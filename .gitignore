@@ -1,0 +1,113 @@
+# === General / OS Specific Ignores ===
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.pyc
+.atom/
+.history
+.svn/
+.fseventsd
+.Spotlight-V100
+.Trashes
+.build/
+.buildlog/
+migrate_working_dir/
+*.class
+*.log
+flutter_*.log
+
+# === Environment Variables and Secrets ===
+# DO NOT commit sensitive environment variables or secrets.
+.env
+.env.*
+assets/env.*
+!assets/env.template
+secrets/
+
+# === IDE Specific Ignores ===
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+
+# === Flutter / Dart / Pub Specific Ignores ===
+build/
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-generated
+**/doc/api/
+.metadata
+pubspec.lock
+coverage/
+
+# === Android Specific Ignores ===
+android/local.properties
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle-wrapper.jar
+android/key.properties
+android/app/google-services.json
+android/app/release/
+android/app/build/
+android/**/*.hprof
+
+# === iOS / Xcode Specific Ignores ===
+DerivedData/
+*.xcuserstate
+*.pbxuser
+*.xcscmblueprint
+*.xccheckout
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcarchive
+*.ipa
+*.dSYM.zip
+*.app.dSYM
+*.framework.dSYM
+*.bak
+*.orig
+*.xcconfig.backup
+mybuildsettings_snapshot.txt
+tbp_files.zip
+DartFiles.zip
+*.cer
+ios_backup*/
+
+# Ignore the entire functions directory first
+functions/
+
+# Now, create exceptions for the specific files you want to KEEP
+!functions/package.json
+!functions/index.js
+
+# Also, add a global rule to ignore all node_modules folders
+**/node_modules/
+
+# === Platform-Specific Generated Files ===
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugins.cmake
+macos/Flutter/GeneratedPluginRegistrant.swift
+
+# === Firebase Specific ===
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# === Temporary and Build Files ===
+rebuild_*
+*.tmp
+*.temp
