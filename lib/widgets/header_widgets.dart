@@ -140,7 +140,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                     builder: (_) => DashboardScreen(appId: widget.appId)));
           }
         },
-        child: const Text('TeamBuild Pro',
+        child: const Text('Team Build Pro',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
       ),
       centerTitle: true,
