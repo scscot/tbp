@@ -85,12 +85,18 @@ DartFiles.zip
 *.cer
 ios_backup*/
 
-# Ignore the entire functions directory first
-functions/
+# === Firebase Functions ===
+# Ignore most of the functions directory
+functions/node_modules/
+functions/.eslintrc.js
+functions/firebase-debug.log
+functions/firebase-debug.*.log
+functions/ui-debug.log
+functions/package-lock.json
 
-# Now, create exceptions for the specific files you want to KEEP
-!functions/package.json
-!functions/index.js
+# Keep these important functions files
+# functions/package.json - tracked
+# functions/index.js - tracked
 
 # Also, add a global rule to ignore all node_modules folders
 **/node_modules/
