@@ -272,6 +272,10 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
   }
   const userId = event.params.userId;
   const notificationData = snap.data();
+
+  console.log(`🔔 PUSH DEBUG: Starting push for user ${userId}`);
+  console.log(`🔔 PUSH DEBUG: Notification data:`, JSON.stringify(notificationData, null, 2));
+
   const userDoc = await db.collection("users").doc(userId).get();
   if (!userDoc.exists) {
     console.error(`User document for ${userId} does not exist.`);
@@ -283,6 +287,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     return;
   }
 
+  console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
+
   const imageUrl = notificationData?.imageUrl;
 
   const message = {
@@ -290,24 +296,28 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     notification: {
       title: notificationData?.title || "New Notification",
       body: notificationData?.message || "You have a new message.",
-      ...(imageUrl && { imageUrl: imageUrl }),
+      // Removed imageUrl to prevent iOS notification failures
     },
     data: {
       type: notificationData?.type || "generic",
       route: notificationData?.route || "/",
       route_params: notificationData?.route_params || "{}",
-      imageUrl: imageUrl || "",
+      imageUrl: imageUrl || "", // Keep in data for app handling
     },
     apns: {
       payload: {
         aps: {
+          alert: {
+            title: notificationData?.title || "New Notification",
+            body: notificationData?.message || "You have a new message.",
+          },
           sound: "default",
+          badge: 1,
           "mutable-content": 1,
+          "content-available": 1,
         },
       },
-      fcm_options: {
-        image: imageUrl,
-      },
+      // Removed fcm_options with image
     },
     android: {
       notification: {
@@ -318,9 +328,11 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
   try {
     const response = await messaging.send(message);
-    console.log(`FCM push sent to user ${userId}:`, response);
+    console.log(`✅ FCM push sent successfully to user ${userId}:`, response);
+    console.log(`🔔 PUSH DEBUG: Full message payload:`, JSON.stringify(message, null, 2));
   } catch (error) {
-    console.error(`Failed to send FCM push to user ${userId}:`, error);
+    console.error(`❌ Failed to send FCM push to user ${userId}:`, error);
+    console.error(`🔔 PUSH DEBUG: Error details:`, error.code, error.message);
   }
 });
 

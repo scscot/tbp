@@ -49,6 +49,23 @@ class FCMService {
       FirebaseMessaging.onMessageOpenedApp.listen((message) {
         _handleMessage(notificationService, message);
       });
+
+      // Handle foreground messages (when app is open)
+      FirebaseMessaging.onMessage.listen((message) {
+        if (kDebugMode) {
+          debugPrint(
+              "📱 Received foreground FCM message: ${message.messageId}");
+          debugPrint("📱 Title: ${message.notification?.title}");
+          debugPrint("📱 Body: ${message.notification?.body}");
+          debugPrint("📱 Data: ${message.data}");
+        }
+
+        // Show in-app notification when app is in foreground
+        _showForegroundNotification(message);
+
+        // Handle the message data for navigation
+        _handleMessage(notificationService, message);
+      });
     }
   }
 
@@ -197,6 +214,74 @@ class FCMService {
     } catch (e) {
       if (kDebugMode) {
         debugPrint('⚠️ Error clearing FCM token: $e');
+      }
+    }
+  }
+
+  void _showForegroundNotification(RemoteMessage message) {
+    // Only show if we have valid notification data and can access the navigator
+    if (message.notification != null && navigatorKey.currentState != null) {
+      final context = navigatorKey.currentState!.context;
+
+      // Create the notification content
+      final title = message.notification!.title ?? 'New Notification';
+      final body = message.notification!.body ?? '';
+
+      // Show a SnackBar with the notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              if (body.isNotEmpty)
+                Text(
+                  body.replaceAll('\nREPLY', ''),
+                  style: const TextStyle(color: Colors.white),
+                ),
+            ],
+          ),
+          backgroundColor: Colors.blue[700],
+          duration: const Duration(seconds: 4),
+          action: SnackBarAction(
+            label: 'VIEW',
+            textColor: Colors.white,
+            onPressed: () {
+              // Handle navigation using the message data
+              if (message.data.isNotEmpty) {
+                final route = message.data['route'] as String?;
+                final paramsString = message.data['route_params'] as String?;
+
+                if (route != null && paramsString != null) {
+                  try {
+                    final Map<String, dynamic> arguments =
+                        jsonDecode(paramsString);
+                    final pendingNotification = PendingNotification(
+                      route: route,
+                      arguments: arguments,
+                    );
+                    navigateToRoute(pendingNotification);
+                  } catch (e) {
+                    if (kDebugMode) {
+                      debugPrint("Error parsing notification route_params: $e");
+                    }
+                  }
+                }
+              }
+            },
+          ),
+        ),
+      );
+
+      if (kDebugMode) {
+        debugPrint("🔔 Showed foreground notification: $title");
       }
     }
   }
