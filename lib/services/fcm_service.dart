@@ -18,7 +18,6 @@ import '../screens/join_opportunity_screen.dart';
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   Future<void> initialize(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.uid.isEmpty) return;
@@ -33,7 +32,10 @@ class FCMService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      // Wait for APNS token to be available before getting FCM token
+      await _waitForAPNSToken();
       await _saveToken();
+
       _messaging.onTokenRefresh.listen((token) async {
         await _saveToken();
       });
@@ -47,6 +49,37 @@ class FCMService {
       FirebaseMessaging.onMessageOpenedApp.listen((message) {
         _handleMessage(notificationService, message);
       });
+    }
+  }
+
+  Future<void> _waitForAPNSToken() async {
+    if (kDebugMode) {
+      debugPrint("--- WAITING FOR APNS TOKEN ---");
+    }
+
+    // Try to get APNS token with retries
+    for (int i = 0; i < 10; i++) {
+      try {
+        final apnsToken = await _messaging.getAPNSToken();
+        if (apnsToken != null) {
+          if (kDebugMode) {
+            debugPrint(
+                "✅ APNS token available: ${apnsToken.substring(0, 10)}...");
+          }
+          return;
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint("⚠️ APNS token not ready, attempt ${i + 1}/10: $e");
+        }
+      }
+
+      // Wait before retrying
+      await Future.delayed(Duration(milliseconds: 500));
+    }
+
+    if (kDebugMode) {
+      debugPrint("⚠️ APNS token still not available after 10 attempts");
     }
   }
 
@@ -93,36 +126,59 @@ class FCMService {
       debugPrint("--- SAVE TOKEN: User found with UID: ${user.uid} ---");
     }
 
-    final token = await _messaging.getToken();
+    try {
+      // Check APNS token availability first
+      final apnsToken = await _messaging.getAPNSToken();
+      if (apnsToken == null) {
+        if (kDebugMode) {
+          debugPrint(
+              "--- SAVE TOKEN FAILED: APNS token not available, will retry later");
+        }
+        // Retry after a delay
+        Future.delayed(Duration(seconds: 2), () => _saveToken());
+        return;
+      }
 
-    if (token == null) {
+      final token = await _messaging.getToken();
+
+      if (token == null) {
+        if (kDebugMode) {
+          debugPrint(
+              "--- SAVE TOKEN FAILED: Aborting, token received from FCM was null.");
+        }
+        return;
+      }
       if (kDebugMode) {
         debugPrint(
-            "--- SAVE TOKEN FAILED: Aborting, token received from FCM was null.");
+            "--- SAVE TOKEN: Got FCM token starting with: ${token.substring(0, 15)}...");
+        debugPrint(
+            "--- SAVE TOKEN: Preparing to write to Firestore document... ---");
       }
-      return;
-    }
-    if (kDebugMode) {
-      debugPrint(
-          "--- SAVE TOKEN: Got FCM token starting with: ${token.substring(0, 15)}...");
-      debugPrint(
-          "--- SAVE TOKEN: Preparing to write to Firestore document... ---");
-    }
 
-    await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .set({'fcm_token': token}, SetOptions(merge: true)).then((_) {
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .set({'fcm_token': token}, SetOptions(merge: true));
+
       if (kDebugMode) {
         debugPrint(
             "✅✅✅ SAVE TOKEN SUCCESS: Firestore write completed without error.");
       }
-    }).catchError((error) {
+    } catch (error) {
       if (kDebugMode) {
         debugPrint(
-            "❌❌❌ SAVE TOKEN FAILED: Firestore write failed with an error: $error");
+            "❌❌❌ SAVE TOKEN FAILED: Error during token generation or Firestore write: $error");
       }
-    });
+
+      // If it's an APNS token error, retry after a delay
+      if (error.toString().contains('apns-token-not-set')) {
+        if (kDebugMode) {
+          debugPrint(
+              "--- SAVE TOKEN: Will retry in 3 seconds due to APNS token issue");
+        }
+        Future.delayed(Duration(seconds: 3), () => _saveToken());
+      }
+    }
 
     if (kDebugMode) {
       debugPrint("--- SAVE TOKEN END ---");
