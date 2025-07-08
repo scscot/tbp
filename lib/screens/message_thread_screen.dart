@@ -188,6 +188,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
     final textToSend = _controller.text.trim();
 
+    // Check for URLs in the message
+    if (_containsUrl(textToSend)) {
+      _showUrlWarningModal();
+      return;
+    }
+
     final chatDocRef =
         FirebaseFirestore.instance.collection('chats').doc(_threadId!);
 
@@ -229,6 +235,61 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       }
     });
   }
+
+  // --- NEW: URL Detection and Warning Methods ---
+  bool _containsUrl(String text) {
+    // Comprehensive URL regex pattern to match various URL formats
+    final urlPatterns = [
+      // HTTP/HTTPS URLs
+      RegExp(r'https?://[^\s]+', caseSensitive: false),
+      // www. URLs
+      RegExp(r'www\.[^\s]+', caseSensitive: false),
+      // Domain.extension patterns (e.g., google.com, site.org)
+      RegExp(r'\b[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?(?:/[^\s]*)?\b',
+          caseSensitive: false),
+      // FTP URLs
+      RegExp(r'ftp://[^\s]+', caseSensitive: false),
+      // Shortened URLs (bit.ly, tinyurl, etc.)
+      RegExp(
+          r'\b(?:bit\.ly|tinyurl\.com|t\.co|short\.link|ow\.ly|is\.gd)/[^\s]+',
+          caseSensitive: false),
+    ];
+
+    // Check against all patterns
+    for (final pattern in urlPatterns) {
+      if (pattern.hasMatch(text)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void _showUrlWarningModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.info_outline, color: Colors.blue),
+              SizedBox(width: 8),
+              Text('Links Not Permitted'),
+            ],
+          ),
+          content: const Text(
+            'To maintain the integrity of our team building system and ensure focus on our business opportunity, links and URLs are not permitted in chat messages. Please share your message without any links.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Understood'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  // --- END: URL Detection and Warning Methods ---
 
   @override
   Widget build(BuildContext context) {
