@@ -313,11 +313,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
           },
           sound: "default",
           badge: 1,
-          "mutable-content": 1,
-          "content-available": 1,
         },
       },
-      // Removed fcm_options with image
     },
     android: {
       notification: {
