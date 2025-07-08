@@ -38,6 +38,10 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   bool _isThreadReady = false;
   // --- MODIFICATION: Added state variable for the photo URL ---
   String? _recipientPhotoUrl;
+  // --- MODIFICATION: Added state variable for actual recipient name ---
+  String _actualRecipientName = '';
+  // --- MODIFICATION: Added state variable for actual recipient ID ---
+  String _actualRecipientId = '';
 
   @override
   void initState() {
@@ -61,23 +65,79 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     }
     _currentUserId = currentUser.uid;
 
-    // --- MODIFICATION: Fetch the recipient's user data to get their photo ---
-    try {
-      final recipientDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.recipientId)
-          .get();
-      if (mounted && recipientDoc.exists) {
-        setState(() {
-          _recipientPhotoUrl = recipientDoc.data()?['photoUrl'];
-        });
+    String actualRecipientId = widget.recipientId;
+    String actualRecipientName = widget.recipientName;
+
+    // If we have a threadId but no recipientId, fetch participants from the thread
+    if (widget.threadId != null &&
+        (widget.recipientId.isEmpty || widget.recipientName.isEmpty)) {
+      try {
+        final threadDoc = await FirebaseFirestore.instance
+            .collection('chats')
+            .doc(widget.threadId)
+            .get();
+
+        if (threadDoc.exists) {
+          final participants =
+              List<String>.from(threadDoc.data()?['participants'] ?? []);
+          final otherParticipant = participants.firstWhere(
+            (id) => id != _currentUserId,
+            orElse: () => '',
+          );
+
+          if (otherParticipant.isNotEmpty) {
+            // Fetch the other participant's details
+            final userDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(otherParticipant)
+                .get();
+
+            if (userDoc.exists) {
+              final userData = userDoc.data()!;
+              actualRecipientId = otherParticipant;
+              actualRecipientName =
+                  '${userData['firstName'] ?? ''} ${userData['lastName'] ?? ''}'
+                      .trim();
+              _recipientPhotoUrl = userData['photoUrl'];
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint("Error fetching thread participants: $e");
       }
-    } catch (e) {
-      debugPrint("Error fetching recipient's profile: $e");
+    }
+
+    // Store the actual recipient info in instance variables for use in _sendMessage
+    _actualRecipientId = actualRecipientId;
+
+    // Store the actual recipient name in state
+    if (mounted) {
+      setState(() {
+        _actualRecipientName = actualRecipientName.isNotEmpty
+            ? actualRecipientName
+            : 'Unknown User';
+      });
+    }
+
+    // --- MODIFICATION: Fetch the recipient's user data to get their photo if not already fetched ---
+    if (actualRecipientId.isNotEmpty && _recipientPhotoUrl == null) {
+      try {
+        final recipientDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(actualRecipientId)
+            .get();
+        if (mounted && recipientDoc.exists) {
+          setState(() {
+            _recipientPhotoUrl = recipientDoc.data()?['photoUrl'];
+          });
+        }
+      } catch (e) {
+        debugPrint("Error fetching recipient's profile: $e");
+      }
     }
     // --- End of modification ---
 
-    final ids = [_currentUserId!, widget.recipientId];
+    final ids = [_currentUserId!, actualRecipientId];
     ids.sort();
     final determinedThreadId = widget.threadId ?? ids.join('_');
 
@@ -127,10 +187,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     }
 
     final textToSend = _controller.text.trim();
-    _controller.clear();
 
     final chatDocRef =
         FirebaseFirestore.instance.collection('chats').doc(_threadId!);
+
+    // Clear the controller only after capturing the text
+    _controller.clear();
 
     chatDocRef.collection('messages').add({
       'text': textToSend,
@@ -138,11 +200,24 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       'timestamp': FieldValue.serverTimestamp(),
     });
 
-    chatDocRef.update({
+    // Build the update data
+    final updateData = <String, dynamic>{
       'lastMessage': textToSend,
       'lastMessageTimestamp': FieldValue.serverTimestamp(),
-      'isRead': {_currentUserId!: true, widget.recipientId: false}
-    });
+    };
+
+    // Use the actual recipient ID we determined during initialization
+    final recipientIdToUse =
+        _actualRecipientId.isNotEmpty ? _actualRecipientId : widget.recipientId;
+
+    // Add isRead only if we have a valid recipient ID
+    if (recipientIdToUse.isNotEmpty) {
+      updateData['isRead'] = {_currentUserId!: true, recipientIdToUse: false};
+    } else {
+      updateData['isRead.${_currentUserId!}'] = true;
+    }
+
+    chatDocRef.update(updateData);
 
     Timer(const Duration(milliseconds: 300), () {
       if (_scrollController.hasClients) {
@@ -185,7 +260,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              widget.recipientName,
+              _actualRecipientName.isNotEmpty
+                  ? _actualRecipientName
+                  : widget.recipientName,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),

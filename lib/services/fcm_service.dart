@@ -113,11 +113,12 @@ class FCMService {
           route: route,
           arguments: arguments,
         );
+        // Only auto-navigate if the app was terminated and reopened by the notification
+        // For foreground messages, just store the notification data without auto-navigation
         if (isTerminated) {
           notificationService.setPendingNotification(pendingNotification);
-        } else {
-          navigateToRoute(pendingNotification);
         }
+        // Removed auto-navigation for foreground messages to prevent unwanted routing
       } catch (e) {
         if (kDebugMode) {
           debugPrint("Error parsing notification route_params: $e");
@@ -250,33 +251,7 @@ class FCMService {
           ),
           backgroundColor: Colors.blue[700],
           duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'VIEW',
-            textColor: Colors.white,
-            onPressed: () {
-              // Handle navigation using the message data
-              if (message.data.isNotEmpty) {
-                final route = message.data['route'] as String?;
-                final paramsString = message.data['route_params'] as String?;
-
-                if (route != null && paramsString != null) {
-                  try {
-                    final Map<String, dynamic> arguments =
-                        jsonDecode(paramsString);
-                    final pendingNotification = PendingNotification(
-                      route: route,
-                      arguments: arguments,
-                    );
-                    navigateToRoute(pendingNotification);
-                  } catch (e) {
-                    if (kDebugMode) {
-                      debugPrint("Error parsing notification route_params: $e");
-                    }
-                  }
-                }
-              }
-            },
-          ),
+          // Remove automatic navigation - let user manually go to notifications
         ),
       );
 
@@ -299,15 +274,14 @@ void navigateToRoute(PendingNotification notification) {
       }
     } else if (notification.route == '/message_thread') {
       final threadId = notification.arguments['threadId'] as String?;
-      final recipientId = notification.arguments['recipientId'] as String?;
-      final recipientName = notification.arguments['recipientName'] as String?;
-      if (threadId != null && recipientId != null && recipientName != null) {
+      if (threadId != null) {
+        // Navigate to message thread - the screen will determine participants from threadId
         const String appId = 'L8n1tJqHqYd3F5j6';
         navigatorKey.currentState!.push(MaterialPageRoute(
           builder: (_) => MessageThreadScreen(
             threadId: threadId,
-            recipientId: recipientId,
-            recipientName: recipientName,
+            recipientId: '', // Will be determined from threadId in the screen
+            recipientName: '', // Will be determined from threadId in the screen
             appId: appId,
           ),
         ));
