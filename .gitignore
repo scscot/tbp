@@ -117,3 +117,4 @@ firebase-debug.*.log
 rebuild_*
 *.tmp
 *.temp
+*.txt

@@ -30,6 +30,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		48998BBE2E1CB2A1007F230C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -204,6 +214,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				6B94A6734996BEBDCEC2D306 /* [CP] Embed Pods Frameworks */,
 				FF6F027F7C632C11A73058CF /* [CP] Copy Pods Resources */,
+				48998BBE2E1CB2A1007F230C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -221,6 +232,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
