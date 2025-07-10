@@ -66,7 +66,6 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
   // Note: For the 'Joined Opportunity' filter to work, the UserModel
   // must contain a `bizJoinDate` field, like:
   // final DateTime? bizJoinDate;
-  List<UserModel> _fullDownline = [];
   List<UserModel> _filteredDownline = [];
   Map<int, List<UserModel>> _downlineByLevel = {};
 
@@ -97,8 +96,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     if (_searchQuery != _searchController.text) {
       setState(() {
         _searchQuery = _searchController.text.toLowerCase();
-        _processAndFilterData();
       });
+      // Trigger backend filtering instead of local processing
+      _fetchFilteredData();
     }
   }
 
@@ -129,32 +129,25 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Note: `getDownlineCounts()` in `DownlineService` must be updated
-      // to return a count for the new filter.
-      final results = await Future.wait([
-        _downlineService.getDownline(),
-        _downlineService.getDownlineCounts(),
-      ]);
+      // Get counts for filter chips
+      final counts = await _downlineService.getDownlineCounts();
 
       if (!mounted) return;
 
-      final downlineUsers = results[0] as List<UserModel>;
-      final counts = results[1] as Map<String, int>;
-
+      // Update filter counts
       setState(() {
-        _fullDownline = downlineUsers;
         _filterCounts[DownlineFilter.all] = counts['all'] ?? 0;
         _filterCounts[DownlineFilter.last24] = counts['last24'] ?? 0;
         _filterCounts[DownlineFilter.last7] = counts['last7'] ?? 0;
         _filterCounts[DownlineFilter.last30] = counts['last30'] ?? 0;
         _filterCounts[DownlineFilter.newQualified] =
             counts['newQualified'] ?? 0;
-        // --- MODIFICATION: Get count for the new filter ---
-        // Assumes the key 'joinedOpportunity' is returned from the service.
         _filterCounts[DownlineFilter.joinedOpportunity] =
             counts['joinedOpportunity'] ?? 0;
-        _processAndFilterData();
       });
+
+      // Fetch filtered data from backend
+      await _fetchFilteredData();
     } catch (e) {
       debugPrint('Error fetching downline data: $e');
     } finally {
@@ -164,73 +157,72 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     }
   }
 
-  void _processAndFilterData() {
-    final now = DateTime.now();
-
-    _filteredDownline = _fullDownline.where((user) {
+  Future<void> _fetchFilteredData() async {
+    try {
+      // Convert filter enum to string
+      String filterString;
       switch (_selectedFilter) {
         case DownlineFilter.last24:
-          return user.createdAt != null &&
-              user.createdAt!.isAfter(now.subtract(const Duration(days: 1)));
+          filterString = 'last24';
+          break;
         case DownlineFilter.last7:
-          return user.createdAt != null &&
-              user.createdAt!.isAfter(now.subtract(const Duration(days: 7)));
+          filterString = 'last7';
+          break;
         case DownlineFilter.last30:
-          return user.createdAt != null &&
-              user.createdAt!.isAfter(now.subtract(const Duration(days: 30)));
+          filterString = 'last30';
+          break;
         case DownlineFilter.newQualified:
-          return user.qualifiedDate != null;
-        // --- MODIFICATION: Add filter condition for 'Joined Opportunity' ---
+          filterString = 'newQualified';
+          break;
         case DownlineFilter.joinedOpportunity:
-          // This requires `bizJoinDate` to be present in the UserModel
-          return user.bizJoinDate != null;
+          filterString = 'joinedOpportunity';
+          break;
         case DownlineFilter.all:
-          return true;
+          filterString = 'all';
+          break;
       }
-    }).toList();
 
-    if (_searchQuery.isNotEmpty) {
-      _filteredDownline = _filteredDownline.where((user) {
-        return (user.firstName?.toLowerCase().contains(_searchQuery) ??
-                false) ||
-            (user.lastName?.toLowerCase().contains(_searchQuery) ?? false) ||
-            (user.email?.toLowerCase().contains(_searchQuery) ?? false);
-      }).toList();
+      // Use the new backend-optimized filtering
+      final result = await _downlineService.getFilteredDownline(
+        filter: filterString,
+        searchQuery: _searchQuery,
+        levelOffset: _levelOffset,
+        limit: 1000, // Increase limit for now, can add pagination later
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _filteredDownline = result['downline'] as List<UserModel>;
+
+        // If we have grouped data from backend, use it; otherwise group locally
+        final backendGrouped = result['groupedByLevel'];
+        if (backendGrouped != null &&
+            backendGrouped is Map<int, List<UserModel>>) {
+          _downlineByLevel = Map<int, List<UserModel>>.from(backendGrouped);
+        } else {
+          // Fallback to local grouping if backend doesn't provide it
+          _groupDataByLevel();
+        }
+      });
+    } catch (e) {
+      debugPrint('Error fetching filtered downline data: $e');
     }
+  }
 
-    // --- MODIFICATION: Update sorting logic to handle the new filter ---
-    _filteredDownline.sort((a, b) {
-      if (_selectedFilter == DownlineFilter.joinedOpportunity) {
-        // Sort by business join date for the 'Joined Opportunity' filter
-        if (a.bizJoinDate == null && b.bizJoinDate == null) return 0;
-        if (a.bizJoinDate == null) return 1;
-        if (b.bizJoinDate == null) return -1;
-        return b.bizJoinDate!.compareTo(a.bizJoinDate!);
-      } else {
-        // Default sort by creation date for all other filters
-        if (a.createdAt == null && b.createdAt == null) return 0;
-        if (a.createdAt == null) return 1;
-        if (b.createdAt == null) return -1;
-        return b.createdAt!.compareTo(a.createdAt!);
-      }
-    });
-
+  void _groupDataByLevel() {
     final Map<int, List<UserModel>> grouped = {};
     for (var user in _filteredDownline) {
       final displayLevel = user.level - _levelOffset;
-      // --- MODIFICATION: Grouping logic updated to include new filter behavior ---
-      if (_selectedFilter == DownlineFilter.newQualified ||
+      if (displayLevel > 0 ||
+          _selectedFilter == DownlineFilter.newQualified ||
           _selectedFilter == DownlineFilter.joinedOpportunity) {
-        grouped.putIfAbsent(displayLevel, () => []).add(user);
-      } else if (displayLevel > 0) {
         grouped.putIfAbsent(displayLevel, () => []).add(user);
       }
     }
 
-    setState(() {
-      _downlineByLevel = Map.fromEntries(
-          grouped.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
-    });
+    _downlineByLevel = Map.fromEntries(
+        grouped.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
   }
 
   @override
@@ -292,8 +284,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
               if (selected) {
                 setState(() {
                   _selectedFilter = filter;
-                  _processAndFilterData();
                 });
+                // Trigger backend filtering instead of local processing
+                _fetchFilteredData();
               }
             },
             selectedColor: Colors.indigo.shade100,

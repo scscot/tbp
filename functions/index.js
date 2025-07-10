@@ -252,6 +252,142 @@ exports.getDownlineCounts = onCall({ region: "us-central1" }, async (request) =>
   }
 });
 
+exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const currentUserId = request.auth.uid;
+  const { filter, searchQuery, levelOffset, limit = 100, offset = 0 } = request.data || {};
+
+  try {
+    console.log(`🔍 FILTER DEBUG: Starting filtered downline for user ${currentUserId}`);
+    console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}", levelOffset: ${levelOffset}`);
+
+    // Get base downline
+    const downlineSnapshot = await db.collection("users")
+      .where("upline_refs", "array-contains", currentUserId)
+      .get();
+
+    if (downlineSnapshot.empty) {
+      return {
+        downline: [],
+        totalCount: 0,
+        hasMore: false
+      };
+    }
+
+    let filteredUsers = [];
+    const now = new Date();
+
+    // Apply time-based and status filters
+    downlineSnapshot.docs.forEach(doc => {
+      const user = { uid: doc.id, ...doc.data() };
+      const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
+      const qualifiedDate = user.qualifiedDate?.toDate ? user.qualifiedDate.toDate() : null;
+      const bizJoinDate = user.biz_join_date?.toDate ? user.biz_join_date.toDate() : null;
+
+      // Apply filter logic
+      let includeUser = false;
+      switch (filter) {
+        case 'last24':
+          includeUser = createdAt && createdAt >= new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case 'last7':
+          includeUser = createdAt && createdAt >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case 'last30':
+          includeUser = createdAt && createdAt >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        case 'newQualified':
+          includeUser = !!qualifiedDate;
+          break;
+        case 'joinedOpportunity':
+          includeUser = !!bizJoinDate;
+          break;
+        case 'all':
+        default:
+          includeUser = true;
+          break;
+      }
+
+      if (includeUser) {
+        // Apply search filter if provided
+        if (searchQuery && searchQuery.trim() !== '') {
+          const searchLower = searchQuery.toLowerCase();
+          const matchesSearch =
+            (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
+            (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
+            (user.email && user.email.toLowerCase().includes(searchLower)) ||
+            (user.city && user.city.toLowerCase().includes(searchLower)) ||
+            (user.state && user.state.toLowerCase().includes(searchLower)) ||
+            (user.country && user.country.toLowerCase().includes(searchLower));
+
+          if (matchesSearch) {
+            filteredUsers.push(user);
+          }
+        } else {
+          filteredUsers.push(user);
+        }
+      }
+    });
+
+    // Sort users based on filter type
+    filteredUsers.sort((a, b) => {
+      if (filter === 'joinedOpportunity') {
+        const aDate = a.biz_join_date?.toDate ? a.biz_join_date.toDate() : null;
+        const bDate = b.biz_join_date?.toDate ? b.biz_join_date.toDate() : null;
+        if (!aDate && !bDate) return 0;
+        if (!aDate) return 1;
+        if (!bDate) return -1;
+        return bDate.getTime() - aDate.getTime();
+      } else {
+        // Default sort by creation date
+        const aDate = a.createdAt?.toDate ? a.createdAt.toDate() : null;
+        const bDate = b.createdAt?.toDate ? b.createdAt.toDate() : null;
+        if (!aDate && !bDate) return 0;
+        if (!aDate) return 1;
+        if (!bDate) return -1;
+        return bDate.getTime() - aDate.getTime();
+      }
+    });
+
+    // Group by level if levelOffset is provided
+    const groupedByLevel = {};
+    if (levelOffset !== undefined) {
+      filteredUsers.forEach(user => {
+        const displayLevel = (user.level || 1) - levelOffset;
+        if (displayLevel > 0 || filter === 'newQualified' || filter === 'joinedOpportunity') {
+          if (!groupedByLevel[displayLevel]) {
+            groupedByLevel[displayLevel] = [];
+          }
+          groupedByLevel[displayLevel].push(user);
+        }
+      });
+    }
+
+    // Apply pagination
+    const totalCount = filteredUsers.length;
+    const paginatedUsers = filteredUsers.slice(offset, offset + limit);
+    const hasMore = offset + limit < totalCount;
+
+    console.log(`✅ FILTER DEBUG: Returning ${paginatedUsers.length} users out of ${totalCount} total`);
+
+    return {
+      downline: serializeData(paginatedUsers),
+      groupedByLevel: levelOffset !== undefined ? serializeData(groupedByLevel) : null,
+      totalCount,
+      hasMore,
+      offset,
+      limit
+    };
+
+  } catch (error) {
+    console.error(`CRITICAL ERROR in getFilteredDownline for user ${currentUserId}:`, error);
+    throw new HttpsError("internal", "An unexpected error occurred while fetching filtered downline.", error.message);
+  }
+});
+
 exports.checkAdminSubscriptionStatus = onCall(async (request) => {
   const { uid } = request.data;
   const adminRef = db.collection("admins").doc(uid);
@@ -628,5 +764,107 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
       throw error;
     }
     throw new HttpsError("internal", "An unexpected error occurred.");
+  }
+});
+
+exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const { memberId } = request.data;
+  if (!memberId) {
+    throw new HttpsError("invalid-argument", "Member ID is required.");
+  }
+
+  try {
+    console.log(`👤 MEMBER DEBUG: Fetching details for member ${memberId}`);
+
+    // Fetch the main user document
+    const memberDoc = await db.collection("users").doc(memberId).get();
+
+    if (!memberDoc.exists) {
+      throw new HttpsError("not-found", "Member not found.");
+    }
+
+    const memberData = { uid: memberDoc.id, ...memberDoc.data() };
+
+    // Parallel fetch sponsor and team leader details
+    const promises = [];
+    let sponsorPromise = null;
+    let teamLeaderPromise = null;
+
+    // Fetch sponsor details if sponsorId exists
+    if (memberData.sponsor_id && memberData.sponsor_id.trim() !== '') {
+      sponsorPromise = db.collection("users").doc(memberData.sponsor_id).get();
+      promises.push(sponsorPromise);
+    }
+
+    // Fetch team leader details if uplineAdmin exists and is different from sponsor
+    if (memberData.upline_admin &&
+      memberData.upline_admin.trim() !== '' &&
+      memberData.upline_admin !== memberData.sponsor_id) {
+      teamLeaderPromise = db.collection("users").doc(memberData.upline_admin).get();
+      promises.push(teamLeaderPromise);
+    }
+
+    // Execute all promises in parallel
+    const results = await Promise.allSettled(promises);
+
+    let sponsorData = null;
+    let teamLeaderData = null;
+
+    let resultIndex = 0;
+
+    // Process sponsor result
+    if (sponsorPromise) {
+      const sponsorResult = results[resultIndex++];
+      if (sponsorResult.status === 'fulfilled' && sponsorResult.value.exists) {
+        const sponsorDoc = sponsorResult.value;
+        sponsorData = {
+          uid: sponsorDoc.id,
+          firstName: sponsorDoc.data().firstName || '',
+          lastName: sponsorDoc.data().lastName || '',
+          email: sponsorDoc.data().email || '',
+          photoUrl: sponsorDoc.data().photoUrl || null,
+          city: sponsorDoc.data().city || '',
+          state: sponsorDoc.data().state || '',
+          country: sponsorDoc.data().country || '',
+        };
+      }
+    }
+
+    // Process team leader result
+    if (teamLeaderPromise) {
+      const teamLeaderResult = results[resultIndex++];
+      if (teamLeaderResult.status === 'fulfilled' && teamLeaderResult.value.exists) {
+        const teamLeaderDoc = teamLeaderResult.value;
+        teamLeaderData = {
+          uid: teamLeaderDoc.id,
+          firstName: teamLeaderDoc.data().firstName || '',
+          lastName: teamLeaderDoc.data().lastName || '',
+          email: teamLeaderDoc.data().email || '',
+          photoUrl: teamLeaderDoc.data().photoUrl || null,
+          city: teamLeaderDoc.data().city || '',
+          state: teamLeaderDoc.data().state || '',
+          country: teamLeaderDoc.data().country || '',
+        };
+      }
+    }
+
+    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no team leader'}`);
+
+    return {
+      member: serializeData(memberData),
+      sponsor: sponsorData ? serializeData(sponsorData) : null,
+      teamLeader: teamLeaderData ? serializeData(teamLeaderData) : null,
+    };
+
+  } catch (error) {
+    console.error(`CRITICAL ERROR in getMemberDetails for member ${memberId}:`, error);
+    if (error instanceof HttpsError) {
+      throw error;
+    }
+    throw new HttpsError("internal", "An unexpected error occurred while fetching member details.", error.message);
   }
 });
