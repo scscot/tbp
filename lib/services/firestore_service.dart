@@ -1,12 +1,14 @@
 // lib/services/firestore_service.dart
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../models/message_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instance;
 
 // In lib/services/firestore_service.dart
 
@@ -46,6 +48,27 @@ class FirestoreService {
     } catch (e) {
       debugPrint("FirestoreService: Error updating user $uid: $e");
       // Re-throw the exception so the UI can catch it.
+      rethrow;
+    }
+  }
+
+  // New method to get member details with sponsor and team leader info in one call
+  Future<Map<String, dynamic>?> getMemberDetails(String userId) async {
+    try {
+      final callable = _functions.httpsCallable('getMemberDetails');
+      final result = await callable.call({'memberId': userId});
+
+      return result.data;
+    } on FirebaseFunctionsException catch (e, s) {
+      debugPrint('Firebase Functions Error calling getMemberDetails:');
+      debugPrint('Code: ${e.code}');
+      debugPrint('Message: ${e.message}');
+      debugPrint('Details: ${e.details}');
+      debugPrint('Stacktrace: $s');
+      rethrow;
+    } catch (e, s) {
+      debugPrint('Error calling getMemberDetails Cloud Function: $e');
+      debugPrint('Stacktrace: $s');
       rethrow;
     }
   }

@@ -65,13 +65,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final authService = context.read<AuthService>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
+      print("🔄 DEBUG: Getting credential...");
       final credential = await getCredential();
+      print("🔄 DEBUG: Credential obtained, signing in with Firebase...");
+      print("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
+      print("✅ DEBUG: Firebase sign-in successful!");
     } on FirebaseAuthException catch (e) {
+      print("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
       scaffoldMessenger.showSnackBar(SnackBar(
           content: Text(e.message ?? 'Sign-in failed.'),
           backgroundColor: Colors.red));
     } catch (e) {
+      print("❌ DEBUG: Unexpected error: $e");
       scaffoldMessenger.showSnackBar(const SnackBar(
           content: Text('An unexpected social sign-in error occurred.'),
           backgroundColor: Colors.red));
@@ -193,6 +199,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<AuthCredential> _getAppleCredential() async {
     final rawNonce = _generateNonce();
     final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+    print("🍎 DEBUG: Starting Apple Sign In...");
+
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -200,8 +209,18 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
       nonce: nonce,
     );
+
+    print(
+        "🍎 DEBUG: Apple credential received: ${appleCredential.identityToken != null}");
+    print("🍎 DEBUG: User identifier: ${appleCredential.userIdentifier}");
+    print(
+        "🍎 DEBUG: Authorization code present: ${appleCredential.authorizationCode.isNotEmpty}");
+    print(
+        "🍎 DEBUG: Identity token length: ${appleCredential.identityToken?.length ?? 0}");
+
     return OAuthProvider('apple.com').credential(
       idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
       rawNonce: rawNonce,
     );
   }

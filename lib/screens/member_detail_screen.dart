@@ -56,45 +56,47 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     _currentUserId = authUser.uid;
 
     try {
-      final userDoc = await _firestoreService.getUser(widget.userId);
+      // Use the new backend aggregation method
+      final memberDetails =
+          await _firestoreService.getMemberDetails(widget.userId);
 
       if (!mounted) return;
 
-      setState(() {
-        _user = userDoc;
-      });
-
-      // Sponsor (uses sponsorId)
-      if (_user?.sponsorId != null && _user!.sponsorId!.isNotEmpty) {
-        final sponsorDoc = await _firestoreService.getUser(_user!.sponsorId!);
-
-        if (mounted && sponsorDoc != null) {
+      if (memberDetails != null) {
+        // Parse the member data
+        if (memberDetails['member'] != null) {
+          final memberData = Map<String, dynamic>.from(memberDetails['member']);
           setState(() {
-            _sponsorUid = sponsorDoc.uid;
-            _sponsorName =
-                '${sponsorDoc.firstName ?? ''} ${sponsorDoc.lastName ?? ''}';
+            _user = UserModel.fromMap(memberData);
           });
         }
 
-        /*    if (mounted && sponsorDoc != null) {
-          setState(() => _sponsorName =
-              '${sponsorDoc.firstName ?? ''} ${sponsorDoc.lastName ?? ''}');
-        } */
-      }
-
-      // Team Leader (uses uplineAdmin)
-      if (_user?.uplineAdmin != null && _user!.uplineAdmin!.isNotEmpty) {
-        final leaderDoc = await _firestoreService.getUser(_user!.uplineAdmin!);
-        if (mounted && leaderDoc != null) {
+        // Parse sponsor data
+        if (memberDetails['sponsor'] != null) {
+          final sponsorData =
+              Map<String, dynamic>.from(memberDetails['sponsor']);
           setState(() {
-            _teamLeaderUid = leaderDoc.uid;
+            _sponsorUid = sponsorData['uid'];
+            _sponsorName =
+                '${sponsorData['firstName'] ?? ''} ${sponsorData['lastName'] ?? ''}'
+                    .trim();
+          });
+        }
+
+        // Parse team leader data
+        if (memberDetails['teamLeader'] != null) {
+          final leaderData =
+              Map<String, dynamic>.from(memberDetails['teamLeader']);
+          setState(() {
+            _teamLeaderUid = leaderData['uid'];
             _teamLeaderName =
-                '${leaderDoc.firstName ?? ''} ${leaderDoc.lastName ?? ''}';
+                '${leaderData['firstName'] ?? ''} ${leaderData['lastName'] ?? ''}'
+                    .trim();
           });
         }
       }
     } catch (e) {
-      _log("Error loading user data: $e");
+      _log("Error loading member details: $e");
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

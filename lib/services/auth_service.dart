@@ -54,7 +54,16 @@ class AuthService {
   }
 
   Future<UserCredential> signInWithCredential(AuthCredential credential) async {
-    return await _firebaseAuth.signInWithCredential(credential);
+    print("🔥 DEBUG: AuthService.signInWithCredential called");
+    print("🔥 DEBUG: Credential provider: ${credential.providerId}");
+    try {
+      final result = await _firebaseAuth.signInWithCredential(credential);
+      print("🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
+      return result;
+    } catch (e) {
+      print("🔥 DEBUG: Firebase Auth failed: $e");
+      rethrow;
+    }
   }
 
   // This is correct. The service should only handle auth logic, not UI logic.

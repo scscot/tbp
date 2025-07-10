@@ -64,4 +64,80 @@ class DownlineService {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>> getFilteredDownline({
+    String filter = 'all',
+    String searchQuery = '',
+    int? levelOffset,
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    try {
+      final callable = _functions.httpsCallable('getFilteredDownline');
+      final result = await callable.call({
+        'filter': filter,
+        'searchQuery': searchQuery,
+        'levelOffset': levelOffset,
+        'limit': limit,
+        'offset': offset,
+      });
+
+      // Safely cast the result data
+      final Map<String, dynamic> data = result.data is Map<String, dynamic>
+          ? result.data as Map<String, dynamic>
+          : Map<String, dynamic>.from(result.data ?? {});
+
+      // Convert downline array to UserModel objects
+      final List<dynamic> downlineData = data['downline'] ?? [];
+      final List<UserModel> downlineUsers = downlineData.map((userData) {
+        final Map<String, dynamic> userMap = userData is Map<String, dynamic>
+            ? userData
+            : Map<String, dynamic>.from(userData ?? {});
+        return UserModel.fromMap(userMap);
+      }).toList();
+
+      // Safely handle groupedByLevel data
+      Map<int, List<UserModel>>? processedGroupedByLevel;
+      if (data['groupedByLevel'] != null) {
+        final rawGrouped = data['groupedByLevel'];
+        if (rawGrouped is Map) {
+          processedGroupedByLevel = <int, List<UserModel>>{};
+          rawGrouped.forEach((key, value) {
+            final levelKey = int.tryParse(key.toString()) ?? 0;
+            if (value is List) {
+              final levelUsers = value.map((userData) {
+                final Map<String, dynamic> userMap =
+                    userData is Map<String, dynamic>
+                        ? userData
+                        : Map<String, dynamic>.from(userData ?? {});
+                return UserModel.fromMap(userMap);
+              }).toList();
+              processedGroupedByLevel![levelKey] = levelUsers;
+            }
+          });
+        }
+      }
+
+      return {
+        'downline': downlineUsers,
+        'groupedByLevel': processedGroupedByLevel,
+        'totalCount': data['totalCount'] ?? 0,
+        'hasMore': data['hasMore'] ?? false,
+        'offset': data['offset'] ?? 0,
+        'limit': data['limit'] ?? limit,
+      };
+    } on FirebaseFunctionsException catch (e, s) {
+      debugPrint('Firebase Functions Error calling getFilteredDownline:');
+      debugPrint('Code: ${e.code}');
+      debugPrint('Message: ${e.message}');
+      debugPrint('Details: ${e.details}');
+      debugPrint('Stacktrace: $s');
+      rethrow;
+    } catch (e, s) {
+      debugPrint(
+          'An unexpected error occurred in DownlineService.getFilteredDownline: $e');
+      debugPrint('Stacktrace: $s');
+      rethrow;
+    }
+  }
 }
