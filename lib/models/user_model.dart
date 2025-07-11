@@ -10,6 +10,7 @@ class UserModel {
   final String? city;
   final String? referralCode;
   final String? referredBy;
+  final String? adminReferral;
   final String? photoUrl;
   final DateTime? createdAt;
   final DateTime? joined;
@@ -38,6 +39,7 @@ class UserModel {
     this.city,
     this.referralCode,
     this.referredBy,
+    this.adminReferral,
     this.photoUrl,
     this.createdAt,
     this.joined,
@@ -85,6 +87,7 @@ class UserModel {
       city: map['city'],
       referralCode: map['referralCode'],
       referredBy: map['referredBy'],
+      adminReferral: map['adminReferral'],
       photoUrl: map['photoUrl'],
       createdAt: parseDate(map['createdAt'] ?? map['joined']),
       joined: parseDate(map['createdAt'] ?? map['joined']),
@@ -114,6 +117,7 @@ class UserModel {
       'city': city,
       'referralCode': referralCode,
       'referredBy': referredBy,
+      'adminReferral': adminReferral,
       'photoUrl': photoUrl,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
       'joined': joined != null ? Timestamp.fromDate(joined!) : null,

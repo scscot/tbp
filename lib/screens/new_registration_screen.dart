@@ -14,11 +14,13 @@ import 'welcome_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
+  final String? adminReferralCode;
   final String appId;
 
   const NewRegistrationScreen({
     super.key,
     this.referralCode,
+    this.adminReferralCode,
     required this.appId,
   });
 
@@ -39,6 +41,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   String? _selectedState;
   String? _sponsorName;
   String? _initialReferralCode;
+  String? _initialAdminReferralCode;
   bool _isLoading = true;
   List<String> _availableCountries = [];
 
@@ -54,12 +57,16 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
   Future<void> _initializeScreen() async {
     _initialReferralCode = widget.referralCode;
-    if (isDevMode && _initialReferralCode == null) {
+    _initialAdminReferralCode = widget.adminReferralCode;
+
+    if (isDevMode &&
+        _initialReferralCode == null &&
+        _initialAdminReferralCode == null) {
       // _initialReferralCode = '88888888'; // Admin
       _initialReferralCode = '28F37ECD'; // Direct
     }
 
-    final code = _initialReferralCode;
+    final code = _initialReferralCode ?? _initialAdminReferralCode;
 
     if (code == null || code.isEmpty) {
       _availableCountries = statesByCountry.keys.toList();
@@ -137,7 +144,13 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'state': _selectedState,
         'city': _cityController.text.trim(),
         'sponsorReferralCode': _initialReferralCode,
-        'role': _initialReferralCode == null ? 'admin' : 'user',
+        'adminReferralCode': _initialAdminReferralCode,
+        'role':
+            (_initialReferralCode == null && _initialAdminReferralCode == null)
+                ? 'admin'
+                : _initialAdminReferralCode != null
+                    ? 'admin'
+                    : 'user',
       });
 
       final userCredential = await authService.signInWithEmailAndPassword(

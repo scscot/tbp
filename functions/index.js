@@ -111,7 +111,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1" }, (req, res) 
 });
 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
-  const { email, password, firstName, lastName, sponsorReferralCode, role, country, state, city } = request.data;
+  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city } = request.data;
 
   if (!email || !password || !firstName || !lastName || !country || !state || !city) {
     throw new HttpsError("invalid-argument", "Missing required user information.");
@@ -121,6 +121,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   let sponsorUplineRefs = [];
   let level = 1;
   let uplineAdminForNewUser = null;
+  let adminReferralId = null;
 
   if (sponsorReferralCode) {
     const sponsorQuery = await db.collection("users").where("referralCode", "==", sponsorReferralCode).limit(1).get();
@@ -137,6 +138,17 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       level = sponsorData.level ? sponsorData.level + 1 : 2;
     } else {
       throw new HttpsError("not-found", `Sponsor with referral code '${sponsorReferralCode}' not found.`);
+    }
+  }
+
+  // Handle admin referral code (for new admins)
+  if (adminReferralCode) {
+    const adminReferralQuery = await db.collection("users").where("referralCode", "==", adminReferralCode).limit(1).get();
+    if (!adminReferralQuery.empty) {
+      const adminReferralDoc = adminReferralQuery.docs[0];
+      adminReferralId = adminReferralDoc.id;
+    } else {
+      throw new HttpsError("not-found", `Admin referral with referral code '${adminReferralCode}' not found.`);
     }
   }
 
@@ -160,6 +172,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       role: role || 'user',
       referralCode: `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}${Math.floor(1000 + Math.random() * 9000)}`,
       referredBy: sponsorReferralCode,
+      adminReferral: adminReferralCode,
       sponsor_id: sponsorId,
       level: level,
       upline_refs: sponsorId ? [...sponsorUplineRefs, sponsorId] : [],
