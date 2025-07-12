@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.2
   firebase_remote_config: ^5.0.0
   rxdart: ^0.27.7
+  app_links: ^6.4.0
 
 dev_dependencies:
   flutter_test:

@@ -56,24 +56,39 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Future<void> _initializeScreen() async {
+    // --- ENHANCED: More comprehensive debug logging ---
+    debugPrint('🔍 NewRegistrationScreen._initializeScreen() called');
+    debugPrint('🔍 Constructor parameters received:');
+    debugPrint('🔍   widget.referralCode: ${widget.referralCode}');
+    debugPrint('🔍   widget.adminReferralCode: ${widget.adminReferralCode}');
+    debugPrint('🔍   widget.appId: ${widget.appId}');
+
     _initialReferralCode = widget.referralCode;
     _initialAdminReferralCode = widget.adminReferralCode;
 
-    if (isDevMode &&
+    debugPrint('🔍 After assignment:');
+    debugPrint('🔍   _initialReferralCode: $_initialReferralCode');
+    debugPrint('🔍   _initialAdminReferralCode: $_initialAdminReferralCode');
+
+/*     if (isDevMode &&
         _initialReferralCode == null &&
         _initialAdminReferralCode == null) {
       // _initialReferralCode = '88888888'; // Admin
       _initialReferralCode = '28F37ECD'; // Direct
-    }
+    } */
 
     final code = _initialReferralCode ?? _initialAdminReferralCode;
+    debugPrint('🔍 Using referral code: $code');
 
     if (code == null || code.isEmpty) {
       _availableCountries = statesByCountry.keys.toList();
+      debugPrint(
+          '🔍 No referral code - setting available countries to all countries');
       if (mounted) setState(() => _isLoading = false);
       return;
     }
 
+    debugPrint('🔍 Making HTTP request to get referral code data...');
     try {
       final uri = Uri.parse(
           'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code');

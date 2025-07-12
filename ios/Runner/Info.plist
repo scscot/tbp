@@ -32,6 +32,26 @@
 				<string>com.googleusercontent.apps.312163687148-1di7hi57husi4s9pcn74hd2ndo2d59ss</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>teambuildpro.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>teambuildpro.custom</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>teambuildpro</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
