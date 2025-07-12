@@ -128,7 +128,7 @@ class _ShareScreenState extends State<ShareScreen> {
                       // Personal Referral Link Section - Rapid Growth Strategy
                       Card(
                         elevation: 6,
-                        shadowColor: Colors.green.withOpacity(0.2),
+                        shadowColor: Colors.green.withValues(alpha: 0.2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
