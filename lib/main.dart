@@ -12,6 +12,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/auth_service.dart';
 import 'services/fcm_service.dart';
+import 'services/deep_link_service.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
@@ -28,6 +29,9 @@ void main() async {
   );
   await AppConstants.initialize();
   await initializeDateFormatting('en_US', null);
+
+  // Initialize deep linking
+  await DeepLinkService().initialize();
 
   runApp(RestartWidget(child: const MyApp()));
 }
