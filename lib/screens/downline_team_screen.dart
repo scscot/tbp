@@ -267,7 +267,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
         ),
       ),
       child: const Text(
-        'Team Analytics',
+        'Downline Team',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,
