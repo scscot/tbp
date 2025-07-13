@@ -9,6 +9,9 @@ import 'models/admin_settings_model.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/admin_edit_profile_screen.dart';
+import 'screens/admin_edit_profile_screen_1.dart';
+import 'screens/edit_profile_screen.dart';
 import 'services/auth_service.dart';
 import 'services/fcm_service.dart';
 import 'services/deep_link_service.dart';
@@ -166,16 +169,34 @@ class _AuthWrapperState extends State<AuthWrapper> {
     debugPrint(
         '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}');
 
-    final bool hasMissingPhoto =
-        user.photoUrl == null || user.photoUrl!.isEmpty;
-    if (hasMissingPhoto) {
-      debugPrint('🔐 AUTH_WRAPPER: User missing photo, showing WelcomeScreen');
-      return WelcomeScreen(
-          key: const ValueKey('WelcomeScreen'), appId: appId, user: user);
+    // Profile completion logic based on user role
+    if (user.role == 'admin') {
+      // Admin user profile completion check
+      if (user.country == null || user.country!.isEmpty) {
+        debugPrint(
+            '🔐 AUTH_WRAPPER: Admin missing country, showing AdminEditProfileScreen');
+        return AdminEditProfileScreen(
+            key: const ValueKey('AdminEditProfileScreen'), appId: appId);
+      }
+
+      // Admin has country, check if admin_settings exist
+      if (adminSettings == null) {
+        debugPrint(
+            '🔐 AUTH_WRAPPER: Admin missing business settings, showing AdminEditProfileScreen1');
+        return AdminEditProfileScreen1(
+            key: const ValueKey('AdminEditProfileScreen1'), appId: appId);
+      }
+    } else {
+      // Non-admin user profile completion check
+      if (user.photoUrl == null || user.photoUrl!.isEmpty) {
+        debugPrint(
+            '🔐 AUTH_WRAPPER: User missing photo, showing EditProfileScreen');
+        return EditProfileScreen(
+            key: const ValueKey('EditProfileScreen'), appId: appId, user: user);
+      }
     }
 
-    // Simplified admin flow - assume admin settings are complete after profile setup
-    // No need to check admin settings since they're set during profile completion
+    // Profile is complete, show dashboard
     debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing DashboardScreen');
     return DashboardScreen(
         key: const ValueKey('DashboardScreen'), appId: appId);

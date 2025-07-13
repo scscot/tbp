@@ -1,0 +1,427 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../widgets/header_widgets.dart';
+import '../config/app_constants.dart';
+import 'profile_screen.dart';
+
+class AdminEditProfileScreen1 extends StatefulWidget {
+  final String appId;
+
+  const AdminEditProfileScreen1({
+    super.key,
+    required this.appId,
+  });
+
+  @override
+  State<AdminEditProfileScreen1> createState() =>
+      _AdminEditProfileScreen1State();
+}
+
+class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
+  final _formKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
+  final TextEditingController _bizNameController = TextEditingController();
+  final TextEditingController _bizNameConfirmController =
+      TextEditingController();
+  final TextEditingController _refLinkController = TextEditingController();
+  final TextEditingController _refLinkConfirmController =
+      TextEditingController();
+
+  // Global keys for form fields to enable scrolling to specific fields
+  final _bizNameKey = GlobalKey();
+  final _bizNameConfirmKey = GlobalKey();
+  final _refLinkKey = GlobalKey();
+  final _refLinkConfirmKey = GlobalKey();
+
+  bool _isLoading = false;
+
+  Future<void> _scrollToField(GlobalKey fieldKey) async {
+    if (fieldKey.currentContext != null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      await Scrollable.ensureVisible(
+        fieldKey.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        alignment: 0.2, // Position field at 20% from top of visible area
+      );
+    }
+  }
+
+  String? _getFirstValidationError() {
+    // Check business name
+    if (_bizNameController.text.trim().isEmpty) {
+      _scrollToField(_bizNameKey);
+      return 'Please enter your business opportunity name';
+    }
+
+    // Check business name confirmation
+    if (_bizNameConfirmController.text.trim().isEmpty) {
+      _scrollToField(_bizNameConfirmKey);
+      return 'Please confirm your business opportunity name';
+    }
+
+    // Check referral link
+    if (_refLinkController.text.trim().isEmpty) {
+      _scrollToField(_refLinkKey);
+      return 'Please enter your referral link';
+    }
+
+    // Check referral link confirmation
+    if (_refLinkConfirmController.text.trim().isEmpty) {
+      _scrollToField(_refLinkConfirmKey);
+      return 'Please confirm your referral link';
+    }
+
+    // Business Name Content Validation
+    final businessName = _bizNameController.text.trim();
+    final RegExp businessNameRegExp = RegExp(r"^[a-zA-Z0-9\s&'\-.,]+$");
+
+    if (!businessNameRegExp.hasMatch(businessName)) {
+      _scrollToField(_bizNameKey);
+      return 'Business name can only contain letters, numbers, and common punctuation.';
+    }
+
+    // Referral Link URL Validation
+    final referralLink = _refLinkController.text.trim();
+    try {
+      final uri = Uri.parse(referralLink);
+      if (!uri.isAbsolute || uri.host.isEmpty) {
+        throw const FormatException('Invalid URL format');
+      }
+    } catch (_) {
+      _scrollToField(_refLinkKey);
+      return 'Please enter a valid referral link (e.g., https://example.com).';
+    }
+
+    // Confirmation field validation
+    if (_bizNameController.text != _bizNameConfirmController.text) {
+      _scrollToField(_bizNameConfirmKey);
+      return 'Business Name fields must match for confirmation.';
+    }
+
+    if (_refLinkController.text != _refLinkConfirmController.text) {
+      _scrollToField(_refLinkConfirmKey);
+      return 'Referral Link fields must match for confirmation.';
+    }
+
+    return null; // No validation errors
+  }
+
+  Future<void> _submit() async {
+    // Check for validation errors and scroll to first problematic field
+    final validationError = _getFirstValidationError();
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(validationError)),
+      );
+      return;
+    }
+
+    // Additional form validation check
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception('User not authenticated');
+
+      // Create/update admin settings
+      await FirebaseFirestore.instance
+          .collection('admin_settings')
+          .doc(user.uid)
+          .set({
+        'biz_opp': _bizNameController.text.trim(),
+        'biz_opp_ref_url': _refLinkController.text.trim(),
+        'isSubscribed': true,
+        'superAdmin': false,
+      }, SetOptions(merge: true));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile completed successfully!')),
+        );
+
+        // Navigate to profile screen
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ProfileScreen(appId: widget.appId),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildMetricCard({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Expanded(
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 28, color: Colors.blue),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppHeaderWithMenu(appId: widget.appId),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        'Your Business Opportunity',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Business Opportunity Section
+                    const Divider(color: Colors.blue, thickness: 2),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Your business opportunity information can only be set once and cannot be changed.",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: _bizNameKey,
+                      controller: _bizNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Your Business Opportunity Name',
+                        helperText: 'This cannot be changed once set',
+                      ),
+                      validator: (value) => value!.isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      key: _bizNameConfirmKey,
+                      controller: _bizNameConfirmController,
+                      decoration: const InputDecoration(
+                          labelText: 'Confirm Business Opportunity Name'),
+                      validator: (value) => value!.isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text(
+                              'Very Important!',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            content: const Text(
+                                'You must enter the exact referral link you received from your company. '
+                                'This will ensure your TeamBuild Pro downline members that join your business opportunity '
+                                'are automatically placed in your business opportunity downline.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('I Understand'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            key: _refLinkKey,
+                            controller: _refLinkController,
+                            decoration: const InputDecoration(
+                              labelText: 'Your Referral Link',
+                              helperText: 'This cannot be changed once set',
+                            ),
+                            validator: (value) =>
+                                value!.isEmpty ? 'Required' : null,
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            key: _refLinkConfirmKey,
+                            controller: _refLinkConfirmController,
+                            decoration: const InputDecoration(
+                              labelText: 'Confirm Referral Link URL',
+                            ),
+                            validator: (value) =>
+                                value!.isEmpty ? 'Required' : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Team Build Pro Feeder System Section
+                    const Divider(color: Colors.green, thickness: 2),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'TeamBuild Pro Feeder System',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: Colors.green.withValues(alpha: 0.2)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.auto_awesome,
+                                  color: Colors.green, size: 24),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: Text(
+                                  'How It Works',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                const TextSpan(
+                                    text:
+                                        "When your downline members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                                TextSpan(
+                                  text: 'business opportunity',
+                                  style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                const TextSpan(
+                                    text:
+                                        " team — with their growing TeamBuild Pro downlines ready to follow."),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Minimum Eligibility Requirements
+                    const Text(
+                      'Minimum Eligibility Requirements',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _buildMetricCard(
+                          icon: Icons.people,
+                          value: AppConstants.projectWideDirectSponsorMin
+                              .toString(),
+                          label: 'Direct Sponsors',
+                        ),
+                        const SizedBox(width: 16),
+                        _buildMetricCard(
+                          icon: Icons.groups,
+                          value:
+                              AppConstants.projectWideTotalTeamMin.toString(),
+                          label: 'Total Team Members',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Complete Profile & Start Building!',
+                            style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _bizNameController.dispose();
+    _bizNameConfirmController.dispose();
+    _refLinkController.dispose();
+    _refLinkConfirmController.dispose();
+    super.dispose();
+  }
+}
