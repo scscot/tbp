@@ -59,7 +59,7 @@ class AuthService {
         });
       } else {
         debugPrint(
-            '🔧 AUTH_SERVICE: Not an admin user, returning null admin settings');
+            '🔧 AUTH_SERVICE: Not an admin user (role: ${currentUser?.role}), returning null admin settings');
         return Stream.value(null);
       }
     });

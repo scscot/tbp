@@ -51,6 +51,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
 
   // Analytics data
   Map<String, dynamic> _analytics = {};
+  
+  // Business opportunity name
+  String _bizOppName = 'biz_opp';
 
   @override
   void initState() {
@@ -92,7 +95,69 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       _levelOffset = userModel.level;
     }
 
+    // Fetch business opportunity name
+    await _fetchBizOppName();
+    
     await _fetchData();
+  }
+
+  Future<void> _fetchBizOppName() async {
+    try {
+      final authUser = FirebaseAuth.instance.currentUser;
+      if (authUser != null) {
+        final currentUserDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(authUser.uid)
+            .get();
+            
+        if (currentUserDoc.exists) {
+          final userData = currentUserDoc.data() as Map<String, dynamic>?;
+          final uplineAdmin = userData?['upline_admin'] as String?;
+          debugPrint('🔍 BIZ_OPP DEBUG: Current user upline_admin: $uplineAdmin');
+          
+          if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+            // Get admin settings for the upline admin
+            final adminSettingsDoc = await FirebaseFirestore.instance
+                .collection('admin_settings')
+                .doc(uplineAdmin)
+                .get();
+
+            if (adminSettingsDoc.exists) {
+              final data = adminSettingsDoc.data() as Map<String, dynamic>?;
+              final bizOpp = data?['biz_opp'] as String?;
+              debugPrint('🔍 BIZ_OPP DEBUG: Admin settings data: $data');
+              debugPrint('🔍 BIZ_OPP DEBUG: biz_opp field: $bizOpp');
+              
+              if (bizOpp != null && bizOpp.isNotEmpty) {
+                setState(() {
+                  _bizOppName = bizOpp;
+                });
+                debugPrint('🔍 BIZ_OPP DEBUG: Set bizOppName from admin settings: $_bizOppName');
+                return;
+              }
+            } else {
+              debugPrint('🔍 BIZ_OPP DEBUG: Admin settings document does not exist for admin: $uplineAdmin');
+            }
+          }
+          
+          // Fallback: try to get bizOpp from current user's data
+          final userBizOpp = userData?['bizOpp'] as String?;
+          debugPrint('🔍 BIZ_OPP DEBUG: Current user bizOpp: $userBizOpp');
+          
+          if (userBizOpp != null && userBizOpp.isNotEmpty) {
+            setState(() {
+              _bizOppName = userBizOpp;
+            });
+            debugPrint('🔍 BIZ_OPP DEBUG: Set bizOppName from current user: $_bizOppName');
+            return;
+          }
+        }
+      }
+      
+      debugPrint('🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
+    } catch (e) {
+      debugPrint('🔍 BIZ_OPP DEBUG: Error fetching biz opp name: $e');
+    }
   }
 
   Future<void> _fetchData() async {
@@ -431,8 +496,8 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
   }
 
   String _getFilterDisplayName(FilterBy filter) {
-    final adminSettings = Provider.of<AdminSettingsModel?>(context, listen: false);
-    final bizOppName = adminSettings?.bizOpp ?? 'biz_opp';
+    // Use the directly fetched business opportunity name
+    debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
     
     switch (filter) {
       case FilterBy.allMembers:
@@ -442,7 +507,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       case FilterBy.qualifiedMembers:
         return 'Qualified Members (${_analytics['qualified'] ?? 0})';
       case FilterBy.joinedMembers:
-        return 'Joined $bizOppName (${_analytics['withOpportunity'] ?? 0})';
+        return 'Joined $_bizOppName (${_analytics['withOpportunity'] ?? 0})';
     }
   }
 

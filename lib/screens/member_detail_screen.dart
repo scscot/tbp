@@ -33,6 +33,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
   String? _teamLeaderName;
   String? _teamLeaderUid;
   String? _currentUserId;
+  bool _isCurrentUserAdmin = false;
   bool _isLoading = true;
 
   @override
@@ -56,6 +57,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     _currentUserId = authUser.uid;
 
     try {
+      // Check if current user is admin
+      final currentUserDoc = await _firestoreService.getUser(_currentUserId!);
+      if (currentUserDoc != null) {
+        _isCurrentUserAdmin = currentUserDoc.role == 'admin';
+      }
+
       // Use the new backend aggregation method
       final memberDetails =
           await _firestoreService.getMemberDetails(widget.userId);
@@ -164,17 +171,40 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildInfoRow('City', _user!.city ?? 'N/A'),
                       _buildInfoRow('State', _user!.state ?? 'N/A'),
                       _buildInfoRow('Country', _user!.country ?? 'N/A'),
-                      if (_user!.createdAt != null)
-                        _buildInfoRow('Joined',
+
+
+                        _buildInfoRow('Joined TBP',
                             DateFormat.yMMMd().format(_user!.createdAt!)),
+
+                       _buildInfoRow('Direct Sponsors',
+                          (_user!.directSponsorCount ?? 0).toString()),
+
+                       _buildInfoRow(
+                          'Total Team',
+                          (_user!.totalTeamCount ?? 0).toString()),
+
+
+                      if (_user!.qualifiedDate != null)
+                        _buildInfoRow('Qualified',
+                            DateFormat.yMMMd().format(_user!.qualifiedDate!)),
+
+                      if (_user!.bizJoinDate != null)
+                        _buildInfoRow('Joined ${_user!.bizOpp}',
+                            DateFormat.yMMMd().format(_user!.bizJoinDate!)),
+
+
                       if (_sponsorName != null)
                         _buildClickableInfoRow(
                             'Sponsor', _sponsorName!, _sponsorUid!),
+
+
                       if (_teamLeaderName != null &&
                           _teamLeaderUid != null &&
                           _user!.referredBy != _teamLeaderUid)
                         _buildClickableInfoRow(
                             'Team Leader', _teamLeaderName!, _teamLeaderUid!),
+
+
                       const SizedBox(height: 30),
                       if (_currentUserId != widget.userId)
                         Center(
