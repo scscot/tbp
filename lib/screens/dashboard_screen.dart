@@ -6,7 +6,6 @@ import 'package:ultimatefix/screens/visit_opportunity_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
-import 'settings_screen.dart';
 import 'my_biz_screen.dart';
 import 'message_center_screen.dart';
 import 'notifications_screen.dart';
@@ -273,18 +272,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             },
                           )
                         : Expanded(child: Container()),
-                  if (user.role == 'admin')
-                    buildButton(
-                      icon: Icons.settings,
-                      label: 'Opportunity Settings',
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SettingsScreen(appId: widget.appId),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 16),
                   buildButton(
                     icon: Icons.person,
                     label: 'My Profile',
@@ -294,6 +281,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             builder: (_) =>
                                 ProfileScreen(appId: widget.appId))),
                   ),
+                  const SizedBox(width: 16),
+                  Expanded(child: Container()),
                 ],
               ),
             ],

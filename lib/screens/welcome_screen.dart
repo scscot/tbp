@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../main.dart' as widget;
 import '../models/user_model.dart';
 import 'edit_profile_screen.dart';
+import 'admin_edit_profile_screen.dart';
 import '../widgets/header_widgets.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -27,24 +28,39 @@ class WelcomeScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Please use the button below to complete your profile. After completing your profile you will have access to the full TeamBuild Pro app.',
+            Text(
+              user.role == 'admin'
+                  ? 'Please use the button below to complete your admin profile and set up your business opportunity. After completing your profile you will have access to the full TeamBuild Pro app.'
+                  : 'Please use the button below to complete your profile. After completing your profile you will have access to the full TeamBuild Pro app.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 36),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EditProfileScreen(
-                      appId: appId,
-                      user: user,
-                      isFirstTimeSetup: true,
+                if (user.role == 'admin') {
+                  // Route admin users to AdminEditProfileScreen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AdminEditProfileScreen(
+                        appId: appId,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  // Route regular users to EditProfileScreen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProfileScreen(
+                        appId: appId,
+                        user: user,
+                        isFirstTimeSetup: true,
+                      ),
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

@@ -23,17 +23,35 @@ class AppConstants {
 
   static Future<void> initialize() async {
     try {
-      // FIX: Set a low fetch interval for development to bypass caching.
-      // The default is 12 hours, which is too long for testing.
+      debugPrint('🔧 AppConstants: Starting Remote Config initialization...');
+
+      // Set a shorter fetch timeout to prevent hanging
       await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(minutes: 1),
+        fetchTimeout: const Duration(seconds: 30), // Reduced from 1 minute
         minimumFetchInterval: const Duration(seconds: 10),
       ));
 
+      debugPrint('🔧 AppConstants: Setting default values...');
       await _remoteConfig.setDefaults(_defaultValues);
-      await _remoteConfig.fetchAndActivate();
+
+      debugPrint('🔧 AppConstants: Fetching and activating Remote Config...');
+
+      // Add timeout to prevent hanging
+      await _remoteConfig.fetchAndActivate().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          debugPrint(
+              '⚠️ AppConstants: Remote Config fetch timed out, using defaults');
+          return false;
+        },
+      );
+
+      debugPrint(
+          '✅ AppConstants: Remote Config initialization completed successfully');
     } catch (e) {
-      debugPrint('Error initializing Remote Config: $e');
+      debugPrint('❌ AppConstants: Error initializing Remote Config: $e');
+      debugPrint('🔧 AppConstants: Continuing with default values...');
+      // Don't rethrow - continue with defaults
     }
   }
 

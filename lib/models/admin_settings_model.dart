@@ -5,7 +5,6 @@ class AdminSettingsModel {
   final String uid;
   final String? bizOpp;
   final String? bizOppRefUrl;
-  final List<String> countries;
   final bool isSubscribed;
   final bool superAdmin;
 
@@ -13,7 +12,6 @@ class AdminSettingsModel {
     required this.uid,
     this.bizOpp,
     this.bizOppRefUrl,
-    required this.countries,
     this.isSubscribed = false,
     this.superAdmin = false,
   });
@@ -24,7 +22,6 @@ class AdminSettingsModel {
       uid: doc.id,
       bizOpp: data['biz_opp'] as String?,
       bizOppRefUrl: data['biz_opp_ref_url'] as String?,
-      countries: List<String>.from(data['countries'] ?? []),
       isSubscribed: data['isSubscribed'] ?? false,
       superAdmin: data['superAdmin'] ?? false,
     );

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -144,7 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              if (!kIsWeb && Platform.isIOS) ...[
+              if (Platform.isIOS) ...[
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   icon:
                       const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
@@ -157,8 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 16),
               ],
+              const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const FaIcon(FontAwesomeIcons.google, size: 20),
                 label: const Text('Sign in with Google'),

@@ -416,69 +416,83 @@ exports.checkAdminSubscriptionStatus = onCall(async (request) => {
 exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{notificationId}", async (event) => {
   const snap = event.data;
   if (!snap) {
-    console.log("No data associated with the event");
+    console.log("🔔 PUSH DEBUG: No data associated with the event");
     return;
   }
   const userId = event.params.userId;
+  const notificationId = event.params.notificationId;
   const notificationData = snap.data();
 
-  console.log(`🔔 PUSH DEBUG: Starting push for user ${userId}`);
+  console.log(`🔔 PUSH DEBUG: Starting push notification process`);
+  console.log(`🔔 PUSH DEBUG: User ID: ${userId}`);
+  console.log(`🔔 PUSH DEBUG: Notification ID: ${notificationId}`);
   console.log(`🔔 PUSH DEBUG: Notification data:`, JSON.stringify(notificationData, null, 2));
 
-  const userDoc = await db.collection("users").doc(userId).get();
-  if (!userDoc.exists) {
-    console.error(`User document for ${userId} does not exist.`);
-    return;
-  }
-  const fcmToken = userDoc.data()?.fcm_token;
-  if (!fcmToken) {
-    console.log(`Missing FCM token for user ${userId}. Skipping push.`);
-    return;
-  }
+  try {
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      console.error(`🔔 PUSH DEBUG: User document for ${userId} does not exist.`);
+      return;
+    }
 
-  console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcm_token;
 
-  const imageUrl = notificationData?.imageUrl;
+    console.log(`🔔 PUSH DEBUG: User found - Name: ${userData?.firstName} ${userData?.lastName}`);
 
-  const message = {
-    token: fcmToken,
-    notification: {
-      title: notificationData?.title || "New Notification",
-      body: notificationData?.message || "You have a new message.",
-      // Removed imageUrl to prevent iOS notification failures
-    },
-    data: {
-      type: notificationData?.type || "generic",
-      route: notificationData?.route || "/",
-      route_params: notificationData?.route_params || "{}",
-      imageUrl: imageUrl || "", // Keep in data for app handling
-    },
-    apns: {
-      payload: {
-        aps: {
-          alert: {
-            title: notificationData?.title || "New Notification",
-            body: notificationData?.message || "You have a new message.",
+    if (!fcmToken) {
+      console.log(`🔔 PUSH DEBUG: Missing FCM token for user ${userId}. Skipping push notification.`);
+      return;
+    }
+
+    console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
+
+    const imageUrl = notificationData?.imageUrl;
+
+    const message = {
+      token: fcmToken,
+      notification: {
+        title: notificationData?.title || "New Notification",
+        body: notificationData?.message || "You have a new message.",
+        // Removed imageUrl to prevent iOS notification failures
+      },
+      data: {
+        type: notificationData?.type || "generic",
+        route: notificationData?.route || "/",
+        route_params: notificationData?.route_params || "{}",
+        imageUrl: imageUrl || "", // Keep in data for app handling
+      },
+      apns: {
+        payload: {
+          aps: {
+            alert: {
+              title: notificationData?.title || "New Notification",
+              body: notificationData?.message || "You have a new message.",
+            },
+            sound: "default",
+            badge: 1,
           },
-          sound: "default",
-          badge: 1,
         },
       },
-    },
-    android: {
-      notification: {
-        sound: "default",
+      android: {
+        notification: {
+          sound: "default",
+        },
       },
-    },
-  };
+    };
 
-  try {
+    console.log(`🔔 PUSH DEBUG: Sending FCM message...`);
+    console.log(`🔔 PUSH DEBUG: Message payload:`, JSON.stringify(message, null, 2));
+
     const response = await messaging.send(message);
-    console.log(`✅ FCM push sent successfully to user ${userId}:`, response);
-    console.log(`🔔 PUSH DEBUG: Full message payload:`, JSON.stringify(message, null, 2));
+    console.log(`✅ PUSH DEBUG: FCM push sent successfully to user ${userId}`);
+    console.log(`✅ PUSH DEBUG: FCM Response:`, response);
+
   } catch (error) {
-    console.error(`❌ Failed to send FCM push to user ${userId}:`, error);
-    console.error(`🔔 PUSH DEBUG: Error details:`, error.code, error.message);
+    console.error(`❌ PUSH DEBUG: Failed to send FCM push to user ${userId}:`, error);
+    console.error(`❌ PUSH DEBUG: Error code:`, error.code);
+    console.error(`❌ PUSH DEBUG: Error message:`, error.message);
+    console.error(`❌ PUSH DEBUG: Full error:`, error);
   }
 });
 
@@ -553,43 +567,101 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
 
 exports.notifyOnNewSponsorship = onDocumentCreated("users/{userId}", async (event) => {
   const snap = event.data;
-  if (!snap) return;
+  if (!snap) {
+    console.log("🔔 SPONSORSHIP DEBUG: No snap data in event");
+    return;
+  }
+
   const newUser = snap.data();
+  const newUserId = event.params.userId; // Get the actual document ID
+
+  console.log(`🔔 SPONSORSHIP DEBUG: New user created - ID: ${newUserId}`);
+  console.log(`🔔 SPONSORSHIP DEBUG: User data:`, JSON.stringify({
+    firstName: newUser.firstName,
+    lastName: newUser.lastName,
+    referredBy: newUser.referredBy,
+    sponsor_id: newUser.sponsor_id
+  }, null, 2));
 
   if (!newUser.referredBy) {
-    console.log(`New user ${newUser.uid} has no sponsor. Skipping sponsorship notification.`);
+    console.log(`🔔 SPONSORSHIP DEBUG: New user ${newUserId} has no referredBy field. Skipping sponsorship notification.`);
     return;
   }
 
   try {
+    console.log(`🔔 SPONSORSHIP DEBUG: Looking for sponsor with referral code: ${newUser.referredBy}`);
+
     const sponsorQuery = await db.collection("users").where("referralCode", "==", newUser.referredBy).limit(1).get();
     if (sponsorQuery.empty) {
-      console.log(`Sponsor with referral code ${newUser.referredBy} not found.`);
+      console.log(`🔔 SPONSORSHIP DEBUG: Sponsor with referral code ${newUser.referredBy} not found.`);
       return;
     }
 
     const sponsorDoc = sponsorQuery.docs[0];
     const sponsor = sponsorDoc.data();
     const sponsorId = sponsorDoc.id;
+
+    console.log(`🔔 SPONSORSHIP DEBUG: Found sponsor - ID: ${sponsorId}, Name: ${sponsor.firstName} ${sponsor.lastName}`);
+    console.log(`🔔 SPONSORSHIP DEBUG: Sponsor role: ${sponsor.role}`);
+    console.log(`🔔 SPONSORSHIP DEBUG: New user adminReferral: ${newUser.adminReferral}`);
+
     const newUserLocation = `${newUser.city || ""}, ${newUser.state || ""}${newUser.country ? ` - ${newUser.country}` : ""}`;
 
-    const notificationContent = {
-      title: "🎉 You have a new Team Member!",
-      message: `Congratulations, ${sponsor.firstName}! You sponsored ${newUser.firstName} ${newUser.lastName} from ${newUserLocation}.`,
-      // --- MODIFICATION: Include the new user's profile picture ---
-      imageUrl: newUser.photoUrl || null,
-      createdAt: FieldValue.serverTimestamp(),
-      read: false,
-      type: "new_member",
-      route: "/member_detail",
-      route_params: JSON.stringify({ "userId": newUser.uid }),
-    };
+    // Get business opportunity name for admin notifications
+    let bizOppName = "your business opportunity";
+    if (sponsor.upline_admin) {
+      try {
+        const adminSettingsDoc = await db.collection("admin_settings").doc(sponsor.upline_admin).get();
+        if (adminSettingsDoc.exists && adminSettingsDoc.data().biz_opp) {
+          bizOppName = adminSettingsDoc.data().biz_opp;
+        }
+      } catch (error) {
+        console.log(`🔔 SPONSORSHIP DEBUG: Could not fetch admin settings for biz opp name: ${error.message}`);
+      }
+    }
+
+    let notificationContent;
+
+    // Determine notification type based on referral method
+    if (newUser.adminReferral && sponsor.role === 'admin') {
+      // Scenario 2: Admin sharing with existing business opportunity downline member (new= parameter)
+      console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
+
+      notificationContent = {
+        title: "🎉 You have a new Team Member!",
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${newUser.firstName} ${newUser.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
+        imageUrl: newUser.photoUrl || null,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "new_member",
+        route: "/member_detail",
+        route_params: JSON.stringify({ "userId": newUserId }),
+      };
+    } else {
+      // Scenario 1: Regular sponsorship (ref= parameter) - user-to-user or admin-to-new-prospect
+      console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
+
+      notificationContent = {
+        title: "🎉 You have a new Team Member!",
+        message: `Congratulations, ${sponsor.firstName}! You sponsored ${newUser.firstName} ${newUser.lastName} from ${newUserLocation}.`,
+        imageUrl: newUser.photoUrl || null,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "new_member",
+        route: "/member_detail",
+        route_params: JSON.stringify({ "userId": newUserId }),
+      };
+    }
+
+    console.log(`🔔 SPONSORSHIP DEBUG: Creating notification for sponsor ${sponsorId}`);
+    console.log(`🔔 SPONSORSHIP DEBUG: Notification content:`, JSON.stringify(notificationContent, null, 2));
 
     await db.collection("users").doc(sponsorId).collection("notifications").add(notificationContent);
-    console.log(`Sponsorship notification sent to ${sponsorId}.`);
+    console.log(`✅ SPONSORSHIP DEBUG: Sponsorship notification successfully sent to ${sponsorId}.`);
 
   } catch (error) {
-    console.error(`Error creating sponsorship notification:`, error);
+    console.error(`❌ SPONSORSHIP DEBUG: Error creating sponsorship notification:`, error);
+    console.error(`❌ SPONSORSHIP DEBUG: Error details:`, error.message, error.stack);
   }
 });
 

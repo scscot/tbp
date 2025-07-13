@@ -11,7 +11,6 @@ import '../screens/downline_team_screen.dart';
 import '../screens/share_screen.dart';
 import '../screens/message_center_screen.dart';
 import '../screens/notifications_screen.dart';
-import '../screens/settings_screen.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
 // --- MODIFICATION: Import main.dart for the navigatorKey, remove fcm_service import ---
@@ -80,10 +79,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       case 'profile':
         navigator.push(MaterialPageRoute(
             builder: (_) => ProfileScreen(appId: widget.appId)));
-        break;
-      case 'settings':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => SettingsScreen(appId: widget.appId)));
         break;
     }
   }
@@ -166,9 +161,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                     value: 'notifications', child: Text('Notifications')),
                 const PopupMenuItem<String>(
                     value: 'profile', child: Text('My Profile')),
-                if (currentUser.role == 'admin')
-                  const PopupMenuItem<String>(
-                      value: 'settings', child: Text('Opportunity Settings')),
               ],
               const PopupMenuItem<String>(
                   value: 'logout', child: Text('Logout')),

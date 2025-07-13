@@ -33,15 +33,33 @@ class AuthService {
   // --- FIX: The adminSettings stream was missing. It is now restored. ---
   Stream<AdminSettingsModel?> get adminSettings {
     return user.switchMap((currentUser) {
+      debugPrint(
+          '🔧 AUTH_SERVICE: adminSettings stream - currentUser: ${currentUser?.uid}, role: ${currentUser?.role}');
+
       if (currentUser != null && currentUser.role == 'admin') {
+        debugPrint(
+            '🔧 AUTH_SERVICE: Admin user detected, fetching admin settings for: ${currentUser.uid}');
+
         return _firestore
             .collection('admin_settings')
             .doc(currentUser.uid)
             .snapshots()
-            .map((snapshot) => snapshot.exists
-                ? AdminSettingsModel.fromFirestore(snapshot)
-                : null);
+            .map((snapshot) {
+          debugPrint(
+              '🔧 AUTH_SERVICE: Admin settings snapshot - exists: ${snapshot.exists}');
+          if (snapshot.exists) {
+            debugPrint(
+                '🔧 AUTH_SERVICE: Admin settings data: ${snapshot.data()}');
+            return AdminSettingsModel.fromFirestore(snapshot);
+          } else {
+            debugPrint(
+                '🔧 AUTH_SERVICE: Admin settings document does not exist for user: ${currentUser.uid}');
+            return null;
+          }
+        });
       } else {
+        debugPrint(
+            '🔧 AUTH_SERVICE: Not an admin user, returning null admin settings');
         return Stream.value(null);
       }
     });

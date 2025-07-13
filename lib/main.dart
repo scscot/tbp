@@ -9,7 +9,6 @@ import 'models/admin_settings_model.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
-import 'screens/settings_screen.dart';
 import 'services/auth_service.dart';
 import 'services/fcm_service.dart';
 import 'services/deep_link_service.dart';
@@ -23,17 +22,36 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 const String appId = 'L8n1tJqHqYd3F5j6';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await AppConstants.initialize();
-  await initializeDateFormatting('en_US', null);
+  try {
+    debugPrint('🚀 MAIN: Starting app initialization...');
 
-  // Initialize deep linking
-  await DeepLinkService().initialize();
+    WidgetsFlutterBinding.ensureInitialized();
+    debugPrint('🚀 MAIN: Flutter binding initialized');
 
-  runApp(RestartWidget(child: const MyApp()));
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint('🚀 MAIN: Firebase initialized');
+
+    await AppConstants.initialize();
+    debugPrint('🚀 MAIN: AppConstants initialized');
+
+    await initializeDateFormatting('en_US', null);
+    debugPrint('🚀 MAIN: Date formatting initialized');
+
+    // Initialize deep linking
+    await DeepLinkService().initialize();
+    debugPrint('🚀 MAIN: Deep link service initialized');
+
+    debugPrint('🚀 MAIN: Starting app...');
+    runApp(RestartWidget(child: const MyApp()));
+    debugPrint('🚀 MAIN: App started successfully');
+  } catch (e, stackTrace) {
+    debugPrint('❌ MAIN: Error during app initialization: $e');
+    debugPrint('❌ MAIN: Stack trace: $stackTrace');
+    // Still try to run the app with basic initialization
+    runApp(RestartWidget(child: const MyApp()));
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -126,6 +144,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final user = context.watch<UserModel?>();
     final adminSettings = context.watch<AdminSettingsModel?>();
 
+    debugPrint(
+        '🔐 AUTH_WRAPPER: Building with user: ${user?.uid ?? 'null'}, admin settings: ${adminSettings != null ? 'loaded' : 'null'}');
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: _buildContent(context, user, adminSettings),
@@ -134,33 +155,28 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   Widget _buildContent(BuildContext context, UserModel? user,
       AdminSettingsModel? adminSettings) {
+    debugPrint(
+        '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
+
     if (user == null) {
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing LoginScreen');
       return LoginScreen(key: const ValueKey('LoginScreen'), appId: appId);
     }
+
+    debugPrint(
+        '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}');
 
     final bool hasMissingPhoto =
         user.photoUrl == null || user.photoUrl!.isEmpty;
     if (hasMissingPhoto) {
+      debugPrint('🔐 AUTH_WRAPPER: User missing photo, showing WelcomeScreen');
       return WelcomeScreen(
           key: const ValueKey('WelcomeScreen'), appId: appId, user: user);
     }
 
-    if (user.role == 'admin') {
-      if (adminSettings == null) {
-        return const Scaffold(
-            key: ValueKey('Loading'),
-            body: Center(child: CircularProgressIndicator()));
-      }
-      final bool settingsIncomplete = adminSettings.bizOpp == null ||
-          adminSettings.bizOpp!.isEmpty ||
-          adminSettings.bizOppRefUrl == null ||
-          adminSettings.bizOppRefUrl!.isEmpty;
-      if (settingsIncomplete) {
-        return SettingsScreen(
-            key: const ValueKey('SettingsScreen'), appId: appId);
-      }
-    }
-
+    // Simplified admin flow - assume admin settings are complete after profile setup
+    // No need to check admin settings since they're set during profile completion
+    debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing DashboardScreen');
     return DashboardScreen(
         key: const ValueKey('DashboardScreen'), appId: appId);
   }
