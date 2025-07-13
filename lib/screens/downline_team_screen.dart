@@ -1,57 +1,29 @@
 // lib/screens/downline_team_screen.dart
+// Professional UI redesign with modern layouts and enhanced reporting
 
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/user_model.dart';
+import '../models/admin_settings_model.dart';
 import '../services/downline_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
 
-// --- ADDED: Helper functions for country data ---
-String countryNameToCode(String? countryName) {
-  if (countryName == null) return '';
-  // This is a simplified map. For a production app, a more robust
-  // mapping or a dedicated package would be better.
-  final map = {
-    'united states': 'US',
-    'canada': 'CA',
-    'mexico': 'MX',
-  };
-  return map[countryName.toLowerCase()] ?? countryName;
-}
+enum ViewMode { grid, list, analytics }
 
-String countryCodeToFlag(String countryCode) {
-  if (countryCode.length != 2) return '';
-  return countryCode
-      .toUpperCase()
-      .runes
-      .map((e) => e + 127397)
-      .map((e) => String.fromCharCode(e))
-      .join();
-}
+enum FilterBy { allMembers, newMembers, qualifiedMembers, joinedMembers }
 
-enum DownlineFilter {
-  all('All Members'),
-  last24('Last 24 Hours'),
-  last7('Last 7 Days'),
-  last30('Last 30 Days'),
-  newQualified('Qualified'),
-  joinedOpportunity('Joined Opportunity');
-
-  const DownlineFilter(this.displayTitle);
-  final String displayTitle;
-}
+enum SortBy { name, joinDate, level, location }
 
 class DownlineTeamScreen extends StatefulWidget {
-  final String? initialAuthToken;
   final String appId;
 
   const DownlineTeamScreen({
     super.key,
-    this.initialAuthToken,
     required this.appId,
   });
 
@@ -59,47 +31,47 @@ class DownlineTeamScreen extends StatefulWidget {
   State<DownlineTeamScreen> createState() => _DownlineTeamScreenState();
 }
 
-class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
+class _DownlineTeamScreenState extends State<DownlineTeamScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
   final DownlineService _downlineService = DownlineService();
   final TextEditingController _searchController = TextEditingController();
 
-  // Note: For the 'Joined Opportunity' filter to work, the UserModel
-  // must contain a `bizJoinDate` field, like:
-  // final DateTime? bizJoinDate;
-  List<UserModel> _filteredDownline = [];
-  Map<int, List<UserModel>> _downlineByLevel = {};
+  List<UserModel> _allMembers = [];
+  List<UserModel> _filteredMembers = [];
+  final Map<int, List<UserModel>> _membersByLevel = {};
 
   bool _isLoading = true;
+  ViewMode _currentView = ViewMode.list;
+  FilterBy _filterBy = FilterBy.allMembers;
+  final SortBy _sortBy = SortBy.joinDate;
   String _searchQuery = '';
-  DownlineFilter _selectedFilter = DownlineFilter.all;
-  int _levelOffset = 0;
-  final Map<DownlineFilter, int> _filterCounts = {
-    for (var filter in DownlineFilter.values) filter: 0
-  };
   final Set<int> _expandedPanels = {};
+  int _levelOffset = 0;
+
+  // Analytics data
+  Map<String, dynamic> _analytics = {};
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
     _initializeData();
     _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
+    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
-    if (_searchQuery != _searchController.text) {
-      setState(() {
-        _searchQuery = _searchController.text.toLowerCase();
-      });
-      // Trigger backend filtering instead of local processing
-      _fetchFilteredData();
-    }
+    setState(() {
+      _searchQuery = _searchController.text.toLowerCase();
+      _applyFiltersAndSort();
+    });
   }
 
   Future<void> _initializeData() async {
@@ -117,9 +89,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
 
     if (userDoc.exists) {
       final userModel = UserModel.fromFirestore(userDoc);
-      setState(() {
-        _levelOffset = userModel.level;
-      });
+      _levelOffset = userModel.level;
     }
 
     await _fetchData();
@@ -129,100 +99,141 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Get counts for filter chips
+      // Get counts for analytics
       final counts = await _downlineService.getDownlineCounts();
 
       if (!mounted) return;
 
-      // Update filter counts
-      setState(() {
-        _filterCounts[DownlineFilter.all] = counts['all'] ?? 0;
-        _filterCounts[DownlineFilter.last24] = counts['last24'] ?? 0;
-        _filterCounts[DownlineFilter.last7] = counts['last7'] ?? 0;
-        _filterCounts[DownlineFilter.last30] = counts['last30'] ?? 0;
-        _filterCounts[DownlineFilter.newQualified] =
-            counts['newQualified'] ?? 0;
-        _filterCounts[DownlineFilter.joinedOpportunity] =
-            counts['joinedOpportunity'] ?? 0;
-      });
-
-      // Fetch filtered data from backend
-      await _fetchFilteredData();
-    } catch (e) {
-      debugPrint('Error fetching downline data: $e');
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
-
-  Future<void> _fetchFilteredData() async {
-    try {
-      // Convert filter enum to string
-      String filterString;
-      switch (_selectedFilter) {
-        case DownlineFilter.last24:
-          filterString = 'last24';
-          break;
-        case DownlineFilter.last7:
-          filterString = 'last7';
-          break;
-        case DownlineFilter.last30:
-          filterString = 'last30';
-          break;
-        case DownlineFilter.newQualified:
-          filterString = 'newQualified';
-          break;
-        case DownlineFilter.joinedOpportunity:
-          filterString = 'joinedOpportunity';
-          break;
-        case DownlineFilter.all:
-          filterString = 'all';
-          break;
-      }
-
-      // Use the new backend-optimized filtering
+      // Fetch all downline data
       final result = await _downlineService.getFilteredDownline(
-        filter: filterString,
-        searchQuery: _searchQuery,
+        filter: 'all',
+        searchQuery: '',
         levelOffset: _levelOffset,
-        limit: 1000, // Increase limit for now, can add pagination later
+        limit: 1000,
       );
 
-      if (!mounted) return;
-
-      setState(() {
-        _filteredDownline = result['downline'] as List<UserModel>;
-
-        // If we have grouped data from backend, use it; otherwise group locally
-        final backendGrouped = result['groupedByLevel'];
-        if (backendGrouped != null &&
-            backendGrouped is Map<int, List<UserModel>>) {
-          _downlineByLevel = Map<int, List<UserModel>>.from(backendGrouped);
-        } else {
-          // Fallback to local grouping if backend doesn't provide it
-          _groupDataByLevel();
-        }
-      });
+      _allMembers = result['downline'] as List<UserModel>;
+      _calculateAnalytics(counts);
+      _applyFiltersAndSort();
     } catch (e) {
-      debugPrint('Error fetching filtered downline data: $e');
+      debugPrint('Error loading downline data: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          // Force rebuild of dropdown with updated analytics
+        });
+      }
     }
   }
 
-  void _groupDataByLevel() {
-    final Map<int, List<UserModel>> grouped = {};
-    for (var user in _filteredDownline) {
-      final displayLevel = user.level - _levelOffset;
-      if (displayLevel > 0 ||
-          _selectedFilter == DownlineFilter.newQualified ||
-          _selectedFilter == DownlineFilter.joinedOpportunity) {
-        grouped.putIfAbsent(displayLevel, () => []).add(user);
-      }
+  void _calculateAnalytics(Map<String, dynamic> counts) {
+    // Calculate direct sponsors from the actual member data since backend doesn't provide level1 count
+    final directSponsorsCount = _allMembers.where((m) => 
+      (m.level - _levelOffset) == 1
+    ).length;
+    
+    // Use backend counts for accurate analytics
+    _analytics = {
+      'totalMembers': counts['all'] ?? 0,
+      'directSponsors': directSponsorsCount, // Calculate from actual data
+      'newMembers': counts['last24'] ?? 0,
+      'qualified': counts['newQualified'] ?? 0,
+      'withOpportunity': counts['joinedOpportunity'] ?? 0,
+    };
+    
+    debugPrint('🔍 ANALYTICS DEBUG: Backend counts: $counts');
+    debugPrint('🔍 ANALYTICS DEBUG: Direct sponsors calculated: $directSponsorsCount');
+    debugPrint('🔍 ANALYTICS DEBUG: All members count: ${_allMembers.length}');
+    debugPrint('🔍 ANALYTICS DEBUG: Final analytics: $_analytics');
+  }
+
+  void _applyFiltersAndSort() {
+    List<UserModel> filtered = List.from(_allMembers);
+
+    // Apply search filter
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered.where((member) {
+        final name =
+            '${member.firstName ?? ''} ${member.lastName ?? ''}'.toLowerCase();
+        final location =
+            '${member.city ?? ''} ${member.state ?? ''} ${member.country ?? ''}'
+                .toLowerCase();
+        return name.contains(_searchQuery) || location.contains(_searchQuery);
+      }).toList();
     }
 
-    _downlineByLevel = Map.fromEntries(
-        grouped.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+    // Apply filtering based on filter type
+    if (_filterBy == FilterBy.newMembers) {
+      final last24h = DateTime.now().subtract(const Duration(hours: 24));
+      filtered = filtered
+          .where((m) => m.createdAt != null && m.createdAt!.isAfter(last24h))
+          .toList();
+    } else if (_filterBy == FilterBy.qualifiedMembers) {
+      filtered =
+          filtered.where((m) => (m.directSponsorCount ?? 0) >= 3).toList();
+    } else if (_filterBy == FilterBy.joinedMembers) {
+      filtered = filtered
+          .where((m) => m.bizOppRefUrl != null && m.bizOppRefUrl!.isNotEmpty)
+          .toList();
+    }
+
+    // Apply sorting (default descending by join date)
+    filtered.sort((a, b) {
+      int comparison = 0;
+      switch (_sortBy) {
+        case SortBy.name:
+          final nameA = '${a.firstName ?? ''} ${a.lastName ?? ''}';
+          final nameB = '${b.firstName ?? ''} ${b.lastName ?? ''}';
+          comparison = nameA.compareTo(nameB);
+          break;
+        case SortBy.joinDate:
+          comparison = (a.createdAt ?? DateTime(2000))
+              .compareTo(b.createdAt ?? DateTime(2000));
+          break;
+        case SortBy.level:
+          comparison = (a.level).compareTo(b.level);
+          break;
+        case SortBy.location:
+          final locA = '${a.country ?? ''} ${a.state ?? ''} ${a.city ?? ''}';
+          final locB = '${b.country ?? ''} ${b.state ?? ''} ${b.city ?? ''}';
+          comparison = locA.compareTo(locB);
+          break;
+      }
+      return -comparison; // Default descending order
+    });
+
+    setState(() {
+      _filteredMembers = filtered;
+      _groupMembersByLevel();
+    });
+  }
+
+  void _groupMembersByLevel() {
+    _membersByLevel.clear();
+    
+    for (var member in _filteredMembers) {
+      // Calculate display level relative to current user
+      final displayLevel = member.level - _levelOffset;
+      
+      // Only show levels > 0 (members below current user)
+      if (displayLevel > 0) {
+        _membersByLevel.putIfAbsent(displayLevel, () => []).add(member);
+      }
+    }
+    
+    // Debug logging
+    debugPrint('🔍 DOWNLINE DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint('🔍 DOWNLINE DEBUG: Level offset: $_levelOffset');
+    debugPrint('🔍 DOWNLINE DEBUG: Members by level: $_membersByLevel');
+    
+    // Ensure levels are sorted
+    final sortedEntries = _membersByLevel.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    _membersByLevel.clear();
+    for (var entry in sortedEntries) {
+      _membersByLevel[entry.key] = entry.value;
+    }
   }
 
   @override
@@ -230,81 +241,289 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     return Scaffold(
       appBar: AppHeaderWithMenu(appId: widget.appId),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-            child: Text('Downline Report',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-          ),
-          _buildFilterChips(),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by name, city, state, country...',
-                prefixIcon: const Icon(Icons.search, size: 20),
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-              ),
-            ),
-          ),
+          _buildHeader(),
+          _buildAnalyticsCards(),
+          _buildControlsBar(),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _buildDownlineList(),
+                : _buildContent(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildFilterChips() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Wrap(
-        spacing: 8.0,
-        runSpacing: 8.0,
-        children: DownlineFilter.values.map((filter) {
-          final isSelected = _selectedFilter == filter;
-          final count = _filterCounts[filter] ?? 0;
-          return ChoiceChip(
-            label: Text('${filter.displayTitle} ($count)'),
-            selected: isSelected,
-            onSelected: (selected) {
-              if (selected) {
-                setState(() {
-                  _selectedFilter = filter;
-                });
-                // Trigger backend filtering instead of local processing
-                _fetchFilteredData();
-              }
-            },
-            selectedColor: Colors.indigo.shade100,
-            labelStyle: TextStyle(
-              color: isSelected ? Colors.indigo.shade900 : Colors.black87,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-            side: BorderSide(
-              color: isSelected ? Colors.indigo : Colors.grey.shade400,
-            ),
-          );
-        }).toList(),
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.indigo.shade600, Colors.indigo.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: const Text(
+        'Team Analytics',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
     );
   }
 
-  Widget _buildDownlineList() {
-    if (_downlineByLevel.isEmpty) {
+
+  Widget _buildAnalyticsCards() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildAnalyticsCard(
+              'Total Team',
+              _analytics['totalMembers']?.toString() ?? '0',
+              Icons.people,
+              Colors.blue,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildAnalyticsCard(
+              'Direct Sponsors',
+              _analytics['directSponsors']?.toString() ?? '0',
+              Icons.person_add,
+              Colors.green,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildAnalyticsCard(
+              'New Members',
+              _analytics['newMembers']?.toString() ?? '0',
+              Icons.trending_up,
+              Colors.orange,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsCard(
+      String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildControlsBar() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Search bar
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search members...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        _onSearchChanged();
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Professional dropdown filter
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: DropdownButton<FilterBy>(
+              value: _filterBy,
+              isExpanded: true,
+              underline: const SizedBox(),
+              icon: const Icon(Icons.keyboard_arrow_down),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              items: FilterBy.values.map((filter) {
+                final displayName = _getFilterDisplayName(filter);
+                return DropdownMenuItem(
+                  value: filter,
+                  child: Text(
+                    displayName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() => _filterBy = value);
+                  _applyFiltersAndSort();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getFilterDisplayName(FilterBy filter) {
+    final adminSettings = Provider.of<AdminSettingsModel?>(context, listen: false);
+    final bizOppName = adminSettings?.bizOpp ?? 'biz_opp';
+    
+    switch (filter) {
+      case FilterBy.allMembers:
+        return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
+      case FilterBy.newMembers:
+        return 'New Members (${_analytics['newMembers'] ?? 0})';
+      case FilterBy.qualifiedMembers:
+        return 'Qualified Members (${_analytics['qualified'] ?? 0})';
+      case FilterBy.joinedMembers:
+        return 'Joined $bizOppName (${_analytics['withOpportunity'] ?? 0})';
+    }
+  }
+
+  Widget _buildContent() {
+    switch (_currentView) {
+      case ViewMode.grid:
+        return _buildGridView();
+      case ViewMode.list:
+        return _buildExpandableLevelView();
+      case ViewMode.analytics:
+        return _buildAnalyticsView();
+    }
+  }
+
+  Widget _buildGridView() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: _filteredMembers.length,
+        itemBuilder: (context, index) {
+          return _buildMemberGridCard(_filteredMembers[index]);
+        },
+      ),
+    );
+  }
+
+  Widget _buildMemberGridCard(UserModel member) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        onTap: () => _navigateToMemberDetail(member),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: member.photoUrl?.isNotEmpty == true
+                    ? NetworkImage(member.photoUrl!)
+                    : null,
+                child: member.photoUrl?.isEmpty != false
+                    ? const Icon(Icons.person, size: 30)
+                    : null,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${member.firstName ?? ''} ${member.lastName ?? ''}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${member.city ?? ''}, ${member.state ?? ''}',
+                style: const TextStyle(color: Colors.black, fontSize: 12),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const Spacer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpandableLevelView() {
+    if (_membersByLevel.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -321,10 +540,10 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
 
     return SingleChildScrollView(
       child: ExpansionPanelList(
-        elevation: 1,
+        elevation: 0,
         expandedHeaderPadding: EdgeInsets.zero,
         expansionCallback: (panelIndex, isExpanded) {
-          final level = _downlineByLevel.keys.elementAt(panelIndex);
+          final level = _membersByLevel.keys.elementAt(panelIndex);
           setState(() {
             if (_expandedPanels.contains(level)) {
               _expandedPanels.remove(level);
@@ -333,7 +552,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
             }
           });
         },
-        children: _downlineByLevel.entries.map((entry) {
+        children: _membersByLevel.entries.map((entry) {
           final level = entry.key;
           final users = entry.value;
           return ExpansionPanel(
@@ -343,16 +562,17 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
                 title: Text(
                   'Level $level',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                      fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 trailing: Text(
                   '${users.length} Members',
-                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  style: const TextStyle(color: Colors.black, fontSize: 14),
                 ),
               );
             },
             body: Column(
-              children: users.map((user) => _buildUserCard(user)).toList(),
+              children:
+                  users.map((user) => _buildMemberListCard(user)).toList(),
             ),
           );
         }).toList(),
@@ -360,35 +580,27 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
     );
   }
 
-  Widget _buildUserCard(UserModel user) {
+  Widget _buildMemberListCard(UserModel member) {
+    // Calculate display level relative to current user
+    final displayLevel = member.level - _levelOffset;
+    
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => MemberDetailScreen(
-                userId: user.uid,
-                appId: widget.appId,
-              ),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(10),
+        onTap: () => _navigateToMemberDetail(member),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 24,
-                backgroundImage:
-                    user.photoUrl != null && user.photoUrl!.isNotEmpty
-                        ? NetworkImage(user.photoUrl!)
-                        : null,
-                child: user.photoUrl == null || user.photoUrl!.isEmpty
-                    ? const Icon(Icons.person, size: 24)
+                radius: 25,
+                backgroundImage: member.photoUrl?.isNotEmpty == true
+                    ? NetworkImage(member.photoUrl!)
+                    : null,
+                child: (member.photoUrl == null || member.photoUrl!.isEmpty)
+                    ? const Icon(Icons.person)
                     : null,
               ),
               const SizedBox(width: 16),
@@ -396,39 +608,226 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text.rich(
-                      TextSpan(
-                        style: const TextStyle(
-                            fontSize: 15, color: Colors.black87),
-                        children: [
-                          TextSpan(
-                            text:
-                                '${user.firstName ?? ''} ${user.lastName ?? ''}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (user.country != null)
-                            TextSpan(
-                                text:
-                                    ' ${countryCodeToFlag(countryNameToCode(user.country!))}'),
-                        ],
+                    Text(
+                      '${member.firstName ?? ''} ${member.lastName ?? ''}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${user.city ?? ''}, ${user.state ?? ''}${user.country != null && countryNameToCode(user.country!).isNotEmpty ? ' - ${countryNameToCode(user.country!)}' : ''}',
-                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                      '${member.city ?? ''}, ${member.state ?? ''}, ${member.country ?? ''}',
+                      style: const TextStyle(color: Colors.black),
                     ),
+                    if (member.createdAt != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        'Joined ${DateFormat('MMM d, yyyy').format(member.createdAt!)}',
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 12),
+                      ),
+                    ],
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              if (user.createdAt != null)
-                Text(
-                  DateFormat('MMM d, yyyy').format(user.createdAt!),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+              if ((member.directSponsorCount ?? 0) >= 3)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'Qualified',
+                    style: TextStyle(
+                      color: Colors.green.shade700,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsView() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Team Performance',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildPerformanceChart(),
+          const SizedBox(height: 24),
+          const Text(
+            'Geographic Distribution',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildGeographicBreakdown(),
+          const SizedBox(height: 24),
+          const Text(
+            'Level Distribution',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildLevelBreakdown(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPerformanceChart() {
+    return Container(
+      height: 200,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: Text(
+          'Performance Chart\n(Chart implementation would go here)',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGeographicBreakdown() {
+    final countryGroups = <String, int>{};
+    for (var member in _filteredMembers) {
+      final country = member.country ?? 'Unknown';
+      countryGroups[country] = (countryGroups[country] ?? 0) + 1;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: countryGroups.entries.map((entry) {
+          final percentage =
+              (entry.value / _filteredMembers.length * 100).round();
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Text(entry.key),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: LinearProgressIndicator(
+                    value: entry.value / _filteredMembers.length,
+                    backgroundColor: Colors.grey.shade200,
+                    valueColor: AlwaysStoppedAnimation(Colors.indigo.shade400),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text('${entry.value} ($percentage%)'),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildLevelBreakdown() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: _membersByLevel.entries.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'L${entry.key}',
+                      style: TextStyle(
+                        color: Colors.indigo.shade700,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    'Level ${entry.key}',
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Text(
+                  '${entry.value.length} members',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  void _navigateToMemberDetail(UserModel member) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MemberDetailScreen(
+          userId: member.uid,
+          appId: widget.appId,
         ),
       ),
     );

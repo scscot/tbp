@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downline Team Screen - Professional UI Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            padding: 20px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .view-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            padding: 4px;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            border-radius: 16px;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: #3f51b5;
+        }
+
+        .analytics-cards {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            justify-content: space-between;
+        }
+
+        .analytics-card-compact {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 12px 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .analytics-card-compact .icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin: 0 auto 6px;
+        }
+
+        .analytics-card-compact .value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .analytics-card-compact .label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .controls {
+            padding: 16px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .sort-select {
+            flex: 1;
+            padding: 16px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+        }
+
+        .sort-btn {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .level-list {
+            padding: 0;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .level-dropdown {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .level-header {
+            padding: 16px;
+            background: white;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .level-header:hover {
+            background: #f5f5f5;
+        }
+
+        .level-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .level-count {
+            margin-left: auto;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .dropdown-arrow {
+            margin-left: 12px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .blue {
+            background: #2196f3;
+        }
+
+        .green {
+            background: #4caf50;
+        }
+
+        .orange {
+            background: #ff9800;
+        }
+
+        .purple {
+            background: #9c27b0;
+        }
+
+        .teal {
+            background: #009688;
+        }
+
+        .red {
+            background: #f44336;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <!-- Header -->
+        <div class="header">
+            <div class="view-toggle">
+                <button class="view-btn">📊</button>
+                <button class="view-btn active">📋</button>
+                <button class="view-btn">📈</button>
+            </div>
+            <h1>Team Analytics</h1>
+            <p>Manage and track your downline performance</p>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="analytics-cards">
+            <div class="analytics-card-compact">
+                <div class="icon blue"></div>
+                <div class="value" style="color: #2196f3;">247</div>
+                <div class="label">Total Team Members</div>
+            </div>
+            <div class="analytics-card-compact">
+                <div class="icon green"></div>
+                <div class="value" style="color: #4caf50;">23</div>
+                <div class="label">Direct Sponsors</div>
+            </div>
+            <div class="analytics-card-compact">
+                <div class="icon orange"></div>
+                <div class="value" style="color: #ff9800;">12</div>
+                <div class="label">New Members</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" class="search-bar" placeholder="Search members..." value="">
+            <div class="sort-controls">
+                <select class="sort-select">
+                    <option>All Members (247)</option>
+                    <option>New Members (12)</option>
+                    <option>Qualified Members (89)</option>
+                    <option>Joined Members (156)</option>
+                </select>
+                <button class="sort-btn">↓</button>
+                <button class="sort-btn">📤</button>
+            </div>
+        </div>
+
+        <!-- Level Dropdowns -->
+        <div class="level-list">
+            <div class="level-dropdown">
+                <div class="level-header">
+                    <span class="level-title">Level 1</span>
+                    <span class="level-count">7 Members</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+
+            <div class="level-dropdown">
+                <div class="level-header">
+                    <span class="level-title">Level 2</span>
+                    <span class="level-count">16 Members</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+
+            <div class="level-dropdown">
+                <div class="level-header">
+                    <span class="level-title">Level 3</span>
+                    <span class="level-count">12 Members</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+
+            <div class="level-dropdown">
+                <div class="level-header">
+                    <span class="level-title">Level 4</span>
+                    <span class="level-count">8 Members</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+
+            <div class="level-dropdown">
+                <div class="level-header">
+                    <span class="level-title">Level 5</span>
+                    <span class="level-count">4 Members</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div
+        style="max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom: 16px; color: #333;">🎨 Professional UI Design Improvements</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h3 style="color: #3f51b5; margin-bottom: 8px;">✨ Visual Enhancements</h3>
+                <ul style="line-height: 1.6; color: #666;">
+                    <li>Modern gradient header with professional branding</li>
+                    <li>Analytics cards with color-coded metrics</li>
+                    <li>Clean card-based layout with subtle shadows</li>
+                    <li>Improved typography and spacing</li>
+                    <li>Professional color scheme (Indigo primary)</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: #4caf50; margin-bottom: 8px;">🚀 Enhanced Functionality</h3>
+                <ul style="line-height: 1.6; color: #666;">
+                    <li>Multiple view modes (List, Grid, Analytics)</li>
+                    <li>Advanced sorting and filtering options</li>
+                    <li>Real-time search with instant results</li>
+                    <li>Export functionality for reports</li>
+                    <li>Performance analytics dashboard</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <h3 style="color: #ff9800; margin-bottom: 8px;">📊 Analytics Features</h3>
+                <ul style="line-height: 1.6; color: #666;">
+                    <li>Key performance indicators at a glance</li>
+                    <li>Geographic distribution breakdown</li>
+                    <li>Level-based team structure visualization</li>
+                    <li>Growth trends and performance charts</li>
+                    <li>Qualification status tracking</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: #9c27b0; margin-bottom: 8px;">💼 Professional Features</h3>
+                <ul style="line-height: 1.6; color: #666;">
+                    <li>Member qualification badges</li>
+                    <li>Opportunity participation tracking</li>
+                    <li>Advanced member detail navigation</li>
+                    <li>Responsive design for all screen sizes</li>
+                    <li>Intuitive user experience flow</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

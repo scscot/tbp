@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (!kIsWeb && Platform.isIOS) ...[
                 ElevatedButton.icon(
                   icon:
-                      const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
+                      const FaIcon(FontAwesomeIcons.apple, color: Colors.white, size: 20),
                   label: const Text('Sign in with Apple'),
                   onPressed: _isLoading
                       ? null
