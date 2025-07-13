@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:ultimatefix/screens/visit_opportunity_screen.dart';
+import 'visit_opportunity_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -276,10 +276,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.person,
                     label: 'My Profile',
                     onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                ProfileScreen(appId: widget.appId))),
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProfileScreen(appId: widget.appId),
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(child: Container()),

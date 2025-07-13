@@ -6,8 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../data/states_by_country.dart';
 import '../widgets/header_widgets.dart';
-import '../config/app_constants.dart';
-import 'dashboard_screen.dart';
+import 'admin_edit_profile_screen_1.dart';
 
 class AdminEditProfileScreen extends StatefulWidget {
   final String appId;
@@ -23,20 +22,24 @@ class AdminEditProfileScreen extends StatefulWidget {
 
 class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _bizNameController = TextEditingController();
-  final TextEditingController _bizNameConfirmController =
-      TextEditingController();
-  final TextEditingController _refLinkController = TextEditingController();
-  final TextEditingController _refLinkConfirmController =
-      TextEditingController();
+
+  // Global keys for form fields to enable scrolling to specific fields
+  final _profileImageKey = GlobalKey();
+  final _countryKey = GlobalKey();
+  final _stateKey = GlobalKey();
+  final _cityKey = GlobalKey();
 
   File? _imageFile;
   bool _isLoading = false;
   List<String> _availableStates = [];
   String? _adminFirstName;
+  String? _adminLastName;
+  String? _adminEmail;
+  String? _adminPhotoUrl;
 
   @override
   void initState() {
@@ -56,6 +59,9 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
         final userData = doc.data()!;
         setState(() {
           _adminFirstName = userData['firstName'];
+          _adminLastName = userData['lastName'];
+          _adminEmail = userData['email'] ?? user.email;
+          _adminPhotoUrl = userData['photoUrl'];
         });
       }
     }
@@ -99,61 +105,58 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
     }
   }
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
+  Future<void> _scrollToField(GlobalKey fieldKey) async {
+    if (fieldKey.currentContext != null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      await Scrollable.ensureVisible(
+        fieldKey.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        alignment: 0.2, // Position field at 20% from top of visible area
+      );
     }
+  }
 
+  String? _getFirstValidationError() {
+    // Check image selection
     if (_imageFile == null) {
+      _scrollToField(_profileImageKey);
+      return 'Please select a profile picture';
+    }
+
+    // Check country
+    if (_countryController.text.trim().isEmpty) {
+      _scrollToField(_countryKey);
+      return 'Please select a country';
+    }
+
+    // Check state
+    if (_stateController.text.trim().isEmpty) {
+      _scrollToField(_stateKey);
+      return 'Please select a state/province';
+    }
+
+    // Check city
+    if (_cityController.text.trim().isEmpty) {
+      _scrollToField(_cityKey);
+      return 'Please enter your city';
+    }
+
+    return null; // No validation errors
+  }
+
+  Future<void> _next() async {
+    // Check for validation errors and scroll to first problematic field
+    final validationError = _getFirstValidationError();
+    if (validationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a profile picture')),
+        SnackBar(content: Text(validationError)),
       );
       return;
     }
 
-    // Business Name Content Validation
-    final businessName = _bizNameController.text.trim();
-    final RegExp businessNameRegExp = RegExp(r"^[a-zA-Z0-9\s&'\-.,]+$");
-
-    if (!businessNameRegExp.hasMatch(businessName)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Business name can only contain letters, numbers, and common punctuation.')),
-      );
-      return;
-    }
-
-    // Referral Link URL Validation
-    final referralLink = _refLinkController.text.trim();
-    try {
-      final uri = Uri.parse(referralLink);
-      if (!uri.isAbsolute || uri.host.isEmpty) {
-        throw const FormatException('Invalid URL format');
-      }
-    } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Please enter a valid referral link (e.g., https://example.com).')),
-      );
-      return;
-    }
-
-    // Confirmation field validation
-    if (_bizNameController.text != _bizNameConfirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Business Name fields must match for confirmation.')),
-      );
-      return;
-    }
-
-    if (_refLinkController.text != _refLinkConfirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Referral Link fields must match for confirmation.')),
-      );
+    // Additional form validation check
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -182,26 +185,16 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
         'photoUrl': imageUrl,
       });
 
-      // Create/update admin settings
-      await FirebaseFirestore.instance
-          .collection('admin_settings')
-          .doc(user.uid)
-          .set({
-        'biz_opp': _bizNameController.text.trim(),
-        'biz_opp_ref_url': _refLinkController.text.trim(),
-        'isSubscribed': true,
-        'superAdmin': false,
-      }, SetOptions(merge: true));
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile completed successfully!')),
+          const SnackBar(
+              content: Text('Profile information saved successfully!')),
         );
 
-        // Navigate to dashboard
-        Navigator.of(context).pushReplacement(
+        // Navigate to Step 2
+        Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => DashboardScreen(appId: widget.appId),
+            builder: (_) => AdminEditProfileScreen1(appId: widget.appId),
           ),
         );
       }
@@ -220,40 +213,6 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
     }
   }
 
-  Widget _buildMetricCard({
-    required IconData icon,
-    required String value,
-    required String label,
-  }) {
-    return Expanded(
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 28, color: Colors.blue),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,6 +220,7 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
@@ -269,63 +229,71 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                   children: [
                     const Center(
                       child: Text(
-                        'Complete Your Admin Profile',
+                        'Profile Setup',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Hello ${_adminFirstName ?? 'Admin'}!\n\n",
-                          ),
-                          const TextSpan(
-                            text:
-                                "Complete your profile to start building your organization. ",
-                          ),
-                          TextSpan(
-                            text:
-                                "Your business opportunity information can only be set once and cannot be changed.",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 24),
 
-                    // Profile Picture Section
-                    const Text('Profile Picture',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
+                    // User Profile Display Section with Camera Icon
                     Center(
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(60),
-                            border: Border.all(color: Colors.grey),
+                      child: Column(
+                        key: _profileImageKey,
+                        children: [
+                          GestureDetector(
+                            onTap: _pickImage,
+                            child: Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage: _imageFile != null
+                                      ? FileImage(_imageFile!)
+                                      : (_adminPhotoUrl != null &&
+                                              _adminPhotoUrl!.isNotEmpty
+                                          ? NetworkImage(_adminPhotoUrl!)
+                                          : null) as ImageProvider?,
+                                  child: _imageFile == null &&
+                                          (_adminPhotoUrl == null ||
+                                              _adminPhotoUrl!.isEmpty)
+                                      ? const Icon(Icons.person, size: 60)
+                                      : null,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.white, width: 2)),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(6.0),
+                                      child: Icon(Icons.camera_alt,
+                                          color: Colors.white, size: 20),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: _imageFile != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(60),
-                                  child: Image.file(_imageFile!,
-                                      fit: BoxFit.cover),
-                                )
-                              : const Icon(Icons.add_a_photo,
-                                  size: 40, color: Colors.grey),
-                        ),
+                          const SizedBox(height: 16),
+                          Text(
+                            '${_adminFirstName ?? ''} ${_adminLastName ?? ''}'
+                                .trim(),
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(_adminEmail ?? 'No email'),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
 
                     // Location Fields
                     DropdownButtonFormField<String>(
+                      key: _countryKey,
                       decoration: const InputDecoration(labelText: 'Country'),
                       value: _countryController.text.isEmpty
                           ? null
@@ -346,6 +314,7 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                     const SizedBox(height: 16),
 
                     DropdownButtonFormField<String>(
+                      key: _stateKey,
                       decoration:
                           const InputDecoration(labelText: 'State/Province'),
                       value: _stateController.text.isEmpty
@@ -367,186 +336,24 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                     const SizedBox(height: 16),
 
                     TextFormField(
+                      key: _cityKey,
                       controller: _cityController,
                       decoration: const InputDecoration(labelText: 'City'),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your city' : null,
                     ),
-                    const SizedBox(height: 24),
-
-                    // Business Opportunity Section
-                    const Divider(color: Colors.blue, thickness: 2),
-                    const SizedBox(height: 16),
-                    const Text('Business Opportunity Information',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 16),
-
-                    TextFormField(
-                      controller: _bizNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Your Business Opportunity Name',
-                        helperText: 'This cannot be changed once set',
-                      ),
-                      validator: (value) => value!.isEmpty ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 16),
-
-                    TextFormField(
-                      controller: _bizNameConfirmController,
-                      decoration: const InputDecoration(
-                          labelText: 'Confirm Business Opportunity Name'),
-                      validator: (value) => value!.isEmpty ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 16),
-
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text(
-                              'Very Important!',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            content: const Text(
-                                'You must enter the exact referral link you received from your company. '
-                                'This will ensure your TeamBuild Pro downline members that join your business opportunity '
-                                'are automatically placed in your business opportunity downline.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('I Understand'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _refLinkController,
-                            decoration: const InputDecoration(
-                              labelText: 'Your Referral Link',
-                              helperText: 'This cannot be changed once set',
-                            ),
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _refLinkConfirmController,
-                            decoration: const InputDecoration(
-                              labelText: 'Confirm Referral Link URL',
-                            ),
-                            validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Team Build Pro Feeder System Section
-                    const Divider(color: Colors.green, thickness: 2),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'TeamBuild Pro Feeder System',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green),
-                    ),
-                    const SizedBox(height: 16),
-
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(12),
-                        border:
-                            Border.all(color: Colors.green.withOpacity(0.2)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.auto_awesome,
-                                  color: Colors.green, size: 24),
-                              const SizedBox(width: 8),
-                              const Expanded(
-                                child: Text(
-                                  'How It Works',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                const TextSpan(
-                                    text:
-                                        "When your downline members meet the minimum eligibility criteria, they are automatically invited to join your "),
-                                TextSpan(
-                                  text: 'business opportunity',
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const TextSpan(
-                                    text:
-                                        " team — with their growing TeamBuild Pro downlines ready to follow."),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Minimum Eligibility Requirements
-                    const Text(
-                      'Minimum Eligibility Requirements',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _buildMetricCard(
-                          icon: Icons.people,
-                          value: AppConstants.projectWideDirectSponsorMin
-                              .toString(),
-                          label: 'Direct Sponsors',
-                        ),
-                        const SizedBox(width: 16),
-                        _buildMetricCard(
-                          icon: Icons.groups,
-                          value:
-                              AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team Members',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 48),
 
                     Center(
                       child: ElevatedButton(
-                        onPressed: _submit,
+                        onPressed: _next,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32, vertical: 16),
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.blue,
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Complete Profile & Start Building!',
+                        child: const Text('Next - Business Information',
                             style: TextStyle(fontSize: 16)),
                       ),
                     ),
@@ -560,13 +367,10 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _countryController.dispose();
     _stateController.dispose();
     _cityController.dispose();
-    _bizNameController.dispose();
-    _bizNameConfirmController.dispose();
-    _refLinkController.dispose();
-    _refLinkConfirmController.dispose();
     super.dispose();
   }
 }
