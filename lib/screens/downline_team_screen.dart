@@ -500,7 +500,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                 '${member.firstName ?? ''} ${member.lastName ?? ''}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.blue,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -613,7 +615,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Colors.black,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
                       ),
                     ),
                     const SizedBox(height: 4),
