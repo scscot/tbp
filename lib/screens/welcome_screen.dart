@@ -30,8 +30,8 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               user.role == 'admin'
-                  ? 'Please use the button below to complete your admin profile and set up your business opportunity. After completing your profile you will have access to the full TeamBuild Pro app.'
-                  : 'Please use the button below to complete your profile. After completing your profile you will have access to the full TeamBuild Pro app.',
+                  ? 'Please use the button below to complete your admin profile and set up your business opportunity. After completing your profile you will have access to the full Team Build Pro app.'
+                  : 'Please use the button below to complete your profile. After completing your profile you will have access to the full Team Build Pro app.',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),

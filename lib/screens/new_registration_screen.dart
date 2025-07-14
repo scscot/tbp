@@ -8,19 +8,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
-import '../data/states_by_country.dart';
 import '../widgets/header_widgets.dart';
 import 'welcome_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
-  final String? adminReferralCode;
   final String appId;
 
   const NewRegistrationScreen({
     super.key,
     this.referralCode,
-    this.adminReferralCode,
     required this.appId,
   });
 
@@ -35,19 +32,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _cityController = TextEditingController();
-
-  String? _selectedCountry;
-  String? _selectedState;
+  
   String? _sponsorName;
   String? _initialReferralCode;
-  String? _initialAdminReferralCode;
   bool _isLoading = true;
-  List<String> _availableCountries = [];
 
   bool isDevMode = true;
-
-  List<String> get states => statesByCountry[_selectedCountry] ?? [];
 
   @override
   void initState() {
@@ -56,34 +46,26 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Future<void> _initializeScreen() async {
-    // --- ENHANCED: More comprehensive debug logging ---
     debugPrint('🔍 NewRegistrationScreen._initializeScreen() called');
     debugPrint('🔍 Constructor parameters received:');
     debugPrint('🔍   widget.referralCode: ${widget.referralCode}');
-    debugPrint('🔍   widget.adminReferralCode: ${widget.adminReferralCode}');
     debugPrint('🔍   widget.appId: ${widget.appId}');
 
     _initialReferralCode = widget.referralCode;
-    _initialAdminReferralCode = widget.adminReferralCode;
 
     debugPrint('🔍 After assignment:');
     debugPrint('🔍   _initialReferralCode: $_initialReferralCode');
-    debugPrint('🔍   _initialAdminReferralCode: $_initialAdminReferralCode');
 
-/*     if (isDevMode &&
-        _initialReferralCode == null &&
-        _initialAdminReferralCode == null) {
+    if (isDevMode && _initialReferralCode == null) {
       // _initialReferralCode = '88888888'; // Admin
       _initialReferralCode = '28F37ECD'; // Direct
-    } */
+    }
 
-    final code = _initialReferralCode ?? _initialAdminReferralCode;
+    final code = _initialReferralCode;
     debugPrint('🔍 Using referral code: $code');
 
     if (code == null || code.isEmpty) {
-      _availableCountries = statesByCountry.keys.toList();
-      debugPrint(
-          '🔍 No referral code - setting available countries to all countries');
+      debugPrint('🔍 No referral code - admin registration');
       if (mounted) setState(() => _isLoading = false);
       return;
     }
@@ -100,26 +82,16 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         final data = jsonDecode(response.body);
         final sponsorName =
             '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+        
         setState(() {
           _sponsorName = sponsorName;
         });
-
-        final countriesFromServer = data['availableCountries'] as List?;
-        if (countriesFromServer != null && countriesFromServer.isNotEmpty) {
-          _availableCountries = List<String>.from(countriesFromServer);
-        } else {
-          _availableCountries = statesByCountry.keys.toList();
-        }
       } else {
-        _availableCountries = statesByCountry.keys.toList();
         debugPrint(
             'Failed to get sponsor data. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint("Error finding sponsor or countries: $e.");
-      if (mounted) {
-        _availableCountries = statesByCountry.keys.toList();
-      }
+      debugPrint("Error finding sponsor: $e.");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -132,7 +104,6 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _cityController.dispose();
     super.dispose();
   }
 
@@ -146,41 +117,47 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     final navigator = Navigator.of(context);
 
     try {
+      debugPrint('🔍 REGISTER: Starting registration process...');
+      
       final HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('registerUser');
 
-      // FIX: Removed the unused 'result' variable to resolve the linter warning.
-      await callable.call<Map<String, dynamic>>(<String, dynamic>{
+      // Prepare registration data
+      final registrationData = <String, dynamic>{
         'email': _emailController.text.trim(),
         'password': _passwordController.text,
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
-        'country': _selectedCountry,
-        'state': _selectedState,
-        'city': _cityController.text.trim(),
         'sponsorReferralCode': _initialReferralCode,
-        'adminReferralCode': _initialAdminReferralCode,
-        'role':
-            (_initialReferralCode == null && _initialAdminReferralCode == null)
-                ? 'admin'
-                : _initialAdminReferralCode != null
-                    ? 'admin'
-                    : 'user',
-      });
+        'role': _initialReferralCode == null ? 'admin' : 'user',
+      };
 
+      debugPrint('🔍 REGISTER: Registration data prepared: ${registrationData.toString()}');
+      debugPrint('🔍 REGISTER: Calling registerUser Cloud Function...');
+
+      final result = await callable.call<Map<String, dynamic>>(registrationData);
+      debugPrint('🔍 REGISTER: Cloud Function call successful: ${result.data}');
+
+      debugPrint('🔍 REGISTER: Attempting to sign in user...');
       final userCredential = await authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text,
       );
+      debugPrint('🔍 REGISTER: Sign in successful, UID: ${userCredential.user?.uid}');
 
+      debugPrint('🔍 REGISTER: Fetching user model from Firestore...');
       final userModel =
           await firestoreService.getUser(userCredential.user!.uid);
 
       if (userModel == null) {
+        debugPrint('❌ REGISTER: Failed to fetch user model from Firestore');
         throw Exception("Failed to fetch new user profile.");
       }
 
+      debugPrint('✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
+
       if (!mounted) return;
+      debugPrint('🔍 REGISTER: Navigating to WelcomeScreen...');
       navigator.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) =>
@@ -189,12 +166,17 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         (Route<dynamic> route) => false,
       );
     } on FirebaseFunctionsException catch (e) {
+      debugPrint('❌ REGISTER: FirebaseFunctionsException - Code: ${e.code}, Message: ${e.message}');
+      debugPrint('❌ REGISTER: FirebaseFunctionsException - Details: ${e.details}');
       _showErrorSnackbar(
           scaffoldMessenger, e.message ?? 'Registration failed.');
     } on FirebaseAuthException catch (e) {
+      debugPrint('❌ REGISTER: FirebaseAuthException - Code: ${e.code}, Message: ${e.message}');
       _showErrorSnackbar(scaffoldMessenger, e.message ?? 'Login failed.');
-    } catch (e) {
-      _showErrorSnackbar(scaffoldMessenger, 'An unexpected error occurred.');
+    } catch (e, stackTrace) {
+      debugPrint('❌ REGISTER: Unexpected error: $e');
+      debugPrint('❌ REGISTER: Stack trace: $stackTrace');
+      _showErrorSnackbar(scaffoldMessenger, 'An unexpected error occurred: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -223,7 +205,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Registration',
+                      'Account Registration',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
@@ -239,22 +221,31 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     const SizedBox(height: 24),
                     TextFormField(
                         controller: _firstNameController,
-                        decoration:
-                            const InputDecoration(labelText: 'First Name'),
+                        decoration: const InputDecoration(
+                          labelText: 'First Name',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null),
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _lastNameController,
-                        decoration:
-                            const InputDecoration(labelText: 'Last Name'),
+                        decoration: const InputDecoration(
+                          labelText: 'Last Name',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null),
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _emailController,
-                        decoration:
-                            const InputDecoration(labelText: 'Email Address'),
+                        decoration: const InputDecoration(
+                          labelText: 'Email Address',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) => v == null || !v.contains('@')
                             ? 'A valid email is required'
@@ -262,8 +253,11 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _passwordController,
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         obscureText: true,
                         validator: (v) => (v?.length ?? 0) < 6
                             ? 'Password must be at least 6 characters'
@@ -272,45 +266,14 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     TextFormField(
                         controller: _confirmPasswordController,
                         decoration: const InputDecoration(
-                            labelText: 'Confirm Password'),
+                          labelText: 'Confirm Password',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         obscureText: true,
                         validator: (v) => v != _passwordController.text
                             ? 'Passwords do not match'
                             : null),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      value: _selectedCountry,
-                      hint: const Text('Select Country'),
-                      items: _availableCountries
-                          .map(
-                              (c) => DropdownMenuItem(value: c, child: Text(c)))
-                          .toList(),
-                      onChanged: (v) => setState(() {
-                        _selectedCountry = v;
-                        _selectedState = null;
-                      }),
-                      decoration: const InputDecoration(labelText: 'Country'),
-                      validator: (v) => v == null ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      value: _selectedState,
-                      hint: const Text('Select State/Province'),
-                      items: states
-                          .map(
-                              (s) => DropdownMenuItem(value: s, child: Text(s)))
-                          .toList(),
-                      onChanged: (v) => setState(() => _selectedState = v),
-                      decoration:
-                          const InputDecoration(labelText: 'State/Province'),
-                      validator: (v) => v == null ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                        controller: _cityController,
-                        decoration: const InputDecoration(labelText: 'City'),
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'Required' : null),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,

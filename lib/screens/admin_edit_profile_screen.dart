@@ -294,7 +294,11 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                     // Location Fields
                     DropdownButtonFormField<String>(
                       key: _countryKey,
-                      decoration: const InputDecoration(labelText: 'Country'),
+                      decoration: const InputDecoration(
+                        labelText: 'Country',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
                       value: _countryController.text.isEmpty
                           ? null
                           : _countryController.text,
@@ -315,8 +319,11 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
 
                     DropdownButtonFormField<String>(
                       key: _stateKey,
-                      decoration:
-                          const InputDecoration(labelText: 'State/Province'),
+                      decoration: const InputDecoration(
+                        labelText: 'State/Province',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
                       value: _stateController.text.isEmpty
                           ? null
                           : _stateController.text,
@@ -338,7 +345,11 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                     TextFormField(
                       key: _cityKey,
                       controller: _cityController,
-                      decoration: const InputDecoration(labelText: 'City'),
+                      decoration: const InputDecoration(
+                        labelText: 'City',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your city' : null,
                     ),

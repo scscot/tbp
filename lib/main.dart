@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           // --- The key is assigned here ---
           navigatorKey: navigatorKey,
-          title: 'TeamBuild Pro',
+          title: 'Team Build Pro',
           theme: ThemeData(
             primarySwatch: Colors.indigo,
             fontFamily: 'Inter',
@@ -192,7 +192,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         debugPrint(
             '🔐 AUTH_WRAPPER: User missing photo, showing EditProfileScreen');
         return EditProfileScreen(
-            key: const ValueKey('EditProfileScreen'), appId: appId, user: user);
+            key: const ValueKey('EditProfileScreen'), appId: appId, user: user, isFirstTimeSetup: true);
       }
     }
 
