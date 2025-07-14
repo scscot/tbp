@@ -273,7 +273,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             ),
                             content: const Text(
                                 'You must enter the exact referral link you received from your company. '
-                                'This will ensure your TeamBuild Pro downline members that join your business opportunity '
+                                'This will ensure your Team Build Pro downline members that join your business opportunity '
                                 'are automatically placed in your business opportunity downline.'),
                             actions: [
                               TextButton(
@@ -319,7 +319,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                     const Divider(color: Colors.green, thickness: 2),
                     const SizedBox(height: 16),
                     const Text(
-                      'TeamBuild Pro Feeder System',
+                      'Team Build Pro Feeder System',
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -368,7 +368,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                                 ),
                                 const TextSpan(
                                     text:
-                                        " team — with their growing TeamBuild Pro downlines ready to follow."),
+                                        " team — with their growing Team Build Pro downlines ready to follow."),
                               ],
                             ),
                           ),
