@@ -16,7 +16,6 @@ class DeepLinkService {
   StreamSubscription<Uri>? _linkSubscription;
 
   String? _pendingReferralCode;
-  String? _pendingAdminReferralCode;
 
   /// Initialize deep link handling
   Future<void> initialize() async {
@@ -51,32 +50,27 @@ class DeepLinkService {
     debugPrint('🔗 Deep Link: Query parameters: $queryParams');
 
     final referralCode = queryParams['ref'];
-    final adminReferralCode = queryParams['new'];
 
-    debugPrint(
-        '🔗 Deep Link: Found referral codes - ref: $referralCode, new: $adminReferralCode');
+    debugPrint('🔗 Deep Link: Found referral code - ref: $referralCode');
 
-    if (referralCode != null || adminReferralCode != null) {
+    if (referralCode != null) {
       debugPrint('🔗 Deep Link: Navigating to registration screen');
       debugPrint('🔗 Deep Link: Parameters being passed:');
       debugPrint('🔗   referralCode: $referralCode');
-      debugPrint('🔗   adminReferralCode: $adminReferralCode');
       debugPrint('🔗   appId: $appId');
       debugPrint('🔗 Deep Link: Creating NewRegistrationScreen widget...');
 
-      // Navigate to registration screen with referral codes
+      // Navigate to registration screen with referral code
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) {
             debugPrint('🔗 Deep Link: MaterialPageRoute builder called');
             debugPrint('🔗   Creating NewRegistrationScreen with:');
             debugPrint('🔗     referralCode: $referralCode');
-            debugPrint('🔗     adminReferralCode: $adminReferralCode');
             debugPrint('🔗     appId: $appId');
 
             return NewRegistrationScreen(
               referralCode: referralCode,
-              adminReferralCode: adminReferralCode,
               appId: appId,
             );
           },
@@ -86,8 +80,8 @@ class DeepLinkService {
 
       debugPrint('🔗 Deep Link: Navigation completed');
     } else {
-      debugPrint('🔗 Deep Link: No referral codes found, navigating to login');
-      // Navigate to login screen if no referral codes
+      debugPrint('🔗 Deep Link: No referral code found, navigating to login');
+      // Navigate to login screen if no referral code
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => LoginScreen(appId: appId),
@@ -101,14 +95,12 @@ class DeepLinkService {
   Map<String, String?> getPendingReferralCodes() {
     return {
       'referralCode': _pendingReferralCode,
-      'adminReferralCode': _pendingAdminReferralCode,
     };
   }
 
   /// Clear pending referral codes
   void clearPendingCodes() {
     _pendingReferralCode = null;
-    _pendingAdminReferralCode = null;
   }
 
   /// Dispose resources

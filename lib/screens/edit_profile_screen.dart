@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
@@ -34,15 +35,25 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _cityController;
+  late TextEditingController _bizOppRefUrlController;
+  late TextEditingController _bizOppRefUrlConfirmController;
 
   String? _selectedCountry;
   String? _selectedState;
+  bool _isBizOppRepresentative = false;
+  String _bizOppName = 'business opportunity';
+  String? _baseUrl; // Added for base URL validation
+  bool _hasShownDialog = false; // Track if dialog has been shown
 
   File? _imageFile;
   bool _isLoading = false;
 
   // MODIFICATION: Added state variable to hold the image validation error text.
   String? _imageErrorText;
+
+  // Global keys for referral link fields
+  final _bizOppRefUrlKey = GlobalKey();
+  final _bizOppRefUrlConfirmKey = GlobalKey();
 
   List<String> get statesForSelectedCountry =>
       statesByCountry[_selectedCountry] ?? [];
@@ -53,9 +64,57 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     _firstNameController = TextEditingController(text: widget.user.firstName);
     _lastNameController = TextEditingController(text: widget.user.lastName);
     _cityController = TextEditingController(text: widget.user.city);
+    _bizOppRefUrlController = TextEditingController(text: widget.user.bizOppRefUrl);
+    _bizOppRefUrlConfirmController = TextEditingController(text: widget.user.bizOppRefUrl);
 
     _selectedCountry = widget.user.country;
     _selectedState = widget.user.state;
+    _isBizOppRepresentative = widget.user.bizOppRefUrl != null && widget.user.bizOppRefUrl!.isNotEmpty;
+    
+    _fetchBizOppName();
+  }
+
+  Future<void> _fetchBizOppName() async {
+    try {
+      // Get the upline admin ID from current user's data
+      final uplineAdmin = widget.user.uplineAdmin;
+      
+      if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+        // Get admin settings for the upline admin
+        final adminSettingsDoc = await FirebaseFirestore.instance
+            .collection('admin_settings')
+            .doc(uplineAdmin)
+            .get();
+
+        if (adminSettingsDoc.exists) {
+          final data = adminSettingsDoc.data();
+          if (data != null) {
+            final bizOpp = data['biz_opp'] as String?;
+            final bizOppRefUrl = data['biz_opp_ref_url'] as String?;
+            
+            if (bizOpp != null && bizOpp.isNotEmpty) {
+              setState(() {
+                _bizOppName = bizOpp;
+              });
+            }
+
+            // Extract base URL for validation (same logic as JoinOpportunityScreen)
+            if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
+              try {
+                final uri = Uri.parse(bizOppRefUrl);
+                setState(() {
+                  _baseUrl = "${uri.scheme}://${uri.host}/";
+                });
+              } catch (e) {
+                debugPrint('Error parsing base URL: $e');
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching business opportunity name: $e');
+    }
   }
 
   @override
@@ -63,7 +122,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _cityController.dispose();
+    _bizOppRefUrlController.dispose();
+    _bizOppRefUrlConfirmController.dispose();
     super.dispose();
+  }
+
+  Future<void> _scrollToField(GlobalKey fieldKey) async {
+    if (fieldKey.currentContext != null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      await Scrollable.ensureVisible(
+        fieldKey.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        alignment: 0.2,
+      );
+    }
   }
 
   Future<void> _pickImage() async {
@@ -77,6 +150,48 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         _imageErrorText = null;
       });
     }
+  }
+
+  String? _validateBizOppFields() {
+    if (_isBizOppRepresentative) {
+      // Check referral link
+      if (_bizOppRefUrlController.text.trim().isEmpty) {
+        _scrollToField(_bizOppRefUrlKey);
+        return 'Please enter your referral link';
+      }
+
+      // Check referral link confirmation
+      if (_bizOppRefUrlConfirmController.text.trim().isEmpty) {
+        _scrollToField(_bizOppRefUrlConfirmKey);
+        return 'Please confirm your referral link';
+      }
+
+      // Referral Link URL Validation (enhanced with base URL check)
+      final referralLink = _bizOppRefUrlController.text.trim();
+      try {
+        final uri = Uri.parse(referralLink);
+        if (!uri.isAbsolute || uri.host.isEmpty) {
+          throw const FormatException('Invalid URL format');
+        }
+      } catch (_) {
+        _scrollToField(_bizOppRefUrlKey);
+        return 'Please enter a valid referral link (e.g., https://example.com).';
+      }
+
+      // Base URL validation (same logic as JoinOpportunityScreen)
+      if (_baseUrl != null && _baseUrl!.isNotEmpty) {
+        if (!_baseUrl!.startsWith('https') || !referralLink.startsWith(_baseUrl!)) {
+          _scrollToField(_bizOppRefUrlKey);
+          return 'Referral link must begin with $_baseUrl';
+        }
+      }
+
+      if (_bizOppRefUrlController.text != _bizOppRefUrlConfirmController.text) {
+        _scrollToField(_bizOppRefUrlConfirmKey);
+        return 'Referral Link fields must match for confirmation.';
+      }
+    }
+    return null;
   }
 
   Future<void> _saveProfile() async {
@@ -100,6 +215,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       });
     }
 
+    // Validate business opportunity fields
+    final bizOppValidationError = _validateBizOppFields();
+    if (bizOppValidationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(bizOppValidationError)),
+      );
+      return;
+    }
+
     // Only proceed if both the form and the image are valid.
     if (isFormValid && isImageValid) {
       setState(() => _isLoading = true);
@@ -120,14 +244,26 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           throw Exception('Image was not provided.');
         }
 
-        final updatedData = {
+        final updatedData = <String, dynamic>{
           'firstName': _firstNameController.text.trim(),
           'lastName': _lastNameController.text.trim(),
           'city': _cityController.text.trim(),
           'country': _selectedCountry,
           'state': _selectedState,
           'photoUrl': photoUrl,
+          'biz_opp_ref_url': _isBizOppRepresentative ? _bizOppRefUrlController.text.trim() : null,
         };
+
+        // Add business opportunity fields if user is a representative
+        if (_isBizOppRepresentative) {
+          final now = FieldValue.serverTimestamp();
+          updatedData.addAll({
+            'biz_join_date': now,
+            'biz_visit_date': now,
+            'qualifiedDate': now,
+            'biz_opp': _bizOppName,
+          });
+        }
 
         await _firestoreService.updateUser(widget.user.uid, updatedData);
 
@@ -240,14 +376,22 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(labelText: 'First Name'),
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                     validator: (value) =>
                         value!.isEmpty ? 'First name cannot be empty' : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: const InputDecoration(labelText: 'Last Name'),
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                     validator: (value) =>
                         value!.isEmpty ? 'Last name cannot be empty' : null,
                   ),
@@ -266,7 +410,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         _selectedState = null;
                       });
                     },
-                    decoration: const InputDecoration(labelText: 'Country'),
+                    decoration: const InputDecoration(
+                      labelText: 'Country',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                     validator: (value) =>
                         value == null ? 'Please select a country' : null,
                   ),
@@ -289,18 +437,207 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               _selectedState = newValue;
                             });
                           },
-                    decoration:
-                        const InputDecoration(labelText: 'State/Province'),
+                    decoration: const InputDecoration(
+                      labelText: 'State/Province',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                     validator: (value) =>
                         value == null ? 'Please select a state/province' : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _cityController,
-                    decoration: const InputDecoration(labelText: 'City'),
+                    decoration: const InputDecoration(
+                      labelText: 'City',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                     validator: (value) =>
                         value!.isEmpty ? 'Please enter a city' : null,
                   ),
+                  const SizedBox(height: 16),
+                  
+                  // Business Opportunity Representative Section
+                  RichText(
+                    text: TextSpan(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                      children: [
+                        const TextSpan(text: 'Are you currently a '),
+                        TextSpan(
+                          text: _bizOppName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const TextSpan(text: ' representative?'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<bool>(
+                          title: const Text('Yes'),
+                          value: true,
+                          groupValue: _isBizOppRepresentative,
+                          onChanged: (value) {
+                            setState(() {
+                              _isBizOppRepresentative = value ?? false;
+                              if (!_isBizOppRepresentative) {
+                                _bizOppRefUrlController.clear();
+                                _bizOppRefUrlConfirmController.clear();
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<bool>(
+                          title: const Text('No'),
+                          value: false,
+                          groupValue: _isBizOppRepresentative,
+                          onChanged: (value) {
+                            setState(() {
+                              _isBizOppRepresentative = !(value ?? true);
+                              if (!_isBizOppRepresentative) {
+                                _bizOppRefUrlController.clear();
+                                _bizOppRefUrlConfirmController.clear();
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  // Conditional Referral Link Fields
+                  if (_isBizOppRepresentative) ...[
+                    const SizedBox(height: 16),
+                    const Divider(color: Colors.blue, thickness: 1),
+                    const SizedBox(height: 16),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue.shade700,
+                        ),
+                        children: [
+                          const TextSpan(text: 'Your '),
+                          TextSpan(
+                            text: _bizOppName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ' Referral Link'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                        children: [
+                          const TextSpan(text: 'Please enter your '),
+                          TextSpan(
+                            text: _bizOppName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ' referral link. This will be used to track referrals from your Team Build Pro downline.'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: _bizOppRefUrlKey,
+                      controller: _bizOppRefUrlController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter Your Referral Link',
+                        helperText: _baseUrl != null 
+                            ? 'Must start with $_baseUrl\nThis cannot be changed once set'
+                            : 'This cannot be changed once set',
+                        hintText: _baseUrl != null ? 'e.g., ${_baseUrl}your_username_here' : null,
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      validator: (value) {
+                        if (_isBizOppRepresentative && (value == null || value.isEmpty)) {
+                          return 'Required when you are a representative';
+                        }
+                        if (_isBizOppRepresentative && _baseUrl != null && _baseUrl!.isNotEmpty) {
+                          if (value != null && value.isNotEmpty) {
+                            if (!_baseUrl!.startsWith('https') || !value.startsWith(_baseUrl!)) {
+                              return 'Link must begin with $_baseUrl';
+                            }
+                          }
+                        }
+                        return null;
+                      },
+                      onTap: () {
+                        if (!_hasShownDialog) {
+                          setState(() {
+                            _hasShownDialog = true;
+                          });
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(
+                                'Very Important!',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              content: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  children: [
+                                    const TextSpan(text: 'You must enter the exact referral link you received from '),
+                                    TextSpan(
+                                      text: _bizOppName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    const TextSpan(text: '. This will ensure your TeamBuild Pro downline members that join '),
+                                    TextSpan(
+                                      text: _bizOppName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    const TextSpan(text: ' are automatically placed in your '),
+                                    TextSpan(
+                                      text: _bizOppName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    const TextSpan(text: ' downline.'),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('I Understand'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: _bizOppRefUrlConfirmKey,
+                      controller: _bizOppRefUrlConfirmController,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm Referral Link URL',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      validator: (value) => _isBizOppRepresentative && (value == null || value.isEmpty) 
+                          ? 'Required when you are a representative' : null,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: _isLoading ? null : _saveProfile,

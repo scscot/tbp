@@ -8,7 +8,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
-import '../screens/edit_profile_screen.dart';
+import '../screens/update_profile_screen.dart';
 import '../services/firestore_service.dart';
 import '../widgets/header_widgets.dart';
 
@@ -204,7 +204,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Divider(),
             _buildInfoRow('City', currentUser.city ?? 'N/A'),
             _buildInfoRow('State', currentUser.state ?? 'N/A'),
             _buildInfoRow('Country', currentUser.country ?? 'N/A'),
@@ -228,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => EditProfileScreen(
+                      builder: (_) => UpdateProfileScreen(
                         user: currentUser,
                         appId: widget.appId,
                       ),

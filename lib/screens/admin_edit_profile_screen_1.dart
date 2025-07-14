@@ -241,6 +241,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                       decoration: const InputDecoration(
                         labelText: 'Your Business Opportunity Name',
                         helperText: 'This cannot be changed once set',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,
                     ),
@@ -250,7 +252,10 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                       key: _bizNameConfirmKey,
                       controller: _bizNameConfirmController,
                       decoration: const InputDecoration(
-                          labelText: 'Confirm Business Opportunity Name'),
+                        labelText: 'Confirm Business Opportunity Name',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
@@ -287,6 +292,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             decoration: const InputDecoration(
                               labelText: 'Your Referral Link',
                               helperText: 'This cannot be changed once set',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,
@@ -297,6 +304,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             controller: _refLinkConfirmController,
                             decoration: const InputDecoration(
                               labelText: 'Confirm Referral Link URL',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,
