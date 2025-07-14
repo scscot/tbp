@@ -96,7 +96,7 @@ class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
       builder: (_) => AlertDialog(
         title: const Text('Before You Continue'),
         content: Text(
-            "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your TeamBuild Pro profile. This ensures your downline is built correctly."),
+            "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your downline is built correctly."),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -265,7 +265,7 @@ class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "After joining, you must return here and add your new referral link to your TeamBuild Pro profile. This ensures your downline is built correctly.",
+                    "After joining, you must return here and add your new referral link to your Team Build Pro profile. This ensures your downline is built correctly.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 16, color: Colors.grey.shade700, height: 1.5),
