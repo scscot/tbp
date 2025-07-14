@@ -111,9 +111,13 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1" }, (req, res) 
 });
 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
+  console.log("🔍 REGISTER FUNCTION: Starting registerUser function");
+  console.log("🔍 REGISTER FUNCTION: Request data:", JSON.stringify(request.data, null, 2));
+  
   const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city } = request.data;
 
-  if (!email || !password || !firstName || !lastName || !country || !state || !city) {
+  if (!email || !password || !firstName || !lastName) {
+    console.error("❌ REGISTER FUNCTION: Missing required fields");
     throw new HttpsError("invalid-argument", "Missing required user information.");
   }
 
@@ -123,56 +127,67 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   let uplineAdminForNewUser = null;
   let adminReferralId = null;
 
-  if (sponsorReferralCode) {
-    const sponsorQuery = await db.collection("users").where("referralCode", "==", sponsorReferralCode).limit(1).get();
-    if (!sponsorQuery.empty) {
-      const sponsorDoc = sponsorQuery.docs[0];
-      sponsorId = sponsorDoc.id;
-      const sponsorData = sponsorDoc.data();
-      if (sponsorData.role === 'admin') {
-        uplineAdminForNewUser = sponsorId;
-      } else {
-        uplineAdminForNewUser = sponsorData.upline_admin;
-      }
-      sponsorUplineRefs = sponsorData.upline_refs || [];
-      level = sponsorData.level ? sponsorData.level + 1 : 2;
-    } else {
-      throw new HttpsError("not-found", `Sponsor with referral code '${sponsorReferralCode}' not found.`);
-    }
-  }
-
-  // Handle admin referral code (for new admins)
-  if (adminReferralCode) {
-    const adminReferralQuery = await db.collection("users").where("referralCode", "==", adminReferralCode).limit(1).get();
-    if (!adminReferralQuery.empty) {
-      const adminReferralDoc = adminReferralQuery.docs[0];
-      adminReferralId = adminReferralDoc.id;
-    } else {
-      throw new HttpsError("not-found", `Admin referral with referral code '${adminReferralCode}' not found.`);
-    }
-  }
-
   try {
+    console.log("🔍 REGISTER FUNCTION: Processing sponsor referral code:", sponsorReferralCode);
+    
+    if (sponsorReferralCode) {
+      const sponsorQuery = await db.collection("users").where("referralCode", "==", sponsorReferralCode).limit(1).get();
+      if (!sponsorQuery.empty) {
+        const sponsorDoc = sponsorQuery.docs[0];
+        sponsorId = sponsorDoc.id;
+        const sponsorData = sponsorDoc.data();
+        console.log("🔍 REGISTER FUNCTION: Found sponsor:", sponsorId, sponsorData.firstName, sponsorData.lastName);
+        
+        if (sponsorData.role === 'admin') {
+          uplineAdminForNewUser = sponsorId;
+        } else {
+          uplineAdminForNewUser = sponsorData.upline_admin;
+        }
+        sponsorUplineRefs = sponsorData.upline_refs || [];
+        level = sponsorData.level ? sponsorData.level + 1 : 2;
+      } else {
+        console.error("❌ REGISTER FUNCTION: Sponsor not found:", sponsorReferralCode);
+        throw new HttpsError("not-found", `Sponsor with referral code '${sponsorReferralCode}' not found.`);
+      }
+    }
+
+    // Handle admin referral code (for new admins)
+    if (adminReferralCode) {
+      console.log("🔍 REGISTER FUNCTION: Processing admin referral code:", adminReferralCode);
+      const adminReferralQuery = await db.collection("users").where("referralCode", "==", adminReferralCode).limit(1).get();
+      if (!adminReferralQuery.empty) {
+        const adminReferralDoc = adminReferralQuery.docs[0];
+        adminReferralId = adminReferralDoc.id;
+        console.log("🔍 REGISTER FUNCTION: Found admin referral:", adminReferralId);
+      } else {
+        console.error("❌ REGISTER FUNCTION: Admin referral not found:", adminReferralCode);
+        throw new HttpsError("not-found", `Admin referral with referral code '${adminReferralCode}' not found.`);
+      }
+    }
+
+    console.log("🔍 REGISTER FUNCTION: Creating Firebase Auth user...");
     const userRecord = await auth.createUser({
       email: email,
       password: password,
       displayName: `${firstName} ${lastName}`,
     });
     const uid = userRecord.uid;
+    console.log("✅ REGISTER FUNCTION: Firebase Auth user created:", uid);
 
+    console.log("🔍 REGISTER FUNCTION: Preparing user document...");
     const newUser = {
       uid: uid,
       email: email,
       firstName: firstName,
       lastName: lastName,
-      country: country,
-      state: state,
-      city: city,
+      country: country || '',
+      state: state || '',
+      city: city || '',
       createdAt: FieldValue.serverTimestamp(),
       role: role || 'user',
       referralCode: `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}${Math.floor(1000 + Math.random() * 9000)}`,
-      referredBy: sponsorReferralCode,
-      adminReferral: adminReferralCode,
+      referredBy: sponsorReferralCode || null,
+      adminReferral: adminReferralCode || null,
       sponsor_id: sponsorId,
       level: level,
       upline_refs: sponsorId ? [...sponsorUplineRefs, sponsorId] : [],
@@ -181,9 +196,13 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       totalTeamCount: 0,
     };
 
+    console.log("🔍 REGISTER FUNCTION: User document prepared:", JSON.stringify(newUser, null, 2));
+    console.log("🔍 REGISTER FUNCTION: Creating Firestore user document...");
     await db.collection("users").doc(uid).set(newUser);
+    console.log("✅ REGISTER FUNCTION: Firestore user document created");
 
     if (sponsorId) {
+      console.log("🔍 REGISTER FUNCTION: Updating sponsor counts...");
       const batch = db.batch();
       const sponsorRef = db.collection("users").doc(sponsorId);
       batch.update(sponsorRef, {
@@ -196,12 +215,24 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
         batch.update(uplineMemberRef, { totalTeamCount: FieldValue.increment(1) });
       });
       await batch.commit();
+      console.log("✅ REGISTER FUNCTION: Sponsor counts updated");
     }
 
+    console.log("✅ REGISTER FUNCTION: Registration completed successfully");
     return { success: true, uid: uid };
   } catch (error) {
-    console.error("Error registering user:", error);
-    throw new HttpsError("internal", error.message, error.details);
+    console.error("❌ REGISTER FUNCTION: Error during registration:", error);
+    console.error("❌ REGISTER FUNCTION: Error message:", error.message);
+    console.error("❌ REGISTER FUNCTION: Error stack:", error.stack);
+    
+    // If we created the auth user but failed to create the Firestore document, clean up
+    if (error.message && error.message.includes("auth/")) {
+      console.log("🔍 REGISTER FUNCTION: Auth error, no cleanup needed");
+    } else {
+      console.log("🔍 REGISTER FUNCTION: Non-auth error, may need to clean up auth user");
+    }
+    
+    throw new HttpsError("internal", `Registration failed: ${error.message}`, error.details);
   }
 });
 
@@ -564,36 +595,39 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
   }
 });
 
+exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (event) => {
+  const beforeData = event.data?.before.data();
+  const afterData = event.data?.after.data();
 
-exports.notifyOnNewSponsorship = onDocumentCreated("users/{userId}", async (event) => {
-  const snap = event.data;
-  if (!snap) {
-    console.log("🔔 SPONSORSHIP DEBUG: No snap data in event");
+  if (!beforeData || !afterData) {
+    console.log("🔔 SPONSORSHIP DEBUG: Missing before or after data");
     return;
   }
 
-  const newUser = snap.data();
-  const newUserId = event.params.userId; // Get the actual document ID
+  const newUserId = event.params.userId;
 
-  console.log(`🔔 SPONSORSHIP DEBUG: New user created - ID: ${newUserId}`);
-  console.log(`🔔 SPONSORSHIP DEBUG: User data:`, JSON.stringify({
-    firstName: newUser.firstName,
-    lastName: newUser.lastName,
-    referredBy: newUser.referredBy,
-    sponsor_id: newUser.sponsor_id
-  }, null, 2));
+  // Check if photoUrl was added for the first time
+  const beforePhotoUrl = beforeData.photoUrl;
+  const afterPhotoUrl = afterData.photoUrl;
 
-  if (!newUser.referredBy) {
+  if ((beforePhotoUrl && beforePhotoUrl !== "") || !afterPhotoUrl || afterPhotoUrl === "") {
+    console.log(`🔔 SPONSORSHIP DEBUG: photoUrl not added for the first time for user ${newUserId}. Skipping notification.`);
+    return;
+  }
+
+  console.log(`🔔 SPONSORSHIP DEBUG: photoUrl added for the first time for user ${newUserId}`);
+
+  if (!afterData.referredBy) {
     console.log(`🔔 SPONSORSHIP DEBUG: New user ${newUserId} has no referredBy field. Skipping sponsorship notification.`);
     return;
   }
 
   try {
-    console.log(`🔔 SPONSORSHIP DEBUG: Looking for sponsor with referral code: ${newUser.referredBy}`);
+    console.log(`🔔 SPONSORSHIP DEBUG: Looking for sponsor with referral code: ${afterData.referredBy}`);
 
-    const sponsorQuery = await db.collection("users").where("referralCode", "==", newUser.referredBy).limit(1).get();
+    const sponsorQuery = await db.collection("users").where("referralCode", "==", afterData.referredBy).limit(1).get();
     if (sponsorQuery.empty) {
-      console.log(`🔔 SPONSORSHIP DEBUG: Sponsor with referral code ${newUser.referredBy} not found.`);
+      console.log(`🔔 SPONSORSHIP DEBUG: Sponsor with referral code ${afterData.referredBy} not found.`);
       return;
     }
 
@@ -603,9 +637,9 @@ exports.notifyOnNewSponsorship = onDocumentCreated("users/{userId}", async (even
 
     console.log(`🔔 SPONSORSHIP DEBUG: Found sponsor - ID: ${sponsorId}, Name: ${sponsor.firstName} ${sponsor.lastName}`);
     console.log(`🔔 SPONSORSHIP DEBUG: Sponsor role: ${sponsor.role}`);
-    console.log(`🔔 SPONSORSHIP DEBUG: New user adminReferral: ${newUser.adminReferral}`);
+    console.log(`🔔 SPONSORSHIP DEBUG: New user adminReferral: ${afterData.adminReferral}`);
 
-    const newUserLocation = `${newUser.city || ""}, ${newUser.state || ""}${newUser.country ? ` - ${newUser.country}` : ""}`;
+    const newUserLocation = `${afterData.city || ""}, ${afterData.state || ""}${afterData.country ? ` - ${afterData.country}` : ""}`;
 
     // Get business opportunity name for admin notifications
     let bizOppName = "your business opportunity";
@@ -623,14 +657,14 @@ exports.notifyOnNewSponsorship = onDocumentCreated("users/{userId}", async (even
     let notificationContent;
 
     // Determine notification type based on referral method
-    if (newUser.adminReferral && sponsor.role === 'admin') {
+    if (afterData.adminReferral && sponsor.role === 'admin') {
       // Scenario 2: Admin sharing with existing business opportunity downline member (new= parameter)
       console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${newUser.firstName} ${newUser.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
-        imageUrl: newUser.photoUrl || null,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
+        imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_member",
@@ -643,8 +677,8 @@ exports.notifyOnNewSponsorship = onDocumentCreated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You sponsored ${newUser.firstName} ${newUser.lastName} from ${newUserLocation}.`,
-        imageUrl: newUser.photoUrl || null,
+        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}.`,
+        imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_member",
@@ -828,8 +862,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
 
     const notificationContent = {
       title: `🎉 New ${bizOpp || 'opportunity'} visit!`,
-      message: `${visitingUserName} has just used your referral link to check out the opportunity! You can CLICK HERE to contact them directly to introduce yourself and answer any questions they might have. Good Luck!`,
-      // --- MODIFICATION: Include the visitor's profile picture ---
+              message: `${visitingUserName} has just used your referral link to check out the opportunity! Contact them directly to introduce yourself and answer any questions they might have. View Profile`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,

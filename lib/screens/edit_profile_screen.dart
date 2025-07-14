@@ -67,8 +67,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     _bizOppRefUrlController = TextEditingController(text: widget.user.bizOppRefUrl);
     _bizOppRefUrlConfirmController = TextEditingController(text: widget.user.bizOppRefUrl);
 
-    _selectedCountry = widget.user.country;
-    _selectedState = widget.user.state;
+    _selectedCountry = widget.user.country?.isNotEmpty == true ? widget.user.country : null;
+    _selectedState = widget.user.state?.isNotEmpty == true ? widget.user.state : null;
     _isBizOppRepresentative = widget.user.bizOppRefUrl != null && widget.user.bizOppRefUrl!.isNotEmpty;
     
     _fetchBizOppName();
