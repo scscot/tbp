@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../services/firestore_service.dart';
 import '../models/user_model.dart';
+import '../config/app_constants.dart';
+import '../config/app_colors.dart';
 import 'message_thread_screen.dart';
 
 class MemberDetailScreen extends StatefulWidget {
@@ -208,10 +210,10 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
 
 
                       if (_user!.qualifiedDate != null)
-                        _buildInfoRow('Qualified',
+                        _buildQualifiedInfoRow('Qualified',
                             DateFormat.yMMMd().format(_user!.qualifiedDate!))
                         else
-                        _buildInfoRow('Qualified', 'Not Yet'),
+                        _buildQualifiedInfoRow('Qualified', 'Not Yet'),
 
                       if (_user!.bizJoinDate != null)
                         _buildInfoRow('Joined ${_user!.bizOpp}',
@@ -302,6 +304,153 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
           ),
           Expanded(child: Text(value)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildQualifiedInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              "$label:",
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Text(value),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _showEligibilityRequirementsModal,
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEligibilityRequirementsModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            constraints: const BoxConstraints(maxWidth: 350, maxHeight: 400),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'ELIGIBILITY REQUIREMENTS',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.warning,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      _buildMetricCard(
+                        icon: Icons.people,
+                        value: AppConstants.projectWideDirectSponsorMin.toString(),
+                        label: 'Direct Sponsors',
+                      ),
+                      const SizedBox(width: 16),
+                      _buildMetricCard(
+                        icon: Icons.groups,
+                        value: AppConstants.projectWideTotalTeamMin.toString(),
+                        label: 'Total Team Members',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Members who meet these requirements are automatically invited to join the ${_user?.bizOpp ?? 'business'} opportunity.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMetricCard({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: AppColors.warningGradient,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: AppColors.lightShadow,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 28, color: AppColors.textInverse),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textInverse,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.withOpacity(AppColors.textInverse, 0.9),
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
