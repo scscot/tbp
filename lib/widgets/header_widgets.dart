@@ -5,10 +5,12 @@ import 'package:ultimatefix/screens/visit_opportunity_screen.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../config/app_constants.dart';
+import '../config/app_colors.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/downline_team_screen.dart';
 import '../screens/share_screen.dart';
+import '../screens/how_it_works_screen.dart';
 import '../screens/message_center_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../services/auth_service.dart';
@@ -68,6 +70,10 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         navigator.push(MaterialPageRoute(
             builder: (_) => ShareScreen(appId: widget.appId)));
         break;
+      case 'how_it_works':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => HowItWorksScreen(appId: widget.appId)));
+        break;
       case 'messages':
         navigator.push(MaterialPageRoute(
             builder: (_) => MessageCenterScreen(appId: widget.appId)));
@@ -121,7 +127,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     }
 
     return AppBar(
-      backgroundColor: const Color(0xFFE6E6FA),
+      backgroundColor: AppColors.backgroundSecondary,
       automaticallyImplyLeading: false,
       leading: _shouldShowBackButton(context)
           ? const BackButton()
@@ -135,8 +141,12 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                     builder: (_) => DashboardScreen(appId: widget.appId)));
           }
         },
-        child: const Text('Team Build Pro',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        child: Text('Team Build Pro',
+            style: TextStyle(
+              fontSize: 22, 
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            )),
       ),
       centerTitle: true,
       actions: [
@@ -155,6 +165,8 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                     value: 'downline', child: Text('My Downline')),
                 const PopupMenuItem<String>(
                     value: 'share', child: Text('Grow My Team')),
+                const PopupMenuItem<String>(
+                    value: 'how_it_works', child: Text('How It Works')),
                 const PopupMenuItem<String>(
                     value: 'messages', child: Text('Messages Center')),
                 const PopupMenuItem<String>(

@@ -12,6 +12,7 @@ import '../models/admin_settings_model.dart';
 import '../services/downline_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
+import '../config/app_colors.dart';
 
 enum ViewMode { grid, list, analytics }
 
@@ -327,12 +328,8 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.indigo.shade600, Colors.indigo.shade400],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: const BoxDecoration(
+        gradient: AppColors.primaryGradient,
       ),
       child: const Text(
         'Downline Team',
@@ -340,7 +337,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
         style: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: AppColors.textInverse,
         ),
       ),
     );
@@ -357,7 +354,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               'Total Team',
               _analytics['totalMembers']?.toString() ?? '0',
               Icons.people,
-              Colors.blue,
+              AppColors.teamPrimary,
               onTap: () {
                 setState(() {
                   _filterBy = FilterBy.allMembers;
@@ -372,7 +369,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               'Direct Sponsors',
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
-              Colors.green,
+              AppColors.growthPrimary,
               onTap: () {
                 setState(() {
                   _filterBy = FilterBy.directSponsors;
@@ -387,7 +384,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               'New Members',
               _analytics['newMembers']?.toString() ?? '0',
               Icons.trending_up,
-              Colors.orange,
+              AppColors.opportunityPrimary,
               onTap: () {
                 setState(() {
                   _filterBy = FilterBy.newMembers;
@@ -409,16 +406,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.1),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          boxShadow: AppColors.lightShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -439,7 +429,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               title,
               style: const TextStyle(
                 fontSize: 11,
-                color: Colors.black,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
@@ -477,7 +467,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                 borderSide: BorderSide.none,
               ),
               filled: true,
-              fillColor: Colors.grey.shade100,
+              fillColor: AppColors.backgroundSecondary,
             ),
           ),
           const SizedBox(height: 12),
@@ -485,7 +475,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: AppColors.border),
               borderRadius: BorderRadius.circular(8),
             ),
             child: DropdownButton<FilterBy>(
@@ -502,7 +492,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                     displayName,
                     style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 );
@@ -592,9 +582,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                 '${member.firstName ?? ''} ${member.lastName ?? ''}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: AppColors.teamPrimary,
                   decoration: TextDecoration.underline,
-                  decorationColor: Colors.blue,
+                  decorationColor: AppColors.teamPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -603,7 +593,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               const SizedBox(height: 4),
               Text(
                 '${member.city ?? ''}, ${member.state ?? ''}',
-                style: const TextStyle(color: Colors.black, fontSize: 12),
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -625,7 +615,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
             _searchQuery.isNotEmpty
                 ? 'No members match your search.'
                 : 'No members found for this filter.',
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ),
@@ -660,7 +650,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                 ),
                 trailing: Text(
                   '${users.length} Members',
-                  style: const TextStyle(color: Colors.black, fontSize: 14),
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
                 ),
               );
             },
@@ -707,22 +697,22 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Colors.blue,
+                        color: AppColors.teamPrimary,
                         decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
+                        decorationColor: AppColors.teamPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       '${member.city ?? ''}, ${member.state ?? ''}, ${member.country ?? ''}',
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(color: AppColors.textSecondary),
                     ),
                     if (member.createdAt != null) ...[
                       const SizedBox(height: 4),
                       Text(
                         'Joined ${DateFormat('MMM d, yyyy').format(member.createdAt!)}',
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 12),
+                            const TextStyle(color: AppColors.textTertiary, fontSize: 12),
                       ),
                     ],
                   ],
@@ -733,13 +723,13 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade100,
+                    color: AppColors.successBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     'Qualified',
-                    style: TextStyle(
-                      color: Colors.green.shade700,
+                    style: const TextStyle(
+                      color: AppColors.success,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -788,22 +778,15 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       height: 200,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: AppColors.mediumShadow,
       ),
       child: const Center(
         child: Text(
           'Performance Chart\n(Chart implementation would go here)',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
+          style: TextStyle(color: AppColors.textSecondary),
         ),
       ),
     );
@@ -819,16 +802,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: AppColors.mediumShadow,
       ),
       child: Column(
         children: countryGroups.entries.map((entry) {
@@ -846,8 +822,8 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                   flex: 5,
                   child: LinearProgressIndicator(
                     value: entry.value / _filteredMembers.length,
-                    backgroundColor: Colors.grey.shade200,
-                    valueColor: AlwaysStoppedAnimation(Colors.indigo.shade400),
+                    backgroundColor: AppColors.backgroundTertiary,
+                    valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -864,16 +840,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: AppColors.mediumShadow,
       ),
       child: Column(
         children: _membersByLevel.entries.map((entry) {
@@ -885,14 +854,14 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.indigo.shade100,
+                    color: AppColors.primaryExtraLight,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(
                       'L${entry.key}',
-                      style: TextStyle(
-                        color: Colors.indigo.shade700,
+                      style: const TextStyle(
+                        color: AppColors.primaryDark,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -907,7 +876,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
                 ),
                 Text(
                   '${entry.value.length} members',
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ],
             ),
