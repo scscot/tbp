@@ -15,7 +15,7 @@ import '../widgets/header_widgets.dart';
 
 enum ViewMode { grid, list, analytics }
 
-enum FilterBy { allMembers, newMembers, qualifiedMembers, joinedMembers }
+enum FilterBy { allMembers, directSponsors, newMembers, qualifiedMembers, joinedMembers }
 
 enum SortBy { name, joinDate, level, location }
 
@@ -229,18 +229,21 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     }
 
     // Apply filtering based on filter type
-    if (_filterBy == FilterBy.newMembers) {
+    if (_filterBy == FilterBy.directSponsors) {
+      // Filter for direct sponsors (level 1 relative to current user)
+      filtered = filtered
+          .where((m) => (m.level - _levelOffset) == 1)
+          .toList();
+    } else if (_filterBy == FilterBy.newMembers) {
       final last24h = DateTime.now().subtract(const Duration(hours: 24));
       filtered = filtered
           .where((m) => m.createdAt != null && m.createdAt!.isAfter(last24h))
           .toList();
     } else if (_filterBy == FilterBy.qualifiedMembers) {
-      filtered =
-          filtered.where((m) => (m.directSponsorCount ?? 0) >= 3).toList();
+      filtered = filtered.where((m) => m.qualifiedDate != null).toList();
     } else if (_filterBy == FilterBy.joinedMembers) {
-      filtered = filtered
-          .where((m) => m.bizOppRefUrl != null && m.bizOppRefUrl!.isNotEmpty)
-          .toList();
+      filtered = filtered.where((m) => m.bizJoinDate != null).toList();
+
     }
 
     // Apply sorting (default descending by join date)
@@ -355,6 +358,12 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               _analytics['totalMembers']?.toString() ?? '0',
               Icons.people,
               Colors.blue,
+              onTap: () {
+                setState(() {
+                  _filterBy = FilterBy.allMembers;
+                });
+                _applyFiltersAndSort();
+              },
             ),
           ),
           const SizedBox(width: 8),
@@ -364,6 +373,12 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
               Colors.green,
+              onTap: () {
+                setState(() {
+                  _filterBy = FilterBy.directSponsors;
+                });
+                _applyFiltersAndSort();
+              },
             ),
           ),
           const SizedBox(width: 8),
@@ -373,6 +388,12 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
               _analytics['newMembers']?.toString() ?? '0',
               Icons.trending_up,
               Colors.orange,
+              onTap: () {
+                setState(() {
+                  _filterBy = FilterBy.newMembers;
+                });
+                _applyFiltersAndSort();
+              },
             ),
           ),
         ],
@@ -381,48 +402,52 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
   }
 
   Widget _buildAnalyticsCard(
-      String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: color,
+      String title, String value, IconData icon, Color color, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 11,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 18),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -502,6 +527,8 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     switch (filter) {
       case FilterBy.allMembers:
         return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
+      case FilterBy.directSponsors:
+        return 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
       case FilterBy.newMembers:
         return 'New Members (${_analytics['newMembers'] ?? 0})';
       case FilterBy.qualifiedMembers:
