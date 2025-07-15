@@ -245,33 +245,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  if (user.role == 'user')
-                    (user.directSponsorCount >=
-                                AppConstants.projectWideDirectSponsorMin &&
-                            user.totalTeamCount >=
-                                AppConstants.projectWideTotalTeamMin)
-                        ? buildButton(
-                            icon: Icons.monetization_on,
-                            label: user.bizOppRefUrl != null
-                                ? 'My Opportunity'
-                                : 'Join Opportunity',
-                            onPressed: () {
-                              if (user.bizOppRefUrl != null) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            MyBizScreen(appId: widget.appId)));
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => VisitOpportunityScreen(
-                                            appId: widget.appId)));
-                              }
-                            },
-                          )
-                        : Expanded(child: Container()),
+                  // First card slot - Opportunity card (conditional)
+                  (user.role == 'user' &&
+                          user.directSponsorCount >=
+                              AppConstants.projectWideDirectSponsorMin &&
+                          user.totalTeamCount >=
+                              AppConstants.projectWideTotalTeamMin)
+                      ? buildButton(
+                          icon: Icons.monetization_on,
+                          label: user.bizOppRefUrl != null
+                              ? 'My Opportunity'
+                              : 'Join Opportunity',
+                          onPressed: () {
+                            if (user.bizOppRefUrl != null) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          MyBizScreen(appId: widget.appId)));
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => VisitOpportunityScreen(
+                                          appId: widget.appId)));
+                            }
+                          },
+                        )
+                      : Expanded(child: Container()), // Empty space when not shown
+                  const SizedBox(width: 16),
+                  // Second card slot - Profile card (always shown)
                   buildButton(
                     icon: Icons.person,
                     label: 'My Profile',
@@ -282,8 +285,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(child: Container()),
                 ],
               ),
             ],
