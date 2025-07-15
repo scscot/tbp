@@ -62,6 +62,35 @@ class UserModel {
     return UserModel.fromMap(data..['uid'] = doc.id);
   }
 
+  static Future<UserModel> fromFirestoreWithBizOpp(DocumentSnapshot doc) async {
+    final data = doc.data() as Map<String, dynamic>;
+    data['uid'] = doc.id;
+    
+    // Fetch biz_opp from admin_settings if upline_admin exists
+    final uplineAdmin = data['upline_admin'] as String?;
+    if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+      try {
+        final adminSettingsDoc = await FirebaseFirestore.instance
+            .collection('admin_settings')
+            .doc(uplineAdmin)
+            .get();
+            
+        if (adminSettingsDoc.exists) {
+          final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+          final bizOpp = adminData?['biz_opp'] as String?;
+          if (bizOpp != null && bizOpp.isNotEmpty) {
+            data['biz_opp'] = bizOpp;
+          }
+        }
+      } catch (e) {
+        // If there's an error fetching admin settings, continue with existing data
+        print('Error fetching biz_opp from admin_settings: $e');
+      }
+    }
+    
+    return UserModel.fromMap(data);
+  }
+
   factory UserModel.fromMap(Map<String, dynamic> map) {
     DateTime? parseDate(dynamic dateValue) {
       if (dateValue == null) return null;

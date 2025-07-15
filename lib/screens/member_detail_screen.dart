@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'dart:developer' as developer;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:provider/provider.dart';
 import '../widgets/header_widgets.dart';
 import '../services/firestore_service.dart';
@@ -73,6 +74,28 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
         // Parse the member data
         if (memberDetails['member'] != null) {
           final memberData = Map<String, dynamic>.from(memberDetails['member']);
+          
+          // Fetch biz_opp from admin_settings if upline_admin exists
+          final uplineAdmin = memberData['upline_admin'] as String?;
+          if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+            try {
+              final adminSettingsDoc = await FirebaseFirestore.instance
+                  .collection('admin_settings')
+                  .doc(uplineAdmin)
+                  .get();
+                  
+              if (adminSettingsDoc.exists) {
+                final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+                final bizOpp = adminData?['biz_opp'] as String?;
+                if (bizOpp != null && bizOpp.isNotEmpty) {
+                  memberData['biz_opp'] = bizOpp;
+                }
+              }
+            } catch (e) {
+              _log('Error fetching biz_opp from admin_settings: $e');
+            }
+          }
+          
           setState(() {
             _user = UserModel.fromMap(memberData);
           });
@@ -186,11 +209,16 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
 
                       if (_user!.qualifiedDate != null)
                         _buildInfoRow('Qualified',
-                            DateFormat.yMMMd().format(_user!.qualifiedDate!)),
+                            DateFormat.yMMMd().format(_user!.qualifiedDate!))
+                        else
+                        _buildInfoRow('Qualified', 'Not Yet'),
 
                       if (_user!.bizJoinDate != null)
                         _buildInfoRow('Joined ${_user!.bizOpp}',
-                            DateFormat.yMMMd().format(_user!.bizJoinDate!)),
+                            DateFormat.yMMMd().format(_user!.bizJoinDate!))
+                      else
+                        _buildInfoRow('Joined ${_user!.bizOpp}',
+                            'Not Yet'),
 
 
                       if (_sponsorName != null)

@@ -169,39 +169,6 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
     }
   }
 
-  Widget _buildMetricCard({
-    required IconData icon,
-    required String value,
-    required String label,
-  }) {
-    return Expanded(
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 28, color: Colors.blue),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -312,94 +279,6 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Team Build Pro Feeder System Section
-                    const Divider(color: Colors.green, thickness: 2),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Team Build Pro Feeder System',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green),
-                    ),
-                    const SizedBox(height: 16),
-
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: Colors.green.withValues(alpha: 0.2)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.auto_awesome,
-                                  color: Colors.green, size: 24),
-                              const SizedBox(width: 8),
-                              const Expanded(
-                                child: Text(
-                                  'How It Works',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                const TextSpan(
-                                    text:
-                                        "When your downline members meet the minimum eligibility criteria, they are automatically invited to join your "),
-                                TextSpan(
-                                  text: 'business opportunity',
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const TextSpan(
-                                    text:
-                                        " team — with their growing Team Build Pro downlines ready to follow."),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Minimum Eligibility Requirements
-                    const Text(
-                      'Minimum Eligibility Requirements',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _buildMetricCard(
-                          icon: Icons.people,
-                          value: AppConstants.projectWideDirectSponsorMin
-                              .toString(),
-                          label: 'Direct Sponsors',
-                        ),
-                        const SizedBox(width: 16),
-                        _buildMetricCard(
-                          icon: Icons.groups,
-                          value:
-                              AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team Members',
-                        ),
-                      ],
                     ),
                     const SizedBox(height: 32),
 
