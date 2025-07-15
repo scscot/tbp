@@ -677,7 +677,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}.`,
+        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}.\nView Profile`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -715,8 +715,9 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
     const wasQualifiedBefore = (beforeData.directSponsorCount >= projectWideDirectSponsorMin) && (beforeData.totalTeamCount >= projectWideTotalTeamMin);
     const isQualifiedNow = (afterData.directSponsorCount >= projectWideDirectSponsorMin) && (afterData.totalTeamCount >= projectWideTotalTeamMin);
+    const isJoined = beforeData.bizJoinDate;
 
-    if (!wasQualifiedBefore && isQualifiedNow) {
+    if (!wasQualifiedBefore && isQualifiedNow && !isJoined) {
       if (afterData.role === 'admin') {
         console.log(`User ${event.params.userId} is an admin. Skipping qualification notification.`);
         await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
@@ -735,7 +736,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       const notificationContent = {
         title: "You're Qualified!",
-        message: `Congratulations, ${afterData.firstName}! You are now qualified to join ${bizName}.`,
+        message: `Congratulations, ${afterData.firstName}! You are now qualified to join ${bizName}.\nLearn More!`,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
@@ -862,7 +863,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
 
     const notificationContent = {
       title: `🎉 New ${bizOpp || 'opportunity'} visit!`,
-              message: `${visitingUserName} has just used your referral link to check out the opportunity! Contact them directly to introduce yourself and answer any questions they might have. View Profile`,
+      message: `${visitingUserName} has just used your referral link to check out the opportunity! Introduce yourself and answer any questions they might have.\nView Profile`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
