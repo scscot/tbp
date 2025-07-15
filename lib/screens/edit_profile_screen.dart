@@ -402,7 +402,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     isExpanded: true,
                     items: statesByCountry.keys
                         .map((country) => DropdownMenuItem(
-                            value: country, child: Text(country)))
+                          value: country,
+                          child: Text(
+                            country,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ))
                         .toList(),
                     onChanged: (newValue) {
                       setState(() {
@@ -427,8 +433,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         ? const Text('Select a country first')
                         : null,
                     items: statesForSelectedCountry
-                        .map((state) =>
-                            DropdownMenuItem(value: state, child: Text(state)))
+                        .map((state) => DropdownMenuItem(
+                          value: state,
+                          child: Text(
+                            state,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ))
                         .toList(),
                     onChanged: _selectedCountry == null
                         ? null

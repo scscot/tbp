@@ -302,9 +302,16 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                       value: _countryController.text.isEmpty
                           ? null
                           : _countryController.text,
+                      isExpanded: true,
                       items: statesByCountry.keys.map((country) {
                         return DropdownMenuItem(
-                            value: country, child: Text(country));
+                          value: country,
+                          child: Text(
+                            country,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        );
                       }).toList(),
                       onChanged: (value) {
                         if (value != null) {
@@ -327,9 +334,16 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                       value: _stateController.text.isEmpty
                           ? null
                           : _stateController.text,
+                      isExpanded: true,
                       items: _availableStates.map((state) {
                         return DropdownMenuItem(
-                            value: state, child: Text(state));
+                          value: state,
+                          child: Text(
+                            state,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        );
                       }).toList(),
                       onChanged: (value) {
                         if (value != null) {
