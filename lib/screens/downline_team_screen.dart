@@ -512,7 +512,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
 
   String _getFilterDisplayName(FilterBy filter) {
     // Use the directly fetched business opportunity name
-    debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
+    // debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
     
     switch (filter) {
       case FilterBy.allMembers:
@@ -623,40 +623,58 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     }
 
     return SingleChildScrollView(
-      child: ExpansionPanelList(
-        elevation: 0,
-        expandedHeaderPadding: EdgeInsets.zero,
-        expansionCallback: (panelIndex, isExpanded) {
-          final level = _membersByLevel.keys.elementAt(panelIndex);
-          setState(() {
-            if (_expandedPanels.contains(level)) {
-              _expandedPanels.remove(level);
-            } else {
-              _expandedPanels.add(level);
-            }
-          });
-        },
+      child: Column(
         children: _membersByLevel.entries.map((entry) {
           final level = entry.key;
           final users = entry.value;
-          return ExpansionPanel(
-            isExpanded: _expandedPanels.contains(level),
-            headerBuilder: (context, isExpanded) {
-              return ListTile(
-                title: Text(
-                  'Level $level',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+          final isExpanded = _expandedPanels.contains(level);
+          
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (_expandedPanels.contains(level)) {
+                        _expandedPanels.remove(level);
+                      } else {
+                        _expandedPanels.add(level);
+                      }
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Level $level',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ),
+                        Text(
+                          '${users.length} Members',
+                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          isExpanded ? Icons.expand_less : Icons.expand_more,
+                          color: AppColors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                trailing: Text(
-                  '${users.length} Members',
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                ),
-              );
-            },
-            body: Column(
-              children:
-                  users.map((user) => _buildMemberListCard(user)).toList(),
+                if (isExpanded)
+                  Column(
+                    children: users.map((user) => _buildMemberListCard(user)).toList(),
+                  ),
+              ],
             ),
           );
         }).toList(),
