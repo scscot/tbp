@@ -127,11 +127,17 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     }
 
     return AppBar(
-      backgroundColor: AppColors.backgroundSecondary,
+      backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
+      ),
       leading: _shouldShowBackButton(context)
-          ? const BackButton()
+          ? const BackButton(color: Colors.white)
           : const SizedBox(),
+      iconTheme: const IconThemeData(color: Colors.white),
       title: GestureDetector(
         onTap: () {
           if (isProfileComplete) {
@@ -142,10 +148,10 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           }
         },
         child: Text('Team Build Pro',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 22, 
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: Colors.white,
             )),
       ),
       centerTitle: true,

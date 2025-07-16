@@ -9,6 +9,7 @@ import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../widgets/header_widgets.dart';
+import '../config/app_colors.dart';
 import 'welcome_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
@@ -238,7 +239,32 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         ),
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null),
-                    const SizedBox(height: 12),
+                    
+                    // Create Your Login section with privacy assurance
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Create Your Login',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '🔒 Your email will never be shared with anyone',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.black,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
                     TextFormField(
                         controller: _emailController,
                         decoration: const InputDecoration(
