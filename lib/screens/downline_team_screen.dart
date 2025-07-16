@@ -351,21 +351,6 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
         children: [
           Expanded(
             child: _buildAnalyticsCard(
-              'Total Team',
-              _analytics['totalMembers']?.toString() ?? '0',
-              Icons.people,
-              AppColors.teamPrimary,
-              onTap: () {
-                setState(() {
-                  _filterBy = FilterBy.allMembers;
-                });
-                _applyFiltersAndSort();
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _buildAnalyticsCard(
               'Direct Sponsors',
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
@@ -379,6 +364,22 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
             ),
           ),
           const SizedBox(width: 8),
+          Expanded(
+            child: _buildAnalyticsCard(
+              'Total Team',
+              _analytics['totalMembers']?.toString() ?? '0',
+              Icons.people,
+              AppColors.teamPrimary,
+              onTap: () {
+                setState(() {
+                  _filterBy = FilterBy.allMembers;
+                });
+                _applyFiltersAndSort();
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+          
           Expanded(
             child: _buildAnalyticsCard(
               'New Members',

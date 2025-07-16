@@ -250,14 +250,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             backgroundColor: AppColors.borderLight,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Progress to eligibility: ${user.directSponsorCount}/${AppConstants.projectWideDirectSponsorMin} direct sponsors',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
-          ),
+          
         ],
       ),
     );
