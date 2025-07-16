@@ -123,6 +123,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
     throw new HttpsError("invalid-argument", "Missing required user information.");
   }
 
+
   let sponsorId = null;
   let sponsorUplineRefs = [];
   let level = 1;
@@ -1054,14 +1055,6 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       const newMember = doc.data();
       const uplineRefs = newMember.upline_refs || [];
       
-      // CRITICAL: Skip admin users - they should not trigger daily team growth notifications
-      if (newMember.role === 'admin') {
-        console.log(`🔔 DAILY NOTIFICATIONS: Skipping admin user ${newMember.firstName} ${newMember.lastName} (${doc.id}) - admins don't trigger team notifications`);
-        return;
-      }
-      
-      console.log(`🔔 DAILY NOTIFICATIONS: Processing regular user ${newMember.firstName} ${newMember.lastName} (${doc.id}) with ${uplineRefs.length} upline members`);
-      
       // For each person in this new member's upline, increment their notification count
       uplineRefs.forEach(uplineUserId => {
         if (!notificationCounts.has(uplineUserId)) {
@@ -1076,8 +1069,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
           photoUrl: newMember.photoUrl,
           city: newMember.city,
           state: newMember.state,
-          country: newMember.country,
-          role: newMember.role // Include role for debugging
+          country: newMember.country
         });
       });
     });
@@ -1094,9 +1086,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     const userPromises = userIds.map(userId => db.collection("users").doc(userId).get());
     const userDocs = await Promise.allSettled(userPromises);
     
-    // Step 4: Filter users by timezone and check for duplicate notifications
+    // Step 4: Filter users by timezone (only notify those where it's currently 3 AM)
     const usersToNotify = [];
-    const todayDateString = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     for (let i = 0; i < userDocs.length; i++) {
       const result = userDocs[i];
@@ -1118,16 +1109,6 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         // Check if it's 3 AM in their timezone
         if (userLocalHour === 3) {
-          // CRITICAL: Check if user already received notification today to prevent duplicates
-          const lastNotificationDate = userData.lastDailyNotificationDate;
-          
-          if (lastNotificationDate === todayDateString) {
-            console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} already received notification today (${todayDateString}). Skipping.`);
-            continue;
-          }
-          
-          console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} eligible for notification. Last notification: ${lastNotificationDate || 'never'}, Today: ${todayDateString}`);
-          
           usersToNotify.push({
             userId: userId,
             userData: userData,
@@ -1148,7 +1129,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       return;
     }
     
-    // Step 5: Send notifications to eligible users and record the date to prevent duplicates
+    // Step 5: Send notifications to eligible users
     const notificationPromises = usersToNotify.map(async ({ userId, userData, newMemberCount, newMembers }) => {
       try {
         console.log(`🔔 DAILY NOTIFICATIONS: Creating notification for ${userData.firstName} ${userData.lastName} (${userId}) - ${newMemberCount} new members`);
@@ -1160,25 +1141,12 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
           read: false,
           type: "new_team_members",
           route: "/downline_team",
-          route_params: JSON.stringify({ filter: "newMembers" }),
+          route_params: JSON.stringify({ filter: "last24" }),
         };
         
-        // Use a batch to atomically create notification and update the tracking date
-        const batch = db.batch();
+        await db.collection("users").doc(userId).collection("notifications").add(notificationContent);
         
-        // Add the notification
-        const notificationRef = db.collection("users").doc(userId).collection("notifications").doc();
-        batch.set(notificationRef, notificationContent);
-        
-        // Update user document with today's date to prevent duplicate notifications
-        const userRef = db.collection("users").doc(userId);
-        batch.update(userRef, { 
-          lastDailyNotificationDate: todayDateString 
-        });
-        
-        await batch.commit();
-        
-        console.log(`✅ DAILY NOTIFICATIONS: Successfully sent notification to ${userData.firstName} ${userData.lastName} and recorded date ${todayDateString}`);
+        console.log(`✅ DAILY NOTIFICATIONS: Successfully sent notification to ${userData.firstName} ${userData.lastName}`);
         return { success: true, userId, count: newMemberCount };
         
       } catch (error) {
