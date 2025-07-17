@@ -20,10 +20,12 @@ enum SortBy { name, joinDate, level, location }
 
 class DownlineTeamScreen extends StatefulWidget {
   final String appId;
+  final String? initialFilter;
 
   const DownlineTeamScreen({
     super.key,
     required this.appId,
+    this.initialFilter,
   });
 
   @override
@@ -58,6 +60,27 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    
+    // Set initial filter based on notification parameter
+    if (widget.initialFilter != null) {
+      switch (widget.initialFilter) {
+        case 'newMembers':
+          _filterBy = FilterBy.newMembers;
+          break;
+        case 'directSponsors':
+          _filterBy = FilterBy.directSponsors;
+          break;
+        case 'qualifiedMembers':
+          _filterBy = FilterBy.qualifiedMembers;
+          break;
+        case 'joinedMembers':
+          _filterBy = FilterBy.joinedMembers;
+          break;
+        default:
+          _filterBy = FilterBy.allMembers;
+      }
+    }
+    
     _initializeData();
     _searchController.addListener(_onSearchChanged);
   }

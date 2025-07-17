@@ -580,7 +580,7 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
 
     const notificationContent = {
       title: `New Message from ${senderName}`,
-      message: `${messageText}\nREPLY`,
+      message: `${messageText} CLICK HERE to REPLY.`,
       imageUrl: senderPhotoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -669,7 +669,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -683,7 +683,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}.\nView Profile`,
+        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. VIEW PROFILE`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -742,7 +742,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       const notificationContent = {
         title: "You're Qualified!",
-        message: `Congratulations, ${afterData.firstName}! You are now qualified to join ${bizName}.\nLearn More!`,
+        message: `Congratulations, ${afterData.firstName}! You are now qualified to join ${bizName}. LEARN MORE!`,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
@@ -869,7 +869,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
 
     const notificationContent = {
       title: `🎉 New ${bizOpp || 'opportunity'} visit!`,
-      message: `${visitingUserName} has just used your referral link to check out the opportunity! Introduce yourself and answer any questions they might have.\nView Profile`,
+      message: `${visitingUserName} has just used your referral link to check out the opportunity! Introduce yourself and answer any questions they might have. VIEW PROFILE`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -1195,7 +1195,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. CLICK HERE to view and welcome your new team members!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. VIEW PROFILES!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_team_members",
