@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../data/states_by_country.dart';
@@ -184,6 +185,25 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
         'city': _cityController.text.trim(),
         'photoUrl': imageUrl,
       });
+
+      // Add timezone recalculation when location data is updated
+      final country = _countryController.text.trim();
+      final state = _stateController.text.trim();
+      if (country.isNotEmpty && state.isNotEmpty) {
+        // Call backend function to recalculate timezone based on new location
+        try {
+          final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+          await callable.call({
+            'userId': user.uid,
+            'country': country,
+            'state': state,
+          });
+          debugPrint('✅ ADMIN PROFILE UPDATE: Timezone recalculated for country: $country, state: $state');
+        } catch (e) {
+          debugPrint('⚠️ ADMIN PROFILE UPDATE: Failed to recalculate timezone: $e');
+          // Continue with profile update even if timezone update fails
+        }
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

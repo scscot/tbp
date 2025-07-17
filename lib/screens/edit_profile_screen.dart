@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
@@ -253,6 +254,23 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           'photoUrl': photoUrl,
           'biz_opp_ref_url': _isBizOppRepresentative ? _bizOppRefUrlController.text.trim() : null,
         };
+
+        // Add timezone recalculation when location data is updated
+        if (_selectedCountry != null && _selectedState != null) {
+          // Call backend function to recalculate timezone based on new location
+          try {
+            final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+            await callable.call({
+              'userId': widget.user.uid,
+              'country': _selectedCountry,
+              'state': _selectedState,
+            });
+            debugPrint('✅ PROFILE UPDATE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
+          } catch (e) {
+            debugPrint('⚠️ PROFILE UPDATE: Failed to recalculate timezone: $e');
+            // Continue with profile update even if timezone update fails
+          }
+        }
 
         // Add business opportunity fields if user is a representative
         if (_isBizOppRepresentative) {

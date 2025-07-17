@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
@@ -118,6 +119,23 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         };
 
         await _firestoreService.updateUser(widget.user.uid, updatedData);
+
+        // Add timezone recalculation when location data is updated
+        if (_selectedCountry != null && _selectedState != null) {
+          // Call backend function to recalculate timezone based on new location
+          try {
+            final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+            await callable.call({
+              'userId': widget.user.uid,
+              'country': _selectedCountry,
+              'state': _selectedState,
+            });
+            debugPrint('✅ UPDATE PROFILE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
+          } catch (e) {
+            debugPrint('⚠️ UPDATE PROFILE: Failed to recalculate timezone: $e');
+            // Continue with profile update even if timezone update fails
+          }
+        }
 
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(

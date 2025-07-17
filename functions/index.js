@@ -994,13 +994,53 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
   }
 });
 
+exports.updateUserTimezone = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const { userId, country, state } = request.data;
+  
+  if (!userId || !country) {
+    throw new HttpsError("invalid-argument", "User ID and country are required.");
+  }
+
+  try {
+    console.log(`🌍 TIMEZONE UPDATE: Updating timezone for user ${userId} - Country: ${country}, State: ${state || 'N/A'}`);
+
+    // Calculate timezone using the same logic as registration
+    const userTimezone = getTimezoneFromLocation(country, state);
+    console.log(`🌍 TIMEZONE UPDATE: Calculated timezone: ${userTimezone}`);
+
+    // Update user document with new timezone
+    await db.collection("users").doc(userId).update({
+      timezone: userTimezone
+    });
+
+    console.log(`✅ TIMEZONE UPDATE: Successfully updated timezone for user ${userId} to ${userTimezone}`);
+
+    return { 
+      success: true, 
+      timezone: userTimezone,
+      message: `Timezone updated to ${userTimezone} based on ${country}${state ? `, ${state}` : ''}` 
+    };
+
+  } catch (error) {
+    console.error(`❌ TIMEZONE UPDATE: Error updating timezone for user ${userId}:`, error);
+    if (error instanceof HttpsError) {
+      throw error;
+    }
+    throw new HttpsError("internal", "An unexpected error occurred while updating timezone.", error.message);
+  }
+});
+
 // ============================================================================
 // DAILY TEAM GROWTH NOTIFICATIONS
 // ============================================================================
 
 /**
  * Scheduled function that runs every hour to send daily team growth notifications
- * at 10 AM local time to users who had new team members join the previous day.
+ * at 12 noon local time to users who had new team members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1116,8 +1156,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
         
-        // Check if it's 10 AM in their timezone
-        if (userLocalHour === 10) {
+        // Check if it's 12 noon in their timezone
+        if (userLocalHour === 12) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
           
@@ -1141,10 +1181,10 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       }
     }
     
-    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 10 AM timezone and will receive notifications`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 12 noon timezone and will receive notifications`);
     
     if (usersToNotify.length === 0) {
-      console.log("🔔 DAILY NOTIFICATIONS: No users in 10 AM timezone to notify at this time");
+      console.log("🔔 DAILY NOTIFICATIONS: No users in 12 noon timezone to notify at this time");
       return;
     }
     
