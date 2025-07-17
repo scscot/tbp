@@ -514,7 +514,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         _buildActionCard(
-          icon: Icons.groups,
+          icon: Icons.logout,
           title: 'Log Out',
           subtitle: 'Log out of your account',
           color: AppColors.teamPrimary,
