@@ -32,6 +32,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     _loadNotifications();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh notifications when returning to this screen
+    _loadNotifications();
+  }
+
   void _loadNotifications() {
     final authUser = FirebaseAuth.instance.currentUser;
     if (authUser != null) {
@@ -53,11 +60,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           .collection('notifications')
           .orderBy('createdAt', descending: true)
           .get();
+      // Restore the original bulk read marking to ensure purple bells show for unread notifications
       for (final doc in snapshot.docs) {
-        // --- FIX: Removed unnecessary type check ---
         if ((doc.data() as Map).containsKey('read') &&
             (doc.data() as Map)['read'] == false) {
-          doc.reference.update({'read': true});
+          // Don't auto-mark as read here - let individual taps handle it
+          // This preserves the original purple bell functionality
         }
       }
       return snapshot.docs;
@@ -85,6 +93,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       }
     } catch (e) {
       debugPrint("Error deleting notification: $e");
+    }
+  }
+
+  // New method to mark individual notification as read when tapped
+  Future<void> _markNotificationAsRead(String docId) async {
+    final authUser = FirebaseAuth.instance.currentUser;
+    if (authUser == null) return;
+    
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(authUser.uid)
+          .collection('notifications')
+          .doc(docId)
+          .update({'read': true});
+    } catch (e) {
+      debugPrint('Error marking notification as read: $e');
     }
   }
 
@@ -152,7 +177,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         ? DateFormat.yMMMMd().add_jm().format(timestamp)
                         : 'N/A';
 
-                    // --- FIX: This variable is now used below ---
+                    // Restore original logic for determining read status
                     final isRead =
                         data.containsKey('read') && data['read'] == true;
 
@@ -203,7 +228,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               const Icon(Icons.delete, color: Colors.redAccent),
                           onPressed: () => _deleteNotification(doc.id),
                         ),
-                        onTap: () {
+                        onTap: () async {
+                          // Mark notification as read when tapped
+                          await _markNotificationAsRead(doc.id);
+                          
                           final route = data['route'] as String?;
                           if (route != null) {
                             try {
