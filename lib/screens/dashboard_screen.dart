@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:ultimatefix/screens/login_screen_old.dart';
 import 'visit_opportunity_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
@@ -16,6 +15,9 @@ import 'profile_screen.dart';
 import 'share_screen.dart';
 import 'how_it_works_screen.dart';
 import 'package:flutter/foundation.dart';
+import '../services/auth_service.dart';
+import '../widgets/restart_widget.dart';
+import '../main.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String appId;
@@ -528,12 +530,21 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'Log Out',
           subtitle: 'Log out of your account',
           color: AppColors.teamPrimary,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => LoginScreen(appId: widget.appId),
-            ),
-          ),
+          onTap: () async {
+            final authService = context.read<AuthService>();
+            final navigator = Navigator.of(context);
+
+            if (navigator.canPop()) {
+              navigator.popUntil((route) => route.isFirst);
+            }
+
+            await authService.signOut();
+
+            final rootNavigatorContext = navigatorKey.currentContext;
+            if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
+              RestartWidget.restartApp(rootNavigatorContext);
+            }
+          },
         ),
         
       ],
