@@ -62,6 +62,10 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         navigator.push(MaterialPageRoute(
             builder: (_) => DashboardScreen(appId: widget.appId)));
         break;
+      case 'how_it_works':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => HowItWorksScreen(appId: widget.appId)));
+        break;
       case 'downline':
         navigator.push(MaterialPageRoute(
             builder: (_) => DownlineTeamScreen(appId: widget.appId)));
@@ -69,10 +73,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       case 'share':
         navigator.push(MaterialPageRoute(
             builder: (_) => ShareScreen(appId: widget.appId)));
-        break;
-      case 'how_it_works':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => HowItWorksScreen(appId: widget.appId)));
         break;
       case 'messages':
         navigator.push(MaterialPageRoute(
