@@ -6,9 +6,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import '../models/user_model.dart';
-import '../models/admin_settings_model.dart';
 import '../services/downline_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
@@ -199,17 +197,28 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       (m.level - _levelOffset) == 1
     ).length;
     
-    // Use backend counts for accurate analytics
+    // Calculate new members count using same logic as frontend filtering
+    final now = DateTime.now();
+    final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
+    final newMembersCount = _allMembers.where((m) => 
+      m.createdAt != null && 
+      m.createdAt!.isAfter(sinceYesterday) &&
+      m.photoUrl != null
+    ).length;
+    
+    // Use backend counts for most analytics, but frontend calculation for newMembers
     _analytics = {
       'totalMembers': counts['all'] ?? 0,
       'directSponsors': directSponsorsCount, // Calculate from actual data
-      'newMembers': counts['last24'] ?? 0,
+      'newMembers': newMembersCount, // Use frontend calculation to match filtering logic
       'qualified': counts['newQualified'] ?? 0,
       'withOpportunity': counts['joinedOpportunity'] ?? 0,
     };
     
     debugPrint('🔍 ANALYTICS DEBUG: Backend counts: $counts');
     debugPrint('🔍 ANALYTICS DEBUG: Direct sponsors calculated: $directSponsorsCount');
+    debugPrint('🔍 ANALYTICS DEBUG: New members calculated (frontend): $newMembersCount');
+    debugPrint('🔍 ANALYTICS DEBUG: Backend new members (sinceYesterday): ${counts['sinceYesterday'] ?? 0}');
     debugPrint('🔍 ANALYTICS DEBUG: All members count: ${_allMembers.length}');
     debugPrint('🔍 ANALYTICS DEBUG: Final analytics: $_analytics');
   }
@@ -236,9 +245,11 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
           .where((m) => (m.level - _levelOffset) == 1)
           .toList();
     } else if (_filterBy == FilterBy.newMembers) {
-      final last24h = DateTime.now().subtract(const Duration(hours: 24));
+      final now = DateTime.now();
+      final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
       filtered = filtered
-          .where((m) => m.createdAt != null && m.createdAt!.isAfter(last24h))
+          .where((m) => m.createdAt != null && m.createdAt!.isAfter(sinceYesterday) &&
+              m.photoUrl != null)
           .toList();
     } else if (_filterBy == FilterBy.qualifiedMembers) {
       filtered = filtered.where((m) => m.qualifiedDate != null).toList();

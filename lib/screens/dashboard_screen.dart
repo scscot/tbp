@@ -410,6 +410,18 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         _buildActionCard(
+          icon: Icons.help_outline,
+          title: 'How It Works',
+          subtitle: 'Learn about the Team Build Pro system',
+          color: AppColors.teamAccent,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HowItWorksScreen(appId: widget.appId),
+            ),
+          ),
+        ),
+        _buildActionCard(
           icon: Icons.groups,
           title: 'My Downline',
           subtitle: 'View and manage your team members',
@@ -430,18 +442,6 @@ class _DashboardScreenState extends State<DashboardScreen>
             context,
             MaterialPageRoute(
               builder: (_) => ShareScreen(appId: widget.appId),
-            ),
-          ),
-        ),
-        _buildActionCard(
-          icon: Icons.help_outline,
-          title: 'How It Works',
-          subtitle: 'Learn about the Team Build Pro system',
-          color: AppColors.teamAccent,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => HowItWorksScreen(appId: widget.appId),
             ),
           ),
         ),

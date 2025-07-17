@@ -1000,7 +1000,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 
 /**
  * Scheduled function that runs every hour to send daily team growth notifications
- * at 3 AM local time to users who had new team members join the previous day.
+ * at 10 AM local time to users who had new team members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1116,8 +1116,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
         
-        // Check if it's 3 AM in their timezone
-        if (userLocalHour === 3) {
+        // Check if it's 10 AM in their timezone
+        if (userLocalHour === 10) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
           
@@ -1141,10 +1141,10 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       }
     }
     
-    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 3 AM timezone and will receive notifications`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 10 AM timezone and will receive notifications`);
     
     if (usersToNotify.length === 0) {
-      console.log("🔔 DAILY NOTIFICATIONS: No users in 3 AM timezone to notify at this time");
+      console.log("🔔 DAILY NOTIFICATIONS: No users in 10 AM timezone to notify at this time");
       return;
     }
     
