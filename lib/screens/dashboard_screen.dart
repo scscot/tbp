@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:ultimatefix/screens/login_screen_old.dart';
 import 'visit_opportunity_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
@@ -512,6 +513,19 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
+        _buildActionCard(
+          icon: Icons.groups,
+          title: 'Log Out',
+          subtitle: 'Log out of your account',
+          color: AppColors.teamPrimary,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => LoginScreen(appId: widget.appId),
+            ),
+          ),
+        ),
+        
       ],
     );
   }
