@@ -168,11 +168,11 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                 const PopupMenuItem<String>(
                     value: 'dashboard', child: Text('Dashboard')),
                 const PopupMenuItem<String>(
+                    value: 'how_it_works', child: Text('How It Works')),
+                const PopupMenuItem<String>(
                     value: 'downline', child: Text('My Downline')),
                 const PopupMenuItem<String>(
                     value: 'share', child: Text('Grow My Team')),
-                const PopupMenuItem<String>(
-                    value: 'how_it_works', child: Text('How It Works')),
                 const PopupMenuItem<String>(
                     value: 'messages', child: Text('Messages Center')),
                 const PopupMenuItem<String>(
