@@ -6,7 +6,6 @@ import 'config/app_constants.dart';
 import 'firebase_options.dart';
 import 'models/user_model.dart';
 import 'models/admin_settings_model.dart';
-import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/admin_edit_profile_screen.dart';

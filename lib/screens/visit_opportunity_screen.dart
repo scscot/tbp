@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
-import '../models/admin_settings_model.dart';
 import 'join_opportunity_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
-import '../config/app_constants.dart';
 import 'profile_screen.dart';
 
 class AdminEditProfileScreen1 extends StatefulWidget {
