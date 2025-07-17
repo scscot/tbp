@@ -52,80 +52,41 @@ class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
     }
 
     try {
-      // Fetch biz_opp from admin_settings (following member_detail_screen pattern)
-      final adminSettingsDoc = await FirebaseFirestore.instance
-          .collection('admin_settings')
-          .doc(adminUid)
-          .get();
-      
-      String? retrievedBizOpp;
-      if (adminSettingsDoc.exists) {
-        final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
-        retrievedBizOpp = adminData?['biz_opp'] as String?;
-      }
+      final results = await Future.wait([
+        FirebaseFirestore.instance
+            .collection('admin_settings')
+            .doc(adminUid)
+            .get(),
+        FirebaseFirestore.instance.collection('users').doc(adminUid).get(),
+      ]);
 
-      // Fetch bizOppRefUrl by traversing upline_refs
-      String? retrievedBizOppRefUrl;
-      if (user.uplineRefs != null && user.uplineRefs!.isNotEmpty) {
-        retrievedBizOppRefUrl = await _findBizOppRefUrlInUpline(user.uplineRefs!);
-      }
-
-      // Fetch admin user data for sponsor name
-      final adminUserDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(adminUid)
-          .get();
+      final adminSettingsDoc =
+          results[0] as DocumentSnapshot<Map<String, dynamic>>;
+      final adminUserDoc = results[1] as DocumentSnapshot<Map<String, dynamic>>;
 
       if (!mounted) return;
 
-      String? retrievedSponsorName;
-      if (adminUserDoc.exists) {
+      if (adminSettingsDoc.exists && adminUserDoc.exists) {
+        final adminSettingsData =
+            AdminSettingsModel.fromFirestore(adminSettingsDoc);
         final adminUserData = UserModel.fromFirestore(adminUserDoc);
-        retrievedSponsorName =
-            '${adminUserData.firstName ?? ''} ${adminUserData.lastName ?? ''}'
-                .trim();
+
+        setState(() {
+          bizOpp = adminSettingsData.bizOpp;
+          bizOppRefUrl = adminSettingsData.bizOppRefUrl;
+          sponsorName =
+              '${adminUserData.firstName ?? ''} ${adminUserData.lastName ?? ''}'
+                  .trim();
+          hasVisitedOpp = user.bizVisitDate != null;
+          bizJoinDate = user.bizVisitDate;
+          loading = false;
+        });
+      } else {
+        setState(() => loading = false);
       }
-
-      setState(() {
-        bizOpp = retrievedBizOpp;
-        bizOppRefUrl = retrievedBizOppRefUrl;
-        sponsorName = retrievedSponsorName;
-        hasVisitedOpp = user.bizVisitDate != null;
-        bizJoinDate = user.bizVisitDate;
-        loading = false;
-      });
-
     } catch (e) {
       debugPrint('Error loading opportunity data: $e');
       if (mounted) setState(() => loading = false);
-    }
-  }
-
-  Future<String?> _findBizOppRefUrlInUpline(List<String> uplineRefs) async {
-    try {
-      // Traverse upline_refs to find first user with non-null biz_opp_ref_url
-      for (String uplineUid in uplineRefs) {
-        final uplineUserDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uplineUid)
-            .get();
-        
-        if (uplineUserDoc.exists) {
-          final uplineUserData = uplineUserDoc.data() as Map<String, dynamic>?;
-          final bizOppRefUrl = uplineUserData?['biz_opp_ref_url'] as String?;
-          
-          if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
-            debugPrint('Found biz_opp_ref_url in upline user: $uplineUid');
-            return bizOppRefUrl;
-          }
-        }
-      }
-      
-      debugPrint('No biz_opp_ref_url found in upline chain');
-      return null;
-    } catch (e) {
-      debugPrint('Error traversing upline refs: $e');
-      return null;
     }
   }
 
@@ -202,7 +163,7 @@ class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
           builder: (_) => AlertDialog(
             title: const Text('Visit Required First'),
             content: Text(
-                "Before updating your profile, you must first use the 'Join Now' button on this page to visit '${bizOpp ?? 'the opportunity'}' and complete your registration."),
+                "Before updating your profile, you must first use the ‘Join Now’ button on this page to visit '${bizOpp ?? 'the opportunity'}' and complete your registration."),
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -242,16 +203,13 @@ class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
                       children: [
                         Icon(Icons.celebration,
                             color: Colors.amber.shade700, size: 22),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            'Congratulations, ${user.firstName}!',
-                            style: const TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Congratulations, ${user.firstName}!',
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Icon(Icons.celebration,
                             color: Colors.amber.shade700, size: 22),
                       ],
