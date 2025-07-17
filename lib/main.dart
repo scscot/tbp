@@ -21,6 +21,9 @@ import 'services/notification_service.dart';
 // --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// --- RouteObserver for tracking navigation events ---
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 const String appId = 'L8n1tJqHqYd3F5j6';
 
 void main() async {
@@ -94,6 +97,8 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Inter',
           ),
           debugShowCheckedModeBanner: false,
+          // --- Add RouteObserver to track navigation events ---
+          navigatorObservers: [routeObserver],
           home: const AuthWrapper(),
         ),
       ),

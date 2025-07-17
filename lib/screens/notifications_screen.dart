@@ -8,6 +8,7 @@ import 'dart:convert';
 import '../widgets/header_widgets.dart';
 import '../services/notification_service.dart';
 import '../services/fcm_service.dart';
+import '../main.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final String? initialAuthToken;
@@ -23,7 +24,7 @@ class NotificationsScreen extends StatefulWidget {
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationsScreenState extends State<NotificationsScreen> with RouteAware {
   Future<List<QueryDocumentSnapshot>>? _notificationsFuture;
 
   @override
@@ -35,8 +36,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Refresh notifications when returning to this screen
+    // Subscribe to route changes
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    // Called when returning to this screen via back arrow
+    // This is more precise than didChangeDependencies as it only triggers on back navigation
+    debugPrint('📱 NotificationsScreen: Returned via back arrow, reloading notifications');
     _loadNotifications();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   void _loadNotifications() {
@@ -60,15 +78,28 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           .collection('notifications')
           .orderBy('createdAt', descending: true)
           .get();
-      // Restore the original bulk read marking to ensure purple bells show for unread notifications
+      
+      // Separate unread and read notifications
+      final List<QueryDocumentSnapshot> unreadNotifications = [];
+      final List<QueryDocumentSnapshot> readNotifications = [];
+      
       for (final doc in snapshot.docs) {
-        if ((doc.data() as Map).containsKey('read') &&
-            (doc.data() as Map)['read'] == false) {
-          // Don't auto-mark as read here - let individual taps handle it
-          // This preserves the original purple bell functionality
+        final data = doc.data();
+        final isRead = data.containsKey('read') && data['read'] == true;
+        
+        if (isRead) {
+          readNotifications.add(doc);
+        } else {
+          unreadNotifications.add(doc);
         }
       }
-      return snapshot.docs;
+      
+      // Combine lists: unread first (chronologically sorted), then read (chronologically sorted)
+      final List<QueryDocumentSnapshot> sortedNotifications = [];
+      sortedNotifications.addAll(unreadNotifications);
+      sortedNotifications.addAll(readNotifications);
+      
+      return sortedNotifications;
     } catch (e) {
       debugPrint('Error fetching notifications for UID $uid: $e');
       return [];
