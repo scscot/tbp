@@ -216,7 +216,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your unique link and start building your network!',
+            'Share your referral link and start building your team!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
