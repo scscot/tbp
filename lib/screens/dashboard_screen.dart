@@ -34,7 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   StreamSubscription? _unreadMessagesSubscription;
   StreamSubscription? _unreadNotificationsSubscription;
   int _unreadNotificationCount = 0;
-  bool _hasUnreadMessages = false;
+  int _unreadMessageCount = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -77,15 +77,18 @@ class _DashboardScreenState extends State<DashboardScreen>
         .where('participants', arrayContains: userId)
         .snapshots()
         .listen((snapshot) {
-      final hasUnread = snapshot.docs.any((doc) {
+      int unreadCount = 0;
+      for (var doc in snapshot.docs) {
         final data = doc.data();
         final isReadMap = data['isRead'] as Map<String, dynamic>?;
-        return isReadMap?[userId] == false;
-      });
+        if (isReadMap?[userId] == false) {
+          unreadCount++;
+        }
+      }
 
       if (mounted) {
         setState(() {
-          _hasUnreadMessages = hasUnread;
+          _unreadMessageCount = unreadCount;
         });
       }
     }, onError: (error) {
@@ -367,22 +370,28 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ),
                   ],
                 ),
-                if (hasBadge)
+                if (hasBadge && badgeCount > 0)
                   Positioned(
                     top: 0,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      constraints: const BoxConstraints(
+                        minWidth: 20,
+                        minHeight: 20,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppColors.error,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        badgeCount > 0 ? badgeCount.toString() : '',
-                        style: const TextStyle(
-                          color: AppColors.textInverse,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                      child: Center(
+                        child: Text(
+                          badgeCount.toString(),
+                          style: const TextStyle(
+                            color: AppColors.textInverse,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -451,7 +460,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'Messages',
           subtitle: 'Chat with your team members',
           color: AppColors.messagePrimary,
-          hasBadge: _hasUnreadMessages,
+          hasBadge: _unreadMessageCount > 0,
+          badgeCount: _unreadMessageCount,
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
