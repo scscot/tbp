@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../services/auth_service.dart';
+import '../models/user_model.dart';
 import 'new_registration_screen.dart';
 import '../widgets/header_widgets.dart'; // Already imported, which is great.
 
@@ -30,6 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -46,6 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await authService.signInWithEmailAndPassword(
           _emailController.text.trim(), _passwordController.text.trim());
+      
+      // Navigate back after successful login
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } on FirebaseAuthException catch (e) {
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -72,6 +83,11 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
       debugPrint("✅ DEBUG: Firebase sign-in successful!");
+      
+      // Navigate back after successful login
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
       scaffoldMessenger.showSnackBar(SnackBar(

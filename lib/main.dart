@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 import 'models/user_model.dart';
 import 'models/admin_settings_model.dart';
 import 'screens/login_screen.dart';
+import 'screens/homepage_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
@@ -166,8 +167,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
     if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing LoginScreen');
-      return LoginScreen(key: const ValueKey('LoginScreen'), appId: appId);
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HomepageScreen');
+      return HomepageScreen(key: const ValueKey('HomepageScreen'), appId: appId);
     }
 
     debugPrint(

@@ -4,23 +4,22 @@ import 'package:flutter/material.dart';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import 'new_registration_screen.dart';
-import 'login_screen.dart';
 
-class HomepageScreen extends StatefulWidget {
+class HomepageScreenExample1 extends StatefulWidget {
   final String? referralCode;
   final String appId;
 
-  const HomepageScreen({
+  const HomepageScreenExample1({
     super.key,
     this.referralCode,
     required this.appId,
   });
 
   @override
-  State<HomepageScreen> createState() => _HomepageScreenState();
+  State<HomepageScreenExample1> createState() => _HomepageScreenExample1State();
 }
 
-class _HomepageScreenState extends State<HomepageScreen>
+class _HomepageScreenExample1State extends State<HomepageScreenExample1>
     with TickerProviderStateMixin {
   late AnimationController _heroAnimationController;
   late AnimationController _statsAnimationController;
@@ -71,9 +70,7 @@ class _HomepageScreenState extends State<HomepageScreen>
 
     _heroAnimationController.forward();
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) {
-        _statsAnimationController.forward();
-      }
+      _statsAnimationController.forward();
     });
   }
 
@@ -100,67 +97,16 @@ class _HomepageScreenState extends State<HomepageScreen>
       ),
       child: Stack(
         children: [
-          // Background pattern (removed since image doesn't exist)
+          // Background pattern
           Positioned.fill(
             child: Opacity(
               opacity: 0.1,
               child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.withOpacity(AppColors.textInverse, 0.1),
-                      AppColors.withOpacity(AppColors.textInverse, 0.05),
-                    ],
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/network_pattern.png'),
+                    fit: BoxFit.cover,
                   ),
-                ),
-              ),
-            ),
-          ),
-          // Login button in top right
-          Positioned(
-            top: 50,
-            right: 16,
-            child: SafeArea(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginScreen(appId: widget.appId),
-                    ),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: AppColors.withOpacity(AppColors.textInverse, 0.2),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(
-                      color: AppColors.withOpacity(AppColors.textInverse, 0.3),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.login,
-                      color: AppColors.textInverse,
-                      size: 14,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Log In',
-                      style: TextStyle(
-                        color: AppColors.textInverse,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
@@ -168,7 +114,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           // Content
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24.0, 80.0, 24.0, 24.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -179,22 +125,22 @@ class _HomepageScreenState extends State<HomepageScreen>
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: AppColors.withOpacity(AppColors.textInverse, 0.15),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.rocket_launch,
-                              size: 48,
+                              size: 64,
                               color: AppColors.textInverse,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
                           Text(
                             'BREAKTHROUGH',
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 32,
                               fontWeight: FontWeight.w900,
                               color: AppColors.textInverse,
                               letterSpacing: 2.0,
@@ -211,16 +157,16 @@ class _HomepageScreenState extends State<HomepageScreen>
                           Text(
                             'THE DIRECT SALES',
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 28,
                               fontWeight: FontWeight.w700,
                               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
                               letterSpacing: 1.5,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             decoration: BoxDecoration(
                               color: AppColors.warning,
                               borderRadius: BorderRadius.circular(30),
@@ -229,26 +175,23 @@ class _HomepageScreenState extends State<HomepageScreen>
                             child: Text(
                               'SUCCESS BARRIER',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.textInverse,
                                 letterSpacing: 1.2,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              'Finally! A proven system that eliminates the #1 reason people fail in direct sales - the inability to build a strong downline team.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.withOpacity(AppColors.textInverse, 0.95),
-                                height: 1.4,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              textAlign: TextAlign.center,
+                          const SizedBox(height: 32),
+                          Text(
+                            'Finally! A proven system that eliminates the #1 reason people fail in direct sales - the inability to build a strong downline team.',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColors.withOpacity(AppColors.textInverse, 0.95),
+                              height: 1.5,
+                              fontWeight: FontWeight.w500,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
