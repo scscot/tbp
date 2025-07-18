@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import '../services/session_manager.dart';
@@ -30,8 +31,10 @@ class HomepageScreen extends StatefulWidget {
 class _HomepageScreenState extends State<HomepageScreen>
     with TickerProviderStateMixin {
   late AnimationController _heroAnimationController;
+  late AnimationController _statsAnimationController;
   late Animation<double> _heroFadeAnimation;
   late Animation<Offset> _heroSlideAnimation;
+  late Animation<double> _statsCountAnimation;
 
   // Referral code related state
   String? _sponsorName;
@@ -47,6 +50,11 @@ class _HomepageScreenState extends State<HomepageScreen>
   void _setupAnimations() {
     _heroAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _statsAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -66,7 +74,20 @@ class _HomepageScreenState extends State<HomepageScreen>
       curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
     ));
 
+    _statsCountAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _statsAnimationController,
+      curve: Curves.easeOutCubic,
+    ));
+
     _heroAnimationController.forward();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        _statsAnimationController.forward();
+      }
+    });
   }
 
   Future<void> _initializeReferralData() async {
@@ -126,6 +147,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   @override
   void dispose() {
     _heroAnimationController.dispose();
+    _statsAnimationController.dispose();
     super.dispose();
   }
 
@@ -257,6 +279,55 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      height: 200, // Increased height to prevent overflow
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2), width: 2),
+        boxShadow: AppColors.lightShadow,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 32, color: color), // Slightly smaller icon
+          const SizedBox(height: 10),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 24, // Reduced font size to prevent overflow
+                fontWeight: FontWeight.w900,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2, // Allow text to wrap if needed
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13, // Slightly smaller label
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

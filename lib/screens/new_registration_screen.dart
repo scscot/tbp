@@ -8,9 +8,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
 import 'welcome_screen.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_of_service_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
@@ -37,6 +40,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   String? _sponsorName;
   String? _initialReferralCode;
   bool _isLoading = true;
+  bool _acceptedPrivacyPolicy = false;
 
   bool isDevMode = true;
 
@@ -52,6 +56,20 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint('🔍   widget.referralCode: ${widget.referralCode}');
     debugPrint('🔍   widget.appId: ${widget.appId}');
 
+    // First, try to get cached referral data from SessionManager
+    final cachedReferralData = await SessionManager.instance.getReferralData();
+    
+    if (cachedReferralData != null) {
+      debugPrint('🔍 Using cached referral data');
+      _initialReferralCode = cachedReferralData['referralCode'];
+      _sponsorName = cachedReferralData['sponsorName'];
+      debugPrint('🔍 Cached referral code: $_initialReferralCode');
+      debugPrint('🔍 Cached sponsor name: $_sponsorName');
+      if (mounted) setState(() => _isLoading = false);
+      return;
+    }
+
+    // Fallback: use constructor parameter (for direct access scenarios)
     _initialReferralCode = widget.referralCode;
 
     debugPrint('🔍 After assignment:');
@@ -71,7 +89,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       return;
     }
 
-    debugPrint('🔍 Making HTTP request to get referral code data...');
+    // Only make HTTP request if we don't have cached data (fallback scenario)
+    debugPrint('🔍 Making HTTP request to get referral code data (fallback)...');
     try {
       final uri = Uri.parse(
           'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code');
@@ -87,6 +106,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         setState(() {
           _sponsorName = sponsorName;
         });
+
+        // Cache this data for future use
+        await SessionManager.instance.setReferralData(code, sponsorName);
+        debugPrint('✅ NewRegistrationScreen: Referral data cached from fallback');
       } else {
         debugPrint(
             'Failed to get sponsor data. Status code: ${response.statusCode}');
@@ -110,6 +133,17 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
+    
+    if (!_acceptedPrivacyPolicy) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please accept the Privacy Policy and Terms of Service to continue'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+    
     setState(() => _isLoading = true);
 
     final authService = context.read<AuthService>();
@@ -156,6 +190,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       }
 
       debugPrint('✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
+
+      // Clear referral data after successful registration
+      await SessionManager.instance.clearReferralData();
+      debugPrint('🧹 REGISTER: Referral data cleared after successful registration');
 
       if (!mounted) return;
       debugPrint('🔍 REGISTER: Navigating to WelcomeScreen...');
@@ -300,6 +338,117 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         validator: (v) => v != _passwordController.text
                             ? 'Passwords do not match'
                             : null),
+                    const SizedBox(height: 24),
+                    
+                    // Privacy Policy Agreement
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundSecondary,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Checkbox(
+                                value: _acceptedPrivacyPolicy,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _acceptedPrivacyPolicy = value ?? false;
+                                  });
+                                },
+                                activeColor: AppColors.primary,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _acceptedPrivacyPolicy = !_acceptedPrivacyPolicy;
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: AppColors.textSecondary,
+                                          height: 1.4,
+                                        ),
+                                        children: [
+                                          const TextSpan(text: 'I agree to the '),
+                                          WidgetSpan(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => PrivacyPolicyScreen(
+                                                      appId: widget.appId,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                'Privacy Policy',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: AppColors.primary,
+                                                  fontWeight: FontWeight.w600,
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const TextSpan(text: ' and '),
+                                          WidgetSpan(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => TermsOfServiceScreen(
+                                                      appId: widget.appId,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                'Terms of Service',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: AppColors.primary,
+                                                  fontWeight: FontWeight.w600,
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '🔒 Required for account creation',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textTertiary,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,

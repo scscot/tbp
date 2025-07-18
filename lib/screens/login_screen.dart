@@ -14,6 +14,8 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import 'new_registration_screen.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_of_service_screen.dart';
 import '../widgets/header_widgets.dart'; // Already imported, which is great.
 
 class LoginScreen extends StatefulWidget {
@@ -194,6 +196,53 @@ class _LoginScreenState extends State<LoginScreen> {
                                 NewRegistrationScreen(appId: widget.appId))),
                     child: const Text('Create Account'),
                   )
+                ],
+              ),
+              const SizedBox(height: 32),
+              // Privacy Policy Footer
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PrivacyPolicyScreen(appId: widget.appId),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Privacy Policy',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    ' | ',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TermsOfServiceScreen(appId: widget.appId),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Terms of Service',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               )
             ]),

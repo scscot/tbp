@@ -13,6 +13,8 @@ import '../screens/share_screen.dart';
 import '../screens/how_it_works_screen.dart';
 import '../screens/message_center_screen.dart';
 import '../screens/notifications_screen.dart';
+import '../screens/privacy_policy_screen.dart';
+import '../screens/terms_of_service_screen.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
 // --- MODIFICATION: Import main.dart for the navigatorKey, remove fcm_service import ---
@@ -85,6 +87,14 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       case 'profile':
         navigator.push(MaterialPageRoute(
             builder: (_) => ProfileScreen(appId: widget.appId)));
+        break;
+      case 'privacy':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => PrivacyPolicyScreen(appId: widget.appId)));
+        break;
+      case 'terms':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => TermsOfServiceScreen(appId: widget.appId)));
         break;
     }
   }
@@ -179,6 +189,10 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                     value: 'notifications', child: Text('Notifications')),
                 const PopupMenuItem<String>(
                     value: 'profile', child: Text('My Profile')),
+                const PopupMenuItem<String>(
+                    value: 'privacy', child: Text('Privacy Policy')),
+                const PopupMenuItem<String>(
+                    value: 'terms', child: Text('Terms of Service')),
               ],
               const PopupMenuItem<String>(
                   value: 'logout', child: Text('Logout')),

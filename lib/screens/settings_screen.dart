@@ -6,6 +6,8 @@ import '../config/app_constants.dart';
 import '../models/user_model.dart';
 import '../services/subscription_service.dart';
 import '../widgets/header_widgets.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_of_service_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   // final Map<String, dynamic> firebaseConfig;
@@ -647,6 +649,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 label: 'Total Team Members',
               ),
             ],
+          ),
+          const SizedBox(height: 32),
+          
+          // Privacy Policy Section
+          const Divider(thickness: 1),
+          const SizedBox(height: 16),
+          const Text(
+            'Privacy & Legal',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              leading: const Icon(Icons.privacy_tip, color: Colors.blue),
+              title: const Text('Privacy Policy'),
+              subtitle: const Text('View our privacy practices and data handling'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PrivacyPolicyScreen(appId: widget.appId),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              leading: const Icon(Icons.gavel, color: Colors.blue),
+              title: const Text('Terms of Service'),
+              subtitle: const Text('View our platform terms and conditions'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TermsOfServiceScreen(appId: widget.appId),
+                  ),
+                );
+              },
+            ),
           ),
           const SizedBox(height: 24),
         ],

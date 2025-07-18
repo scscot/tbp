@@ -77,13 +77,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
       child: Column(
         children: [
           Icon(
-            Icons.rocket_launch,
+            Icons.groups,
             size: 48,
             color: AppColors.textInverse,
           ),
           const SizedBox(height: 16),
           Text(
-            'TEAM BUILD PRO FEEDER SYSTEM',
+            'TEAM BUILD PRO PLATFORM',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Whether you have years of experience, are just getting started, or are even considering joining, the Team Build Pro app will help turbo-charge the growth of your $_bizOpp business!',
+            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -294,7 +294,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Challenge
             _buildSectionCard(
               title: 'THE CHALLENGE',
-              content: 'The main obstacle to achieving success with $_bizOpp is recruiting and building your team. In fact, it\'s the number one reason people give up before achieving financial success.',
+              content: 'Building meaningful professional connections can be difficult in today\'s digital world. Many professionals struggle to expand their network beyond their immediate circle.',
               icon: Icons.warning_amber,
               color: AppColors.error,
             ),
@@ -303,7 +303,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Solution
             _buildSectionCard(
               title: 'THE SOLUTION',
-              content: 'The Team Build Pro app is a proven system that provides your $_bizOpp recruiting prospects the opportunity to pre-build their team before joining $_bizOpp, thereby significantly increasing their chances at short and long-term success.',
+              content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
               icon: Icons.lightbulb,
               color: AppColors.primary,
             ),
@@ -312,7 +312,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Why It Works
             _buildSectionCard(
               title: 'WHY IT WORKS',
-              content: 'There are no barriers to entry. No start-up fees. No initial product or service purchases required. This enables them to quickly pre-build large, global teams.',
+              content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their communities organically.',
               icon: Icons.trending_up,
               color: AppColors.growthPrimary,
             ),
@@ -351,20 +351,20 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'Share the App',
-                      description: 'You share the Team Build Pro app with your existing $_bizOpp downline members and your recruiting prospects who have committed to joining $_bizOpp but have not yet done so.',
+                      title: 'Share the Platform',
+                      description: 'Share Team Build Pro with your professional contacts and colleagues who are interested in expanding their professional network.',
                       icon: Icons.share,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'They Do the Same',
-                      description: 'Your team members begin sharing the app with their networks, creating exponential growth.',
+                      title: 'Network Growth',
+                      description: 'Your connections begin building their own professional communities, creating a growing network of like-minded professionals.',
                       icon: Icons.group_add,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'Automatic Invitations',
-                      description: 'When your Team Build Pro downline members meet the minimum eligibility criteria, they are automatically invited to join your $_bizOpp opportunity – with their growing Team Build Pro downline members ready to follow.',
+                      title: 'Professional Opportunities',
+                      description: 'When community members meet certain engagement criteria, they may receive invitations to participate in professional development opportunities.',
                       icon: Icons.auto_awesome,
                     ),
                     Container(
@@ -380,7 +380,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Remember: Every member of your Team Build Pro downline that ultimately joins $_bizOpp will automatically be placed in your $_bizOpp downline!',
+                              'Note: Team Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful career opportunities.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -406,7 +406,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'MINIMUM ELIGIBILITY REQUIREMENTS',
+                      'COMMUNITY ENGAGEMENT THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -420,13 +420,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         _buildMetricCard(
                           icon: Icons.people,
                           value: AppConstants.projectWideDirectSponsorMin.toString(),
-                          label: 'Direct Sponsors',
+                          label: 'Direct Connections',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.groups,
                           value: AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team Members',
+                          label: 'Community Members',
                         ),
                       ],
                     ),
@@ -453,7 +453,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Ready to Turbo-Charge Your Success?',
+                    'Ready to Build Your Professional Community?',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -463,7 +463,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Start building your pre-qualified $_bizOpp team today with Team Build Pro!',
+                    'Start building meaningful professional connections today with Team Build Pro!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),

@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:app_links/app_links.dart';
-import '../screens/new_registration_screen.dart';
+import '../screens/homepage_screen.dart';
 import '../screens/login_screen.dart';
 import '../main.dart' show navigatorKey, appId;
 
@@ -54,22 +54,22 @@ class DeepLinkService {
     debugPrint('🔗 Deep Link: Found referral code - ref: $referralCode');
 
     if (referralCode != null) {
-      debugPrint('🔗 Deep Link: Navigating to registration screen');
+      debugPrint('🔗 Deep Link: Navigating to homepage screen with referral code');
       debugPrint('🔗 Deep Link: Parameters being passed:');
       debugPrint('🔗   referralCode: $referralCode');
       debugPrint('🔗   appId: $appId');
-      debugPrint('🔗 Deep Link: Creating NewRegistrationScreen widget...');
+      debugPrint('🔗 Deep Link: Creating HomepageScreen widget...');
 
-      // Navigate to registration screen with referral code
+      // Navigate to homepage screen with referral code (updated flow)
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) {
             debugPrint('🔗 Deep Link: MaterialPageRoute builder called');
-            debugPrint('🔗   Creating NewRegistrationScreen with:');
+            debugPrint('🔗   Creating HomepageScreen with:');
             debugPrint('🔗     referralCode: $referralCode');
             debugPrint('🔗     appId: $appId');
 
-            return NewRegistrationScreen(
+            return HomepageScreen(
               referralCode: referralCode,
               appId: appId,
             );
@@ -80,11 +80,11 @@ class DeepLinkService {
 
       debugPrint('🔗 Deep Link: Navigation completed');
     } else {
-      debugPrint('🔗 Deep Link: No referral code found, navigating to login');
-      // Navigate to login screen if no referral code
+      debugPrint('🔗 Deep Link: No referral code found, navigating to homepage');
+      // Navigate to homepage screen if no referral code
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => LoginScreen(appId: appId),
+          builder: (context) => HomepageScreen(appId: appId),
         ),
         (route) => false,
       );
