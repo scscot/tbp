@@ -5,7 +5,7 @@ echo "🔧 Testing Backend Optimization Fixes..."
 echo ""
 echo "✅ Type casting fixes applied:"
 echo "   • Fixed Map<Object?, Object?> casting issues in DownlineService"
-echo "   • Updated groupedByLevel handling in DownlineTeamScreen"
+echo "   • Updated groupedByLevel handling in TeamScreen"
 echo "   • Added proper data serialization in getFilteredDownline Cloud Function"
 echo "   • Fixed parameter name mismatch in getMemberDetails (userId → memberId)"
 

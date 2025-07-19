@@ -1,4 +1,4 @@
-// lib/screens/downline_team_screen.dart
+// lib/screens/team_screen.dart
 // Professional UI redesign with modern layouts and enhanced reporting
 
 import 'package:flutter/material.dart';
@@ -18,21 +18,21 @@ enum FilterBy { allMembers, directSponsors, newMembers, qualifiedMembers, joined
 
 enum SortBy { name, joinDate, level, location }
 
-class DownlineTeamScreen extends StatefulWidget {
+class TeamScreen extends StatefulWidget {
   final String appId;
   final String? initialFilter;
 
-  const DownlineTeamScreen({
+  const TeamScreen({
     super.key,
     required this.appId,
     this.initialFilter,
   });
 
   @override
-  State<DownlineTeamScreen> createState() => _DownlineTeamScreenState();
+  State<TeamScreen> createState() => _TeamScreenState();
 }
 
-class _DownlineTeamScreenState extends State<DownlineTeamScreen>
+class _TeamScreenState extends State<TeamScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final DownlineService _downlineService = DownlineService();
@@ -191,7 +191,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
 
       if (!mounted) return;
 
-      // Fetch all downline data
+      // Fetch all team data
       final result = await _downlineService.getFilteredDownline(
         filter: 'all',
         searchQuery: '',
@@ -203,7 +203,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {
-      debugPrint('Error loading downline data: $e');
+      debugPrint('Error loading team data: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -326,9 +326,9 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
     }
     
     // Debug logging
-    debugPrint('🔍 DOWNLINE DEBUG: Total filtered members: ${_filteredMembers.length}');
-    debugPrint('🔍 DOWNLINE DEBUG: Level offset: $_levelOffset');
-    debugPrint('🔍 DOWNLINE DEBUG: Members by level: $_membersByLevel');
+    debugPrint('🔍 team DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint('🔍 team DEBUG: Level offset: $_levelOffset');
+    debugPrint('🔍 team DEBUG: Members by level: $_membersByLevel');
     
     // Ensure levels are sorted
     final sortedEntries = _membersByLevel.entries.toList()
@@ -366,7 +366,7 @@ class _DownlineTeamScreenState extends State<DownlineTeamScreen>
         gradient: AppColors.primaryGradient,
       ),
       child: const Text(
-        'Downline Team',
+        'My Global Team',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,

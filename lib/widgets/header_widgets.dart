@@ -8,7 +8,7 @@ import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
-import '../screens/downline_team_screen.dart';
+import '../screens/team_screen.dart';
 import '../screens/share_screen.dart';
 import '../screens/how_it_works_screen.dart';
 import '../screens/message_center_screen.dart';
@@ -70,7 +70,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         break;
       case 'downline':
         navigator.push(MaterialPageRoute(
-            builder: (_) => DownlineTeamScreen(appId: widget.appId)));
+            builder: (_) => TeamScreen(appId: widget.appId)));
         break;
       case 'share':
         navigator.push(MaterialPageRoute(

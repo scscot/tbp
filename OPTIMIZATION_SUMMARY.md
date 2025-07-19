@@ -3,7 +3,7 @@
 ## ✅ Completed Optimizations
 
 ### 1. Downline Team Screen Backend Migration
-**File:** `/lib/screens/downline_team_screen.dart`
+**File:** `/lib/screens/team_screen.dart`
 **Cloud Function:** `getFilteredDownline`
 
 **Before:**
@@ -21,7 +21,7 @@
 **Changes Made:**
 - Added `getFilteredDownline` Cloud Function with comprehensive filtering logic
 - Updated `DownlineService.getFilteredDownline()` to call backend
-- Refactored `DownlineTeamScreen` to use backend-powered filtering
+- Refactored `TeamScreen` to use backend-powered filtering
 - Removed client-side processing code
 
 ### 2. Member Detail Screen Backend Aggregation
