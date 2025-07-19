@@ -10,7 +10,7 @@ import 'message_center_screen.dart';
 import 'notifications_screen.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
-import 'downline_team_screen.dart';
+import 'team_screen.dart';
 import 'profile_screen.dart';
 import 'share_screen.dart';
 import 'how_it_works_screen.dart';
@@ -435,13 +435,13 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.groups,
-          title: 'My Downline',
+          title: 'View My Team',
           subtitle: 'View and manage your team members',
           color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => DownlineTeamScreen(appId: widget.appId),
+              builder: (_) => TeamScreen(appId: widget.appId),
             ),
           ),
         ),

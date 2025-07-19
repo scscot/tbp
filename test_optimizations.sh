@@ -10,7 +10,7 @@ echo "   2. ✅ Member detail aggregation moved to backend (getMemberDetails)"
 echo ""
 
 echo "📋 Optimization summary:"
-echo "   • DownlineTeamScreen: Now uses backend-powered filtering, search, and grouping"
+echo "   • TeamScreen: Now uses backend-powered filtering, search, and grouping"
 echo "   • MemberDetailScreen: Now uses single backend call for member + sponsor + team leader data"
 echo "   • Cloud Functions: getFilteredDownline and getMemberDetails deployed successfully"
 echo ""

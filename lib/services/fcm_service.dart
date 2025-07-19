@@ -12,7 +12,7 @@ import 'notification_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/message_thread_screen.dart';
 import '../screens/join_opportunity_screen.dart';
-import '../screens/downline_team_screen.dart';
+import '../screens/team_screen.dart';
 
 // --- MODIFICATION: The key is now defined in main.dart and removed from here ---
 
@@ -296,9 +296,9 @@ void navigateToRoute(PendingNotification notification) {
       const String appId = 'L8n1tJqHqYd3F5j6';
       final filter = notification.arguments['filter'] as String?;
       
-      // Navigate to DownlineTeamScreen with initial filter
+      // Navigate to TeamScreen with initial filter
       navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => DownlineTeamScreen(
+        builder: (_) => TeamScreen(
           appId: appId,
           initialFilter: filter,
         ),
