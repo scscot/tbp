@@ -197,7 +197,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
         debugPrint(
             '🔐 AUTH_WRAPPER: User missing photo, showing EditProfileScreen');
         return EditProfileScreen(
-            key: const ValueKey('EditProfileScreen'), appId: appId, user: user, isFirstTimeSetup: true);
+            key: const ValueKey('EditProfileScreen'),
+            appId: appId,
+            user: user,
+            isFirstTimeSetup: true);
       }
     }
 

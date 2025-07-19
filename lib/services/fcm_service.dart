@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// --- MODIFICATION: Import main.dart for navigatorKey ---
 import '../main.dart';
 import 'notification_service.dart';
 import '../screens/member_detail_screen.dart';
@@ -14,11 +13,36 @@ import '../screens/message_thread_screen.dart';
 import '../screens/join_company_screen.dart';
 import '../screens/team_screen.dart';
 
-// --- MODIFICATION: The key is now defined in main.dart and removed from here ---
-
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // --- NEW: Private helper method to mark notification as read ---
+  Future<void> _markNotificationAsRead(String? notificationId) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (notificationId == null || currentUser == null) return;
+
+    if (kDebugMode) {
+      debugPrint(
+          "🔔 FCM_SERVICE: Marking notification as read: $notificationId");
+    }
+    try {
+      await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'read': true});
+      if (kDebugMode) {
+        debugPrint("✅ FCM_SERVICE: Successfully marked as read.");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("❌ FCM_SERVICE: Error marking notification as read: $e");
+      }
+    }
+  }
+
   Future<void> initialize(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.uid.isEmpty) return;
@@ -101,11 +125,28 @@ class FCMService {
     }
   }
 
+  // --- MODIFIED: This function now conditionally marks the notification as read ---
   void _handleMessage(
       NotificationService notificationService, RemoteMessage message,
       {bool isTerminated = false, bool shouldNavigate = false}) {
+    // --- MODIFIED: Only mark as read when user actually clicks system notification ---
+    // Don't mark as read for foreground SnackBar notifications
+    if (isTerminated || shouldNavigate) {
+      final notificationId = message.data['notification_id'] as String?;
+      _markNotificationAsRead(notificationId);
+      if (kDebugMode) {
+        debugPrint("📨 FCM: Marking notification as read due to user click (isTerminated: $isTerminated, shouldNavigate: $shouldNavigate)");
+      }
+    } else {
+      if (kDebugMode) {
+        debugPrint("📨 FCM: Foreground notification - NOT marking as read automatically");
+      }
+    }
+    // --- END MODIFIED ---
+
     if (kDebugMode) {
-      debugPrint("📨 FCM: Handling message - isTerminated: $isTerminated, shouldNavigate: $shouldNavigate");
+      debugPrint(
+          "📨 FCM: Handling message - isTerminated: $isTerminated, shouldNavigate: $shouldNavigate");
       debugPrint("📨 FCM: Message data: ${message.data}");
     }
 
@@ -116,23 +157,25 @@ class FCMService {
       if (kDebugMode) {
         debugPrint("📨 FCM: Route: $route, Params: $paramsString");
       }
-      
+
       try {
         final Map<String, dynamic> arguments = jsonDecode(paramsString);
         final pendingNotification = PendingNotification(
           route: route,
           arguments: arguments,
         );
-        
+
         if (isTerminated) {
           if (kDebugMode) {
-            debugPrint("📨 FCM: App was terminated - storing pending notification");
+            debugPrint(
+                "📨 FCM: App was terminated - storing pending notification");
           }
           // Store pending notification for terminated app
           notificationService.setPendingNotification(pendingNotification);
         } else if (shouldNavigate) {
           if (kDebugMode) {
-            debugPrint("📨 FCM: App opened from background - scheduling navigation");
+            debugPrint(
+                "📨 FCM: App opened from background - scheduling navigation");
           }
           // Navigate when app is opened from background, with a small delay to ensure navigator is ready
           Future.delayed(Duration(milliseconds: 500), () {
@@ -292,9 +335,11 @@ class FCMService {
 
 void navigateToRoute(PendingNotification notification) {
   if (kDebugMode) {
-    debugPrint("🚀 NAVIGATION: Attempting to navigate to route: ${notification.route}");
+    debugPrint(
+        "🚀 NAVIGATION: Attempting to navigate to route: ${notification.route}");
     debugPrint("🚀 NAVIGATION: Arguments: ${notification.arguments}");
-    debugPrint("🚀 NAVIGATION: Navigator state available: ${navigatorKey.currentState != null}");
+    debugPrint(
+        "🚀 NAVIGATION: Navigator state available: ${navigatorKey.currentState != null}");
   }
 
   if (navigatorKey.currentState != null) {
@@ -302,7 +347,8 @@ void navigateToRoute(PendingNotification notification) {
       final userId = notification.arguments['userId'] as String?;
       if (userId != null) {
         if (kDebugMode) {
-          debugPrint("🚀 NAVIGATION: Navigating to MemberDetailScreen for userId: $userId");
+          debugPrint(
+              "🚀 NAVIGATION: Navigating to MemberDetailScreen for userId: $userId");
         }
         const String appId = 'L8n1tJqHqYd3F5j6';
         navigatorKey.currentState!.push(MaterialPageRoute(
@@ -335,7 +381,7 @@ void navigateToRoute(PendingNotification notification) {
     } else if (notification.route == '/team') {
       const String appId = 'L8n1tJqHqYd3F5j6';
       final filter = notification.arguments['filter'] as String?;
-      
+
       // Navigate to TeamScreen with initial filter
       navigatorKey.currentState!.push(MaterialPageRoute(
         builder: (_) => TeamScreen(

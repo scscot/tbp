@@ -515,13 +515,14 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
     const imageUrl = notificationData?.imageUrl;
 
-    // Build APNS payload - only include badge if count > 0
+    // Build APNS payload, always including the badge count
     const apnsPayload = {
       alert: {
         title: notificationData?.title || "New Notification",
         body: notificationData?.message || "You have a new message.",
       },
       sound: "default",
+      badge: badgeCount, // Always set the badge with the calculated count
     };
 
     // Only add badge if there are unread notifications (never show badge with 0)
@@ -529,7 +530,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
       apnsPayload.badge = badgeCount;
     }
 
-    const message = {
+    const message ={ 
       token: fcmToken,
       notification: {
         title: notificationData?.title || "New Notification",
@@ -537,6 +538,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
         // Removed imageUrl to prevent iOS notification failures
       },
       data: {
+        notification_id: notificationId, 
         type: notificationData?.type || "generic",
         route: notificationData?.route || "/",
         route_params: notificationData?.route_params || "{}",
