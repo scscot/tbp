@@ -361,15 +361,12 @@ class _BusinessScreenState extends State<BusinessScreen> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: GestureDetector(
-                              onTap: _confirmAndCopyUrl,
-                              child: SelectableText(
-                                bizOppRefUrl!,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
+                            child: Text(
+                              bizOppRefUrl!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
