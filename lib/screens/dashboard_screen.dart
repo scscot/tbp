@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'visit_opportunity_screen.dart';
+import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -459,7 +459,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.message,
-          title: 'Messages',
+          title: 'Message Center',
           subtitle: 'Chat with your team members',
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
@@ -507,7 +507,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => VisitOpportunityScreen(appId: widget.appId),
+                    builder: (_) => BusinessScreen(appId: widget.appId),
                   ),
                 );
               }

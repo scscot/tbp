@@ -10,19 +10,19 @@ import '../models/user_model.dart';
 import 'join_opportunity_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
-class VisitOpportunityScreen extends StatefulWidget {
+class BusinessScreen extends StatefulWidget {
   final String appId;
 
-  const VisitOpportunityScreen({
+  const BusinessScreen({
     super.key,
     required this.appId,
   });
 
   @override
-  State<VisitOpportunityScreen> createState() => _VisitOpportunityScreenState();
+  State<BusinessScreen> createState() => _BusinessScreenState();
 }
 
-class _VisitOpportunityScreenState extends State<VisitOpportunityScreen> {
+class _BusinessScreenState extends State<BusinessScreen> {
   String? bizOpp;
   String? bizOppRefUrl;
   String? sponsorName;

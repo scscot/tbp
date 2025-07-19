@@ -133,7 +133,7 @@ class _MyBizScreenState extends State<MyBizScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      "From this point forward, anyone in your Team Build Pro downline that joins ${bizOpp ?? 'this opportunity'} will automatically be placed in your downline.",
+                      "From this point forward, anyone in your Team Build Pro organization that joins ${bizOpp ?? 'this opportunity'} will automatically be placed in your team.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,

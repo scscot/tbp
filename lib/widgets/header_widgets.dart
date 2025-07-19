@@ -1,7 +1,7 @@
 // lib/widgets/header_widgets.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ultimatefix/screens/visit_opportunity_screen.dart';
+import 'package:ultimatefix/screens/business_screen.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../config/app_constants.dart';
@@ -58,7 +58,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     switch (value) {
       case 'join':
         navigator.push(MaterialPageRoute(
-            builder: (_) => VisitOpportunityScreen(appId: widget.appId)));
+            builder: (_) => BusinessScreen(appId: widget.appId)));
         break;
       case 'dashboard':
         navigator.push(MaterialPageRoute(

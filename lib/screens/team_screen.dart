@@ -771,23 +771,6 @@ class _TeamScreenState extends State<TeamScreen>
                   ],
                 ),
               ),
-              if ((member.directSponsorCount ?? 0) >= 3)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.successBackground,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    'Qualified',
-                    style: const TextStyle(
-                      color: AppColors.success,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
