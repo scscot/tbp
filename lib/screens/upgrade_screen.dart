@@ -62,10 +62,10 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-                '• Submit your unique Business Opportunity referral link'),
-            const Text('• Unlock messaging to users across your downline'),
+                '• Submit your unique Business referral link'),
+            const Text('• Unlock messaging to users on your team'),
             const Text(
-                '• Ensure downline members join under YOU in the business opp'),
+                '• Ensure team members join under YOU in your business'),
             const Spacer(),
             SizedBox(
               width: double.infinity,

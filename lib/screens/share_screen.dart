@@ -337,8 +337,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         // Strategy 2: Existing Team Members
         _buildStrategyCard(
           title: '🚀 Current Team Members',
-          subtitle: 'Great for your current $_bizOppName downline',
-          description: 'Share with people already in your $_bizOppName downline. When their Team Build Pro downline members join $_bizOppName, they\'ll automatically be placed in your organization!',
+          subtitle: 'Great for your current $_bizOppName team',
+          description: 'Share with people already in your $_bizOppName team. When their Team Build Pro team members join $_bizOppName, they\'ll automatically be placed in your organization!',
           buttonText: 'Share with Current Team Members',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

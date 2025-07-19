@@ -378,7 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const TextSpan(
                     text:
-                        "These values will apply to every member of your downline team, ensuring the highest level of integrity, consistency, and fairness across your organization.",
+                        "These values will apply to every member of your team, ensuring the highest level of integrity, consistency, and fairness across your organization.",
                   ),
                 ],
               ),
@@ -424,8 +424,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           content: const Text(
                               'You must enter the exact referral link you received from your company. '
-                              'This will ensure your Team Build Pro downline members that join your business opportunity '
-                              'are automatically placed in your business opportunity downline.'),
+                              'This will ensure your Team Build Pro team members that join your business opportunity '
+                              'are automatically placed in your business opportunity team.'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(),
@@ -614,7 +614,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const TextSpan(
                           text:
-                              "When your downline members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                              "When your team members meet the minimum eligibility criteria, they are automatically invited to join your "),
                       TextSpan(
                         text: _bizOpp ?? 'business opportunity',
                         style: const TextStyle(
@@ -622,7 +622,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const TextSpan(
                           text:
-                              " team — with their growing Team Build Pro downlines ready to follow."),
+                              " team — with their growing Team Build Pro team ready to follow."),
                     ],
                   ),
                 ),

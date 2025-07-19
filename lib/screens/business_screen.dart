@@ -1,9 +1,9 @@
 // ignore_for_file: unnecessary_cast
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
@@ -29,6 +29,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
   bool loading = true;
   bool hasVisitedOpp = false;
   DateTime? bizJoinDate;
+  bool hasSeenConfirmation = false;
 
   @override
   void initState() {
@@ -128,27 +129,34 @@ class _BusinessScreenState extends State<BusinessScreen> {
     }
   }
 
-  Future<void> _confirmAndLaunchOpportunity() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Before You Continue'),
-        content: Text(
-            "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your downline is built correctly."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('I Understand'),
-          ),
-        ],
-      ),
-    );
+  Future<void> _confirmAndCopyUrl() async {
+    if (bizOppRefUrl == null) return;
 
-    if (!mounted || confirmed != true || bizOppRefUrl == null) return;
+    // Show confirmation dialog only on first tap
+    if (!hasSeenConfirmation) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // Prevent dismissing by tapping outside
+        builder: (_) => AlertDialog(
+          title: const Text('Before You Continue'),
+          content: Text(
+              "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your team is built correctly."),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('I Understand'),
+            ),
+          ],
+        ),
+      );
+
+      if (!mounted || confirmed != true) return;
+
+      // Mark that user has seen the confirmation
+      setState(() {
+        hasSeenConfirmation = true;
+      });
+    }
 
     // --- MODIFICATION: The client now only calls the Cloud Function ---
     // The backend now handles the date update and notification logic.
@@ -172,14 +180,21 @@ class _BusinessScreenState extends State<BusinessScreen> {
     }
     // --- End of modification ---
 
-    // Launch the URL
-    final url = Uri.parse(bizOppRefUrl!);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
+    // Copy URL to clipboard
+    try {
+      await Clipboard.setData(ClipboardData(text: bizOppRefUrl!));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open link: $bizOppRefUrl')),
+          const SnackBar(
+            content: Text('Registration URL copied to clipboard!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to copy URL: $e')),
         );
       }
     }
@@ -279,20 +294,118 @@ class _BusinessScreenState extends State<BusinessScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.open_in_new),
-                    label: Text('Join ${bizOpp ?? 'Opportunity'} Now!'),
-                    onPressed: bizOppRefUrl != null
-                        ? _confirmAndLaunchOpportunity
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      textStyle: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                  // Instructions for copying URL
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'How to Join ${bizOpp ?? 'Opportunity'}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '1. Copy the registration link below\n'
+                          '2. Open your web browser\n'
+                          '3. Paste the link and complete registration\n'
+                          '4. Return here to add your referral link',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue.shade800,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  // Copyable URL section
+                  if (bizOppRefUrl != null) ...[
+                    Text(
+                      'Registration Link:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: _confirmAndCopyUrl,
+                              child: SelectableText(
+                                bizOppRefUrl!,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            onPressed: _confirmAndCopyUrl,
+                            icon: const Icon(Icons.copy),
+                            tooltip: 'Copy URL',
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.blue.shade100,
+                              foregroundColor: Colors.blue.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ] else ...[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.warning_amber, color: Colors.orange.shade700),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Registration URL not available. Please contact your sponsor.',
+                              style: TextStyle(
+                                color: Colors.orange.shade800,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 40),
                   const Center(
                     child: Text(
@@ -306,7 +419,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "After joining, you must return here and add your new referral link to your Team Build Pro profile. This ensures your downline is built correctly.",
+                    "After joining, you must return here and add your new referral link to your Team Build Pro profile. This ensures your team is built correctly.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 16, color: Colors.grey.shade700, height: 1.5),

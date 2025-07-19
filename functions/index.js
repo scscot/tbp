@@ -39,28 +39,28 @@ const serializeData = (data) => {
   return newData;
 };
 
-exports.getDownline = onCall({ region: "us-central1" }, async (request) => {
+exports.getTeam = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
   const currentUserId = request.auth.uid;
 
   try {
-    const downlineSnapshot = await db.collection("users")
+    const teamSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (downlineSnapshot.empty) {
-      return { downline: [] };
+    if (teamSnapshot.empty) {
+      return { downline: [] }; // Keep API response key for backward compatibility
     }
 
-    const downlineUsers = downlineSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
-    const serializedDownline = serializeData(downlineUsers);
-    return { downline: serializedDownline };
+    const teamUsers = teamSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    const serializedTeam = serializeData(teamUsers);
+    return { downline: serializedTeam }; // Keep API response key for backward compatibility
 
   } catch (error) {
-    console.error("Critical Error in getDownline function:", error);
-    throw new HttpsError("internal", "An unexpected error occurred while fetching the downline.", error.message);
+    console.error("Critical Error in getTeam function:", error);
+    throw new HttpsError("internal", "An unexpected error occurred while fetching the team.", error.message);
   }
 });
 
@@ -242,17 +242,17 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-exports.getDownlineCounts = onCall({ region: "us-central1" }, async (request) => {
+exports.getTeamCounts = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
   const currentUserId = request.auth.uid;
   try {
-    const downlineSnapshot = await db.collection("users")
+    const teamSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (downlineSnapshot.empty) {
+    if (teamSnapshot.empty) {
       return {
         counts: { all: 0, last24: 0, last7: 0, last30: 0, newQualified: 0, joinedOpportunity: 0 }
       };
@@ -269,7 +269,7 @@ exports.getDownlineCounts = onCall({ region: "us-central1" }, async (request) =>
     let newQualifiedCount = 0;
     let joinedOpportunityCount = 0;
 
-    downlineSnapshot.docs.forEach(doc => {
+    teamSnapshot.docs.forEach(doc => {
       const user = doc.data();
       const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
 
@@ -288,7 +288,7 @@ exports.getDownlineCounts = onCall({ region: "us-central1" }, async (request) =>
 
     return {
       counts: {
-        all: downlineSnapshot.size,
+        all: teamSnapshot.size,
         last24: last24Count,
         last7: last7Count,
         last30: last30Count,
@@ -297,12 +297,12 @@ exports.getDownlineCounts = onCall({ region: "us-central1" }, async (request) =>
       }
     };
   } catch (error) {
-    console.error(`CRITICAL ERROR in getDownlineCounts for user ${currentUserId}:`, error);
+    console.error(`CRITICAL ERROR in getTeamCounts for user ${currentUserId}:`, error);
     throw new HttpsError("internal", "An unexpected error occurred.");
   }
 });
 
-exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) => {
+exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
@@ -311,17 +311,17 @@ exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) 
   const { filter, searchQuery, levelOffset, limit = 100, offset = 0 } = request.data || {};
 
   try {
-    console.log(`🔍 FILTER DEBUG: Starting filtered downline for user ${currentUserId}`);
+    console.log(`🔍 FILTER DEBUG: Starting filtered team for user ${currentUserId}`);
     console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}", levelOffset: ${levelOffset}`);
 
-    // Get base downline
-    const downlineSnapshot = await db.collection("users")
+    // Get base team
+    const teamSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (downlineSnapshot.empty) {
+    if (teamSnapshot.empty) {
       return {
-        downline: [],
+        downline: [], // Keep API response key for backward compatibility
         totalCount: 0,
         hasMore: false
       };
@@ -331,7 +331,7 @@ exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) 
     const now = new Date();
 
     // Apply time-based and status filters
-    downlineSnapshot.docs.forEach(doc => {
+    teamSnapshot.docs.forEach(doc => {
       const user = { uid: doc.id, ...doc.data() };
       const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
       const qualifiedDate = user.qualifiedDate?.toDate ? user.qualifiedDate.toDate() : null;
@@ -424,7 +424,7 @@ exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) 
     console.log(`✅ FILTER DEBUG: Returning ${paginatedUsers.length} users out of ${totalCount} total`);
 
     return {
-      downline: serializeData(paginatedUsers),
+      downline: serializeData(paginatedUsers), // Keep API response key for backward compatibility
       groupedByLevel: levelOffset !== undefined ? serializeData(groupedByLevel) : null,
       totalCount,
       hasMore,
@@ -433,8 +433,8 @@ exports.getFilteredDownline = onCall({ region: "us-central1" }, async (request) 
     };
 
   } catch (error) {
-    console.error(`CRITICAL ERROR in getFilteredDownline for user ${currentUserId}:`, error);
-    throw new HttpsError("internal", "An unexpected error occurred while fetching filtered downline.", error.message);
+    console.error(`CRITICAL ERROR in getFilteredTeam for user ${currentUserId}:`, error);
+    throw new HttpsError("internal", "An unexpected error occurred while fetching filtered team.", error.message);
   }
 });
 
@@ -746,7 +746,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
-        route: "/visit_opportunity",
+        route: "/business",
         route_params: JSON.stringify({}),
       };
       await db.collection("users").doc(event.params.userId).collection("notifications").add(notificationContent);
@@ -1195,11 +1195,11 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. VIEW PROFILES!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro team yesterday. VIEW PROFILES!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_team_members",
-          route: "/downline_team",
+          route: "/team",
           route_params: JSON.stringify({ filter: "newMembers" }),
         };
         

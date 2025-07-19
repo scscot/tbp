@@ -1,1 +1,1 @@
-// UI card for displaying downline members
+// UI card for displaying team members

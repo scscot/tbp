@@ -239,8 +239,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             ),
                             content: const Text(
                                 'You must enter the exact referral link you received from your company. '
-                                'This will ensure your Team Build Pro downline members that join your business opportunity '
-                                'are automatically placed in your business opportunity downline.'),
+                                'This will ensure your Team Build Pro team members that join your business opportunity '
+                                'are automatically placed in your business opportunity team.'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),

@@ -292,7 +292,7 @@ void navigateToRoute(PendingNotification notification) {
       navigatorKey.currentState!.push(MaterialPageRoute(
         builder: (_) => JoinOpportunityScreen(appId: appId),
       ));
-    } else if (notification.route == '/downline_team') {
+    } else if (notification.route == '/team') {
       const String appId = 'L8n1tJqHqYd3F5j6';
       final filter = notification.arguments['filter'] as String?;
       

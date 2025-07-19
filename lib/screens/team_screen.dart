@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../models/user_model.dart';
-import '../services/downline_service.dart';
+import '../services/team_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
@@ -35,7 +35,7 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final DownlineService _downlineService = DownlineService();
+  final TeamService _teamService = TeamService();
   final TextEditingController _searchController = TextEditingController();
 
   List<UserModel> _allMembers = [];
@@ -187,19 +187,19 @@ class _TeamScreenState extends State<TeamScreen>
 
     try {
       // Get counts for analytics
-      final counts = await _downlineService.getDownlineCounts();
+      final counts = await _teamService.getTeamCounts();
 
       if (!mounted) return;
 
       // Fetch all team data
-      final result = await _downlineService.getFilteredDownline(
+      final result = await _teamService.getFilteredTeam(
         filter: 'all',
         searchQuery: '',
         levelOffset: _levelOffset,
         limit: 1000,
       );
 
-      _allMembers = result['downline'] as List<UserModel>;
+      _allMembers = result['team'] as List<UserModel>;
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {

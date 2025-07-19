@@ -68,7 +68,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         navigator.push(MaterialPageRoute(
             builder: (_) => HowItWorksScreen(appId: widget.appId)));
         break;
-      case 'downline':
+      case 'team':
         navigator.push(MaterialPageRoute(
             builder: (_) => TeamScreen(appId: widget.appId)));
         break;
@@ -180,7 +180,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                 const PopupMenuItem<String>(
                     value: 'how_it_works', child: Text('How It Works')),
                 const PopupMenuItem<String>(
-                    value: 'downline', child: Text('My Downline')),
+                    value: 'team', child: Text('My Team')),
                 const PopupMenuItem<String>(
                     value: 'share', child: Text('Grow My Team')),
                 const PopupMenuItem<String>(

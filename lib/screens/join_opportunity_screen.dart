@@ -235,9 +235,9 @@ class _JoinOpportunityScreenState extends State<JoinOpportunityScreen> {
                     _buildBulletPoint(
                         'Your unique referral link can only be set one time.'),
                     _buildBulletPoint(
-                        'Once set, your current and future Team Build Pro downline members will automatically be placed in your $_bizOpp downline.'),
+                        'Once set, your current and future Team Build Pro team members will automatically be placed in your $_bizOpp team.'),
                     _buildBulletPoint(
-                        'This ensures your new downline is built correctly under you in ${_bizOpp ?? 'this opportunity'}.'),
+                        'This ensures your new team is built correctly under you in ${_bizOpp ?? 'this opportunity'}.'),
                     const SizedBox(height: 8),
                     const Text(
                       'Please double-check that your link is accurate before saving.',

@@ -279,7 +279,7 @@ Legal Compliance:
 
 Within Your Team:
 • Your name and profile photo are visible to your team members
-• Referral relationships are shared within your upline/downline structure
+• Referral relationships are shared within your team structure
 
 Service Providers:
 • Firebase (Google) for authentication and database services
