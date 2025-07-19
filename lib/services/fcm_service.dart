@@ -11,7 +11,7 @@ import '../main.dart';
 import 'notification_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/message_thread_screen.dart';
-import '../screens/join_opportunity_screen.dart';
+import '../screens/join_company_screen.dart';
 import '../screens/team_screen.dart';
 
 // --- MODIFICATION: The key is now defined in main.dart and removed from here ---
@@ -290,7 +290,7 @@ void navigateToRoute(PendingNotification notification) {
     } else if (notification.route == '/join_opportunity') {
       const String appId = 'L8n1tJqHqYd3F5j6';
       navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => JoinOpportunityScreen(appId: appId),
+        builder: (_) => JoinCompanyScreen(appId: appId),
       ));
     } else if (notification.route == '/team') {
       const String appId = 'L8n1tJqHqYd3F5j6';

@@ -99,7 +99,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
 
-            // Extract base URL for validation (same logic as JoinOpportunityScreen)
+            // Extract base URL for validation (same logic as JoinCompanyScreen)
             if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
               try {
                 final uri = Uri.parse(bizOppRefUrl);
@@ -179,7 +179,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         return 'Please enter a valid referral link (e.g., https://example.com).';
       }
 
-      // Base URL validation (same logic as JoinOpportunityScreen)
+      // Base URL validation (same logic as JoinCompanyScreen)
       if (_baseUrl != null && _baseUrl!.isNotEmpty) {
         if (!_baseUrl!.startsWith('https') || !referralLink.startsWith(_baseUrl!)) {
           _scrollToField(_bizOppRefUrlKey);

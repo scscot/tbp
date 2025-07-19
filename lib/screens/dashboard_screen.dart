@@ -5,7 +5,7 @@ import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
-import 'my_biz_screen.dart';
+import 'company_screen.dart';
 import 'message_center_screen.dart';
 import 'notifications_screen.dart';
 import '../config/app_constants.dart';
@@ -500,7 +500,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => MyBizScreen(appId: widget.appId),
+                    builder: (_) => CompanyScreen(appId: widget.appId),
                   ),
                 );
               } else {

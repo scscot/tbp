@@ -99,7 +99,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     }
   }
 
-  bool _shouldShowJoinOpportunity(UserModel? currentUser) {
+  bool _shouldShowJoinCompany(UserModel? currentUser) {
     if (currentUser == null ||
         currentUser.role == 'admin' ||
         currentUser.bizVisitDate != null) {
@@ -172,9 +172,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                 _handleMenuSelection(value, isProfileComplete),
             itemBuilder: (BuildContext context) => [
               if (isProfileComplete) ...[
-                if (_shouldShowJoinOpportunity(currentUser))
-                  const PopupMenuItem<String>(
-                      value: 'join', child: Text('Join Now!')),
                 const PopupMenuItem<String>(
                     value: 'dashboard', child: Text('Dashboard')),
                 const PopupMenuItem<String>(

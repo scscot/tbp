@@ -406,7 +406,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'COMMUNITY ENGAGEMENT THRESHOLDS',
+                      'COMMUNITY GROWTH THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

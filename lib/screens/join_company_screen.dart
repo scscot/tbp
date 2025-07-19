@@ -1,4 +1,4 @@
-// lib/screens/join_opportunity_screen.dart
+// lib/screens/join_company_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,19 +6,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../widgets/header_widgets.dart';
-import 'my_biz_screen.dart';
+import 'company_screen.dart';
 import 'package:flutter/foundation.dart';
 
-class JoinOpportunityScreen extends StatefulWidget {
+class JoinCompanyScreen extends StatefulWidget {
   final String appId;
 
-  const JoinOpportunityScreen({super.key, required this.appId});
+  const JoinCompanyScreen({super.key, required this.appId});
 
   @override
-  State<JoinOpportunityScreen> createState() => _JoinOpportunityScreenState();
+  State<JoinCompanyScreen> createState() => _JoinCompanyScreenState();
 }
 
-class _JoinOpportunityScreenState extends State<JoinOpportunityScreen> {
+class _JoinCompanyScreenState extends State<JoinCompanyScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _refLinkController = TextEditingController();
   final TextEditingController _refLinkConfirmController =
@@ -115,7 +115,7 @@ class _JoinOpportunityScreenState extends State<JoinOpportunityScreen> {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => MyBizScreen(appId: widget.appId)),
+        MaterialPageRoute(builder: (_) => CompanyScreen(appId: widget.appId)),
       );
     } catch (e) {
       if (!mounted) return;

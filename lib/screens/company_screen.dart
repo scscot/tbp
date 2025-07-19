@@ -1,4 +1,4 @@
-// lib/screens/my_biz_screen.dart
+// lib/screens/company_screen.dart
 
 // ignore_for_file: deprecated_member_use
 
@@ -10,19 +10,19 @@ import 'package:intl/intl.dart'; // Required for date formatting
 import '../widgets/header_widgets.dart';
 import 'dashboard_screen.dart'; // Required for dashboard navigation
 
-class MyBizScreen extends StatefulWidget {
+class CompanyScreen extends StatefulWidget {
   final String appId;
 
-  const MyBizScreen({
+  const CompanyScreen({
     super.key,
     required this.appId,
   });
 
   @override
-  State<MyBizScreen> createState() => _MyBizScreenState();
+  State<CompanyScreen> createState() => _CompanyScreenState();
 }
 
-class _MyBizScreenState extends State<MyBizScreen> {
+class _CompanyScreenState extends State<CompanyScreen> {
   String? bizOpp;
   String? bizOppRefUrl;
   Timestamp? bizJoinDate;
@@ -63,7 +63,7 @@ class _MyBizScreenState extends State<MyBizScreen> {
         loading = false;
       });
     } catch (e) {
-      debugPrint("Error loading MyBizScreen data: $e");
+      debugPrint("Error loading CompanyScreen data: $e");
       if (mounted) setState(() => loading = false);
     }
   }
@@ -86,7 +86,7 @@ class _MyBizScreenState extends State<MyBizScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'My Business Details',
+                      'My Company Details',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
