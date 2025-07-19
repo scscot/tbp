@@ -158,29 +158,34 @@ class _BusinessScreenState extends State<BusinessScreen> {
       });
     }
 
-    // --- MODIFICATION: The client now only calls the Cloud Function ---
-    // The backend now handles the date update and notification logic.
-    try {
-      HttpsCallable callable = FirebaseFunctions.instance
-          .httpsCallable('notifySponsorOfBizOppVisit');
-      await callable.call();
+    // Only call the Cloud Function if the user hasn't visited the opportunity yet
+    // This ensures the sponsor notification is only sent on the first copy
+    if (!hasVisitedOpp) {
+      try {
+        HttpsCallable callable = FirebaseFunctions.instance
+            .httpsCallable('notifySponsorOfBizOppVisit');
+        await callable.call();
 
-      if (mounted) {
-        // Update the local state to reflect the change immediately
-        setState(() => hasVisitedOpp = true);
+        if (mounted) {
+          // Update the local state to reflect the change immediately
+          setState(() => hasVisitedOpp = true);
+          if (kDebugMode) {
+            debugPrint("Successfully triggered sponsor notification function on first copy.");
+          }
+        }
+      } on FirebaseFunctionsException catch (e) {
         if (kDebugMode) {
-          debugPrint("Successfully triggered sponsor notification function.");
+          debugPrint(
+              "Error calling notifySponsorOfBizOppVisit: ${e.code} - ${e.message}");
         }
       }
-    } on FirebaseFunctionsException catch (e) {
+    } else {
       if (kDebugMode) {
-        debugPrint(
-            "Error calling notifySponsorOfBizOppVisit: ${e.code} - ${e.message}");
+        debugPrint("User has already visited opportunity - skipping notification call.");
       }
     }
-    // --- End of modification ---
 
-    // Copy URL to clipboard
+    // Copy URL to clipboard (this happens every time)
     try {
       await Clipboard.setData(ClipboardData(text: bizOppRefUrl!));
       if (mounted) {
