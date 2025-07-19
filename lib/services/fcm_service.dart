@@ -48,7 +48,7 @@ class FCMService {
       });
 
       FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        _handleMessage(notificationService, message);
+        _handleMessage(notificationService, message, shouldNavigate: true);
       });
 
       // Handle foreground messages (when app is open)
@@ -103,27 +103,54 @@ class FCMService {
 
   void _handleMessage(
       NotificationService notificationService, RemoteMessage message,
-      {bool isTerminated = false}) {
+      {bool isTerminated = false, bool shouldNavigate = false}) {
+    if (kDebugMode) {
+      debugPrint("📨 FCM: Handling message - isTerminated: $isTerminated, shouldNavigate: $shouldNavigate");
+      debugPrint("📨 FCM: Message data: ${message.data}");
+    }
+
     final route = message.data['route'] as String?;
     final paramsString = message.data['route_params'] as String?;
 
     if (route != null && paramsString != null) {
+      if (kDebugMode) {
+        debugPrint("📨 FCM: Route: $route, Params: $paramsString");
+      }
+      
       try {
         final Map<String, dynamic> arguments = jsonDecode(paramsString);
         final pendingNotification = PendingNotification(
           route: route,
           arguments: arguments,
         );
-        // Only auto-navigate if the app was terminated and reopened by the notification
-        // For foreground messages, just store the notification data without auto-navigation
+        
         if (isTerminated) {
+          if (kDebugMode) {
+            debugPrint("📨 FCM: App was terminated - storing pending notification");
+          }
+          // Store pending notification for terminated app
           notificationService.setPendingNotification(pendingNotification);
+        } else if (shouldNavigate) {
+          if (kDebugMode) {
+            debugPrint("📨 FCM: App opened from background - scheduling navigation");
+          }
+          // Navigate when app is opened from background, with a small delay to ensure navigator is ready
+          Future.delayed(Duration(milliseconds: 500), () {
+            navigateToRoute(pendingNotification);
+          });
+        } else {
+          if (kDebugMode) {
+            debugPrint("📨 FCM: Foreground message - no navigation scheduled");
+          }
         }
-        // Removed auto-navigation for foreground messages to prevent unwanted routing
       } catch (e) {
         if (kDebugMode) {
-          debugPrint("Error parsing notification route_params: $e");
+          debugPrint("❌ FCM: Error parsing notification route_params: $e");
         }
+      }
+    } else {
+      if (kDebugMode) {
+        debugPrint("📨 FCM: No route or params found in message data");
       }
     }
   }
@@ -264,14 +291,27 @@ class FCMService {
 }
 
 void navigateToRoute(PendingNotification notification) {
+  if (kDebugMode) {
+    debugPrint("🚀 NAVIGATION: Attempting to navigate to route: ${notification.route}");
+    debugPrint("🚀 NAVIGATION: Arguments: ${notification.arguments}");
+    debugPrint("🚀 NAVIGATION: Navigator state available: ${navigatorKey.currentState != null}");
+  }
+
   if (navigatorKey.currentState != null) {
     if (notification.route == '/member_detail') {
       final userId = notification.arguments['userId'] as String?;
       if (userId != null) {
+        if (kDebugMode) {
+          debugPrint("🚀 NAVIGATION: Navigating to MemberDetailScreen for userId: $userId");
+        }
         const String appId = 'L8n1tJqHqYd3F5j6';
         navigatorKey.currentState!.push(MaterialPageRoute(
           builder: (_) => MemberDetailScreen(userId: userId, appId: appId),
         ));
+      } else {
+        if (kDebugMode) {
+          debugPrint("❌ NAVIGATION: userId is null for member_detail route");
+        }
       }
     } else if (notification.route == '/message_thread') {
       final threadId = notification.arguments['threadId'] as String?;
@@ -304,5 +344,14 @@ void navigateToRoute(PendingNotification notification) {
         ),
       ));
     }
+  } else {
+    if (kDebugMode) {
+      debugPrint("❌ NAVIGATION: Navigator state is null, cannot navigate");
+      debugPrint("❌ NAVIGATION: Will retry navigation in 1 second...");
+    }
+    // Retry navigation after a longer delay if navigator is not ready
+    Future.delayed(Duration(seconds: 1), () {
+      navigateToRoute(notification);
+    });
   }
 }

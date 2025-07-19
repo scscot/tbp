@@ -39,6 +39,25 @@ const serializeData = (data) => {
   return newData;
 };
 
+// Helper function to get business opportunity name from admin settings
+const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your business opportunity') => {
+  if (!uplineAdminId || uplineAdminId.trim() === '') {
+    return defaultName;
+  }
+  
+  try {
+    const adminSettingsDoc = await db.collection('admin_settings').doc(uplineAdminId).get();
+    if (adminSettingsDoc.exists) {
+      const bizOpp = adminSettingsDoc.data()?.biz_opp;
+      return (bizOpp && bizOpp.trim() !== '') ? bizOpp : defaultName;
+    }
+    return defaultName;
+  } catch (error) {
+    console.log(`Error fetching business opportunity name for admin ${uplineAdminId}:`, error.message);
+    return defaultName;
+  }
+};
+
 exports.getTeam = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -647,18 +666,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
     const newUserLocation = `${afterData.city || ""}, ${afterData.state || ""}${afterData.country ? ` - ${afterData.country}` : ""}`;
 
-    // Get business opportunity name for admin notifications
-    let bizOppName = "your business opportunity";
-    if (sponsor.upline_admin) {
-      try {
-        const adminSettingsDoc = await db.collection("admin_settings").doc(sponsor.upline_admin).get();
-        if (adminSettingsDoc.exists && adminSettingsDoc.data().biz_opp) {
-          bizOppName = adminSettingsDoc.data().biz_opp;
-        }
-      } catch (error) {
-        console.log(`🔔 SPONSORSHIP DEBUG: Could not fetch admin settings for biz opp name: ${error.message}`);
-      }
-    }
+    // Get business opportunity name using centralized helper
+    const bizOppName = await getBusinessOpportunityName(sponsor.upline_admin);
 
     let notificationContent;
 
@@ -732,13 +741,8 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
 
-      let bizName = "your business opportunity";
-      if (afterData.upline_admin) {
-        const adminSettingsDoc = await db.collection("admin_settings").doc(afterData.upline_admin).get();
-        if (adminSettingsDoc.exists && adminSettingsDoc.data().biz_opp) {
-          bizName = adminSettingsDoc.data().biz_opp;
-        }
-      }
+      // Get business opportunity name using centralized helper
+      const bizName = await getBusinessOpportunityName(afterData.upline_admin);
 
       const notificationContent = {
         title: "You're Qualified!",
@@ -865,11 +869,13 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     }
     const sponsorData = sponsorDoc.data();
     const sponsorName = sponsorData.firstName;
-    const bizOpp = sponsorData.biz_opp;
+    
+    // Get business opportunity name using centralized helper
+    const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
     const notificationContent = {
-      title: `🎉 New ${bizOpp || 'opportunity'} visit!`,
-      message: `${visitingUserName} has just used your referral link to check out the opportunity! Introduce yourself and answer any questions they might have. VIEW PROFILE`,
+      title: `🎉 New ${bizOpp} visit!`,
+      message: `${visitingUserName} has just used your referral link to check out ${bizOpp}! Introduce yourself and answer any questions they might have. VIEW PROFILE`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
