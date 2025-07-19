@@ -55,10 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await authService.signInWithEmailAndPassword(
           _emailController.text.trim(), _passwordController.text.trim());
       
-      // Navigate back after successful login
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      // Don't navigate - let AuthWrapper handle routing based on auth state
     } on FirebaseAuthException catch (e) {
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -86,10 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await authService.signInWithCredential(credential);
       debugPrint("✅ DEBUG: Firebase sign-in successful!");
       
-      // Navigate back after successful login
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+      // Don't navigate - let AuthWrapper handle routing based on auth state
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
       scaffoldMessenger.showSnackBar(SnackBar(

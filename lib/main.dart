@@ -167,8 +167,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
     if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HomepageScreen');
-      return HomepageScreen(key: const ValueKey('HomepageScreen'), appId: appId);
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing LoginScreen');
+      return LoginScreen(key: const ValueKey('LoginScreen'), appId: appId);
     }
 
     debugPrint(

@@ -284,7 +284,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                           color: Colors.black87, fontSize: 18, height: 1.4),
                       children: [
                         const TextSpan(
-                            text: "You're now eligible to register for "),
+                            text: "You're now eligible to join "),
                         TextSpan(
                           text: bizOpp ?? 'your business opportunity',
                           style: const TextStyle(fontWeight: FontWeight.bold),

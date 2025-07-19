@@ -503,7 +503,31 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
     console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
 
+    // Count unread notifications to set correct badge number
+    const unreadNotificationsSnapshot = await db.collection("users")
+      .doc(userId)
+      .collection("notifications")
+      .where("read", "==", false)
+      .get();
+    
+    const badgeCount = unreadNotificationsSnapshot.size;
+    console.log(`🔔 PUSH DEBUG: Unread notifications count: ${badgeCount}`);
+
     const imageUrl = notificationData?.imageUrl;
+
+    // Build APNS payload - only include badge if count > 0
+    const apnsPayload = {
+      alert: {
+        title: notificationData?.title || "New Notification",
+        body: notificationData?.message || "You have a new message.",
+      },
+      sound: "default",
+    };
+
+    // Only add badge if there are unread notifications (never show badge with 0)
+    if (badgeCount > 0) {
+      apnsPayload.badge = badgeCount;
+    }
 
     const message = {
       token: fcmToken,
@@ -520,14 +544,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
       },
       apns: {
         payload: {
-          aps: {
-            alert: {
-              title: notificationData?.title || "New Notification",
-              body: notificationData?.message || "You have a new message.",
-            },
-            sound: "default",
-            badge: 1,
-          },
+          aps: apnsPayload,
         },
       },
       android: {
@@ -537,7 +554,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
       },
     };
 
-    console.log(`🔔 PUSH DEBUG: Sending FCM message...`);
+    console.log(`🔔 PUSH DEBUG: Sending FCM message with badge ${badgeCount > 0 ? `count: ${badgeCount}` : 'hidden (0 unread)'}`);
     console.log(`🔔 PUSH DEBUG: Message payload:`, JSON.stringify(message, null, 2));
 
     const response = await messaging.send(message);
@@ -1039,6 +1056,7 @@ exports.updateUserTimezone = onCall({ region: "us-central1" }, async (request) =
     throw new HttpsError("internal", "An unexpected error occurred while updating timezone.", error.message);
   }
 });
+
 
 // ============================================================================
 // DAILY TEAM GROWTH NOTIFICATIONS
