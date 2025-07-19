@@ -424,7 +424,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.help_outline,
           title: 'How It Works',
-          subtitle: 'Learn about the Team Build Pro system',
+          subtitle: 'Important steps',
           color: AppColors.teamAccent,
           onTap: () => Navigator.push(
             context,
@@ -436,7 +436,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.groups,
           title: 'View My Team',
-          subtitle: 'View and manage your team members',
+          subtitle: 'View your organization',
           color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,
@@ -490,10 +490,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             user.totalTeamCount >= AppConstants.projectWideTotalTeamMin)
           _buildActionCard(
             icon: Icons.monetization_on,
-            title: user.bizOppRefUrl != null ? 'My Opportunity' : 'Join Opportunity',
+            title: user.bizOppRefUrl != null ? 'My Business Details' : 'Join Business',
             subtitle: user.bizOppRefUrl != null
-                ? 'Manage your business opportunity'
-                : 'Ready to join the business opportunity',
+                ? 'View your business details'
+                : 'Ready to join the business',
             color: AppColors.opportunityPrimary,
             onTap: () {
               if (user.bizOppRefUrl != null) {

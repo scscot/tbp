@@ -86,7 +86,7 @@ class _MyBizScreenState extends State<MyBizScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'My Opportunity Details',
+                      'My Business Details',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -141,24 +141,7 @@ class _MyBizScreenState extends State<MyBizScreen> {
                           height: 1.5),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Provide a clear path back to the main dashboard
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                DashboardScreen(appId: widget.appId)),
-                        (route) => false,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      textStyle: const TextStyle(fontSize: 18),
-                    ),
-                    child: const Text('Back to Dashboard'),
-                  )
+                  
                 ],
               ),
             ),
