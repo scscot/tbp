@@ -222,6 +222,9 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   let level = 1;
   let uplineAdminForNewUser = null;
   let adminReferralId = null;
+  
+  // CRITICAL: Define uid outside try block for atomic cleanup access
+  let uid = null;
 
   try {
     console.log("🔍 REGISTER FUNCTION: Processing sponsor referral code:", sponsorReferralCode);
@@ -267,7 +270,9 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       password: password,
       displayName: `${firstName} ${lastName}`,
     });
-    const uid = userRecord.uid;
+    
+    // CRITICAL: Store uid immediately after creation for potential cleanup
+    uid = userRecord.uid;
     console.log("✅ REGISTER FUNCTION: Firebase Auth user created:", uid);
 
     console.log("🔍 REGISTER FUNCTION: Preparing user document...");
@@ -320,16 +325,22 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
 
     console.log("✅ REGISTER FUNCTION: Registration completed successfully");
     return { success: true, uid: uid };
+    
   } catch (error) {
     console.error("❌ REGISTER FUNCTION: Error during registration:", error);
     console.error("❌ REGISTER FUNCTION: Error message:", error.message);
     console.error("❌ REGISTER FUNCTION: Error stack:", error.stack);
     
-    // If we created the auth user but failed to create the Firestore document, clean up
-    if (error.message && error.message.includes("auth/")) {
-      console.log("🔍 REGISTER FUNCTION: Auth error, no cleanup needed");
-    } else {
-      console.log("🔍 REGISTER FUNCTION: Non-auth error, may need to clean up auth user");
+    // CRITICAL: Atomic cleanup - if we created auth user but failed later, clean it up
+    if (uid) {
+      try {
+        console.log(`🧹 REGISTER FUNCTION: Cleaning up orphaned auth user ${uid}...`);
+        await auth.deleteUser(uid);
+        console.log(`✅ REGISTER FUNCTION: Auth user ${uid} deleted successfully.`);
+      } catch (cleanupError) {
+        console.error(`❌ REGISTER FUNCTION: Failed to cleanup auth user ${uid}:`, cleanupError);
+        // Log cleanup failure but still throw original error
+      }
     }
     
     throw new HttpsError("internal", `Registration failed: ${error.message}`, error.details);
