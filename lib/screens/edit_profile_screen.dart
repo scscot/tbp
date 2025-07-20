@@ -253,6 +253,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           'state': _selectedState,
           'photoUrl': photoUrl,
           'biz_opp_ref_url': _isBizOppRepresentative ? _bizOppRefUrlController.text.trim() : null,
+          // 🆕 Set profile completion flag for first-time setup
+          if (widget.isFirstTimeSetup) 'isProfileComplete': true,
         };
 
         // Add timezone recalculation when location data is updated

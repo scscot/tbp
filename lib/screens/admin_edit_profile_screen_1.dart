@@ -141,6 +141,14 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
         'superAdmin': false,
       }, SetOptions(merge: true));
 
+      // 🆕 Set profile completion flag for admin users
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
+        'isProfileComplete': true,
+      });
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile completed successfully!')),

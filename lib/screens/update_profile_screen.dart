@@ -116,6 +116,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
           'country': _selectedCountry,
           'state': _selectedState,
           'photoUrl': photoUrl,
+          // 🆕 Set profile completion flag for first-time setup
+          if (widget.isFirstTimeSetup) 'isProfileComplete': true,
         };
 
         await _firestoreService.updateUser(widget.user.uid, updatedData);
