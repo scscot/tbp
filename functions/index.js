@@ -34,7 +34,7 @@ const updateUserBadge = async (userId) => {
       console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
       return;
     }
-    
+
     const userData = userDoc.data();
     const fcmToken = userData?.fcm_token;
     if (!fcmToken) {
@@ -48,14 +48,14 @@ const updateUserBadge = async (userId) => {
       .collection("notifications")
       .where("read", "==", false)
       .get();
-    
+
     const notificationCount = unreadNotificationsSnapshot.size;
-    
+
     // Count unread chat messages  
     const unreadChatsSnapshot = await db.collection("chats")
       .where("participants", "array-contains", userId)
       .get();
-    
+
     let messageCount = 0;
     unreadChatsSnapshot.docs.forEach(doc => {
       const chatData = doc.data();
@@ -66,9 +66,9 @@ const updateUserBadge = async (userId) => {
     });
 
     const totalBadgeCount = notificationCount + messageCount;
-    
+
     console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
-    
+
     // Send badge update message
     const message = {
       token: fcmToken,
@@ -86,7 +86,7 @@ const updateUserBadge = async (userId) => {
 
     await messaging.send(message);
     console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
-    
+
   } catch (error) {
     console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
   }
@@ -119,7 +119,7 @@ const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your bus
   if (!uplineAdminId || uplineAdminId.trim() === '') {
     return defaultName;
   }
-  
+
   try {
     const adminSettingsDoc = await db.collection('admin_settings').doc(uplineAdminId).get();
     if (adminSettingsDoc.exists) {
@@ -209,7 +209,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1" }, (req, res) 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   console.log("🔍 REGISTER FUNCTION: Starting registerUser function");
   console.log("🔍 REGISTER FUNCTION: Request data:", JSON.stringify(request.data, null, 2));
-  
+
   const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city } = request.data;
 
   if (!email || !password || !firstName || !lastName) {
@@ -222,13 +222,13 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   let level = 1;
   let uplineAdminForNewUser = null;
   let adminReferralId = null;
-  
+
   // CRITICAL: Define uid outside try block for atomic cleanup access
   let uid = null;
 
   try {
     console.log("🔍 REGISTER FUNCTION: Processing sponsor referral code:", sponsorReferralCode);
-    
+
     if (sponsorReferralCode) {
       const sponsorQuery = await db.collection("users").where("referralCode", "==", sponsorReferralCode).limit(1).get();
       if (!sponsorQuery.empty) {
@@ -236,7 +236,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
         sponsorId = sponsorDoc.id;
         const sponsorData = sponsorDoc.data();
         console.log("🔍 REGISTER FUNCTION: Found sponsor:", sponsorId, sponsorData.firstName, sponsorData.lastName);
-        
+
         if (sponsorData.role === 'admin') {
           uplineAdminForNewUser = sponsorId;
         } else {
@@ -270,7 +270,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       password: password,
       displayName: `${firstName} ${lastName}`,
     });
-    
+
     // CRITICAL: Store uid immediately after creation for potential cleanup
     uid = userRecord.uid;
     console.log("✅ REGISTER FUNCTION: Firebase Auth user created:", uid);
@@ -278,7 +278,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
     console.log("🔍 REGISTER FUNCTION: Preparing user document...");
     const userTimezone = getTimezoneFromLocation(country, state);
     console.log("🔍 REGISTER FUNCTION: Determined timezone:", userTimezone);
-    
+
     const newUser = {
       uid: uid,
       email: email,
@@ -299,6 +299,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       upline_admin: uplineAdminForNewUser,
       directSponsorCount: 0,
       totalTeamCount: 0,
+      isProfileComplete: false,
     };
 
     console.log("🔍 REGISTER FUNCTION: User document prepared:", JSON.stringify(newUser, null, 2));
@@ -325,12 +326,12 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
 
     console.log("✅ REGISTER FUNCTION: Registration completed successfully");
     return { success: true, uid: uid };
-    
+
   } catch (error) {
     console.error("❌ REGISTER FUNCTION: Error during registration:", error);
     console.error("❌ REGISTER FUNCTION: Error message:", error.message);
     console.error("❌ REGISTER FUNCTION: Error stack:", error.stack);
-    
+
     // CRITICAL: Atomic cleanup - if we created auth user but failed later, clean it up
     if (uid) {
       try {
@@ -342,7 +343,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
         // Log cleanup failure but still throw original error
       }
     }
-    
+
     throw new HttpsError("internal", `Registration failed: ${error.message}`, error.details);
   }
 });
@@ -592,7 +593,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     const imageUrl = notificationData?.imageUrl;
 
     // Send the push notification without badge (badge will be updated by centralized function)
-    const message = { 
+    const message = {
       token: fcmToken,
       notification: {
         title: notificationData?.title || "New Notification",
@@ -600,7 +601,7 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
         // Removed imageUrl to prevent iOS notification failures
       },
       data: {
-        notification_id: notificationId, 
+        notification_id: notificationId,
         type: notificationData?.type || "generic",
         route: notificationData?.route || "/",
         route_params: notificationData?.route_params || "{}",
@@ -727,16 +728,16 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
   const newUserId = event.params.userId;
 
-  // Check if photoUrl was added for the first time
-  const beforePhotoUrl = beforeData.photoUrl;
-  const afterPhotoUrl = afterData.photoUrl;
+  // Check if profile was completed for the first time using explicit flag
+  const beforeIsProfileComplete = beforeData.isProfileComplete;
+  const afterIsProfileComplete = afterData.isProfileComplete;
 
-  if ((beforePhotoUrl && beforePhotoUrl !== "") || !afterPhotoUrl || afterPhotoUrl === "") {
-    console.log(`🔔 SPONSORSHIP DEBUG: photoUrl not added for the first time for user ${newUserId}. Skipping notification.`);
+  if (beforeIsProfileComplete === true || afterIsProfileComplete !== true) {
+    console.log(`🔔 SPONSORSHIP DEBUG: Profile not completed for the first time for user ${newUserId}. Before: ${beforeIsProfileComplete}, After: ${afterIsProfileComplete}. Skipping notification.`);
     return;
   }
 
-  console.log(`🔔 SPONSORSHIP DEBUG: photoUrl added for the first time for user ${newUserId}`);
+  console.log(`🔔 SPONSORSHIP DEBUG: Profile completed for the first time for user ${newUserId}`);
 
   if (!afterData.referredBy) {
     console.log(`🔔 SPONSORSHIP DEBUG: New user ${newUserId} has no referredBy field. Skipping sponsorship notification.`);
@@ -965,7 +966,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     }
     const sponsorData = sponsorDoc.data();
     const sponsorName = sponsorData.firstName;
-    
+
     // Get business opportunity name using centralized helper
     const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
@@ -1102,7 +1103,7 @@ exports.updateUserTimezone = onCall({ region: "us-central1" }, async (request) =
   }
 
   const { userId, country, state } = request.data;
-  
+
   if (!userId || !country) {
     throw new HttpsError("invalid-argument", "User ID and country are required.");
   }
@@ -1121,10 +1122,10 @@ exports.updateUserTimezone = onCall({ region: "us-central1" }, async (request) =
 
     console.log(`✅ TIMEZONE UPDATE: Successfully updated timezone for user ${userId} to ${userTimezone}`);
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       timezone: userTimezone,
-      message: `Timezone updated to ${userTimezone} based on ${country}${state ? `, ${state}` : ''}` 
+      message: `Timezone updated to ${userTimezone} based on ${country}${state ? `, ${state}` : ''}`
     };
 
   } catch (error) {
@@ -1145,10 +1146,10 @@ exports.clearAppBadge = onCall({ region: "us-central1" }, async (request) => {
 
   try {
     console.log(`🔔 CLEAR BADGE: Badge clear requested for user ${userId} - using centralized update`);
-    
+
     // Use centralized badge update function which will calculate and set correct badge
     await updateUserBadge(userId);
-    
+
     return { success: true, message: "Badge updated successfully" };
 
   } catch (error) {
@@ -1186,9 +1187,9 @@ exports.onNotificationDelete = onDocumentDeleted("users/{userId}/notifications/{
 exports.onChatUpdate = onDocumentUpdated("chats/{chatId}", async (event) => {
   const afterData = event.data?.after.data();
   const participants = afterData?.participants || [];
-  
+
   console.log(`🔔 TRIGGER: Chat updated for participants: ${participants.join(', ')}`);
-  
+
   // Update badge for all participants
   const updatePromises = participants.map(userId => updateUserBadge(userId));
   await Promise.allSettled(updatePromises);
@@ -1202,10 +1203,10 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Authentication required");
   }
-  
+
   const userId = request.auth.uid;
   console.log(`🔔 SYNC: Manual badge sync requested for user ${userId}`);
-  
+
   await updateUserBadge(userId);
   return { success: true, message: "Badge synced successfully" };
 });
@@ -1229,24 +1230,24 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   region: "us-central1"
 }, async (event) => {
   console.log("🔔 DAILY NOTIFICATIONS: Starting daily team growth notification process");
-  
+
   try {
     const now = new Date();
     const currentHour = now.getUTCHours();
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: Current UTC time: ${now.toISOString()}, Hour: ${currentHour}`);
-    
+
     // Calculate yesterday's date range in UTC
     const yesterdayStart = new Date(now);
     yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1);
     yesterdayStart.setUTCHours(0, 0, 0, 0);
-    
+
     const yesterdayEnd = new Date(now);
     yesterdayEnd.setUTCDate(yesterdayEnd.getUTCDate() - 1);
     yesterdayEnd.setUTCHours(23, 59, 59, 999);
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: Yesterday range: ${yesterdayStart.toISOString()} to ${yesterdayEnd.toISOString()}`);
-    
+
     // Step 1: Get all users who joined yesterday with photoUrl != null (completed profiles)
     console.log("🔔 DAILY NOTIFICATIONS: Querying new members from yesterday...");
     const newMembersSnapshot = await db.collection("users")
@@ -1254,30 +1255,30 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       .where("createdAt", "<=", yesterdayEnd)
       .where("photoUrl", "!=", null)
       .get();
-    
+
     if (newMembersSnapshot.empty) {
       console.log("🔔 DAILY NOTIFICATIONS: No new members with completed profiles found for yesterday");
       return;
     }
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: Found ${newMembersSnapshot.size} new members with completed profiles`);
-    
+
     // Step 2: Use the efficient approach - extract upline_refs to identify notification recipients
     const notificationCounts = new Map(); // userId -> count of new members
     const newMembersByUpline = new Map(); // userId -> array of new member data
-    
+
     newMembersSnapshot.docs.forEach(doc => {
       const newMember = doc.data();
       const uplineRefs = newMember.upline_refs || [];
-      
+
       // CRITICAL: Skip admin users - they should not trigger daily team growth notifications
       if (newMember.role === 'admin') {
         console.log(`🔔 DAILY NOTIFICATIONS: Skipping admin user ${newMember.firstName} ${newMember.lastName} (${doc.id}) - admins don't trigger team notifications`);
         return;
       }
-      
+
       console.log(`🔔 DAILY NOTIFICATIONS: Processing regular user ${newMember.firstName} ${newMember.lastName} (${doc.id}) with ${uplineRefs.length} upline members`);
-      
+
       // For each person in this new member's upline, increment their notification count
       uplineRefs.forEach(uplineUserId => {
         if (!notificationCounts.has(uplineUserId)) {
@@ -1297,53 +1298,53 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         });
       });
     });
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new team members to be notified about`);
-    
+
     if (notificationCounts.size === 0) {
       console.log("🔔 DAILY NOTIFICATIONS: No users to notify");
       return;
     }
-    
+
     // Step 3: Get user details for those who should receive notifications
     const userIds = Array.from(notificationCounts.keys());
     const userPromises = userIds.map(userId => db.collection("users").doc(userId).get());
     const userDocs = await Promise.allSettled(userPromises);
-    
+
     // Step 4: Filter users by timezone and check for duplicate notifications
     const usersToNotify = [];
     const todayDateString = now.toISOString().split('T')[0]; // YYYY-MM-DD format
-    
+
     for (let i = 0; i < userDocs.length; i++) {
       const result = userDocs[i];
       if (result.status !== 'fulfilled' || !result.value.exists) {
         continue;
       }
-      
+
       const userDoc = result.value;
       const userData = userDoc.data();
       const userId = userDoc.id;
       const userTimezone = userData.timezone || 'UTC';
-      
+
       try {
         // Calculate what time it is in the user's timezone
         const userLocalTime = new Date(now.toLocaleString("en-US", { timeZone: userTimezone }));
         const userLocalHour = userLocalTime.getHours();
-        
+
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
-        
+
         // Check if it's 12 noon in their timezone
         if (userLocalHour === 12) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
-          
+
           if (lastNotificationDate === todayDateString) {
             console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} already received notification today (${todayDateString}). Skipping.`);
             continue;
           }
-          
+
           console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} eligible for notification. Last notification: ${lastNotificationDate || 'never'}, Today: ${todayDateString}`);
-          
+
           usersToNotify.push({
             userId: userId,
             userData: userData,
@@ -1356,19 +1357,19 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         // Skip this user if timezone processing fails
       }
     }
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 12 noon timezone and will receive notifications`);
-    
+
     if (usersToNotify.length === 0) {
       console.log("🔔 DAILY NOTIFICATIONS: No users in 12 noon timezone to notify at this time");
       return;
     }
-    
+
     // Step 5: Send notifications to eligible users and record the date to prevent duplicates
     const notificationPromises = usersToNotify.map(async ({ userId, userData, newMemberCount, newMembers }) => {
       try {
         console.log(`🔔 DAILY NOTIFICATIONS: Creating notification for ${userData.firstName} ${userData.lastName} (${userId}) - ${newMemberCount} new members`);
-        
+
         const notificationContent = {
           title: "Your Team Is Growing!",
           message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro team yesterday. VIEW PROFILES!`,
@@ -1378,148 +1379,42 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
           route: "/team",
           route_params: JSON.stringify({ filter: "newMembers" }),
         };
-        
+
         // Use a batch to atomically create notification and update the tracking date
         const batch = db.batch();
-        
+
         // Add the notification
         const notificationRef = db.collection("users").doc(userId).collection("notifications").doc();
         batch.set(notificationRef, notificationContent);
-        
+
         // Update user document with today's date to prevent duplicate notifications
         const userRef = db.collection("users").doc(userId);
-        batch.update(userRef, { 
-          lastDailyNotificationDate: todayDateString 
+        batch.update(userRef, {
+          lastDailyNotificationDate: todayDateString
         });
-        
+
         await batch.commit();
-        
+
         console.log(`✅ DAILY NOTIFICATIONS: Successfully sent notification to ${userData.firstName} ${userData.lastName} and recorded date ${todayDateString}`);
         return { success: true, userId, count: newMemberCount };
-        
+
       } catch (error) {
         console.error(`❌ DAILY NOTIFICATIONS: Failed to send notification to user ${userId}:`, error);
         return { success: false, userId, error: error.message };
       }
     });
-    
+
     // Wait for all notifications to be sent
     const results = await Promise.allSettled(notificationPromises);
-    
+
     // Log summary
     const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
     const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
-    
+
     console.log(`🔔 DAILY NOTIFICATIONS: Notification summary - Successful: ${successful}, Failed: ${failed}`);
     console.log(`✅ DAILY NOTIFICATIONS: Daily team growth notification process completed`);
-    
+
   } catch (error) {
     console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
-  }
-});
-
-// ============================================================================
-// TEMPORARY MIGRATION FUNCTION
-// ============================================================================
-
-/**
- * TEMPORARY: Migration function to set isProfileComplete flag for existing users
- * This function will be removed after migration is complete
- */
-exports.migrateProfileCompletion = onCall({ region: "us-central1" }, async (request) => {
-  // Only allow authenticated users to run this
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  console.log('🚀 Starting profile completion migration...');
-  
-  try {
-    // Get all users from Firestore
-    const usersSnapshot = await db.collection('users').get();
-    
-    if (usersSnapshot.empty) {
-      console.log('❌ No users found in database');
-      return { success: false, message: 'No users found' };
-    }
-
-    console.log(`📊 Found ${usersSnapshot.size} users to process`);
-    
-    let updatedCount = 0;
-    let completedCount = 0;
-    let incompleteCount = 0;
-    let errorCount = 0;
-    
-    // Process users in batches
-    const batch = db.batch();
-    let batchCount = 0;
-    const BATCH_SIZE = 500;
-    
-    for (const doc of usersSnapshot.docs) {
-      try {
-        const userData = doc.data();
-        const userId = doc.id;
-        const photoUrl = userData.photoUrl;
-        
-        // Determine if profile is complete based on photoUrl
-        const isProfileComplete = photoUrl && photoUrl.trim() !== '';
-        
-        // Only update if isProfileComplete field doesn't exist or is different
-        const currentIsProfileComplete = userData.isProfileComplete;
-        
-        if (currentIsProfileComplete !== isProfileComplete) {
-          batch.update(doc.ref, { isProfileComplete });
-          updatedCount++;
-          batchCount++;
-          
-          if (isProfileComplete) {
-            completedCount++;
-            console.log(`✅ User ${userId} (${userData.firstName} ${userData.lastName}) - Profile COMPLETE`);
-          } else {
-            incompleteCount++;
-            console.log(`⚠️  User ${userId} (${userData.firstName} ${userData.lastName}) - Profile INCOMPLETE`);
-          }
-          
-          // Commit batch when it reaches the limit
-          if (batchCount >= BATCH_SIZE) {
-            await batch.commit();
-            console.log(`📦 Committed batch of ${batchCount} updates`);
-            batchCount = 0;
-          }
-        } else {
-          console.log(`⏭️  User ${userId} - Already has correct isProfileComplete: ${isProfileComplete}`);
-        }
-        
-      } catch (error) {
-        console.error(`❌ Error processing user ${doc.id}:`, error);
-        errorCount++;
-      }
-    }
-    
-    // Commit any remaining updates in the batch
-    if (batchCount > 0) {
-      await batch.commit();
-      console.log(`📦 Committed final batch of ${batchCount} updates`);
-    }
-    
-    const summary = {
-      totalUsers: usersSnapshot.size,
-      usersUpdated: updatedCount,
-      completeProfiles: completedCount,
-      incompleteProfiles: incompleteCount,
-      errors: errorCount
-    };
-    
-    console.log('🎉 Migration completed!', summary);
-    
-    return {
-      success: true,
-      message: 'Migration completed successfully',
-      summary
-    };
-    
-  } catch (error) {
-    console.error('❌ Migration failed:', error);
-    throw new HttpsError("internal", `Migration failed: ${error.message}`);
   }
 });
