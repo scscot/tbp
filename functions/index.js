@@ -1417,3 +1417,109 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
   }
 });
+
+// ============================================================================
+// TEMPORARY MIGRATION FUNCTION
+// ============================================================================
+
+/**
+ * TEMPORARY: Migration function to set isProfileComplete flag for existing users
+ * This function will be removed after migration is complete
+ */
+exports.migrateProfileCompletion = onCall({ region: "us-central1" }, async (request) => {
+  // Only allow authenticated users to run this
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  console.log('🚀 Starting profile completion migration...');
+  
+  try {
+    // Get all users from Firestore
+    const usersSnapshot = await db.collection('users').get();
+    
+    if (usersSnapshot.empty) {
+      console.log('❌ No users found in database');
+      return { success: false, message: 'No users found' };
+    }
+
+    console.log(`📊 Found ${usersSnapshot.size} users to process`);
+    
+    let updatedCount = 0;
+    let completedCount = 0;
+    let incompleteCount = 0;
+    let errorCount = 0;
+    
+    // Process users in batches
+    const batch = db.batch();
+    let batchCount = 0;
+    const BATCH_SIZE = 500;
+    
+    for (const doc of usersSnapshot.docs) {
+      try {
+        const userData = doc.data();
+        const userId = doc.id;
+        const photoUrl = userData.photoUrl;
+        
+        // Determine if profile is complete based on photoUrl
+        const isProfileComplete = photoUrl && photoUrl.trim() !== '';
+        
+        // Only update if isProfileComplete field doesn't exist or is different
+        const currentIsProfileComplete = userData.isProfileComplete;
+        
+        if (currentIsProfileComplete !== isProfileComplete) {
+          batch.update(doc.ref, { isProfileComplete });
+          updatedCount++;
+          batchCount++;
+          
+          if (isProfileComplete) {
+            completedCount++;
+            console.log(`✅ User ${userId} (${userData.firstName} ${userData.lastName}) - Profile COMPLETE`);
+          } else {
+            incompleteCount++;
+            console.log(`⚠️  User ${userId} (${userData.firstName} ${userData.lastName}) - Profile INCOMPLETE`);
+          }
+          
+          // Commit batch when it reaches the limit
+          if (batchCount >= BATCH_SIZE) {
+            await batch.commit();
+            console.log(`📦 Committed batch of ${batchCount} updates`);
+            batchCount = 0;
+          }
+        } else {
+          console.log(`⏭️  User ${userId} - Already has correct isProfileComplete: ${isProfileComplete}`);
+        }
+        
+      } catch (error) {
+        console.error(`❌ Error processing user ${doc.id}:`, error);
+        errorCount++;
+      }
+    }
+    
+    // Commit any remaining updates in the batch
+    if (batchCount > 0) {
+      await batch.commit();
+      console.log(`📦 Committed final batch of ${batchCount} updates`);
+    }
+    
+    const summary = {
+      totalUsers: usersSnapshot.size,
+      usersUpdated: updatedCount,
+      completeProfiles: completedCount,
+      incompleteProfiles: incompleteCount,
+      errors: errorCount
+    };
+    
+    console.log('🎉 Migration completed!', summary);
+    
+    return {
+      success: true,
+      message: 'Migration completed successfully',
+      summary
+    };
+    
+  } catch (error) {
+    console.error('❌ Migration failed:', error);
+    throw new HttpsError("internal", `Migration failed: ${error.message}`);
+  }
+});
