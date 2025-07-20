@@ -299,6 +299,7 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       upline_admin: uplineAdminForNewUser,
       directSponsorCount: 0,
       totalTeamCount: 0,
+      isProfileComplete: false, // 🆕 Explicit profile completion flag
     };
 
     console.log("🔍 REGISTER FUNCTION: User document prepared:", JSON.stringify(newUser, null, 2));
@@ -727,16 +728,16 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
   const newUserId = event.params.userId;
 
-  // Check if photoUrl was added for the first time
-  const beforePhotoUrl = beforeData.photoUrl;
-  const afterPhotoUrl = afterData.photoUrl;
+  // 🆕 NEW RELIABLE TRIGGER: Check explicit profile completion
+  const wasProfileCompleteBefore = beforeData.isProfileComplete === true;
+  const isProfileCompleteNow = afterData.isProfileComplete === true;
 
-  if ((beforePhotoUrl && beforePhotoUrl !== "") || !afterPhotoUrl || afterPhotoUrl === "") {
-    console.log(`🔔 SPONSORSHIP DEBUG: photoUrl not added for the first time for user ${newUserId}. Skipping notification.`);
+  if (wasProfileCompleteBefore || !isProfileCompleteNow) {
+    console.log(`🔔 SPONSORSHIP DEBUG: User ${newUserId} did not just complete their profile. Before: ${wasProfileCompleteBefore}, After: ${isProfileCompleteNow}. Skipping.`);
     return;
   }
 
-  console.log(`🔔 SPONSORSHIP DEBUG: photoUrl added for the first time for user ${newUserId}`);
+  console.log(`🔔 SPONSORSHIP DEBUG: Profile completed for the first time for user ${newUserId}`);
 
   if (!afterData.referredBy) {
     console.log(`🔔 SPONSORSHIP DEBUG: New user ${newUserId} has no referredBy field. Skipping sponsorship notification.`);
