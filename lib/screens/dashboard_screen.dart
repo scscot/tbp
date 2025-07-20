@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'business_screen.dart';
 import 'dart:async';
@@ -302,7 +303,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _buildActionCard({
     required IconData icon,
     required String title,
-    required String subtitle,
     required VoidCallback onTap,
     required Color color,
     bool hasBadge = false,
@@ -329,75 +329,60 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ],
               ),
             ),
-            child: Stack(
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.withOpacity(color, 0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(icon, color: color, size: 28),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: AppColors.textTertiary,
-                      size: 16,
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.withOpacity(color, 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color, size: 28),
                 ),
-                if (hasBadge && badgeCount > 0)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        minWidth: 20,
-                        minHeight: 20,
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          badgeCount.toString(),
-                          style: const TextStyle(
-                            color: AppColors.textInverse,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ),
-                    ),
+                      if (hasBadge && badgeCount > 0) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 20,
+                            minHeight: 20,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              badgeCount.toString(),
+                              style: const TextStyle(
+                                color: AppColors.textInverse,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.textTertiary,
+                  size: 16,
+                ),
               ],
             ),
           ),
@@ -424,7 +409,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.help_outline,
           title: 'How It Works',
-          subtitle: 'Important steps',
           color: AppColors.teamAccent,
           onTap: () => Navigator.push(
             context,
@@ -436,7 +420,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.groups,
           title: 'View My Team',
-          subtitle: 'View your organization',
           color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,
@@ -448,7 +431,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow My Team',
-          subtitle: 'Share your referral link and invite others',
           color: AppColors.growthPrimary,
           onTap: () => Navigator.push(
             context,
@@ -460,7 +442,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.message,
           title: 'Message Center',
-          subtitle: 'Chat with your team members',
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
           badgeCount: _unreadMessageCount,
@@ -474,7 +455,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.notifications,
           title: 'Notifications',
-          subtitle: 'Stay updated with important alerts',
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
@@ -491,9 +471,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           _buildActionCard(
             icon: Icons.monetization_on,
             title: user.bizOppRefUrl != null ? 'My Business Details' : 'Join Business',
-            subtitle: user.bizOppRefUrl != null
-                ? 'View your business details'
-                : 'Ready to join the business',
             color: AppColors.opportunityPrimary,
             onTap: () {
               if (user.bizOppRefUrl != null) {
@@ -516,7 +493,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.person,
           title: 'My Profile',
-          subtitle: 'Update your personal information',
           color: AppColors.primary,
           onTap: () => Navigator.push(
             context,
@@ -528,7 +504,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.logout,
           title: 'Log Out',
-          subtitle: 'Log out of your account',
           color: AppColors.teamPrimary,
           onTap: () async {
             final authService = context.read<AuthService>();

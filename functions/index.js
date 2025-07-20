@@ -615,7 +615,7 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
 
     const notificationContent = {
       title: `New Message from ${senderName}`,
-      message: `${messageText} CLICK HERE to REPLY.`,
+      message: `${messageText}`,
       imageUrl: senderPhotoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
