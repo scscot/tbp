@@ -148,25 +148,17 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     if (authUser == null) return;
 
     try {
-      final unreadSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(authUser.uid)
-          .collection('notifications')
-          .where('read', isEqualTo: false)
-          .limit(1)
-          .get();
-
-      if (unreadSnapshot.docs.isEmpty) {
-        if (kDebugMode) {
-          print("✅ No unread notifications left. Calling clearAppBadge...");
-        }
-        await FirebaseFunctions.instanceFor(region: 'us-central1')
-            .httpsCallable('clearAppBadge')
-            .call();
+      // Always call syncAppBadge to recalculate the correct badge count
+      // This will handle both notifications AND messages properly
+      if (kDebugMode) {
+        print("🔔 Syncing badge after notification change...");
       }
+      await FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('syncAppBadge')
+          .call();
     } catch (e) {
       if (kDebugMode) {
-        print("Error calling clearAppBadge: $e");
+        print("Error calling syncAppBadge: $e");
       }
     }
   }
