@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onRequest } = require("firebase-functions/v2/https");
-const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore, FieldValue, DocumentReference } = require("firebase-admin/firestore");
@@ -16,6 +16,81 @@ const db = getFirestore();
 const auth = getAuth();
 const messaging = getMessaging();
 const remoteConfig = getRemoteConfig();
+
+// ============================================================================
+// CENTRALIZED BADGE UPDATE FUNCTION
+// ============================================================================
+
+/**
+ * Centralized function to calculate and update badge count for a user
+ * Includes both notifications and chat messages
+ */
+const updateUserBadge = async (userId) => {
+  try {
+    console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
+
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
+      return;
+    }
+    
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcm_token;
+    if (!fcmToken) {
+      console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
+      return;
+    }
+
+    // Count unread notifications
+    const unreadNotificationsSnapshot = await db.collection("users")
+      .doc(userId)
+      .collection("notifications")
+      .where("read", "==", false)
+      .get();
+    
+    const notificationCount = unreadNotificationsSnapshot.size;
+    
+    // Count unread chat messages  
+    const unreadChatsSnapshot = await db.collection("chats")
+      .where("participants", "array-contains", userId)
+      .get();
+    
+    let messageCount = 0;
+    unreadChatsSnapshot.docs.forEach(doc => {
+      const chatData = doc.data();
+      const isReadMap = chatData.isRead || {};
+      if (isReadMap[userId] === false) {
+        messageCount++;
+      }
+    });
+
+    const totalBadgeCount = notificationCount + messageCount;
+    
+    console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
+    
+    // Send badge update message
+    const message = {
+      token: fcmToken,
+      apns: {
+        payload: {
+          aps: {
+            badge: totalBadgeCount,
+          },
+        },
+      },
+      android: {
+        // Android handles badges differently, but we include for completeness
+      },
+    };
+
+    await messaging.send(message);
+    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
+    
+  } catch (error) {
+    console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
+  }
+};
 
 const serializeData = (data) => {
   if (data === null || data === undefined || typeof data !== 'object') {
@@ -503,32 +578,10 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
     console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
 
-    // Count unread notifications to set correct badge number
-    const unreadNotificationsSnapshot = await db.collection("users")
-      .doc(userId)
-      .collection("notifications")
-      .where("read", "==", false)
-      .get();
-    
-    const badgeCount = unreadNotificationsSnapshot.size;
-    console.log(`🔔 PUSH DEBUG: Unread notifications count: ${badgeCount}`);
-
     const imageUrl = notificationData?.imageUrl;
 
-    // Build APNS payload, always including the correct badge count
-    const apnsPayload = {
-      alert: {
-        title: notificationData?.title || "New Notification",
-        body: notificationData?.message || "You have a new message.",
-      },
-      sound: "default",
-      badge: badgeCount, // Always set the badge. APNS correctly handles 0 by clearing the badge.
-    };
-
-    console.log(`🔔 PUSH DEBUG: Setting badge count to: ${badgeCount} ${badgeCount === 0 ? '(will clear badge)' : '(will show badge)'}`);
-
-
-    const message ={ 
+    // Send the push notification without badge (badge will be updated by centralized function)
+    const message = { 
       token: fcmToken,
       notification: {
         title: notificationData?.title || "New Notification",
@@ -544,7 +597,14 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
       },
       apns: {
         payload: {
-          aps: apnsPayload,
+          aps: {
+            alert: {
+              title: notificationData?.title || "New Notification",
+              body: notificationData?.message || "You have a new message.",
+            },
+            sound: "default",
+            // Badge will be set by updateUserBadge function
+          },
         },
       },
       android: {
@@ -559,6 +619,10 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     const response = await messaging.send(message);
     console.log(`✅ PUSH DEBUG: FCM push sent successfully to user ${userId}`);
     console.log(`✅ PUSH DEBUG: FCM Response:`, response);
+
+    // Update badge using centralized function after notification is created
+    console.log(`🔔 PUSH DEBUG: Updating badge using centralized function`);
+    await updateUserBadge(userId);
 
   } catch (error) {
     console.error(`❌ PUSH DEBUG: Failed to send FCM push to user ${userId}:`, error);
@@ -630,6 +694,11 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
 
     await Promise.all(notificationPromises);
     console.log(`Successfully created notifications for ${recipients.length} recipients.`);
+
+    // Update badge for all recipients after creating notifications
+    console.log(`🔔 CHAT MESSAGE: Updating badge for recipients: ${recipients.join(', ')}`);
+    const badgeUpdatePromises = recipients.map(userId => updateUserBadge(userId));
+    await Promise.allSettled(badgeUpdatePromises);
 
   } catch (error) {
     console.error(`Error in onNewChatMessage for thread ${threadId}:`, error);
@@ -1064,67 +1133,71 @@ exports.clearAppBadge = onCall({ region: "us-central1" }, async (request) => {
   const userId = request.auth.uid;
 
   try {
-    console.log(`🔔 CLEAR BADGE: Starting badge clear process for user ${userId}`);
-
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists) {
-      console.error(`🔔 CLEAR BADGE: User document for ${userId} does not exist.`);
-      return { success: false, message: "User not found" };
-    }
-
-    const userData = userDoc.data();
-    const fcmToken = userData?.fcm_token;
-
-    if (!fcmToken) {
-      console.log(`🔔 CLEAR BADGE: Missing FCM token for user ${userId}. Cannot clear badge.`);
-      return { success: false, message: "No FCM token found" };
-    }
-
-    console.log(`🔔 CLEAR BADGE: FCM token found: ${fcmToken.substring(0, 20)}...`);
-
-    // Count unread notifications to verify badge should be cleared
-    const unreadNotificationsSnapshot = await db.collection("users")
-      .doc(userId)
-      .collection("notifications")
-      .where("read", "==", false)
-      .get();
+    console.log(`🔔 CLEAR BADGE: Badge clear requested for user ${userId} - using centralized update`);
     
-    const badgeCount = unreadNotificationsSnapshot.size;
-    console.log(`🔔 CLEAR BADGE: Current unread notifications count: ${badgeCount}`);
-
-    // Only send clear badge message if there are actually 0 unread notifications
-    if (badgeCount === 0) {
-      const message = {
-        token: fcmToken,
-        apns: {
-          payload: {
-            aps: {
-              badge: 0, // Explicitly set to 0 to clear the badge
-            },
-          },
-        },
-        android: {
-          // Android doesn't need badge clearing
-        },
-      };
-
-      console.log(`🔔 CLEAR BADGE: Sending badge clear message`);
-      const response = await messaging.send(message);
-      console.log(`✅ CLEAR BADGE: Badge cleared successfully for user ${userId}`);
-      console.log(`✅ CLEAR BADGE: FCM Response:`, response);
-
-      return { success: true, message: "Badge cleared successfully" };
-    } else {
-      console.log(`🔔 CLEAR BADGE: User has ${badgeCount} unread notifications, not clearing badge`);
-      return { success: false, message: `User has ${badgeCount} unread notifications` };
-    }
+    // Use centralized badge update function which will calculate and set correct badge
+    await updateUserBadge(userId);
+    
+    return { success: true, message: "Badge updated successfully" };
 
   } catch (error) {
-    console.error(`❌ CLEAR BADGE: Failed to clear badge for user ${userId}:`, error);
+    console.error(`❌ CLEAR BADGE: Failed to update badge for user ${userId}:`, error);
     return { success: false, message: error.message };
   }
 });
 
+
+// ============================================================================
+// BADGE SYNCHRONIZATION TRIGGERS
+// ============================================================================
+
+/**
+ * Trigger when a notification is updated (e.g., marked as read)
+ */
+exports.onNotificationUpdate = onDocumentUpdated("users/{userId}/notifications/{notificationId}", async (event) => {
+  const userId = event.params.userId;
+  console.log(`🔔 TRIGGER: Notification updated for user ${userId}`);
+  await updateUserBadge(userId);
+});
+
+/**
+ * Trigger when a notification is deleted
+ */
+exports.onNotificationDelete = onDocumentDeleted("users/{userId}/notifications/{notificationId}", async (event) => {
+  const userId = event.params.userId;
+  console.log(`🔔 TRIGGER: Notification deleted for user ${userId}`);
+  await updateUserBadge(userId);
+});
+
+/**
+ * Trigger when a chat document is updated (e.g., message marked as read)
+ */
+exports.onChatUpdate = onDocumentUpdated("chats/{chatId}", async (event) => {
+  const afterData = event.data?.after.data();
+  const participants = afterData?.participants || [];
+  
+  console.log(`🔔 TRIGGER: Chat updated for participants: ${participants.join(', ')}`);
+  
+  // Update badge for all participants
+  const updatePromises = participants.map(userId => updateUserBadge(userId));
+  await Promise.allSettled(updatePromises);
+});
+
+
+/**
+ * Sync app badge function - called when app becomes active
+ */
+exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+  
+  const userId = request.auth.uid;
+  console.log(`🔔 SYNC: Manual badge sync requested for user ${userId}`);
+  
+  await updateUserBadge(userId);
+  return { success: true, message: "Badge synced successfully" };
+});
 
 // ============================================================================
 // DAILY TEAM GROWTH NOTIFICATIONS

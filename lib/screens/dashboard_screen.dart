@@ -418,17 +418,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         _buildActionCard(
-          icon: Icons.groups,
-          title: 'View My Team',
-          color: AppColors.teamPrimary,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TeamScreen(appId: widget.appId),
-            ),
-          ),
-        ),
-        _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow My Team',
           color: AppColors.growthPrimary,
@@ -440,15 +429,13 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         _buildActionCard(
-          icon: Icons.message,
-          title: 'Message Center',
-          color: AppColors.messagePrimary,
-          hasBadge: _unreadMessageCount > 0,
-          badgeCount: _unreadMessageCount,
+          icon: Icons.groups,
+          title: 'View My Team',
+          color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => MessageCenterScreen(appId: widget.appId),
+              builder: (_) => TeamScreen(appId: widget.appId),
             ),
           ),
         ),
@@ -462,6 +449,19 @@ class _DashboardScreenState extends State<DashboardScreen>
             context,
             MaterialPageRoute(
               builder: (_) => NotificationsScreen(appId: widget.appId),
+            ),
+          ),
+        ),
+        _buildActionCard(
+          icon: Icons.message,
+          title: 'Message Center',
+          color: AppColors.messagePrimary,
+          hasBadge: _unreadMessageCount > 0,
+          badgeCount: _unreadMessageCount,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MessageCenterScreen(appId: widget.appId),
             ),
           ),
         ),
@@ -504,7 +504,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         _buildActionCard(
           icon: Icons.logout,
           title: 'Log Out',
-          color: AppColors.teamPrimary,
+          color: AppColors.errorLight,
           onTap: () async {
             final authService = context.read<AuthService>();
             final navigator = Navigator.of(context);

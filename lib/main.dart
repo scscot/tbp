@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'config/app_constants.dart';
 import 'firebase_options.dart';
 import 'models/user_model.dart';
@@ -60,8 +61,47 @@ void main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    if (state == AppLifecycleState.resumed) {
+      // App became active - sync badge with server
+      debugPrint('🔔 APP LIFECYCLE: App resumed, syncing badge');
+      _syncAppBadge();
+    }
+  }
+
+  Future<void> _syncAppBadge() async {
+    try {
+      await FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('syncAppBadge')
+          .call();
+      debugPrint('✅ APP LIFECYCLE: Badge sync completed');
+    } catch (e) {
+      debugPrint('❌ APP LIFECYCLE: Badge sync failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
