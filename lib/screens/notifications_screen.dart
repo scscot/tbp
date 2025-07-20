@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+
 import '../widgets/header_widgets.dart';
 import '../services/notification_service.dart';
 import '../services/fcm_service.dart';
@@ -24,7 +27,8 @@ class NotificationsScreen extends StatefulWidget {
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> with RouteAware {
+class _NotificationsScreenState extends State<NotificationsScreen>
+    with RouteAware {
   Future<List<QueryDocumentSnapshot>>? _notificationsFuture;
 
   @override
@@ -36,7 +40,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Subscribe to route changes
     final route = ModalRoute.of(context);
     if (route is PageRoute) {
       routeObserver.subscribe(this, route);
@@ -45,9 +48,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
 
   @override
   void didPopNext() {
-    // Called when returning to this screen via back arrow
-    // This is more precise than didChangeDependencies as it only triggers on back navigation
-    debugPrint('📱 NotificationsScreen: Returned via back arrow, reloading notifications');
+    debugPrint(
+        '📱 NotificationsScreen: Returned via back arrow, reloading notifications');
     _loadNotifications();
   }
 
@@ -78,27 +80,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
           .collection('notifications')
           .orderBy('createdAt', descending: true)
           .get();
-      
-      // Separate unread and read notifications
+
       final List<QueryDocumentSnapshot> unreadNotifications = [];
       final List<QueryDocumentSnapshot> readNotifications = [];
-      
+
       for (final doc in snapshot.docs) {
         final data = doc.data();
         final isRead = data.containsKey('read') && data['read'] == true;
-        
+
         if (isRead) {
           readNotifications.add(doc);
         } else {
           unreadNotifications.add(doc);
         }
       }
-      
-      // Combine lists: unread first (chronologically sorted), then read (chronologically sorted)
+
       final List<QueryDocumentSnapshot> sortedNotifications = [];
       sortedNotifications.addAll(unreadNotifications);
       sortedNotifications.addAll(readNotifications);
-      
+
       return sortedNotifications;
     } catch (e) {
       debugPrint('Error fetching notifications for UID $uid: $e');
@@ -106,7 +106,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
     }
   }
 
-  // --- FIX: This function is now referenced by the delete button ---
   Future<void> _deleteNotification(String docId) async {
     final authUser = FirebaseAuth.instance.currentUser;
     if (authUser == null) return;
@@ -117,21 +116,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
           .collection('notifications')
           .doc(docId)
           .delete();
+
+      await _checkAndClearBadge();
+
       if (mounted) {
-        setState(() {
-          _notificationsFuture = _fetchNotifications(authUser.uid);
-        });
+        _loadNotifications();
       }
     } catch (e) {
       debugPrint("Error deleting notification: $e");
     }
   }
 
-  // New method to mark individual notification as read when tapped
   Future<void> _markNotificationAsRead(String docId) async {
     final authUser = FirebaseAuth.instance.currentUser;
     if (authUser == null) return;
-    
+
     try {
       await FirebaseFirestore.instance
           .collection('users')
@@ -141,6 +140,34 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
           .update({'read': true});
     } catch (e) {
       debugPrint('Error marking notification as read: $e');
+    }
+  }
+
+  Future<void> _checkAndClearBadge() async {
+    final authUser = FirebaseAuth.instance.currentUser;
+    if (authUser == null) return;
+
+    try {
+      final unreadSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(authUser.uid)
+          .collection('notifications')
+          .where('read', isEqualTo: false)
+          .limit(1)
+          .get();
+
+      if (unreadSnapshot.docs.isEmpty) {
+        if (kDebugMode) {
+          print("✅ No unread notifications left. Calling clearAppBadge...");
+        }
+        await FirebaseFunctions.instanceFor(region: 'us-central1')
+            .httpsCallable('clearAppBadge')
+            .call();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error calling clearAppBadge: $e");
+      }
     }
   }
 
@@ -203,12 +230,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
                     final timestamp =
                         (data['createdAt'] as Timestamp?)?.toDate().toLocal();
 
-                    // --- FIX: This variable is now used below ---
                     final String formattedTime = timestamp != null
-                        ? DateFormat.yMMMMd().add_jm().format(timestamp)
+                        ? DateFormat('MMM d, yyyy h:mm a').format(timestamp)
                         : 'N/A';
 
-                    // Restore original logic for determining read status
                     final isRead =
                         data.containsKey('read') && data['read'] == true;
 
@@ -260,9 +285,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> with RouteAwa
                           onPressed: () => _deleteNotification(doc.id),
                         ),
                         onTap: () async {
-                          // Mark notification as read when tapped
                           await _markNotificationAsRead(doc.id);
-                          
+                          await _checkAndClearBadge();
+                          _loadNotifications();
+
                           final route = data['route'] as String?;
                           if (route != null) {
                             try {

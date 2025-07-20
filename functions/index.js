@@ -515,20 +515,18 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
     const imageUrl = notificationData?.imageUrl;
 
-    // Build APNS payload, always including the badge count
+    // Build APNS payload, always including the correct badge count
     const apnsPayload = {
       alert: {
         title: notificationData?.title || "New Notification",
         body: notificationData?.message || "You have a new message.",
       },
       sound: "default",
-      badge: badgeCount, // Always set the badge with the calculated count
+      badge: badgeCount, // Always set the badge. APNS correctly handles 0 by clearing the badge.
     };
 
-    // Only add badge if there are unread notifications (never show badge with 0)
-    if (badgeCount > 0) {
-      apnsPayload.badge = badgeCount;
-    }
+    console.log(`🔔 PUSH DEBUG: Setting badge count to: ${badgeCount} ${badgeCount === 0 ? '(will clear badge)' : '(will show badge)'}`);
+
 
     const message ={ 
       token: fcmToken,
@@ -556,7 +554,6 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
       },
     };
 
-    console.log(`🔔 PUSH DEBUG: Sending FCM message with badge ${badgeCount > 0 ? `count: ${badgeCount}` : 'hidden (0 unread)'}`);
     console.log(`🔔 PUSH DEBUG: Message payload:`, JSON.stringify(message, null, 2));
 
     const response = await messaging.send(message);
@@ -1056,6 +1053,75 @@ exports.updateUserTimezone = onCall({ region: "us-central1" }, async (request) =
       throw error;
     }
     throw new HttpsError("internal", "An unexpected error occurred while updating timezone.", error.message);
+  }
+});
+
+exports.clearAppBadge = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const userId = request.auth.uid;
+
+  try {
+    console.log(`🔔 CLEAR BADGE: Starting badge clear process for user ${userId}`);
+
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      console.error(`🔔 CLEAR BADGE: User document for ${userId} does not exist.`);
+      return { success: false, message: "User not found" };
+    }
+
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcm_token;
+
+    if (!fcmToken) {
+      console.log(`🔔 CLEAR BADGE: Missing FCM token for user ${userId}. Cannot clear badge.`);
+      return { success: false, message: "No FCM token found" };
+    }
+
+    console.log(`🔔 CLEAR BADGE: FCM token found: ${fcmToken.substring(0, 20)}...`);
+
+    // Count unread notifications to verify badge should be cleared
+    const unreadNotificationsSnapshot = await db.collection("users")
+      .doc(userId)
+      .collection("notifications")
+      .where("read", "==", false)
+      .get();
+    
+    const badgeCount = unreadNotificationsSnapshot.size;
+    console.log(`🔔 CLEAR BADGE: Current unread notifications count: ${badgeCount}`);
+
+    // Only send clear badge message if there are actually 0 unread notifications
+    if (badgeCount === 0) {
+      const message = {
+        token: fcmToken,
+        apns: {
+          payload: {
+            aps: {
+              badge: 0, // Explicitly set to 0 to clear the badge
+            },
+          },
+        },
+        android: {
+          // Android doesn't need badge clearing
+        },
+      };
+
+      console.log(`🔔 CLEAR BADGE: Sending badge clear message`);
+      const response = await messaging.send(message);
+      console.log(`✅ CLEAR BADGE: Badge cleared successfully for user ${userId}`);
+      console.log(`✅ CLEAR BADGE: FCM Response:`, response);
+
+      return { success: true, message: "Badge cleared successfully" };
+    } else {
+      console.log(`🔔 CLEAR BADGE: User has ${badgeCount} unread notifications, not clearing badge`);
+      return { success: false, message: `User has ${badgeCount} unread notifications` };
+    }
+
+  } catch (error) {
+    console.error(`❌ CLEAR BADGE: Failed to clear badge for user ${userId}:`, error);
+    return { success: false, message: error.message };
   }
 });
 
