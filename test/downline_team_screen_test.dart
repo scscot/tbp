@@ -27,8 +27,8 @@ void main() {
       await tester.pump();
 
       // Check for analytics cards text
-      expect(find.text('Total Team Members'), findsOneWidget);
-      expect(find.text('Direct Sponsors'), findsOneWidget);
+      expect(find.text('Total Members Members'), findsOneWidget);
+      expect(find.text('Direct Members'), findsOneWidget);
       expect(find.text('New Members'), findsOneWidget);
     });
 

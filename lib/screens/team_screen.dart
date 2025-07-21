@@ -385,7 +385,7 @@ class _TeamScreenState extends State<TeamScreen>
         children: [
           Expanded(
             child: _buildAnalyticsCard(
-              'Direct Sponsors',
+              'Direct Members',
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
               AppColors.growthPrimary,
@@ -400,7 +400,7 @@ class _TeamScreenState extends State<TeamScreen>
           const SizedBox(width: 8),
           Expanded(
             child: _buildAnalyticsCard(
-              'Total Team',
+              'Total Members',
               _analytics['totalMembers']?.toString() ?? '0',
               Icons.people,
               AppColors.teamPrimary,
@@ -553,7 +553,7 @@ class _TeamScreenState extends State<TeamScreen>
       case FilterBy.allMembers:
         return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
       case FilterBy.directSponsors:
-        return 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
+        return 'Direct Members (${_analytics['directSponsors'] ?? 0})';
       case FilterBy.newMembers:
         return 'New Members (${_analytics['newMembers'] ?? 0})';
       case FilterBy.qualifiedMembers:

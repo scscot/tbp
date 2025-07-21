@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'business_screen.dart';
 import 'dart:async';
@@ -9,6 +8,7 @@ import '../widgets/header_widgets.dart';
 import 'company_screen.dart';
 import 'message_center_screen.dart';
 import 'notifications_screen.dart';
+import 'eligibility_screen.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'team_screen.dart';
@@ -235,7 +235,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.people,
                   value: user.directSponsorCount.toString(),
-                  label: 'Direct Sponsors',
+                  label: 'Direct Members',
                   color: Colors.blue.shade600,
                 ),
               ),
@@ -244,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.groups,
                   value: user.totalTeamCount.toString(),
-                  label: 'Total Team',
+                  label: 'Total Members',
                   color: Colors.green.shade600,
                 ),
               ),
@@ -465,15 +465,18 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
+        // Business opportunity card - conditional based on qualification status
         if (user.role == 'user' &&
             user.directSponsorCount >= AppConstants.projectWideDirectSponsorMin &&
             user.totalTeamCount >= AppConstants.projectWideTotalTeamMin)
+          // QUALIFIED: Show business details or join business option
           _buildActionCard(
             icon: Icons.monetization_on,
-            title: user.bizOppRefUrl != null ? 'My Business Details' : 'Join Business',
+            title: user.bizOppRefUrl != null ? 'My Business Details' : 'Available Opportunity',
             color: AppColors.opportunityPrimary,
             onTap: () {
               if (user.bizOppRefUrl != null) {
+                // User has already joined - show company details
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -481,6 +484,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                 );
               } else {
+                // User is qualified but hasn't joined - show business screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -488,6 +492,21 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                 );
               }
+            },
+          )
+        else
+          // NOT QUALIFIED: Show eligibility status
+          _buildActionCard(
+            icon: Icons.assessment,
+            title: 'Eligibility Progress',
+            color: AppColors.opportunityPrimary,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EligibilityScreen(appId: widget.appId),
+                ),
+              );
             },
           ),
         _buildActionCard(

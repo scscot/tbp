@@ -201,11 +201,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         _buildInfoRow('Joined TBP',
                             DateFormat.yMMMd().format(_user!.createdAt!)),
 
-                       _buildInfoRow('Direct Sponsors',
+                       _buildInfoRow('Direct Members',
                           (_user!.directSponsorCount ?? 0).toString()),
 
                        _buildInfoRow(
-                          'Total Team',
+                          'Total Members',
                           (_user!.totalTeamCount ?? 0).toString()),
 
 
@@ -385,13 +385,13 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildMetricCard(
                         icon: Icons.people,
                         value: AppConstants.projectWideDirectSponsorMin.toString(),
-                        label: 'Direct Sponsors',
+                        label: 'Direct Members',
                       ),
                       const SizedBox(width: 16),
                       _buildMetricCard(
                         icon: Icons.groups,
                         value: AppConstants.projectWideTotalTeamMin.toString(),
-                        label: 'Total Team Members',
+                        label: 'Total Members Members',
                       ),
                     ],
                   ),

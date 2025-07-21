@@ -5,19 +5,19 @@ import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 
-class HowItWorksScreen extends StatefulWidget {
+class EligibilityScreen extends StatefulWidget {
   final String appId;
 
-  const HowItWorksScreen({
+  const EligibilityScreen({
     super.key,
     required this.appId,
   });
 
   @override
-  State<HowItWorksScreen> createState() => _HowItWorksScreenState();
+  State<EligibilityScreen> createState() => _EligibilityScreenState();
 }
 
-class _HowItWorksScreenState extends State<HowItWorksScreen> {
+class _EligibilityScreenState extends State<EligibilityScreen> {
   String _bizOpp = 'your business opportunity';
   bool _isLoading = true;
 
@@ -77,13 +77,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
       child: Column(
         children: [
           Icon(
-            Icons.groups,
+            Icons.check,
             size: 48,
             color: AppColors.textInverse,
           ),
           const SizedBox(height: 16),
           Text(
-            'TEAM BUILD PRO PLATFORM',
+            'ELIGIBILITY STATUS',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -291,32 +291,47 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             _buildHeroSection(),
             const SizedBox(height: 24),
 
-            // The Challenge
-            _buildSectionCard(
-              title: 'THE CHALLENGE',
-              content: 'Building meaningful professional connections can be difficult in today\'s digital world. Many professionals struggle to expand their network beyond their immediate circle.',
-              icon: Icons.warning_amber,
-              color: AppColors.error,
+             // Minimum Eligibility Requirements
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Text(
+                      'COMMUNITY GROWTH THRESHOLDS',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.warning,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        _buildMetricCard(
+                          icon: Icons.people,
+                          value: AppConstants.projectWideDirectSponsorMin
+                              .toString(),
+                          label: 'Direct Members',
+                        ),
+                        const SizedBox(width: 16),
+                        _buildMetricCard(
+                          icon: Icons.groups,
+                          value:
+                              AppConstants.projectWideTotalTeamMin.toString(),
+                          label: 'Community Members',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
-
-            // The Solution
-            _buildSectionCard(
-              title: 'THE SOLUTION',
-              content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
-              icon: Icons.lightbulb,
-              color: AppColors.primary,
-            ),
-            const SizedBox(height: 16),
-
-            // Why It Works
-            _buildSectionCard(
-              title: 'WHY IT WORKS',
-              content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their communities organically.',
-              icon: Icons.trending_up,
-              color: AppColors.growthPrimary,
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16), 
 
             // The Process
             Card(
@@ -395,89 +410,48 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-            // Minimum Eligibility Requirements
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Text(
-                      'COMMUNITY GROWTH THRESHOLDS',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.warning,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        _buildMetricCard(
-                          icon: Icons.people,
-                          value: AppConstants.projectWideDirectSponsorMin.toString(),
-                          label: 'Direct Members',
-                        ),
-                        const SizedBox(width: 16),
-                        _buildMetricCard(
-                          icon: Icons.groups,
-                          value: AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Community Members',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+        Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: AppColors.mediumShadow,
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.share_rounded,
+            size: 48,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Grow Your Team',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            const SizedBox(height: 32),
-
-            // Call to Action
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: AppColors.growthGradient,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: AppColors.heavyShadow,
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.celebration,
-                    size: 48,
-                    color: AppColors.textInverse,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Ready to Build Your Professional Community?',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textInverse,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Start building meaningful professional connections today with Team Build Pro!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.withOpacity(AppColors.textInverse, 0.9),
-                      height: 1.4,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Share your referral link and start building your team!',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white.withValues(alpha: 0.9),
             ),
-            const SizedBox(height: 24),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
+
 }

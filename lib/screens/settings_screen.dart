@@ -640,13 +640,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _buildMetricCard(
                 icon: Icons.people,
                 value: AppConstants.projectWideDirectSponsorMin.toString(),
-                label: 'Direct Sponsors',
+                label: 'Direct Members',
               ),
               const SizedBox(width: 16),
               _buildMetricCard(
                 icon: Icons.groups,
                 value: AppConstants.projectWideTotalTeamMin.toString(),
-                label: 'Total Team Members',
+                label: 'Total Members Members',
               ),
             ],
           ),
