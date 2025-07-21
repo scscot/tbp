@@ -1,1 +1,1 @@
-// UI card for displaying team members
+// UI card for displaying community members

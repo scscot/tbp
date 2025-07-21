@@ -424,7 +424,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           content: const Text(
                               'You must enter the exact referral link you received from your company. '
-                              'This will ensure your Team Build Pro team members that join your business opportunity '
+                              'This will ensure your Team Build Pro community members that join your business opportunity '
                               'are automatically placed in your business opportunity team.'),
                           actions: [
                             TextButton(
@@ -614,7 +614,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const TextSpan(
                           text:
-                              "When your team members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                              "When your community members meet the minimum eligibility criteria, they are automatically invited to join your "),
                       TextSpan(
                         text: _bizOpp ?? 'business opportunity',
                         style: const TextStyle(
@@ -622,7 +622,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const TextSpan(
                           text:
-                              " team — with their growing Team Build Pro team ready to follow."),
+                              " community — with their growing Team Build Pro community ready to follow."),
                     ],
                   ),
                 ),

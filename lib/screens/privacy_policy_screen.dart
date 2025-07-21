@@ -236,7 +236,7 @@ Personal Information:
 Account Information:
 • User authentication data (managed by Firebase Auth)
 • Account preferences and settings
-• Referral codes and team structure data
+• Referral codes and community structure data
 
 Usage Information:
 • App usage analytics (non-personal)
@@ -256,8 +256,8 @@ Communication Data:
 
 Service Provision:
 • Create and manage your account
-• Enable team building and referral features
-• Facilitate communication between team members
+• Enable community building and referral features
+• Facilitate communication between community members
 • Send important notifications about your account
 
 App Improvement:
@@ -278,8 +278,8 @@ Legal Compliance:
               content: '''We do not sell your personal information. We may share information in these limited circumstances:
 
 Within Your Team:
-• Your name and profile photo are visible to your team members
-• Referral relationships are shared within your team structure
+• Your name and profile photo are visible to your community members
+• Referral relationships are shared within your community structure
 
 Service Providers:
 • Firebase (Google) for authentication and database services
@@ -333,7 +333,7 @@ Privacy Settings:
 • Opt out of non-essential communications
 
 Data Portability:
-• Export your team structure data
+• Export your community structure data
 • Transfer your information to another service (where applicable)
 
 To exercise these rights, contact us at privacy@teambuildpro.com or use the in-app settings.''',

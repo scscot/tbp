@@ -277,7 +277,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
             ],
           ),
           content: const Text(
-            'To maintain the integrity of our team building system and ensure focus on our business opportunity, links and URLs are not permitted in chat messages. Please share your message without any links.',
+            'To maintain the integrity of our community building system and ensure focus on our business opportunity, links and URLs are not permitted in chat messages. Please share your message without any links.',
           ),
           actions: [
             TextButton(
