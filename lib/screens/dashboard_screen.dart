@@ -163,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     Text(
                       '${user.firstName}!',
                       style: const TextStyle(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textInverse,
                       ),
@@ -186,7 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ready to grow your team and achieve success?',
+                    'Ready to grow your team!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.95),
