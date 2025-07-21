@@ -192,7 +192,7 @@ class _BusinessScreenState extends State<BusinessScreen>
             ],
           ),
           content: Text(
-              "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your team is built correctly."),
+              "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your ${bizOpp ?? 'business opportunity'} team is built correctly."),
           actions: [
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
@@ -711,7 +711,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring the opportunity, you must return here and add your new referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
+            "After exploring the opportunity, you must return here and add your new referral link to your Team Build Pro profile. This ensures your community connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),

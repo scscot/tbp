@@ -87,7 +87,7 @@ class TeamService {
           ? result.data as Map<String, dynamic>
           : Map<String, dynamic>.from(result.data ?? {});
 
-      // Convert team array to UserModel objects
+      // Convert community array to UserModel objects
       final List<dynamic> teamData = data['downline'] ?? [];
       final List<UserModel> teamUsers = teamData.map((userData) {
         final Map<String, dynamic> userMap = userData is Map<String, dynamic>

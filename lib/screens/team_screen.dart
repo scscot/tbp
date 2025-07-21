@@ -191,7 +191,7 @@ class _TeamScreenState extends State<TeamScreen>
 
       if (!mounted) return;
 
-      // Fetch all team data
+      // Fetch all community data
       final result = await _teamService.getFilteredTeam(
         filter: 'all',
         searchQuery: '',
@@ -203,7 +203,7 @@ class _TeamScreenState extends State<TeamScreen>
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {
-      debugPrint('Error loading team data: $e');
+      debugPrint('Error loading community data: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -326,9 +326,9 @@ class _TeamScreenState extends State<TeamScreen>
     }
     
     // Debug logging
-    debugPrint('🔍 team DEBUG: Total filtered members: ${_filteredMembers.length}');
-    debugPrint('🔍 team DEBUG: Level offset: $_levelOffset');
-    debugPrint('🔍 team DEBUG: Members by level: $_membersByLevel');
+    debugPrint('🔍 community DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint('🔍 community DEBUG: Level offset: $_levelOffset');
+    debugPrint('🔍 community DEBUG: Members by level: $_membersByLevel');
     
     // Ensure levels are sorted
     final sortedEntries = _membersByLevel.entries.toList()

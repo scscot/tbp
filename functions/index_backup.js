@@ -670,7 +670,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro team members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro community members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -915,7 +915,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 
     const memberData = { uid: memberDoc.id, ...memberDoc.data() };
 
-    // Parallel fetch sponsor and team leader details
+    // Parallel fetch sponsor and community leader details
     const promises = [];
     let sponsorPromise = null;
     let teamLeaderPromise = null;
@@ -926,7 +926,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       promises.push(sponsorPromise);
     }
 
-    // Fetch team leader details if uplineAdmin exists and is different from sponsor
+    // Fetch community leader details if uplineAdmin exists and is different from sponsor
     if (memberData.upline_admin &&
       memberData.upline_admin.trim() !== '' &&
       memberData.upline_admin !== memberData.sponsor_id) {
@@ -960,7 +960,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    // Process team leader result
+    // Process community leader result
     if (teamLeaderPromise) {
       const teamLeaderResult = results[resultIndex++];
       if (teamLeaderResult.status === 'fulfilled' && teamLeaderResult.value.exists) {
@@ -978,7 +978,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no team leader'}`);
+    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no community leader'}`);
 
     return {
       member: serializeData(memberData),
@@ -1000,8 +1000,8 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 // ============================================================================
 
 /**
- * Scheduled function that runs every hour to send daily team growth notifications
- * at 3 AM local time to users who had new team members join the previous day.
+ * Scheduled function that runs every hour to send daily community growth notifications
+ * at 3 AM local time to users who had new community members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1013,7 +1013,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   timeZone: "UTC",
   region: "us-central1"
 }, async (event) => {
-  console.log("🔔 DAILY NOTIFICATIONS: Starting daily team growth notification process");
+  console.log("🔔 DAILY NOTIFICATIONS: Starting daily community growth notification process");
   
   try {
     const now = new Date();
@@ -1074,7 +1074,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       });
     });
     
-    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new team members to be notified about`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new community members to be notified about`);
     
     if (notificationCounts.size === 0) {
       console.log("🔔 DAILY NOTIFICATIONS: No users to notify");
@@ -1136,7 +1136,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. CLICK HERE to view and welcome your new team members!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. CLICK HERE to view and welcome your new community members!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_team_members",
@@ -1163,9 +1163,9 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
     
     console.log(`🔔 DAILY NOTIFICATIONS: Notification summary - Successful: ${successful}, Failed: ${failed}`);
-    console.log(`✅ DAILY NOTIFICATIONS: Daily team growth notification process completed`);
+    console.log(`✅ DAILY NOTIFICATIONS: Daily community growth notification process completed`);
     
   } catch (error) {
-    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
+    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily community growth notifications:", error);
   }
 });

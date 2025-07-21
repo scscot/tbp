@@ -114,7 +114,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       
       final message = _currentUser?.role == 'admin'
           ? '🚀 Ready to build your own $_bizOppName team? Join me ($userName) on Team Build Pro and start growing your network today! $_referralLink'
-          : '🌟 Hey! I\'m building my team on Team Build Pro and would love for you to join me! Start your journey here: $_referralLink';
+          : '🌟 Hey! I\'m building my community on Team Build Pro and would love for you to join me! Start your journey here: $_referralLink';
 
       Share.share(message);
     }
@@ -325,7 +325,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🌟 Current Prospects',
           subtitle: 'Perfect for people considering $_bizOppName',
-          description: 'Share with potential team members who are interested in joining $_bizOppName. They can start pre-building their team now!',
+          description: 'Share with potential community members who are interested in joining $_bizOppName. They can start pre-building their community now!',
           buttonText: 'Share with Current Prospects',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
@@ -338,7 +338,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🚀 Current Team Members',
           subtitle: 'Great for your current $_bizOppName team',
-          description: 'Share with people already in your $_bizOppName team. When their Team Build Pro team members join $_bizOppName, they\'ll automatically be placed in your organization!',
+          description: 'Share with people already in your $_bizOppName team. When their Team Build Pro community members join $_bizOppName, they\'ll automatically be placed in your organization!',
           buttonText: 'Share with Current Team Members',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

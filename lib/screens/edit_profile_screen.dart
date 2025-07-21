@@ -630,7 +630,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: '. This will ensure your Team Build Pro team members that join '),
+                                    const TextSpan(text: '. This will ensure your Team Build Pro community members that join '),
                                     TextSpan(
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),

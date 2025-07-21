@@ -113,9 +113,9 @@ These Terms constitute a legally binding agreement between you and Team Build Pr
               '2. DESCRIPTION OF SERVICE',
               '''Team Build Pro is a subscription-based team-building platform designed to help users:
 • Build and manage referral networks
-• Track team growth and development
+• Track community growth and development
 • Connect with potential companies
-• Receive notifications about team activities
+• Receive notifications about community activities
 
 SUBSCRIPTION MODEL: Team Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee (currently planned at \$4.99/month, subject to change).
 
