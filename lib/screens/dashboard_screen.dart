@@ -439,6 +439,50 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
+        // Business opportunity card - conditional based on qualification status
+        if (user.role == 'user' && user.qualifiedDate != null)
+          // QUALIFIED: Show business details or join business option
+          _buildActionCard(
+            icon: Icons.rocket_launch,
+            title: user.bizOppRefUrl != null
+                ? 'My Business Details'
+                : 'Get Started Today',
+            color: AppColors.opportunityPrimary,
+            onTap: () {
+              if (user.bizOppRefUrl != null) {
+                // User has already joined - show company details
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CompanyScreen(appId: widget.appId),
+                  ),
+                );
+              } else {
+                // User is qualified but hasn't joined - show business screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BusinessScreen(appId: widget.appId),
+                  ),
+                );
+              }
+            },
+          )
+        else
+          // NOT QUALIFIED: Show eligibility status
+          _buildActionCard(
+            icon: Icons.assessment,
+            title: 'Eligibility Status',
+            color: AppColors.opportunityPrimary,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EligibilityScreen(appId: widget.appId),
+                ),
+              );
+            },
+          ),
         _buildActionCard(
           icon: Icons.notifications,
           title: 'Notifications',
@@ -465,50 +509,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
-        // Business opportunity card - conditional based on qualification status
-        if (user.role == 'user' &&
-            user.directSponsorCount >= AppConstants.projectWideDirectSponsorMin &&
-            user.totalTeamCount >= AppConstants.projectWideTotalTeamMin)
-          // QUALIFIED: Show business details or join business option
-          _buildActionCard(
-            icon: Icons.monetization_on,
-            title: user.bizOppRefUrl != null ? 'My Business Details' : 'Available Opportunity',
-            color: AppColors.opportunityPrimary,
-            onTap: () {
-              if (user.bizOppRefUrl != null) {
-                // User has already joined - show company details
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CompanyScreen(appId: widget.appId),
-                  ),
-                );
-              } else {
-                // User is qualified but hasn't joined - show business screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => BusinessScreen(appId: widget.appId),
-                  ),
-                );
-              }
-            },
-          )
-        else
-          // NOT QUALIFIED: Show eligibility status
-          _buildActionCard(
-            icon: Icons.assessment,
-            title: 'Eligibility Progress',
-            color: AppColors.opportunityPrimary,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => EligibilityScreen(appId: widget.appId),
-                ),
-              );
-            },
-          ),
+        
         _buildActionCard(
           icon: Icons.person,
           title: 'My Profile',

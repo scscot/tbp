@@ -20,14 +20,17 @@ class EligibilityScreen extends StatefulWidget {
 class _EligibilityScreenState extends State<EligibilityScreen> {
   String _bizOpp = 'your business opportunity';
   bool _isLoading = true;
+  int _currentDirectCount = 0;
+  int _currentTotalCount = 0;
+  bool _isQualified = false;
 
   @override
   void initState() {
     super.initState();
-    _loadBizOpp();
+    _loadUserData();
   }
 
-  Future<void> _loadBizOpp() async {
+  Future<void> _loadUserData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -38,8 +41,17 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             
         if (userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>?;
-          final uplineAdmin = userData?['upline_admin'] as String?;
           
+          // Get current user's community stats
+          _currentDirectCount = userData?['directSponsorCount']?.toInt() ?? 0;
+          _currentTotalCount = userData?['totalTeamCount']?.toInt() ?? 0;
+          
+          // Check if qualified
+          _isQualified = _currentDirectCount >= AppConstants.projectWideDirectSponsorMin &&
+                        _currentTotalCount >= AppConstants.projectWideTotalTeamMin;
+          
+          // Get biz_opp from admin settings
+          final uplineAdmin = userData?['upline_admin'] as String?;
           if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
             final adminSettingsDoc = await FirebaseFirestore.instance
                 .collection('admin_settings')
@@ -48,10 +60,10 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 
             if (adminSettingsDoc.exists) {
               final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
-              final bizOpp = adminData?['biz_opp'] as String?;
-              if (bizOpp != null && bizOpp.isNotEmpty) {
+              final bizOppValue = adminData?['biz_opp'] as String?;
+              if (bizOppValue != null && bizOppValue.isNotEmpty) {
                 setState(() {
-                  _bizOpp = bizOpp;
+                  _bizOpp = bizOppValue;
                 });
               }
             }
@@ -59,7 +71,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
         }
       }
     } catch (e) {
-      // Handle error gracefully - keep default value
+      // Handle error gracefully - keep default values
     } finally {
       setState(() {
         _isLoading = false;
@@ -77,13 +89,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
       child: Column(
         children: [
           Icon(
-            Icons.check,
+            _isQualified ? Icons.celebration : Icons.trending_up,
             size: 48,
             color: AppColors.textInverse,
           ),
           const SizedBox(height: 16),
           Text(
-            'ELIGIBILITY STATUS',
+            'KEEP GROWING!',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -94,7 +106,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
+            'Continue building your community to unlock your opportunity with $_bizOpp.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -107,61 +119,73 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     );
   }
 
-  Widget _buildSectionCard({
-    required String title,
-    required String content,
+  
+
+  Widget _buildProgressCard({
     required IconData icon,
-    required Color color,
+    required String label,
+    required int current,
+    required int target,
   }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    final progress = current / target;
+    final isComplete = current >= target;
+    
+    return Expanded(
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
+          gradient: isComplete 
+              ? LinearGradient(
+                  colors: [AppColors.teamAccent, AppColors.darker(AppColors.teamAccent)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  colors: [AppColors.growthPrimary, AppColors.darker(AppColors.growthPrimary)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.withOpacity(color, 0.2), width: 2),
+          boxShadow: AppColors.mediumShadow,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.withOpacity(color, 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: color, size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-                  ),
-                ),
-              ],
+            Icon(
+              isComplete ? Icons.check_circle : icon,
+              size: 32,
+              color: AppColors.textInverse,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
-              content,
-              style: TextStyle(
-                fontSize: 16,
-                height: 1.6,
-                color: AppColors.textSecondary,
+              '$current / $target',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textInverse,
               ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.withOpacity(AppColors.textInverse, 0.9),
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            LinearProgressIndicator(
+              value: progress.clamp(0.0, 1.0),
+              backgroundColor: AppColors.withOpacity(AppColors.textInverse, 0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.textInverse),
             ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildProcessStep({
     required int step,
@@ -291,7 +315,6 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             _buildHeroSection(),
             const SizedBox(height: 24),
 
-             // Minimum Eligibility Requirements
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -301,7 +324,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'COMMUNITY GROWTH THRESHOLDS',
+                      'MINIMUM THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -330,8 +353,48 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                   ],
                 ),
               ),
+            ), 
+            // Progress Cards
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Text(
+                      'YOUR PROGRESS',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.growthPrimary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        _buildProgressCard(
+                          icon: Icons.people,
+                          label: 'Direct Members',
+                          current: _currentDirectCount,
+                          target: AppConstants.projectWideDirectSponsorMin,
+                        ),
+                        const SizedBox(width: 16),
+                        _buildProgressCard(
+                          icon: Icons.groups,
+                          label: 'Community Members',
+                          current: _currentTotalCount,
+                          target: AppConstants.projectWideTotalTeamMin,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 16), 
+            const SizedBox(height: 16),
 
             // The Process
             Card(
@@ -366,7 +429,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'Share the Platform',
+                      title: 'Continue Sharing',
                       description: 'Share Team Build Pro with your professional contacts and colleagues who are interested in expanding their professional network.',
                       icon: Icons.share,
                     ),
@@ -378,8 +441,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'Professional Opportunities',
-                      description: 'When community members meet certain engagement criteria, they may receive invitations to participate in professional development opportunities.',
+                      title: 'Professional Opportunity',
+                      description: 'When community members meet the growth thresholds, they receive invitations to complete their $_bizOpp registration.',
                       icon: Icons.auto_awesome,
                     ),
                     Container(
@@ -395,7 +458,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Team Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful career opportunities.',
+                              'Note: Team Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful long-term success.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -415,21 +478,21 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
         Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: _isQualified ? AppColors.successGradient : AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(20),
         boxShadow: AppColors.mediumShadow,
       ),
       child: Column(
         children: [
-          const Icon(
-            Icons.share_rounded,
+          Icon(
+            _isQualified ? Icons.celebration : Icons.share_rounded,
             size: 48,
             color: Colors.white,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Grow Your Team',
-            style: TextStyle(
+          Text(
+            _isQualified ? 'You\'re Qualified!' : 'Grow Your Community',
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -437,7 +500,9 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your referral link and start building your team!',
+            _isQualified
+                ? 'Congratulations! You\'ve unlocked $_bizOpp opportunities. Keep growing your community!'
+                : 'Share your referral link and start building your community!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
