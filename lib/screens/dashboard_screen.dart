@@ -123,6 +123,111 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
+  void _showBizOppFollowUpModal(UserModel user) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: AppColors.warningGradient,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.assignment_return,
+                size: 32,
+                color: AppColors.textInverse,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Automatically grow your ${user.bizOpp ?? 'business opportunity'} team.',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textInverse,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed on your team.',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.withOpacity(AppColors.textInverse, 0.9),
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        // Navigate to join company screen or business screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BusinessScreen(appId: widget.appId),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.textInverse,
+                        foregroundColor: AppColors.warning,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "I've completed registration",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Add my referral link now",
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: Text(
+                      'Close - I haven\'t joined ${user.bizOpp ?? 'yet'}',
+                      style: TextStyle(
+                        color: AppColors.textInverse,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildWelcomeSection(UserModel user) {
     return Container(
       margin: const EdgeInsets.only(bottom: 32),
@@ -458,13 +563,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                 );
               } else {
-                // User is qualified but hasn't joined - show business screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => BusinessScreen(appId: widget.appId),
-                  ),
-                );
+                // Check if user has visited business opportunity but hasn't added referral link
+                if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
+                  // Show follow-up modal
+                  _showBizOppFollowUpModal(user);
+                } else {
+                  // User is qualified but hasn't visited - show business screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BusinessScreen(appId: widget.appId),
+                    ),
+                  );
+                }
               }
             },
           )
@@ -475,6 +586,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             title: 'Eligibility Status',
             color: AppColors.opportunityPrimary,
             onTap: () {
+              // Navigate to eligibility screen normally
               Navigator.push(
                 context,
                 MaterialPageRoute(
