@@ -8,7 +8,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
-import 'join_company_screen.dart';
+import 'add_link_screen.dart';
 import 'member_detail_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
@@ -322,7 +322,7 @@ class _BusinessScreenState extends State<BusinessScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => JoinCompanyScreen(appId: widget.appId),
+          builder: (_) => AddLinkScreen(appId: widget.appId),
         ),
       );
     } else {

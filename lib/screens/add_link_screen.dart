@@ -1,4 +1,4 @@
-// lib/screens/join_company_screen.dart
+// lib/screens/add_link_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,16 +10,16 @@ import '../config/app_colors.dart';
 import 'company_screen.dart';
 import 'package:flutter/foundation.dart';
 
-class JoinCompanyScreen extends StatefulWidget {
+class AddLinkScreen extends StatefulWidget {
   final String appId;
 
-  const JoinCompanyScreen({super.key, required this.appId});
+  const AddLinkScreen({super.key, required this.appId});
 
   @override
-  State<JoinCompanyScreen> createState() => _JoinCompanyScreenState();
+  State<AddLinkScreen> createState() => _AddLinkScreenState();
 }
 
-class _JoinCompanyScreenState extends State<JoinCompanyScreen>
+class _AddLinkScreenState extends State<AddLinkScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _refLinkController = TextEditingController();
@@ -183,14 +183,14 @@ class _JoinCompanyScreenState extends State<JoinCompanyScreen>
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
-              Icons.business_center,
+              Icons.keyboard_double_arrow_right_outlined,
               size: 48,
               color: AppColors.textInverse,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Connect Your Referral Link',
+            'Tracking Your\n$_bizOpp Referrals',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -199,16 +199,7 @@ class _JoinCompanyScreenState extends State<JoinCompanyScreen>
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Set up your connection to $_bizOpp',
-            style: TextStyle(
-              fontSize: 18,
-              color: AppColors.withOpacity(AppColors.textInverse, 0.9),
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          
         ],
       ),
     );
@@ -268,14 +259,14 @@ class _JoinCompanyScreenState extends State<JoinCompanyScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'You are connecting your Team Build Pro account to track referrals for ',
+                  text: 'You are updating your Team Build Pro account to track referrals to ',
                 ),
                 TextSpan(
                   text: _bizOpp ?? 'this business opportunity',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(
-                  text: '. This is a separate, independent business opportunity that is ',
+                  text: '. This is a separate, independent business entity that is ',
                 ),
                 const TextSpan(
                   text: 'NOT owned, operated, or affiliated with Team Build Pro',
@@ -335,7 +326,7 @@ class _JoinCompanyScreenState extends State<JoinCompanyScreen>
             'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'When your Team Build Pro connections are ready to explore business opportunities, they may use your referral link.',
+            'Should your Team Build Pro community members decide to join $_bizOpp after you, they will automatically be placed in your $_bizOpp organization.',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',

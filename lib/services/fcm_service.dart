@@ -10,7 +10,7 @@ import '../main.dart';
 import 'notification_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/message_thread_screen.dart';
-import '../screens/join_company_screen.dart';
+import '../screens/add_link_screen.dart';
 import '../screens/team_screen.dart';
 
 class FCMService {
@@ -376,7 +376,7 @@ void navigateToRoute(PendingNotification notification) {
     } else if (notification.route == '/join_opportunity') {
       const String appId = 'L8n1tJqHqYd3F5j6';
       navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => JoinCompanyScreen(appId: appId),
+        builder: (_) => AddLinkScreen(appId: appId),
       ));
     } else if (notification.route == '/team') {
       const String appId = 'L8n1tJqHqYd3F5j6';
