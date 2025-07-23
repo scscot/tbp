@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:ultimatefix/screens/add_link_screen.dart';
 import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
@@ -176,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BusinessScreen(appId: widget.appId),
+                            builder: (_) => AddLinkScreen(appId: widget.appId),
                           ),
                         );
                       },

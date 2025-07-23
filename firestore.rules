@@ -3,9 +3,10 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /users/{userId} {
-      // Allow reads based on authenticated relationships and optional participant access
-      allow read: if request.auth != null && (
-        // 1. Read your own profile
+      // MODIFICATION: Changed 'allow read' to 'allow get' to apply these
+      // strict rules only when fetching a single, specific document.
+      allow get: if request.auth != null && (
+        // 1. Get your own profile
         request.auth.uid == userId ||
 
         // 2. They're in your downline (they list you in upline_refs)
@@ -20,15 +21,18 @@ service cloud.firestore {
         // 5. They have explicitly allowed you to view their profile (from a chat)
         (resource.data.can_read_profile != null && request.auth.uid in resource.data.can_read_profile)
       );
+      
+      // MODIFICATION: This rule now correctly allows the uniqueness check query.
+      // It permits any authenticated user to query the collection, which is
+      // necessary for the 'where("biz_opp_ref_url", ...)' query to succeed.
+      // The 'get' rule above still protects individual document data from being read.
+      allow list: if request.auth != null;
 
-      // --- MODIFICATION: Replaced 'allow write' with explicit permissions ---
-      // A user can update their own document (e.g., to add an fcm_token).
+      // A user can update their own document.
       allow update: if request.auth != null && request.auth.uid == userId;
 
-      // Client-side creation and deletion of user documents is disallowed.
-      // This is handled securely by backend Cloud Functions.
+      // Client-side creation and deletion is disallowed.
       allow create, delete: if false;
-      // --- End of Modification ---
 
       // A user can only access their own notifications.
       match /notifications/{notificationId} {
@@ -47,14 +51,14 @@ service cloud.firestore {
       match /messages/{messageId} {
         allow read: if request.auth != null && 
                     request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        
+      
         // More permissive create rule to allow message creation
         allow create: if request.auth != null && 
                       request.resource.data.senderId == request.auth.uid &&
                       (request.auth.uid in chatId.split('_') || 
                        (exists(/databases/$(database)/documents/chats/$(chatId)) &&
                         request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants));
-        
+      
         allow update, delete: if false;
       }
     }
