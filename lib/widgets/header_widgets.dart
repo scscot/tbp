@@ -1,7 +1,10 @@
 // lib/widgets/header_widgets.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ultimatefix/screens/add_link_screen.dart';
 import 'package:ultimatefix/screens/business_screen.dart';
+import 'package:ultimatefix/screens/company_screen.dart';
+import 'package:ultimatefix/screens/eligibility_screen.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../config/app_colors.dart';
@@ -46,9 +49,17 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
 
     final navigator = Navigator.of(context);
     switch (value) {
-      case 'join':
+      case 'company':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => CompanyScreen(appId: widget.appId)));
+        break;
+      case 'business':
         navigator.push(MaterialPageRoute(
             builder: (_) => BusinessScreen(appId: widget.appId)));
+        break;
+      case 'eligibility':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => EligibilityScreen(appId: widget.appId)));
         break;
       case 'dashboard':
         navigator.push(MaterialPageRoute(
@@ -85,6 +96,24 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       case 'terms':
         navigator.push(MaterialPageRoute(
             builder: (_) => TermsOfServiceScreen(appId: widget.appId)));
+        break;
+      case 'business_details':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => CompanyScreen(appId: widget.appId)));
+        break;
+      case 'get_started':
+        final user = Provider.of<UserModel?>(context, listen: false);
+        if (user != null) {
+          // Check if user has visited business opportunity but hasn't added referral link
+          if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
+            // Show follow-up modal
+            _showBizOppFollowUpModal(user);
+          } else {
+            // User is qualified but hasn't visited - show business screen
+            navigator.push(MaterialPageRoute(
+                builder: (_) => BusinessScreen(appId: widget.appId)));
+          }
+        }
         break;
     }
   }
@@ -233,6 +262,110 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     );
   }
 
+  void _showBizOppFollowUpModal(UserModel user) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: AppColors.warningGradient,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.assignment_return,
+                size: 32,
+                color: AppColors.textInverse,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Automatically grow your ${user.bizOpp ?? 'business opportunity'} team.',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textInverse,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed on your team.',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.withOpacity(AppColors.textInverse, 0.9),
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        // Navigate to add link screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddLinkScreen(appId: widget.appId),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.textInverse,
+                        foregroundColor: AppColors.warning,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "I've completed registration",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Add my referral link now",
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: Text(
+                      'Close - I haven\'t joined ${user.bizOpp ?? 'yet'}',
+                      style: TextStyle(
+                        color: AppColors.textInverse,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   bool _shouldShowBackButton(BuildContext context) {
     return Navigator.of(context).canPop();
@@ -253,7 +386,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     );
   }
 
-  List<PopupMenuEntry<String>> _buildMenuItems(bool isProfileComplete) {
+  List<PopupMenuEntry<String>> _buildMenuItems(bool isProfileComplete, UserModel? currentUser) {
     final List<PopupMenuEntry<String>> items = [];
 
     if (isProfileComplete) {
@@ -271,6 +404,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           title: 'How It Works',
           color: AppColors.teamAccent,
         ),
+        _buildBusinessOpportunityMenuItem(currentUser),
         const PopupMenuDivider(),
         
         // Team & Growth section
@@ -388,6 +522,47 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     );
   }
 
+  PopupMenuItem<String> _buildBusinessOpportunityMenuItem(UserModel? user) {
+    if (user == null) {
+      return _buildMenuItem(
+        value: 'eligibility',
+        icon: Icons.assessment,
+        title: 'Eligibility Status',
+        color: AppColors.opportunityPrimary,
+      );
+    }
+
+    // Determine the menu item based on user qualification status
+    if (user.role == 'user' && user.qualifiedDate != null) {
+      // QUALIFIED: Show business details or get started
+      if (user.bizOppRefUrl != null) {
+        // User has already joined - show business details
+        return _buildMenuItem(
+          value: 'business_details',
+          icon: Icons.details,
+          title: 'My Business Details',
+          color: AppColors.opportunityPrimary,
+        );
+      } else {
+        // User is qualified but hasn't joined yet
+        return _buildMenuItem(
+          value: 'get_started',
+          icon: Icons.start,
+          title: 'Get Started',
+          color: AppColors.opportunityPrimary,
+        );
+      }
+    } else {
+      // NOT QUALIFIED: Show eligibility status
+      return _buildMenuItem(
+        value: 'eligibility',
+        icon: Icons.assessment,
+        title: 'Eligibility Status',
+        color: AppColors.opportunityPrimary,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userFromProvider = Provider.of<UserModel?>(context);
@@ -468,7 +643,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               elevation: 8,
               offset: const Offset(0, 8),
-              itemBuilder: (BuildContext context) => _buildMenuItems(isProfileComplete),
+              itemBuilder: (BuildContext context) => _buildMenuItems(isProfileComplete, currentUser),
             ),
           ),
       ],

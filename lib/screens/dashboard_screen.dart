@@ -523,28 +523,6 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
-        _buildActionCard(
-          icon: Icons.trending_up,
-          title: 'Grow My Team',
-          color: AppColors.growthPrimary,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ShareScreen(appId: widget.appId),
-            ),
-          ),
-        ),
-        _buildActionCard(
-          icon: Icons.groups,
-          title: 'View My Team',
-          color: AppColors.teamPrimary,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TeamScreen(appId: widget.appId),
-            ),
-          ),
-        ),
         // Business opportunity card - conditional based on qualification status
         if (user.role == 'user' && user.qualifiedDate != null)
           // QUALIFIED: Show business details or join business option
@@ -596,6 +574,29 @@ class _DashboardScreenState extends State<DashboardScreen>
               );
             },
           ),
+        _buildActionCard(
+          icon: Icons.trending_up,
+          title: 'Grow My Team',
+          color: AppColors.growthPrimary,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ShareScreen(appId: widget.appId),
+            ),
+          ),
+        ),
+        _buildActionCard(
+          icon: Icons.groups,
+          title: 'View My Team',
+          color: AppColors.teamPrimary,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TeamScreen(appId: widget.appId),
+            ),
+          ),
+        ),
+
         _buildActionCard(
           icon: Icons.notifications,
           title: 'Notifications',
