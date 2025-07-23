@@ -43,6 +43,7 @@ class _TeamScreenState extends State<TeamScreen>
   final Map<int, List<UserModel>> _membersByLevel = {};
 
   bool _isLoading = true;
+  // ignore: prefer_final_fields
   ViewMode _currentView = ViewMode.list;
   FilterBy _filterBy = FilterBy.allMembers;
   final SortBy _sortBy = SortBy.joinDate;

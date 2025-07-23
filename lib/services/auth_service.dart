@@ -75,7 +75,9 @@ class AuthService {
     if (kDebugMode) {
       print("🔥 DEBUG: AuthService.signInWithCredential called");
     }
-    print("🔥 DEBUG: Credential provider: ${credential.providerId}");
+    if (kDebugMode) {
+      print("🔥 DEBUG: Credential provider: ${credential.providerId}");
+    }
     try {
       final result = await _firebaseAuth.signInWithCredential(credential);
       print("🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");

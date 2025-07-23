@@ -24,18 +24,22 @@ class AddLinkScreen extends StatefulWidget {
 class _AddLinkScreenState extends State<AddLinkScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _refLinkController = TextEditingController();
-  final TextEditingController _refLinkConfirmController = TextEditingController();
+  final TextEditingController _bizOppRefUrlController = TextEditingController();
+  final TextEditingController _bizOppRefUrlConfirmController = TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
 
   String? _baseUrl;
   String? _bizOpp;
-  String? _originalUrlPattern;
-  String? _originalIdentifierExample;
+  String _bizOppName = 'business opportunity';
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _hasShownDialog = false; // Track if dialog has been shown
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+
+  // Global keys for referral link fields
+  final _bizOppRefUrlKey = GlobalKey();
+  final _bizOppRefUrlConfirmKey = GlobalKey();
 
   @override
   void initState() {
@@ -53,10 +57,10 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     ));
 
     // Add listeners to update preview in real-time
-    _refLinkController.addListener(() {
+    _bizOppRefUrlController.addListener(() {
       setState(() {}); // Rebuild to update preview
     });
-    _refLinkConfirmController.addListener(() {
+    _bizOppRefUrlConfirmController.addListener(() {
       setState(() {}); // Rebuild to update confirmation validation
     });
 
@@ -65,8 +69,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
 
   @override
   void dispose() {
-    _refLinkController.dispose();
-    _refLinkConfirmController.dispose();
+    _bizOppRefUrlController.dispose();
+    _bizOppRefUrlConfirmController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -98,33 +102,12 @@ class _AddLinkScreenState extends State<AddLinkScreen>
 
           setState(() {
             _bizOpp = data?['biz_opp'];
+            _bizOppName = data?['biz_opp'] ?? 'business opportunity';
             if (originalUrl != null && originalUrl.isNotEmpty) {
               final uri = Uri.parse(originalUrl);
               
-              // Extract the base URL and URI pattern for strict validation
+              // Store base URL as scheme + host for validation
               _baseUrl = "${uri.scheme}://${uri.host}";
-              
-              // Determine the URL pattern structure
-              if (uri.hasQuery) {
-                // Query parameter format (e.g., ?id=1234, ?ref=john123)
-                _baseUrl = "${uri.scheme}://${uri.host}${uri.path}";
-                final queryParams = uri.queryParameters;
-                if (queryParams.isNotEmpty) {
-                  final firstParam = queryParams.entries.first;
-                  _originalUrlPattern = "query";
-                  _originalIdentifierExample = "?${firstParam.key}=[identifier]";
-                }
-              } else {
-                // Path-based format (e.g., /go/john123, /ref/john123)
-                final pathSegments = uri.pathSegments;
-                if (pathSegments.isNotEmpty) {
-                  // Extract the path pattern (everything except the last segment which is the identifier)
-                  final pathWithoutIdentifier = pathSegments.take(pathSegments.length - 1).join('/');
-                  _baseUrl = "${uri.scheme}://${uri.host}/$pathWithoutIdentifier";
-                  _originalUrlPattern = "path";
-                  _originalIdentifierExample = "/${pathSegments.last}";
-                }
-              }
             }
           });
         }
@@ -141,7 +124,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     }
   }
 
-  /// Validate that the URL matches the expected base URL and URI format for the business opportunity
+  /// Validate that the link begins with the expected host from the business opportunity
   String? _validateUrlStructure(String url) {
     if (_bizOpp == null || _baseUrl == null) {
       return null; // No validation if no business opportunity set
@@ -149,89 +132,35 @@ class _AddLinkScreenState extends State<AddLinkScreen>
 
     try {
       final uri = Uri.parse(url);
-      final baseUri = Uri.parse(_baseUrl!);
+      final baseUri = Uri.parse(_baseUrl!); // Contains scheme://host
 
-      // Basic validation - ensure it's a proper URL with host
+      // Basic validation - ensure it's a proper link with host
       if (uri.host.isEmpty) {
-        return 'Please enter a valid URL with a proper domain';
+        return 'Please enter a valid link with a proper domain';
       }
 
-      // Ensure it's not a localhost or IP address (basic business URL validation)
+      // Ensure it's not a localhost or IP address (basic business link validation)
       if (uri.host == 'localhost' ||
           uri.host.startsWith('127.') ||
           uri.host.startsWith('192.168.') ||
           uri.host.startsWith('10.') ||
           RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
-        return 'Please enter a valid business referral URL (not localhost or IP address)';
+        return 'Please enter a valid business referral link (not localhost or IP address)';
       }
 
       // Ensure it has a proper TLD
       if (!uri.host.contains('.')) {
-        return 'Please enter a valid URL with a proper domain (e.g., company.com)';
+        return 'Please enter a valid link with a proper domain (e.g., company.com)';
       }
 
-      // Strict validation: Host must match exactly
-      if (uri.host != baseUri.host) {
-        return 'Referral URL must be from ${baseUri.host}';
-      }
-
-      // Strict validation: URI format must match the original pattern
-      if (_originalUrlPattern == "query") {
-        // Must have query parameters and match the base path
-        if (!uri.hasQuery) {
-          return 'Referral URL must include query parameters like the original format';
-        }
-        
-        // Check if base path matches (everything before query parameters)
-        final expectedBasePath = baseUri.path;
-        if (uri.path != expectedBasePath) {
-          return 'Referral URL path must match: ${baseUri.scheme}://${baseUri.host}$expectedBasePath';
-        }
-        
-        // Check if it has the same query parameter structure
-        final baseQueryParams = baseUri.queryParameters;
-        final uriQueryParams = uri.queryParameters;
-        
-        if (baseQueryParams.keys.length != uriQueryParams.keys.length) {
-          return 'Referral URL must have the same query parameter structure as the original';
-        }
-        
-        for (String key in baseQueryParams.keys) {
-          if (!uriQueryParams.containsKey(key)) {
-            return 'Referral URL must include the "$key" parameter like the original format';
-          }
-        }
-        
-      } else if (_originalUrlPattern == "path") {
-        // Must follow the same path structure
-        final basePathSegments = baseUri.pathSegments;
-        final uriPathSegments = uri.pathSegments;
-        
-        // Must have the same number of path segments
-        if (basePathSegments.length != uriPathSegments.length) {
-          return 'Referral URL must follow the same path structure as the original';
-        }
-        
-        // All segments except the last one (identifier) must match exactly
-        for (int i = 0; i < basePathSegments.length - 1; i++) {
-          if (basePathSegments[i] != uriPathSegments[i]) {
-            return 'Referral URL path structure must match the original format';
-          }
-        }
-        
-        // The last segment should be different (it's the unique identifier)
-        if (basePathSegments.isNotEmpty && uriPathSegments.isNotEmpty) {
-          final lastBaseSegment = basePathSegments.last;
-          final lastUriSegment = uriPathSegments.last;
-          if (lastBaseSegment == lastUriSegment) {
-            return 'You must use your own unique identifier, not the original one';
-          }
-        }
+      // Simple validation: entered link must begin with the base URL (scheme + host)
+      if (!url.startsWith(_baseUrl!)) {
+        return 'Referral link must begin with $_baseUrl';
       }
 
       return null; // Valid
     } catch (e) {
-      return 'Invalid URL format';
+      return 'Invalid link format';
     }
   }
 
@@ -248,10 +177,10 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     }
 
     try {
-      // Use the complete referral URL directly
-      final completeReferralUrl = _refLinkController.text.trim();
+      // Use the complete referral link directly
+      final completeReferralUrl = _bizOppRefUrlController.text.trim();
 
-      // Check if the referral URL is already in use
+      // Check if the referral link is already in use
       final isUnique =
           await _checkReferralUrlUniqueness(completeReferralUrl, user.uid);
       if (!isUnique) {
@@ -310,7 +239,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     }
   }
 
-  /// Check if the referral URL is unique across all users
+  /// Check if the referral link is unique across all users
   Future<bool> _checkReferralUrlUniqueness(
       String referralUrl, String currentUserId) async {
     try {
@@ -318,14 +247,14 @@ class _AddLinkScreenState extends State<AddLinkScreen>
           referralUrl, currentUserId);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error checking referral URL uniqueness: $e');
+        debugPrint('Error checking referral link uniqueness: $e');
       }
       // In case of error, assume it's not unique to be safe
       return false;
     }
   }
 
-  /// Show dialog when referral URL is already in use
+  /// Show dialog when referral link is already in use
   void _showReferralUrlInUseDialog() {
     showDialog(
       context: context,
@@ -403,7 +332,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'You must use a different referral URL to continue.',
+                        'You must use a different referral link to continue.',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textPrimary,
@@ -707,7 +636,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Paste Your ${_bizOpp ?? 'Business'} Referral Link',
+                  'Your ${_bizOpp ?? 'Business'} Referral Link',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -729,17 +658,17 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Simply paste your complete referral link below. We\'ll automatically validate and store it for tracking.',
+                  'Enter your $_bizOpp referral link below. This will be used to track referrals from your Team Build Pro team.',
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
                     height: 1.3,
                   ),
                 ),
-                if (_baseUrl != null && _originalIdentifierExample != null) ...[
+                if (_baseUrl != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                    'Required format: $_baseUrl$_originalIdentifierExample',
+                    'Must begin with: $_baseUrl',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.primary,
@@ -751,112 +680,113 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
-          // First referral link input
-          Text(
-            'Enter Your Referral Link',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+          const Divider(color: Colors.blue, thickness: 1),
+          const SizedBox(height: 16),
+          TextFormField(
+            key: _bizOppRefUrlKey,
+            controller: _bizOppRefUrlController,
+            decoration: InputDecoration(
+              labelText: 'Enter Your Referral Link',
+              helperText: _baseUrl != null 
+                  ? 'Must start with $_baseUrl\nThis cannot be changed once set'
+                  : 'This cannot be changed once set',
+              hintText: _baseUrl != null ? 'e.g., ${_baseUrl}your_username_here' : null,
+              border: const OutlineInputBorder(),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border, width: 1.5),
-              color: AppColors.backgroundPrimary,
-            ),
-            child: TextFormField(
-              controller: _refLinkController,
-              keyboardType: TextInputType.url,
-              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
-              maxLines: 3,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.all(16),
-                hintText:
-                    'Paste your full referral link here\n(e.g., https://Your-Company.com/go/john123)',
-                hintStyle: TextStyle(color: AppColors.textTertiary),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Icon(Icons.content_paste, color: AppColors.primary),
-                ),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please paste your referral link.';
-                }
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your $_bizOpp referral link.';
+              }
 
-                // Basic URL validation
-                if (!value.trim().startsWith('http://') &&
-                    !value.trim().startsWith('https://')) {
-                  return 'Please enter a complete URL starting with http:// or https://';
-                }
+              // Basic link validation
+              if (!value.trim().startsWith('http://') &&
+                  !value.trim().startsWith('https://')) {
+                return 'Please enter a complete link starting with http:// or https://';
+              }
 
-                try {
-                  Uri.parse(value.trim());
-                } catch (e) {
-                  return 'Please enter a valid URL';
-                }
+              try {
+                Uri.parse(value.trim());
+              } catch (e) {
+                return 'Please enter a valid link';
+              }
 
-                // Strict URL structure validation
-                final validationError = _validateUrlStructure(value.trim());
-                if (validationError != null) {
-                  return validationError;
-                }
+              // Strict link structure validation
+              final validationError = _validateUrlStructure(value.trim());
+              if (validationError != null) {
+                return validationError;
+              }
 
-                return null;
-              },
-            ),
+              return null;
+            },
+            onTap: () {
+              if (!_hasShownDialog) {
+                setState(() {
+                  _hasShownDialog = true;
+                });
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text(
+                      'Very Important!',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    content: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(fontSize: 16, color: Colors.black),
+                        children: [
+                          const TextSpan(text: 'You must enter the exact referral link you received from '),
+                          TextSpan(
+                            text: _bizOppName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: '. This will ensure your Team Build Pro community members that join '),
+                          TextSpan(
+                            text: _bizOppName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ' are automatically placed in your '),
+                          TextSpan(
+                            text: _bizOppName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ' team.'),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('I Understand'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
-          
-          const SizedBox(height: 20),
-          
-          // Confirmation referral link input
-          Text(
-            'Confirm Your Referral Link',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+          const SizedBox(height: 16),
+          TextFormField(
+            key: _bizOppRefUrlConfirmKey,
+            controller: _bizOppRefUrlConfirmController,
+            decoration: const InputDecoration(
+              labelText: 'Confirm Referral Link URL',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your referral link.';
+              }
+              if (value.trim() != _bizOppRefUrlController.text.trim()) {
+                return 'Referral links do not match exactly';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border, width: 1.5),
-              color: AppColors.backgroundPrimary,
-            ),
-            child: TextFormField(
-              controller: _refLinkConfirmController,
-              keyboardType: TextInputType.url,
-              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
-              maxLines: 3,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.all(16),
-                hintText: 'Re-enter your referral link to confirm',
-                hintStyle: TextStyle(color: AppColors.textTertiary),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Icon(Icons.verified, color: AppColors.success),
-                ),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please confirm your referral link.';
-                }
-                if (value.trim() != _refLinkController.text.trim()) {
-                  return 'Referral links do not match exactly';
-                }
-                return null;
-              },
-            ),
-          ),
-          if (_refLinkController.text.isNotEmpty) ...[
+          if (_bizOppRefUrlController.text.isNotEmpty) ...[
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(16),
@@ -885,7 +815,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _refLinkController.text.trim(),
+                    _bizOppRefUrlController.text.trim(),
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textPrimary,

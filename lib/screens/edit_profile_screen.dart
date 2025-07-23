@@ -43,7 +43,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   String? _selectedState;
   bool _isBizOppRepresentative = false;
   String _bizOppName = 'business opportunity';
-  String? _baseUrl; // Added for base URL validation
+  String? _baseUrl; // Added for base link validation
   bool _hasShownDialog = false; // Track if dialog has been shown
 
   File? _imageFile;
@@ -99,13 +99,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
 
-            // Extract base URL for validation (same logic as AddLinkScreen)
+            // Extract base link for validation (same logic as AddLinkScreen)
             if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
               try {
                 final uri = Uri.parse(bizOppRefUrl);
-                setState(() {
-                  _baseUrl = "${uri.scheme}://${uri.host}/";
-                });
+                
+                // Store base URL as scheme + host for validation
+                _baseUrl = "${uri.scheme}://${uri.host}";
+                
+                setState(() {});
               } catch (e) {
                 debugPrint('Error parsing base URL: $e');
               }
@@ -140,6 +142,45 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  /// Validate that the link begins with the expected host from the business opportunity
+  String? _validateUrlStructure(String url) {
+    if (_bizOppName == 'business opportunity' || _baseUrl == null) {
+      return null; // No validation if no business opportunity set
+    }
+
+    try {
+      final uri = Uri.parse(url);
+
+      // Basic validation - ensure it's a proper link with host
+      if (uri.host.isEmpty) {
+        return 'Please enter a valid link with a proper domain';
+      }
+
+      // Ensure it's not a localhost or IP address (basic business link validation)
+      if (uri.host == 'localhost' ||
+          uri.host.startsWith('127.') ||
+          uri.host.startsWith('192.168.') ||
+          uri.host.startsWith('10.') ||
+          RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
+        return 'Please enter a valid business referral link (not localhost or IP address)';
+      }
+
+      // Ensure it has a proper TLD
+      if (!uri.host.contains('.')) {
+        return 'Please enter a valid link with a proper domain (e.g., company.com)';
+      }
+
+      // Simple validation: entered link must begin with the base URL (scheme + host)
+      if (!url.startsWith(_baseUrl!)) {
+        return 'Referral link must begin with $_baseUrl';
+      }
+
+      return null; // Valid
+    } catch (e) {
+      return 'Invalid link format';
+    }
+  }
+
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -167,24 +208,27 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         return 'Please confirm your referral link';
       }
 
-      // Referral Link URL Validation (enhanced with base URL check)
+      // Comprehensive Referral Link link Validation
       final referralLink = _bizOppRefUrlController.text.trim();
+      
+      // Basic link validation
+      if (!referralLink.startsWith('http://') && !referralLink.startsWith('https://')) {
+        _scrollToField(_bizOppRefUrlKey);
+        return 'Please enter a complete link starting with http:// or https://';
+      }
+
       try {
-        final uri = Uri.parse(referralLink);
-        if (!uri.isAbsolute || uri.host.isEmpty) {
-          throw const FormatException('Invalid URL format');
-        }
+        Uri.parse(referralLink);
       } catch (_) {
         _scrollToField(_bizOppRefUrlKey);
         return 'Please enter a valid referral link (e.g., https://example.com).';
       }
 
-      // Base URL validation (same logic as AddLinkScreen)
-      if (_baseUrl != null && _baseUrl!.isNotEmpty) {
-        if (!_baseUrl!.startsWith('https') || !referralLink.startsWith(_baseUrl!)) {
-          _scrollToField(_bizOppRefUrlKey);
-          return 'Referral link must begin with $_baseUrl';
-        }
+      // Comprehensive link structure validation
+      final validationError = _validateUrlStructure(referralLink);
+      if (validationError != null) {
+        _scrollToField(_bizOppRefUrlKey);
+        return validationError;
       }
 
       if (_bizOppRefUrlController.text != _bizOppRefUrlConfirmController.text) {
@@ -598,13 +642,27 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         if (_isBizOppRepresentative && (value == null || value.isEmpty)) {
                           return 'Required when you are a representative';
                         }
-                        if (_isBizOppRepresentative && _baseUrl != null && _baseUrl!.isNotEmpty) {
-                          if (value != null && value.isNotEmpty) {
-                            if (!_baseUrl!.startsWith('https') || !value.startsWith(_baseUrl!)) {
-                              return 'Link must begin with $_baseUrl';
-                            }
+                        
+                        if (_isBizOppRepresentative && value != null && value.isNotEmpty) {
+                          // Basic link validation
+                          if (!value.trim().startsWith('http://') &&
+                              !value.trim().startsWith('https://')) {
+                            return 'Please enter a complete link starting with http:// or https://';
+                          }
+
+                          try {
+                            Uri.parse(value.trim());
+                          } catch (e) {
+                            return 'Please enter a valid referral link (e.g., $_baseUrl).';
+                          }
+
+                          // Comprehensive link structure validation
+                          final validationError = _validateUrlStructure(value.trim());
+                          if (validationError != null) {
+                            return validationError;
                           }
                         }
+                        
                         return null;
                       },
                       onTap: () {
@@ -660,7 +718,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       key: _bizOppRefUrlConfirmKey,
                       controller: _bizOppRefUrlConfirmController,
                       decoration: const InputDecoration(
-                        labelText: 'Confirm Referral Link URL',
+                        labelText: 'Confirm Referral Link',
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
