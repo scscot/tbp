@@ -133,7 +133,7 @@ class _TeamScreenState extends State<TeamScreen>
             .get();
             
         if (currentUserDoc.exists) {
-          final userData = currentUserDoc.data() as Map<String, dynamic>?;
+          final userData = currentUserDoc.data();
           final uplineAdmin = userData?['upline_admin'] as String?;
           debugPrint('🔍 BIZ_OPP DEBUG: Current user upline_admin: $uplineAdmin');
           
@@ -145,7 +145,7 @@ class _TeamScreenState extends State<TeamScreen>
                 .get();
 
             if (adminSettingsDoc.exists) {
-              final data = adminSettingsDoc.data() as Map<String, dynamic>?;
+              final data = adminSettingsDoc.data();
               final bizOpp = data?['biz_opp'] as String?;
               debugPrint('🔍 BIZ_OPP DEBUG: Admin settings data: $data');
               debugPrint('🔍 BIZ_OPP DEBUG: biz_opp field: $bizOpp');
@@ -718,9 +718,6 @@ class _TeamScreenState extends State<TeamScreen>
   }
 
   Widget _buildMemberListCard(UserModel member) {
-    // Calculate display level relative to current user
-    final displayLevel = member.level - _levelOffset;
-    
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

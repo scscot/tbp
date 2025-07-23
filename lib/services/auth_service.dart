@@ -72,7 +72,9 @@ class AuthService {
   }
 
   Future<UserCredential> signInWithCredential(AuthCredential credential) async {
-    print("🔥 DEBUG: AuthService.signInWithCredential called");
+    if (kDebugMode) {
+      print("🔥 DEBUG: AuthService.signInWithCredential called");
+    }
     print("🔥 DEBUG: Credential provider: ${credential.providerId}");
     try {
       final result = await _firebaseAuth.signInWithCredential(credential);

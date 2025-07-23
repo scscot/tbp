@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:app_links/app_links.dart';
 import '../screens/homepage_screen.dart';
-import '../screens/login_screen.dart';
 import '../main.dart' show navigatorKey, appId;
 
 class DeepLinkService {

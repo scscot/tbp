@@ -37,7 +37,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             .get();
             
         if (userDoc.exists) {
-          final userData = userDoc.data() as Map<String, dynamic>?;
+          final userData = userDoc.data();
           final uplineAdmin = userData?['upline_admin'] as String?;
           
           if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
@@ -47,7 +47,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 .get();
                 
             if (adminSettingsDoc.exists) {
-              final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+              final adminData = adminSettingsDoc.data();
               final bizOpp = adminData?['biz_opp'] as String?;
               if (bizOpp != null && bizOpp.isNotEmpty) {
                 setState(() {
@@ -289,6 +289,32 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           children: [
             // Hero Section
             _buildHeroSection(),
+            const SizedBox(height: 24),
+
+            // Business Opportunity Section
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Icon(Icons.business_center, color: AppColors.primary, size: 28),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        _bizOpp,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
 
             // The Challenge
