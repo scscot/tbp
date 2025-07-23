@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 // Required for clipboard functionality
 import 'package:intl/intl.dart'; // Required for date formatting
 import '../widgets/header_widgets.dart';
-import 'dashboard_screen.dart'; // Required for dashboard navigation
 
 class CompanyScreen extends StatefulWidget {
   final String appId;

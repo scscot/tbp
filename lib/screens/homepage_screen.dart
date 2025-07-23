@@ -1,12 +1,13 @@
 // lib/screens/homepage_screen.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import '../services/session_manager.dart';
-import '../widgets/header_widgets.dart';
 import 'new_registration_screen.dart';
 import 'login_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -95,7 +96,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         fetchedSponsorName =
             '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
 
-        if (fetchedSponsorName!.isNotEmpty) {
+        if (fetchedSponsorName.isNotEmpty) {
           await SessionManager.instance.setReferralData(code, fetchedSponsorName);
           if (kDebugMode) {
             print('✅ HomepageScreen: Referral data cached successfully');

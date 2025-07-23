@@ -1,7 +1,8 @@
 // lib/screens/terms_of_service_screen.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
 

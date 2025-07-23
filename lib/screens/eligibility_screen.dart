@@ -40,7 +40,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             .get();
             
         if (userDoc.exists) {
-          final userData = userDoc.data() as Map<String, dynamic>?;
+          final userData = userDoc.data();
           
           // Get current user's community stats
           _currentDirectCount = userData?['directSponsorCount']?.toInt() ?? 0;
@@ -59,7 +59,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 .get();
                 
             if (adminSettingsDoc.exists) {
-              final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+              final adminData = adminSettingsDoc.data();
               final bizOppValue = adminData?['biz_opp'] as String?;
               if (bizOppValue != null && bizOppValue.isNotEmpty) {
                 setState(() {

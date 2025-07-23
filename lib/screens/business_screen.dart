@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_cast, deprecated_member_use, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

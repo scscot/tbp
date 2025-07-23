@@ -76,7 +76,7 @@ class UserModel {
             .get();
             
         if (adminSettingsDoc.exists) {
-          final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+          final adminData = adminSettingsDoc.data();
           final bizOpp = adminData?['biz_opp'] as String?;
           if (bizOpp != null && bizOpp.isNotEmpty) {
             data['biz_opp'] = bizOpp;

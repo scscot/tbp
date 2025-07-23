@@ -82,7 +82,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .get();
               
           if (adminSettingsDoc.exists) {
-            final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+            final adminData = adminSettingsDoc.data();
             final bizOpp = adminData?['biz_opp'] as String?;
             if (bizOpp != null && bizOpp.isNotEmpty) {
               setState(() {
@@ -178,10 +178,6 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
                       
                       // Pro Tips
                       _buildProTips(),
-                      const SizedBox(height: 24),
-                      
-                      // Stats Section
-                      if (_currentUser?.role != 'admin') _buildStatsSection(),
                     ],
                   ),
                 ),
@@ -496,58 +492,5 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
     );
   }
 
-  Widget _buildStatsSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: AppColors.successGradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AppColors.lightShadow,
-      ),
-      child: Column(
-        children: [
-          const Icon(
-            Icons.analytics_rounded,
-            size: 32,
-            color: Colors.white,
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Your Referral Code',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              _currentUser?.referralCode ?? 'Not Available',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Others can use this code during registration',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+  
 }

@@ -36,7 +36,6 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
   String? _teamLeaderName;
   String? _teamLeaderUid;
   String? _currentUserId;
-  bool _isCurrentUserAdmin = false;
   bool _isLoading = true;
 
   @override
@@ -63,7 +62,6 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       // Check if current user is admin
       final currentUserDoc = await _firestoreService.getUser(_currentUserId!);
       if (currentUserDoc != null) {
-        _isCurrentUserAdmin = currentUserDoc.role == 'admin';
       }
 
       // Use the new backend aggregation method
@@ -87,7 +85,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   .get();
                   
               if (adminSettingsDoc.exists) {
-                final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
+                final adminData = adminSettingsDoc.data();
                 final bizOpp = adminData?['biz_opp'] as String?;
                 if (bizOpp != null && bizOpp.isNotEmpty) {
                   memberData['biz_opp'] = bizOpp;
@@ -202,11 +200,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                             DateFormat.yMMMd().format(_user!.createdAt!)),
 
                        _buildInfoRow('Direct Members',
-                          (_user!.directSponsorCount ?? 0).toString()),
+                          _user!.directSponsorCount.toString()),
 
                        _buildInfoRow(
                           'Total Members',
-                          (_user!.totalTeamCount ?? 0).toString()),
+                          _user!.totalTeamCount.toString()),
 
 
                       if (_user!.qualifiedDate != null)

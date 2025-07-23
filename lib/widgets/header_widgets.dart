@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:ultimatefix/screens/business_screen.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
-import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
@@ -234,16 +233,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     );
   }
 
-  bool _shouldShowJoinCompany(UserModel? currentUser) {
-    if (currentUser == null ||
-        currentUser.role == 'admin' ||
-        currentUser.bizVisitDate != null) {
-      return false;
-    }
-    return (currentUser.directSponsorCount) >=
-            AppConstants.projectWideDirectSponsorMin &&
-        (currentUser.totalTeamCount) >= AppConstants.projectWideTotalTeamMin;
-  }
 
   bool _shouldShowBackButton(BuildContext context) {
     return Navigator.of(context).canPop();
