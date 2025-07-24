@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class UserModel {
   final String uid;
@@ -84,7 +85,7 @@ class UserModel {
         }
       } catch (e) {
         // If there's an error fetching admin settings, continue with existing data
-        print('Error fetching biz_opp from admin_settings: $e');
+        debugPrint('Error fetching biz_opp from admin_settings: $e');
       }
     }
     

@@ -73,17 +73,17 @@ class AuthService {
 
   Future<UserCredential> signInWithCredential(AuthCredential credential) async {
     if (kDebugMode) {
-      print("🔥 DEBUG: AuthService.signInWithCredential called");
+      debugPrint("🔥 DEBUG: AuthService.signInWithCredential called");
     }
     if (kDebugMode) {
-      print("🔥 DEBUG: Credential provider: ${credential.providerId}");
+      debugPrint("🔥 DEBUG: Credential provider: ${credential.providerId}");
     }
     try {
       final result = await _firebaseAuth.signInWithCredential(credential);
-      print("🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
+      debugPrint("🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
       return result;
     } catch (e) {
-      print("🔥 DEBUG: Firebase Auth failed: $e");
+      debugPrint("🔥 DEBUG: Firebase Auth failed: $e");
       rethrow;
     }
   }
@@ -97,7 +97,7 @@ class AuthService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('AuthService: Error clearing FCM token: $e');
+        debugPrint('AuthService: Error clearing FCM token: $e');
       }
     }
     await _googleSignIn.signOut();

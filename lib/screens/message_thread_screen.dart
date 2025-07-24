@@ -42,6 +42,8 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   String _actualRecipientName = '';
   // --- MODIFICATION: Added state variable for actual recipient ID ---
   String _actualRecipientId = '';
+  // --- NEW: Added state variable for business opportunity ---
+  String? _bizOpp;
 
   @override
   void initState() {
@@ -64,6 +66,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       return;
     }
     _currentUserId = currentUser.uid;
+
+    // --- NEW: Fetch business opportunity information ---
+    await _fetchBusinessOpportunity();
 
     String actualRecipientId = widget.recipientId;
     String actualRecipientName = widget.recipientName;
@@ -173,6 +178,48 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     }
   }
 
+  // --- NEW: Method to fetch business opportunity ---
+  Future<void> _fetchBusinessOpportunity() async {
+    try {
+      if (_currentUserId == null) return;
+
+      // First, get the current user's data to determine admin UID
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_currentUserId!)
+          .get();
+
+      if (!userDoc.exists) return;
+
+      final userData = userDoc.data()!;
+      String? adminUid;
+
+      // Determine admin UID based on user role
+      if (userData['role'] == 'admin') {
+        adminUid = _currentUserId;
+      } else {
+        adminUid = userData['uplineAdmin'];
+      }
+
+      if (adminUid != null && adminUid.isNotEmpty) {
+        // Fetch admin settings to get business opportunity
+        final adminDoc = await FirebaseFirestore.instance
+            .collection('admin_settings')
+            .doc(adminUid)
+            .get();
+
+        if (mounted && adminDoc.exists) {
+          final adminData = adminDoc.data();
+          setState(() {
+            _bizOpp = adminData?['biz_opp'];
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching business opportunity: $e");
+    }
+  }
+
   void _markMessagesAsRead() {
     if (_threadId == null || _currentUserId == null) return;
     FirebaseFirestore.instance
@@ -276,8 +323,8 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
               Text('Links Not Permitted'),
             ],
           ),
-          content: const Text(
-            'To maintain the integrity of our community building system and ensure focus on our business opportunity, links and URLs are not permitted in chat messages. Please share your message without any links.',
+          content: Text(
+            'Links aren\'t allowed in messages to keep our community focused on ${_bizOpp ?? 'our business opportunity'}. Please share your message without any links.',
           ),
           actions: [
             TextButton(

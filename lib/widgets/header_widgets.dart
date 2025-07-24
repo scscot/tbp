@@ -177,7 +177,8 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       },
     );
 
-    if (result == true) {
+    
+    if (result == true && mounted) {
       final authService = context.read<AuthService>();
       final navigator = Navigator.of(context);
 
@@ -186,6 +187,9 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       }
 
       await authService.signOut();
+
+      // Use mounted check before accessing context after await
+      if (!mounted) return;
 
       final rootNavigatorContext = navigatorKey.currentContext;
       if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
