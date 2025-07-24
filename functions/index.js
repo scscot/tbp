@@ -1418,3 +1418,39 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     console.error("❌ DAILY NOTIFICATIONS: Critical error in daily community growth notifications:", error);
   }
 });
+
+exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) => {
+  const url = request.data.url;
+
+  if (!url || typeof url !== 'string') {
+    throw new HttpsError('invalid-argument', 'A valid URL is required.');
+  }
+
+  // Basic URL structure check
+  try {
+    new URL(url);
+  } catch (e) {
+    throw new HttpsError('invalid-argument', 'Malformed URL.');
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'HEAD',
+      timeout: 5000,
+      redirect: 'follow',
+    });
+
+    const isValid = response.status === 200;
+
+    return {
+      valid: isValid,
+      status: response.status,
+      redirected: response.redirected,
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      error: error.message,
+    };
+  }
+});
