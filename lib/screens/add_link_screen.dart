@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
+import '../services/link_validator_service.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
 import 'company_screen.dart';
@@ -132,8 +133,6 @@ class _AddLinkScreenState extends State<AddLinkScreen>
 
     try {
       final uri = Uri.parse(url);
-      final baseUri = Uri.parse(_baseUrl!); // Contains scheme://host
-
       // Basic validation - ensure it's a proper link with host
       if (uri.host.isEmpty) {
         return 'Please enter a valid link with a proper domain';
@@ -145,17 +144,22 @@ class _AddLinkScreenState extends State<AddLinkScreen>
           uri.host.startsWith('192.168.') ||
           uri.host.startsWith('10.') ||
           RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
-        return 'Please enter a valid business referral link (not localhost or IP address)';
+        return 'Please enter a valid business referral link\n(not localhost or IP address)';
       }
 
       // Ensure it has a proper TLD
       if (!uri.host.contains('.')) {
-        return 'Please enter a valid link with a proper domain (e.g., company.com)';
+        return 'Please enter a valid link with a proper domain\n(e.g., company.com)';
       }
 
       // Simple validation: entered link must begin with the base URL (scheme + host)
       if (!url.startsWith(_baseUrl!)) {
-        return 'Referral link must begin with $_baseUrl';
+        return 'Referral link must begin with:\n$_baseUrl';
+      }
+
+      // Ensure the entered URL is not just the homepage (must have additional path/parameters)
+      if (url.trim() == _baseUrl!.trim() || url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
+        return 'Please enter your unique referral link,\nnot just the homepage';
       }
 
       return null; // Valid
@@ -179,6 +183,16 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     try {
       // Use the complete referral link directly
       final completeReferralUrl = _bizOppRefUrlController.text.trim();
+
+      // Validate the referral URL accessibility using Firebase Cloud Function
+      final isValidUrl = await LinkValidatorService.validateReferralUrl(completeReferralUrl);
+      if (!isValidUrl) {
+        if (mounted) {
+          setState(() => _isSaving = false);
+          _showUrlValidationFailedDialog();
+        }
+        return;
+      }
 
       // Check if the referral link is already in use
       final isUnique =
@@ -366,6 +380,131 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 ),
                 child: Text(
                   'Try Different Link',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textInverse,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Show dialog when referral URL validation fails
+  void _showUrlValidationFailedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: AppColors.surface,
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.withOpacity(AppColors.error, 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.link_off,
+                  color: AppColors.error,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Invalid Referral Link',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.error,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textPrimary,
+                    height: 1.4,
+                  ),
+                  children: [
+                    const TextSpan(
+                      text: 'The ',
+                    ),
+                    TextSpan(
+                      text: _bizOpp ?? 'business opportunity',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(
+                      text: ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.withOpacity(AppColors.warning, 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: AppColors.warning, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Please check the link and try again, or contact your sponsor for the correct referral link.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Container(
+              width: double.infinity,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Try Again',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -702,7 +841,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               // Basic link validation
               if (!value.trim().startsWith('http://') &&
                   !value.trim().startsWith('https://')) {
-                return 'Please enter a complete link starting with http:// or https://';
+                return 'Please enter a complete link starting with\nhttp:// or https://';
               }
 
               try {
@@ -864,7 +1003,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Saving...',
+                    'Validating & Saving...',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,

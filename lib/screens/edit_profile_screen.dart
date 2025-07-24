@@ -1,5 +1,7 @@
 // lib/screens/edit_profile_screen.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -8,6 +10,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
+import '../services/link_validator_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import 'dashboard_screen.dart';
@@ -162,17 +165,22 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           uri.host.startsWith('192.168.') ||
           uri.host.startsWith('10.') ||
           RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
-        return 'Please enter a valid business referral link (not localhost or IP address)';
+        return 'Please enter a valid business referral link\n(not localhost or IP address)';
       }
 
       // Ensure it has a proper TLD
       if (!uri.host.contains('.')) {
-        return 'Please enter a valid link with a proper domain (e.g., company.com)';
+        return 'Please enter a valid link with a proper domain\n(e.g., company.com)';
       }
 
       // Simple validation: entered link must begin with the base URL (scheme + host)
       if (!url.startsWith(_baseUrl!)) {
-        return 'Referral link must begin with $_baseUrl';
+        return 'Referral link must begin with:\n$_baseUrl';
+      }
+
+      // Ensure the entered URL is not just the homepage (must have additional path/parameters)
+      if (url.trim() == _baseUrl!.trim() || url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
+        return 'Please enter your unique referral link,\nnot just the homepage';
       }
 
       return null; // Valid
@@ -214,7 +222,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       // Basic link validation
       if (!referralLink.startsWith('http://') && !referralLink.startsWith('https://')) {
         _scrollToField(_bizOppRefUrlKey);
-        return 'Please enter a complete link starting with http:// or https://';
+        return 'Please enter a complete link starting with\nhttp:// or https://';
       }
 
       try {
@@ -237,6 +245,105 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       }
     }
     return null;
+  }
+
+  /// Show dialog when referral URL validation fails
+  void _showUrlValidationFailedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.link_off,
+                color: Colors.red,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Invalid Referral Link',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    height: 1.4,
+                  ),
+                  children: [
+                    const TextSpan(
+                      text: 'The ',
+                    ),
+                    TextSpan(
+                      text: _bizOppName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(
+                      text: ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Please check the link and try again, or contact your sponsor for the correct referral link.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Try Again',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _saveProfile() async {
@@ -269,10 +376,25 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
+    // Validate referral URL accessibility if user is a business opportunity representative
+    if (_isBizOppRepresentative && _bizOppRefUrlController.text.trim().isNotEmpty) {
+      final referralUrl = _bizOppRefUrlController.text.trim();
+      final isValidUrl = await LinkValidatorService.validateReferralUrl(referralUrl);
+      if (!isValidUrl) {
+        if (mounted) {
+          _showUrlValidationFailedDialog();
+        }
+        return;
+      }
+    }
+
     // Only proceed if both the form and the image are valid.
+
     if (isFormValid && isImageValid) {
       setState(() => _isLoading = true);
 
+      // Capture context-dependent objects before async operations
+      if (!mounted) return;
       final navigator = Navigator.of(context);
       final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -296,7 +418,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           'country': _selectedCountry,
           'state': _selectedState,
           'photoUrl': photoUrl,
-          'biz_opp_ref_url': _isBizOppRepresentative ? _bizOppRefUrlController.text.trim() : null,
+          'biz_opp_ref_url': _isBizOppRepresentative
+              ? _bizOppRefUrlController.text.trim()
+              : null,
           // 🆕 Set profile completion flag for first-time setup
           if (widget.isFirstTimeSetup) 'isProfileComplete': true,
         };
@@ -305,13 +429,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         if (_selectedCountry != null && _selectedState != null) {
           // Call backend function to recalculate timezone based on new location
           try {
-            final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+            final HttpsCallable callable =
+                FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
             await callable.call({
               'userId': widget.user.uid,
               'country': _selectedCountry,
               'state': _selectedState,
             });
-            debugPrint('✅ PROFILE UPDATE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
+            debugPrint(
+                '✅ PROFILE UPDATE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
           } catch (e) {
             debugPrint('⚠️ PROFILE UPDATE: Failed to recalculate timezone: $e');
             // Continue with profile update even if timezone update fails
@@ -647,7 +773,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           // Basic link validation
                           if (!value.trim().startsWith('http://') &&
                               !value.trim().startsWith('https://')) {
-                            return 'Please enter a complete link starting with http:// or https://';
+                            return 'Please enter a complete link starting with\nhttp:// or https://';
                           }
 
                           try {

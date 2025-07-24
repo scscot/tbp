@@ -111,7 +111,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                             content: bizOppRefUrl ?? 'Not available',
                             icon: Icons.link,
                           ),
-                          const Divider(height: 24),
+                          /* const Divider(height: 24),
                           _buildInfoRow(
                             title: 'Date Joined',
                             content: bizJoinDate != null
@@ -119,7 +119,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                                     .format(bizJoinDate!.toDate())
                                 : 'Not available',
                             icon: Icons.calendar_today,
-                          ),
+                          ), */
                         ],
                       ),
                     ),
@@ -132,7 +132,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      "From this point forward, anyone in your Team Build Pro organization that joins ${bizOpp ?? 'this opportunity'} will automatically be placed in your team.",
+                      "From this point forward, anyone in your Team Build Pro organization that joins $bizOpp will automatically be placed in your $bizOpp organization.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,
