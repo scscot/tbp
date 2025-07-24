@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:ultimatefix/screens/add_link_screen.dart';
+import 'add_link_screen.dart';
 import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
@@ -20,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
 import '../main.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   final String appId;
@@ -523,57 +524,74 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
-        // Business opportunity card - conditional based on qualification status
-        if (user.role == 'user' && user.qualifiedDate != null)
-          // QUALIFIED: Show business details or join business option
-          _buildActionCard(
-            icon: Icons.rocket_launch,
-            title: user.bizOppRefUrl != null
-                ? 'My Business Details'
-                : 'Get Started Today',
-            color: AppColors.opportunityPrimary,
-            onTap: () {
-              if (user.bizOppRefUrl != null) {
-                // User has already joined - show company details
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CompanyScreen(appId: widget.appId),
-                  ),
-                );
-              } else {
-                // Check if user has visited business opportunity but hasn't added referral link
-                if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
-                  // Show follow-up modal
-                  _showBizOppFollowUpModal(user);
-                } else {
-                  // User is qualified but hasn't visited - show business screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BusinessScreen(appId: widget.appId),
-                    ),
-                  );
-                }
-              }
-            },
-          )
-        else
-          // NOT QUALIFIED: Show eligibility status
-          _buildActionCard(
-            icon: Icons.assessment,
-            title: 'Eligibility Status',
-            color: AppColors.opportunityPrimary,
-            onTap: () {
-              // Navigate to eligibility screen normally
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => EligibilityScreen(appId: widget.appId),
-                ),
-              );
-            },
+// Business opportunity card - conditional based on qualification status
+
+if (user.role == 'admin') ...[
+  _buildActionCard(
+    icon: Icons.rocket_launch,
+    title: 'My Business Details',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      // Navigate to company screen normally
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CompanyScreen(appId: widget.appId),
+        ),
+      );
+    },
+  ),
+] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
+  // QUALIFIED: Show business details or join business option
+  _buildActionCard(
+    icon: Icons.rocket_launch,
+    title: user.bizOppRefUrl != null
+        ? 'My Business Details'
+        : 'Get Started Today',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      if (user.bizOppRefUrl != null) {
+        // User has already joined - show company details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompanyScreen(appId: widget.appId),
           ),
+        );
+      } else {
+        // Check if user has visited business opportunity but hasn't added referral link
+        if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
+          // Show follow-up modal
+          _showBizOppFollowUpModal(user);
+        } else {
+          // User is qualified but hasn't visited - show business screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BusinessScreen(appId: widget.appId),
+            ),
+          );
+        }
+      }
+    },
+  ),
+] else ...[
+  // NOT QUALIFIED: Show eligibility status
+  _buildActionCard(
+    icon: Icons.assessment,
+    title: 'Eligibility Status',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      // Navigate to eligibility screen normally
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => EligibilityScreen(appId: widget.appId),
+        ),
+      );
+    },
+  ),
+],
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow My Team',

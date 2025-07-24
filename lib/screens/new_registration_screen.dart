@@ -11,9 +11,10 @@ import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
-import 'welcome_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
+import 'edit_profile_screen.dart';
+import 'admin_edit_profile_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
@@ -196,14 +197,27 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       debugPrint('🧹 REGISTER: Referral data cleared after successful registration');
 
       if (!mounted) return;
-      debugPrint('🔍 REGISTER: Navigating to WelcomeScreen...');
-      navigator.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) =>
-              WelcomeScreen(appId: widget.appId, user: userModel),
-        ),
-        (Route<dynamic> route) => false,
-      );
+      
+      // Navigate based on user role - bypass WelcomeScreen
+      if (userModel.role == 'admin') {
+        debugPrint('🔍 REGISTER: Navigating admin user to AdminEditProfileScreen...');
+        navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) =>
+                AdminEditProfileScreen(appId: widget.appId),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        debugPrint('🔍 REGISTER: Navigating regular user to EditProfileScreen...');
+        navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) =>
+                EditProfileScreen(appId: widget.appId, user: userModel, isFirstTimeSetup: true),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
     } on FirebaseFunctionsException catch (e) {
       debugPrint('❌ REGISTER: FirebaseFunctionsException - Code: ${e.code}, Message: ${e.message}');
       debugPrint('❌ REGISTER: FirebaseFunctionsException - Details: ${e.details}');

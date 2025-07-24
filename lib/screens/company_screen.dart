@@ -5,8 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// Required for clipboard functionality
-import 'package:intl/intl.dart'; // Required for date formatting
 import '../widgets/header_widgets.dart';
 
 class CompanyScreen extends StatefulWidget {
@@ -47,9 +45,46 @@ class _CompanyScreenState extends State<CompanyScreen> {
       if (!mounted) return;
 
       final data = doc.data();
-      if (data == null ||
-          data['role'] != 'user' ||
-          data['biz_opp_ref_url'] == null) {
+      if (data == null) {
+        if (mounted) Navigator.of(context).pop();
+        return;
+      }
+
+      // Allow both admin and user roles to access company screen
+      final role = data['role'] as String?;
+      if (role != 'user' && role != 'admin') {
+        if (mounted) Navigator.of(context).pop();
+        return;
+      }
+
+      // For admin users, get data from admin_settings collection
+      if (role == 'admin') {
+        try {
+          final adminDoc = await FirebaseFirestore.instance
+              .collection('admin_settings')
+              .doc(uid)
+              .get();
+          
+          if (adminDoc.exists) {
+            final adminData = adminDoc.data();
+            setState(() {
+              bizOpp = adminData?['biz_opp'] as String?;
+              bizOppRefUrl = adminData?['biz_opp_ref_url'] as String?;
+              bizJoinDate = null; // Admin doesn't have join date
+              loading = false;
+            });
+          } else {
+            if (mounted) Navigator.of(context).pop();
+          }
+        } catch (e) {
+          debugPrint("Error loading admin data: $e");
+          if (mounted) Navigator.of(context).pop();
+        }
+        return;
+      }
+
+      // For regular users, check if they have business opportunity data
+      if (data['biz_opp_ref_url'] == null) {
         if (mounted) Navigator.of(context).pop();
         return;
       }
