@@ -292,7 +292,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 2,
             title: 'Share Your Link',
             description:
-                'Share your unique invitation link with your professional contacts. Watch your community grow as they join and connect.',
+                'Share your unique invitation link with your professional contacts, friends, or family members. Watch your community grow as they join and connect.',
             icon: Icons.share,
             color: AppColors.growthPrimary,
           ),
@@ -300,7 +300,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 3,
             title: 'Stay Connected',
             description:
-                'Receive notifications as new professionals join your growing community and engage with your connections.',
+                'Receive real-time notifications as new members join your growing community and engage with your members.',
             icon: Icons.notifications_active,
             color: AppColors.notificationPrimary,
           ),
@@ -308,7 +308,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 4,
             title: 'Unlock Opportunities',
             description:
-                'When members reach ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total community members, they may receive professional opportunities.',
+                'When members reach ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total community members, they receive an invitation to join your company.',
             icon: Icons.auto_awesome,
             color: AppColors.opportunityPrimary,
             isLast: true,
@@ -445,7 +445,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Join professionals worldwide who are building meaningful connections through Team Build Pro.',
+            'Team Build Pro helps professionals achieve exponential growth by connecting them with the people, tools, and structure they need to build global teams.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withOpacity(0.95),
@@ -547,14 +547,14 @@ class _HomepageScreenState extends State<HomepageScreen>
     if (_sponsorName != null && _sponsorName!.isNotEmpty) {
       return Container(
         width: double.infinity,
-        color: AppColors.primaryDark,
+        color: AppColors.teamAccent,
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(
-          'Welcome! You were invited by $_sponsorName',
+          'Welcome!\nYou were invited by $_sponsorName',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
         ),
