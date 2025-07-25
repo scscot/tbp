@@ -458,7 +458,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
+                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures.',
                       icon: Icons.handshake,
                     ),
                     Container(
