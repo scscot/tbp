@@ -8,6 +8,7 @@ import 'dart:convert';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import '../services/session_manager.dart';
+import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
 import 'login_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -37,12 +38,49 @@ class _HomepageScreenState extends State<HomepageScreen>
   // Referral code related state
   String? _sponsorName;
   bool _isLoadingReferral = false;
+  bool _isLoggingOut = true;
 
   @override
   void initState() {
     super.initState();
     _setupAnimations();
-    _initializeReferralData();
+    _performLogoutAndInitialize();
+  }
+
+  Future<void> _performLogoutAndInitialize() async {
+    try {
+      if (kDebugMode) {
+        print('🔐 HOMEPAGE: Starting logout process before homepage render...');
+      }
+      
+      // Perform complete logout
+      final authService = AuthService();
+      await authService.signOut();
+      
+      // Clear any cached session data
+      await SessionManager.instance.clearSession();
+      await SessionManager.instance.clearReferralData();
+      
+      if (kDebugMode) {
+        print('✅ HOMEPAGE: Logout completed successfully');
+      }
+      
+      // Small delay to ensure logout is fully processed
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ HOMEPAGE: Error during logout: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = false;
+        });
+        // Now initialize referral data
+        _initializeReferralData();
+      }
+    }
   }
 
   void _setupAnimations() {
@@ -567,6 +605,73 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Show loading screen while logout is in progress
+    if (_isLoggingOut) {
+      return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.primaryDark,
+                AppColors.teamAccent,
+              ],
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.textInverse.withOpacity(0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.rocket_launch,
+                    size: 48,
+                    color: AppColors.textInverse,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Network Build Pro',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textInverse,
+                    letterSpacing: 2.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppColors.textInverse,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Initializing...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textInverse.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: _buildCustomAppBar(context),
       body: SingleChildScrollView(
