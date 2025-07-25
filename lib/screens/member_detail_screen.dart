@@ -164,7 +164,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
-              ? const Center(child: Text('Member not found.'))
+              ? const Center(child: Text('Partner not found.'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
