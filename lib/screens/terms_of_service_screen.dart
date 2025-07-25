@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
 
-class TermsOfServiceScreen extends StatelessWidget {
+class TermsOfServiceScreen extends StatefulWidget {
   final String appId;
 
   const TermsOfServiceScreen({
@@ -15,9 +15,24 @@ class TermsOfServiceScreen extends StatelessWidget {
   });
 
   @override
+  State<TermsOfServiceScreen> createState() => _TermsOfServiceScreenState();
+}
+
+class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
+  static const String legalEmail = 'legal@networkbuildpro.com';
+  late final String lastUpdated;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    lastUpdated = '${now.day}/${now.month}/${now.year}';
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: appId),
+      appBar: AppHeaderWithMenu(appId: widget.appId),
       backgroundColor: AppColors.backgroundPrimary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -84,7 +99,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Last Updated: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                    'Last Updated: $lastUpdated',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -111,116 +126,93 @@ These Terms constitute a legally binding agreement between you and Network Build
             ),
 
             _buildSection(
-              '2. DESCRIPTION OF SERVICE',
-            '''Network Build Pro is a premium subscription-based professional networking platform designed to help users:
-• Build and cultivate meaningful business relationships
-• Develop thriving professional networks
-• Connect with business opportunities
-• Receive insights about network growth and engagement
-• Access tools for systematic relationship building
-
-SUBSCRIPTION MODEL: Network Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee of \$4.95/month (subject to change).
-
-PLATFORM FOCUS: Network Build Pro specializes in authentic professional relationship building, helping users expand their networks and discover business ventures through genuine connections.''',
-            ),
-
-            _buildSection(
-              '3. SUBSCRIPTION VALUE AND FEATURES',
-            '''Your monthly subscription provides access to premium features including:
-• Advanced relationship management and tracking tools
+              '2. SERVICE DESCRIPTION',
+            '''Network Build Pro is a subscription-based professional networking platform that provides:
+• Relationship management and tracking tools
 • Professional network analytics and insights
-• Business venture opportunity matching
-• Systematic relationship development frameworks
-• Premium networking functionality
+• Business opportunity connections
+• Systematic networking frameworks
+• Communication and collaboration features
 
-SUBSCRIPTION VALUE: Your investment provides ongoing access to cutting-edge tools, resources, and opportunities that facilitate meaningful business relationships and professional growth.
-
-MEASURABLE RESULTS: Our platform delivers tangible value through enhanced networking capabilities, strategic connections, and business opportunities that drive real professional advancement.''',
+The platform operates on a subscription model with a 30-day free trial, followed by a monthly fee of \$4.95 (subject to change with notice).''',
             ),
 
             _buildSection(
-              '4. PLATFORM LEADERSHIP AND PARTNERSHIPS',
-            '''Network Build Pro leads the industry through:
-• Cutting-edge relationship management technology
-• Systematic networking methodologies
-• Premium business connections
-• Advanced analytics and insights
-• Industry-leading tools and resources
+              '3. SUBSCRIPTION TERMS',
+            '''BILLING AND PAYMENT:
+• 30-day free trial for new users
+• Monthly subscription fee of \$4.95 after trial period
+• Automatic renewal unless cancelled
+• Payment charged to your selected payment method
+• Subscription rates subject to change with 30 days notice
 
-INDUSTRY LEADERSHIP: We set the standard for authentic professional relationship building, helping users develop meaningful connections through proven strategies and innovative features.
-
-THIRD-PARTY PARTNERSHIPS: Business opportunities are provided by independent, established companies that maintain separate operations and partnerships with our members.''',
+CANCELLATION:
+• Cancel anytime through account settings
+• Cancellation effective at end of current billing period
+• No refunds for partial subscription periods
+• Account access continues until end of paid period''',
             ),
 
             _buildSection(
-              '5. COLLABORATIVE BUSINESS VENTURES',
-              '''Network Build Pro excels at connecting professionals with premium business opportunities through our advanced networking platform:
+              '4. BUSINESS OPPORTUNITIES',
+            '''THIRD-PARTY OPPORTUNITIES:
+• Business opportunities are provided by independent companies
+• Network Build Pro does not own or operate these businesses
+• All business partnerships are separate from Network Build Pro
+• Users make independent decisions regarding participation
+• Network Build Pro provides connection services only
 
-VENTURE FACILITATION:
-• Curated access to established, legitimate business collaborations
-• Strategic partnerships with industry-leading companies
-• Quality-focused opportunity matching based on professional qualifications
-• Comprehensive vetting process for all ventures
-• Ongoing support for successful partnership development
-
-PROFESSIONAL AUTONOMY:
-• Users maintain complete decision-making authority over business partnerships
-• Full transparency in all opportunity presentations
-• Independent evaluation and selection of business ventures
-• Direct relationship building between users and business partners
-• Professional guidance throughout the partnership evaluation process
-
-QUALITY STANDARDS: Network Build Pro maintains rigorous standards for business ventures, ensuring all opportunities meet our professional networking excellence criteria and provide genuine value for qualified professionals.''',
+DISCLAIMER:
+• Network Build Pro does not guarantee business success
+• All business decisions and outcomes are user responsibility
+• Independent evaluation of opportunities is required
+• Network Build Pro is not liable for third-party business results''',
             ),
 
             _buildSection(
-              '6. SUBSCRIPTION TERMS AND BILLING',
-              '''SUBSCRIPTION MODEL:
-• Network Build Pro operates on a subscription basis
-• New users receive a 30-day free trial period
-• After the trial period, users are charged a monthly subscription fee
-• Current subscription rate: \$4.95/month (subject to change)
-• Subscription fees are charged automatically to your payment method
+              '5. USER RESPONSIBILITIES',
+              '''ACCOUNT MANAGEMENT:
+• Provide accurate and current information
+• Maintain confidentiality of account credentials
+• Use the platform in compliance with these Terms
+• Respect other users' privacy and rights
+• Report violations or inappropriate behavior
 
-BILLING TERMS:
-• Subscriptions automatically renew monthly unless cancelled
-• Users can cancel their subscription at any time through their account settings
-• Cancellation takes effect at the end of the current billing period
-• No refunds are provided for partial months of service
-• Subscription rates may change with 30 days advance notice
+PROFESSIONAL CONDUCT:
+• Engage in lawful and ethical networking activities
+• Maintain professional standards in all communications
+• Respect intellectual property rights
+• Avoid spam, harassment, or disruptive behavior
+• Use platform features as intended''',
+            ),
 
-TRIAL PERIOD:
-• The 30-day free trial begins when you first register your account
-• No payment method is required during the trial period
-• You will be notified before the trial period ends
-• If you do not subscribe, your account will be deactivated after the trial''',
+
+            _buildSection(
+              '7. ACCEPTABLE USE',
+            '''Users agree to:
+• Use the platform for legitimate networking purposes only
+• Maintain professional conduct in all interactions
+• Comply with applicable laws and regulations
+• Provide accurate information during registration
+• Respect other users' privacy and rights
+• Report violations or inappropriate behavior
+• Protect platform security through responsible usage
+
+Users must not engage in spam, harassment, illegal activities, or misuse of platform features.''',
             ),
 
             _buildSection(
-              '7. USER COMMITMENTS',
-            '''As members of the Network Build Pro community, users commit to:
-• Maximize the platform's capabilities for legitimate relationship building
-• Accurately represent Network Build Pro as a premium networking platform
-• Maintain the highest standards of professional conduct and legal compliance
-• Foster a positive environment for all members
-• Protect fellow members' privacy, confidentiality, and professional rights
-• Provide complete and accurate information during registration
-• Safeguard platform security through responsible and ethical usage
+              '8. PROHIBITED ACTIVITIES',
+            '''The following activities are strictly prohibited:
+• Spam, unsolicited messages, or bulk communications
+• Harassment, threats, or abusive behavior
+• Impersonation or misrepresentation of identity
+• Automated or artificial manipulation of platform features
+• Sharing false, misleading, or inaccurate information
+• Violation of intellectual property rights
+• Any illegal activities or content
 
-PLATFORM EXCELLENCE: These commitments ensure Network Build Pro maintains its position as the premier networking platform where meaningful business relationships and opportunities thrive.''',
-            ),
-
-            _buildSection(
-              '8. CONDUCT STANDARDS',
-            '''Network Build Pro maintains high professional standards. Users are expected to:
-• Use the platform exclusively for legitimate networking and relationship building
-• Respect fellow members and maintain courteous communication
-• Share accurate and truthful information in all interactions
-• Protect platform security and integrity through responsible usage
-• Engage authentically without automated or artificial manipulation
-• Comply with all applicable laws and regulations
-
-PLATFORM INTEGRITY: These standards ensure Network Build Pro remains a premium environment where meaningful business relationships can flourish and opportunities can develop successfully.''',
+Violations may result in account suspension or termination.''',
             ),
 
             _buildSection(
@@ -266,9 +258,9 @@ Upon termination, your right to use the platform ceases immediately, and we may 
 
             _buildSection(
               '14. GOVERNING LAW',
-              '''These Terms are governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to conflict of law principles.
+              '''These Terms are governed by and construed in accordance with the laws of California, without regard to conflict of law principles.
 
-Any disputes arising from these Terms or your use of Network Build Pro shall be resolved in the courts of [Your Jurisdiction].''',
+Any disputes arising from these Terms or your use of Network Build Pro shall be resolved in the courts of California.''',
             ),
 
             _buildSection(
@@ -282,8 +274,8 @@ Your continued use of Network Build Pro after changes are posted constitutes acc
               '16. CONTACT INFORMATION',
               '''For questions about these Terms of Service, please contact us:
 
-Email: legal@networkbuildpro.com 
-Website: www.networkbuildpro.com 
+Email: $legalEmail
+Website: www.networkbuildpro.com
 
 We will respond to all inquiries within 48 hours during business days.''',
             ),
@@ -374,7 +366,7 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 16),
           const Text(
-            'Network Build Pro: The Future of Professional Network Building',
+            'Service Overview',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -383,12 +375,12 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 12),
           const Text(
-            '''• Network Build Pro is a subscription-based professional networking platform
-• We help professionals build meaningful business relationships
-• Users pay a monthly subscription fee for access to our networking and relationship building tools
-• We focus on authentic relationship building and professional growth
+            '''• Network Build Pro is a subscription-based networking platform
+• Users pay a monthly subscription fee for access to networking tools
+• The platform provides relationship management and business connection features
+• All business opportunities are provided by independent third parties
 
-Network Build Pro empowers professionals to expand their networks systematically and discover opportunities through genuine relationship building.''',
+Network Build Pro operates as a networking platform and does not guarantee business outcomes.''',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,
