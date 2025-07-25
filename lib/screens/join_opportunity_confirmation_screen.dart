@@ -11,7 +11,7 @@ class JoinOpportunityConfirmationScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(24.0),
           child: Text(
-            'Thank you for registering for the opportunity.\n\nYou can return to your dashboard now.',
+            'Thank you for registering for the collaborative business venture.\n\nYou can return to your dashboard now.',
             style: TextStyle(fontSize: 16),
             textAlign: TextAlign.center,
           ),

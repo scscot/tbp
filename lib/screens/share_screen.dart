@@ -113,8 +113,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       final userName = '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'.trim();
       
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Ready to build your own $_bizOppName team? Join me ($userName) on Team Build Pro and start growing your network today! $_referralLink'
-          : '🌟 Hey! I\'m building my community on Team Build Pro and would love for you to join me! Start your journey here: $_referralLink';
+          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Team Build Pro and start expanding your collaborative opportunities today! $_referralLink'
+          : '🌟 Hey! I\'m expanding my professional network on Team Build Pro and would love for you to connect with me! Start your networking journey here: $_referralLink';
 
       Share.share(message);
     }
@@ -123,8 +123,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _shareForExistingMembers() {
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
-          ? '💪 Team! Use Team Build Pro to supercharge your $_bizOppName growth. Download the app and continue building with me: $_referralLink'
-          : '🎯 Let\'s grow together! I\'m using Team Build Pro to build my network. Join me and let\'s accelerate our success: $_referralLink';
+          ? '💪 Network Partners! Use Team Build Pro to accelerate your $_bizOppName professional growth. Download the app and continue cultivating meaningful connections with me: $_referralLink'
+          : '🎯 Let\'s expand together! I\'m using Team Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our collaborative success: $_referralLink';
 
       Share.share(message);
     }
@@ -203,7 +203,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Grow Your Team',
+            'Expand Your Professional Network',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -212,7 +212,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your referral link and start building your team!',
+            'Share your networking link and cultivate meaningful professional relationships!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
@@ -309,7 +309,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Sharing Strategies',
+          'Professional Networking Strategies',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -317,28 +317,28 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         ),
         const SizedBox(height: 16),
         
-        // Strategy 1: New Prospects
+        // Strategy 1: New Professional Connections
         _buildStrategyCard(
-          title: '🌟 Current Prospects',
-          subtitle: 'Perfect for people considering $_bizOppName',
-          description: 'Share with potential community members who are interested in joining $_bizOppName. They can start pre-building their community now!',
-          buttonText: 'Share with Current Prospects',
+          title: '🌟 New Professional Connections',
+          subtitle: 'Perfect for professionals exploring $_bizOppName',
+          description: 'Share with like-minded professionals who are interested in collaborative business ventures with $_bizOppName. They can start cultivating their professional network now!',
+          buttonText: 'Share with New Connections',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
-          icon: Icons.person_add_rounded,
+          icon: Icons.connect_without_contact,
         ),
         
         const SizedBox(height: 16),
         
-        // Strategy 2: Existing Team Members
+        // Strategy 2: Existing Network Partners
         _buildStrategyCard(
-          title: '🚀 Current Team Members',
-          subtitle: 'Great for your current $_bizOppName team',
-          description: 'Share with people already in your $_bizOppName team. When their Team Build Pro community members join $_bizOppName, they\'ll automatically be placed in your organization!',
-          buttonText: 'Share with Current Team Members',
+          title: '🚀 Current Network Partners',
+          subtitle: 'Great for your existing $_bizOppName collaborators',
+          description: 'Share with professionals already in your $_bizOppName network. When their Team Build Pro community connects with $_bizOppName, they\'ll automatically join your collaborative network!',
+          buttonText: 'Share with Network Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,
-          icon: Icons.group_rounded,
+          icon: Icons.handshake,
         ),
       ],
     );

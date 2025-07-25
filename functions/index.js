@@ -774,8 +774,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro community members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
+        title: "🎉 You have a new Network Partner!",
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} network partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro community members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -788,8 +788,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You sponsored ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. VIEW PROFILE`,
+        title: "🎉 You have a new Network Partner!",
+        message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. VIEW PROFILE`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -843,7 +843,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       const notificationContent = {
         title: "You're Qualified!",
-        message: `Congratulations, ${afterData.firstName}! You are now qualified to join ${bizName}. LEARN MORE!`,
+        message: `Congratulations, ${afterData.firstName}! You are now qualified to join the ${bizName} business venture. LEARN MORE!`,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
@@ -971,8 +971,8 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
     const notificationContent = {
-      title: `🎉 New ${bizOpp} visit!`,
-      message: `${visitingUserName} has just used your referral link to check out ${bizOpp}! Introduce yourself and answer any questions they might have. VIEW PROFILE`,
+      title: `🎉 New ${bizOpp} interest!`,
+      message: `${visitingUserName} has just used your referral link to explore the ${bizOpp} business venture! Connect with them and answer any questions they might have. VIEW PROFILE`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -1371,13 +1371,13 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         console.log(`🔔 DAILY NOTIFICATIONS: Creating notification for ${userData.firstName} ${userData.lastName} (${userId}) - ${newMemberCount} new members`);
 
         const notificationContent = {
-          title: "Your Team Is Growing!",
+          title: "Your Network Is Growing!",
           message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro community yesterday. VIEW PROFILES!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
-          type: "new_team_members",
+          type: "new_network_members",
           route: "/team",
-          route_params: JSON.stringify({ filter: "newMembers" }),
+          route_params: JSON.stringify({ filter: "last24" }),
         };
 
         // Use a batch to atomically create notification and update the tracking date

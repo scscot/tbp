@@ -18,14 +18,25 @@ class AuthService {
   Stream<UserModel?> get user {
     return _firebaseAuth.authStateChanges().switchMap((firebaseUser) {
       if (firebaseUser == null) {
+        debugPrint('🔐 AUTH_SERVICE: No Firebase user, returning null');
         return Stream.value(null);
       } else {
+        debugPrint('🔐 AUTH_SERVICE: Firebase user found: ${firebaseUser.uid}, fetching user data from Firestore');
         return _firestore
             .collection('users')
             .doc(firebaseUser.uid)
             .snapshots()
-            .map((snapshot) =>
-                snapshot.exists ? UserModel.fromFirestore(snapshot) : null);
+            .map((snapshot) {
+              if (snapshot.exists) {
+                debugPrint('🔐 AUTH_SERVICE: User document exists, creating UserModel');
+                final userModel = UserModel.fromFirestore(snapshot);
+                debugPrint('🔐 AUTH_SERVICE: UserModel created - uid: ${userModel.uid}, role: ${userModel.role}, firstName: ${userModel.firstName}');
+                return userModel;
+              } else {
+                debugPrint('🔐 AUTH_SERVICE: User document does not exist for uid: ${firebaseUser.uid}');
+                return null;
+              }
+            });
       }
     });
   }

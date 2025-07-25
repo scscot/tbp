@@ -211,7 +211,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     }
 
     debugPrint(
-        '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}');
+        '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}, country: ${user.country}, firstName: ${user.firstName}');
 
     // Profile completion logic based on user role
     if (user.role == 'admin') {

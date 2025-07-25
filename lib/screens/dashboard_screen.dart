@@ -148,7 +148,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                'Automatically grow your ${user.bizOpp ?? 'business opportunity'} team.',
+                'Automatically expand your ${user.bizOpp ?? 'collaborative business venture'} network.',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -158,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed on your team.',
+                'Once you\'ve registered with ${user.bizOpp ?? 'your collaborative business venture'}, add your partnership link to your Team Build Pro profile. This ensures anyone from your professional network who joins is placed in your collaborative network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -193,14 +193,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                       child: Column(
                         children: [
                           Text(
-                            "I've completed registration",
+                            "I've completed partnership registration",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "Add my referral link now",
+                            "Add my collaboration link now",
                             style: TextStyle(
                               fontSize: 14,
                             ),
@@ -293,7 +293,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ready to grow your team!',
+                    'Ready to expand your professional network!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.95),
@@ -326,7 +326,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Icon(Icons.analytics, color: AppColors.growthPrimary, size: 24),
               const SizedBox(width: 12),
               Text(
-                'Your Team Progress',
+                'Your Network Growth',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -594,7 +594,7 @@ if (user.role == 'admin') ...[
 ],
         _buildActionCard(
           icon: Icons.trending_up,
-          title: 'Grow My Team',
+          title: 'Expand My Network',
           color: AppColors.growthPrimary,
           onTap: () => Navigator.push(
             context,
@@ -605,7 +605,7 @@ if (user.role == 'admin') ...[
         ),
         _buildActionCard(
           icon: Icons.groups,
-          title: 'View My Team',
+          title: 'View My Network',
           color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,
