@@ -495,14 +495,14 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'Congratulations! Your professional network growth has unlocked access to premium collaborative opportunities with ',
+                  text: 'Congratulations! Your professional network growth has unlocked access to premium opportunities with ',
                 ),
                 TextSpan(
                   text: bizOpp ?? 'established business partners',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(
-                  text: '. This represents a carefully curated collaborative business venture that operates as ',
+                  text: '. This represents a carefully curated business venture that operates as ',
                 ),
                 const TextSpan(
                   text: 'an independent partnership opportunity through Network Build Pro\'s professional network',
@@ -528,7 +528,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Network Build Pro facilitates access to vetted collaborative business ventures. Evaluate each opportunity based on your professional goals and interests.',
+                    'Network Build Pro facilitates access to vetted business ventures. Evaluate each opportunity based on your professional goals and interests.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -780,7 +780,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring the collaborative business venture, you must return here and add your new partnership link to your Network Build Pro profile. This ensures your professional network connections are tracked correctly.",
+            "After exploring the business venture, you must return here and add your new partnership link to your Network Build Pro profile. This ensures your professional network connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),

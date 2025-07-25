@@ -453,7 +453,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures.',
+                      description: 'When your professional network reaches engagement milestones, unlock business ventures.',
                       icon: Icons.handshake,
                     ),
                     Container(

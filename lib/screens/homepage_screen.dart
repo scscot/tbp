@@ -319,7 +319,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              'The premier platform that transforms how professionals build meaningful business relationships and discover collaborative opportunities worldwide.',
+                              'The premier platform that transforms how professionals build meaningful business relationships and discover opportunities worldwide.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.textInverse.withOpacity(0.95),
@@ -378,7 +378,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 3,
             title: 'COLLABORATE - Unlock Opportunities Together',
             description:
-                'When your professional network reaches engagement milestones, unlock collaborative business ventures.',
+                'When your professional network reaches engagement milestones, unlock business ventures.',
             icon: Icons.handshake,
             color: AppColors.notificationPrimary,
           ),
@@ -386,7 +386,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 4,
             title: 'TRANSFORM - Professional Growth Excellence',
             description:
-                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium collaborative business ventures.',
+                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium business ventures.',
             icon: Icons.rocket_launch,
             color: AppColors.opportunityPrimary,
             isLast: true,
@@ -523,7 +523,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Network Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, collaborative opportunities, and systematic network development.',
+            'Network Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, opportunities, and systematic network development.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withOpacity(0.95),

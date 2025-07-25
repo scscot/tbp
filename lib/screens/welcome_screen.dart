@@ -30,7 +30,7 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               user.role == 'admin'
-                  ? 'Ready to lead the professional networking revolution? Complete your admin profile and set up your collaborative business venture. After completing your profile you will have access to the full Network Build Pro platform.'
+                  ? 'Ready to lead the professional networking revolution? Complete your admin profile and set up your business venture. After completing your profile you will have access to the full Network Build Pro platform.'
                   : 'Ready to transform your professional network? Complete your profile to unlock the full power of Network Build Pro\'s networking revolution.',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),

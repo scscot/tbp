@@ -458,7 +458,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures.',
+                      description: 'When your professional network reaches engagement milestones, unlock business ventures.',
                       icon: Icons.handshake,
                     ),
                     Container(
@@ -557,7 +557,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Expand your professional networking and unlock collaborative opportunities that drive real business growth!',
+                    'Expand your professional networking and unlock opportunities that drive real business growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),

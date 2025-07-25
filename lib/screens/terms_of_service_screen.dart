@@ -115,13 +115,13 @@ These Terms constitute a legally binding agreement between you and Network Build
             '''Network Build Pro is a premium subscription-based professional networking platform designed to help users:
 • Build and cultivate meaningful business relationships
 • Develop thriving professional networks and networks
-• Connect with collaborative business opportunities
+• Connect with business opportunities
 • Receive insights about network growth and engagement
 • Access tools for systematic relationship and network building
 
 SUBSCRIPTION MODEL: Network Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee (currently planned at \$4.99/month, subject to change).
 
-PLATFORM FOCUS: Network Build Pro specializes in authentic professional relationship building and network development, helping users expand their professional networks and discover collaborative business ventures through genuine connections.''',
+PLATFORM FOCUS: Network Build Pro specializes in authentic professional relationship building and network development, helping users expand their professional networks and discover business ventures through genuine connections.''',
             ),
 
             _buildSection(
@@ -129,14 +129,14 @@ PLATFORM FOCUS: Network Build Pro specializes in authentic professional relation
             '''Network Build Pro operates as a premium subscription-based professional networking platform that provides:
 • Advanced relationship management and network tracking tools
 • Professional network and network building capabilities
-• Access to collaborative business venture opportunities
+• Access to business venture opportunities
 • Network growth analytics and insights
 • Systematic relationship and network development frameworks
 • Premium networking features and functionality
 
 SUBSCRIPTION VALUE: Users invest in a monthly subscription to access our comprehensive professional networking platform. This investment provides ongoing access to cutting-edge tools, resources, and opportunities that facilitate meaningful business relationship and network development.
 
-PLATFORM FOCUS: Network Build Pro specializes in delivering measurable value through professional relationship building, network development, and collaborative business connections that drive real professional growth.''',
+PLATFORM FOCUS: Network Build Pro specializes in delivering measurable value through professional relationship building, network development, and business connections that drive real professional growth.''',
             ),
 
             _buildSection(
@@ -144,37 +144,37 @@ PLATFORM FOCUS: Network Build Pro specializes in delivering measurable value thr
             '''Network Build Pro leads the professional networking industry by providing:
 • Cutting-edge relationship management and network technology
 • Systematic network and network building methodologies
-• Premium collaborative business connections
+• Premium business connections
 • Advanced network analytics and insights
 • Professional network development frameworks
 • Industry-leading networking tools and resources
 
 INDUSTRY LEADERSHIP: Network Build Pro sets the standard for authentic professional relationship building and network development, helping users develop meaningful business connections through proven networking strategies and innovative platform features.
 
-COLLABORATIVE FOCUS: Our platform connects professionals with legitimate collaborative business ventures and development opportunities, facilitating partnerships that drive mutual success and professional network growth.
+COLLABORATIVE FOCUS: Our platform connects professionals with legitimate business ventures and development opportunities, facilitating partnerships that drive mutual success and professional network growth.
 
 THIRD-PARTY PARTNERSHIPS: Business opportunities available through our platform are provided by independent, established companies that maintain their own separate business operations and partnerships with Network Build Pro network members.''',
             ),
 
             _buildSection(
               '5. COLLABORATIVE BUSINESS VENTURES',
-              '''Network Build Pro excels at connecting professionals with premium collaborative business opportunities through our advanced networking platform:
+              '''Network Build Pro excels at connecting professionals with premium business opportunities through our advanced networking platform:
 
 VENTURE FACILITATION:
 • Curated access to established, legitimate business collaborations
 • Strategic partnerships with industry-leading companies
 • Quality-focused opportunity matching based on professional qualifications
-• Comprehensive vetting process for all collaborative ventures
+• Comprehensive vetting process for all ventures
 • Ongoing support for successful partnership development
 
 PROFESSIONAL AUTONOMY:
 • Users maintain complete decision-making authority over business partnerships
-• Full transparency in all collaborative opportunity presentations
+• Full transparency in all opportunity presentations
 • Independent evaluation and selection of business ventures
 • Direct relationship building between users and business partners
 • Professional guidance throughout the partnership evaluation process
 
-QUALITY STANDARDS: Network Build Pro maintains rigorous standards for collaborative business ventures, ensuring all opportunities meet our professional networking excellence criteria and provide genuine value for qualified professionals.''',
+QUALITY STANDARDS: Network Build Pro maintains rigorous standards for business ventures, ensuring all opportunities meet our professional networking excellence criteria and provide genuine value for qualified professionals.''',
             ),
 
             _buildSection(
@@ -206,12 +206,12 @@ TRIAL PERIOD:
 • Maximize the platform's professional networking capabilities for legitimate relationship and network building
 • Accurately represent Network Build Pro as a premium professional networking platform
 • Maintain the highest standards of professional conduct and legal compliance
-• Foster a positive, collaborative environment for all network members
+• Foster a positive, environment for all network members
 • Protect fellow network members' privacy, confidentiality, and professional rights
 • Provide complete and accurate professional information during registration
 • Safeguard platform security through responsible and ethical usage practices
 
-NETWORK EXCELLENCE: These commitments ensure Network Build Pro maintains its position as the premier professional networking platform, where meaningful business relationships, networks, and collaborative opportunities thrive.''',
+NETWORK EXCELLENCE: These commitments ensure Network Build Pro maintains its position as the premier professional networking platform, where meaningful business relationships, networks, and opportunities thrive.''',
             ),
 
             _buildSection(
@@ -225,7 +225,7 @@ NETWORK EXCELLENCE: These commitments ensure Network Build Pro maintains its pos
 • Engage authentically without automated or artificial manipulation
 • Comply with all applicable laws and professional networking regulations
 
-PLATFORM INTEGRITY: These standards ensure Network Build Pro remains a premium professional networking environment where meaningful business relationships and networks can flourish and collaborative opportunities can develop successfully.''',
+PLATFORM INTEGRITY: These standards ensure Network Build Pro remains a premium professional networking environment where meaningful business relationships and networks can flourish and opportunities can develop successfully.''',
             ),
 
             _buildSection(
@@ -390,12 +390,12 @@ We will respond to all inquiries within 48 hours during business days.''',
           const Text(
             '''• Network Build Pro is a subscription-based professional networking platform
 • We help professionals build meaningful business relationships, networks, and networks
-• Our platform facilitates connections to legitimate collaborative business ventures
+• Our platform facilitates connections to legitimate business ventures
 • Users pay a monthly subscription fee for access to our networking and relationship building tools
 • We focus on authentic relationship building, network development, and professional growth
 • Third-party business opportunities are independent collaborations
 
-Network Build Pro empowers professionals to expand their networks systematically and discover collaborative opportunities through genuine relationship and network building.''',
+Network Build Pro empowers professionals to expand their networks systematically and discover opportunities through genuine relationship and network building.''',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,

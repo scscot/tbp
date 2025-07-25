@@ -113,7 +113,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       final userName = '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'.trim();
       
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Network Build Pro and start expanding your collaborative opportunities today! $_referralLink'
+          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Network Build Pro and start expanding your opportunities today! $_referralLink'
           : '🌟 Hey! I\'m expanding my professional network on Network Build Pro and would love for you to connect with me! Start your networking journey here: $_referralLink';
 
       Share.share(message);
@@ -124,7 +124,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
           ? '💪 Network Partners! Use Network Build Pro to accelerate your $_bizOppName professional growth. Download the app and continue cultivating meaningful connections with me: $_referralLink'
-          : '🎯 Let\'s expand together! I\'m using Network Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our collaborative success: $_referralLink';
+          : '🎯 Let\'s expand together! I\'m using Network Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our success: $_referralLink';
 
       Share.share(message);
     }
@@ -321,7 +321,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🌟 New Professional Connections',
           subtitle: 'Perfect for professionals exploring $_bizOppName',
-          description: 'Share with like-minded professionals who are interested in collaborative business ventures with $_bizOppName. They can start cultivating their professional network now!',
+          description: 'Share with like-minded professionals who are interested in business ventures with $_bizOppName. They can start cultivating their professional network now!',
           buttonText: 'Share with New Connections',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
@@ -334,7 +334,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🚀 Current Network Partners',
           subtitle: 'Great for your existing $_bizOppName collaborators',
-          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro network connects with $_bizOppName, they\'ll automatically join your collaborative network!',
+          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro network connects with $_bizOppName, they\'ll automatically join your network!',
           buttonText: 'Share with Network Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,
