@@ -119,3 +119,4 @@ rebuild_*
 *.temp
 *.txt
 GIT_COMMIT_MESSAGE.md
+GIT_COMMIT_MESSAGE.md

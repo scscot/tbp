@@ -13,7 +13,7 @@ import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
 import 'screens/edit_profile_screen.dart';
 import 'services/auth_service.dart';
-import 'services/fcm_service.dart';
+import 'services/fcm_service.dart' show FCMService, navigateToRoute;
 import 'services/deep_link_service.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';

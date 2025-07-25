@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await authService.signInWithEmailAndPassword(
           _emailController.text.trim(), _passwordController.text.trim());
-      
+
       // Don't navigate - let AuthWrapper handle routing based on auth state
     } on FirebaseAuthException catch (e) {
       scaffoldMessenger.showSnackBar(
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
       debugPrint("✅ DEBUG: Firebase sign-in successful!");
-      
+
       // Don't navigate - let AuthWrapper handle routing based on auth state
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
@@ -157,8 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               if (!kIsWeb && Platform.isIOS) ...[
                 ElevatedButton.icon(
-                  icon:
-                      const FaIcon(FontAwesomeIcons.apple, color: Colors.white, size: 20),
+                  icon: const FaIcon(FontAwesomeIcons.apple,
+                      color: Colors.white, size: 20),
                   label: const Text('Sign in with Apple'),
                   onPressed: _isLoading
                       ? null
@@ -201,7 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PrivacyPolicyScreen(appId: widget.appId),
+                          builder: (context) =>
+                              PrivacyPolicyScreen(appId: widget.appId),
                         ),
                       );
                     },
@@ -223,7 +224,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => TermsOfServiceScreen(appId: widget.appId),
+                          builder: (context) =>
+                              TermsOfServiceScreen(appId: widget.appId),
                         ),
                       );
                     },

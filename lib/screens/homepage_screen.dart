@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
 import '../services/session_manager.dart';
@@ -39,6 +40,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   String? _sponsorName;
   bool _isLoadingReferral = false;
   bool _isLoggingOut = true;
+  bool _hasPerformedLogout = false; // Track if logout has been completed
 
   @override
   void initState() {
@@ -50,28 +52,46 @@ class _HomepageScreenState extends State<HomepageScreen>
   Future<void> _performLogoutAndInitialize() async {
     try {
       if (kDebugMode) {
-        print('🔐 HOMEPAGE: Starting logout process before homepage render...');
+        print('🔐 HOMEPAGE: Checking if logout is needed before homepage render...');
       }
       
-      // Perform complete logout
+      // Only perform logout if there's a referral code
       final authService = AuthService();
-      await authService.signOut();
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final hasReferralCode = widget.referralCode != null && widget.referralCode!.isNotEmpty;
       
-      // Clear any cached session data
-      await SessionManager.instance.clearSession();
-      await SessionManager.instance.clearReferralData();
-      
-      if (kDebugMode) {
-        print('✅ HOMEPAGE: Logout completed successfully');
+      if (hasReferralCode && currentUser != null) {
+        if (kDebugMode) {
+          print('🔐 HOMEPAGE: Found referral code and existing user session, performing logout...');
+        }
+        
+        // Perform complete logout only when there's a referral code
+        await authService.signOut();
+        
+        // Clear any cached session data
+        await SessionManager.instance.clearSession();
+        await SessionManager.instance.clearReferralData();
+        
+        if (kDebugMode) {
+          print('✅ HOMEPAGE: Logout completed successfully');
+        }
+        
+        // Small delay to ensure logout is fully processed
+        await Future.delayed(const Duration(milliseconds: 500));
+      } else {
+        if (kDebugMode) {
+          print('🔐 HOMEPAGE: No referral code or no user session, skipping logout');
+        }
       }
       
-      // Small delay to ensure logout is fully processed
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Mark that logout process has been completed
+      _hasPerformedLogout = true;
       
     } catch (e) {
       if (kDebugMode) {
-        print('❌ HOMEPAGE: Error during logout: $e');
+        print('❌ HOMEPAGE: Error during logout check: $e');
       }
+      _hasPerformedLogout = true; // Mark as completed even on error
     } finally {
       if (mounted) {
         setState(() {
@@ -166,6 +186,26 @@ class _HomepageScreenState extends State<HomepageScreen>
   void dispose() {
     _heroAnimationController.dispose();
     super.dispose();
+  }
+
+  // Override the navigation to login to ensure logout is complete
+  void _navigateToLogin() {
+    // Only navigate if logout process has completed to prevent race conditions
+    if (_hasPerformedLogout) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(appId: widget.appId),
+        ),
+      );
+    } else {
+      // If logout hasn't completed, wait a bit and try again
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          _navigateToLogin();
+        }
+      });
+    }
   }
 
   Widget _buildHeroSection() {
@@ -775,14 +815,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       centerTitle: true,
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginScreen(appId: widget.appId),
-              ),
-            );
-          },
+          onPressed: _navigateToLogin,
           style: TextButton.styleFrom(
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

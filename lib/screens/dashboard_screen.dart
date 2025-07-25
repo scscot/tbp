@@ -359,8 +359,9 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           const SizedBox(height: 12),
           LinearProgressIndicator(
-            value: (user.directSponsorCount / AppConstants.projectWideDirectSponsorMin)
-                .clamp(0.0, 1.0),
+            value: AppConstants.projectWideDirectSponsorMin > 0 
+                ? (user.directSponsorCount / AppConstants.projectWideDirectSponsorMin).clamp(0.0, 1.0)
+                : 0.0,
             backgroundColor: AppColors.borderLight,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
