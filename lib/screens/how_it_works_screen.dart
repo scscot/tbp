@@ -406,7 +406,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Why It Works
             _buildSectionCard(
               title: 'WHY IT WORKS',
-              content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their communities organically.',
+              content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their networks organically.',
               icon: Icons.trending_up,
               color: AppColors.growthPrimary,
             ),
@@ -474,7 +474,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Network Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful career opportunities.',
+                              'Note: Network Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful career opportunities.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

@@ -114,7 +114,7 @@ These Terms constitute a legally binding agreement between you and Network Build
               '2. DESCRIPTION OF SERVICE',
             '''Network Build Pro is a premium subscription-based professional networking platform designed to help users:
 • Build and cultivate meaningful business relationships
-• Develop thriving professional networks and communities
+• Develop thriving professional networks and networks
 • Connect with collaborative business opportunities
 • Receive insights about network growth and engagement
 • Access tools for systematic relationship and network building
@@ -389,7 +389,7 @@ We will respond to all inquiries within 48 hours during business days.''',
           const SizedBox(height: 12),
           const Text(
             '''• Network Build Pro is a subscription-based professional networking platform
-• We help professionals build meaningful business relationships, networks, and communities
+• We help professionals build meaningful business relationships, networks, and networks
 • Our platform facilitates connections to legitimate collaborative business ventures
 • Users pay a monthly subscription fee for access to our networking and relationship building tools
 • We focus on authentic relationship building, network development, and professional growth

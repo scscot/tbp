@@ -469,7 +469,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Network Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful long-term success.',
+                              'Note: Network Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful long-term success.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

@@ -10,7 +10,7 @@ Updated Terms of Service and Privacy Policy screens to align with professional n
 - Updated subtitle from "Network Build Pro Platform Agreement" to "Professional Networking Platform Agreement"
 - Enhanced networking terminology throughout all sections:
   - "team-building platform service" → "professional networking platform service"
-  - Added "networks" alongside "communities" in service descriptions
+  - Added "networks" alongside "networks" in service descriptions
   - "relationship building" → "relationship and network building"
   - "community development" → "network development"
   - "relationship management" → "relationship management and network technology"
