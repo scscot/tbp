@@ -133,28 +133,28 @@ const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your bus
   }
 };
 
-exports.getTeam = onCall({ region: "us-central1" }, async (request) => {
+exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
   const currentUserId = request.auth.uid;
 
   try {
-    const teamSnapshot = await db.collection("users")
+    const networkSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (teamSnapshot.empty) {
-      return { downline: [] }; // Keep API response key for backward compatibility
+    if (networkSnapshot.empty) {
+      return { network: [] };
     }
 
-    const teamUsers = teamSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
-    const serializedTeam = serializeData(teamUsers);
-    return { downline: serializedTeam }; // Keep API response key for backward compatibility
+    const networkUsers = networkSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    const serializedNetwork = serializeData(networkUsers);
+    return { network: serializedNetwork };
 
   } catch (error) {
-    console.error("Critical Error in getTeam function:", error);
-    throw new HttpsError("internal", "An unexpected error occurred while fetching the team.", error.message);
+    console.error("Critical Error in getNetwork function:", error);
+    throw new HttpsError("internal", "An unexpected error occurred while fetching the network.", error.message);
   }
 });
 
@@ -348,17 +348,17 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-exports.getTeamCounts = onCall({ region: "us-central1" }, async (request) => {
+exports.getNetworkCounts = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
   const currentUserId = request.auth.uid;
   try {
-    const teamSnapshot = await db.collection("users")
+    const networkSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (teamSnapshot.empty) {
+    if (networkSnapshot.empty) {
       return {
         counts: { all: 0, last24: 0, last7: 0, last30: 0, newQualified: 0, joinedOpportunity: 0 }
       };
@@ -375,7 +375,7 @@ exports.getTeamCounts = onCall({ region: "us-central1" }, async (request) => {
     let newQualifiedCount = 0;
     let joinedOpportunityCount = 0;
 
-    teamSnapshot.docs.forEach(doc => {
+    networkSnapshot.docs.forEach(doc => {
       const user = doc.data();
       const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
 
@@ -394,7 +394,7 @@ exports.getTeamCounts = onCall({ region: "us-central1" }, async (request) => {
 
     return {
       counts: {
-        all: teamSnapshot.size,
+        all: networkSnapshot.size,
         last24: last24Count,
         last7: last7Count,
         last30: last30Count,
@@ -403,12 +403,12 @@ exports.getTeamCounts = onCall({ region: "us-central1" }, async (request) => {
       }
     };
   } catch (error) {
-    console.error(`CRITICAL ERROR in getTeamCounts for user ${currentUserId}:`, error);
+    console.error(`CRITICAL ERROR in getNetworkCounts for user ${currentUserId}:`, error);
     throw new HttpsError("internal", "An unexpected error occurred.");
   }
 });
 
-exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
+exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
@@ -417,17 +417,17 @@ exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
   const { filter, searchQuery, levelOffset, limit = 100, offset = 0 } = request.data || {};
 
   try {
-    console.log(`🔍 FILTER DEBUG: Starting filtered community for user ${currentUserId}`);
+    console.log(`🔍 FILTER DEBUG: Starting filtered network for user ${currentUserId}`);
     console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}", levelOffset: ${levelOffset}`);
 
-    // Get base team
-    const teamSnapshot = await db.collection("users")
+    // Get base network
+    const networkSnapshot = await db.collection("users")
       .where("upline_refs", "array-contains", currentUserId)
       .get();
 
-    if (teamSnapshot.empty) {
+    if (networkSnapshot.empty) {
       return {
-        downline: [], // Keep API response key for backward compatibility
+        network: [],
         totalCount: 0,
         hasMore: false
       };
@@ -437,7 +437,7 @@ exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
     const now = new Date();
 
     // Apply time-based and status filters
-    teamSnapshot.docs.forEach(doc => {
+    networkSnapshot.docs.forEach(doc => {
       const user = { uid: doc.id, ...doc.data() };
       const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
       const qualifiedDate = user.qualifiedDate?.toDate ? user.qualifiedDate.toDate() : null;
@@ -530,7 +530,7 @@ exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
     console.log(`✅ FILTER DEBUG: Returning ${paginatedUsers.length} users out of ${totalCount} total`);
 
     return {
-      downline: serializeData(paginatedUsers), // Keep API response key for backward compatibility
+      network: serializeData(paginatedUsers),
       groupedByLevel: levelOffset !== undefined ? serializeData(groupedByLevel) : null,
       totalCount,
       hasMore,
@@ -539,8 +539,8 @@ exports.getFilteredTeam = onCall({ region: "us-central1" }, async (request) => {
     };
 
   } catch (error) {
-    console.error(`CRITICAL ERROR in getFilteredTeam for user ${currentUserId}:`, error);
-    throw new HttpsError("internal", "An unexpected error occurred while fetching filtered team.", error.message);
+    console.error(`CRITICAL ERROR in getFilteredNetwork for user ${currentUserId}:`, error);
+    throw new HttpsError("internal", "An unexpected error occurred while fetching filtered network.", error.message);
   }
 });
 
@@ -1372,11 +1372,11 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Network Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro community yesterday. VIEW PROFILES!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro network yesterday. VIEW PROFILES!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
-          route: "/team",
+          route: "/network",
           route_params: JSON.stringify({ filter: "last24" }),
         };
 

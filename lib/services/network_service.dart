@@ -9,10 +9,10 @@ class NetworkService {
 
   Future<List<UserModel>> getNetwork() async {
     try {
-      final callable = _functions.httpsCallable('getDownline');
+      final callable = _functions.httpsCallable('getNetwork');
       final result = await callable.call();
 
-      final List<dynamic> networkData = result.data['downline'] ?? [];
+      final List<dynamic> networkData = result.data['network'] ?? [];
 
       return networkData.map((data) {
         final Map<String, dynamic> userMap = Map<String, dynamic>.from(data);
@@ -20,7 +20,7 @@ class NetworkService {
       }).toList();
     } on FirebaseFunctionsException catch (e, s) {
       // Improved logging for Firebase-specific errors
-      debugPrint('Firebase Functions Error calling getDownline:');
+      debugPrint('Firebase Functions Error calling getNetwork:');
       debugPrint('Code: ${e.code}');
       debugPrint('Message: ${e.message}');
       debugPrint('Details: ${e.details}');
@@ -38,7 +38,7 @@ class NetworkService {
 
   Future<Map<String, int>> getNetworkCounts() async {
     try {
-      final callable = _functions.httpsCallable('getDownlineCounts');
+      final callable = _functions.httpsCallable('getNetworkCounts');
       final result = await callable.call();
 
       if (result.data != null && result.data['counts'] != null) {
@@ -50,7 +50,7 @@ class NetworkService {
       return {};
     } on FirebaseFunctionsException catch (e, s) {
       // Improved logging for Firebase-specific errors
-      debugPrint('Firebase Functions Error calling getDownlineCounts:');
+      debugPrint('Firebase Functions Error calling getNetworkCounts:');
       debugPrint('Code: ${e.code}');
       debugPrint('Message: ${e.message}');
       debugPrint('Details: ${e.details}');
@@ -73,7 +73,7 @@ class NetworkService {
     int offset = 0,
   }) async {
     try {
-      final callable = _functions.httpsCallable('getFilteredDownline');
+      final callable = _functions.httpsCallable('getFilteredNetwork');
       final result = await callable.call({
         'filter': filter,
         'searchQuery': searchQuery,
@@ -88,7 +88,7 @@ class NetworkService {
           : Map<String, dynamic>.from(result.data ?? {});
 
       // Convert network array to UserModel objects
-      final List<dynamic> networkData = data['downline'] ?? [];
+      final List<dynamic> networkData = data['network'] ?? [];
       final List<UserModel> networkUsers = networkData.map((userData) {
         final Map<String, dynamic> userMap = userData is Map<String, dynamic>
             ? userData
@@ -127,7 +127,7 @@ class NetworkService {
         'limit': data['limit'] ?? limit,
       };
     } on FirebaseFunctionsException catch (e, s) {
-      debugPrint('Firebase Functions Error calling getFilteredDownline:');
+      debugPrint('Firebase Functions Error calling getFilteredNetwork:');
       debugPrint('Code: ${e.code}');
       debugPrint('Message: ${e.message}');
       debugPrint('Details: ${e.details}');
