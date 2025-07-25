@@ -162,51 +162,100 @@ class _DashboardScreenState extends State<DashboardScreen>
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            gradient: AppColors.warningGradient,
-            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFFFF8A00),
+                const Color(0xFFFF6B00),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.assignment_return,
-                size: 32,
-                color: AppColors.textInverse,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Automatically expand your ${_bizOpp ?? 'collaborative business venture'} network.',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 32),
+              // Enhanced icon with background
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  Icons.assignment_return_outlined,
+                  size: 40,
                   color: AppColors.textInverse,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
-              Text(
-                'Once you\'ve registered with ${_bizOpp ?? 'your business venture'}, add your partnership link to your Network Build Pro profile. This ensures anyone from your professional network who joins is placed in your network.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.withOpacity(AppColors.textInverse, 0.9),
-                  height: 1.5,
+              const SizedBox(height: 24),
+              // Title with better typography
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  'Don\'t Miss Out on Growing Your $_bizOpp Business!',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textInverse,
+                    height: 1.2,
+                    letterSpacing: -0.5,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
+              const SizedBox(height: 16),
+              // Description with improved readability
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  'You\'ve joined $_bizOpp — great! Update your profile now so every member of your network that joins $_bizOpp after you is placed directly into your $_bizOpp organization.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textInverse.withValues(alpha: 0.95),
+                    height: 1.4,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Enhanced button styling
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.textInverse,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
                         Navigator.pop(dialogContext);
-                        // Navigate to join company screen or business screen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -214,47 +263,47 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.textInverse,
-                        foregroundColor: AppColors.warning,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Add My $_bizOpp Referral Link Now",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFFFF6B00),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+ 
+                          ],
                         ),
                       ),
-                      child: Column(
-                        children: [
-                          Text(
-                            "I've completed partnership registration",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Add my collaboration link now",
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: () => Navigator.pop(dialogContext),
-                    child: Text(
-                      'Close - I haven\'t joined ${_bizOpp ?? 'yet'}',
-                      style: TextStyle(
-                        color: AppColors.textInverse,
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
+              const SizedBox(height: 20),
+              // Enhanced close button
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text(
+                  'Skip for now - I haven’t joined $_bizOpp',
+                  style: TextStyle(
+                    color: AppColors.textInverse,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.textInverse.withValues(alpha: 0.7),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
