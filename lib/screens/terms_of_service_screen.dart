@@ -119,7 +119,7 @@ These Terms constitute a legally binding agreement between you and Network Build
 • Receive insights about network growth and engagement
 • Access tools for systematic relationship and network building
 
-SUBSCRIPTION MODEL: Network Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee (currently planned at \$4.99/month, subject to change).
+SUBSCRIPTION MODEL: Network Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee of \$4.95/month (subject to change).
 
 PLATFORM FOCUS: Network Build Pro specializes in authentic professional relationship building and network development, helping users expand their professional networks and discover business ventures through genuine connections.''',
             ),
@@ -183,7 +183,7 @@ QUALITY STANDARDS: Network Build Pro maintains rigorous standards for business v
 • Network Build Pro operates on a subscription basis
 • New users receive a 30-day free trial period
 • After the trial period, users are charged a monthly subscription fee
-• Current planned subscription rate: \$4.99/month (subject to change)
+• Current subscription rate: \$4.95/month (subject to change)
 • Subscription fees are charged automatically to your payment method
 
 BILLING TERMS:
