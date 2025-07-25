@@ -389,11 +389,9 @@ We will respond to all inquiries within 48 hours during business days.''',
           const SizedBox(height: 12),
           const Text(
             '''• Network Build Pro is a subscription-based professional networking platform
-• We help professionals build meaningful business relationships, networks, and networks
-• Our platform facilitates connections to legitimate business ventures
+• We help professionals build meaningful business relationships and networks
 • Users pay a monthly subscription fee for access to our networking and relationship building tools
 • We focus on authentic relationship building, network development, and professional growth
-• Third-party business opportunities are independent collaborations
 
 Network Build Pro empowers professionals to expand their networks systematically and discover opportunities through genuine relationship and network building.''',
             style: TextStyle(
