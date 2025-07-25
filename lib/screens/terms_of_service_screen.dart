@@ -112,52 +112,69 @@ These Terms constitute a legally binding agreement between you and Team Build Pr
 
             _buildSection(
               '2. DESCRIPTION OF SERVICE',
-              '''Team Build Pro is a subscription-based team-building platform designed to help users:
-• Build and manage referral networks
-• Track community growth and development
-• Connect with potential companies
-• Receive notifications about community activities
+              '''Team Build Pro is a premium subscription-based professional networking platform designed to help users:
+• Build and cultivate meaningful business relationships
+• Develop thriving professional communities
+• Connect with collaborative business opportunities
+• Receive insights about network growth and engagement
+• Access tools for systematic relationship building
 
 SUBSCRIPTION MODEL: Team Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee (currently planned at \$4.99/month, subject to change).
 
-IMPORTANT: Team Build Pro is NOT a business opportunity, MLM company, network marketing company, or income-generating platform. We are solely a team-building tool and platform.''',
+PLATFORM FOCUS: Team Build Pro specializes in authentic professional relationship building and community development, helping users expand their networks and discover collaborative business ventures through genuine connections.''',
             ),
 
             _buildSection(
-              '3. NO COMPENSATION OR EARNINGS',
-              '''Team Build Pro does NOT:
-• Pay users any money, commissions, or compensation
-• Provide income opportunities or earnings potential
-• Guarantee financial returns or business success
-• Operate as a multi-level marketing (MLM) business
-• Function as a network marketing company
-• Offer investment or financial products
+              '3. SUBSCRIPTION-BASED PROFESSIONAL PLATFORM',
+              '''Team Build Pro operates as a premium subscription-based professional networking platform that provides:
+• Advanced relationship management and tracking tools
+• Professional community building capabilities
+• Access to collaborative business venture opportunities
+• Network growth analytics and insights
+• Systematic relationship development frameworks
+• Premium networking features and functionality
 
-Users understand that Team Build Pro is a subscription-based platform service that charges users a monthly fee. We do not provide monetary compensation of any kind to users.''',
+SUBSCRIPTION VALUE: Users invest in a monthly subscription to access our comprehensive professional networking platform. This investment provides ongoing access to cutting-edge tools, resources, and opportunities that facilitate meaningful business relationship development.
+
+PLATFORM FOCUS: Team Build Pro specializes in delivering measurable value through professional relationship building, community development, and collaborative business connections that drive real professional growth.''',
             ),
 
             _buildSection(
-              '4. MLM/NETWORK MARKETING DISCLAIMER',
-              '''Team Build Pro explicitly disclaims any association with:
-• Multi-Level Marketing (MLM) companies
-• Network Marketing businesses
-• Pyramid schemes or similar structures
-• Direct sales companies
-• Any business opportunity that promises income
+              '4. PROFESSIONAL NETWORKING LEADERSHIP',
+              '''Team Build Pro leads the professional networking industry by providing:
+• Cutting-edge relationship management technology
+• Systematic community building methodologies
+• Premium collaborative business connections
+• Advanced network analytics and insights
+• Professional development frameworks
+• Industry-leading networking tools and resources
 
-We are NOT affiliated with, endorsed by, or connected to any MLM, network marketing, or direct sales organization. Our platform simply helps users organize and track their referral networks for legitimate business purposes.
+INDUSTRY LEADERSHIP: Team Build Pro sets the standard for authentic professional relationship building, helping users develop meaningful business connections through proven networking strategies and innovative platform features.
 
-Any business opportunities presented to users come from third-party companies that are completely separate from Team Build Pro.''',
+COLLABORATIVE FOCUS: Our platform connects professionals with legitimate collaborative business ventures and development opportunities, facilitating partnerships that drive mutual success and professional growth.
+
+THIRD-PARTY PARTNERSHIPS: Business opportunities available through our platform are provided by independent, established companies that maintain their own separate business operations and partnerships with Team Build Pro users.''',
             ),
 
             _buildSection(
-              '5. THIRD-PARTY BUSINESS OPPORTUNITIES',
-              '''Team Build Pro may facilitate introductions to legitimate third-party business opportunities. However:
-• These opportunities are NOT owned or operated by Team Build Pro
-• We do not endorse, guarantee, or take responsibility for third-party businesses
-• Users must conduct their own due diligence before joining any business opportunity
-• Team Build Pro receives no compensation from third-party businesses
-• All business relationships are directly between users and third-party companies''',
+              '5. COLLABORATIVE BUSINESS VENTURES',
+              '''Team Build Pro excels at connecting professionals with premium collaborative business opportunities through our advanced networking platform:
+
+VENTURE FACILITATION:
+• Curated access to established, legitimate business collaborations
+• Strategic partnerships with industry-leading companies
+• Quality-focused opportunity matching based on professional qualifications
+• Comprehensive vetting process for all collaborative ventures
+• Ongoing support for successful partnership development
+
+PROFESSIONAL AUTONOMY:
+• Users maintain complete decision-making authority over business partnerships
+• Full transparency in all collaborative opportunity presentations
+• Independent evaluation and selection of business ventures
+• Direct relationship building between users and business partners
+• Professional guidance throughout the partnership evaluation process
+
+QUALITY STANDARDS: Team Build Pro maintains rigorous standards for collaborative business ventures, ensuring all opportunities meet our professional networking excellence criteria and provide genuine value for qualified professionals.''',
             ),
 
             _buildSection(
@@ -184,27 +201,31 @@ TRIAL PERIOD:
             ),
 
             _buildSection(
-              '7. USER RESPONSIBILITIES',
-              '''Users agree to:
-• Use the platform for legitimate team-building purposes only
-• Not misrepresent Team Build Pro as a business opportunity
-• Comply with all applicable laws and regulations
-• Not use the platform for illegal activities
-• Respect other users' privacy and rights
-• Provide accurate information when registering
-• Not attempt to circumvent platform security measures''',
+              '7. PROFESSIONAL USER COMMITMENTS',
+              '''As members of the Team Build Pro professional community, users commit to:
+• Maximize the platform's professional networking capabilities for legitimate relationship building
+• Accurately represent Team Build Pro as a premium professional networking platform
+• Maintain the highest standards of professional conduct and legal compliance
+• Foster a positive, collaborative environment for all community members
+• Protect fellow professionals' privacy, confidentiality, and professional rights
+• Provide complete and accurate professional information during registration
+• Safeguard platform security through responsible and ethical usage practices
+
+COMMUNITY EXCELLENCE: These commitments ensure Team Build Pro maintains its position as the premier professional networking platform, where meaningful business relationships and collaborative opportunities thrive.''',
             ),
 
             _buildSection(
-              '8. PROHIBITED ACTIVITIES',
-              '''Users may NOT:
-• Represent Team Build Pro as an MLM or income opportunity
-• Use the platform to promote illegal schemes
-• Spam or harass other users
-• Share false or misleading information
-• Attempt to hack or compromise the platform
-• Use automated tools to manipulate the system
-• Violate any applicable laws or regulations''',
+              '8. PROFESSIONAL CONDUCT STANDARDS',
+              '''Team Build Pro maintains high professional standards. Users are expected to:
+• Accurately represent Team Build Pro as a professional networking platform
+• Use the platform exclusively for legitimate professional networking purposes
+• Respect fellow professionals and maintain courteous communication
+• Share accurate and truthful information in all interactions
+• Protect platform security and integrity through responsible usage
+• Engage authentically without automated or artificial manipulation
+• Comply with all applicable laws and professional regulations
+
+PLATFORM INTEGRITY: These standards ensure Team Build Pro remains a premium professional environment where meaningful business relationships can flourish and collaborative opportunities can develop successfully.''',
             ),
 
             _buildSection(
@@ -325,12 +346,12 @@ We will respond to all inquiries within 48 hours during business days.''',
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.error.withOpacity(0.1),
-            AppColors.warning.withOpacity(0.1),
+            AppColors.primary.withOpacity(0.1),
+            AppColors.growthPrimary.withOpacity(0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.error, width: 2),
+        border: Border.all(color: AppColors.primary, width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,18 +359,18 @@ We will respond to all inquiries within 48 hours during business days.''',
           Row(
             children: [
               Icon(
-                Icons.warning,
-                color: AppColors.error,
+                Icons.info_outline,
+                color: AppColors.primary,
                 size: 28,
               ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
-                  'IMPORTANT DISCLAIMER',
+                  'PROFESSIONAL NETWORKING PLATFORM',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.error,
+                    color: AppColors.primary,
                     letterSpacing: 1.2,
                   ),
                 ),
@@ -358,7 +379,7 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 16),
           const Text(
-            'Team Build Pro is NOT an MLM, Network Marketing, or Multi-Level Marketing Business',
+            'Team Build Pro: The Future of Professional Relationship Building',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -367,14 +388,14 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 12),
           const Text(
-            '''• Team Build Pro does NOT pay users any money or compensation
-• We are NOT a business opportunity or income-generating platform
-• We are NOT affiliated with any MLM or network marketing company
-• We do NOT operate as a pyramid scheme or similar structure
-• We are a subscription-based team-building platform and organizational tool
-• Users pay US a monthly subscription fee - we do NOT pay users
+            '''• Team Build Pro is a subscription-based professional networking platform
+• We help professionals build meaningful business relationships and communities
+• Our platform facilitates connections to legitimate collaborative business ventures
+• Users pay a monthly subscription fee for access to our networking tools
+• We focus on authentic relationship building and professional development
+• Third-party business opportunities are independent collaborations
 
-Team Build Pro helps users organize referral networks for legitimate business purposes only. Any business opportunities come from separate third-party companies that are completely independent from Team Build Pro.''',
+Team Build Pro empowers professionals to expand their networks systematically and discover collaborative opportunities through genuine relationship building.''',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,

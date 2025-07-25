@@ -38,12 +38,22 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             
         if (userDoc.exists) {
           final userData = userDoc.data();
-          final uplineAdmin = userData?['upline_admin'] as String?;
+          final userRole = userData?['role'] as String?;
           
-          if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+          // Determine which admin settings to fetch
+          String? adminUid;
+          if (userRole == 'admin') {
+            // If user is admin, use their own UID
+            adminUid = user.uid;
+          } else {
+            // If user is not admin, use their upline_admin
+            adminUid = userData?['upline_admin'] as String?;
+          }
+          
+          if (adminUid != null && adminUid.isNotEmpty) {
             final adminSettingsDoc = await FirebaseFirestore.instance
                 .collection('admin_settings')
-                .doc(uplineAdmin)
+                .doc(adminUid)
                 .get();
                 
             if (adminSettingsDoc.exists) {
@@ -83,7 +93,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'TEAM BUILD PRO PLATFORM',
+            'PROFESSIONAL NETWORKING REVOLUTION',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -291,24 +301,82 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             _buildHeroSection(),
             const SizedBox(height: 24),
 
-            // Business Opportunity Section
+            // Featured Collaboration Section
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               child: Container(
                 padding: const EdgeInsets.all(20),
-                child: Row(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.withOpacity(AppColors.primary, 0.2), width: 2),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.business_center, color: AppColors.primary, size: 28),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        _bizOpp,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.withOpacity(AppColors.primary, 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.star, color: AppColors.primary, size: 28),
                         ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            'Featured Collaboration',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary.withValues(alpha: 0.05),
+                            AppColors.growthPrimary.withValues(alpha: 0.05),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.business,
+                              color: AppColors.primary,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _bizOpp,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -377,21 +445,21 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'Share the Platform',
-                      description: 'Share Team Build Pro with your professional contacts and colleagues who are interested in expanding their professional network.',
-                      icon: Icons.share,
+                      title: 'CONNECT - Expand Your Network',
+                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
+                      icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'Network Growth',
-                      description: 'Your connections begin building their own professional communities, creating a growing network of like-minded professionals.',
-                      icon: Icons.group_add,
+                      title: 'CULTIVATE - Nurture Professional Bonds',
+                      description: 'Foster authentic relationships as your network grows, creating a thriving community of professionals who support each other\'s success.',
+                      icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'Professional Opportunities',
-                      description: 'When community members meet certain engagement criteria, they may receive invitations to participate in professional development opportunities.',
-                      icon: Icons.auto_awesome,
+                      title: 'COLLABORATE - Unlock Opportunities Together',
+                      description: 'When your professional community reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
+                      icon: Icons.handshake,
                     ),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -432,7 +500,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'COMMUNITY GROWTH THRESHOLDS',
+                      'COMMUNITY ENGAGEMENT THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -444,15 +512,15 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     Row(
                       children: [
                         _buildMetricCard(
-                          icon: Icons.people,
+                          icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin.toString(),
-                          label: 'Direct Members',
+                          label: 'Direct Connections',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
-                          icon: Icons.groups,
+                          icon: Icons.hub,
                           value: AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Community Members',
+                          label: 'Community Network',
                         ),
                       ],
                     ),
@@ -473,13 +541,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
               child: Column(
                 children: [
                   Icon(
-                    Icons.celebration,
+                    Icons.rocket_launch,
                     size: 48,
                     color: AppColors.textInverse,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Ready to Build Your Professional Community?',
+                    'Transform Your Professional Network',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -489,7 +557,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Start building meaningful professional connections today with Team Build Pro!',
+                    'Join the professional networking revolution and unlock collaborative opportunities that drive real business growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),

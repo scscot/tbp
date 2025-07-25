@@ -51,11 +51,22 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         _currentTotalCount >= AppConstants.projectWideTotalTeamMin;
           
           // Get biz_opp from admin settings
-          final uplineAdmin = userData?['upline_admin'] as String?;
-          if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+          final userRole = userData?['role'] as String?;
+          
+          // Determine which admin settings to fetch
+          String? adminUid;
+          if (userRole == 'admin') {
+            // If user is admin, use their own UID
+            adminUid = user.uid;
+          } else {
+            // If user is not admin, use their upline_admin
+            adminUid = userData?['upline_admin'] as String?;
+          }
+          
+          if (adminUid != null && adminUid.isNotEmpty) {
             final adminSettingsDoc = await FirebaseFirestore.instance
                 .collection('admin_settings')
-                .doc(uplineAdmin)
+                .doc(adminUid)
                 .get();
                 
             if (adminSettingsDoc.exists) {
@@ -324,7 +335,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'MINIMUM THRESHOLDS',
+                      'COMMUNITY ENGAGEMENT THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -336,17 +347,17 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     Row(
                       children: [
                         _buildMetricCard(
-                          icon: Icons.people,
+                          icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin
                               .toString(),
-                          label: 'Direct Members',
+                          label: 'Direct Connections',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
-                          icon: Icons.groups,
+                          icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Community Members',
+                          label: 'Community Network',
                         ),
                       ],
                     ),
@@ -376,15 +387,15 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     Row(
                       children: [
                         _buildProgressCard(
-                          icon: Icons.people,
-                          label: 'Direct Members',
+                          icon: Icons.connect_without_contact,
+                          label: 'Direct Connections',
                           current: _currentDirectCount,
                           target: AppConstants.projectWideDirectSponsorMin,
                         ),
                         const SizedBox(width: 16),
                         _buildProgressCard(
-                          icon: Icons.groups,
-                          label: 'Community Members',
+                          icon: Icons.hub,
+                          label: 'Community Network',
                           current: _currentTotalCount,
                           target: AppConstants.projectWideTotalTeamMin,
                         ),
@@ -429,21 +440,21 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'Continue Sharing',
-                      description: 'Share Team Build Pro with your professional contacts and colleagues who are interested in expanding their professional network.',
-                      icon: Icons.share,
+                      title: 'CONNECT - Expand Your Network',
+                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
+                      icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'Network Growth',
-                      description: 'Your connections begin building their own professional communities, creating a growing network of like-minded professionals.',
-                      icon: Icons.group_add,
+                      title: 'CULTIVATE - Nurture Professional Bonds',
+                      description: 'Foster authentic relationships as your network grows, creating a thriving community of professionals who support each other\'s success.',
+                      icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'Professional Opportunity',
-                      description: 'When community members meet the growth thresholds, they receive invitations to complete their $_bizOpp registration.',
-                      icon: Icons.auto_awesome,
+                      title: 'COLLABORATE - Unlock Opportunities Together',
+                      description: 'When your professional community reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
+                      icon: Icons.handshake,
                     ),
                     Container(
                       padding: const EdgeInsets.all(16),
