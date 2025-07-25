@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ultimatefix/screens/dashboard_screen.dart';
 import '../widgets/header_widgets.dart';
-import 'profile_screen.dart';
 
 class AdminEditProfileScreen1 extends StatefulWidget {
   final String appId;

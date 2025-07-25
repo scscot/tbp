@@ -191,7 +191,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                           ),
                           const SizedBox(height: 24),
                           Text(
-                            'BUILD YOUR',
+                            'PROFESSIONAL',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
@@ -208,7 +208,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            'GLOBAL PROFESSIONAL',
+                            'NETWORKING',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
@@ -227,7 +227,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                               boxShadow: AppColors.mediumShadow,
                             ),
                             child: Text(
-                              'COMMUNITY',
+                              'REVOLUTION',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
@@ -241,7 +241,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              'An established platform that helps you organize and expand your professional community globally through meaningful connections.',
+                              'The premier platform that transforms how professionals build meaningful business relationships and discover collaborative opportunities worldwide.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.textInverse.withOpacity(0.95),
@@ -282,34 +282,34 @@ class _HomepageScreenState extends State<HomepageScreen>
           const SizedBox(height: 32),
           _buildProcessStep(
             step: 1,
-            title: 'Join Team Build Pro',
+            title: 'CONNECT - Expand Your Network',
             description:
-                'Start building your professional community with our platform - includes a 30-day trial period.',
-            icon: Icons.person_add,
+                'Join the professional networking revolution with our premium platform - includes a 30-day trial period to experience transformative relationship building.',
+            icon: Icons.connect_without_contact,
             color: AppColors.primary,
           ),
           _buildProcessStep(
             step: 2,
-            title: 'Share Your Link',
+            title: 'CULTIVATE - Nurture Professional Bonds',
             description:
-                'Share your unique invitation link with your professional contacts, friends, or family members. Watch your community grow as they join and connect.',
-            icon: Icons.share,
+                'Share your unique networking link with like-minded professionals and colleagues. Foster authentic relationships as your professional community grows organically.',
+            icon: Icons.psychology,
             color: AppColors.growthPrimary,
           ),
           _buildProcessStep(
             step: 3,
-            title: 'Stay Connected',
+            title: 'COLLABORATE - Unlock Opportunities Together',
             description:
-                'Receive real-time notifications as new members join your growing community and engage with your members.',
-            icon: Icons.notifications_active,
+                'Receive real-time insights as your professional network expands and engage meaningfully with your growing community of business professionals.',
+            icon: Icons.handshake,
             color: AppColors.notificationPrimary,
           ),
           _buildProcessStep(
             step: 4,
-            title: 'Unlock Opportunities',
+            title: 'TRANSFORM - Professional Growth Excellence',
             description:
-                'When members reach ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total community members, they receive an invitation to join your company.',
-            icon: Icons.auto_awesome,
+                'When your community reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium collaborative business ventures.',
+            icon: Icons.rocket_launch,
             color: AppColors.opportunityPrimary,
             isLast: true,
           ),
@@ -424,7 +424,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            'START BUILDING YOUR',
+            'TRANSFORM YOUR',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -434,7 +434,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             textAlign: TextAlign.center,
           ),
           Text(
-            'PROFESSIONAL COMMUNITY!',
+            'PROFESSIONAL NETWORK!',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w900,
@@ -445,7 +445,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Team Build Pro helps professionals achieve exponential growth by connecting them with the people, tools, and structure they need to build global teams.',
+            'Team Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, collaborative opportunities, and systematic network development.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withOpacity(0.95),
@@ -490,7 +490,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      'START 30-DAY TRIAL',
+                      'JOIN THE REVOLUTION',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
