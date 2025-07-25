@@ -217,7 +217,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             // Important Notice
             _buildHighlightBox(
               title: 'Your Privacy Matters',
-              content: 'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data in compliance with Apple App Store guidelines and applicable privacy laws.',
+              content: 'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
               icon: Icons.shield_outlined,
               backgroundColor: AppColors.successBackground,
               borderColor: AppColors.success,
@@ -247,6 +247,7 @@ Usage Information:
 
 Communication Data:
 • Messages sent through our in-app messaging system
+• Network communications and interactions
 • Notifications and alerts you receive''',
             ),
 
@@ -257,10 +258,10 @@ Communication Data:
               content: '''We use your information for the following purposes:
 
 Service Provision:
-• Create and manage your account
-• Enable community building and referral features
+• Create and manage your professional networking account
+• Enable network building and community features
 • Facilitate communication between network members
-• Send important notifications about your account
+• Send important notifications about your account and network
 
 App Improvement:
 • Analyze app usage to improve functionality
@@ -279,9 +280,9 @@ Legal Compliance:
               icon: Icons.share_outlined,
               content: '''We do not sell your personal information. We may share information in these limited circumstances:
 
-Within Your Team:
+Within Your Network:
 • Your name and profile photo are visible to your network members
-• Referral relationships are shared within your community structure
+• Network relationships are shared within your community structure
 
 Service Providers:
 • Firebase (Google) for authentication and database services
@@ -335,7 +336,7 @@ Privacy Settings:
 • Opt out of non-essential communications
 
 Data Portability:
-• Export your community structure data
+• Export your network and community structure data
 • Transfer your information to another service (where applicable)
 
 To exercise these rights, contact us at privacy@teambuildpro.com or use the in-app settings.''',
@@ -344,7 +345,7 @@ To exercise these rights, contact us at privacy@teambuildpro.com or use the in-a
             // Apple-Specific Privacy
             _buildHighlightBox(
               title: 'Apple Privacy Compliance',
-              content: 'This app complies with Apple\'s App Store privacy requirements. We use Apple\'s In-App Purchase system for subscriptions and do not collect payment information directly. All data collection is transparent and with your consent.',
+              content: 'This professional networking app complies with Apple\'s App Store privacy requirements. We use Apple\'s In-App Purchase system for subscriptions and do not collect payment information directly. All data collection is transparent and with your consent.',
               icon: Icons.apple,
               backgroundColor: AppColors.backgroundTertiary,
               borderColor: AppColors.textSecondary,

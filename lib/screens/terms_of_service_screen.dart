@@ -53,7 +53,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Team Build Pro Platform Agreement',
+                    'Professional Networking Platform Agreement',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.textInverse.withOpacity(0.9),
@@ -105,55 +105,55 @@ class TermsOfServiceScreen extends StatelessWidget {
             // Terms Sections
             _buildSection(
               '1. ACCEPTANCE OF TERMS',
-              '''By downloading, installing, accessing, or using the Team Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
+            '''By downloading, installing, accessing, or using the Team Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
 
-These Terms constitute a legally binding agreement between you and Team Build Pro regarding your use of our team-building platform service.''',
+These Terms constitute a legally binding agreement between you and Team Build Pro regarding your use of our professional networking platform service.''',
             ),
 
             _buildSection(
               '2. DESCRIPTION OF SERVICE',
-              '''Team Build Pro is a premium subscription-based professional networking platform designed to help users:
+            '''Team Build Pro is a premium subscription-based professional networking platform designed to help users:
 • Build and cultivate meaningful business relationships
-• Develop thriving professional communities
+• Develop thriving professional networks and communities
 • Connect with collaborative business opportunities
 • Receive insights about network growth and engagement
-• Access tools for systematic relationship building
+• Access tools for systematic relationship and network building
 
 SUBSCRIPTION MODEL: Team Build Pro operates on a subscription basis with a 30-day free trial period, followed by a monthly subscription fee (currently planned at \$4.99/month, subject to change).
 
-PLATFORM FOCUS: Team Build Pro specializes in authentic professional relationship building and community development, helping users expand their networks and discover collaborative business ventures through genuine connections.''',
+PLATFORM FOCUS: Team Build Pro specializes in authentic professional relationship building and network development, helping users expand their professional networks and discover collaborative business ventures through genuine connections.''',
             ),
 
             _buildSection(
               '3. SUBSCRIPTION-BASED PROFESSIONAL PLATFORM',
-              '''Team Build Pro operates as a premium subscription-based professional networking platform that provides:
-• Advanced relationship management and tracking tools
-• Professional community building capabilities
+            '''Team Build Pro operates as a premium subscription-based professional networking platform that provides:
+• Advanced relationship management and network tracking tools
+• Professional network and community building capabilities
 • Access to collaborative business venture opportunities
 • Network growth analytics and insights
-• Systematic relationship development frameworks
+• Systematic relationship and network development frameworks
 • Premium networking features and functionality
 
-SUBSCRIPTION VALUE: Users invest in a monthly subscription to access our comprehensive professional networking platform. This investment provides ongoing access to cutting-edge tools, resources, and opportunities that facilitate meaningful business relationship development.
+SUBSCRIPTION VALUE: Users invest in a monthly subscription to access our comprehensive professional networking platform. This investment provides ongoing access to cutting-edge tools, resources, and opportunities that facilitate meaningful business relationship and network development.
 
-PLATFORM FOCUS: Team Build Pro specializes in delivering measurable value through professional relationship building, community development, and collaborative business connections that drive real professional growth.''',
+PLATFORM FOCUS: Team Build Pro specializes in delivering measurable value through professional relationship building, network development, and collaborative business connections that drive real professional growth.''',
             ),
 
             _buildSection(
               '4. PROFESSIONAL NETWORKING LEADERSHIP',
-              '''Team Build Pro leads the professional networking industry by providing:
-• Cutting-edge relationship management technology
-• Systematic community building methodologies
+            '''Team Build Pro leads the professional networking industry by providing:
+• Cutting-edge relationship management and network technology
+• Systematic network and community building methodologies
 • Premium collaborative business connections
 • Advanced network analytics and insights
-• Professional development frameworks
+• Professional network development frameworks
 • Industry-leading networking tools and resources
 
-INDUSTRY LEADERSHIP: Team Build Pro sets the standard for authentic professional relationship building, helping users develop meaningful business connections through proven networking strategies and innovative platform features.
+INDUSTRY LEADERSHIP: Team Build Pro sets the standard for authentic professional relationship building and network development, helping users develop meaningful business connections through proven networking strategies and innovative platform features.
 
-COLLABORATIVE FOCUS: Our platform connects professionals with legitimate collaborative business ventures and development opportunities, facilitating partnerships that drive mutual success and professional growth.
+COLLABORATIVE FOCUS: Our platform connects professionals with legitimate collaborative business ventures and development opportunities, facilitating partnerships that drive mutual success and professional network growth.
 
-THIRD-PARTY PARTNERSHIPS: Business opportunities available through our platform are provided by independent, established companies that maintain their own separate business operations and partnerships with Team Build Pro users.''',
+THIRD-PARTY PARTNERSHIPS: Business opportunities available through our platform are provided by independent, established companies that maintain their own separate business operations and partnerships with Team Build Pro network members.''',
             ),
 
             _buildSection(
@@ -202,30 +202,30 @@ TRIAL PERIOD:
 
             _buildSection(
               '7. PROFESSIONAL USER COMMITMENTS',
-              '''As members of the Team Build Pro professional community, users commit to:
-• Maximize the platform's professional networking capabilities for legitimate relationship building
+            '''As members of the Team Build Pro professional networking community, users commit to:
+• Maximize the platform's professional networking capabilities for legitimate relationship and network building
 • Accurately represent Team Build Pro as a premium professional networking platform
 • Maintain the highest standards of professional conduct and legal compliance
 • Foster a positive, collaborative environment for all network members
-• Protect fellow professionals' privacy, confidentiality, and professional rights
+• Protect fellow network members' privacy, confidentiality, and professional rights
 • Provide complete and accurate professional information during registration
 • Safeguard platform security through responsible and ethical usage practices
 
-COMMUNITY EXCELLENCE: These commitments ensure Team Build Pro maintains its position as the premier professional networking platform, where meaningful business relationships and collaborative opportunities thrive.''',
+NETWORK EXCELLENCE: These commitments ensure Team Build Pro maintains its position as the premier professional networking platform, where meaningful business relationships, networks, and collaborative opportunities thrive.''',
             ),
 
             _buildSection(
               '8. PROFESSIONAL CONDUCT STANDARDS',
-              '''Team Build Pro maintains high professional standards. Users are expected to:
+            '''Team Build Pro maintains high professional networking standards. Users are expected to:
 • Accurately represent Team Build Pro as a professional networking platform
-• Use the platform exclusively for legitimate professional networking purposes
-• Respect fellow professionals and maintain courteous communication
-• Share accurate and truthful information in all interactions
+• Use the platform exclusively for legitimate professional networking and relationship building purposes
+• Respect fellow network members and maintain courteous communication
+• Share accurate and truthful information in all network interactions
 • Protect platform security and integrity through responsible usage
 • Engage authentically without automated or artificial manipulation
-• Comply with all applicable laws and professional regulations
+• Comply with all applicable laws and professional networking regulations
 
-PLATFORM INTEGRITY: These standards ensure Team Build Pro remains a premium professional environment where meaningful business relationships can flourish and collaborative opportunities can develop successfully.''',
+PLATFORM INTEGRITY: These standards ensure Team Build Pro remains a premium professional networking environment where meaningful business relationships and networks can flourish and collaborative opportunities can develop successfully.''',
             ),
 
             _buildSection(
@@ -379,7 +379,7 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 16),
           const Text(
-            'Team Build Pro: The Future of Professional Relationship Building',
+            'Team Build Pro: The Future of Professional Network Building',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -389,13 +389,13 @@ We will respond to all inquiries within 48 hours during business days.''',
           const SizedBox(height: 12),
           const Text(
             '''• Team Build Pro is a subscription-based professional networking platform
-• We help professionals build meaningful business relationships and communities
+• We help professionals build meaningful business relationships, networks, and communities
 • Our platform facilitates connections to legitimate collaborative business ventures
-• Users pay a monthly subscription fee for access to our networking tools
-• We focus on authentic relationship building and professional development
+• Users pay a monthly subscription fee for access to our networking and relationship building tools
+• We focus on authentic relationship building, network development, and professional growth
 • Third-party business opportunities are independent collaborations
 
-Team Build Pro empowers professionals to expand their networks systematically and discover collaborative opportunities through genuine relationship building.''',
+Team Build Pro empowers professionals to expand their networks systematically and discover collaborative opportunities through genuine relationship and network building.''',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,
