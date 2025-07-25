@@ -1,20 +1,20 @@
-// lib/services/team_service.dart
+// lib/services/network_service.dart
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 
-class TeamService {
+class NetworkService {
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
 
-  Future<List<UserModel>> getTeam() async {
+  Future<List<UserModel>> getNetwork() async {
     try {
       final callable = _functions.httpsCallable('getDownline');
       final result = await callable.call();
 
-      final List<dynamic> teamData = result.data['downline'] ?? [];
+      final List<dynamic> networkData = result.data['downline'] ?? [];
 
-      return teamData.map((data) {
+      return networkData.map((data) {
         final Map<String, dynamic> userMap = Map<String, dynamic>.from(data);
         return UserModel.fromMap(userMap);
       }).toList();
@@ -30,13 +30,13 @@ class TeamService {
     } catch (e, s) {
       // Improved logging for any other unexpected errors
       debugPrint(
-          'An unexpected error occurred in TeamService.getTeam: $e');
+          'An unexpected error occurred in NetworkService.getNetwork: $e');
       debugPrint('Stacktrace: $s');
       rethrow;
     }
   }
 
-  Future<Map<String, int>> getTeamCounts() async {
+  Future<Map<String, int>> getNetworkCounts() async {
     try {
       final callable = _functions.httpsCallable('getDownlineCounts');
       final result = await callable.call();
@@ -59,13 +59,13 @@ class TeamService {
     } catch (e, s) {
       // Improved logging for any other unexpected errors
       debugPrint(
-          'An unexpected error occurred in TeamService.getTeamCounts: $e');
+          'An unexpected error occurred in NetworkService.getNetworkCounts: $e');
       debugPrint('Stacktrace: $s');
       rethrow;
     }
   }
 
-  Future<Map<String, dynamic>> getFilteredTeam({
+  Future<Map<String, dynamic>> getFilteredNetwork({
     String filter = 'all',
     String searchQuery = '',
     int? levelOffset,
@@ -87,9 +87,9 @@ class TeamService {
           ? result.data as Map<String, dynamic>
           : Map<String, dynamic>.from(result.data ?? {});
 
-      // Convert community array to UserModel objects
-      final List<dynamic> teamData = data['downline'] ?? [];
-      final List<UserModel> teamUsers = teamData.map((userData) {
+      // Convert network array to UserModel objects
+      final List<dynamic> networkData = data['downline'] ?? [];
+      final List<UserModel> networkUsers = networkData.map((userData) {
         final Map<String, dynamic> userMap = userData is Map<String, dynamic>
             ? userData
             : Map<String, dynamic>.from(userData ?? {});
@@ -119,7 +119,7 @@ class TeamService {
       }
 
       return {
-        'team': teamUsers,
+        'network': networkUsers,
         'groupedByLevel': processedGroupedByLevel,
         'totalCount': data['totalCount'] ?? 0,
         'hasMore': data['hasMore'] ?? false,
@@ -135,7 +135,7 @@ class TeamService {
       rethrow;
     } catch (e, s) {
       debugPrint(
-          'An unexpected error occurred in TeamService.getFilteredTeam: $e');
+          'An unexpected error occurred in NetworkService.getFilteredNetwork: $e');
       debugPrint('Stacktrace: $s');
       rethrow;
     }

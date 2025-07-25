@@ -11,7 +11,7 @@ import 'notification_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/message_thread_screen.dart';
 import '../screens/add_link_screen.dart';
-import '../screens/team_screen.dart';
+import '../screens/network_screen.dart';
 
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -382,9 +382,9 @@ void navigateToRoute(PendingNotification notification) {
       const String appId = 'L8n1tJqHqYd3F5j6';
       final filter = notification.arguments['filter'] as String?;
 
-      // Navigate to TeamScreen with initial filter
+      // Navigate to NetworkScreen with initial filter
       navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => TeamScreen(
+        builder: (_) => NetworkScreen(
           appId: appId,
           initialFilter: filter,
         ),

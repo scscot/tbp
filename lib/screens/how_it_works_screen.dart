@@ -93,7 +93,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'PROFESSIONAL NETWORKING REVOLUTION',
+            'PROFESSIONAL NETWORKING',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -557,7 +557,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Join the professional networking revolution and unlock collaborative opportunities that drive real business growth!',
+                    'Expand your professional networking and unlock collaborative opportunities that drive real business growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),

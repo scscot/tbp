@@ -12,7 +12,7 @@ import 'notifications_screen.dart';
 import 'eligibility_screen.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
-import 'team_screen.dart';
+import 'network_screen.dart';
 import 'profile_screen.dart';
 import 'share_screen.dart';
 import 'how_it_works_screen.dart';
@@ -610,7 +610,7 @@ if (user.role == 'admin') ...[
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => TeamScreen(appId: widget.appId),
+              builder: (_) => NetworkScreen(appId: widget.appId),
             ),
           ),
         ),

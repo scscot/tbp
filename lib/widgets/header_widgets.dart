@@ -10,7 +10,7 @@ import '../models/admin_settings_model.dart';
 import '../config/app_colors.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
-import '../screens/team_screen.dart';
+import '../screens/network_screen.dart';
 import '../screens/share_screen.dart';
 import '../screens/how_it_works_screen.dart';
 import '../screens/message_center_screen.dart';
@@ -71,7 +71,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         break;
       case 'team':
         navigator.push(MaterialPageRoute(
-            builder: (_) => TeamScreen(appId: widget.appId)));
+            builder: (_) => NetworkScreen(appId: widget.appId)));
         break;
       case 'share':
         navigator.push(MaterialPageRoute(
@@ -289,7 +289,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Automatically grow your ${user.bizOpp ?? 'business opportunity'} team.',
+                'Automatically grow your ${user.bizOpp ?? 'business opportunity'} network.',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -299,7 +299,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed on your team.',
+                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed in your network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -415,13 +415,13 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         _buildMenuItem(
           value: 'share',
           icon: Icons.trending_up,
-          title: 'Grow My Team',
+          title: 'Grow My Network',
           color: AppColors.growthPrimary,
         ),
         _buildMenuItem(
           value: 'team',
           icon: Icons.groups,
-          title: 'View My Team',
+          title: 'View My Network',
           color: AppColors.teamPrimary,
         ),
         const PopupMenuDivider(),

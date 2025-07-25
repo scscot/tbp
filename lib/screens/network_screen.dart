@@ -1,4 +1,4 @@
-// lib/screens/team_screen.dart
+// lib/screens/network_screen.dart
 // Professional UI redesign with modern layouts and enhanced reporting
 
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../models/user_model.dart';
-import '../services/team_service.dart';
+import '../services/network_service.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
@@ -18,24 +18,24 @@ enum FilterBy { allMembers, directSponsors, newMembers, qualifiedMembers, joined
 
 enum SortBy { name, joinDate, level, location }
 
-class TeamScreen extends StatefulWidget {
+class NetworkScreen extends StatefulWidget {
   final String appId;
   final String? initialFilter;
 
-  const TeamScreen({
+  const NetworkScreen({
     super.key,
     required this.appId,
     this.initialFilter,
   });
 
   @override
-  State<TeamScreen> createState() => _TeamScreenState();
+  State<NetworkScreen> createState() => _NetworkScreenState();
 }
 
-class _TeamScreenState extends State<TeamScreen>
+class _NetworkScreenState extends State<NetworkScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final TeamService _teamService = TeamService();
+  final NetworkService _networkService = NetworkService();
   final TextEditingController _searchController = TextEditingController();
 
   List<UserModel> _allMembers = [];
@@ -188,23 +188,23 @@ class _TeamScreenState extends State<TeamScreen>
 
     try {
       // Get counts for analytics
-      final counts = await _teamService.getTeamCounts();
+      final counts = await _networkService.getNetworkCounts();
 
       if (!mounted) return;
 
-      // Fetch all community data
-      final result = await _teamService.getFilteredTeam(
+      // Fetch all network data
+      final result = await _networkService.getFilteredNetwork(
         filter: 'all',
         searchQuery: '',
         levelOffset: _levelOffset,
         limit: 1000,
       );
 
-      _allMembers = result['team'] as List<UserModel>;
+      _allMembers = result['network'] as List<UserModel>;
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {
-      debugPrint('Error loading community data: $e');
+      debugPrint('Error loading network data: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -367,7 +367,7 @@ class _TeamScreenState extends State<TeamScreen>
         gradient: AppColors.primaryGradient,
       ),
       child: const Text(
-        'My Global Team',
+        'My Global Network',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,
@@ -783,7 +783,7 @@ class _TeamScreenState extends State<TeamScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Team Performance',
+            'Network Performance',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
