@@ -299,7 +299,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your network who joins is placed in your network.',
+                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Network Build Pro profile. This ensures anyone from your network who joins is placed in your network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -622,7 +622,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Team Build Pro',
+              'Network Build Pro',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

@@ -7,7 +7,7 @@ Updated Terms of Service and Privacy Policy screens to align with professional n
 
 ### 1. lib/screens/terms_of_service_screen.dart
 **Key Changes Made:**
-- Updated subtitle from "Team Build Pro Platform Agreement" to "Professional Networking Platform Agreement"
+- Updated subtitle from "Network Build Pro Platform Agreement" to "Professional Networking Platform Agreement"
 - Enhanced networking terminology throughout all sections:
   - "team-building platform service" → "professional networking platform service"
   - Added "networks" alongside "communities" in service descriptions

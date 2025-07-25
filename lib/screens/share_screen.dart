@@ -104,7 +104,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _buildReferralLink() {
     if (_currentUser != null) {
       // Unified referral link format
-      _referralLink = 'https://teambuildpro.com/?ref=${_currentUser!.referralCode}';
+      _referralLink = 'https://networkbuildpro.com /?ref=${_currentUser!.referralCode}';
     }
   }
 
@@ -113,8 +113,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       final userName = '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'.trim();
       
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Team Build Pro and start expanding your collaborative opportunities today! $_referralLink'
-          : '🌟 Hey! I\'m expanding my professional network on Team Build Pro and would love for you to connect with me! Start your networking journey here: $_referralLink';
+          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Network Build Pro and start expanding your collaborative opportunities today! $_referralLink'
+          : '🌟 Hey! I\'m expanding my professional network on Network Build Pro and would love for you to connect with me! Start your networking journey here: $_referralLink';
 
       Share.share(message);
     }
@@ -123,8 +123,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _shareForExistingMembers() {
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
-          ? '💪 Network Partners! Use Team Build Pro to accelerate your $_bizOppName professional growth. Download the app and continue cultivating meaningful connections with me: $_referralLink'
-          : '🎯 Let\'s expand together! I\'m using Team Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our collaborative success: $_referralLink';
+          ? '💪 Network Partners! Use Network Build Pro to accelerate your $_bizOppName professional growth. Download the app and continue cultivating meaningful connections with me: $_referralLink'
+          : '🎯 Let\'s expand together! I\'m using Network Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our collaborative success: $_referralLink';
 
       Share.share(message);
     }
@@ -334,7 +334,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🚀 Current Network Partners',
           subtitle: 'Great for your existing $_bizOppName collaborators',
-          description: 'Share with professionals already in your $_bizOppName network. When their Team Build Pro community connects with $_bizOppName, they\'ll automatically join your collaborative network!',
+          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro community connects with $_bizOppName, they\'ll automatically join your collaborative network!',
           buttonText: 'Share with Network Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

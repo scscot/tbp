@@ -31,7 +31,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Future<void> _launchEmail() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'privacy@teambuildpro.com',
+      path: 'privacy@networkbuildpro.com ',
       query: 'subject=Privacy Policy Inquiry',
     );
     
@@ -41,7 +41,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Could not open email client. Please contact privacy@teambuildpro.com'),
+            content: Text('Could not open email client. Please contact privacy@networkbuildpro.com '),
             backgroundColor: AppColors.error,
           ),
         );
@@ -217,7 +217,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             // Important Notice
             _buildHighlightBox(
               title: 'Your Privacy Matters',
-              content: 'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
+              content: 'Network Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
               icon: Icons.shield_outlined,
               backgroundColor: AppColors.successBackground,
               borderColor: AppColors.success,
@@ -339,7 +339,7 @@ Data Portability:
 • Export your network and community structure data
 • Transfer your information to another service (where applicable)
 
-To exercise these rights, contact us at privacy@teambuildpro.com or use the in-app settings.''',
+To exercise these rights, contact us at privacy@networkbuildpro.com  or use the in-app settings.''',
             ),
 
             // Apple-Specific Privacy
@@ -355,21 +355,21 @@ To exercise these rights, contact us at privacy@teambuildpro.com or use the in-a
             _buildSection(
               title: '6. Children\'s Privacy',
               icon: Icons.child_care_outlined,
-              content: '''Team Build Pro is intended for users 18 years and older. We do not knowingly collect personal information from children under 18.
+              content: '''Network Build Pro is intended for users 18 years and older. We do not knowingly collect personal information from children under 18.
 
 If we discover that we have collected information from a child under 18:
 • We will delete the information immediately
 • We will terminate the account
 • We will notify the parents/guardians if possible
 
-Parents who believe their child has provided information to us should contact privacy@teambuildpro.com immediately.''',
+Parents who believe their child has provided information to us should contact privacy@networkbuildpro.com  immediately.''',
             ),
 
             // International Users
             _buildSection(
               title: '7. International Data Transfers',
               icon: Icons.public_outlined,
-              content: '''Team Build Pro is available globally. Your information may be transferred to and processed in:
+              content: '''Network Build Pro is available globally. Your information may be transferred to and processed in:
 
 • United States (Firebase/Google servers)
 • Other countries where our service providers operate
@@ -436,7 +436,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                     onPressed: _launchEmail,
                     icon: const Icon(Icons.email, size: 20),
                     label: const Text(
-                      'privacy@teambuildpro.com',
+                      'privacy@networkbuildpro.com ',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -456,7 +456,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Team Build Pro\nPrivacy Officer\nResponse within 48 hours',
+                    'Network Build Pro\nPrivacy Officer\nResponse within 48 hours',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textInverse.withOpacity(0.9),
@@ -481,7 +481,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
               child: Column(
                 children: [
                   Text(
-                    '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
+                    '© ${DateTime.now().year} Network Build Pro. All rights reserved.',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -491,7 +491,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'This Privacy Policy is effective as of the date listed above and applies to all users of the Team Build Pro mobile application.',
+                    'This Privacy Policy is effective as of the date listed above and applies to all users of the Network Build Pro mobile application.',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textTertiary,

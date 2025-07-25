@@ -158,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your collaborative business venture'}, add your partnership link to your Team Build Pro profile. This ensures anyone from your professional network who joins is placed in your collaborative network.',
+                'Once you\'ve registered with ${user.bizOpp ?? 'your collaborative business venture'}, add your partnership link to your Network Build Pro profile. This ensures anyone from your professional network who joins is placed in your collaborative network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),

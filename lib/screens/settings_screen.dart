@@ -424,7 +424,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           content: const Text(
                               'You must enter the exact referral link you received from your company. '
-                              'This will ensure your Team Build Pro network members that join your business opportunity '
+                              'This will ensure your Network Build Pro network members that join your business opportunity '
                               'are automatically placed in your business opportunity team.'),
                           actions: [
                             TextButton(
@@ -601,7 +601,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: TextStyle(fontSize: 16, color: Colors.grey)),
           const SizedBox(height: 10),
           const Text(
-            'Team Build Pro Feeder System',
+            'Network Build Pro Feeder System',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 20),
@@ -622,7 +622,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const TextSpan(
                           text:
-                              " community — with their growing Team Build Pro community ready to follow."),
+                              " community — with their growing Network Build Pro community ready to follow."),
                     ],
                   ),
                 ),

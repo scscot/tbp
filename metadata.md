@@ -1,8 +1,8 @@
-# Team Build Pro - Apple App Store Metadata
+# Network Build Pro - Apple App Store Metadata
 
 ## App Information
 
-**App Name:** Team Build Pro
+**App Name:** Network Build Pro
 
 **Subtitle:** Professional Networking Platform
 
@@ -20,7 +20,7 @@
 
 ### Primary Description (4000 character limit)
 
-Team Build Pro is the professional networking platform that transforms how you CONNECT → CULTIVATE → COLLABORATE with your professional network. Experience advanced business relationship management with complete transparency and Apple Store compliance.
+Network Build Pro is the professional networking platform that transforms how you CONNECT → CULTIVATE → COLLABORATE with your professional network. Experience advanced business relationship management with complete transparency and Apple Store compliance.
 
 **🚀 PROFESSIONAL NETWORKING EXCELLENCE:**
 
@@ -73,14 +73,14 @@ Team Build Pro is the professional networking platform that transforms how you C
 • Easy-to-navigate network directory
 
 **🚫 IMPORTANT DISCLAIMERS:**
-• Team Build Pro is NOT an MLM or network marketing company
+• Network Build Pro is NOT an MLM or network marketing company
 • We do NOT pay users any money or compensation
 • We are NOT a business opportunity or income platform
 • Users pay US a subscription fee - we do NOT pay users
 • We are a community organization tool and tracking platform ONLY
 
 **💳 TRANSPARENT SUBSCRIPTION MODEL:**
-Team Build Pro operates on a clear subscription basis with a 30-day free trial, followed by a monthly subscription fee. This ensures you have access to all premium features for effective community management and professional networking.
+Network Build Pro operates on a clear subscription basis with a 30-day free trial, followed by a monthly subscription fee. This ensures you have access to all premium features for effective community management and professional networking.
 
 **🎯 PERFECT FOR:**
 • Business professionals expanding their networks
@@ -100,7 +100,7 @@ Team Build Pro operates on a clear subscription basis with a 30-day free trial, 
 ✓ Complete transparency - no hidden agendas
 ✓ Subscription-based service model
 
-Start your professional networking journey today with Team Build Pro - where authentic business relationships CONNECT → CULTIVATE → COLLABORATE into lasting success through transparent, Apple-compliant networking excellence.
+Start your professional networking journey today with Network Build Pro - where authentic business relationships CONNECT → CULTIVATE → COLLABORATE into lasting success through transparent, Apple-compliant networking excellence.
 
 ---
 
@@ -147,7 +147,7 @@ Secure professional communication interface with messaging and notification feat
 
 ## App Preview Video Script (30 seconds)
 
-**[0-5s]:** Team Build Pro logo animation with tagline "Professional Networking Excellence - CONNECT → CULTIVATE → COLLABORATE"
+**[0-5s]:** Network Build Pro logo animation with tagline "Professional Networking Excellence - CONNECT → CULTIVATE → COLLABORATE"
 
 **[5-15s]:** Quick tour of main dashboard showing network metrics, growth charts, and partner overview with CONNECT → CULTIVATE → COLLABORATE framework
 
@@ -222,16 +222,16 @@ Secure professional communication interface with messaging and notification feat
 - **Apple Compliance:** ✅ Both documents explicitly address App Store guidelines
 
 ### External URLs (Optional)
-- Privacy Policy URL: https://teambuildpro.com/privacy
-- Terms of Service URL: https://teambuildpro.com/terms
-- Support URL: https://teambuildpro.com/support
+- Privacy Policy URL: https://networkbuildpro.com /privacy
+- Terms of Service URL: https://networkbuildpro.com /terms
+- Support URL: https://networkbuildpro.com /support
 
 ### Contact Information
-- **Support Email:** support@teambuildpro.com
-- **Privacy Email:** privacy@teambuildpro.com
-- **Legal Email:** legal@teambuildpro.com
-- **Business Email:** business@teambuildpro.com
-- **Compliance Email:** compliance@teambuildpro.com
+- **Support Email:** support@networkbuildpro.com 
+- **Privacy Email:** privacy@networkbuildpro.com 
+- **Legal Email:** legal@networkbuildpro.com 
+- **Business Email:** business@networkbuildpro.com 
+- **Compliance Email:** compliance@networkbuildpro.com 
 
 ---
 
@@ -270,8 +270,8 @@ Approximately 45-60 MB (optimized for App Store guidelines)
 - **Annual Subscription:** $49.99/year (17% savings, planned future feature)
 
 ### Apple In-App Purchases
-- Monthly Team Build Pro Community Subscription
-- (Future) Annual Team Build Pro Community Subscription
+- Monthly Network Build Pro Community Subscription
+- (Future) Annual Network Build Pro Community Subscription
 
 ### Revenue Model
 100% transparent subscription-based SaaS platform for professional community management - users pay us, we never pay users

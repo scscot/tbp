@@ -104,7 +104,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
+            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Network Build Pro helps you build meaningful professional connections worldwide.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -397,7 +397,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Solution
             _buildSectionCard(
               title: 'THE SOLUTION',
-              content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
+              content: 'Network Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
               icon: Icons.lightbulb,
               color: AppColors.primary,
             ),
@@ -446,7 +446,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'CONNECT - Expand Your Network',
-                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
+                      description: 'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
@@ -474,7 +474,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Team Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful career opportunities.',
+                              'Note: Network Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful career opportunities.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

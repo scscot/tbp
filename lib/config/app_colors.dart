@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-/// Team Build Pro App Color Palette
+/// Network Build Pro App Color Palette
 /// A professional, modern color system designed for trust, growth, and success
 class AppColors {
   // Private constructor to prevent instantiation

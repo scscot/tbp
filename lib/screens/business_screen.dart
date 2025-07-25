@@ -209,7 +209,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Team Build Pro profile. This ensures your ${bizOpp ?? 'business opportunity'} team is built correctly.",
+                  "Important: After completing your ${bizOpp ?? 'business opportunity'} registration, you must return here to add your new referral link to your Network Build Pro profile. This ensures your ${bizOpp ?? 'business opportunity'} team is built correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -505,7 +505,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                   text: '. This represents a carefully curated collaborative business venture that operates as ',
                 ),
                 const TextSpan(
-                  text: 'an independent partnership opportunity through Team Build Pro\'s professional network',
+                  text: 'an independent partnership opportunity through Network Build Pro\'s professional network',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -528,7 +528,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Team Build Pro facilitates access to vetted collaborative business ventures. Evaluate each opportunity based on your professional goals and interests.',
+                    'Network Build Pro facilitates access to vetted collaborative business ventures. Evaluate each opportunity based on your professional goals and interests.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -626,7 +626,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                     ),
                   ),
                 const TextSpan(
-                  text: '. This person is a member of your Team Build Pro network who has already joined this opportunity.',
+                  text: '. This person is a member of your Network Build Pro network who has already joined this opportunity.',
                 ),
               ],
             ),
@@ -780,7 +780,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring the collaborative business venture, you must return here and add your new partnership link to your Team Build Pro profile. This ensures your professional network connections are tracked correctly.",
+            "After exploring the collaborative business venture, you must return here and add your new partnership link to your Network Build Pro profile. This ensures your professional network connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),

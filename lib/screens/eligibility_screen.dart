@@ -441,7 +441,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'CONNECT - Expand Your Network',
-                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
+                      description: 'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
@@ -469,7 +469,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Team Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful long-term success.',
+                              'Note: Network Build Pro focuses on building genuine professional relationships and communities that can lead to meaningful long-term success.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

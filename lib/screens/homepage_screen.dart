@@ -445,7 +445,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Team Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, collaborative opportunities, and systematic network development.',
+            'Network Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, collaborative opportunities, and systematic network development.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withOpacity(0.95),
@@ -638,7 +638,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
+            '© ${DateTime.now().year} Network Build Pro. All rights reserved.',
             style: const TextStyle(
               fontSize: 12,
               color: AppColors.textTertiary,
@@ -660,7 +660,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         ),
       ),
       title: const Text(
-        'Team Build Pro',
+        'Network Build Pro',
         style: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.bold,

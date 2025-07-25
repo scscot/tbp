@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" 
-                      android:host="teambuildpro.com" />
+                      android:host="networkbuildpro.com " />
             </intent-filter>
             <!-- Custom scheme for testing -->
             <intent-filter>

@@ -747,7 +747,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: ' referral link. This will be used to track referrals from your Team Build Pro team.'),
+                          const TextSpan(text: ' referral link. This will be used to track referrals from your Network Build Pro team.'),
                         ],
                       ),
                     ),
@@ -814,7 +814,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: '. This will ensure your Team Build Pro network members that join '),
+                                    const TextSpan(text: '. This will ensure your Network Build Pro network members that join '),
                                     TextSpan(
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),

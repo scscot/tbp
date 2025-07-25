@@ -339,7 +339,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
-                      text: ' referral link you entered is already in use by another Team Build Pro member.',
+                      text: ' referral link you entered is already in use by another Network Build Pro member.',
                     ),
                   ],
                 ),
@@ -499,7 +499,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'You are updating your Team Build Pro account to track referrals to ',
+                  text: 'You are updating your Network Build Pro account to track referrals to ',
                 ),
                 TextSpan(
                   text: _bizOpp ?? 'this business opportunity',
@@ -509,7 +509,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                   text: '. This is a separate, independent business entity that is ',
                 ),
                 const TextSpan(
-                  text: 'NOT owned, operated, or affiliated with Team Build Pro',
+                  text: 'NOT owned, operated, or affiliated with Network Build Pro',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
@@ -563,10 +563,10 @@ class _AddLinkScreenState extends State<AddLinkScreen>
           ),
           const SizedBox(height: 16),
           _buildBulletPoint(
-            'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
+            'Your referral link will be stored in your Network Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'Should your Team Build Pro network members decide to join $_bizOpp after you, they will automatically be placed in your $_bizOpp organization.',
+            'Should your Network Build Pro network members decide to join $_bizOpp after you, they will automatically be placed in your $_bizOpp organization.',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',
@@ -585,7 +585,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Team Build Pro is a referral tracking platform only. We do not endorse or guarantee any business opportunities.',
+                    'Network Build Pro is a referral tracking platform only. We do not endorse or guarantee any business opportunities.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.warning),

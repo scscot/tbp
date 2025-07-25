@@ -670,7 +670,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Team Member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Network Build Pro App with your current ${bizOppName} downline member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their Network Build Pro network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization!`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1136,7 +1136,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team Build Pro downline yesterday. CLICK HERE to view and welcome your new network members!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Network Build Pro downline yesterday. CLICK HERE to view and welcome your new network members!`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_team_members",
