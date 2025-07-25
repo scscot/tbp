@@ -42,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   int _unreadMessageCount = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  String? _bizOpp; // Add state variable to store biz_opp value
 
   @override
   void initState() {
@@ -58,6 +59,37 @@ class _DashboardScreenState extends State<DashboardScreen>
       curve: Curves.easeInOut,
     ));
     _animationController.forward();
+    _loadBizOppData(); // Load biz_opp data on init
+  }
+
+  Future<void> _loadBizOppData() async {
+    final user = Provider.of<UserModel?>(context, listen: false);
+    if (user == null) return;
+
+    final adminUid = user.uplineAdmin;
+    if (adminUid == null || adminUid.isEmpty) {
+      debugPrint("User does not have an upline admin.");
+      return;
+    }
+
+    try {
+      // Fetch biz_opp from admin_settings (following BusinessScreen pattern)
+      final adminSettingsDoc = await FirebaseFirestore.instance
+          .collection('admin_settings')
+          .doc(adminUid)
+          .get();
+      
+      if (adminSettingsDoc.exists && mounted) {
+        final adminData = adminSettingsDoc.data();
+        final retrievedBizOpp = adminData?['biz_opp'] as String?;
+        
+        setState(() {
+          _bizOpp = retrievedBizOpp;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading biz_opp data: $e');
+    }
   }
 
   @override
@@ -148,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                'Automatically expand your ${user.bizOpp ?? 'collaborative business venture'} network.',
+                'Automatically expand your ${_bizOpp ?? 'collaborative business venture'} network.',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -158,7 +190,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your business venture'}, add your partnership link to your Network Build Pro profile. This ensures anyone from your professional network who joins is placed in your network.',
+                'Once you\'ve registered with ${_bizOpp ?? 'your business venture'}, add your partnership link to your Network Build Pro profile. This ensures anyone from your professional network who joins is placed in your network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -213,7 +245,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   TextButton(
                     onPressed: () => Navigator.pop(dialogContext),
                     child: Text(
-                      'Close - I haven\'t joined ${user.bizOpp ?? 'yet'}',
+                      'Close - I haven\'t joined ${_bizOpp ?? 'yet'}',
                       style: TextStyle(
                         color: AppColors.textInverse,
                         fontSize: 14,
