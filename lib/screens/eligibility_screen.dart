@@ -42,7 +42,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
         if (userDoc.exists) {
           final userData = userDoc.data();
           
-          // Get current user's community stats
+          // Get current user's network stats
           _currentDirectCount = userData?['directSponsorCount']?.toInt() ?? 0;
           _currentTotalCount = userData?['totalTeamCount']?.toInt() ?? 0;
           
@@ -117,7 +117,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Continue building your community to unlock your opportunity with $_bizOpp.',
+            'Continue building your network to unlock your opportunity with $_bizOpp.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -447,13 +447,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 2,
                       title: 'CULTIVATE - Nurture Professional Bonds',
-                      description: 'Foster authentic relationships as your network grows, creating a thriving community of professionals who support each other\'s success.',
+                      description: 'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional community reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
+                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
                       icon: Icons.handshake,
                     ),
                     Container(

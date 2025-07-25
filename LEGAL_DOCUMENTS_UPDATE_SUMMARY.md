@@ -14,7 +14,7 @@ Updated Terms of Service and Privacy Policy screens to align with professional n
   - "relationship building" → "relationship and network building"
   - "community development" → "network development"
   - "relationship management" → "relationship management and network technology"
-  - "community building" → "network and community building"
+  - "community building" → "network and network building"
   - "professional community" → "professional networking community"
   - "fellow professionals" → "fellow network members"
   - "COMMUNITY EXCELLENCE" → "NETWORK EXCELLENCE"
@@ -33,13 +33,13 @@ Updated Terms of Service and Privacy Policy screens to align with professional n
 - Updated data collection descriptions to include "network communications and interactions"
 - Modified service provision language:
   - "your account" → "your professional networking account"
-  - "community building" → "network building and community features"
+  - "community building" → "network building and network features"
   - "notifications about your account" → "notifications about your account and network"
 - Updated information sharing section:
   - "Within Your Team" → "Within Your Network"
   - "Referral relationships" → "Network relationships"
 - Enhanced data portability section:
-  - "community structure data" → "network and community structure data"
+  - "community structure data" → "network and network structure data"
 - Updated Apple compliance section to specify "professional networking app"
 
 ## Impact

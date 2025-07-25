@@ -324,7 +324,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
             ],
           ),
           content: Text(
-            'Links aren\'t allowed in messages to keep our community focused on ${_bizOpp ?? 'our business opportunity'}. Please share your message without any links.',
+            'Links aren\'t allowed in messages to keep our network focused on ${_bizOpp ?? 'our business opportunity'}. Please share your message without any links.',
           ),
           actions: [
             TextButton(

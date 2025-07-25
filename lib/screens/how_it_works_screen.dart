@@ -452,13 +452,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 2,
                       title: 'CULTIVATE - Nurture Professional Bonds',
-                      description: 'Foster authentic relationships as your network grows, creating a thriving community of professionals who support each other\'s success.',
+                      description: 'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional community reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
+                      description: 'When your professional network reaches engagement milestones, unlock collaborative business ventures and development opportunities.',
                       icon: Icons.handshake,
                     ),
                     Container(

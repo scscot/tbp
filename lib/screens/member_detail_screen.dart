@@ -113,7 +113,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
           });
         }
 
-        // Parse community leader data
+        // Parse network leader data
         if (memberDetails['teamLeader'] != null) {
           final leaderData =
               Map<String, dynamic>.from(memberDetails['teamLeader']);

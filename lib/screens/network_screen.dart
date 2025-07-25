@@ -327,9 +327,9 @@ class _NetworkScreenState extends State<NetworkScreen>
     }
     
     // Debug logging
-    debugPrint('🔍 community DEBUG: Total filtered members: ${_filteredMembers.length}');
-    debugPrint('🔍 community DEBUG: Level offset: $_levelOffset');
-    debugPrint('🔍 community DEBUG: Members by level: $_membersByLevel');
+    debugPrint('🔍 network DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint('🔍 network DEBUG: Level offset: $_levelOffset');
+    debugPrint('🔍 network DEBUG: Members by level: $_membersByLevel');
     
     // Ensure levels are sorted
     final sortedEntries = _membersByLevel.entries.toList()

@@ -428,7 +428,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'You\'ve reached the community growth threshold',
+            'You\'ve reached the network growth threshold',
             style: TextStyle(
               fontSize: 18,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),

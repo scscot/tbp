@@ -52,7 +52,7 @@ class FirestoreService {
     }
   }
 
-  // New method to get member details with sponsor and community leader info in one call
+  // New method to get member details with sponsor and network leader info in one call
   Future<Map<String, dynamic>?> getMemberDetails(String userId) async {
     try {
       final callable = _functions.httpsCallable('getMemberDetails');

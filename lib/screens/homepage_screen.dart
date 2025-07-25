@@ -292,7 +292,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 2,
             title: 'CULTIVATE - Nurture Professional Bonds',
             description:
-                'Share your unique networking link with like-minded professionals and colleagues. Foster authentic relationships as your professional community grows organically.',
+                'Share your unique networking link with like-minded professionals and colleagues. Foster authentic relationships as your professional network grows organically.',
             icon: Icons.psychology,
             color: AppColors.growthPrimary,
           ),
@@ -300,7 +300,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 3,
             title: 'COLLABORATE - Unlock Opportunities Together',
             description:
-                'Receive real-time insights as your professional network expands and engage meaningfully with your growing community of business professionals.',
+                'Receive real-time insights as your professional network expands and engage meaningfully with your growing network of business professionals.',
             icon: Icons.handshake,
             color: AppColors.notificationPrimary,
           ),
@@ -308,7 +308,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 4,
             title: 'TRANSFORM - Professional Growth Excellence',
             description:
-                'When your community reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium collaborative business ventures.',
+                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium collaborative business ventures.',
             icon: Icons.rocket_launch,
             color: AppColors.opportunityPrimary,
             isLast: true,

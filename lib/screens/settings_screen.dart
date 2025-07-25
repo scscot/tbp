@@ -622,7 +622,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const TextSpan(
                           text:
-                              " community — with their growing Network Build Pro community ready to follow."),
+                              " network — with their growing Network Build Pro network ready to follow."),
                     ],
                   ),
                 ),

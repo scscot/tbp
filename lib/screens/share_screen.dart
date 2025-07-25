@@ -334,7 +334,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         _buildStrategyCard(
           title: '🚀 Current Network Partners',
           subtitle: 'Great for your existing $_bizOppName collaborators',
-          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro community connects with $_bizOppName, they\'ll automatically join your collaborative network!',
+          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro network connects with $_bizOppName, they\'ll automatically join your collaborative network!',
           buttonText: 'Share with Network Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

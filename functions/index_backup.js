@@ -915,7 +915,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 
     const memberData = { uid: memberDoc.id, ...memberDoc.data() };
 
-    // Parallel fetch sponsor and community leader details
+    // Parallel fetch sponsor and network leader details
     const promises = [];
     let sponsorPromise = null;
     let teamLeaderPromise = null;
@@ -926,7 +926,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       promises.push(sponsorPromise);
     }
 
-    // Fetch community leader details if uplineAdmin exists and is different from sponsor
+    // Fetch network leader details if uplineAdmin exists and is different from sponsor
     if (memberData.upline_admin &&
       memberData.upline_admin.trim() !== '' &&
       memberData.upline_admin !== memberData.sponsor_id) {
@@ -960,7 +960,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    // Process community leader result
+    // Process network leader result
     if (teamLeaderPromise) {
       const teamLeaderResult = results[resultIndex++];
       if (teamLeaderResult.status === 'fulfilled' && teamLeaderResult.value.exists) {
@@ -978,7 +978,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no community leader'}`);
+    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no network leader'}`);
 
     return {
       member: serializeData(memberData),
@@ -1000,7 +1000,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 // ============================================================================
 
 /**
- * Scheduled function that runs every hour to send daily community growth notifications
+ * Scheduled function that runs every hour to send daily network growth notifications
  * at 3 AM local time to users who had new network members join the previous day.
  * 
  * This function uses an efficient approach:
@@ -1013,7 +1013,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   timeZone: "UTC",
   region: "us-central1"
 }, async (event) => {
-  console.log("🔔 DAILY NOTIFICATIONS: Starting daily community growth notification process");
+  console.log("🔔 DAILY NOTIFICATIONS: Starting daily network growth notification process");
   
   try {
     const now = new Date();
@@ -1163,9 +1163,9 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
     
     console.log(`🔔 DAILY NOTIFICATIONS: Notification summary - Successful: ${successful}, Failed: ${failed}`);
-    console.log(`✅ DAILY NOTIFICATIONS: Daily community growth notification process completed`);
+    console.log(`✅ DAILY NOTIFICATIONS: Daily network growth notification process completed`);
     
   } catch (error) {
-    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily community growth notifications:", error);
+    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily network growth notifications:", error);
   }
 });

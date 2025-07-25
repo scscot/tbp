@@ -238,7 +238,7 @@ Personal Information:
 Account Information:
 • User authentication data (managed by Firebase Auth)
 • Account preferences and settings
-• Referral codes and community structure data
+• Referral codes and network structure data
 
 Usage Information:
 • App usage analytics (non-personal)
@@ -259,7 +259,7 @@ Communication Data:
 
 Service Provision:
 • Create and manage your professional networking account
-• Enable network building and community features
+• Enable network building and network features
 • Facilitate communication between network members
 • Send important notifications about your account and network
 
@@ -282,7 +282,7 @@ Legal Compliance:
 
 Within Your Network:
 • Your name and profile photo are visible to your network members
-• Network relationships are shared within your community structure
+• Network relationships are shared within your network structure
 
 Service Providers:
 • Firebase (Google) for authentication and database services
@@ -336,7 +336,7 @@ Privacy Settings:
 • Opt out of non-essential communications
 
 Data Portability:
-• Export your network and community structure data
+• Export your network and network structure data
 • Transfer your information to another service (where applicable)
 
 To exercise these rights, contact us at privacy@networkbuildpro.com  or use the in-app settings.''',
