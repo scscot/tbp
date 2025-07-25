@@ -259,7 +259,7 @@ Communication Data:
 Service Provision:
 • Create and manage your account
 • Enable community building and referral features
-• Facilitate communication between community members
+• Facilitate communication between network members
 • Send important notifications about your account
 
 App Improvement:
@@ -280,7 +280,7 @@ Legal Compliance:
               content: '''We do not sell your personal information. We may share information in these limited circumstances:
 
 Within Your Team:
-• Your name and profile photo are visible to your community members
+• Your name and profile photo are visible to your network members
 • Referral relationships are shared within your community structure
 
 Service Providers:

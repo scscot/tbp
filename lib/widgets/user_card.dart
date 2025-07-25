@@ -1,1 +1,1 @@
-// UI card for displaying community members
+// UI card for displaying network members

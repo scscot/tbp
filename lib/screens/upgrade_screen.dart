@@ -65,7 +65,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                 '• Submit your unique Business referral link'),
             const Text('• Unlock messaging to users on your team'),
             const Text(
-                '• Ensure community members join under YOU in your business'),
+                '• Ensure network members join under YOU in your business'),
             const Spacer(),
             SizedBox(
               width: double.infinity,

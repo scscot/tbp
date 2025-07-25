@@ -681,7 +681,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'Should your Team Build Pro community members decide to join ${_bizOpp ?? 'this business'} after you, they will automatically be placed in your ${_bizOpp ?? 'business'} organization.',
+            'Should your Team Build Pro network members decide to join ${_bizOpp ?? 'this business'} after you, they will automatically be placed in your ${_bizOpp ?? 'business'} organization.',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',
@@ -881,7 +881,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: '. This will ensure your Team Build Pro community members that join '),
+                          const TextSpan(text: '. This will ensure your Team Build Pro network members that join '),
                           TextSpan(
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),

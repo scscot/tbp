@@ -775,7 +775,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Network Partner!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} network partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro community members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Team Build Pro App with your current ${bizOppName} network partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team Build Pro network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1217,7 +1217,7 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
 
 /**
  * Scheduled function that runs every hour to send daily community growth notifications
- * at 12 noon local time to users who had new community members join the previous day.
+ * at 12 noon local time to users who had new network members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1299,7 +1299,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       });
     });
 
-    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new community members to be notified about`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new network members to be notified about`);
 
     if (notificationCounts.size === 0) {
       console.log("🔔 DAILY NOTIFICATIONS: No users to notify");

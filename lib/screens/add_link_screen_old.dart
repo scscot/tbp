@@ -566,7 +566,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'Should your Team Build Pro community members decide to join $_bizOpp after you, they will automatically be placed in your $_bizOpp organization.',
+            'Should your Team Build Pro network members decide to join $_bizOpp after you, they will automatically be placed in your $_bizOpp organization.',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',

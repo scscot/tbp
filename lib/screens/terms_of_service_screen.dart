@@ -206,7 +206,7 @@ TRIAL PERIOD:
 • Maximize the platform's professional networking capabilities for legitimate relationship building
 • Accurately represent Team Build Pro as a premium professional networking platform
 • Maintain the highest standards of professional conduct and legal compliance
-• Foster a positive, collaborative environment for all community members
+• Foster a positive, collaborative environment for all network members
 • Protect fellow professionals' privacy, confidentiality, and professional rights
 • Provide complete and accurate professional information during registration
 • Safeguard platform security through responsible and ethical usage practices
