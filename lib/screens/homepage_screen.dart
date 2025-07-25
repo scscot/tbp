@@ -284,7 +284,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 1,
             title: 'CONNECT - Expand Your Network',
             description:
-                'Join the professional networking revolution with our premium platform - includes a 30-day trial period to experience transformative relationship building.',
+                'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
             icon: Icons.connect_without_contact,
             color: AppColors.primary,
           ),
@@ -292,7 +292,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 2,
             title: 'CULTIVATE - Nurture Professional Bonds',
             description:
-                'Share your unique networking link with like-minded professionals and colleagues. Foster authentic relationships as your professional network grows organically.',
+                'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
             icon: Icons.psychology,
             color: AppColors.growthPrimary,
           ),
@@ -300,7 +300,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 3,
             title: 'COLLABORATE - Unlock Opportunities Together',
             description:
-                'Receive real-time insights as your professional network expands and engage meaningfully with your growing network of business professionals.',
+                'When your professional network reaches engagement milestones, unlock collaborative business ventures.',
             icon: Icons.handshake,
             color: AppColors.notificationPrimary,
           ),
