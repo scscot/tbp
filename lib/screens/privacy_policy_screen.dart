@@ -21,6 +21,15 @@ class PrivacyPolicyScreen extends StatefulWidget {
 
 class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   final ScrollController _scrollController = ScrollController();
+  static const String privacyEmail = 'privacy@networkbuildpro.com';
+  late final String lastUpdated;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    lastUpdated = '${now.month}/${now.day}/${now.year}';
+  }
 
   @override
   void dispose() {
@@ -31,7 +40,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Future<void> _launchEmail() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'privacy@networkbuildpro.com ',
+      path: privacyEmail,
       query: 'subject=Privacy Policy Inquiry',
     );
     
@@ -40,8 +49,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open email client. Please contact privacy@networkbuildpro.com '),
+          SnackBar(
+            content: Text('Could not open email client. Please contact $privacyEmail'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -117,7 +126,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         color: backgroundColor ?? AppColors.infoBackground,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: borderColor ?? AppColors.info.withOpacity(0.3),
+          color: borderColor ?? AppColors.info.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -201,10 +210,10 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Last Updated: ${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}',
+                    'Last Updated: $lastUpdated',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textInverse.withOpacity(0.9),
+                      color: AppColors.textInverse.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -258,8 +267,8 @@ Communication Data:
               content: '''We use your information for the following purposes:
 
 Service Provision:
-• Create and manage your professional networking account
-• Enable network building and network features
+• Create and manage your networking account
+• Enable networking features and functionality
 • Facilitate communication between network members
 • Send important notifications about your account and network
 
@@ -336,10 +345,10 @@ Privacy Settings:
 • Opt out of non-essential communications
 
 Data Portability:
-• Export your network and network structure data
+• Export your network structure data
 • Transfer your information to another service (where applicable)
 
-To exercise these rights, contact us at privacy@networkbuildpro.com  or use the in-app settings.''',
+To exercise these rights, contact us at $privacyEmail or use the in-app settings.''',
             ),
 
             // Apple-Specific Privacy
@@ -362,7 +371,7 @@ If we discover that we have collected information from a child under 18:
 • We will terminate the account
 • We will notify the parents/guardians if possible
 
-Parents who believe their child has provided information to us should contact privacy@networkbuildpro.com  immediately.''',
+Parents who believe their child has provided information to us should contact $privacyEmail immediately.''',
             ),
 
             // International Users
@@ -435,9 +444,9 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ElevatedButton.icon(
                     onPressed: _launchEmail,
                     icon: const Icon(Icons.email, size: 20),
-                    label: const Text(
-                      'privacy@networkbuildpro.com ',
-                      style: TextStyle(
+                    label: Text(
+                      privacyEmail,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -459,7 +468,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                     'Network Build Pro\nPrivacy Officer\nResponse within 48 hours',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textInverse.withOpacity(0.9),
+                      color: AppColors.textInverse.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w400,
                     ),
                     textAlign: TextAlign.center,
