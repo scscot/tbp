@@ -18,6 +18,337 @@ const messaging = getMessaging();
 const remoteConfig = getRemoteConfig();
 
 // ============================================================================
+// PHASE 2: APPLE STORE SUBSCRIPTION FUNCTIONS
+// ============================================================================
+
+/**
+ * Helper function to update user subscription status in Firestore
+ */
+const updateUserSubscription = async (userId, status, expiryDate = null) => {
+  try {
+    console.log(`📱 SUBSCRIPTION: Updating user ${userId} to status: ${status}`);
+
+    const updateData = {
+      subscriptionStatus: status,
+      subscriptionUpdated: FieldValue.serverTimestamp(),
+    };
+
+    if (expiryDate) {
+      // Convert string to number before creating Date object
+      const expiryTimestamp = typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate;
+      updateData.subscriptionExpiry = new Date(expiryTimestamp);
+      console.log(`📱 SUBSCRIPTION: Setting expiry date: ${updateData.subscriptionExpiry.toISOString()}`);
+    }
+
+    await db.collection('users').doc(userId).update(updateData);
+    console.log(`✅ SUBSCRIPTION: Successfully updated user ${userId} subscription status`);
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION: Failed to update user ${userId} subscription:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Apple Server-to-Server Notification Handler
+ * Handles real-time subscription events from Apple
+ */
+exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" }, async (req, res) => {
+  console.log(`📱 APPLE NOTIFICATION: Received Apple server-to-server notification`);
+
+  try {
+    // Verify this is a POST request
+    if (req.method !== 'POST') {
+      console.log(`📱 APPLE NOTIFICATION: Invalid method: ${req.method}`);
+      return res.status(405).send('Method Not Allowed');
+    }
+
+    const notificationData = req.body;
+    console.log(`📱 APPLE NOTIFICATION: Notification data:`, JSON.stringify(notificationData, null, 2));
+
+    // Extract notification type and transaction info
+    const notificationType = notificationData.notification_type;
+    const latestReceiptInfo = notificationData.latest_receipt_info?.[0];
+
+    if (!latestReceiptInfo) {
+      console.log(`📱 APPLE NOTIFICATION: No transaction info found`);
+      return res.status(400).send('No transaction info');
+    }
+
+    // Extract original transaction ID to find user
+    const originalTransactionId = latestReceiptInfo.original_transaction_id;
+
+    if (!originalTransactionId) {
+      console.log(`📱 APPLE NOTIFICATION: No original transaction ID found`);
+      return res.status(400).send('No transaction ID found');
+    }
+
+    console.log(`📱 APPLE NOTIFICATION: Looking for user with transaction ID: ${originalTransactionId}`);
+
+    // Find user by Apple transaction ID
+    const userQuery = await db.collection('users')
+      .where('appleTransactionId', '==', originalTransactionId)
+      .limit(1)
+      .get();
+
+    if (userQuery.empty) {
+      console.log(`📱 APPLE NOTIFICATION: No user found for transaction ${originalTransactionId}`);
+      return res.status(404).send('User not found');
+    }
+
+    const userDoc = userQuery.docs[0];
+    const userId = userDoc.id;
+
+    console.log(`📱 APPLE NOTIFICATION: Found user ${userId}, processing ${notificationType}`);
+
+    // Handle different notification types
+    switch (notificationType) {
+      case 'INITIAL_BUY':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} started subscription`);
+        await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        break;
+
+      case 'CANCEL':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} cancelled subscription`);
+        await updateUserSubscription(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
+        break;
+
+      case 'DID_FAIL_TO_RENEW':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} subscription failed to renew`);
+        await updateUserSubscription(userId, 'expired');
+        break;
+
+      case 'DID_RENEW':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} subscription renewed`);
+        await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        break;
+
+      case 'INTERACTIVE_RENEWAL':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} interactively renewed subscription`);
+        await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        break;
+
+      case 'DID_CHANGE_RENEWAL_PREF':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} changed renewal preference`);
+        // Handle renewal preference change if needed
+        break;
+
+      case 'DID_CHANGE_RENEWAL_STATUS':
+        console.log(`📱 APPLE NOTIFICATION: User ${userId} changed renewal status`);
+        // Check if auto-renew is enabled/disabled
+        const autoRenewStatus = latestReceiptInfo.auto_renew_status;
+        if (autoRenewStatus === '0') {
+          // Auto-renew disabled - mark as cancelled but still active until expiry
+          await updateUserSubscription(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
+        }
+        break;
+
+      default:
+        console.log(`📱 APPLE NOTIFICATION: Unhandled notification type: ${notificationType}`);
+        break;
+    }
+
+    console.log(`✅ APPLE NOTIFICATION: Successfully processed ${notificationType} for user ${userId}`);
+    return res.status(200).send('OK');
+
+  } catch (error) {
+    console.error(`❌ APPLE NOTIFICATION: Error processing notification:`, error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Apple Receipt Validation Function
+ * Validates receipts with Apple and updates user subscription status
+ */
+exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+  
+  const userId = request.auth.uid;
+  const { receiptData } = request.data;
+  
+  if (!receiptData) {
+    throw new HttpsError("invalid-argument", "Receipt data is required");
+  }
+  
+  console.log(`📱 RECEIPT VALIDATION: Validating receipt for user ${userId}`);
+  
+  try {
+    // Apple's receipt validation endpoint
+    const appleValidationUrl = 'https://buy.itunes.apple.com/verifyReceipt';
+    const sandboxValidationUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
+    
+    // Prepare validation request
+    const validationRequest = {
+      'receipt-data': receiptData,
+      'password': process.env.APPLE_SHARED_SECRET, // Set this in your Firebase Functions config
+      'exclude-old-transactions': true
+    };
+    
+    console.log(`📱 RECEIPT VALIDATION: Sending validation request to Apple`);
+    
+    // Try production first, then sandbox if needed
+    let response = await fetch(appleValidationUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(validationRequest),
+    });
+    
+    let validationResult = await response.json();
+    
+    // If production returns sandbox receipt error, try sandbox
+    if (validationResult.status === 21007) {
+      console.log(`📱 RECEIPT VALIDATION: Trying sandbox validation`);
+      response = await fetch(sandboxValidationUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(validationRequest),
+      });
+      validationResult = await response.json();
+    }
+    
+    console.log(`📱 RECEIPT VALIDATION: Apple validation result:`, JSON.stringify(validationResult, null, 2));
+    
+    // Check validation status
+    if (validationResult.status !== 0) {
+      console.log(`📱 RECEIPT VALIDATION: Invalid receipt, status: ${validationResult.status}`);
+      return {
+        isValid: false,
+        status: validationResult.status,
+        message: 'Receipt validation failed'
+      };
+    }
+    
+    // Extract subscription info from latest receipt
+    const latestReceiptInfo = validationResult.latest_receipt_info;
+    const pendingRenewalInfo = validationResult.pending_renewal_info;
+    
+    if (!latestReceiptInfo || latestReceiptInfo.length === 0) {
+      console.log(`📱 RECEIPT VALIDATION: No subscription info found`);
+      return {
+        isValid: false,
+        message: 'No subscription information found'
+      };
+    }
+    
+    // Get the most recent transaction
+    const latestTransaction = latestReceiptInfo[latestReceiptInfo.length - 1];
+    const expiresDate = new Date(parseInt(latestTransaction.expires_date_ms));
+    const now = new Date();
+    
+    console.log(`📱 RECEIPT VALIDATION: Latest transaction expires: ${expiresDate.toISOString()}`);
+    
+    // Determine subscription status
+    let subscriptionStatus = 'expired';
+    if (expiresDate > now) {
+      // Check if auto-renew is enabled
+      const renewalInfo = pendingRenewalInfo?.[0];
+      if (renewalInfo?.auto_renew_status === '0') {
+        subscriptionStatus = 'cancelled'; // Cancelled but still active
+      } else {
+        subscriptionStatus = 'active';
+      }
+    }
+    
+    console.log(`📱 RECEIPT VALIDATION: Determined status: ${subscriptionStatus}`);
+    
+    // Update user subscription status
+    await updateUserSubscription(userId, subscriptionStatus, expiresDate);
+    
+    return {
+      isValid: true,
+      subscriptionStatus: subscriptionStatus,
+      expiresDate: expiresDate.toISOString(),
+      productId: latestTransaction.product_id,
+      transactionId: latestTransaction.transaction_id
+    };
+    
+  } catch (error) {
+    console.error(`❌ RECEIPT VALIDATION: Error validating receipt for user ${userId}:`, error);
+    throw new HttpsError("internal", "Receipt validation failed", error.message);
+  }
+});
+
+/**
+ * Enhanced subscription status check that includes Apple subscription data
+ */
+exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+  
+  const userId = request.auth.uid;
+  
+  try {
+    console.log(`📱 SUBSCRIPTION CHECK: Checking subscription status for user ${userId}`);
+    
+    const userDoc = await db.collection("users").doc(userId).get();
+    
+    if (!userDoc.exists) {
+      throw new HttpsError("not-found", "User not found");
+    }
+    
+    const userData = userDoc.data();
+    const subscriptionStatus = userData.subscriptionStatus || 'trial';
+    const subscriptionExpiry = userData.subscriptionExpiry;
+    const trialStartDate = userData.trialStartDate || userData.createdAt;
+    
+    // Calculate trial validity
+    let isTrialValid = false;
+    let trialDaysRemaining = 0;
+    
+    if (trialStartDate) {
+      const trialStart = trialStartDate.toDate ? trialStartDate.toDate() : new Date(trialStartDate);
+      const daysSinceTrialStart = Math.floor((Date.now() - trialStart.getTime()) / (1000 * 60 * 60 * 24));
+      trialDaysRemaining = Math.max(0, 30 - daysSinceTrialStart);
+      isTrialValid = trialDaysRemaining > 0;
+    }
+    
+    // Check if subscription is active
+    const isSubscriptionActive = subscriptionStatus === 'active' || 
+                                (subscriptionStatus === 'trial' && isTrialValid);
+    
+    // Check if subscription has expired
+    let isExpired = false;
+    if (subscriptionExpiry) {
+      const expiry = subscriptionExpiry.toDate ? subscriptionExpiry.toDate() : new Date(subscriptionExpiry);
+      isExpired = Date.now() > expiry.getTime();
+    }
+    
+    // Check if in grace period (cancelled but still active)
+    const isInGracePeriod = subscriptionStatus === 'cancelled' && 
+                           subscriptionExpiry && 
+                           !isExpired;
+    
+    console.log(`✅ SUBSCRIPTION CHECK: User ${userId} status: ${subscriptionStatus}, active: ${isSubscriptionActive}`);
+    
+    return {
+      subscriptionStatus,
+      isActive: isSubscriptionActive,
+      isTrialValid,
+      trialDaysRemaining,
+      isExpired,
+      isInGracePeriod,
+      subscriptionExpiry: subscriptionExpiry ? (subscriptionExpiry.toDate ? subscriptionExpiry.toDate().toISOString() : subscriptionExpiry) : null,
+      subscriptionUpdated: userData.subscriptionUpdated ? (userData.subscriptionUpdated.toDate ? userData.subscriptionUpdated.toDate().toISOString() : userData.subscriptionUpdated) : null
+    };
+    
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION CHECK: Error checking subscription for user ${userId}:`, error);
+    if (error instanceof HttpsError) {
+      throw error;
+    }
+    throw new HttpsError("internal", "Failed to check subscription status", error.message);
+  }
+});
+
+// ============================================================================
 // CENTRALIZED BADGE UPDATE FUNCTION
 // ============================================================================
 
@@ -300,6 +631,9 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       directSponsorCount: 0,
       totalTeamCount: 0,
       isProfileComplete: false,
+      // --- PHASE 2: Initialize subscription fields for new users ---
+      subscriptionStatus: 'trial',
+      trialStartDate: FieldValue.serverTimestamp(),
     };
 
     console.log("🔍 REGISTER FUNCTION: User document prepared:", JSON.stringify(newUser, null, 2));
@@ -1454,3 +1788,4 @@ exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) 
     };
   }
 });
+
