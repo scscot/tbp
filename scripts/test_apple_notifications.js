@@ -9,7 +9,7 @@ const testNotifications = {
         notification_type: 'INITIAL_BUY',
         latest_receipt_info: [{
             original_transaction_id: 'test_transaction_12345',
-            product_id: 'com.networkbuildpro.monthly_subscription',
+            product_id: 'monthly_subscription',
             purchase_date_ms: Date.now().toString(),
             expires_date_ms: (Date.now() + (30 * 24 * 60 * 60 * 1000)).toString(), // 30 days from now
             is_trial_period: 'false',
@@ -18,7 +18,7 @@ const testNotifications = {
         unified_receipt: {
             latest_receipt_info: [{
                 original_transaction_id: 'test_transaction_12345',
-                product_id: 'com.networkbuildpro.monthly_subscription'
+                product_id: 'monthly_subscription'
             }]
         }
     },
@@ -27,7 +27,7 @@ const testNotifications = {
         notification_type: 'DID_RENEW',
         latest_receipt_info: [{
             original_transaction_id: 'test_transaction_12345',
-            product_id: 'com.networkbuildpro.monthly_subscription',
+            product_id: 'monthly_subscription',
             purchase_date_ms: Date.now().toString(),
             expires_date_ms: (Date.now() + (30 * 24 * 60 * 60 * 1000)).toString(),
             is_trial_period: 'false'
@@ -38,7 +38,7 @@ const testNotifications = {
         notification_type: 'CANCEL',
         latest_receipt_info: [{
             original_transaction_id: 'test_transaction_12345',
-            product_id: 'com.networkbuildpro.monthly_subscription',
+            product_id: 'monthly_subscription',
             cancellation_date_ms: Date.now().toString(),
             expires_date_ms: (Date.now() + (7 * 24 * 60 * 60 * 1000)).toString() // Still valid for 7 days
         }]
@@ -48,7 +48,7 @@ const testNotifications = {
         notification_type: 'DID_FAIL_TO_RENEW',
         latest_receipt_info: [{
             original_transaction_id: 'test_transaction_12345',
-            product_id: 'com.networkbuildpro.monthly_subscription',
+            product_id: 'monthly_subscription',
             expires_date_ms: (Date.now() - (24 * 60 * 60 * 1000)).toString(), // Expired yesterday
             is_in_billing_retry_period: 'true'
         }]

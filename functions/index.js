@@ -18,7 +18,7 @@ const messaging = getMessaging();
 const remoteConfig = getRemoteConfig();
 
 // ============================================================================
-// PHASE 2: APPLE STORE SUBSCRIPTION FUNCTIONS
+// APPLE STORE SUBSCRIPTION FUNCTIONS
 // ============================================================================
 
 /**
@@ -46,6 +46,66 @@ const updateUserSubscription = async (userId, status, expiryDate = null) => {
   } catch (error) {
     console.error(`❌ SUBSCRIPTION: Failed to update user ${userId} subscription:`, error);
     throw error;
+  }
+};
+
+// Subscription notifications to users
+const createSubscriptionNotification = async (userId, status, expiryDate = null) => {
+  try {
+    let notificationContent = null;
+
+    switch (status) {
+      case 'active':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
+          notificationContent = {
+            title: "✅ Subscription Active",
+            message: `Your Network Build Pro subscription is now active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_active"
+          };
+        }
+        break;
+
+      case 'cancelled':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
+          notificationContent = {
+            title: "⚠️ Subscription Cancelled",
+            message: `Your subscription has been cancelled but remains active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_cancelled"
+          };
+        }
+        break;
+
+      case 'expired':
+        notificationContent = {
+          title: "❌ Subscription Expired",
+          message: "Your Network Build Pro subscription has expired. Renew to continue accessing premium features.",
+          type: "subscription_expired",
+          route: "/subscription",
+          route_params: JSON.stringify({})
+        };
+        break;
+
+      default:
+        // Don't send notifications for trial or other statuses
+        return;
+    }
+
+    if (notificationContent) {
+      const notification = {
+        ...notificationContent,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false
+      };
+
+      await db.collection('users').doc(userId).collection('notifications').add(notification);
+      console.log(`✅ SUBSCRIPTION: Notification sent to user ${userId} for status: ${status}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION: Failed to send notification to user ${userId}:`, error);
+    // Don't throw error - notification failure shouldn't break subscription update
   }
 };
 

@@ -257,8 +257,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                             ? const CircularProgressIndicator(color: Colors.white)
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] == 'trial'
-                                    ? 'Upgrade Now - \$4.99/month'
-                                    : 'Subscribe - \$4.99/month',
+                                    ? 'Upgrade Now - \$4.95/month'
+                                    : 'Subscribe - \$4.95/month',
                                 style: const TextStyle(fontSize: 16),
                               ),
                       ),

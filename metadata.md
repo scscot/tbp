@@ -266,7 +266,7 @@ Approximately 45-60 MB (optimized for App Store guidelines)
 
 ### Transparent Subscription Model
 - **Free Trial:** 30 days, full feature access, no payment method required
-- **Monthly Subscription:** $4.99/month (subject to change with notice)
+- **Monthly Subscription:** $4.95/month (subject to change with notice)
 - **Annual Subscription:** $49.99/year (17% savings, planned future feature)
 
 ### Apple In-App Purchases
