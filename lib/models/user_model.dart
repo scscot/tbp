@@ -28,6 +28,12 @@ class UserModel {
   final String? uplineAdmin;
   // --- MODIFICATION: Added field for business opportunity join date ---
   final DateTime? bizJoinDate;
+  
+  // --- PHASE 1: Apple Store Subscription Fields ---
+  final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired'
+  final DateTime? subscriptionExpiry;
+  final DateTime? trialStartDate;
+  final DateTime? subscriptionUpdated;
 
   UserModel({
     required this.uid,
@@ -56,6 +62,11 @@ class UserModel {
     this.bizVisitDate,
     // --- MODIFICATION: Added to constructor ---
     this.bizJoinDate,
+    // --- PHASE 1: Apple Store Subscription Fields ---
+    this.subscriptionStatus = 'trial',
+    this.subscriptionExpiry,
+    this.trialStartDate,
+    this.subscriptionUpdated,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -133,6 +144,11 @@ class UserModel {
       bizVisitDate: parseDate(map['biz_visit_date']),
       // --- MODIFICATION: Parse biz_join_date from the map ---
       bizJoinDate: parseDate(map['biz_join_date']),
+      // --- PHASE 1: Parse subscription fields from the map ---
+      subscriptionStatus: map['subscriptionStatus'] ?? 'trial',
+      subscriptionExpiry: parseDate(map['subscriptionExpiry']),
+      trialStartDate: parseDate(map['trialStartDate']),
+      subscriptionUpdated: parseDate(map['subscriptionUpdated']),
     );
   }
 
@@ -167,6 +183,46 @@ class UserModel {
           bizVisitDate != null ? Timestamp.fromDate(bizVisitDate!) : null,
       'biz_join_date':
           bizJoinDate != null ? Timestamp.fromDate(bizJoinDate!) : null,
+      // --- PHASE 1: Convert subscription fields to Firestore format ---
+      'subscriptionStatus': subscriptionStatus,
+      'subscriptionExpiry': subscriptionExpiry != null ? Timestamp.fromDate(subscriptionExpiry!) : null,
+      'trialStartDate': trialStartDate != null ? Timestamp.fromDate(trialStartDate!) : null,
+      'subscriptionUpdated': subscriptionUpdated != null ? Timestamp.fromDate(subscriptionUpdated!) : null,
     };
+  }
+
+  // --- PHASE 1: Subscription Helper Methods ---
+  
+  /// Returns true if the user has an active subscription or valid trial
+  bool get isSubscriptionActive => 
+    subscriptionStatus == 'active' || 
+    (subscriptionStatus == 'trial' && isTrialValid);
+    
+  /// Returns true if the trial period is still valid (30 days from start)
+  bool get isTrialValid {
+    if (trialStartDate == null) return false;
+    final daysSinceTrialStart = DateTime.now().difference(trialStartDate!).inDays;
+    return daysSinceTrialStart <= 30;
+  }
+  
+  /// Returns the number of days remaining in trial period
+  int get trialDaysRemaining {
+    if (trialStartDate == null) return 0;
+    final daysSinceTrialStart = DateTime.now().difference(trialStartDate!).inDays;
+    return (30 - daysSinceTrialStart).clamp(0, 30);
+  }
+  
+  /// Returns true if subscription has expired
+  bool get isSubscriptionExpired {
+    if (subscriptionStatus == 'expired') return true;
+    if (subscriptionExpiry == null) return false;
+    return DateTime.now().isAfter(subscriptionExpiry!);
+  }
+  
+  /// Returns true if user is in grace period (cancelled but still active)
+  bool get isInGracePeriod {
+    return subscriptionStatus == 'cancelled' && 
+           subscriptionExpiry != null && 
+           DateTime.now().isBefore(subscriptionExpiry!);
   }
 }
