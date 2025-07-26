@@ -512,8 +512,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           const SizedBox(height: 8),
           Text(
             _isQualified
-                ? 'Congratulations! You\'ve unlocked $_bizOpp opportunities. Keep growing your community!'
-                : 'Share your referral link and start building your community!',
+                ? 'Congratulations! You\'ve unlocked the $_bizOpp opportunity. Keep growing your community!'
+                : 'Share your referral link and start building your network!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
