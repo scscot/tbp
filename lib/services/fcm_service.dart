@@ -12,6 +12,7 @@ import '../screens/member_detail_screen.dart';
 import '../screens/message_thread_screen.dart';
 import '../screens/add_link_screen.dart';
 import '../screens/network_screen.dart';
+import '../screens/subscription_screen.dart';
 
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -359,6 +360,15 @@ void navigateToRoute(PendingNotification notification) {
           debugPrint("❌ NAVIGATION: userId is null for member_detail route");
         }
       }
+    }
+    // ADD THIS NEW HANDLER
+    else if (notification.route == '/subscription') {
+      if (kDebugMode) {
+        debugPrint("🚀 NAVIGATION: Navigating to SubscriptionScreen");
+      }
+      navigatorKey.currentState!.push(MaterialPageRoute(
+        builder: (_) => const SubscriptionScreen(),
+      ));
     } else if (notification.route == '/message_thread') {
       final threadId = notification.arguments['threadId'] as String?;
       if (threadId != null) {
@@ -389,6 +399,12 @@ void navigateToRoute(PendingNotification notification) {
           initialFilter: filter,
         ),
       ));
+    }
+    // ADD FALLBACK HANDLER
+    else {
+      if (kDebugMode) {
+        debugPrint("❌ NAVIGATION: Unknown route: ${notification.route}");
+      }
     }
   } else {
     if (kDebugMode) {

@@ -82,8 +82,8 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
           title: "❌ Subscription Expired",
           message: "Your Network Build Pro subscription has expired. Renew to continue accessing premium features.",
           type: "subscription_expired",
-          route: "/subscription",
-          route_params: JSON.stringify({})
+          route: "/subscription", // Changed to match FCM handler
+          route_params: JSON.stringify({ "action": "renew" })
         };
         break;
 
@@ -166,26 +166,31 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
       case 'INITIAL_BUY':
         console.log(`📱 APPLE NOTIFICATION: User ${userId} started subscription`);
         await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        await createSubscriptionNotification(userId, 'active', latestReceiptInfo.expires_date_ms);
         break;
 
       case 'CANCEL':
         console.log(`📱 APPLE NOTIFICATION: User ${userId} cancelled subscription`);
         await updateUserSubscription(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
+        await createSubscriptionNotification(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
         break;
 
       case 'DID_FAIL_TO_RENEW':
         console.log(`📱 APPLE NOTIFICATION: User ${userId} subscription failed to renew`);
         await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
         break;
 
       case 'DID_RENEW':
         console.log(`📱 APPLE NOTIFICATION: User ${userId} subscription renewed`);
         await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        await createSubscriptionNotification(userId, 'active', latestReceiptInfo.expires_date_ms);
         break;
 
       case 'INTERACTIVE_RENEWAL':
         console.log(`📱 APPLE NOTIFICATION: User ${userId} interactively renewed subscription`);
         await updateUserSubscription(userId, 'active', latestReceiptInfo.expires_date_ms);
+        await createSubscriptionNotification(userId, 'active', latestReceiptInfo.expires_date_ms);
         break;
 
       case 'DID_CHANGE_RENEWAL_PREF':
@@ -200,6 +205,7 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
         if (autoRenewStatus === '0') {
           // Auto-renew disabled - mark as cancelled but still active until expiry
           await updateUserSubscription(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
+          await createSubscriptionNotification(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
         }
         break;
 

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../services/iap_service.dart';
 import '../config/app_colors.dart';
 
-class UpgradeScreen extends StatefulWidget {
-  const UpgradeScreen({super.key});
+class SubscriptionScreen extends StatefulWidget {
+  const SubscriptionScreen({super.key});
 
   @override
-  State<UpgradeScreen> createState() => _UpgradeScreenState();
+  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
-class _UpgradeScreenState extends State<UpgradeScreen> {
+class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool isPurchasing = false;
   bool isLoading = true;
   Map<String, dynamic>? subscriptionStatus;
