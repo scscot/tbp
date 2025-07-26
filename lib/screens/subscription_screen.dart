@@ -251,15 +251,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         onPressed: isPurchasing ? null : _handleUpgrade,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white, // Add this line
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: isPurchasing
-                            ? const CircularProgressIndicator(color: Colors.white)
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
                             : Text(
-                                subscriptionStatus?['subscriptionStatus'] == 'trial'
+                                subscriptionStatus?['subscriptionStatus'] ==
+                                        'trial'
                                     ? 'Upgrade Now - \$4.95/month'
                                     : 'Subscribe - \$4.95/month',
-                                style: const TextStyle(fontSize: 16),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color:
+                                      Colors.white, // Add this line as backup
+                                ),
                               ),
                       ),
                     ),
