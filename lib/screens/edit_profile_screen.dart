@@ -423,6 +423,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
               : null,
           // 🆕 Set profile completion flag for first-time setup
           if (widget.isFirstTimeSetup) 'isProfileComplete': true,
+
+          // SUBSCRIPTION TRIAL FIELDS:
+          if (widget.isFirstTimeSetup) 'subscriptionStatus': 'trial',
+          if (widget.isFirstTimeSetup)
+            'trialStartDate': FieldValue.serverTimestamp(),
         };
 
         // Add timezone recalculation when location data is updated

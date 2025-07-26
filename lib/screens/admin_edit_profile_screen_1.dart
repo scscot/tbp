@@ -147,6 +147,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
           .doc(user.uid)
           .update({
         'isProfileComplete': true,
+        //SUBSCRIPTION TRIAL FIELDS:
+        'subscriptionStatus': 'trial',
+        'trialStartDate': FieldValue.serverTimestamp(),
       });
 
       if (mounted) {

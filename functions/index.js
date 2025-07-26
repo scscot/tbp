@@ -224,6 +224,117 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
 });
 
 /**
+ * Daily check for expired trial periods
+ * Runs every day at 9 AM UTC
+ */
+exports.checkExpiredTrials = onSchedule("0 9 * * *", async (event) => {
+  console.log('📅 TRIAL CHECK: Starting daily trial expiration check');
+
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Find users whose trial started 30+ days ago and are still on trial
+    const expiredTrialsQuery = await db.collection('users')
+      .where('subscriptionStatus', '==', 'trial')
+      .where('trialStartDate', '<=', thirtyDaysAgo)
+      .get();
+
+    if (expiredTrialsQuery.empty) {
+      console.log('📅 TRIAL CHECK: No expired trials found');
+      return;
+    }
+
+    console.log(`📅 TRIAL CHECK: Found ${expiredTrialsQuery.size} expired trials`);
+
+    // Process each expired trial
+    const promises = expiredTrialsQuery.docs.map(async (doc) => {
+      const userId = doc.id;
+      const userData = doc.data();
+
+      console.log(`📅 TRIAL CHECK: Expiring trial for user ${userId}`);
+
+      try {
+        // Update subscription status to expired
+        await updateUserSubscription(userId, 'expired');
+
+        // Send expiration notification
+        await createSubscriptionNotification(userId, 'expired');
+
+        console.log(`✅ TRIAL CHECK: Successfully expired trial for user ${userId}`);
+
+      } catch (error) {
+        console.error(`❌ TRIAL CHECK: Failed to expire trial for user ${userId}:`, error);
+      }
+    });
+
+    await Promise.all(promises);
+    console.log(`✅ TRIAL CHECK: Completed processing ${expiredTrialsQuery.size} expired trials`);
+
+  } catch (error) {
+    console.error('❌ TRIAL CHECK: Error checking expired trials:', error);
+  }
+});
+
+/**
+ * Warning notification for trials expiring soon (optional)
+ * Runs daily at 9 AM UTC
+ */
+exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
+  console.log('⚠️ TRIAL WARNING: Checking for trials expiring soon');
+
+  try {
+    const twentySevenDaysAgo = new Date();
+    twentySevenDaysAgo.setDate(twentySevenDaysAgo.getDate() - 27); // 3 days left
+
+    const twentySixDaysAgo = new Date();
+    twentySixDaysAgo.setDate(twentySixDaysAgo.getDate() - 26); // Between 3-4 days left
+
+    // Find users whose trial will expire in 3 days
+    const expiringSoonQuery = await db.collection('users')
+      .where('subscriptionStatus', '==', 'trial')
+      .where('trialStartDate', '<=', twentySevenDaysAgo)
+      .where('trialStartDate', '>', twentySixDaysAgo)
+      .get();
+
+    if (expiringSoonQuery.empty) {
+      console.log('⚠️ TRIAL WARNING: No trials expiring soon');
+      return;
+    }
+
+    console.log(`⚠️ TRIAL WARNING: Found ${expiringSoonQuery.size} trials expiring soon`);
+
+    // Send warning notifications
+    const promises = expiringSoonQuery.docs.map(async (doc) => {
+      const userId = doc.id;
+
+      try {
+        const warningNotification = {
+          title: "⏰ Trial Expiring Soon",
+          message: "Your Network Build Pro trial expires in 3 days. Subscribe now to continue accessing premium features.",
+          type: "trial_warning",
+          route: "/subscription",
+          route_params: JSON.stringify({ "action": "upgrade" }),
+          createdAt: FieldValue.serverTimestamp(),
+          read: false
+        };
+
+        await db.collection('users').doc(userId).collection('notifications').add(warningNotification);
+        console.log(`✅ TRIAL WARNING: Sent warning to user ${userId}`);
+
+      } catch (error) {
+        console.error(`❌ TRIAL WARNING: Failed to send warning to user ${userId}:`, error);
+      }
+    });
+
+    await Promise.all(promises);
+
+  } catch (error) {
+    console.error('❌ TRIAL WARNING: Error checking trials expiring soon:', error);
+  }
+});
+
+/**
  * Apple Receipt Validation Function
  * Validates receipts with Apple and updates user subscription status
  */

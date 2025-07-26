@@ -12,7 +12,7 @@ class IAPService {
   final InAppPurchase _iap = InAppPurchase.instance;
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
-  final String _subscriptionId = 'teambuild_pro_monthly';
+  final String _subscriptionId = 'monthly_subscription';
 
   bool available = false;
   List<ProductDetails> products = [];
