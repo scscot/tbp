@@ -676,7 +676,7 @@ if (user.role == 'admin') ...[
 ],
         _buildActionCard(
           icon: Icons.trending_up,
-          title: 'Expand My Network',
+          title: 'Grow My Network',
           color: AppColors.growthPrimary,
           onTap: () => Navigator.push(
             context,
