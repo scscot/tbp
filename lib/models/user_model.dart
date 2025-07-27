@@ -28,6 +28,8 @@ class UserModel {
   final String? uplineAdmin;
   // --- MODIFICATION: Added field for business opportunity join date ---
   final DateTime? bizJoinDate;
+  // --- MODIFICATION: Added field to track if user is a current business partner ---
+  final bool currentPartner;
   
   // --- PHASE 1: Apple Store Subscription Fields ---
   final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired'
@@ -62,6 +64,8 @@ class UserModel {
     this.bizVisitDate,
     // --- MODIFICATION: Added to constructor ---
     this.bizJoinDate,
+    // --- MODIFICATION: Added to constructor ---
+    this.currentPartner = false,
     // --- PHASE 1: Apple Store Subscription Fields ---
     this.subscriptionStatus = 'trial',
     this.subscriptionExpiry,
@@ -144,6 +148,8 @@ class UserModel {
       bizVisitDate: parseDate(map['biz_visit_date']),
       // --- MODIFICATION: Parse biz_join_date from the map ---
       bizJoinDate: parseDate(map['biz_join_date']),
+      // --- MODIFICATION: Parse currentPartner from the map ---
+      currentPartner: map['currentPartner'] ?? false,
       // --- PHASE 1: Parse subscription fields from the map ---
       subscriptionStatus: map['subscriptionStatus'] ?? 'trial',
       subscriptionExpiry: parseDate(map['subscriptionExpiry']),
@@ -183,6 +189,8 @@ class UserModel {
           bizVisitDate != null ? Timestamp.fromDate(bizVisitDate!) : null,
       'biz_join_date':
           bizJoinDate != null ? Timestamp.fromDate(bizJoinDate!) : null,
+      // --- MODIFICATION: Add currentPartner to Firestore format ---
+      'currentPartner': currentPartner,
       // --- PHASE 1: Convert subscription fields to Firestore format ---
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry != null ? Timestamp.fromDate(subscriptionExpiry!) : null,

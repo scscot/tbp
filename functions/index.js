@@ -808,6 +808,8 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
       directSponsorCount: 0,
       totalTeamCount: 0,
       isProfileComplete: false,
+      // --- MODIFICATION: Initialize currentPartner field for new users ---
+      currentPartner: false,
       // --- PHASE 2: Initialize subscription fields for new users ---
       subscriptionStatus: 'trial',
       trialStartDate: FieldValue.serverTimestamp(),
@@ -1965,4 +1967,5 @@ exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) 
     };
   }
 });
+
 
