@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart'; // Import the new model
 import 'fcm_service.dart';
@@ -117,5 +118,98 @@ class AuthService {
 
   Future<void> sendPasswordResetEmail(String email) async {
     return await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  /// Check if user needs to be routed to subscription screen
+  /// Returns true if user should be shown subscription screen
+  Future<bool> shouldShowSubscriptionScreen(UserModel user) async {
+    try {
+      debugPrint('🔐 AUTH_SERVICE: Checking subscription status for user ${user.uid}');
+      
+      // First check local user model for quick assessment
+      final localCheck = _checkLocalSubscriptionStatus(user);
+      debugPrint('🔐 AUTH_SERVICE: Local subscription check - needs subscription: $localCheck');
+      
+      // If local check suggests subscription is needed, verify with cloud function
+      if (localCheck) {
+        return await _verifySubscriptionStatusViaFunction();
+      }
+      
+      return false;
+      
+    } catch (e) {
+      debugPrint('❌ AUTH_SERVICE: Error checking subscription status: $e');
+      // Fail-safe: if we can't check, don't block access but log the issue
+      return false;
+    }
+  }
+
+  /// Local subscription status check using UserModel data
+  bool _checkLocalSubscriptionStatus(UserModel user) {
+    // Check subscription status from user model
+    final subscriptionStatus = user.subscriptionStatus;
+    
+    // If status is active, no need for subscription screen
+    if (subscriptionStatus == 'active') {
+      return false;
+    }
+    
+    // If status is trial, check if trial is still valid
+    if (subscriptionStatus == 'trial') {
+      return !user.isTrialValid;
+    }
+    
+    // For cancelled, expired, or any other status, show subscription screen
+    return true;
+  }
+
+  /// Verify subscription status via cloud function for authoritative check
+  Future<bool> _verifySubscriptionStatusViaFunction() async {
+    try {
+      debugPrint('🔐 AUTH_SERVICE: Verifying subscription via cloud function');
+      
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('checkUserSubscriptionStatus');
+      
+      final result = await callable.call();
+      final data = result.data;
+      
+      final isActive = data['isActive'] as bool? ?? false;
+      final isTrialValid = data['isTrialValid'] as bool? ?? false;
+      
+      debugPrint('🔐 AUTH_SERVICE: Cloud Function check - Active: $isActive, Trial Valid: $isTrialValid');
+      
+      // Show subscription screen if neither active subscription nor valid trial
+      final needsSubscription = !isActive && !isTrialValid;
+      debugPrint('🔐 AUTH_SERVICE: User needs subscription screen: $needsSubscription');
+      
+      return needsSubscription;
+      
+    } catch (e) {
+      debugPrint('❌ AUTH_SERVICE: Error checking subscription via Cloud Function: $e');
+      // On error, be conservative - show subscription screen to be safe
+      return true;
+    }
+  }
+
+  /// Check subscription status when app resumes (called from app lifecycle)
+  Future<bool> checkSubscriptionOnAppResume() async {
+    try {
+      final firebaseUser = _firebaseAuth.currentUser;
+      if (firebaseUser == null) return false;
+      
+      debugPrint('🔐 AUTH_SERVICE: Checking subscription on app resume for user ${firebaseUser.uid}');
+      
+      // Get current user data
+      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+      if (!userDoc.exists) return false;
+      
+      final user = UserModel.fromFirestore(userDoc);
+      return await shouldShowSubscriptionScreen(user);
+      
+    } catch (e) {
+      debugPrint('❌ AUTH_SERVICE: Error checking subscription on app resume: $e');
+      return false;
+    }
   }
 }
