@@ -457,8 +457,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
             'biz_visit_date': now,
             'qualifiedDate': now,
             'biz_opp': _bizOppName,
-            // --- MODIFICATION: Set currentPartner to true when user provides biz_opp_ref_url ---
-            'currentPartner': true,
           });
         }
 

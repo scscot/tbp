@@ -17,7 +17,7 @@ if (!isDryRun && !isUpdate) {
     process.exit(1);
 }
 
-console.log(`\n🚀 Starting ${isDryRun ? 'DRY-RUN' : 'UPDATE'} mode to convert currentPartner from boolean to string...\n`);
+console.log(`\n🚀 Starting ${isDryRun ? 'DRY-RUN' : 'UPDATE'} mode to convert currentPartner from string to boolean...\n`);
 
 (async () => {
     try {
@@ -25,7 +25,7 @@ console.log(`\n🚀 Starting ${isDryRun ? 'DRY-RUN' : 'UPDATE'} mode to convert 
         const snapshot = await usersRef.get();
         let convertedTrueCount = 0;
         let convertedFalseCount = 0;
-        let alreadyStringCount = 0;
+        let alreadyBooleanCount = 0;
         let noFieldCount = 0;
 
         console.log(`📊 Found ${snapshot.docs.length} user documents to process\n`);
@@ -39,62 +39,63 @@ console.log(`\n🚀 Starting ${isDryRun ? 'DRY-RUN' : 'UPDATE'} mode to convert 
             let targetValue = null;
             let needsUpdate = false;
 
-            // Determine conversion logic
+            // Determine conversion logic - STRING TO BOOLEAN
             if (currentPartnerValue === undefined || currentPartnerValue === null) {
                 // Field doesn't exist or is null - set default
-                targetValue = 'false';
+                targetValue = false;
                 needsUpdate = true;
                 noFieldCount++;
-            } else if (currentType === 'boolean') {
-                // Convert boolean to string
-                targetValue = currentPartnerValue.toString();
-                needsUpdate = true;
-                if (currentPartnerValue === true) {
+            } else if (currentType === 'string') {
+                // Convert string to boolean
+                if (currentPartnerValue.toLowerCase() === 'true') {
+                    targetValue = true;
                     convertedTrueCount++;
                 } else {
+                    targetValue = false;
                     convertedFalseCount++;
                 }
-            } else if (currentType === 'string') {
-                // Already a string - no conversion needed
+                needsUpdate = true;
+            } else if (currentType === 'boolean') {
+                // Already a boolean - no conversion needed
                 needsUpdate = false;
-                alreadyStringCount++;
+                alreadyBooleanCount++;
             } else {
-                // Unexpected type - convert to string anyway
-                targetValue = String(currentPartnerValue);
+                // Unexpected type - convert to boolean anyway (truthy/falsy logic)
+                targetValue = Boolean(currentPartnerValue);
                 needsUpdate = true;
                 console.log(`⚠️  UNEXPECTED TYPE: ${uid} has currentPartner type: ${currentType}, value: ${currentPartnerValue}`);
             }
 
             if (isDryRun) {
                 if (!needsUpdate) {
-                    console.log(`✅ DRY-RUN SKIP: ${uid} (currentPartner already string: "${currentPartnerValue}")`);
+                    console.log(`✅ DRY-RUN SKIP: ${uid} (currentPartner already boolean: ${currentPartnerValue})`);
                 } else {
-                    console.log(`🔄 DRY-RUN CONVERT: ${uid} (${currentType}: ${currentPartnerValue} → string: "${targetValue}")`);
+                    console.log(`🔄 DRY-RUN CONVERT: ${uid} (${currentType}: "${currentPartnerValue}" → boolean: ${targetValue})`);
                 }
             } else if (isUpdate) {
                 if (!needsUpdate) {
-                    console.log(`✅ SKIP: ${uid} (currentPartner already string: "${currentPartnerValue}")`);
+                    console.log(`✅ SKIP: ${uid} (currentPartner already boolean: ${currentPartnerValue})`);
                 } else {
                     await usersRef.doc(uid).update({
                         currentPartner: targetValue
                     });
-                    console.log(`🔄 CONVERTED: ${uid} (${currentType}: ${currentPartnerValue} → string: "${targetValue}")`);
+                    console.log(`🔄 CONVERTED: ${uid} (${currentType}: "${currentPartnerValue}" → boolean: ${targetValue})`);
                 }
             }
         }
 
         console.log(`\n📈 ${isDryRun ? 'Dry run' : 'Conversion'} complete:`);
-        console.log(`   ${convertedTrueCount} users ${isDryRun ? 'would be converted' : 'converted'} from boolean true → "true"`);
-        console.log(`   ${convertedFalseCount} users ${isDryRun ? 'would be converted' : 'converted'} from boolean false → "false"`);
-        console.log(`   ${noFieldCount} users ${isDryRun ? 'would get default' : 'got default'} value "false" (field missing)`);
-        console.log(`   ${alreadyStringCount} users already had string type (no change needed)`);
+        console.log(`   ${convertedTrueCount} users ${isDryRun ? 'would be converted' : 'converted'} from string "true" → boolean true`);
+        console.log(`   ${convertedFalseCount} users ${isDryRun ? 'would be converted' : 'converted'} from string "false" → boolean false`);
+        console.log(`   ${noFieldCount} users ${isDryRun ? 'would get default' : 'got default'} value false (field missing)`);
+        console.log(`   ${alreadyBooleanCount} users already had boolean type (no change needed)`);
         console.log(`   ${snapshot.docs.length} total users processed\n`);
 
         console.log(`📋 Conversion rules applied:`);
-        console.log(`   boolean true → string "true"`);
-        console.log(`   boolean false → string "false"`);
-        console.log(`   undefined/null → string "false"`);
-        console.log(`   existing strings → no change\n`);
+        console.log(`   string "true" → boolean true`);
+        console.log(`   string "false" → boolean false`);
+        console.log(`   undefined/null → boolean false`);
+        console.log(`   existing booleans → no change\n`);
 
     } catch (error) {
         console.error("❌ Error:", error);

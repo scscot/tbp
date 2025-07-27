@@ -36,6 +36,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
   String? _teamLeaderName;
   String? _teamLeaderUid;
   String? _currentUserId;
+  String? _bizOpp;
   bool _isLoading = true;
 
   @override
@@ -89,6 +90,9 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                 final bizOpp = adminData?['biz_opp'] as String?;
                 if (bizOpp != null && bizOpp.isNotEmpty) {
                   memberData['biz_opp'] = bizOpp;
+                  setState(() {
+                    _bizOpp = bizOpp;
+                  });
                 }
               }
             } catch (e) {
@@ -208,18 +212,22 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
 
 
 
-                      if (_user!.qualifiedDate != null)
-                        _buildQualifiedInfoRow('Qualified',
-                            DateFormat.yMMMd().format(_user!.qualifiedDate!))
+                      if (_user!.currentPartner == true)
+                        _buildQualifiedInfoRow('Qualified', 'Yes')
+                      else ...[
+                        if (_user!.qualifiedDate != null)
+                          _buildQualifiedInfoRow('Qualified',
+                              DateFormat.yMMMd().format(_user!.qualifiedDate!))
                         else
-                        _buildQualifiedInfoRow('Qualified', 'Not Yet'),
+                          _buildQualifiedInfoRow('Qualified', 'Not Yet'),
 
-                      if (_user!.bizJoinDate != null)
-                        _buildInfoRow('Joined ${_user!.bizOpp}',
-                            DateFormat.yMMMd().format(_user!.bizJoinDate!))
-                      else
-                        _buildInfoRow('Joined ${_user!.bizOpp}',
-                            'Not Yet'),
+                        if (_user!.bizJoinDate != null)
+                          _buildInfoRow('Joined ${_bizOpp ?? 'business'}',
+                              DateFormat.yMMMd().format(_user!.bizJoinDate!))
+                        else
+                          _buildInfoRow('Joined ${_bizOpp ?? 'business'}',
+                              'Not Yet'),
+                      ],
 
 
 
@@ -398,7 +406,9 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Members who meet these requirements are automatically invited to join the ${_user?.bizOpp ?? 'business'} opportunity.',
+                    _user!.currentPartner == true
+                        ? 'Eligibility requirements are waived for individuals who joined ${_bizOpp ?? 'business'} prior to joining your network.'
+                        : 'Members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'business'} opportunity.',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

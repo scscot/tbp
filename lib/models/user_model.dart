@@ -149,7 +149,9 @@ class UserModel {
       // --- MODIFICATION: Parse biz_join_date from the map ---
       bizJoinDate: parseDate(map['biz_join_date']),
       // --- MODIFICATION: Parse currentPartner from the map ---
-      currentPartner: map['currentPartner'] ?? false,
+      currentPartner: map['currentPartner'] is bool
+          ? map['currentPartner']
+          : (map['currentPartner'] == 'true' ? true : false),
       // --- PHASE 1: Parse subscription fields from the map ---
       subscriptionStatus: map['subscriptionStatus'] ?? 'trial',
       subscriptionExpiry: parseDate(map['subscriptionExpiry']),
