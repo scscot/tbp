@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
+import 'share_screen.dart';
 
 class HowItWorksScreen extends StatefulWidget {
   final String appId;
@@ -547,7 +548,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Transform Your Professional Network',
+                    'Grow Your Network Network',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -557,13 +558,40 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Expand your professional networking and unlock opportunities that drive real business growth!',
+                    'Expand your netwrok to drive exponential business growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),
                       height: 1.4,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShareScreen(appId: widget.appId),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.textInverse,
+                      foregroundColor: AppColors.growthPrimary,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: const Text(
+                      'Proven Growth Strategies',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
