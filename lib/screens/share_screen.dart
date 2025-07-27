@@ -203,9 +203,9 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Expand Your Professional Network',
+            'Expand Your Network',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -309,33 +309,35 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Professional Networking Strategies',
+          'Business Growth Strategies',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 16),
-        
-        // Strategy 1: New Professional Connections
+
+        // Strategy 1: New Business Prospects
         _buildStrategyCard(
-          title: '🌟 New Professional Connections',
-          subtitle: 'Perfect for professionals exploring $_bizOppName',
-          description: 'Share with like-minded professionals who are interested in business ventures with $_bizOppName. They can start cultivating their professional network now!',
-          buttonText: 'Share with New Connections',
+          title: '🌟 New Business Prospects',
+          subtitle: 'Perfect for expanding your $_bizOppName business',
+          description:
+              'Share Network Build Pro with professionals interested in $_bizOppName opportunities. They can explore business possibilities while building valuable professional connections!',
+          buttonText: 'Share with Prospects',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
           icon: Icons.connect_without_contact,
         ),
-        
+
         const SizedBox(height: 16),
-        
-        // Strategy 2: Existing Network Partners
+
+        // Strategy 2: Current Business Partners
         _buildStrategyCard(
-          title: '🚀 Current Network Partners',
-          subtitle: 'Great for your existing $_bizOppName collaborators',
-          description: 'Share with professionals already in your $_bizOppName network. When their Network Build Pro network connects with $_bizOppName, they\'ll automatically join your network!',
-          buttonText: 'Share with Network Partners',
+          title: '🚀 Current Business Partners',
+          subtitle: 'Great for your existing $_bizOppName network',
+          description:
+              'Share Network Build Pro with your current $_bizOppName partners. When they bring new connections into $_bizOppName, those partners join your business network!',
+          buttonText: 'Share with Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,
           icon: Icons.handshake,
