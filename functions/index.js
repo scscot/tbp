@@ -1285,8 +1285,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Network Partner!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Network Build Pro App with your current ${bizOppName} network partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their Network Build Pro network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! VIEW PROFILE`,
+        title: "🎉 You have a new Network member!",
+        message: `Congratulations, ${sponsor.firstName}! You shared the Network Build Pro App with your current ${bizOppName} partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1299,8 +1299,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Network Partner!",
-        message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. VIEW PROFILE`,
+        title: "🎉 You have a new network member!",
+        message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1483,7 +1483,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
 
     const notificationContent = {
       title: `🎉 New ${bizOpp} interest!`,
-      message: `${visitingUserName} has just used your referral link to explore the ${bizOpp} business venture! Connect with them and answer any questions they might have. VIEW PROFILE`,
+      message: `${visitingUserName} has just used your referral link to explore the ${bizOpp} opportunity! Click Here to view their profile.`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -1883,7 +1883,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Network Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Network Build Pro network yesterday. VIEW PROFILES!`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your network yesterday. Click Here to view their profiles`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
