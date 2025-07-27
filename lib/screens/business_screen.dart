@@ -136,8 +136,16 @@ class _BusinessScreenState extends State<BusinessScreen>
         if (uplineUserDoc.exists) {
           final uplineUserData = uplineUserDoc.data() as Map<String, dynamic>?;
           final bizOppRefUrl = uplineUserData?['biz_opp_ref_url'] as String?;
-          
-          if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
+          final subscriptionStatus = uplineUserData?['subscriptionStatus'] as String?;
+
+          final validStatuses = [
+            'active',
+            'trial'
+          ];
+
+          if (bizOppRefUrl != null &&
+              bizOppRefUrl.isNotEmpty &&
+              validStatuses.contains(subscriptionStatus)) {
             debugPrint('✅ Found biz_opp_ref_url in upline user at index $i: $uplineUid');
             
             // Get sponsor name from the same user
