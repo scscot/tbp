@@ -110,11 +110,13 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
 
   void _shareForNewProspects() {
     if (_referralLink != null) {
-      final userName = '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'.trim();
-      
+      final userName =
+          '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'
+              .trim();
+
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Ready to cultivate your own $_bizOppName professional network? Join me ($userName) on Network Build Pro and start expanding your opportunities today! $_referralLink'
-          : '🌟 Hey! I\'m expanding my professional network on Network Build Pro and would love for you to connect with me! Start your networking journey here: $_referralLink';
+          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Network Build Pro to explore this business opportunity while expanding your professional network! $_referralLink'
+          : '🌟 I\'m expanding my professional network on Network Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
 
       Share.share(message);
     }
@@ -123,8 +125,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _shareForExistingMembers() {
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
-          ? '💪 Network Partners! Use Network Build Pro to accelerate your $_bizOppName professional growth. Download the app and continue cultivating meaningful connections with me: $_referralLink'
-          : '🎯 Let\'s expand together! I\'m using Network Build Pro to cultivate my professional network. Connect with me and let\'s accelerate our success: $_referralLink';
+          ? '💪 Fellow $_bizOppName partners! Use Network Build Pro to accelerate your business growth and connect with quality prospects: $_referralLink'
+          : '🎯 Let\'s grow our $_bizOppName business together! I\'m using Network Build Pro to expand my professional network: $_referralLink';
 
       Share.share(message);
     }
