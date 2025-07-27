@@ -115,7 +115,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .trim();
 
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Network Build Pro to explore this business opportunity while expanding your professional network! $_referralLink'
+          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Network Build Pro to explore this business while expanding your professional network! $_referralLink'
           : '🌟 I\'m expanding my professional network on Network Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
 
       Share.share(message);
@@ -205,7 +205,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Expand Your Network',
+            'Grow Your Business Network',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -214,7 +214,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your networking link and cultivate meaningful professional relationships!',
+            'Share your business link to connect with prospects and grow your $_bizOppName business!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
