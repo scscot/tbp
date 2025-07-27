@@ -170,12 +170,12 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
                       _buildHeader(),
                       const SizedBox(height: 32),
                       
-                      // Your Referral Link Section
-                      _buildReferralLinkCard(),
+                      // Sharing Strategies (MOVED UP)
+                      _buildSharingStrategies(),
                       const SizedBox(height: 24),
                       
-                      // Sharing Strategies
-                      _buildSharingStrategies(),
+                      // Your Referral Link Section (MOVED DOWN)
+                      _buildReferralLinkCard(),
                       const SizedBox(height: 32),
                       
                       // Pro Tips
