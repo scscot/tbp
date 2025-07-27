@@ -196,7 +196,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildInfoRow('Country', _user!.country ?? 'N/A'),
 
 
-                        _buildInfoRow('Joined TBP',
+                        _buildInfoRow('Joined Network',
                             DateFormat.yMMMd().format(_user!.createdAt!)),
 
                        _buildInfoRow('Direct Members',
@@ -205,6 +205,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                        _buildInfoRow(
                           'Total Members',
                           _user!.totalTeamCount.toString()),
+
 
 
                       if (_user!.qualifiedDate != null)
@@ -219,6 +220,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       else
                         _buildInfoRow('Joined ${_user!.bizOpp}',
                             'Not Yet'),
+
+
 
 
                       if (_sponsorName != null)
