@@ -42,7 +42,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
         if (userDoc.exists) {
           final userData = userDoc.data();
           
-          // Get current user's network stats
+          // Get current user's team stats
           _currentDirectCount = userData?['directSponsorCount']?.toInt() ?? 0;
           _currentTotalCount = userData?['totalTeamCount']?.toInt() ?? 0;
           
@@ -117,7 +117,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Continue building your network to unlock your opportunity with $_bizOpp.',
+            'Continue building your team to unlock your opportunity with $_bizOpp.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -441,19 +441,19 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'CONNECT - Expand Your Network',
-                      description: 'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
+                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
                       title: 'CULTIVATE - Nurture Professional Bonds',
-                      description: 'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
+                      description: 'Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional network reaches engagement milestones, unlock business ventures.',
+                      description: 'When your professional team reaches engagement milestones, unlock business ventures.',
                       icon: Icons.handshake,
                     ),
                     Container(
@@ -469,7 +469,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Network Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful long-term success.',
+                              'Note: Team Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful long-term success.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

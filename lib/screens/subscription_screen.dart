@@ -237,7 +237,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   const SizedBox(height: 12),
                   _buildFeatureItem('Submit your unique Business referral link'),
                   _buildFeatureItem('Unlock messaging to users on your team'),
-                  _buildFeatureItem('Ensure network members join under YOU in your business'),
+                  _buildFeatureItem('Ensure team members join under YOU in your business'),
                   _buildFeatureItem('Priority customer support'),
                   _buildFeatureItem('Advanced analytics and insights'),
                   

@@ -120,7 +120,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'My Company Details',
+                      'My Opportunity Details',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -167,7 +167,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      "From this point forward, anyone in your Network Build Pro network that joins $bizOpp will automatically be placed in your $bizOpp organization.",
+                      "From this point forward, anyone in your team that joins $bizOpp will automatically be placed in your $bizOpp team.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,

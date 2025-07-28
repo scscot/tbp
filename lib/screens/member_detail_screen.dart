@@ -117,7 +117,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
           });
         }
 
-        // Parse network leader data
+        // Parse team leader data
         if (memberDetails['teamLeader'] != null) {
           final leaderData =
               Map<String, dynamic>.from(memberDetails['teamLeader']);
@@ -168,7 +168,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
-              ? const Center(child: Text('Network member not found.'))
+              ? const Center(child: Text('Team member not found.'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -203,11 +203,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         _buildInfoRow('Joined Network',
                             DateFormat.yMMMd().format(_user!.createdAt!)),
 
-                       _buildInfoRow('Direct Members',
+                       _buildInfoRow('Direct Sponsors',
                           _user!.directSponsorCount.toString()),
 
                        _buildInfoRow(
-                          'Total Members',
+                          'Total Team',
                           _user!.totalTeamCount.toString()),
 
 
@@ -394,13 +394,13 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildMetricCard(
                         icon: Icons.people,
                         value: AppConstants.projectWideDirectSponsorMin.toString(),
-                        label: 'Direct Members',
+                        label: 'Direct Sponsors',
                       ),
                       const SizedBox(width: 16),
                       _buildMetricCard(
                         icon: Icons.groups,
                         value: AppConstants.projectWideTotalTeamMin.toString(),
-                        label: 'Total Members Members',
+                        label: 'Total Team Members',
                       ),
                     ],
                   ),
@@ -408,7 +408,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   Text(
                     _user!.currentPartner == true
                         ? 'Eligibility requirements are waived for individuals who joined the ${_bizOpp ?? 'organization'} prior to joining the Network.'
-                        : 'Network members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'organization'}.',
+                        : 'Team members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'organization'}.',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

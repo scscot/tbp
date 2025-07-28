@@ -36,6 +36,7 @@ secrets/
 .vscode/
 
 # === Flutter / Dart / Pub Specific Ignores ===
+lib_backup/
 build/
 .dart_tool/
 .packages

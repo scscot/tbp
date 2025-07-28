@@ -224,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'You\'ve joined the $_bizOpp organization — great! Update your profile now so every Network member that joins the $_bizOpp organization after you is placed directly into your $_bizOpp organization.',
+                  'You\'ve joined the $_bizOpp opportunity — great! Update your profile now so every Team member that joins the $_bizOpp opportunity after you is placed directly into your $_bizOpp team.',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textInverse.withValues(alpha: 0.95),
@@ -374,7 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ready to expand your Network!',
+                    'Ready to expandyour Team!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.95),
@@ -423,7 +423,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.people,
                   value: user.directSponsorCount.toString(),
-                  label: 'Direct Members',
+                  label: 'Direct Sponsors',
                   color: Colors.blue.shade600,
                 ),
               ),
@@ -432,7 +432,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.groups,
                   value: user.totalTeamCount.toString(),
-                  label: 'Total Members',
+                  label: 'Total Team',
                   color: Colors.green.shade600,
                 ),
               ),
@@ -611,7 +611,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
-    title: 'My Company Details',
+    title: 'My Opportunity Details',
     color: AppColors.opportunityPrimary,
     onTap: () {
       // Navigate to company screen normally
@@ -628,7 +628,7 @@ if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
     title: user.bizOppRefUrl != null
-        ? 'My Company Details'
+        ? 'My Opportunity Details'
         : 'Get Started Today',
     color: AppColors.opportunityPrimary,
     onTap: () {
@@ -676,7 +676,7 @@ if (user.role == 'admin') ...[
 ],
         _buildActionCard(
           icon: Icons.trending_up,
-          title: 'Grow My Network',
+          title: 'Grow My Team',
           color: AppColors.growthPrimary,
           onTap: () => Navigator.push(
             context,
@@ -687,7 +687,7 @@ if (user.role == 'admin') ...[
         ),
         _buildActionCard(
           icon: Icons.groups,
-          title: 'View My Network',
+          title: 'View My Team',
           color: AppColors.teamPrimary,
           onTap: () => Navigator.push(
             context,

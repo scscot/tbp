@@ -299,7 +299,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Network Build Pro profile. This ensures anyone from your network who joins is placed in your network.',
+                'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your team who joins is placed in your network.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -415,13 +415,13 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         _buildMenuItem(
           value: 'share',
           icon: Icons.trending_up,
-          title: 'Grow My Network',
+          title: 'Grow My Team',
           color: AppColors.growthPrimary,
         ),
         _buildMenuItem(
           value: 'team',
           icon: Icons.groups,
-          title: 'View My Network',
+          title: 'View My Team',
           color: AppColors.teamPrimary,
         ),
         const PopupMenuDivider(),
@@ -622,7 +622,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Network Build Pro',
+              'Team Build Pro',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

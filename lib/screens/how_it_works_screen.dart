@@ -105,7 +105,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Network Build Pro helps you build meaningful professional connections worldwide.',
+            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -398,7 +398,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Solution
             _buildSectionCard(
               title: 'THE SOLUTION',
-              content: 'Network Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
+              content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
               icon: Icons.lightbulb,
               color: AppColors.primary,
             ),
@@ -475,7 +475,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Note: Network Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful career opportunities.',
+                              'Note: Team Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful career opportunities.',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

@@ -115,8 +115,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .trim();
 
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Network Build Pro to explore this business while expanding your professional network! $_referralLink'
-          : '🌟 I\'m expanding my professional network on Network Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
+          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Team Build Pro to explore this business while expanding your professional network! $_referralLink'
+          : '🌟 I\'m expanding my professional team on Team Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
 
       Share.share(message);
     }
@@ -125,8 +125,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _shareForExistingMembers() {
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
-          ? '💪 Fellow $_bizOppName partners! Use Network Build Pro to accelerate your business growth and connect with quality prospects: $_referralLink'
-          : '🎯 Let\'s grow our $_bizOppName business together! I\'m using Network Build Pro to expand my professional network: $_referralLink';
+          ? '💪 Fellow $_bizOppName partners! Use Team Build Pro to accelerate your business growth and connect with quality prospects: $_referralLink'
+          : '🎯 Let\'s grow our $_bizOppName business together! I\'m using Team Build Pro to expand my professional network: $_referralLink';
 
       Share.share(message);
     }
@@ -205,7 +205,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Grow Your Network',
+            'Grow Your Team',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -214,7 +214,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your Network Build Pro link to connect with prospects and grow your $_bizOppName organization!',
+            'Share your Team Build Pro link to connect with prospects and grow your $_bizOppName organization!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
@@ -324,7 +324,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           title: '🌟 New Business Prospects',
           subtitle: 'Perfect for expanding your $_bizOppName business',
           description:
-              'Share your Network Build Pro link with professionals interested in $_bizOppName. They can explore $_bizOppName while building valuable professional connections!',
+              'Share your Team Build Pro link with professionals interested in $_bizOppName. They can explore $_bizOppName while building valuable professional connections!',
           buttonText: 'Share with Prospects',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
@@ -338,7 +338,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           title: '🚀 Current Business Partners',
           subtitle: 'Great for your existing $_bizOppName network',
           description:
-              'Share your Network Build Pro link with your current $_bizOppName partners. When they bring new members into their Network Build Pro network, those members will ultimately be placed in your $_bizOppName organization!',
+              'Share your Team Build Pro link with your current $_bizOppName partners. When they bring new members into their Team Build Pro network, those members will ultimately be placed in your $_bizOppName organization!',
           buttonText: 'Share with Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

@@ -87,7 +87,7 @@ class NetworkService {
           ? result.data as Map<String, dynamic>
           : Map<String, dynamic>.from(result.data ?? {});
 
-      // Convert network array to UserModel objects
+      // Convert team array to UserModel objects
       final List<dynamic> networkData = data['network'] ?? [];
       final List<UserModel> networkUsers = networkData.map((userData) {
         final Map<String, dynamic> userMap = userData is Map<String, dynamic>

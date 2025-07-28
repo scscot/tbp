@@ -930,7 +930,7 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
   const { filter, searchQuery, levelOffset, limit = 100, offset = 0 } = request.data || {};
 
   try {
-    console.log(`🔍 FILTER DEBUG: Starting filtered network for user ${currentUserId}`);
+    console.log(`🔍 FILTER DEBUG: Starting filtered team for user ${currentUserId}`);
     console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}", levelOffset: ${levelOffset}`);
 
     // Get base network
@@ -1287,8 +1287,8 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Network member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Network with your current ${bizOppName} organization member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their Network members that ultimately join the ${bizOppName} organization will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
+        title: "🎉 You have a new team member!",
+        message: `Congratulations, ${sponsor.firstName}! You shared the Network with your current ${bizOppName} organization member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team members that ultimately join the ${bizOppName} organization will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1301,7 +1301,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new Network member!",
+        title: "🎉 You have a new team member!",
         message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
@@ -1530,7 +1530,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
 
     const memberData = { uid: memberDoc.id, ...memberDoc.data() };
 
-    // Parallel fetch sponsor and network leader details
+    // Parallel fetch sponsor and team leader details
     const promises = [];
     let sponsorPromise = null;
     let teamLeaderPromise = null;
@@ -1541,7 +1541,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       promises.push(sponsorPromise);
     }
 
-    // Fetch network leader details if uplineAdmin exists and is different from sponsor
+    // Fetch team leader details if uplineAdmin exists and is different from sponsor
     if (memberData.upline_admin &&
       memberData.upline_admin.trim() !== '' &&
       memberData.upline_admin !== memberData.sponsor_id) {
@@ -1575,7 +1575,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    // Process network leader result
+    // Process team leader result
     if (teamLeaderPromise) {
       const teamLeaderResult = results[resultIndex++];
       if (teamLeaderResult.status === 'fulfilled' && teamLeaderResult.value.exists) {
@@ -1593,7 +1593,7 @@ exports.getMemberDetails = onCall({ region: "us-central1" }, async (request) => 
       }
     }
 
-    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no network leader'}`);
+    console.log(`✅ MEMBER DEBUG: Successfully fetched member details with ${sponsorData ? 'sponsor' : 'no sponsor'} and ${teamLeaderData ? 'team leader' : 'no team leader'}`);
 
     return {
       member: serializeData(memberData),
@@ -1729,8 +1729,8 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
 // ============================================================================
 
 /**
- * Scheduled function that runs every hour to send daily network growth notifications
- * at 12 noon local time to users who had new network members join the previous day.
+ * Scheduled function that runs every hour to send daily team growth notifications
+ * at 12 noon local time to users who had new team members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1742,7 +1742,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   timeZone: "UTC",
   region: "us-central1"
 }, async (event) => {
-  console.log("🔔 DAILY NOTIFICATIONS: Starting daily network growth notification process");
+  console.log("🔔 DAILY NOTIFICATIONS: Starting daily team growth notification process");
 
   try {
     const now = new Date();
@@ -1784,9 +1784,9 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       const newMember = doc.data();
       const uplineRefs = newMember.upline_refs || [];
 
-      // CRITICAL: Skip admin users - they should not trigger daily network growth notifications
+      // CRITICAL: Skip admin users - they should not trigger daily team growth notifications
       if (newMember.role === 'admin') {
-        console.log(`🔔 DAILY NOTIFICATIONS: Skipping admin user ${newMember.firstName} ${newMember.lastName} (${doc.id}) - admins don't trigger network notifications`);
+        console.log(`🔔 DAILY NOTIFICATIONS: Skipping admin user ${newMember.firstName} ${newMember.lastName} (${doc.id}) - admins don't trigger team notifications`);
         return;
       }
 
@@ -1812,7 +1812,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       });
     });
 
-    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new network members to be notified about`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new team members to be notified about`);
 
     if (notificationCounts.size === 0) {
       console.log("🔔 DAILY NOTIFICATIONS: No users to notify");
@@ -1884,8 +1884,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         console.log(`🔔 DAILY NOTIFICATIONS: Creating notification for ${userData.firstName} ${userData.lastName} (${userId}) - ${newMemberCount} new members`);
 
         const notificationContent = {
-          title: "Your Network Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Network yesterday. Click Here to view their profiles`,
+          title: "Your Team Is Growing!",
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team yesterday. Click Here to view their profiles`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
@@ -1925,10 +1925,10 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
 
     console.log(`🔔 DAILY NOTIFICATIONS: Notification summary - Successful: ${successful}, Failed: ${failed}`);
-    console.log(`✅ DAILY NOTIFICATIONS: Daily network growth notification process completed`);
+    console.log(`✅ DAILY NOTIFICATIONS: Daily team growth notification process completed`);
 
   } catch (error) {
-    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily network growth notifications:", error);
+    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
   }
 });
 

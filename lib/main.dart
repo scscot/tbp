@@ -155,7 +155,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         child: MaterialApp(
           // --- The key is assigned here ---
           navigatorKey: navigatorKey,
-          title: 'Network Build Pro',
+          title: 'Team Build Pro',
           theme: ThemeData(
             primarySwatch: Colors.indigo,
             fontFamily: 'Inter',

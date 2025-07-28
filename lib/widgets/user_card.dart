@@ -1,1 +1,1 @@
-// UI card for displaying network members
+// UI card for displaying team members

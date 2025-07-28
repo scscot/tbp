@@ -378,7 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const TextSpan(
                     text:
-                        "These values will apply to every member of your team, ensuring the highest level of integrity, consistency, and fairness across your organization.",
+                        "These values will apply to every member of your team, ensuring the highest level of integrity, consistency, and fairness across your team.",
                   ),
                 ],
               ),
@@ -424,8 +424,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           content: const Text(
                               'You must enter the exact referral link you received from your company. '
-                              'This will ensure your Network members that join your organization '
-                              'are automatically placed in your organization team.'),
+                              'This will ensure your team members that join your opportunity '
+                              'are automatically placed in your opportunity team.'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(),
@@ -480,7 +480,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const TextSpan(
                     text:
-                        ' Only select the countries where your organization is currently available.',
+                        ' Only select the countries where your opportunity is currently available.',
                   ),
                 ],
               ),
@@ -614,7 +614,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const TextSpan(
                           text:
-                              "When your Network members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                              "When your team members meet the minimum eligibility criteria, they are automatically invited to join your "),
                       TextSpan(
                         text: _bizOpp ?? 'organization',
                         style: const TextStyle(
@@ -640,13 +640,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _buildMetricCard(
                 icon: Icons.people,
                 value: AppConstants.projectWideDirectSponsorMin.toString(),
-                label: 'Direct Members',
+                label: 'Direct Sponsors',
               ),
               const SizedBox(width: 16),
               _buildMetricCard(
                 icon: Icons.groups,
                 value: AppConstants.projectWideTotalTeamMin.toString(),
-                label: 'Total Members Members',
+                label: 'Total Team Members',
               ),
             ],
           ),

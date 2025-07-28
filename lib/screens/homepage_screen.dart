@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import '../config/app_colors.dart';
 import '../config/app_constants.dart';
@@ -33,14 +34,16 @@ class HomepageScreen extends StatefulWidget {
 class _HomepageScreenState extends State<HomepageScreen>
     with TickerProviderStateMixin {
   late AnimationController _heroAnimationController;
+  late AnimationController _networkAnimationController;
   late Animation<double> _heroFadeAnimation;
   late Animation<Offset> _heroSlideAnimation;
+  late Animation<double> _networkAnimation;
 
   // Referral code related state
   String? _sponsorName;
   bool _isLoadingReferral = false;
   bool _isLoggingOut = true;
-  bool _hasPerformedLogout = false; // Track if logout has been completed
+  bool _hasPerformedLogout = false;
 
   @override
   void initState() {
@@ -55,7 +58,6 @@ class _HomepageScreenState extends State<HomepageScreen>
         print('🔐 HOMEPAGE: Checking if logout is needed before homepage render...');
       }
       
-      // Only perform logout if there's a referral code
       final authService = AuthService();
       final currentUser = FirebaseAuth.instance.currentUser;
       final hasReferralCode = widget.referralCode != null && widget.referralCode!.isNotEmpty;
@@ -65,10 +67,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           print('🔐 HOMEPAGE: Found referral code and existing user session, performing logout...');
         }
         
-        // Perform complete logout only when there's a referral code
         await authService.signOut();
-        
-        // Clear any cached session data
         await SessionManager.instance.clearSession();
         await SessionManager.instance.clearReferralData();
         
@@ -76,7 +75,6 @@ class _HomepageScreenState extends State<HomepageScreen>
           print('✅ HOMEPAGE: Logout completed successfully');
         }
         
-        // Small delay to ensure logout is fully processed
         await Future.delayed(const Duration(milliseconds: 500));
       } else {
         if (kDebugMode) {
@@ -84,20 +82,18 @@ class _HomepageScreenState extends State<HomepageScreen>
         }
       }
       
-      // Mark that logout process has been completed
       _hasPerformedLogout = true;
       
     } catch (e) {
       if (kDebugMode) {
         print('❌ HOMEPAGE: Error during logout check: $e');
       }
-      _hasPerformedLogout = true; // Mark as completed even on error
+      _hasPerformedLogout = true;
     } finally {
       if (mounted) {
         setState(() {
           _isLoggingOut = false;
         });
-        // Now initialize referral data
         _initializeReferralData();
       }
     }
@@ -105,7 +101,12 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   void _setupAnimations() {
     _heroAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _networkAnimationController = AnimationController(
+      duration: const Duration(seconds: 8),
       vsync: this,
     );
 
@@ -125,7 +126,16 @@ class _HomepageScreenState extends State<HomepageScreen>
       curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
     ));
 
+    _networkAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _networkAnimationController,
+      curve: Curves.linear,
+    ));
+
     _heroAnimationController.forward();
+    _networkAnimationController.repeat();
   }
 
   Future<void> _initializeReferralData() async {
@@ -135,7 +145,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
 
     if (code == null || code.isEmpty) {
-      return; // No code, nothing to do.
+      return;
     }
 
     setState(() {
@@ -160,12 +170,11 @@ class _HomepageScreenState extends State<HomepageScreen>
             print('✅ HomepageScreen: Referral data cached successfully');
           }
         } else {
-          fetchedSponsorName = null; // Treat empty name as invalid.
+          fetchedSponsorName = null;
         }
       } else {
         if (kDebugMode) {
-          print(
-              'Failed to get sponsor data. Status code: ${response.statusCode}');
+          print('Failed to get sponsor data. Status code: ${response.statusCode}');
         }
       }
     } catch (e) {
@@ -185,12 +194,11 @@ class _HomepageScreenState extends State<HomepageScreen>
   @override
   void dispose() {
     _heroAnimationController.dispose();
+    _networkAnimationController.dispose();
     super.dispose();
   }
 
-  // Override the navigation to login to ensure logout is complete
   void _navigateToLogin() {
-    // Only navigate if logout process has completed to prevent race conditions
     if (_hasPerformedLogout) {
       Navigator.push(
         context,
@@ -199,7 +207,6 @@ class _HomepageScreenState extends State<HomepageScreen>
         ),
       );
     } else {
-      // If logout hasn't completed, wait a bit and try again
       Future.delayed(const Duration(milliseconds: 100), () {
         if (mounted) {
           _navigateToLogin();
@@ -208,127 +215,262 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
   }
 
+  void _navigateToRegistration() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewRegistrationScreen(
+          referralCode: widget.referralCode,
+          appId: widget.appId,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedNetworkBackground() {
+    return AnimatedBuilder(
+      animation: _networkAnimation,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: NetworkNodesPainter(_networkAnimation.value),
+          size: Size.infinite,
+        );
+      },
+    );
+  }
+
+  Widget _buildPlatformLogo() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.2),
+            Colors.white.withOpacity(0.1),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: const Icon(
+        Icons.hub_outlined,
+        size: 48,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildDynamicWelcomeSection() {
+    if (_sponsorName != null && _sponsorName!.isNotEmpty) {
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.withOpacity(0.2), Colors.green.withOpacity(0.1)],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.green.withOpacity(0.3)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.person_add, color: Colors.white, size: 16),
+                ),
+                const SizedBox(width: 8),
+                const Flexible(
+                  child: Text(
+                    'PERSONAL INVITATION',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$_sponsorName has invited you to join their professional network infrastructure.',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Flexible(child: _buildStatCard('10K+', 'Active\nProfessionals')),
+          const SizedBox(width: 8),
+          Flexible(child: _buildStatCard('500+', 'Organizations')),
+          const SizedBox(width: 8),
+          Flexible(child: _buildStatCard('50K+', 'Connections\nMade')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String number, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            number,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white.withOpacity(0.9),
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHeroSection() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.65,
-      decoration: BoxDecoration(
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height * 0.6,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary,
-            AppColors.primaryDark,
-            AppColors.teamAccent,
+            Color(0xFF0A0E27), // Deep navy
+            Color(0xFF1A237E), // Indigo
+            Color(0xFF3949AB), // Material indigo
           ],
         ),
       ),
       child: Stack(
         children: [
-          // Background pattern (removed since image doesn't exist)
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.1,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.textInverse.withOpacity(0.1),
-                      AppColors.textInverse.withOpacity(0.05),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Content
+          // Animated network nodes background
+          _buildAnimatedNetworkBackground(),
+          
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   FadeTransition(
                     opacity: _heroFadeAnimation,
                     child: SlideTransition(
                       position: _heroSlideAnimation,
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.textInverse.withOpacity(0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.rocket_launch,
-                              size: 48,
-                              color: AppColors.textInverse,
-                            ),
-                          ),
+                          // Platform logo with subtle animation
+                          _buildPlatformLogo(),
                           const SizedBox(height: 24),
-                          Text(
-                            'PROFESSIONAL',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.textInverse,
-                              letterSpacing: 2.0,
-                              shadows: [
-                                Shadow(
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 4,
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'NETWORKING',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textInverse.withOpacity(0.9),
-                              letterSpacing: 1.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: AppColors.warning,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: AppColors.mediumShadow,
-                            ),
-                            child: Text(
-                              'REVOLUTION',
+                          
+                          // Main headline
+                          ShaderMask(
+                            shaderCallback: (bounds) => LinearGradient(
+                              colors: [Colors.white, Colors.blue.shade200],
+                            ).createShader(bounds),
+                            child: const Text(
+                              'THE NETWORK',
                               style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.textInverse,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: 2.5,
+                                height: 1.1,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 8),
+                          
+                          // Subtitle
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Colors.orange, Colors.deepOrange],
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Text(
+                              'PROFESSIONAL INFRASTRUCTURE',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
                                 letterSpacing: 1.2,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                          
+                          const SizedBox(height: 16),
+                          
+                          // Value proposition
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'The premier platform that transforms how professionals build meaningful business relationships and discover opportunities worldwide.',
+                              'The enterprise-grade platform that powers relationship-driven business growth for organizations worldwide.',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: AppColors.textInverse.withOpacity(0.95),
+                                color: Colors.white,
                                 height: 1.4,
                                 fontWeight: FontWeight.w500,
                               ),
                               textAlign: TextAlign.center,
                             ),
                           ),
+                          
+                          const SizedBox(height: 24),
+                          
+                          // Sponsor welcome or stats
+                          _buildDynamicWelcomeSection(),
                         ],
                       ),
                     ),
@@ -342,138 +484,245 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildHowItWorksSection() {
+  Widget _buildPlatformCapabilities() {
     return Container(
       padding: const EdgeInsets.all(24),
+      color: Colors.grey.shade50,
       child: Column(
         children: [
-          Text(
-            'HOW IT WORKS',
+          const Text(
+            'ENTERPRISE CAPABILITIES',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: Color(0xFF1A237E),
               letterSpacing: 1.5,
             ),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          _buildProcessStep(
-            step: 1,
-            title: 'CONNECT - Expand Your Network',
-            description:
-                'Connect with like-minded professionals and introduce the Network to colleagues who value meaningful business relationships.',
-            icon: Icons.connect_without_contact,
-            color: AppColors.primary,
+          
+          Row(
+            children: [
+              Expanded(
+                child: _buildCapabilityCard(
+                  icon: Icons.hub_outlined,
+                  title: 'Network Hub',
+                  description: 'Centralized platform connecting professionals across organizations',
+                  color: Colors.blue,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildCapabilityCard(
+                  icon: Icons.analytics_outlined,
+                  title: 'Growth Analytics',
+                  description: 'Real-time insights and performance tracking for your network',
+                  color: Colors.green,
+                ),
+              ),
+            ],
           ),
-          _buildProcessStep(
-            step: 2,
-            title: 'CULTIVATE - Nurture Professional Bonds',
-            description:
-                'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
-            icon: Icons.psychology,
-            color: AppColors.growthPrimary,
-          ),
-          _buildProcessStep(
-            step: 3,
-            title: 'COLLABORATE - Unlock Opportunities Together',
-            description:
-                'When your network members reach engagement milestones, unlock organization opportunities.',
-            icon: Icons.handshake,
-            color: AppColors.notificationPrimary,
-          ),
-          _buildProcessStep(
-            step: 4,
-            title: 'TRANSFORM - Professional Growth Excellence',
-            description:
-                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium organization opportunities.',
-            icon: Icons.rocket_launch,
-            color: AppColors.opportunityPrimary,
-            isLast: true,
+          
+          const SizedBox(height: 16),
+          
+          Row(
+            children: [
+              Expanded(
+                child: _buildCapabilityCard(
+                  icon: Icons.security_outlined,
+                  title: 'Enterprise Security',
+                  description: 'Bank-level security protecting your business relationships',
+                  color: Colors.orange,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildCapabilityCard(
+                  icon: Icons.rocket_launch_outlined,
+                  title: 'Scale Ready',
+                  description: 'Built to support organizations from startup to enterprise',
+                  color: Colors.purple,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProcessStep({
-    required int step,
+  Widget _buildCapabilityCard({
+    required IconData icon,
     required String title,
     required String description,
-    required IconData icon,
     required Color color,
-    bool isLast = false,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
         children: [
-          Column(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [color, AppColors.darker(color, 0.2)],
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: AppColors.mediumShadow,
-                ),
-                child: Center(
-                  child: Text(
-                    step.toString(),
-                    style: const TextStyle(
-                      color: AppColors.textInverse,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
-              if (!isLast)
-                Container(
-                  width: 3,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-            ],
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 32),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            description,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrganizationShowcase() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.white, Colors.blue.shade50],
+        ),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'POWERING DIVERSE ORGANIZATIONS',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A237E),
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 32),
+          
+          _buildOrganizationType(
+            icon: Icons.business_center,
+            title: 'Professional Services',
+            examples: 'Real Estate • Insurance • Consulting • Financial Planning',
+            description: 'Connect with qualified prospects and grow your client base',
+            color: Colors.blue,
+          ),
+          
+          _buildOrganizationType(
+            icon: Icons.fitness_center,
+            title: 'Membership Organizations',
+            examples: 'Fitness Franchises • Wellness Programs • Business Clubs',
+            description: 'Expand membership through professional relationship building',
+            color: Colors.green,
+          ),
+          
+          _buildOrganizationType(
+            icon: Icons.trending_up,
+            title: 'Growth-Focused Businesses',
+            examples: 'Direct Sales • Franchise Systems • Coaching Programs',
+            description: 'Scale your organization through systematic network development',
+            color: Colors.orange,
+          ),
+          
+          _buildOrganizationType(
+            icon: Icons.school,
+            title: 'Education & Training',
+            examples: 'Professional Development • Certification Programs • Academies',
+            description: 'Build communities of learners and successful graduates',
+            color: Colors.purple,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrganizationType({
+    required IconData icon,
+    required String title,
+    required String examples,
+    required String description,
+    required Color color,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 32),
           ),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(icon, color: color, size: 24),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
+                Text(
+                  examples,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: color.withOpacity(0.8),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Text(
                   description,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: AppColors.textSecondary,
-                    height: 1.5,
-                    fontWeight: FontWeight.w500,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    height: 1.4,
                   ),
                 ),
               ],
@@ -484,162 +733,315 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildCTASection() {
+  Widget _buildSuccessMetrics() {
     return Container(
       margin: const EdgeInsets.all(24),
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: AppColors.growthGradient,
+        color: const Color(0xFF1A237E),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: AppColors.heavyShadow,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.celebration,
-            size: 56,
-            color: AppColors.textInverse,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'TRANSFORM YOUR',
+          const Text(
+            'NETWORK IMPACT',
             style: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textInverse.withOpacity(0.9),
-              letterSpacing: 1.2,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            'PROFESSIONAL NETWORK!',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textInverse,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
               letterSpacing: 1.5,
             ),
-            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
-          Text(
-            'The Network leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, opportunities, and systematic network development.',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textInverse.withOpacity(0.95),
-              height: 1.5,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewRegistrationScreen(
-                      referralCode: widget.referralCode,
-                      appId: widget.appId,
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.textInverse,
-                foregroundColor: AppColors.growthPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 8,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.rocket_launch,
-                    size: 20,
-                    color: AppColors.growthPrimary,
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      'JOIN THE REVOLUTION',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.growthPrimary,
-                        letterSpacing: 0.8,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const SizedBox(height: 24),
           
+          Row(
+            children: [
+              Expanded(
+                child: _buildMetricCard(
+                  number: '10K+',
+                  label: 'Active Professionals',
+                  icon: Icons.people_outline,
+                ),
+              ),
+              Expanded(
+                child: _buildMetricCard(
+                  number: '500+',
+                  label: 'Organizations',
+                  icon: Icons.corporate_fare_outlined,
+                ),
+              ),
+              Expanded(
+                child: _buildMetricCard(
+                  number: '50K+',
+                  label: 'Connections Made',
+                  icon: Icons.handshake_outlined,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  // Helper widget for the loading/sponsor banner
-  Widget _buildStatusBanner() {
-    if (_isLoadingReferral) {
-      return Container(
-        width: double.infinity,
-        color: AppColors.primaryDark,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: const Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+  Widget _buildMetricCard({
+    required String number,
+    required String label,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white, size: 32),
+          const SizedBox(height: 12),
+          Text(
+            number,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmartOnboarding() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          const Text(
+            'JOIN THE NETWORK',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A237E),
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Dynamic onboarding based on referral
+          if (_sponsorName != null) 
+            _buildInvitedUserFlow()
+          else 
+            _buildDirectJoinFlow(),
+            
+          const SizedBox(height: 24),
+          
+          // Trust indicators
+          _buildTrustIndicators(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInvitedUserFlow() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.green.shade50, Colors.green.shade100],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.green.shade300),
+      ),
+      child: Column(
+        children: [
+          Row(
             children: [
-              SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person_add, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Personal Invitation',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.green,
+                      ),
+                    ),
+                    Text(
+                      'Welcome! $_sponsorName has invited you to join their professional network.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.green.shade800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _navigateToRegistration,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Accept Invitation & Join',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
               ),
-              SizedBox(width: 12),
-              Text(
-                'Checking invitation...',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDirectJoinFlow() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blue.shade50, Colors.blue.shade100],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blue.shade300),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
                 ),
-              )
+                child: const Icon(Icons.rocket_launch, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Start Your Network',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    Text(
+                      'Join as a founding member and build your professional infrastructure.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-      );
-    }
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _navigateToRegistration,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Join The Network',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    if (_sponsorName != null && _sponsorName!.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        color: AppColors.teamAccent,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Text(
-          'Welcome!\nYou were invited by $_sponsorName',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+  Widget _buildTrustIndicators() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildTrustBadge(Icons.security, 'Enterprise\nSecurity'),
+        _buildTrustBadge(Icons.verified_user, 'Verified\nPlatform'),
+        _buildTrustBadge(Icons.support_agent, '24/7\nSupport'),
+      ],
+    );
+  }
+
+  Widget _buildTrustBadge(IconData icon, String label) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.grey.shade600, size: 24),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         ),
-      );
-    }
+      ],
+    );
+  }
 
-    // Return an empty container if there's nothing to show
+  Widget _buildStatusBanner() {
+    // Remove redundant banner - invitation info is shown in hero section
     return const SizedBox.shrink();
   }
 
@@ -649,14 +1051,14 @@ class _HomepageScreenState extends State<HomepageScreen>
     if (_isLoggingOut) {
       return Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.primary,
-                AppColors.primaryDark,
-                AppColors.teamAccent,
+                Color(0xFF0A0E27),
+                Color(0xFF1A237E),
+                Color(0xFF3949AB),
               ],
             ),
           ),
@@ -665,43 +1067,48 @@ class _HomepageScreenState extends State<HomepageScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.textInverse.withOpacity(0.15),
                     shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.2),
+                        Colors.white.withOpacity(0.1),
+                      ],
+                    ),
                   ),
-                  child: Icon(
-                    Icons.rocket_launch,
-                    size: 48,
-                    color: AppColors.textInverse,
+                  child: const Icon(
+                    Icons.hub_outlined,
+                    size: 60,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(
-                  'Network Build Pro',
+                const Text(
+                  'THE NETWORK',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
-                    color: AppColors.textInverse,
+                    color: Colors.white,
                     letterSpacing: 2.0,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                SizedBox(
+                const SizedBox(
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: AppColors.textInverse,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Initializing...',
+                  'Initializing platform...',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.textInverse.withOpacity(0.8),
+                    color: Colors.white.withOpacity(0.8),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -719,8 +1126,10 @@ class _HomepageScreenState extends State<HomepageScreen>
           children: [
             _buildStatusBanner(),
             _buildHeroSection(),
-            _buildHowItWorksSection(),
-            _buildCTASection(),
+            _buildPlatformCapabilities(),
+            _buildOrganizationShowcase(),
+            _buildSuccessMetrics(),
+            _buildSmartOnboarding(),
             _buildFooterSection(),
           ],
         ),
@@ -731,10 +1140,10 @@ class _HomepageScreenState extends State<HomepageScreen>
   Widget _buildFooterSection() {
     return Container(
       padding: const EdgeInsets.all(24),
-      color: AppColors.backgroundTertiary,
+      color: Colors.grey.shade100,
       child: Column(
         children: [
-          const Divider(color: AppColors.border),
+          const Divider(color: Colors.grey),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -752,14 +1161,14 @@ class _HomepageScreenState extends State<HomepageScreen>
                   'Privacy Policy',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: Colors.grey,
                     decoration: TextDecoration.underline,
                   ),
                 ),
               ),
               const Text(
                 ' | ',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               TextButton(
                 onPressed: () {
@@ -774,7 +1183,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   'Terms of Service',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: Colors.grey,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -783,10 +1192,10 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            '© ${DateTime.now().year} Network Build Pro. All rights reserved.',
+            '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
             style: const TextStyle(
               fontSize: 12,
-              color: AppColors.textTertiary,
+              color: Colors.grey,
             ),
             textAlign: TextAlign.center,
           ),
@@ -801,11 +1210,19 @@ class _HomepageScreenState extends State<HomepageScreen>
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         decoration: const BoxDecoration(
-          gradient: AppColors.primaryGradient,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF0A0E27),
+              Color(0xFF1A237E),
+              Color(0xFF3949AB),
+            ],
+          ),
         ),
       ),
       title: const Text(
-        'Network Build Pro',
+        'The Network',
         style: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.bold,
@@ -820,7 +1237,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           ),
-          child: Row(
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
@@ -828,7 +1245,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 color: Colors.white,
                 size: 18,
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Text(
                 'Log In',
                 style: TextStyle(
@@ -843,5 +1260,53 @@ class _HomepageScreenState extends State<HomepageScreen>
         const SizedBox(width: 8),
       ],
     );
+  }
+}
+
+// Custom painter for animated network background
+class NetworkNodesPainter extends CustomPainter {
+  final double animationValue;
+
+  NetworkNodesPainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    final nodePaint = Paint()
+      ..color = Colors.white.withOpacity(0.2)
+      ..style = PaintingStyle.fill;
+
+    // Create animated network nodes
+    final nodes = <Offset>[];
+    for (int i = 0; i < 8; i++) {
+      final angle = (i * 2 * math.pi / 8) + (animationValue * 2 * math.pi);
+      final radius = size.width * 0.3;
+      final x = size.width / 2 + radius * math.cos(angle);
+      final y = size.height / 2 + radius * math.sin(angle);
+      nodes.add(Offset(x, y));
+    }
+
+    // Draw connections
+    for (int i = 0; i < nodes.length; i++) {
+      for (int j = i + 1; j < nodes.length; j++) {
+        if ((i - j).abs() <= 2) {
+          canvas.drawLine(nodes[i], nodes[j], paint);
+        }
+      }
+    }
+
+    // Draw nodes
+    for (final node in nodes) {
+      canvas.drawCircle(node, 4, nodePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(NetworkNodesPainter oldDelegate) {
+    return oldDelegate.animationValue != animationValue;
   }
 }

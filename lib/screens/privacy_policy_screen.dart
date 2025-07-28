@@ -226,7 +226,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             // Important Notice
             _buildHighlightBox(
               title: 'Your Privacy Matters',
-              content: 'Network Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
+              content: 'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
               icon: Icons.shield_outlined,
               backgroundColor: AppColors.successBackground,
               borderColor: AppColors.success,
@@ -247,7 +247,7 @@ Personal Information:
 Account Information:
 • User authentication data (managed by Firebase Auth)
 • Account preferences and settings
-• Referral codes and network structure data
+• Referral codes and team structure data
 
 Usage Information:
 • App usage analytics (non-personal)
@@ -269,7 +269,7 @@ Communication Data:
 Service Provision:
 • Create and manage your networking account
 • Enable networking features and functionality
-• Facilitate communication between network members
+• Facilitate communication between team members
 • Send important notifications about your account and network
 
 App Improvement:
@@ -290,8 +290,8 @@ Legal Compliance:
               content: '''We do not sell your personal information. We may share information in these limited circumstances:
 
 Within Your Network:
-• Your name and profile photo are visible to your network members
-• Network relationships are shared within your network structure
+• Your name and profile photo are visible to your team members
+• Network relationships are shared within your team structure
 
 Service Providers:
 • Firebase (Google) for authentication and database services
@@ -345,7 +345,7 @@ Privacy Settings:
 • Opt out of non-essential communications
 
 Data Portability:
-• Export your network structure data
+• Export your team structure data
 • Transfer your information to another service (where applicable)
 
 To exercise these rights, contact us at $privacyEmail or use the in-app settings.''',
@@ -364,7 +364,7 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
             _buildSection(
               title: '6. Children\'s Privacy',
               icon: Icons.child_care_outlined,
-              content: '''Network Build Pro is intended for users 18 years and older. We do not knowingly collect personal information from children under 18.
+              content: '''Team Build Pro is intended for users 18 years and older. We do not knowingly collect personal information from children under 18.
 
 If we discover that we have collected information from a child under 18:
 • We will delete the information immediately
@@ -378,7 +378,7 @@ Parents who believe their child has provided information to us should contact $p
             _buildSection(
               title: '7. International Data Transfers',
               icon: Icons.public_outlined,
-              content: '''Network Build Pro is available globally. Your information may be transferred to and processed in:
+              content: '''Team Build Pro is available globally. Your information may be transferred to and processed in:
 
 • United States (Firebase/Google servers)
 • Other countries where our service providers operate
@@ -465,7 +465,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Network Build Pro\nPrivacy Officer\nResponse within 48 hours',
+                    'Team Build Pro\nPrivacy Officer\nResponse within 48 hours',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textInverse.withValues(alpha: 0.9),
@@ -490,7 +490,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
               child: Column(
                 children: [
                   Text(
-                    '© ${DateTime.now().year} Network Build Pro. All rights reserved.',
+                    '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -500,7 +500,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'This Privacy Policy is effective as of the date listed above and applies to all users of the Network Build Pro mobile application.',
+                    'This Privacy Policy is effective as of the date listed above and applies to all users of the Team Build Pro mobile application.',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textTertiary,

@@ -192,7 +192,7 @@ class _NetworkScreenState extends State<NetworkScreen>
 
       if (!mounted) return;
 
-      // Fetch all network data
+      // Fetch all team data
       final result = await _networkService.getFilteredNetwork(
         filter: 'all',
         searchQuery: '',
@@ -204,7 +204,7 @@ class _NetworkScreenState extends State<NetworkScreen>
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {
-      debugPrint('Error loading network data: $e');
+      debugPrint('Error loading team data: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -327,9 +327,9 @@ class _NetworkScreenState extends State<NetworkScreen>
     }
     
     // Debug logging
-    debugPrint('🔍 network DEBUG: Total filtered members: ${_filteredMembers.length}');
-    debugPrint('🔍 network DEBUG: Level offset: $_levelOffset');
-    debugPrint('🔍 network DEBUG: Members by level: $_membersByLevel');
+    debugPrint('🔍 team DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint('🔍 team DEBUG: Level offset: $_levelOffset');
+    debugPrint('🔍 team DEBUG: Members by level: $_membersByLevel');
     
     // Ensure levels are sorted
     final sortedEntries = _membersByLevel.entries.toList()
@@ -367,7 +367,7 @@ class _NetworkScreenState extends State<NetworkScreen>
         gradient: AppColors.primaryGradient,
       ),
       child: const Text(
-        'My Global Network',
+        'My Global Team',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,
@@ -386,7 +386,7 @@ class _NetworkScreenState extends State<NetworkScreen>
         children: [
           Expanded(
             child: _buildAnalyticsCard(
-              'Direct Members',
+              'Direct Sponsors',
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
               AppColors.growthPrimary,
@@ -401,7 +401,7 @@ class _NetworkScreenState extends State<NetworkScreen>
           const SizedBox(width: 8),
           Expanded(
             child: _buildAnalyticsCard(
-              'Total Members',
+              'Total Team',
               _analytics['totalMembers']?.toString() ?? '0',
               Icons.people,
               AppColors.teamPrimary,
@@ -554,7 +554,7 @@ class _NetworkScreenState extends State<NetworkScreen>
       case FilterBy.allMembers:
         return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
       case FilterBy.directSponsors:
-        return 'Direct Members (${_analytics['directSponsors'] ?? 0})';
+        return 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
       case FilterBy.newMembers:
         return 'New Members (${_analytics['newMembers'] ?? 0})';
       case FilterBy.qualifiedMembers:

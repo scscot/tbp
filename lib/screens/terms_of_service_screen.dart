@@ -112,7 +112,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
 
             const SizedBox(height: 32),
 
-            // IMPORTANT DISCLAIMER - MLM/Network Marketing
+            // IMPORTANT DISCLAIMER - Direct Sales
             _buildImportantDisclaimer(),
             
             const SizedBox(height: 32),
@@ -120,16 +120,16 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
             // Terms Sections
             _buildSection(
               '1. ACCEPTANCE OF TERMS',
-            '''By downloading, installing, accessing, or using the Network Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
+            '''By downloading, installing, accessing, or using the Team Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
 
-These Terms constitute a legally binding agreement between you and Network Build Pro regarding your use of our professional networking platform service.''',
+These Terms constitute a legally binding agreement between you and Team Build Pro regarding your use of our professional networking platform service.''',
             ),
 
             _buildSection(
               '2. SERVICE DESCRIPTION',
-            '''Network Build Pro is a subscription-based professional networking platform that provides:
+            '''Team Build Pro is a subscription-based professional networking platform that provides:
 • Relationship management and tracking tools
-• Professional network analytics and insights
+• Professional team analytics and insights
 • Business opportunity connections
 • Systematic networking frameworks
 • Communication and collaboration features
@@ -157,16 +157,16 @@ CANCELLATION:
               '4. BUSINESS OPPORTUNITIES',
             '''THIRD-PARTY OPPORTUNITIES:
 • Business opportunities are provided by independent companies
-• Network Build Pro does not own or operate these businesses
-• All business partnerships are separate from Network Build Pro
+• Team Build Pro does not own or operate these businesses
+• All business partnerships are separate from Team Build Pro
 • Users make independent decisions regarding participation
-• Network Build Pro provides connection services only
+• Team Build Pro provides connection services only
 
 DISCLAIMER:
-• Network Build Pro does not guarantee business success
+• Team Build Pro does not guarantee business success
 • All business decisions and outcomes are user responsibility
 • Independent evaluation of opportunities is required
-• Network Build Pro is not liable for third-party business results''',
+• Team Build Pro is not liable for third-party business results''',
             ),
 
             _buildSection(
@@ -217,7 +217,7 @@ Violations may result in account suspension or termination.''',
 
             _buildSection(
               '9. INTELLECTUAL PROPERTY',
-              '''All content, features, and functionality of Network Build Pro, including but not limited to text, graphics, logos, icons, images, audio clips, and software, are owned by Network Build Pro and protected by copyright, trademark, and other intellectual property laws.
+              '''All content, features, and functionality of Team Build Pro, including but not limited to text, graphics, logos, icons, images, audio clips, and software, are owned by Team Build Pro and protected by copyright, trademark, and other intellectual property laws.
 
 Users may not reproduce, distribute, modify, or create derivative works without explicit written permission.''',
             ),
@@ -226,12 +226,12 @@ Users may not reproduce, distribute, modify, or create derivative works without 
               '10. PRIVACY AND DATA PROTECTION',
               '''Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference.
 
-By using Network Build Pro, you consent to the collection and use of information as outlined in our Privacy Policy.''',
+By using Team Build Pro, you consent to the collection and use of information as outlined in our Privacy Policy.''',
             ),
 
             _buildSection(
               '11. DISCLAIMERS AND LIMITATIONS',
-              '''Network Build Pro is provided "AS IS" without warranties of any kind. We disclaim all warranties, express or implied, including but not limited to:
+              '''Team Build Pro is provided "AS IS" without warranties of any kind. We disclaim all warranties, express or implied, including but not limited to:
 • Merchantability and fitness for a particular purpose
 • Non-infringement of third-party rights
 • Uninterrupted or error-free service
@@ -242,7 +242,7 @@ We are not liable for any indirect, incidental, special, or consequential damage
 
             _buildSection(
               '12. INDEMNIFICATION',
-              '''You agree to indemnify and hold harmless Network Build Pro, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from:
+              '''You agree to indemnify and hold harmless Team Build Pro, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from:
 • Your use of the platform
 • Your violation of these Terms
 • Your violation of any third-party rights
@@ -251,7 +251,7 @@ We are not liable for any indirect, incidental, special, or consequential damage
 
             _buildSection(
               '13. TERMINATION',
-              '''We reserve the right to terminate or suspend your account and access to Network Build Pro at any time, with or without notice, for any reason, including violation of these Terms.
+              '''We reserve the right to terminate or suspend your account and access to Team Build Pro at any time, with or without notice, for any reason, including violation of these Terms.
 
 Upon termination, your right to use the platform ceases immediately, and we may delete your account and associated data.''',
             ),
@@ -260,14 +260,14 @@ Upon termination, your right to use the platform ceases immediately, and we may 
               '14. GOVERNING LAW',
               '''These Terms are governed by and construed in accordance with the laws of California, without regard to conflict of law principles.
 
-Any disputes arising from these Terms or your use of Network Build Pro shall be resolved in the courts of California.''',
+Any disputes arising from these Terms or your use of Team Build Pro shall be resolved in the courts of California.''',
             ),
 
             _buildSection(
               '15. CHANGES TO TERMS',
               '''We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting in the App.
 
-Your continued use of Network Build Pro after changes are posted constitutes acceptance of the modified Terms.''',
+Your continued use of Team Build Pro after changes are posted constitutes acceptance of the modified Terms.''',
             ),
 
             _buildSection(
@@ -375,12 +375,12 @@ We will respond to all inquiries within 48 hours during business days.''',
           ),
           const SizedBox(height: 12),
           const Text(
-            '''• Network Build Pro is a subscription-based networking platform
+            '''• Team Build Pro is a subscription-based networking platform
 • Users pay a monthly subscription fee for access to networking tools
 • The platform provides relationship management and business connection features
 • All business opportunities are provided by independent third parties
 
-Network Build Pro operates as a networking platform and does not guarantee business outcomes.''',
+Team Build Pro operates as a networking platform and does not guarantee business outcomes.''',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,
