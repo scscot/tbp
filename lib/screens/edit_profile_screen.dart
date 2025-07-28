@@ -752,7 +752,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: ' referral link. This will be used to track referrals fromyour Team.'),
+                          const TextSpan(text: ' referral link. This will be used to track referrals from your team.'),
                         ],
                       ),
                     ),

@@ -217,7 +217,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "Important: After completing your ${bizOpp ?? 'organization'} registration, you must return here to add your new referral link toyour Team profile. This ensures your ${bizOpp ?? 'organization'} team is built correctly.",
+                  "Important: After completing your ${bizOpp ?? 'organization'} registration, you must return here to add your new referral link to your team profile. This ensures your ${bizOpp ?? 'organization'} team is built correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -634,7 +634,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                     ),
                   ),
                 const TextSpan(
-                  text: '. This person is a member ofyour Team who has already joined this opportunity.',
+                  text: '. This person is a member of your team who has already joined this opportunity.',
                 ),
               ],
             ),
@@ -788,7 +788,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring the organization, you must return here and add your new partnership link to your Team Build Pro profile. This ensuresyour Team connections are tracked correctly.",
+            "After exploring the organization, you must return here and add your new partnership link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),

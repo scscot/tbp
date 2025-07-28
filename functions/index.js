@@ -1885,7 +1885,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Team yesterday. Click Here to view their profiles`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your team yesterday. Click Here to view their profiles`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
