@@ -168,7 +168,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
-              ? const Center(child: Text('Partner not found.'))
+              ? const Center(child: Text('Network member not found.'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -222,10 +222,10 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                           _buildQualifiedInfoRow('Qualified', 'Not Yet'),
 
                         if (_user!.bizJoinDate != null)
-                          _buildInfoRow('Joined ${_bizOpp ?? 'business'}',
+                          _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
                               DateFormat.yMMMd().format(_user!.bizJoinDate!))
                         else
-                          _buildInfoRow('Joined ${_bizOpp ?? 'business'}',
+                          _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
                               'Not Yet'),
                       ],
 
@@ -407,8 +407,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   const SizedBox(height: 20),
                   Text(
                     _user!.currentPartner == true
-                        ? 'Eligibility requirements are waived for individuals who joined ${_bizOpp ?? 'business'} prior to joining your network.'
-                        : 'Members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'business'} opportunity.',
+                        ? 'Eligibility requirements are waived for individuals who joined the ${_bizOpp ?? 'organization'} prior to joining the Network.'
+                        : 'Network members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'organization'}.',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

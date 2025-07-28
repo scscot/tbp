@@ -228,7 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content:
-                  Text('Business Name fields must match for confirmation.')),
+                  Text('Organization Name fields must match for confirmation.')),
         );
         return;
       }
@@ -357,7 +357,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             const Center(
               child: Text(
-                'Business Opportunity Settings',
+                'Organization Settings',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -395,7 +395,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               maxLines: null,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'Your Business Opportunity Name',
+                labelText: 'Your Organization Name',
                 filled: _isBizLocked,
                 fillColor: _isBizLocked ? Colors.grey[200] : null,
               ),
@@ -406,7 +406,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextFormField(
                 controller: _bizNameConfirmController,
                 decoration: const InputDecoration(
-                    labelText: 'Confirm Business Opportunity Name'),
+                    labelText: 'Confirm Organization Name'),
                 validator: (value) => value!.isEmpty ? 'Required' : null,
               ),
             const SizedBox(height: 16),
@@ -424,8 +424,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           content: const Text(
                               'You must enter the exact referral link you received from your company. '
-                              'This will ensure your Network Build Pro network members that join your business opportunity '
-                              'are automatically placed in your business opportunity team.'),
+                              'This will ensure your Network members that join your organization '
+                              'are automatically placed in your organization team.'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(),
@@ -480,7 +480,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const TextSpan(
                     text:
-                        ' Only select the countries where your business opportunity is currently available.',
+                        ' Only select the countries where your organization is currently available.',
                   ),
                 ],
               ),
@@ -534,7 +534,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           const Center(
             child: Text(
-              'Business Opportunity Settings',
+              'Organization Settings',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -547,7 +547,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.business, color: Colors.blue),
-                  title: const Text('Your Business Opportunity'),
+                  title: const Text('Your Organization'),
                   subtitle: Text(
                     _bizOpp ?? 'Not Set',
                     style: const TextStyle(fontSize: 16, color: Colors.black87),
@@ -601,7 +601,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: TextStyle(fontSize: 16, color: Colors.grey)),
           const SizedBox(height: 10),
           const Text(
-            'Network Build Pro Feeder System',
+            'Network Feeder System',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 20),
@@ -614,15 +614,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const TextSpan(
                           text:
-                              "When your network members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                              "When your Network members meet the minimum eligibility criteria, they are automatically invited to join your "),
                       TextSpan(
-                        text: _bizOpp ?? 'business opportunity',
+                        text: _bizOpp ?? 'organization',
                         style: const TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.w500),
                       ),
                       const TextSpan(
                           text:
-                              " network — with their growing Network Build Pro network ready to follow."),
+                              " — with their growing Network ready to follow."),
                     ],
                   ),
                 ),

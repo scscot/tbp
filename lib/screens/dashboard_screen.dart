@@ -208,7 +208,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'Don\'t Miss Out on Growing Your $_bizOpp Business!',
+                  'Don\'t Miss Out on Growing Your $_bizOpp Organization!',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -224,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'You\'ve joined $_bizOpp — great! Update your profile now so every member of your network that joins $_bizOpp after you is placed directly into your $_bizOpp organization.',
+                  'You\'ve joined the $_bizOpp organization — great! Update your profile now so every Network member that joins the $_bizOpp organization after you is placed directly into your $_bizOpp organization.',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textInverse.withValues(alpha: 0.95),
@@ -269,7 +269,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         child: Column(
                           children: [
                             Text(
-                              "Add My $_bizOpp Referral Link Now",
+                              "Add My $_bizOpp Organization Link Now",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -374,7 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ready to expand your professional network!',
+                    'Ready to expand your Network!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.95),
@@ -611,7 +611,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
-    title: 'My Business Details',
+    title: 'My Organization Details',
     color: AppColors.opportunityPrimary,
     onTap: () {
       // Navigate to company screen normally
@@ -628,7 +628,7 @@ if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
     title: user.bizOppRefUrl != null
-        ? 'My Business Details'
+        ? 'My Organization Details'
         : 'Get Started Today',
     color: AppColors.opportunityPrimary,
     onTap: () {

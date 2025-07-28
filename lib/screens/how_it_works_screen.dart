@@ -19,7 +19,7 @@ class HowItWorksScreen extends StatefulWidget {
 }
 
 class _HowItWorksScreenState extends State<HowItWorksScreen> {
-  String _bizOpp = 'your business opportunity';
+  String _bizOpp = 'your organization';
   bool _isLoading = true;
 
   @override
@@ -447,7 +447,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'CONNECT - Expand Your Network',
-                      description: 'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
+                      description: 'Connect with like-minded professionals and introduce the Network to colleagues who value meaningful business relationships.',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
@@ -459,7 +459,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional network reaches engagement milestones, unlock business ventures.',
+                      description: 'When your professional network members reach engagement milestones, unlock opportunities.',
                       icon: Icons.handshake,
                     ),
                     Container(
@@ -548,7 +548,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Grow Your Network Network',
+                    'Grow Your Network',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -558,7 +558,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Expand your netwrok to drive exponential business growth!',
+                    'Expand your Network to drive organization growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),

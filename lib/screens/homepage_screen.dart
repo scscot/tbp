@@ -362,7 +362,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 1,
             title: 'CONNECT - Expand Your Network',
             description:
-                'Connect with like-minded professionals and introduce Network Build Pro to colleagues who value meaningful business relationships.',
+                'Connect with like-minded professionals and introduce the Network to colleagues who value meaningful business relationships.',
             icon: Icons.connect_without_contact,
             color: AppColors.primary,
           ),
@@ -378,7 +378,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 3,
             title: 'COLLABORATE - Unlock Opportunities Together',
             description:
-                'When your professional network reaches engagement milestones, unlock business ventures.',
+                'When your network members reach engagement milestones, unlock organization opportunities.',
             icon: Icons.handshake,
             color: AppColors.notificationPrimary,
           ),
@@ -386,7 +386,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             step: 4,
             title: 'TRANSFORM - Professional Growth Excellence',
             description:
-                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium business ventures.',
+                'When your network reaches ${AppConstants.projectWideDirectSponsorMin} direct connections and ${AppConstants.projectWideTotalTeamMin} total network members, unlock access to premium organization opportunities.',
             icon: Icons.rocket_launch,
             color: AppColors.opportunityPrimary,
             isLast: true,
@@ -523,7 +523,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Network Build Pro leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, opportunities, and systematic network development.',
+            'The Network leads the professional networking revolution, empowering professionals to achieve exponential growth through meaningful relationships, opportunities, and systematic network development.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withOpacity(0.95),
