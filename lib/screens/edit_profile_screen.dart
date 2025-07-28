@@ -819,7 +819,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: '. This will ensure your Network Build Pro network members that join '),
+                                    const TextSpan(text: '. This will ensure your Network members that join '),
                                     TextSpan(
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -829,7 +829,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       text: _bizOppName,
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: ' team.'),
+                                    const TextSpan(text: ' organization.'),
                                   ],
                                 ),
                               ),
