@@ -205,7 +205,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Grow Your Business Network',
+            'Grow Your Network',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -214,7 +214,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your business link to connect with prospects and grow your $_bizOppName business!',
+            'Share your Network Build Pro link to connect with prospects and grow your $_bizOppName organization!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
@@ -324,7 +324,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           title: '🌟 New Business Prospects',
           subtitle: 'Perfect for expanding your $_bizOppName business',
           description:
-              'Share Network Build Pro with professionals interested in $_bizOppName opportunities. They can explore business possibilities while building valuable professional connections!',
+              'Share your Network Build Pro link with professionals interested in $_bizOppName. They can explore $_bizOppName while building valuable professional connections!',
           buttonText: 'Share with Prospects',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
@@ -338,7 +338,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           title: '🚀 Current Business Partners',
           subtitle: 'Great for your existing $_bizOppName network',
           description:
-              'Share Network Build Pro with your current $_bizOppName partners. When they bring new connections into $_bizOppName, those partners join your business network!',
+              'Share your Network Build Pro link with your current $_bizOppName partners. When they bring new members into their Network Build Pro network, those members will ultimately be placed in your $_bizOppName organization!',
           buttonText: 'Share with Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,

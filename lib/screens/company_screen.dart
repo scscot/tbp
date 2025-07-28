@@ -142,7 +142,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                           ),
                           const Divider(height: 24),
                           _buildInfoRow(
-                            title: 'My Unique Referral Link',
+                            title: 'My Company Referral Link',
                             content: bizOppRefUrl ?? 'Not available',
                             icon: Icons.link,
                           ),
@@ -167,7 +167,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      "From this point forward, anyone in your Network Build Pro organization that joins $bizOpp will automatically be placed in your $bizOpp organization.",
+                      "From this point forward, anyone in your Network Build Pro network that joins $bizOpp will automatically be placed in your $bizOpp organization.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,

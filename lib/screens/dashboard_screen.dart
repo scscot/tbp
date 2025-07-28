@@ -611,7 +611,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
-    title: 'My Organization Details',
+    title: 'My Company Details',
     color: AppColors.opportunityPrimary,
     onTap: () {
       // Navigate to company screen normally
@@ -628,7 +628,7 @@ if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
     title: user.bizOppRefUrl != null
-        ? 'My Organization Details'
+        ? 'My Company Details'
         : 'Get Started Today',
     color: AppColors.opportunityPrimary,
     onTap: () {
