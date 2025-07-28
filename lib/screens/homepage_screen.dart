@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
-import '../config/app_colors.dart';
-import '../config/app_constants.dart';
 import '../services/session_manager.dart';
 import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
@@ -41,7 +39,6 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   // Referral code related state
   String? _sponsorName;
-  bool _isLoadingReferral = false;
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
 
@@ -149,7 +146,6 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
 
     setState(() {
-      _isLoadingReferral = true;
     });
 
     String? fetchedSponsorName;
@@ -185,7 +181,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       if (mounted) {
         setState(() {
           _sponsorName = fetchedSponsorName;
-          _isLoadingReferral = false;
         });
       }
     }
@@ -259,7 +254,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         ],
       ),
       child: const Icon(
-        Icons.hub_outlined,
+        Icons.groups_3,
         size: 48,
         color: Colors.white,
       ),
@@ -321,60 +316,15 @@ class _HomepageScreenState extends State<HomepageScreen>
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Flexible(child: _buildStatCard('10K+', 'Active\nProfessionals')),
-          const SizedBox(width: 8),
-          Flexible(child: _buildStatCard('500+', 'Organizations')),
-          const SizedBox(width: 8),
-          Flexible(child: _buildStatCard('50K+', 'Connections\nMade')),
-        ],
-      ),
-    );
+  return const SizedBox.shrink();
   }
 
-  Widget _buildStatCard(String number, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            number,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.white.withOpacity(0.9),
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildHeroSection() {
     return Container(
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.6,
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        minHeight: MediaQuery.of(context).size.height * 0.5, // Reduced from 0.6
+        maxHeight: MediaQuery.of(context).size.height * 0.65, // Reduced from 0.8
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -396,7 +346,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center, // Changed from spaceEvenly
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FadeTransition(
@@ -406,9 +356,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Platform logo with subtle animation
+                          const SizedBox(height: 32), 
                           _buildPlatformLogo(),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 24), 
                           
                           // Main headline
                           ShaderMask(
@@ -416,9 +366,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                               colors: [Colors.white, Colors.blue.shade200],
                             ).createShader(bounds),
                             child: const Text(
-                              'THE NETWORK',
+                              'TEAM BUILD PRO',
                               style: TextStyle(
-                                fontSize: 36,
+                                fontSize: 32,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
                                 letterSpacing: 2.5,
@@ -428,7 +378,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                           ),
                           
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16), 
                           
                           // Subtitle
                           Container(
@@ -440,7 +390,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: const Text(
-                              'PROFESSIONAL INFRASTRUCTURE',
+                              'DIRECT SALES SUCCESS PLATFORM',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
@@ -456,7 +406,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'The enterprise-grade platform that powers relationship-driven business growth for organizations worldwide.',
+                              'The comprehensive platform designed specifically for direct sales professionals to systematically build and manage their teams.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -467,10 +417,12 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                           ),
                           
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 24), // Reduced from 24
                           
                           // Sponsor welcome or stats
                           _buildDynamicWelcomeSection(),
+                          
+                          const SizedBox(height: 12), // Add bottom spacing
                         ],
                       ),
                     ),
@@ -505,7 +457,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             children: [
               Expanded(
                 child: _buildCapabilityCard(
-                  icon: Icons.hub_outlined,
+                  icon: Icons.group,
                   title: 'Network Hub',
                   description: 'Centralized platform connecting professionals across organizations',
                   color: Colors.blue,
@@ -616,7 +568,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       child: Column(
         children: [
           const Text(
-            'POWERING DIVERSE ORGANIZATIONS',
+            'BUILT FOR DIRECT SALES SUCCESS',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
@@ -627,36 +579,23 @@ class _HomepageScreenState extends State<HomepageScreen>
           const SizedBox(height: 32),
           
           _buildOrganizationType(
-            icon: Icons.business_center,
-            title: 'Professional Services',
-            examples: 'Real Estate • Insurance • Consulting • Financial Planning',
-            description: 'Connect with qualified prospects and grow your client base',
-            color: Colors.blue,
-          ),
-          
-          _buildOrganizationType(
-            icon: Icons.fitness_center,
-            title: 'Membership Organizations',
-            examples: 'Fitness Franchises • Wellness Programs • Business Clubs',
-            description: 'Expand membership through professional relationship building',
-            color: Colors.green,
-          ),
-          
-          _buildOrganizationType(
             icon: Icons.trending_up,
-            title: 'Growth-Focused Businesses',
-            examples: 'Direct Sales • Franchise Systems • Coaching Programs',
-            description: 'Scale your organization through systematic network development',
+            title: 'Direct Sales Professionals',
+            examples:
+                'Network Marketing • MLM • Direct Sales • Affiliate Marketing',
+            description:
+                'Build, track, and grow your direct sales team with professional tools designed for your success',
             color: Colors.orange,
           ),
-          
           _buildOrganizationType(
-            icon: Icons.school,
-            title: 'Education & Training',
-            examples: 'Professional Development • Certification Programs • Academies',
-            description: 'Build communities of learners and successful graduates',
-            color: Colors.purple,
+            icon: Icons.groups,
+            title: 'Team Leaders & Recruiters',
+            examples: 'Team Building • Recruitment • Leadership Development',
+            description:
+                'Manage your growing team with powerful analytics and communication tools',
+            color: Colors.blue,
           ),
+
         ],
       ),
     );
@@ -831,7 +770,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       child: Column(
         children: [
           const Text(
-            'JOIN THE NETWORK',
+            'JOIN TEAM BUILD PRO',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
@@ -990,7 +929,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'Join The Network',
+                'Join TEAM BUILD PRO',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -1085,7 +1024,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  'THE NETWORK',
+                  'TEAM BUILD PRO',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
@@ -1222,7 +1161,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         ),
       ),
       title: const Text(
-        'The Network',
+        'TEAM BUILD PRO',
         style: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.bold,

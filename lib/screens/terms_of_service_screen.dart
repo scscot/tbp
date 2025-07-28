@@ -156,7 +156,7 @@ CANCELLATION:
             _buildSection(
               '4. BUSINESS OPPORTUNITIES',
             '''THIRD-PARTY OPPORTUNITIES:
-• Business opportunities are provided by independent companies
+• Business opportunities are provided by independent representatives
 • Team Build Pro does not own or operate these businesses
 • All business partnerships are separate from Team Build Pro
 • Users make independent decisions regarding participation

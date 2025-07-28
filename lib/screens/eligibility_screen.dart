@@ -350,14 +350,14 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin
                               .toString(),
-                          label: 'Direct Connections',
+                          label: 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Community Network',
+                          label: 'Total Team',
                         ),
                       ],
                     ),
@@ -388,14 +388,14 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                       children: [
                         _buildProgressCard(
                           icon: Icons.connect_without_contact,
-                          label: 'Direct Connections',
+                          label: 'Direct Sponsors',
                           current: _currentDirectCount,
                           target: AppConstants.projectWideDirectSponsorMin,
                         ),
                         const SizedBox(width: 16),
                         _buildProgressCard(
                           icon: Icons.hub,
-                          label: 'Community Network',
+                          label: 'Total Team',
                           current: _currentTotalCount,
                           target: AppConstants.projectWideTotalTeamMin,
                         ),
@@ -453,7 +453,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 3,
                       title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your professional team reaches engagement milestones, unlock business ventures.',
+                      description: 'When your team members achieve team growth milestones, they recieve an invitation to join $_bizOpp.',
                       icon: Icons.handshake,
                     ),
                     Container(
@@ -502,7 +502,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            _isQualified ? 'You\'re Qualified!' : 'Grow Your Community',
+            _isQualified ? 'You\'re Qualified!' : 'Grow Your Team',
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,

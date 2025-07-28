@@ -374,7 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ready to expand your team!',
+                    'Ready to grow your team!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.95),

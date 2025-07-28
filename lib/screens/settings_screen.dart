@@ -646,7 +646,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _buildMetricCard(
                 icon: Icons.groups,
                 value: AppConstants.projectWideTotalTeamMin.toString(),
-                label: 'Total Team Members',
+                label: 'Total MembersMembers',
               ),
             ],
           ),

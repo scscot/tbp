@@ -501,7 +501,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'COMMUNITY ENGAGEMENT THRESHOLDS',
+                      ' TEAM GROWTH THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -515,13 +515,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         _buildMetricCard(
                           icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin.toString(),
-                          label: 'Direct Connections',
+                          label: 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
                           value: AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Community Network',
+                          label: 'Total Team',
                         ),
                       ],
                     ),

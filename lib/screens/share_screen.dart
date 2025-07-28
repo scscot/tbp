@@ -115,8 +115,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .trim();
 
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Team Build Pro to explore this business while expanding your professional network! $_referralLink'
-          : '🌟 I\'m expanding my professional team on Team Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
+          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Team Build Pro to explore this business while building your professional network! $_referralLink'
+          : '🌟 I\'m building my team on Team Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
 
       Share.share(message);
     }

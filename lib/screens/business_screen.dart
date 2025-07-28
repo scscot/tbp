@@ -503,7 +503,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'Congratulations! Your professional team growth has unlocked access to premium opportunities with ',
+                  text: 'Congratulations! Your team growth has unlocked access to premium opportunities with ',
                 ),
                 TextSpan(
                   text: bizOpp ?? 'established business partners',

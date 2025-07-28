@@ -487,7 +487,7 @@ class _NetworkScreenState extends State<NetworkScreen>
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
-              hintText: 'Search members...',
+              hintText: 'Search team members...',
               prefixIcon: const Icon(Icons.search),
               suffixIcon: _searchQuery.isNotEmpty
                   ? IconButton(
