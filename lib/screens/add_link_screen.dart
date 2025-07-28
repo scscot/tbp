@@ -797,7 +797,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Enter your $_bizOpp referral link below. This will be used to track referrals from your Network Build Pro team.',
+                  'Enter your $_bizOpp referral link below. This will be used to track referrals from your Network.',
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
