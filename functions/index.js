@@ -60,7 +60,7 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
           const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
           notificationContent = {
             title: "✅ Subscription Active",
-            message: `Your Network Build Pro subscription is now active until ${expiry.toLocaleDateString()}.`,
+            message: `Your subscription is now active until ${expiry.toLocaleDateString()}.`,
             type: "subscription_active"
           };
         }
@@ -80,7 +80,7 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
       case 'expired':
         notificationContent = {
           title: "❌ Subscription Expired",
-          message: "Your Network Build Pro subscription has expired. Renew to continue accessing premium features.",
+          message: "Your subscription has expired. Renew to continue accessing premium features.",
           type: "subscription_expired",
           route: "/subscription", // Changed to match FCM handler
           route_params: JSON.stringify({ "action": "renew" })
@@ -311,7 +311,7 @@ exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
       try {
         const warningNotification = {
           title: "⏰ Trial Expiring Soon",
-          message: "Your Network Build Pro trial expires in 3 days. Subscribe now to continue accessing premium features.",
+          message: "Your 30-day trial expires in 3 days. Subscribe now to continue accessing premium features.",
           type: "trial_warning",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "upgrade" }),
@@ -1288,7 +1288,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new Network member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Network Build Pro App with your current ${bizOppName} partner, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their network members that ultimately join ${bizOppName} will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
+        message: `Congratulations, ${sponsor.firstName}! You shared the Network with your current ${bizOppName} organization member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Network Build Pro app! This means any of their Network members that ultimately join the ${bizOppName} organization will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1301,7 +1301,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
       console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
 
       notificationContent = {
-        title: "🎉 You have a new network member!",
+        title: "🎉 You have a new Network member!",
         message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
@@ -1356,7 +1356,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       const notificationContent = {
         title: "You're Qualified!",
-        message: `Congratulations, ${afterData.firstName}! You are now qualified to join the ${bizName} business venture. LEARN MORE!`,
+        message: `Congratulations, ${afterData.firstName}! You are now qualified to join the ${bizName} organization. Click Here to learn more.`,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
@@ -1485,7 +1485,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
 
     const notificationContent = {
       title: `🎉 New ${bizOpp} interest!`,
-      message: `${visitingUserName} has just used your referral link to explore the ${bizOpp} opportunity! Click Here to view their profile.`,
+      message: `${visitingUserName} has just used your referral link to explore ${bizOpp}! Click Here to view their profile.`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -1885,7 +1885,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Network Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your network yesterday. Click Here to view their profiles`,
+          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your Network yesterday. Click Here to view their profiles`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
