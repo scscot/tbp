@@ -1065,7 +1065,6 @@ class _HomepageScreenState extends State<HomepageScreen>
           children: [
             _buildStatusBanner(),
             _buildHeroSection(),
-            _buildPlatformCapabilities(),
             _buildOrganizationShowcase(),
             _buildSuccessMetrics(),
             _buildSmartOnboarding(),
