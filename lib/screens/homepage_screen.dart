@@ -374,7 +374,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   ),
                   const TextSpan(
                       text:
-                          ' team using Team Build Pro and wants you to join their success journey! Start building your own organization within their growing network.'),
+                          ' team using the Team Build Pro app, recommending you to use it too!'),
                 ],
               ),
             ),
@@ -417,7 +417,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 const SizedBox(width: 8),
                 const Flexible(
                   child: Text(
-                    'BREAKTHROUGH SUCCESS SOLUTION',
+                    'INNOVATIVE APPROACH',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -515,7 +515,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                             
                             SizedBox(height: isLandscape ? 16 : 24), 
-                            
+
                             // Subtitle
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
@@ -526,7 +526,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: Text(
-                                'DIRECT SALES SUCCESS PLATFORM',
+                                (_sponsorName != null && _sponsorName!.isNotEmpty)
+                                ? 'JUMPSTART YOUR TEAM GROWTH'
+                                : 'EXPONENTIAL TEAM GROWTH',
                                 style: TextStyle(
                                   fontSize: isLandscape ? 12 : 14,
                                   fontWeight: FontWeight.w700,
@@ -542,7 +544,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Text(
-                                'The comprehensive platform designed specifically for direct sales professionals to effectively build and manage their teams.',
+                                (_sponsorName != null && _sponsorName!.isNotEmpty)
+                                ? 'This platform was built with a clear understanding of what it takes to succeed in direct sales. It helps those just starting out by making it possible to begin building before they officially launch—so they\'re not starting from zero when it matters most.'
+                                : 'This platform was built with a clear understanding of what it takes to succeed in direct sales. It supports professionals actively growing their teams, helping them build and organize their global network effectively, creating lasting professional relationships.',
                                 style: TextStyle(
                                   fontSize: isLandscape ? 14 : 16,
                                   color: Colors.white,
@@ -552,6 +556,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                                 textAlign: TextAlign.center,
                               ),
                             ),
+
                             
                             SizedBox(height: isLandscape ? 16 : 24),
                             
