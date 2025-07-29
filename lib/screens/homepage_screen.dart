@@ -42,6 +42,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   // Referral code related state
   String? _sponsorName;
   String? _bizOpp = 'your opportunity';
+  String? _bizOpp1;
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
 
@@ -231,6 +232,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         setState(() {
           _sponsorName = fetchedSponsorName;
           _bizOpp = fetchedBizOpp;
+          _bizOpp1 = fetchedBizOpp;
         });
       }
     }
@@ -365,12 +367,14 @@ class _HomepageScreenState extends State<HomepageScreen>
                     text: _sponsorName ?? '',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(text: ' is using the Team Build Pro app to build their '),
+                  const TextSpan(text: ' is building their '),
                   TextSpan(
-                    text: _bizOpp ?? 'business opportunity',
+                    text: _bizOpp ?? 'direct sales',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(text: ' business, and they are inviting you to do the same!'),
+                  const TextSpan(
+                      text:
+                          ' team using Team Build Pro and wants you to join their success journey! Start building your own organization within their growing network.'),
                 ],
               ),
             ),
@@ -379,7 +383,67 @@ class _HomepageScreenState extends State<HomepageScreen>
       );
     }
 
-  return const SizedBox.shrink();
+    else {
+
+
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.green.withOpacity(0.2),
+              Colors.green.withOpacity(0.1)
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.green.withOpacity(0.3)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.trending_up,
+                      color: Colors.white, size: 16),
+                ),
+                const SizedBox(width: 8),
+                const Flexible(
+                  child: Text(
+                    'BREAKTHROUGH SUCCESS SOLUTION',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Transform your recruitment and team building strategy! Help prospects start building their organization immediately while your existing team members accelerate their growth - creating unstoppable momentum throughout your entire network!',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+  // return const SizedBox.shrink();
   }
 
 
@@ -391,11 +455,11 @@ class _HomepageScreenState extends State<HomepageScreen>
     return Container(
       constraints: BoxConstraints(
         minHeight: isLandscape 
-            ? screenHeight * 0.4  // Reduced for landscape
+            ? screenHeight * 0.45  // Slightly increased for landscape
             : screenHeight * 0.5,
         maxHeight: isLandscape 
-            ? screenHeight * 0.9  // Allow more height in landscape
-            : screenHeight * 0.65,
+            ? screenHeight * 0.95  // Increased max height to prevent cutoff
+            : screenHeight * 0.75,  // Increased max height for portrait
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -722,7 +786,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'Begin Account Registration',
+                'Begin Free 30-Day Trial!',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -796,7 +860,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'GET TEAM BUILD PRO',
+                'BEGIN FREE 30-DAY TRIAL!',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -888,7 +952,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'PROFESSIONAL NETWORKING',
+                  'CREATING MOMENTUM',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -938,7 +1002,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       const SizedBox(width: 16),
                       const Expanded(
                         child: Text(
-                          'Featured Collaboration',
+                          'Featured Opportuntiy',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -978,7 +1042,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            _bizOpp ?? 'your opportunity',
+                            _bizOpp1 ?? 'Your Company',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
