@@ -376,7 +376,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           _buildProcessStep(
             step: 3,
-            title: 'COLLABORATE - Unlock Opportunities Together',
+            title: 'PARTNER - Work Together For Mutual Success',
             description:
                 'When your network members reach engagement milestones, unlock organization opportunities.',
             icon: Icons.handshake,

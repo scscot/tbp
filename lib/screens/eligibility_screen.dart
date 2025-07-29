@@ -18,7 +18,7 @@ class EligibilityScreen extends StatefulWidget {
 }
 
 class _EligibilityScreenState extends State<EligibilityScreen> {
-  String _bizOpp = 'your business opportunity';
+  String _bizOpp = 'your opportunity';
   bool _isLoading = true;
   int _currentDirectCount = 0;
   int _currentTotalCount = 0;
@@ -205,59 +205,49 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     required IconData icon,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Row(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.growthPrimary,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                step.toString(),
-                style: const TextStyle(
-                  color: AppColors.textInverse,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Icon(icon, color: Colors.orange, size: 24),
               ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, color: AppColors.growthPrimary, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    height: 1.4,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.only(left: 44),
+            child: Text(
+              description,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+                height: 1.4,
+              ),
             ),
           ),
         ],
@@ -357,7 +347,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team',
+                          label: 'Total Team Members',
                         ),
                       ],
                     ),
@@ -395,7 +385,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         const SizedBox(width: 16),
                         _buildProgressCard(
                           icon: Icons.hub,
-                          label: 'Total Team',
+                          label: 'Total Team Members',
                           current: _currentTotalCount,
                           target: AppConstants.projectWideTotalTeamMin,
                         ),
@@ -440,8 +430,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'CONNECT - Expand Your Network',
-                      description: 'Connect with like-minded professionals and introduce Team Build Pro to colleagues who value meaningful business relationships.',
+                      title: 'INVITE - Expand Your Network',
+                      description: 'Connect with like-minded professionals open to exploring $_bizOpp .',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
@@ -452,8 +442,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'COLLABORATE - Unlock Opportunities Together',
-                      description: 'When your team members achieve team growth milestones, they recieve an invitation to join $_bizOpp.',
+                      title: 'PARTNER - Work Together For Mutual Success',
+                      description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
                     ),
                     Container(

@@ -407,7 +407,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Icon(Icons.analytics, color: AppColors.growthPrimary, size: 24),
               const SizedBox(width: 12),
               Text(
-                'Your Network Growth',
+                'Your Team Growth',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -423,7 +423,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.people,
                   value: user.directSponsorCount.toString(),
-                  label: 'Direct Sponsors',
+                  label: 'Direct\nSponsors',
                   color: Colors.blue.shade600,
                 ),
               ),
@@ -432,7 +432,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: _buildStatItem(
                   icon: Icons.groups,
                   value: user.totalTeamCount.toString(),
-                  label: 'Total Team',
+                  label: 'Total Team\nMembers',
                   color: Colors.green.shade600,
                 ),
               ),
@@ -611,7 +611,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
-    title: 'My Opportunity Details',
+    title: 'Opportunity Details',
     color: AppColors.opportunityPrimary,
     onTap: () {
       // Navigate to company screen normally
@@ -628,7 +628,7 @@ if (user.role == 'admin') ...[
   _buildActionCard(
     icon: Icons.rocket_launch,
     title: user.bizOppRefUrl != null
-        ? 'My Opportunity Details'
+        ? 'Opportunity Details'
         : 'Get Started Today',
     color: AppColors.opportunityPrimary,
     onTap: () {

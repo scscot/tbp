@@ -120,7 +120,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'My Opportunity Details',
+                      'Opportunity Details',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),

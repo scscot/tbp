@@ -7,12 +7,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/session_manager.dart';
 import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
 import 'login_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
+import '../config/app_constants.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class HomepageScreen extends StatefulWidget {
@@ -39,6 +41,7 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   // Referral code related state
   String? _sponsorName;
+  String? _bizOpp = 'your opportunity';
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
 
@@ -149,6 +152,8 @@ class _HomepageScreenState extends State<HomepageScreen>
     });
 
     String? fetchedSponsorName;
+    String? fetchedSponsorUid;
+    String? fetchedBizOpp;
 
     try {
       final uri = Uri.parse(
@@ -159,6 +164,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         final data = jsonDecode(response.body);
         fetchedSponsorName =
             '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+        fetchedSponsorUid = data['uid'] as String?;
 
         if (fetchedSponsorName.isNotEmpty) {
           await SessionManager.instance.setReferralData(code, fetchedSponsorName);
@@ -167,6 +173,49 @@ class _HomepageScreenState extends State<HomepageScreen>
           }
         } else {
           fetchedSponsorName = null;
+        }
+
+        // Fetch biz_opp from admin_settings using sponsor's upline_admin
+        if (fetchedSponsorUid != null) {
+          try {
+            // Get sponsor's user document to find their upline_admin
+            final sponsorDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(fetchedSponsorUid)
+                .get();
+
+            if (sponsorDoc.exists) {
+              final sponsorData = sponsorDoc.data();
+              String? uplineAdmin;
+
+              // If sponsor is admin, use their UID, otherwise use their upline_admin
+              if (sponsorData?['role'] == 'admin') {
+                uplineAdmin = fetchedSponsorUid;
+              } else {
+                uplineAdmin = sponsorData?['upline_admin'] as String?;
+              }
+
+              // Fetch biz_opp from admin_settings
+              if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
+                final adminSettingsDoc = await FirebaseFirestore.instance
+                    .collection('admin_settings')
+                    .doc(uplineAdmin)
+                    .get();
+
+                if (adminSettingsDoc.exists) {
+                  final adminData = adminSettingsDoc.data();
+                  fetchedBizOpp = adminData?['biz_opp'] as String?;
+                  if (kDebugMode) {
+                    print('✅ HomepageScreen: Fetched biz_opp: $fetchedBizOpp');
+                  }
+                }
+              }
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('❌ Error fetching biz_opp: $e');
+            }
+          }
         }
       } else {
         if (kDebugMode) {
@@ -181,6 +230,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       if (mounted) {
         setState(() {
           _sponsorName = fetchedSponsorName;
+          _bizOpp = fetchedBizOpp;
         });
       }
     }
@@ -302,14 +352,27 @@ class _HomepageScreenState extends State<HomepageScreen>
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              '$_sponsorName has invited you to join their professional network infrastructure.',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
+            RichText(
               textAlign: TextAlign.center,
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                children: [
+                  TextSpan(
+                    text: _sponsorName ?? '',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: ' is using the Team Build Pro app to build their '),
+                  TextSpan(
+                    text: _bizOpp ?? 'business opportunity',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: ' business, and they are inviting you to do the same!'),
+                ],
+              ),
             ),
           ],
         ),
@@ -378,7 +441,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                           ),
                           
-                          const SizedBox(height: 16), 
+                          const SizedBox(height: 24), 
                           
                           // Subtitle
                           Container(
@@ -392,7 +455,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             child: const Text(
                               'DIRECT SALES SUCCESS PLATFORM',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                                 letterSpacing: 1.2,
@@ -400,13 +463,13 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                           ),
                           
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 24),
                           
                           // Value proposition
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              'The comprehensive platform designed specifically for direct sales professionals to systematically build and manage their teams.',
+                              'The comprehensive platform designed specifically for direct sales professionals to effectively build and manage their teams.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -567,13 +630,16 @@ class _HomepageScreenState extends State<HomepageScreen>
       ),
       child: Column(
         children: [
-          const Text(
-            'BUILT FOR DIRECT SALES SUCCESS',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1A237E),
-              letterSpacing: 1.5,
+          const Center(
+            child: Text(
+              'BUILT FOR DIRECT SALES SUCCESS',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1A237E),
+                letterSpacing: 1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 32),
@@ -582,7 +648,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             icon: Icons.trending_up,
             title: 'Direct Sales Professionals',
             examples:
-                'Network Marketing • MLM • Direct Sales • Affiliate Marketing',
+                'Direct Sales • Affiliate Marketing',
             description:
                 'Build, track, and grow your direct sales team with professional tools designed for your success',
             color: Colors.orange,
@@ -770,7 +836,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       child: Column(
         children: [
           const Text(
-            'JOIN TEAM BUILD PRO',
+            'GET STARTED TODAY!',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
@@ -831,7 +897,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
                     Text(
-                      'Welcome! $_sponsorName has invited you to join their professional network.',
+                      '$_sponsorName has invited you to download the app and get started!',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.green.shade800,
@@ -855,7 +921,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'Accept Invitation & Join',
+                'Get Team Build Pro App',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -897,7 +963,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Start Your Network',
+                      'Join The Revolution',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -905,7 +971,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
                     Text(
-                      'Join as a founding member and build your professional infrastructure.',
+                      'Join thousands of direct sales professionals worldwide who are using the Team Build Pro app to grow their teams.',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.blue,
@@ -929,7 +995,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'Join TEAM BUILD PRO',
+                'GET TEAM BUILD PRO',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -982,6 +1048,459 @@ class _HomepageScreenState extends State<HomepageScreen>
   Widget _buildStatusBanner() {
     // Remove redundant banner - invitation info is shown in hero section
     return const SizedBox.shrink();
+  }
+
+  Widget _buildHowItWorks() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      color: Colors.grey.shade50,
+      child: Column(
+        children: [
+          // Section Title
+          const Text(
+            'HOW IT WORKS',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A237E),
+              letterSpacing: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+
+          // Hero Section
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1A237E), Color(0xFF3949AB)],
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.groups,
+                  size: 48,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'PROFESSIONAL NETWORKING',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
+                    height: 1.5,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Featured Collaboration Section
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF1A237E).withOpacity(0.2), width: 2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1A237E).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.star, color: Color(0xFF1A237E), size: 28),
+                      ),
+                      const SizedBox(width: 16),
+                      const Expanded(
+                        child: Text(
+                          'Featured Collaboration',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A237E),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF1A237E).withOpacity(0.05),
+                          Colors.green.withOpacity(0.05),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF1A237E).withOpacity(0.3), width: 1),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1A237E).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.business,
+                            color: Color(0xFF1A237E),
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            _bizOpp ?? 'your business opportunity',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A237E),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // The Challenge, Solution, Why It Works
+          _buildHowItWorksSectionCard(
+            title: 'THE CHALLENGE',
+            content: 'Building meaningful professional connections can be difficult in today\'s digital world. Many professionals struggle to expand their network beyond their immediate circle.',
+            icon: Icons.warning_amber,
+            color: Colors.red,
+          ),
+          const SizedBox(height: 16),
+
+          _buildHowItWorksSectionCard(
+            title: 'THE SOLUTION',
+            content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
+            icon: Icons.lightbulb,
+            color: const Color(0xFF1A237E),
+          ),
+          const SizedBox(height: 16),
+
+          _buildHowItWorksSectionCard(
+            title: 'WHY IT WORKS',
+            content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their networks organically.',
+            icon: Icons.trending_up,
+            color: Colors.green,
+          ),
+          const SizedBox(height: 24),
+
+          // The Process
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.settings, color: Colors.orange, size: 28),
+                      ),
+                      const SizedBox(width: 16),
+                      const Text(
+                        'THE PROCESS',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _buildHowItWorksProcessStep(
+                    step: 1,
+                    title: 'INVITE - Expand Your Network',
+                    description: 'Connect with like-minded professionals open to exploring $_bizOpp .',
+                    icon: Icons.connect_without_contact,
+                  ),
+                  _buildHowItWorksProcessStep(
+                    step: 2,
+                    title: 'CULTIVATE - Nurture Professional Bonds',
+                    description: 'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
+                    icon: Icons.psychology,
+                  ),
+                  _buildHowItWorksProcessStep(
+                    step: 3,
+                    title: 'PARTNER - Work Together For Mutual Success',
+                    description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
+                    icon: Icons.handshake,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.green, size: 24),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Note: Team Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful career opportunities.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green.shade800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Team Growth Thresholds
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Text(
+                    'KEY GROWTH TARGETS',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      _buildHowItWorksMetricCard(
+                        icon: Icons.connect_without_contact,
+                        value: AppConstants.projectWideDirectSponsorMin.toString(),
+                        label: 'Direct Sponsors',
+                      ),
+                      const SizedBox(width: 16),
+                      _buildHowItWorksMetricCard(
+                        icon: Icons.hub,
+                        value: AppConstants.projectWideTotalTeamMin.toString(),
+                        label: 'Total Team Members',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksSectionCard({
+    required String title,
+    required String content,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.2), width: 2),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.6,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksProcessStep({
+    required int step,
+    required String title,
+    required String description,
+    required IconData icon,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: Colors.orange, size: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.only(left: 44),
+            child: Text(
+              description,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksMetricCard({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.orange, Colors.deepOrange],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 32, color: Colors.white),
+            const SizedBox(height: 12),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white.withOpacity(0.9),
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -1066,7 +1585,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             _buildStatusBanner(),
             _buildHeroSection(),
             _buildOrganizationShowcase(),
-            _buildSuccessMetrics(),
+            _buildHowItWorks(),
             _buildSmartOnboarding(),
             _buildFooterSection(),
           ],
