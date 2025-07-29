@@ -384,10 +384,18 @@ class _HomepageScreenState extends State<HomepageScreen>
 
 
   Widget _buildHeroSection() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLandscape = screenWidth > screenHeight;
+    
     return Container(
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.5, // Reduced from 0.6
-        maxHeight: MediaQuery.of(context).size.height * 0.65, // Reduced from 0.8
+        minHeight: isLandscape 
+            ? screenHeight * 0.4  // Reduced for landscape
+            : screenHeight * 0.5,
+        maxHeight: isLandscape 
+            ? screenHeight * 0.9  // Allow more height in landscape
+            : screenHeight * 0.65,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -406,91 +414,93 @@ class _HomepageScreenState extends State<HomepageScreen>
           _buildAnimatedNetworkBackground(),
           
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Changed from spaceEvenly
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FadeTransition(
-                    opacity: _heroFadeAnimation,
-                    child: SlideTransition(
-                      position: _heroSlideAnimation,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 32), 
-                          _buildPlatformLogo(),
-                          const SizedBox(height: 24), 
-                          
-                          // Main headline
-                          ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                              colors: [Colors.white, Colors.blue.shade200],
-                            ).createShader(bounds),
-                            child: const Text(
-                              'TEAM BUILD PRO',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                                letterSpacing: 2.5,
-                                height: 1.1,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          
-                          const SizedBox(height: 24), 
-                          
-                          // Subtitle
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Colors.orange, Colors.deepOrange],
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: const Text(
-                              'DIRECT SALES SUCCESS PLATFORM',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 1.2,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FadeTransition(
+                      opacity: _heroFadeAnimation,
+                      child: SlideTransition(
+                        position: _heroSlideAnimation,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: isLandscape ? 16 : 32), 
+                            _buildPlatformLogo(),
+                            SizedBox(height: isLandscape ? 16 : 24), 
+                            
+                            // Main headline
+                            ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [Colors.white, Colors.blue.shade200],
+                              ).createShader(bounds),
+                              child: Text(
+                                'TEAM BUILD PRO',
+                                style: TextStyle(
+                                  fontSize: isLandscape ? 28 : 32,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  letterSpacing: 2.5,
+                                  height: 1.1,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
-                          
-                          const SizedBox(height: 24),
-                          
-                          // Value proposition
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              'The comprehensive platform designed specifically for direct sales professionals to effectively build and manage their teams.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                height: 1.4,
-                                fontWeight: FontWeight.w500,
+                            
+                            SizedBox(height: isLandscape ? 16 : 24), 
+                            
+                            // Subtitle
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Colors.orange, Colors.deepOrange],
+                                ),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              textAlign: TextAlign.center,
+                              child: Text(
+                                'DIRECT SALES SUCCESS PLATFORM',
+                                style: TextStyle(
+                                  fontSize: isLandscape ? 12 : 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
                             ),
-                          ),
-                          
-                          const SizedBox(height: 24), // Reduced from 24
-                          
-                          // Sponsor welcome or stats
-                          _buildDynamicWelcomeSection(),
-                          
-                          const SizedBox(height: 12), // Add bottom spacing
-                        ],
+                            
+                            SizedBox(height: isLandscape ? 16 : 24),
+                            
+                            // Value proposition
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                'The comprehensive platform designed specifically for direct sales professionals to effectively build and manage their teams.',
+                                style: TextStyle(
+                                  fontSize: isLandscape ? 14 : 16,
+                                  color: Colors.white,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            
+                            SizedBox(height: isLandscape ? 16 : 24),
+                            
+                            // Sponsor welcome or stats
+                            _buildDynamicWelcomeSection(),
+                            
+                            SizedBox(height: isLandscape ? 8 : 12),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -712,7 +722,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ),
               child: const Text(
-                'Get Team Build Pro App',
+                'Begin Account Registration',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -968,7 +978,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            _bizOpp ?? 'your business opportunity',
+                            _bizOpp ?? 'your opportunity',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -1045,7 +1055,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   _buildHowItWorksProcessStep(
                     step: 1,
                     title: 'INVITE - Expand Your Network',
-                    description: 'Connect with like-minded professionals open to exploring $_bizOpp .',
+                    description: 'Connect with like-minded professionals open to exploring $_bizOpp.',
                     icon: Icons.connect_without_contact,
                   ),
                   _buildHowItWorksProcessStep(
@@ -1060,6 +1070,50 @@ class _HomepageScreenState extends State<HomepageScreen>
                     description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                     icon: Icons.handshake,
                   ),
+
+const SizedBox(height: 8),
+                  
+                  // Key Growth Targets section
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'KEY GROWTH TARGETS',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            _buildHowItWorksMetricCard(
+                              icon: Icons.connect_without_contact,
+                              value: AppConstants.projectWideDirectSponsorMin.toString(),
+                              label: 'Direct Sponsors',
+                            ),
+                            const SizedBox(width: 16),
+                            _buildHowItWorksMetricCard(
+                              icon: Icons.hub,
+                              value: AppConstants.projectWideTotalTeamMin.toString(),
+                              label: 'Total Team Members',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -1083,45 +1137,6 @@ class _HomepageScreenState extends State<HomepageScreen>
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Team Growth Thresholds
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const Text(
-                    'KEY GROWTH TARGETS',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      _buildHowItWorksMetricCard(
-                        icon: Icons.connect_without_contact,
-                        value: AppConstants.projectWideDirectSponsorMin.toString(),
-                        label: 'Direct Sponsors',
-                      ),
-                      const SizedBox(width: 16),
-                      _buildHowItWorksMetricCard(
-                        icon: Icons.hub,
-                        value: AppConstants.projectWideTotalTeamMin.toString(),
-                        label: 'Total Team Members',
-                      ),
-                    ],
                   ),
                 ],
               ),
