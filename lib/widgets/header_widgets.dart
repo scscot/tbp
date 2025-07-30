@@ -177,7 +177,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       },
     );
 
-    
     if (result == true && mounted) {
       final authService = context.read<AuthService>();
       final navigator = Navigator.of(context);
@@ -390,7 +389,8 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     );
   }
 
-  List<PopupMenuEntry<String>> _buildMenuItems(bool isProfileComplete, UserModel? currentUser) {
+  List<PopupMenuEntry<String>> _buildMenuItems(
+      bool isProfileComplete, UserModel? currentUser) {
     final List<PopupMenuEntry<String>> items = [];
 
     if (isProfileComplete) {
@@ -410,7 +410,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         ),
         _buildBusinessOpportunityMenuItem(currentUser),
         const PopupMenuDivider(),
-        
+
         // Team & Growth section
         _buildMenuItem(
           value: 'share',
@@ -425,7 +425,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           color: AppColors.teamPrimary,
         ),
         const PopupMenuDivider(),
-        
+
         // Communication section
         _buildMenuItem(
           value: 'notifications',
@@ -647,7 +647,8 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
               ),
               elevation: 8,
               offset: const Offset(0, 8),
-              itemBuilder: (BuildContext context) => _buildMenuItems(isProfileComplete, currentUser),
+              itemBuilder: (BuildContext context) =>
+                  _buildMenuItems(isProfileComplete, currentUser),
             ),
           ),
       ],

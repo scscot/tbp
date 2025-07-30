@@ -125,6 +125,9 @@ class AuthService {
   Future<bool> shouldShowSubscriptionScreen(UserModel user) async {
     try {
       debugPrint('🔐 AUTH_SERVICE: Checking subscription status for user ${user.uid}');
+      debugPrint('🔐 AUTH_SERVICE: User subscription status: ${user.subscriptionStatus}');
+      debugPrint('🔐 AUTH_SERVICE: User trial start date: ${user.trialStartDate}');
+      debugPrint('🔐 AUTH_SERVICE: User is trial valid: ${user.isTrialValid}');
       
       // First check local user model for quick assessment
       final localCheck = _checkLocalSubscriptionStatus(user);
@@ -132,9 +135,11 @@ class AuthService {
       
       // If local check suggests subscription is needed, verify with cloud function
       if (localCheck) {
+        debugPrint('🔐 AUTH_SERVICE: Local check suggests subscription needed, verifying with cloud function...');
         return await _verifySubscriptionStatusViaFunction();
       }
       
+      debugPrint('🔐 AUTH_SERVICE: Local check passed, no subscription screen needed');
       return false;
       
     } catch (e) {
@@ -171,7 +176,16 @@ class AuthService {
       final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'us-central1')
           .httpsCallable('checkUserSubscriptionStatus');
       
-      final result = await callable.call();
+      debugPrint('🔐 AUTH_SERVICE: Calling cloud function...');
+      final result = await callable.call().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('❌ AUTH_SERVICE: Cloud function call timed out after 10 seconds');
+          throw TimeoutException('Cloud function call timed out', const Duration(seconds: 10));
+        },
+      );
+      
+      debugPrint('🔐 AUTH_SERVICE: Cloud function call completed');
       final data = result.data;
       
       final isActive = data['isActive'] as bool? ?? false;
@@ -187,8 +201,9 @@ class AuthService {
       
     } catch (e) {
       debugPrint('❌ AUTH_SERVICE: Error checking subscription via Cloud Function: $e');
-      // On error, be conservative - show subscription screen to be safe
-      return true;
+      // On error, be conservative - allow access but log the issue
+      debugPrint('🔐 AUTH_SERVICE: Allowing access due to cloud function error');
+      return false;
     }
   }
 
