@@ -15,7 +15,7 @@ import '../config/app_colors.dart';
 
 enum ViewMode { grid, list, analytics }
 
-enum FilterBy { allMembers, directSponsors, newMembers, qualifiedMembers, joinedMembers }
+enum FilterBy { selectReport, allMembers, directSponsors, newMembers, qualifiedMembers, joinedMembers }
 
 enum SortBy { name, joinDate, level, location }
 
@@ -46,7 +46,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   bool _isLoading = true;
   // ignore: prefer_final_fields
   ViewMode _currentView = ViewMode.list;
-  FilterBy _filterBy = FilterBy.allMembers;
+  FilterBy _filterBy = FilterBy.selectReport;
   final SortBy _sortBy = SortBy.joinDate;
   String _searchQuery = '';
   final Set<int> _expandedPanels = {};
@@ -290,7 +290,10 @@ class _NetworkScreenState extends State<NetworkScreen>
     }
 
     // Apply filtering based on filter type
-    if (_filterBy == FilterBy.directSponsors) {
+    if (_filterBy == FilterBy.selectReport) {
+      // Clear filtered members when no report is selected
+      filtered = [];
+    } else if (_filterBy == FilterBy.directSponsors) {
       // Filter for direct sponsors (level 1 relative to current user)
       filtered = filtered
           .where((m) => (m.level - _levelOffset) == 1)
@@ -306,7 +309,6 @@ class _NetworkScreenState extends State<NetworkScreen>
       filtered = filtered.where((m) => m.qualifiedDate != null).toList();
     } else if (_filterBy == FilterBy.joinedMembers) {
       filtered = filtered.where((m) => m.bizJoinDate != null).toList();
-
     }
 
     // Apply sorting (default descending by join date)
@@ -588,59 +590,19 @@ class _NetworkScreenState extends State<NetworkScreen>
               },
             ),
           ),
-          // Cache status indicator (debug mode only)
-          if (kDebugMode) _buildCacheStatusIndicator(),
         ],
       ),
     );
   }
 
-  /// Debug widget to show cache status
-  Widget _buildCacheStatusIndicator() {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: Future.value(_networkService.getCacheStats()),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
-        
-        final stats = snapshot.data!;
-        final totalEntries = stats['totalEntries'] as int;
-        
-        return Container(
-          margin: const EdgeInsets.only(top: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.memory,
-                size: 16,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                'Cache: $totalEntries entries',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   String _getFilterDisplayName(FilterBy filter) {
     // Use the directly fetched business opportunity name
     // debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
     
     switch (filter) {
+      case FilterBy.selectReport:
+        return 'Select Team Report';
       case FilterBy.allMembers:
         return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
       case FilterBy.directSponsors:
@@ -738,9 +700,11 @@ class _NetworkScreenState extends State<NetworkScreen>
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            _searchQuery.isNotEmpty
-                ? 'No members match your search.'
-                : 'No members found for this filter.',
+            _filterBy == FilterBy.selectReport
+                ? 'Please select a team report from the dropdown above to view your team data.'
+                : _searchQuery.isNotEmpty
+                    ? 'No members match your search.'
+                    : 'No members found for this filter.',
             style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
