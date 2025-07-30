@@ -2,6 +2,7 @@
 // Professional UI redesign with modern layouts and enhanced reporting
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -215,6 +216,50 @@ class _NetworkScreenState extends State<NetworkScreen>
     }
   }
 
+  /// Force refresh data (bypasses cache)
+  Future<void> _refreshData() async {
+    try {
+      debugPrint('🔄 REFRESH: Force refreshing network data...');
+      
+      // Force refresh counts and network data
+      final counts = await _networkService.refreshNetworkCounts();
+      
+      if (!mounted) return;
+
+      final result = await _networkService.refreshFilteredNetwork(
+        filter: 'all',
+        searchQuery: '',
+        levelOffset: _levelOffset,
+        limit: 1000,
+      );
+
+      _allMembers = result['network'] as List<UserModel>;
+      _calculateAnalytics(counts);
+      _applyFiltersAndSort();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Network data refreshed'),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error refreshing team data: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error refreshing data: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _calculateAnalytics(Map<String, dynamic> counts) {
     // --- REVISED: Use the server-provided counts directly ---
     _analytics = {
@@ -334,7 +379,10 @@ class _NetworkScreenState extends State<NetworkScreen>
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _buildContent(),
+                : RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: _buildContent(),
+                  ),
           ),
         ],
       ),
@@ -465,28 +513,45 @@ class _NetworkScreenState extends State<NetworkScreen>
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Search bar
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search team members...',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                        _onSearchChanged();
-                      },
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
+          // Search bar with cache info
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search team members...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              _onSearchChanged();
+                            },
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.backgroundSecondary,
+                  ),
+                ),
               ),
-              filled: true,
-              fillColor: AppColors.backgroundSecondary,
-            ),
+              const SizedBox(width: 8),
+              // Cache refresh button
+              IconButton(
+                onPressed: _refreshData,
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Force refresh data',
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  foregroundColor: AppColors.primary,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           // Professional dropdown filter
@@ -523,8 +588,51 @@ class _NetworkScreenState extends State<NetworkScreen>
               },
             ),
           ),
+          // Cache status indicator (debug mode only)
+          if (kDebugMode) _buildCacheStatusIndicator(),
         ],
       ),
+    );
+  }
+
+  /// Debug widget to show cache status
+  Widget _buildCacheStatusIndicator() {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: Future.value(_networkService.getCacheStats()),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        
+        final stats = snapshot.data!;
+        final totalEntries = stats['totalEntries'] as int;
+        
+        return Container(
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.memory,
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Cache: $totalEntries entries',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
