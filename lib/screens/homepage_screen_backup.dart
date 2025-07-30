@@ -319,27 +319,27 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   double _calculateContentHeight(bool isLandscape) {
     double height = 0;
-    height += isLandscape ? 12 : 32; // top spacing (reduced for landscape)
-    height += isLandscape ? 60 : 80; // platform logo (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += isLandscape ? 45 : 60; // main title (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing  
-    height += isLandscape ? 35 : 50; // subtitle badge (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += isLandscape ? 100 : 140; // value proposition text (less in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += _estimateWelcomeCardHeight(isLandscape); // dynamic card with landscape consideration
-    height += isLandscape ? 6 : 12; // bottom spacing
-    height += isLandscape ? 80 : 120; // safety buffer (less needed in landscape)
+    height += isLandscape ? 16 : 32; // top spacing
+    height += 80; // platform logo
+    height += isLandscape ? 16 : 24; // spacing
+    height += 50; // main title
+    height += isLandscape ? 16 : 24; // spacing  
+    height += 40; // subtitle badge
+    height += isLandscape ? 16 : 24; // spacing
+    height += 100; // value proposition text
+    height += isLandscape ? 16 : 24; // spacing
+    height += _estimateWelcomeCardHeight(); // dynamic card
+    height += isLandscape ? 8 : 12; // bottom spacing
+    height += 80; // safety buffer for overflow prevention
     
     return height;
   }
 
-  double _estimateWelcomeCardHeight(bool isLandscape) {
+  double _estimateWelcomeCardHeight() {
     if (_sponsorName != null && _sponsorName!.isNotEmpty) {
-      return isLandscape ? 100 : 120; // Personal invitation card (shorter in landscape)
+      return 120; // Personal invitation card (shorter)
     } else {
-      return isLandscape ? 140 : 180; // Innovative approach card (shorter in landscape)
+      return 180; // Innovative approach card (longer text)
     }
   }
 
@@ -472,12 +472,13 @@ class _HomepageScreenState extends State<HomepageScreen>
           _buildAnimatedNetworkBackground(),
 
           SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
+            child: SingleChildScrollView( // Internal scrolling fallback
+              child: Padding(
+                padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                       FadeTransition(
                         opacity: _heroFadeAnimation,
                         child: SlideTransition(
@@ -564,7 +565,8 @@ class _HomepageScreenState extends State<HomepageScreen>
                           ),
                         ),
                       ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
