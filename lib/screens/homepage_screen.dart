@@ -249,15 +249,12 @@ class _HomepageScreenState extends State<HomepageScreen>
     super.dispose();
   }
 
-  void _navigateToLogin() {
+void _navigateToLogin() {
     if (_hasPerformedLogout) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginScreen(appId: widget.appId),
-        ),
-      );
+      // Dismiss the homepage to reveal the underlying login screen
+      Navigator.of(context).pop();
     } else {
+      // This logic ensures the pop only happens after the initial logout check is complete
       Future.delayed(const Duration(milliseconds: 100), () {
         if (mounted) {
           _navigateToLogin();

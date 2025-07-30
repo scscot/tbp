@@ -53,14 +53,13 @@ class DeepLinkService {
       debugPrint('🔗 Deep Link: Found referral code: $referralCode');
       
       // Navigate to homepage screen with referral code
-      navigatorKey.currentState?.pushAndRemoveUntil(
+      navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => HomepageScreen(
             referralCode: referralCode,
             appId: appId,
           ),
         ),
-        (route) => false, // Clear the navigation stack
       );
     } else {
       debugPrint('🔗 Deep Link: No referral code found, ignoring deep link');
