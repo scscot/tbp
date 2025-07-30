@@ -97,6 +97,15 @@ class _NetworkScreenState extends State<NetworkScreen>
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.toLowerCase();
+      
+      // Auto-load "All Members" data if user is searching but no report is selected
+      if (_searchQuery.isNotEmpty && _filterBy == FilterBy.selectReport) {
+        _filterBy = FilterBy.allMembers;
+        if (kDebugMode) {
+          debugPrint('🔍 SEARCH: Auto-loading All Members for search query: "$_searchQuery"');
+        }
+      }
+      
       _applyFiltersAndSort();
     });
   }
@@ -291,8 +300,11 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     // Apply filtering based on filter type
     if (_filterBy == FilterBy.selectReport) {
-      // Clear filtered members when no report is selected
-      filtered = [];
+      // Clear filtered members when no report is selected AND no search query
+      if (_searchQuery.isEmpty) {
+        filtered = [];
+      }
+      // If there's a search query, we keep the filtered results from search
     } else if (_filterBy == FilterBy.directSponsors) {
       // Filter for direct sponsors (level 1 relative to current user)
       filtered = filtered
@@ -409,7 +421,6 @@ class _NetworkScreenState extends State<NetworkScreen>
       ),
     );
   }
-
 
   Widget _buildAnalyticsCards() {
     return Container(
@@ -595,7 +606,6 @@ class _NetworkScreenState extends State<NetworkScreen>
     );
   }
 
-
   String _getFilterDisplayName(FilterBy filter) {
     // Use the directly fetched business opportunity name
     // debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
@@ -696,17 +706,47 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   Widget _buildExpandableLevelView() {
     if (_membersByLevel.isEmpty) {
+      String message;
+      if (_filterBy == FilterBy.selectReport && _searchQuery.isEmpty) {
+        message = 'Please select a team report from the dropdown above to view your team data.';
+      } else if (_searchQuery.isNotEmpty) {
+        message = _filterBy == FilterBy.selectReport 
+            ? 'Showing search results from All Members. No members match your search.'
+            : 'No members match your search.';
+      } else {
+        message = 'No members found for this filter.';
+      }
+
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: Text(
-            _filterBy == FilterBy.selectReport
-                ? 'Please select a team report from the dropdown above to view your team data.'
-                : _searchQuery.isNotEmpty
-                    ? 'No members match your search.'
-                    : 'No members found for this filter.',
-            style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                message,
+                style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              if (_filterBy == FilterBy.selectReport && _searchQuery.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    'Searching in: All Members',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       );
@@ -714,60 +754,94 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     return SingleChildScrollView(
       child: Column(
-        children: _membersByLevel.entries.map((entry) {
-          final level = entry.key;
-          final users = entry.value;
-          final isExpanded = _expandedPanels.contains(level);
-          
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (_expandedPanels.contains(level)) {
-                        _expandedPanels.remove(level);
-                      } else {
-                        _expandedPanels.add(level);
-                      }
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Level $level',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Text(
-                          '${users.length} Members',
-                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          isExpanded ? Icons.expand_less : Icons.expand_more,
-                          color: AppColors.primary,
-                        ),
-                      ],
+        children: [
+          // Show search context indicator when searching without explicit report selection
+          if (_filterBy == FilterBy.allMembers && _searchQuery.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Showing search results from All Members',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-                if (isExpanded)
-                  Column(
-                    children: users.map((user) => _buildMemberListCard(user)).toList(),
-                  ),
-              ],
+                ],
+              ),
             ),
-          );
-        }).toList(),
+          ],
+          ..._membersByLevel.entries.map((entry) {
+            final level = entry.key;
+            final users = entry.value;
+            final isExpanded = _expandedPanels.contains(level);
+            
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (_expandedPanels.contains(level)) {
+                          _expandedPanels.remove(level);
+                        } else {
+                          _expandedPanels.add(level);
+                        }
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Level $level',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
+                          Text(
+                            '${users.length} Members',
+                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            isExpanded ? Icons.expand_less : Icons.expand_more,
+                            color: AppColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (isExpanded)
+                    Column(
+                      children: users.map((user) => _buildMemberListCard(user)).toList(),
+                    ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }
