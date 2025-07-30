@@ -861,59 +861,50 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-// lib/functions/index.js
-
 exports.getNetworkCounts = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
   const currentUserId = request.auth.uid;
-
   try {
+    const networkSnapshot = await db.collection("users")
+      .where("upline_refs", "array-contains", currentUserId)
+      .get();
+
+    if (networkSnapshot.empty) {
+      return {
+        counts: { all: 0, last24: 0, newQualified: 0, joinedOpportunity: 0 }
+      };
+    }
+
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    
+    let last24Count = 0;
+    let newQualifiedCount = 0;
+    let joinedOpportunityCount = 0;
 
-    // Base query for the user's network
-    const baseNetworkQuery = db.collection("users").where("upline_refs", "array-contains", currentUserId);
+    networkSnapshot.docs.forEach(doc => {
+      const user = doc.data();
+      const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
 
-    // Create promises for each count
-    const allCountPromise = baseNetworkQuery.count().get();
-    const last24CountPromise = baseNetworkQuery.where("createdAt", ">=", twentyFourHoursAgo).count().get();
-    const newQualifiedCountPromise = baseNetworkQuery.where("qualifiedDate", "!=", null).count().get();
-    const joinedOpportunityCountPromise = baseNetworkQuery.where("biz_join_date", "!=", null).count().get();
-    // --- NEW: Add a specific count for direct sponsors ---
-    const directSponsorsCountPromise = db.collection("users").where("sponsor_id", "==", currentUserId).count().get();
-
-
-    // Await all promises simultaneously
-    const [
-      allCountSnapshot,
-      last24CountSnapshot,
-      newQualifiedCountSnapshot,
-      joinedOpportunityCountSnapshot,
-      directSponsorsCountSnapshot, // --- NEW ---
-    ] = await Promise.all([
-      allCountPromise,
-      last24CountPromise,
-      newQualifiedCountPromise,
-      joinedOpportunityCountPromise,
-      directSponsorsCountPromise, // --- NEW ---
-    ]);
-
-    // Extract counts from snapshots
-    const allCount = allCountSnapshot.data().count;
-    const last24Count = last24CountSnapshot.data().count;
-    const newQualifiedCount = newQualifiedCountSnapshot.data().count;
-    const joinedOpportunityCount = joinedOpportunityCountSnapshot.data().count;
-    const directSponsorsCount = directSponsorsCountSnapshot.data().count; // --- NEW ---
+      if (createdAt) {
+        if (createdAt >= twentyFourHoursAgo) last24Count++;
+      }
+      if (user.qualifiedDate) {
+        newQualifiedCount++;
+      }
+      if (user.biz_join_date) {
+        joinedOpportunityCount++;
+      }
+    });
 
     return {
       counts: {
-        all: allCount,
+        all: networkSnapshot.size,
         last24: last24Count,
         newQualified: newQualifiedCount,
         joinedOpportunity: joinedOpportunityCount,
-        directSponsors: directSponsorsCount, // --- NEW ---
       }
     };
   } catch (error) {
@@ -928,56 +919,16 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
   }
 
   const currentUserId = request.auth.uid;
-  const { filter, searchQuery, limit = 100, offset = 0 } = request.data || {};
+  const { filter, searchQuery, levelOffset, limit = 100, offset = 0 } = request.data || {};
 
   try {
     console.log(`🔍 FILTER DEBUG: Starting filtered team for user ${currentUserId}`);
-    console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}"`);
+    console.log(`🔍 FILTER DEBUG: Params - filter: ${filter}, searchQuery: "${searchQuery}", levelOffset: ${levelOffset}`);
 
-    // --- OPTIMIZATION: Build a dynamic query with filters applied ---
-    let baseQuery = db.collection("users").where("upline_refs", "array-contains", currentUserId);
-
-    // Apply main filters
-    const now = new Date();
-    switch (filter) {
-      case 'last24':
-        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        baseQuery = baseQuery.where("createdAt", ">=", twentyFourHoursAgo);
-        break;
-      case 'newQualified':
-        baseQuery = baseQuery.where("qualifiedDate", "!=", null);
-        break;
-      case 'joinedOpportunity':
-        baseQuery = baseQuery.where("biz_join_date", "!=", null);
-        break;
-    }
-
-    // IMPORTANT: The text search is removed here because it's inefficient.
-    // A proper implementation requires a dedicated search service like Algolia.
-    // For now, we prioritize the performance of the main filters.
-
-    // Create a parallel query to get the total count for pagination
-    const countQuery = baseQuery.count().get();
-
-    // Apply sorting and pagination to the main data query
-    let dataQuery = baseQuery;
-    if (filter === 'joinedOpportunity') {
-      dataQuery = dataQuery.orderBy("biz_join_date", "desc");
-    } else {
-      // Default sort for all other filters, including 'newQualified' and 'last24'
-      dataQuery = dataQuery.orderBy("createdAt", "desc");
-    }
-
-    dataQuery = dataQuery.limit(limit).offset(offset);
-
-    // Execute both queries in parallel
-    const [countSnapshot, networkSnapshot] = await Promise.all([
-      countQuery,
-      dataQuery.get()
-    ]);
-
-    const totalCount = countSnapshot.data().count;
-    const hasMore = offset + limit < totalCount;
+    // Get base network
+    const networkSnapshot = await db.collection("users")
+      .where("upline_refs", "array-contains", currentUserId)
+      .get();
 
     if (networkSnapshot.empty) {
       return {
@@ -987,12 +938,99 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
       };
     }
 
-    const filteredUsers = networkSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    let filteredUsers = [];
+    const now = new Date();
 
-    console.log(`✅ FILTER DEBUG: Returning ${filteredUsers.length} users out of ${totalCount} total`);
+    // Apply time-based and status filters
+    networkSnapshot.docs.forEach(doc => {
+      const user = { uid: doc.id, ...doc.data() };
+      const createdAt = user.createdAt?.toDate ? user.createdAt.toDate() : null;
+      const qualifiedDate = user.qualifiedDate?.toDate ? user.qualifiedDate.toDate() : null;
+      const bizJoinDate = user.biz_join_date?.toDate ? user.biz_join_date.toDate() : null;
+
+      // Apply filter logic
+      let includeUser = false;
+      switch (filter) {
+        case 'last24':
+          includeUser = createdAt && createdAt >= new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case 'newQualified':
+          includeUser = !!qualifiedDate;
+          break;
+        case 'joinedOpportunity':
+          includeUser = !!bizJoinDate;
+          break;
+        case 'all':
+        default:
+          includeUser = true;
+          break;
+      }
+
+      if (includeUser) {
+        // Apply search filter if provided
+        if (searchQuery && searchQuery.trim() !== '') {
+          const searchLower = searchQuery.toLowerCase();
+          const matchesSearch =
+            (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
+            (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
+            (user.email && user.email.toLowerCase().includes(searchLower)) ||
+            (user.city && user.city.toLowerCase().includes(searchLower)) ||
+            (user.state && user.state.toLowerCase().includes(searchLower)) ||
+            (user.country && user.country.toLowerCase().includes(searchLower));
+
+          if (matchesSearch) {
+            filteredUsers.push(user);
+          }
+        } else {
+          filteredUsers.push(user);
+        }
+      }
+    });
+
+    // Sort users based on filter type
+    filteredUsers.sort((a, b) => {
+      if (filter === 'joinedOpportunity') {
+        const aDate = a.biz_join_date?.toDate ? a.biz_join_date.toDate() : null;
+        const bDate = b.biz_join_date?.toDate ? b.biz_join_date.toDate() : null;
+        if (!aDate && !bDate) return 0;
+        if (!aDate) return 1;
+        if (!bDate) return -1;
+        return bDate.getTime() - aDate.getTime();
+      } else {
+        // Default sort by creation date
+        const aDate = a.createdAt?.toDate ? a.createdAt.toDate() : null;
+        const bDate = b.createdAt?.toDate ? b.createdAt.toDate() : null;
+        if (!aDate && !bDate) return 0;
+        if (!aDate) return 1;
+        if (!bDate) return -1;
+        return bDate.getTime() - aDate.getTime();
+      }
+    });
+
+    // Group by level if levelOffset is provided
+    const groupedByLevel = {};
+    if (levelOffset !== undefined) {
+      filteredUsers.forEach(user => {
+        const displayLevel = (user.level || 1) - levelOffset;
+        if (displayLevel > 0 || filter === 'newQualified' || filter === 'joinedOpportunity') {
+          if (!groupedByLevel[displayLevel]) {
+            groupedByLevel[displayLevel] = [];
+          }
+          groupedByLevel[displayLevel].push(user);
+        }
+      });
+    }
+
+    // Apply pagination
+    const totalCount = filteredUsers.length;
+    const paginatedUsers = filteredUsers.slice(offset, offset + limit);
+    const hasMore = offset + limit < totalCount;
+
+    console.log(`✅ FILTER DEBUG: Returning ${paginatedUsers.length} users out of ${totalCount} total`);
 
     return {
-      network: serializeData(filteredUsers),
+      network: serializeData(paginatedUsers),
+      groupedByLevel: levelOffset !== undefined ? serializeData(groupedByLevel) : null,
       totalCount,
       hasMore,
       offset,

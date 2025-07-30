@@ -216,35 +216,17 @@ class _NetworkScreenState extends State<NetworkScreen>
   }
 
   void _calculateAnalytics(Map<String, dynamic> counts) {
-    // Calculate direct sponsors from the actual member data since backend doesn't provide level1 count
-    final directSponsorsCount = _allMembers.where((m) => 
-      (m.level - _levelOffset) == 1
-    ).length;
-    
-    // Calculate new members count using same logic as frontend filtering
-    final now = DateTime.now();
-    final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
-    final newMembersCount = _allMembers.where((m) => 
-      m.createdAt != null && 
-      m.createdAt!.isAfter(sinceYesterday) &&
-      m.photoUrl != null
-    ).length;
-    
-    // Use backend counts for most analytics, but frontend calculation for newMembers
+    // --- REVISED: Use the server-provided counts directly ---
     _analytics = {
       'totalMembers': counts['all'] ?? 0,
-      'directSponsors': directSponsorsCount, // Calculate from actual data
-      'newMembers': newMembersCount, // Use frontend calculation to match filtering logic
+      'directSponsors': counts['directSponsors'] ?? 0, // From new backend logic
+      'newMembers':
+          counts['last24'] ?? 0, // Use the 'last24' count from backend
       'qualified': counts['newQualified'] ?? 0,
       'withOpportunity': counts['joinedOpportunity'] ?? 0,
     };
-    
-    debugPrint('🔍 ANALYTICS DEBUG: Backend counts: $counts');
-    debugPrint('🔍 ANALYTICS DEBUG: Direct sponsors calculated: $directSponsorsCount');
-    debugPrint('🔍 ANALYTICS DEBUG: New members calculated (frontend): $newMembersCount');
-    debugPrint('🔍 ANALYTICS DEBUG: Backend new members (sinceYesterday): ${counts['sinceYesterday'] ?? 0}');
-    debugPrint('🔍 ANALYTICS DEBUG: All members count: ${_allMembers.length}');
-    debugPrint('🔍 ANALYTICS DEBUG: Final analytics: $_analytics');
+
+    debugPrint('🔍 ANALYTICS DEBUG: Final analytics from server: $_analytics');
   }
 
   void _applyFiltersAndSort() {

@@ -20,7 +20,7 @@ import 'package:flutter/foundation.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
 import '../main.dart';
-import 'subscription_screen.dart'; // --- 1. New import for SubscriptionScreen ---
+
 
 class DashboardScreen extends StatefulWidget {
   final String appId;
@@ -42,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   int _unreadMessageCount = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  String? _bizOpp;
+  String? _bizOpp; // Add state variable to store biz_opp value
 
   @override
   void initState() {
@@ -59,32 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       curve: Curves.easeInOut,
     ));
     _animationController.forward();
-    _loadBizOppData();
-  }
-
-  // --- 2. New helper method to check subscription before navigating ---
-  Future<void> _navigateTo(Widget screen) async {
-    final authService = context.read<AuthService>();
-    final user = context.read<UserModel?>();
-
-    if (user == null || !mounted) return;
-
-    final needsSubscription =
-        await authService.shouldShowSubscriptionScreen(user);
-
-    if (!mounted) return;
-
-    if (needsSubscription) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => screen),
-      );
-    }
+    _loadBizOppData(); // Load biz_opp data on init
   }
 
   Future<void> _loadBizOppData() async {
@@ -98,15 +73,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     try {
+      // Fetch biz_opp from admin_settings (following BusinessScreen pattern)
       final adminSettingsDoc = await FirebaseFirestore.instance
           .collection('admin_settings')
           .doc(adminUid)
           .get();
-
+      
       if (adminSettingsDoc.exists && mounted) {
         final adminData = adminSettingsDoc.data();
         final retrievedBizOpp = adminData?['biz_opp'] as String?;
-
+        
         setState(() {
           _bizOpp = retrievedBizOpp;
         });
@@ -204,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(75),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -214,10 +190,11 @@ class _DashboardScreenState extends State<DashboardScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 32),
+              // Enhanced icon with background
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(50),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Icon(
@@ -227,6 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
               const SizedBox(height: 24),
+              // Title with better typography
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
@@ -242,13 +220,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
               const SizedBox(height: 16),
+              // Description with improved readability
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
                   'You\'ve joined the $_bizOpp opportunity — great! Update your profile now so every Team member that joins the $_bizOpp opportunity after you is placed directly into your $_bizOpp team.',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.textInverse.withAlpha(240),
+                    color: AppColors.textInverse.withValues(alpha: 0.95),
                     height: 1.4,
                     fontWeight: FontWeight.w400,
                   ),
@@ -256,6 +235,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
               const SizedBox(height: 32),
+              // Enhanced button styling
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Container(
@@ -265,7 +245,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withAlpha(25),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -276,23 +256,28 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(dialogContext);
-                        _navigateTo(AddLinkScreen(appId: widget.appId));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddLinkScreen(appId: widget.appId),
+                          ),
+                        );
                       },
                       borderRadius: BorderRadius.circular(16),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                         child: Column(
                           children: [
                             Text(
                               "Add My $_bizOpp Organization Link Now",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFFFF6B00),
+                                color: const Color(0xFFFF6B00),
                               ),
                               textAlign: TextAlign.center,
                             ),
+ 
                           ],
                         ),
                       ),
@@ -301,11 +286,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
               const SizedBox(height: 20),
+              // Enhanced close button
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext),
                 style: TextButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: Text(
                   'Skip for now - I haven’t joined $_bizOpp',
@@ -314,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
-                    decorationColor: AppColors.textInverse.withAlpha(180),
+                    decorationColor: AppColors.textInverse.withValues(alpha: 0.7),
                   ),
                 ),
               ),
@@ -360,8 +345,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       'Welcome back,',
                       style: TextStyle(
                         fontSize: 16,
-                        color:
-                            AppColors.withOpacity(AppColors.textInverse, 0.9),
+                        color: AppColors.withOpacity(AppColors.textInverse, 0.9),
                       ),
                     ),
                     Text(
@@ -386,8 +370,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             child: Row(
               children: [
-                Icon(Icons.rocket_launch,
-                    color: AppColors.textInverse, size: 24),
+                Icon(Icons.rocket_launch, color: AppColors.textInverse, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -457,14 +440,13 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
           const SizedBox(height: 12),
           LinearProgressIndicator(
-            value: AppConstants.projectWideDirectSponsorMin > 0
-                ? (user.directSponsorCount /
-                        AppConstants.projectWideDirectSponsorMin)
-                    .clamp(0.0, 1.0)
+            value: AppConstants.projectWideDirectSponsorMin > 0 
+                ? (user.directSponsorCount / AppConstants.projectWideDirectSponsorMin).clamp(0.0, 1.0)
                 : 0.0,
             backgroundColor: AppColors.borderLight,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
+          
         ],
       ),
     );
@@ -565,8 +547,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             minWidth: 20,
                             minHeight: 20,
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: AppColors.error,
                             borderRadius: BorderRadius.circular(10),
@@ -599,7 +580,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  // --- 3. All onTap handlers updated to use the new _navigateTo method ---
   Widget _buildQuickActions(UserModel user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,61 +599,116 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.help_outline,
           title: 'How It Works',
           color: AppColors.teamAccent,
-          onTap: () => _navigateTo(HowItWorksScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HowItWorksScreen(appId: widget.appId),
+            ),
+          ),
         ),
-        if (user.role == 'admin') ...[
-          _buildActionCard(
-            icon: Icons.rocket_launch,
-            title: 'Opportunity Details',
-            color: AppColors.opportunityPrimary,
-            onTap: () => _navigateTo(CompanyScreen(appId: widget.appId)),
+// Business opportunity card - conditional based on qualification status
+
+if (user.role == 'admin') ...[
+  _buildActionCard(
+    icon: Icons.rocket_launch,
+    title: 'Opportunity Details',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      // Navigate to company screen normally
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CompanyScreen(appId: widget.appId),
+        ),
+      );
+    },
+  ),
+] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
+  // QUALIFIED: Show business details or join business option
+  _buildActionCard(
+    icon: Icons.rocket_launch,
+    title: user.bizOppRefUrl != null
+        ? 'Opportunity Details'
+        : 'Get Started Today',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      if (user.bizOppRefUrl != null) {
+        // User has already joined - show company details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompanyScreen(appId: widget.appId),
           ),
-        ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
-          _buildActionCard(
-            icon: Icons.rocket_launch,
-            title: user.bizOppRefUrl != null
-                ? 'Opportunity Details'
-                : 'Get Started Today',
-            color: AppColors.opportunityPrimary,
-            onTap: () {
-              if (user.bizOppRefUrl != null) {
-                _navigateTo(CompanyScreen(appId: widget.appId));
-              } else {
-                if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
-                  _showBizOppFollowUpModal(user);
-                } else {
-                  _navigateTo(BusinessScreen(appId: widget.appId));
-                }
-              }
-            },
-          ),
-        ] else ...[
-          _buildActionCard(
-            icon: Icons.assessment,
-            title: 'Eligibility Status',
-            color: AppColors.opportunityPrimary,
-            onTap: () => _navigateTo(EligibilityScreen(appId: widget.appId)),
-          ),
-        ],
+        );
+      } else {
+        // Check if user has visited business opportunity but hasn't added referral link
+        if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
+          // Show follow-up modal
+          _showBizOppFollowUpModal(user);
+        } else {
+          // User is qualified but hasn't visited - show business screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BusinessScreen(appId: widget.appId),
+            ),
+          );
+        }
+      }
+    },
+  ),
+] else ...[
+  // NOT QUALIFIED: Show eligibility status
+  _buildActionCard(
+    icon: Icons.assessment,
+    title: 'Eligibility Status',
+    color: AppColors.opportunityPrimary,
+    onTap: () {
+      // Navigate to eligibility screen normally
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => EligibilityScreen(appId: widget.appId),
+        ),
+      );
+    },
+  ),
+],
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow My Team',
           color: AppColors.growthPrimary,
-          onTap: () => _navigateTo(ShareScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ShareScreen(appId: widget.appId),
+            ),
+          ),
         ),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View My Team',
           color: AppColors.teamPrimary,
-          onTap: () => _navigateTo(NetworkScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => NetworkScreen(appId: widget.appId),
+            ),
+          ),
         ),
+
         _buildActionCard(
           icon: Icons.notifications,
           title: 'Notifications',
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
-          onTap: () => _navigateTo(NotificationsScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => NotificationsScreen(appId: widget.appId),
+            ),
+          ),
         ),
         _buildActionCard(
           icon: Icons.message,
@@ -681,16 +716,25 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
           badgeCount: _unreadMessageCount,
-          onTap: () => _navigateTo(MessageCenterScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MessageCenterScreen(appId: widget.appId),
+            ),
+          ),
         ),
-
+        
         _buildActionCard(
           icon: Icons.person,
           title: 'My Profile',
           color: AppColors.primary,
-          onTap: () => _navigateTo(ProfileScreen(appId: widget.appId)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProfileScreen(appId: widget.appId),
+            ),
+          ),
         ),
-        // The Log Out button remains unchanged
         _buildActionCard(
           icon: Icons.logout,
           title: 'Log Out',
@@ -711,6 +755,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             }
           },
         ),
+        
       ],
     );
   }
