@@ -5,7 +5,7 @@ class LinkValidatorService {
   static Future<bool> validateReferralUrl(String url) async {
     try {
       final HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('validateReferralUrl');
+          FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('validateReferralUrl');
       final response = await callable.call(<String, dynamic>{'url': url});
 
       if (response.data['valid'] == true) {

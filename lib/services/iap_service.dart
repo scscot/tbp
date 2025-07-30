@@ -10,7 +10,7 @@ class IAPService {
   IAPService._internal();
 
   final InAppPurchase _iap = InAppPurchase.instance;
-  final FirebaseFunctions _functions = FirebaseFunctions.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
   late StreamSubscription<List<PurchaseDetails>> _subscription;
   final String _subscriptionId = 'monthly_subscription';
 

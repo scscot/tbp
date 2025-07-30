@@ -156,7 +156,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       debugPrint('🔍 REGISTER: Starting registration process...');
       
       final HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('registerUser');
+          FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('registerUser');
 
       // Prepare registration data
       final registrationData = <String, dynamic>{

@@ -262,7 +262,7 @@ class _BusinessScreenState extends State<BusinessScreen>
     // This ensures the sponsor notification is only sent on the first copy
     if (!hasVisitedOpp) {
       try {
-        HttpsCallable callable = FirebaseFunctions.instance
+        HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'us-central1')
             .httpsCallable('notifySponsorOfBizOppVisit');
         await callable.call();
 

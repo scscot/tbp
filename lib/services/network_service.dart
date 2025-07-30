@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 
 class NetworkService {
-  final FirebaseFunctions _functions = FirebaseFunctions.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
 
   Future<List<UserModel>> getNetwork() async {
     try {

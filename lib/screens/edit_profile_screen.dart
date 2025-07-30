@@ -435,7 +435,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           // Call backend function to recalculate timezone based on new location
           try {
             final HttpsCallable callable =
-                FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+                FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('updateUserTimezone');
             await callable.call({
               'userId': widget.user.uid,
               'country': _selectedCountry,
