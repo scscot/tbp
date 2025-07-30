@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/iap_service.dart';
 import '../config/app_colors.dart';
+import '../models/user_model.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
@@ -13,12 +16,46 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool isPurchasing = false;
   bool isLoading = true;
   Map<String, dynamic>? subscriptionStatus;
+  String? _bizOpp; // --- 1. State variable for biz_opp added ---
   final IAPService _iapService = IAPService();
 
   @override
   void initState() {
     super.initState();
     _loadSubscriptionStatus();
+    _loadBizOppData(); // --- 2. Call to fetch biz_opp data added ---
+  }
+
+  // --- 3. New function to load biz_opp data, similar to dashboard_screen.dart ---
+  Future<void> _loadBizOppData() async {
+    // This check ensures context is available before using Provider
+    if (!mounted) return;
+
+    final user = Provider.of<UserModel?>(context, listen: false);
+    if (user == null) return;
+
+    final adminUid = user.uplineAdmin;
+    if (adminUid == null || adminUid.isEmpty) {
+      return;
+    }
+
+    try {
+      final adminSettingsDoc = await FirebaseFirestore.instance
+          .collection('admin_settings')
+          .doc(adminUid)
+          .get();
+
+      if (adminSettingsDoc.exists && mounted) {
+        final adminData = adminSettingsDoc.data();
+        final retrievedBizOpp = adminData?['biz_opp'] as String?;
+
+        setState(() {
+          _bizOpp = retrievedBizOpp;
+        });
+      }
+    } catch (e) {
+      // Errors are handled silently to avoid disrupting the UI
+    }
   }
 
   Future<void> _loadSubscriptionStatus() async {
@@ -41,14 +78,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Future<void> _handleUpgrade() async {
     setState(() => isPurchasing = true);
-    
+
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
         if (!mounted) return;
-        
+
         // Refresh subscription status after successful purchase
         await _loadSubscriptionStatus();
-        
+
         setState(() => isPurchasing = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -67,7 +104,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           context: context,
           builder: (_) => AlertDialog(
             title: const Text('Subscription Failed'),
-            content: const Text('Unable to process your subscription. Please check your payment method and try again.'),
+            content: const Text(
+                'Unable to process your subscription. Please check your payment method and try again.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -82,14 +120,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Future<void> _handleRestorePurchases() async {
     setState(() => isPurchasing = true);
-    
+
     await _iapService.restorePurchases(
       onSuccess: () async {
         if (!mounted) return;
-        
+
         // Refresh subscription status after restore
         await _loadSubscriptionStatus();
-        
+
         setState(() => isPurchasing = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -115,18 +153,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Widget _buildSubscriptionStatusCard() {
     if (subscriptionStatus == null) return const SizedBox.shrink();
-    
+
     final status = subscriptionStatus!['subscriptionStatus'] as String;
     final isActive = subscriptionStatus!['isActive'] as bool;
     final isTrialValid = subscriptionStatus!['isTrialValid'] as bool;
     final trialDaysRemaining = subscriptionStatus!['trialDaysRemaining'] as int;
     final isInGracePeriod = subscriptionStatus!['isInGracePeriod'] as bool;
-    
+
     Color cardColor;
     String statusText;
     String subtitle;
     IconData icon;
-    
+
     if (isActive && status == 'active') {
       cardColor = Colors.green.shade50;
       statusText = 'Active Subscription';
@@ -148,7 +186,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       subtitle = 'Upgrade to restore premium features';
       icon = Icons.error;
     }
-    
+
     return Card(
       color: cardColor,
       child: Padding(
@@ -194,10 +232,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   bool _shouldShowUpgradeButton() {
     if (subscriptionStatus == null) return true;
-    
+
     final isActive = subscriptionStatus!['isActive'] as bool;
     final status = subscriptionStatus!['subscriptionStatus'] as String;
-    
+
     // Show upgrade button if not active or if trial/expired
     return !isActive || status == 'trial' || status == 'expired';
   }
@@ -228,21 +266,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   // Subscription Status Card
                   _buildSubscriptionStatusCard(),
                   const SizedBox(height: 24),
-                  
+
                   // Features Section
                   const Text(
                     'Premium Features:',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  _buildFeatureItem('Submit your unique Business referral link'),
+                  _buildFeatureItem(
+                      'Submit your unique $_bizOpp referral link'),
                   _buildFeatureItem('Unlock messaging to users on your team'),
-                  _buildFeatureItem('Ensure team members join under YOU in your business'),
+                  _buildFeatureItem(
+                      'Ensure team members join under YOU in $_bizOpp'),
                   _buildFeatureItem('Priority customer support'),
                   _buildFeatureItem('Advanced analytics and insights'),
-                  
+
                   const Spacer(),
-                  
+
                   // Action Buttons
                   if (_shouldShowUpgradeButton()) ...[
                     SizedBox(
@@ -272,7 +312,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                  
+
                   // Restore Purchases Button
                   SizedBox(
                     width: double.infinity,
@@ -281,7 +321,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       child: const Text('Restore Previous Purchases'),
                     ),
                   ),
-                  
+
                   // Terms and Privacy
                   const SizedBox(height: 16),
                   Text(
