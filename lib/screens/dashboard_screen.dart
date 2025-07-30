@@ -18,6 +18,7 @@ import 'share_screen.dart';
 import 'how_it_works_screen.dart';
 import 'package:flutter/foundation.dart';
 import '../services/auth_service.dart';
+import '../services/network_service.dart'; // Added for caching
 import '../widgets/restart_widget.dart';
 import '../main.dart';
 import 'subscription_screen.dart'; // --- 1. New import for SubscriptionScreen ---
@@ -43,6 +44,11 @@ class _DashboardScreenState extends State<DashboardScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   String? _bizOpp;
+  
+  // Network service for cached counts
+  final NetworkService _networkService = NetworkService();
+  Map<String, int> _cachedNetworkCounts = {};
+  bool _isLoadingCounts = false;
 
   @override
   void initState() {
@@ -60,6 +66,90 @@ class _DashboardScreenState extends State<DashboardScreen>
     ));
     _animationController.forward();
     _loadBizOppData();
+    _loadNetworkCounts();
+  }
+
+  /// Load cached network counts from NetworkService
+  Future<void> _loadNetworkCounts() async {
+    if (!mounted) return;
+    
+    setState(() {
+      _isLoadingCounts = true;
+    });
+
+    try {
+      if (kDebugMode) {
+        debugPrint('📊 DASHBOARD: Loading cached network counts...');
+      }
+      
+      final counts = await _networkService.getNetworkCounts();
+      
+      if (mounted) {
+        setState(() {
+          _cachedNetworkCounts = counts;
+          _isLoadingCounts = false;
+        });
+        
+        if (kDebugMode) {
+          debugPrint('✅ DASHBOARD: Cached counts loaded: $counts');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ DASHBOARD: Error loading cached counts: $e');
+      }
+      
+      if (mounted) {
+        setState(() {
+          _isLoadingCounts = false;
+        });
+      }
+    }
+  }
+
+  /// Force refresh network counts (bypasses cache)
+  Future<void> _refreshNetworkCounts() async {
+    if (!mounted) return;
+    
+    try {
+      if (kDebugMode) {
+        debugPrint('🔄 DASHBOARD: Force refreshing network counts...');
+      }
+      
+      final counts = await _networkService.refreshNetworkCounts();
+      
+      if (mounted) {
+        setState(() {
+          _cachedNetworkCounts = counts;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Team stats refreshed'),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        if (kDebugMode) {
+          debugPrint('✅ DASHBOARD: Force refresh completed: $counts');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ DASHBOARD: Error refreshing counts: $e');
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error refreshing stats: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   // --- 2. New helper method to check subscription before navigating ---
@@ -408,6 +498,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildStatsCard(UserModel user) {
+    // Use cached network counts if available, fallback to user model data
+    final directSponsors = _cachedNetworkCounts['directSponsors'] ?? user.directSponsorCount;
+    final totalTeam = _cachedNetworkCounts['all'] ?? user.totalTeamCount;
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(20),
@@ -431,6 +525,31 @@ class _DashboardScreenState extends State<DashboardScreen>
                   color: AppColors.textPrimary,
                 ),
               ),
+              const Spacer(),
+              // Refresh button for manual cache refresh
+              IconButton(
+                onPressed: _isLoadingCounts ? null : _refreshNetworkCounts,
+                icon: _isLoadingCounts 
+                    ? SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      )
+                    : Icon(
+                        Icons.refresh,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                tooltip: 'Refresh team stats',
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  minimumSize: const Size(32, 32),
+                  padding: const EdgeInsets.all(6),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -439,18 +558,20 @@ class _DashboardScreenState extends State<DashboardScreen>
               Expanded(
                 child: _buildStatItem(
                   icon: Icons.people,
-                  value: user.directSponsorCount.toString(),
+                  value: directSponsors.toString(),
                   label: 'Direct\nSponsors',
                   color: Colors.blue.shade600,
+                  isLoading: _isLoadingCounts,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: _buildStatItem(
                   icon: Icons.groups,
-                  value: user.totalTeamCount.toString(),
+                  value: totalTeam.toString(),
                   label: 'Total Team\nMembers',
                   color: Colors.green.shade600,
+                  isLoading: _isLoadingCounts,
                 ),
               ),
             ],
@@ -458,9 +579,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           const SizedBox(height: 12),
           LinearProgressIndicator(
             value: AppConstants.projectWideDirectSponsorMin > 0
-                ? (user.directSponsorCount /
-                        AppConstants.projectWideDirectSponsorMin)
-                    .clamp(0.0, 1.0)
+                ? (directSponsors / AppConstants.projectWideDirectSponsorMin).clamp(0.0, 1.0)
                 : 0.0,
             backgroundColor: AppColors.borderLight,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -475,6 +594,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     required String value,
     required String label,
     required Color color,
+    bool isLoading = false,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -486,14 +606,24 @@ class _DashboardScreenState extends State<DashboardScreen>
         children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
+          isLoading
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: color,
+                  ),
+                )
+              : Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+          const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
@@ -730,16 +860,23 @@ class _DashboardScreenState extends State<DashboardScreen>
       appBar: AppHeaderWithMenu(appId: widget.appId),
       body: FadeTransition(
         opacity: _fadeAnimation,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildWelcomeSection(user),
-              _buildStatsCard(user),
-              _buildQuickActions(user),
-              const SizedBox(height: 32),
-            ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _refreshNetworkCounts();
+            await _loadBizOppData();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildWelcomeSection(user),
+                _buildStatsCard(user),
+                _buildQuickActions(user),
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
         ),
       ),
