@@ -11,10 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/session_manager.dart';
 import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
-import 'login_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
-import '../config/app_constants.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class HomepageScreen extends StatefulWidget {
@@ -1556,54 +1554,6 @@ void _navigateToLogin() {
     );
   }
 
-  Widget _buildHowItWorksMetricCard({
-    required IconData icon,
-    required String value,
-    required String label,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.orange, Colors.deepOrange],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 32, color: Colors.white),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white.withOpacity(0.9),
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
