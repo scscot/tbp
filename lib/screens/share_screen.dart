@@ -115,8 +115,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .trim();
 
       final message = _currentUser?.role == 'admin'
-          ? '🚀 Interested in $_bizOppName? Join me ($userName) on Team Build Pro to explore this business while building your professional network! $_referralLink'
-          : '🌟 I\'m building my team on Team Build Pro while exploring $_bizOppName. Connect with me here: $_referralLink';
+          ? '🚀 Get a head start on building your $_bizOppName team! I\'m inviting you to use the Team Build Pro app to pre-build your network so you can launch with momentum. Join me ($userName): $_referralLink'
+          : '🌟 Let\'s build our $_bizOppName team together! I\'m using the Team Build Pro app to get a head start and create momentum before day one. Connect with me and start pre-building your network: $_referralLink';
 
       Share.share(message);
     }
@@ -125,8 +125,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _shareForExistingMembers() {
     if (_referralLink != null) {
       final message = _currentUser?.role == 'admin'
-          ? '💪 Fellow $_bizOppName partners! Use Team Build Pro to accelerate your business growth and connect with quality prospects: $_referralLink'
-          : '🎯 Let\'s grow our $_bizOppName business together! I\'m using Team Build Pro to expand my professional network: $_referralLink';
+          ? '💪 Fellow $_bizOppName partners! Let\'s use the same powerful system. Join me on the Team Build Pro app to accelerate your team\'s growth and duplication: $_referralLink'
+          : '🎯 Let\'s duplicate our success in $_bizOppName! I\'m using the Team Build Pro app to help our whole team grow faster. Get on the same system with me: $_referralLink';
 
       Share.share(message);
     }
@@ -205,7 +205,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 16),
           const Text(
-            'Grow Your Team',
+            'Build & Grow Your Team',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -214,7 +214,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your Team Build Pro link to connect with prospects and grow your $_bizOppName organization!',
+            'Share your link to pre-build a new team with aspiring leaders or expand your existing network.',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white.withValues(alpha: 0.9),
@@ -322,9 +322,9 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
         // Strategy 1: New Business Prospects
         _buildStrategyCard(
           title: '🌟 New Business Prospects',
-          subtitle: 'Perfect for expanding your $_bizOppName business',
+          subtitle: 'Invite aspiring leaders to get a head start.',
           description:
-              'Share your Team Build Pro link with professionals interested in $_bizOppName. They can explore $_bizOppName while building valuable professional connections!',
+              'Invite professionals to pre-build their team on this platform. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
           buttonText: 'Share with Prospects',
           buttonColor: AppColors.growthPrimary,
           onPressed: _shareForNewProspects,
@@ -338,7 +338,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           title: '🚀 Current Business Partners',
           subtitle: 'Great for your existing $_bizOppName network',
           description:
-              'Share your Team Build Pro link with your current $_bizOppName partners. When they bring new members into their Team Build Pro network, those members will ultimately be placed in your $_bizOppName organization!',
+              'Empower your existing partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
           buttonText: 'Share with Partners',
           buttonColor: AppColors.opportunityPrimary,
           onPressed: _shareForExistingMembers,
