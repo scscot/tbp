@@ -311,7 +311,7 @@ exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
       try {
         const warningNotification = {
           title: "⏰ Trial Expiring Soon",
-          message: "Your 30-day trial expires in 3 days. Subscribe now to continue accessing premium features.",
+          message: "Your 30-day trial expires in 3 days. Subscribe now to maintain your team's momentum and continue growing your network.",
           type: "trial_warning",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "upgrade" }),
@@ -1236,7 +1236,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new team member!",
-        message: `Congratulations, ${sponsor.firstName}! You shared the Network with your current ${bizOppName} organization member, ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} and they have just downloaded and installed the Team Build Pro app! This means any of their Team members that ultimately join the ${bizOppName} organization will automatically be placed in your ${bizOppName} organization! Click Here to view their profile.`,
+        message: `Congratulations, ${sponsor.firstName}! Your existing ${bizOppName} partner, ${afterData.firstName} ${afterData.lastName}, has joined you on the Team Build Pro app. You're now on the same system to accelerate growth and duplication! Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1250,7 +1250,7 @@ exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (even
 
       notificationContent = {
         title: "🎉 You have a new team member!",
-        message: `Congratulations, ${sponsor.firstName}! You connected with ${afterData.firstName} ${afterData.lastName} from ${newUserLocation}. Click Here to view their profile.`,
+        message: `Congratulations, ${sponsor.firstName}! ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} has just joined your team on the Team Build Pro app. This is the first step in creating powerful momentum together! Click Here to view their profile.`,
         imageUrl: afterData.photoUrl || null,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
@@ -1304,7 +1304,7 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
 
       const notificationContent = {
         title: "You're Qualified!",
-        message: `Congratulations, ${afterData.firstName}! You are now qualified to join the ${bizName} organization. Click Here to learn more.`,
+        message: `Your hard work paid off, ${afterData.firstName}! You've built a qualified team and are now eligible to join the ${bizName} organization. Click Here to take the next step!`,
         createdAt: FieldValue.serverTimestamp(),
         read: false,
         type: "new_qualification",
@@ -1432,8 +1432,8 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
     const notificationContent = {
-      title: `🎉 New ${bizOpp} interest!`,
-      message: `${visitingUserName} has just used your referral link to explore ${bizOpp}! Click Here to view their profile.`,
+      title: `Interest in your ${bizOpp} opportunity! 🎉`,
+      message: `${visitingUserName} has just used your referral link to to learn more about the ${bizOpp} opportunity! Click Here to view their profile.`,
       imageUrl: userData.photoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
@@ -1833,7 +1833,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Congratulations, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your team yesterday. Click Here to view their profiles`,
+          message: `Your team's momentum is growing, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your network yesterday. Click Here to see your team's progress`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
