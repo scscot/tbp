@@ -560,7 +560,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                 icon: const Icon(Icons.refresh),
                 tooltip: 'Force refresh data',
                 style: IconButton.styleFrom(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   foregroundColor: AppColors.primary,
                 ),
               ),
@@ -733,7 +733,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
@@ -761,9 +761,9 @@ class _NetworkScreenState extends State<NetworkScreen>
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
@@ -840,7 +840,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

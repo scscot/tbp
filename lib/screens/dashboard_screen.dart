@@ -545,7 +545,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                 tooltip: 'Refresh team stats',
                 style: IconButton.styleFrom(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   minimumSize: const Size(32, 32),
                   padding: const EdgeInsets.all(6),
                 ),

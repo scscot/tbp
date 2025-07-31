@@ -21,6 +21,7 @@ class HowItWorksScreen extends StatefulWidget {
 class _HowItWorksScreenState extends State<HowItWorksScreen> {
   String _bizOpp = 'your opportunity';
   bool _isLoading = true;
+  String? role;
 
   @override
   void initState() {
@@ -40,6 +41,9 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
         if (userDoc.exists) {
           final userData = userDoc.data();
           final userRole = userData?['role'] as String?;
+         role = userData?['role'];
+
+
           
           // Determine which admin settings to fetch
           String? adminUid;
@@ -94,7 +98,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'PROFESSIONAL NETWORKING',
+            'CREATING MOMENTUM',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -105,7 +109,9 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Whether you\'re an experienced professional, just starting your career, or looking to expand your network, Team Build Pro helps you build meaningful professional connections worldwide.',
+            (role == 'user')
+                ? 'For the forward-thinking leader about to join $_bizOpp, the Team Build Pro app is your tool to build your team before day one, positioning you for immediate success.'
+                : 'For the ambitious direct sales professional, whether a beginner, rising star, or seasoned leader, the Team Build Pro app is your tool for building a powerful global organization, one meaningful connection at a time.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -196,7 +202,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: Colors.orange, size: 24),
@@ -318,7 +324,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            'Featured Collaboration',
+                            'Featured Opportunity',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -379,7 +385,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Challenge
             _buildSectionCard(
               title: 'THE CHALLENGE',
-              content: 'Building meaningful professional connections can be difficult in today\'s digital world. Many professionals struggle to expand their network beyond their immediate circle.',
+              content: 'Starting from zero is the biggest hurdle in direct sales. Professionals often struggle to find motivated prospects and build momentum quickly, leading to frustration and slow growth.',
               icon: Icons.warning_amber,
               color: AppColors.error,
             ),
@@ -388,7 +394,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Solution
             _buildSectionCard(
               title: 'THE SOLUTION',
-              content: 'Team Build Pro provides a structured platform that helps professionals build and organize their global network systematically, creating lasting professional relationships.',
+              content: 'The Team Build Pro app offers a unique system for pre-building your team. Our platform provides the tools to cultivate a network of interested prospects before day one, turning a cold start into a running start.',
               icon: Icons.lightbulb,
               color: AppColors.primary,
             ),
@@ -397,7 +403,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Why It Works
             _buildSectionCard(
               title: 'WHY IT WORKS',
-              content: 'Our platform removes traditional networking barriers by providing an accessible, user-friendly environment where professionals can connect, collaborate, and grow their networks organically.',
+              content: 'By focusing on relationship-building first, our platform creates genuine momentum. When prospects are part of a growing community from the beginning, they are more engaged, motivated, and prepared for success the moment they officially join.',
               icon: Icons.trending_up,
               color: AppColors.growthPrimary,
             ),
@@ -451,30 +457,6 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       title: 'PARTNER - Work Together For Mutual Success',
                       description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.successBackground,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.withOpacity(AppColors.success, 0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: AppColors.success, size: 24),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Note: Team Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful career opportunities.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.darker(AppColors.success),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
