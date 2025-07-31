@@ -520,7 +520,7 @@ void _navigateToLogin() {
                                   (_sponsorName != null &&
                                           _sponsorName!.isNotEmpty)
                                       ? 'JUMPSTART YOUR TEAM GROWTH'
-                                      : 'EXPONENTIAL TEAM GROWTH',
+                                      : 'PROVEN TEAM BUILDING SYSTEM',
                                   style: TextStyle(
                                     fontSize: isLandscape ? 12 : 14,
                                     fontWeight: FontWeight.w700,
@@ -684,6 +684,165 @@ void _navigateToLogin() {
       ),
     );
   }
+
+  Widget _buildHighPerformance() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.white, Colors.blue.shade50],
+        ),
+      ),
+      child: Column(
+        children: [
+          const Center(
+            child: Text(
+              'HIGH-PERFORMANCE TEAM BUILDING',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1A237E),
+                letterSpacing: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 32),
+          
+          _buildOrganizationType1(
+            icon: Icons.rocket_launch,
+            title: 'BUILD - Expand Your Team Network',
+            description:
+                '• Build meaningful professional relationships globally\n'
+                '• Connect with like-minded direct sales professionals\n'
+                '• Expand your team reach across 120+ countries\n'
+                '• Create authentic business connections that drive results',
+            color: Colors.orange,
+          ),
+          
+          _buildOrganizationType1(
+            icon: Icons.trending_up,
+            title: 'GROW - Nurture Team Development',
+            description:
+                '• Track team growth and engagement metrics in real-time\n'
+                '• Monitor qualification progress and achievements\n'
+                '• Foster collaborative team building relationships\n'
+                '• Strengthen your organization with data-driven insights',
+            color: Colors.green,
+          ),
+          
+          _buildOrganizationType1(
+            icon: Icons.analytics,
+            title: 'Advanced Team Analytics & Caching',
+            description:
+                '• Monitor team expansion with instant data loading\n'
+                '• Receive daily team growth notifications\n'
+                '• Track member engagement and qualification activity\n'
+                '• Generate comprehensive team reports with cached performance\n'
+                '• 90% reduction in database queries through smart caching',
+            color: Colors.purple,
+          ),
+          
+          _buildOrganizationType1(
+            icon: Icons.message,
+            title: 'Secure Team Communication',
+            description:
+                '• Built-in messaging system with privacy protection\n'
+                '• Connect with team members globally\n'
+                '• Share updates and opportunities safely\n'
+                '• Build meaningful professional relationships',
+            color: Colors.blue,
+          ),
+          
+          _buildOrganizationType1(
+            icon: Icons.notifications_active,
+            title: 'Smart Notification System',
+            description:
+                '• Daily team growth updates\n'
+                '• New team member welcome notifications\n'
+                '• Important milestone and qualification alerts\n'
+                '• Fully customizable notification preferences',
+            color: Colors.teal,
+          ),
+          
+          _buildOrganizationType1(
+            icon: Icons.warning,
+            title: 'IMPORTANT DISCLAIMERS',
+            description:
+                '• Team Build Pro is NOT an MLM or network marketing company\n'
+                '• We do NOT pay users any money or compensation\n'
+                '• We are NOT a business opportunity or income platform\n'
+                '• Users pay US a subscription fee - we do NOT pay users\n'
+                '• We are a team organization tool and tracking platform ONLY',
+            color: Colors.red,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrganizationType1({
+    required IconData icon,
+    required String title,
+    required String description,
+    required Color color,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 32),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  
 
   Widget _buildSmartOnboarding() {
     return Container(
@@ -1462,6 +1621,7 @@ void _navigateToLogin() {
             _buildStatusBanner(),
             _buildHeroSection(),
             _buildOrganizationShowcase(),
+            _buildHighPerformance(),
             _buildHowItWorks(),
             _buildSmartOnboarding(),
             _buildFooterSection(),
