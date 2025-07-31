@@ -104,7 +104,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _buildReferralLink() {
     if (_currentUser != null) {
       // Unified referral link format
-      _referralLink = 'https://networkbuildpro.com/?ref=${_currentUser!.referralCode}';
+      _referralLink = 'https://teambuildpro.com/?ref=${_currentUser!.referralCode}';
     }
   }
 

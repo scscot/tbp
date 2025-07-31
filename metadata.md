@@ -106,8 +106,8 @@ The official launch of Team Build Pro, the ultimate platform for building your d
 * **Privacy Policy:** Comprehensive in-app screen implemented.
 * **Terms of Service:** Extensive in-app screen with clear MLM disclaimers.
 * **Support Email:** support@teambuildpro.com
-* **Privacy Email:** privacy@networkbuildpro.com
-* **Legal Email:** legal@networkbuildpro.com
+* **Privacy Email:** privacy@teambuildpro.com
+* **Legal Email:** legal@teambuildpro.com
 
 ---
 

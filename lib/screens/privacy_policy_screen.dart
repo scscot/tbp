@@ -21,7 +21,7 @@ class PrivacyPolicyScreen extends StatefulWidget {
 
 class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   final ScrollController _scrollController = ScrollController();
-  static const String privacyEmail = 'privacy@networkbuildpro.com';
+  static const String privacyEmail = 'privacy@teambuildpro.com';
   late final String lastUpdated;
 
   @override
@@ -364,7 +364,7 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
             _buildSection(
               title: '6. Children\'s Privacy',
               icon: Icons.child_care_outlined,
-              content: '''Team Build Pro is intended for users 18 years and older. We do not knowingly collect personal information from children under 18.
+              content: '''Team Build Pro is intended for a general audience and is not directed to children under the age of 18. We do not knowingly collect personal information from children under 18.
 
 If we discover that we have collected information from a child under 18:
 • We will delete the information immediately

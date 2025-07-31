@@ -19,7 +19,7 @@ class TermsOfServiceScreen extends StatefulWidget {
 }
 
 class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
-  static const String legalEmail = 'legal@networkbuildpro.com';
+  static const String legalEmail = 'legal@teambuildpro.com';
   late final String lastUpdated;
 
   @override
@@ -130,7 +130,7 @@ These Terms constitute a legally binding agreement between you and Team Build Pr
             '''Team Build Pro is a subscription-based professional networking platform that provides:
 • Relationship management and tracking tools
 • Professional team analytics and insights
-• Business opportunity connections
+• Pre-building tools for aspiring leaders to build momentum
 • Systematic networking frameworks
 • Communication and collaboration features
 
@@ -160,7 +160,7 @@ CANCELLATION:
 • Team Build Pro does not own or operate these businesses
 • All business partnerships are separate from Team Build Pro
 • Users make independent decisions regarding participation
-• Team Build Pro provides connection services only
+• Team Build Pro is a software tool used to organize and track networking for these independent opportunities; we provide connection services only.
 
 DISCLAIMER:
 • Team Build Pro does not guarantee business success
@@ -188,7 +188,7 @@ PROFESSIONAL CONDUCT:
 
 
             _buildSection(
-              '7. ACCEPTABLE USE',
+              '6. ACCEPTABLE USE',
             '''Users agree to:
 • Use the platform for legitimate networking purposes only
 • Maintain professional conduct in all interactions
@@ -202,7 +202,7 @@ Users must not engage in spam, harassment, illegal activities, or misuse of plat
             ),
 
             _buildSection(
-              '8. PROHIBITED ACTIVITIES',
+              '7. PROHIBITED ACTIVITIES',
             '''The following activities are strictly prohibited:
 • Spam, unsolicited messages, or bulk communications
 • Harassment, threats, or abusive behavior
@@ -216,21 +216,21 @@ Violations may result in account suspension or termination.''',
             ),
 
             _buildSection(
-              '9. INTELLECTUAL PROPERTY',
+              '8. INTELLECTUAL PROPERTY',
               '''All content, features, and functionality of Team Build Pro, including but not limited to text, graphics, logos, icons, images, audio clips, and software, are owned by Team Build Pro and protected by copyright, trademark, and other intellectual property laws.
 
 Users may not reproduce, distribute, modify, or create derivative works without explicit written permission.''',
             ),
 
             _buildSection(
-              '10. PRIVACY AND DATA PROTECTION',
+              '9. PRIVACY AND DATA PROTECTION',
               '''Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference.
 
 By using Team Build Pro, you consent to the collection and use of information as outlined in our Privacy Policy.''',
             ),
 
             _buildSection(
-              '11. DISCLAIMERS AND LIMITATIONS',
+              '10. DISCLAIMERS AND LIMITATIONS',
               '''Team Build Pro is provided "AS IS" without warranties of any kind. We disclaim all warranties, express or implied, including but not limited to:
 • Merchantability and fitness for a particular purpose
 • Non-infringement of third-party rights
@@ -241,7 +241,7 @@ We are not liable for any indirect, incidental, special, or consequential damage
             ),
 
             _buildSection(
-              '12. INDEMNIFICATION',
+              '11. INDEMNIFICATION',
               '''You agree to indemnify and hold harmless Team Build Pro, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from:
 • Your use of the platform
 • Your violation of these Terms
@@ -250,32 +250,32 @@ We are not liable for any indirect, incidental, special, or consequential damage
             ),
 
             _buildSection(
-              '13. TERMINATION',
+              '12. TERMINATION',
               '''We reserve the right to terminate or suspend your account and access to Team Build Pro at any time, with or without notice, for any reason, including violation of these Terms.
 
 Upon termination, your right to use the platform ceases immediately, and we may delete your account and associated data.''',
             ),
 
             _buildSection(
-              '14. GOVERNING LAW',
+              '13. GOVERNING LAW',
               '''These Terms are governed by and construed in accordance with the laws of California, without regard to conflict of law principles.
 
 Any disputes arising from these Terms or your use of Team Build Pro shall be resolved in the courts of California.''',
             ),
 
             _buildSection(
-              '15. CHANGES TO TERMS',
+              '14. CHANGES TO TERMS',
               '''We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting in the App.
 
 Your continued use of Team Build Pro after changes are posted constitutes acceptance of the modified Terms.''',
             ),
 
             _buildSection(
-              '16. CONTACT INFORMATION',
+              '15. CONTACT INFORMATION',
               '''For questions about these Terms of Service, please contact us:
 
 Email: $legalEmail
-Website: www.networkbuildpro.com
+Website: www.teambuildpro.com
 
 We will respond to all inquiries within 48 hours during business days.''',
             ),
