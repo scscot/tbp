@@ -17,6 +17,7 @@ import '../screens/message_center_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/privacy_policy_screen.dart';
 import '../screens/terms_of_service_screen.dart';
+import '../screens/platform_management_screen.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
 // --- MODIFICATION: Import main.dart for the navigatorKey, remove fcm_service import ---
@@ -88,6 +89,10 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       case 'profile':
         navigator.push(MaterialPageRoute(
             builder: (_) => ProfileScreen(appId: widget.appId)));
+        break;
+      case 'platform_management':
+        navigator.push(MaterialPageRoute(
+            builder: (_) => PlatformManagementScreen(appId: widget.appId)));
         break;
       case 'privacy':
         navigator.push(MaterialPageRoute(
@@ -452,6 +457,18 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         color: isProfileComplete ? AppColors.primary : AppColors.warning,
       ),
     ]);
+
+    // Platform Management (admin only)
+    if (currentUser?.role == 'admin') {
+      items.add(
+        _buildMenuItem(
+          value: 'platform_management',
+          icon: Icons.settings,
+          title: 'Platform Management',
+          color: AppColors.primary,
+        ),
+      );
+    }
 
     if (isProfileComplete) {
       items.addAll([

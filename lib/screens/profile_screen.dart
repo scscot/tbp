@@ -4,15 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
-import '../screens/new_registration_screen.dart';
 import '../services/firestore_service.dart';
-import '../services/auth_service.dart';
-import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -25,12 +20,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirestoreService _firestoreService = FirestoreService();
-  bool _isRecalculating = false;
 
   bool _biometricEnabled = false;
   bool _biometricsAvailable = false;
 
-  bool _isSuperAdmin = false;
   bool _checkingSuperAdminStatus = true;
 
   String? _sponsorName;
@@ -88,14 +81,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (user.role == 'admin') {
       try {
-        final adminSettingsDoc = await FirebaseFirestore.instance
-            .collection('admin_settings')
-            .doc(user.uid)
-            .get();
 
         if (mounted) {
           setState(() {
-            _isSuperAdmin = adminSettingsDoc.data()?['superAdmin'] == true;
           });
         }
       } catch (e) {
@@ -142,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // --- END MODIFICATION ---
   }
 
-  Future<void> _runRecalculation() async {
+/*   Future<void> _runRecalculation() async {
     setState(() => _isRecalculating = true);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
@@ -162,71 +150,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } finally {
       if (mounted) setState(() => _isRecalculating = false);
     }
-  }
+  } */
 
-  Future<void> _createNewAdminAccount() async {
-    // Show confirmation dialog
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: [
-              Icon(Icons.person_add, color: Colors.blue, size: 24),
-              const SizedBox(width: 12),
-              const Text('Create New Account', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          content: const Text(
-            'You will be logged out and redirected to create a new admin account. Continue?',
-            style: TextStyle(fontSize: 16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              child: const Text('Continue', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result == true && mounted) {
-      // Perform logout and navigation
-      final authService = AuthService();
-      final navigator = Navigator.of(context);
-
-      // Clear navigation stack
-      if (navigator.canPop()) {
-        navigator.popUntil((route) => route.isFirst);
-      }
-
-      // Clear all session data including referral data
-      await SessionManager.instance.clearSession();
-      await SessionManager.instance.clearReferralData();
-      
-      // Sign out user
-      await authService.signOut();
-
-      // Navigate to registration screen without referral code (admin mode)
-      if (mounted) {
-        navigator.pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => NewRegistrationScreen(
-              referralCode: null, // No referral code = admin registration
-              appId: widget.appId,
-            ),
-          ),
-        );
-      }
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -319,84 +245,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 secondary: const Icon(Icons.fingerprint),
               )
             ],
-            if (_checkingSuperAdminStatus && currentUser.role == 'admin')
-              const Center(
-                  child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator()))
-            else if (currentUser.role == 'admin' && _isSuperAdmin) ...[
-              const Divider(height: 40),
-              Text('Super Admin Tools',
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 10),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Recalculate all user counts in the database. This is a heavy operation and should be run only when necessary.',
-                        style: TextStyle(color: Colors.black54),
-                      ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: ElevatedButton.icon(
-                          onPressed:
-                              _isRecalculating ? null : _runRecalculation,
-                          icon: _isRecalculating
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2))
-                              : const Icon(Icons.calculate),
-                          label: const Text('Recalculate Team Counts'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                            foregroundColor: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            if (currentUser.role == 'admin') ...[
-              const Divider(height: 40),
-              Text('Admin Actions',
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 10),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Create a new admin account. You will be logged out and redirected to the registration screen.',
-                        style: TextStyle(color: Colors.black54),
-                      ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: ElevatedButton.icon(
-                          onPressed: _createNewAdminAccount,
-                          icon: const Icon(Icons.person_add),
-                          label: const Text('Create New Account'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          
+          
           ],
         ),
       ),

@@ -14,6 +14,7 @@ import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'network_screen.dart';
 import 'profile_screen.dart';
+import 'platform_management_screen.dart';
 import 'share_screen.dart';
 import 'how_it_works_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -820,6 +821,15 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.primary,
           onTap: () => _navigateTo(ProfileScreen(appId: widget.appId)),
         ),
+
+        if (user.role == 'admin')
+          _buildActionCard(
+            icon: Icons.manage_accounts,
+            title: 'Platform Management',
+            color: AppColors.opportunityPrimary,
+            onTap: () => _navigateTo(PlatformManagementScreen(appId: widget.appId)),
+          ),
+        
         // The Log Out button remains unchanged
         _buildActionCard(
           icon: Icons.logout,
