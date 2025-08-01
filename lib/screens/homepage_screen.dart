@@ -1414,21 +1414,21 @@ class _HomepageScreenState extends State<HomepageScreen>
                   const SizedBox(height: 20),
                   _buildHowItWorksProcessStep(
                     step: 1,
-                    title: 'INVITE - Expand Your Network',
+                    title: 'INVITE - Build Your Foundation',
                     description:
                         'Connect with like-minded professionals open to exploring ${_bizOpp ?? 'your opportunity'}.',
                     icon: Icons.connect_without_contact,
                   ),
                   _buildHowItWorksProcessStep(
                     step: 2,
-                    title: 'CULTIVATE - Nurture Professional Bonds',
+                    title: 'CULTIVATE - Create Momentum',
                     description:
                         'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
                     icon: Icons.psychology,
                   ),
                   _buildHowItWorksProcessStep(
                     step: 3,
-                    title: 'PARTNER - Work Together For Mutual Success',
+                    title: 'PARTNER - Launch with Success',
                     description:
                         "Team members receive an invitation to join ${_bizOpp ?? 'your opportunity'} upon achieving key growth targets.",
                     icon: Icons.handshake,

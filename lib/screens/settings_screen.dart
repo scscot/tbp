@@ -366,19 +366,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "Hello ${_adminFirstName ?? 'Admin'}!\n\n",
-                  ),
-                  const TextSpan(
-                    text: "Carefully complete and review your settings, as ",
-                  ),
-                  TextSpan(
-                    text: "once submitted, they cannot be changed. ",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.red),
-                  ),
-                  const TextSpan(
-                    text:
-                        "These values will apply to every member of your team, ensuring the highest level of integrity, consistency, and fairness across your team.",
+                    text: "Welcome $_adminFirstName!\n\nLet's set up the foundation for your team's success. Please complete these settings carefully, as they will define the opportunity for your entire network and cannot be changed once saved.",
                   ),
                 ],
               ),
@@ -614,7 +602,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       const TextSpan(
                           text:
-                              "When your team members meet the minimum eligibility criteria, they are automatically invited to join your "),
+                              "This is your automated growth engine. When your team members build momentum and meet the eligibility requirements, they are invited to join "),
                       TextSpan(
                         text: _bizOpp ?? 'organization',
                         style: const TextStyle(
@@ -622,7 +610,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const TextSpan(
                           text:
-                              " — with their growing Network ready to follow."),
+                              ", with their pre-built network ready to follow."),
                     ],
                   ),
                 ),

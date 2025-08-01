@@ -221,7 +221,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "Important: After completing your $bizOpp registration, you must return here to add your new referral link to your team profile. This ensures your $bizOpp team is built correctly.",
+                  "This is the next step in your journey. After joining $bizOpp through your sponsor's link, you must return here to add your new referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -414,7 +414,6 @@ class _BusinessScreenState extends State<BusinessScreen>
   }
 
   Widget _buildHeroSection() {
-    final user = Provider.of<UserModel?>(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -438,7 +437,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            'Congratulations, ${user?.firstName ?? 'User'}!',
+            'Congratulations, You\'re Qualified!',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -449,7 +448,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'You\'ve reached the team growth milestones that unlock access to $bizOpp.',
+            'Your hard work and team-building have paid off. You are now eligible to join the $bizOpp opportunity.',
             style: TextStyle(
               fontSize: 18,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -796,7 +795,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Important Follow-up Step!',
+            'Final Step: Link Your Account',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -830,14 +829,14 @@ class _BusinessScreenState extends State<BusinessScreen>
               child: Column(
                 children: [
                   Text(
-                    "I've completed partnership registration",
+                    "I've completed my $bizOpp registration",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    "Add my opportunity link now",
+                    "Add My Opportunity Link",
                     style: TextStyle(
                       fontSize: 14,
                     ),

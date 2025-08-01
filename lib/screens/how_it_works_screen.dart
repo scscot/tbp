@@ -96,7 +96,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'CREATING MOMENTUM',
+            'Your Path to Momentum',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -454,21 +454,21 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'INVITE - Expand Your Network',
+                      title: 'INVITE - Build Your Foundation',
                       description:
                           'Connect with like-minded professionals open to exploring $_bizOpp .',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'CULTIVATE - Nurture Professional Bonds',
+                      title: 'CULTIVATE - Create Momentum',
                       description:
                           'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'PARTNER - Work Together For Mutual Success',
+                      title: 'PARTNER - Launch with Success',
                       description:
                           'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
