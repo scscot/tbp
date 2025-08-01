@@ -10,14 +10,15 @@ class IAPService {
   IAPService._internal();
 
   final InAppPurchase _iap = InAppPurchase.instance;
-  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+  final FirebaseFunctions _functions =
+      FirebaseFunctions.instanceFor(region: 'us-central1');
   late StreamSubscription<List<PurchaseDetails>> _subscription;
   final String _subscriptionId = 'monthly_subscription';
 
   bool available = false;
   List<ProductDetails> products = [];
   bool isPurchased = false;
-  
+
   // --- PHASE 3: Enhanced subscription management ---
   String? _currentSubscriptionStatus;
   DateTime? _subscriptionExpiry;
@@ -65,48 +66,49 @@ class IAPService {
   Future<void> _verifyAndCompleteSubscription(PurchaseDetails purchase) async {
     try {
       debugPrint('📱 SUBSCRIPTION: Verifying purchase: ${purchase.productID}');
-      
+
       // Get receipt data for validation
       final receiptData = purchase.verificationData.serverVerificationData;
-      
+
       if (receiptData.isEmpty) {
         debugPrint('❌ SUBSCRIPTION: No receipt data available');
         return;
       }
-      
+
       // Validate receipt with our Firebase Function
       final validateFunction = _functions.httpsCallable('validateAppleReceipt');
       final result = await validateFunction.call({
         'receiptData': receiptData,
       });
-      
+
       final validationResult = result.data as Map<String, dynamic>;
-      
+
       if (validationResult['isValid'] == true) {
         debugPrint('✅ SUBSCRIPTION: Receipt validated successfully');
-        
+
         // Update local subscription status
         _currentSubscriptionStatus = validationResult['subscriptionStatus'];
         if (validationResult['expiresDate'] != null) {
           _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
         }
-        
+
         isPurchased = _currentSubscriptionStatus == 'active';
-        
-        debugPrint('📱 SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
+
+        debugPrint(
+            '📱 SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
       } else {
-        debugPrint('❌ SUBSCRIPTION: Receipt validation failed: ${validationResult['message']}');
+        debugPrint(
+            '❌ SUBSCRIPTION: Receipt validation failed: ${validationResult['message']}');
       }
-      
+
       // Complete the purchase
       if (purchase.pendingCompletePurchase) {
         await _iap.completePurchase(purchase);
         debugPrint('✅ SUBSCRIPTION: Purchase completed');
       }
-      
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error verifying purchase: $e');
-      
+
       // Still complete the purchase to avoid issues
       if (purchase.pendingCompletePurchase) {
         await _iap.completePurchase(purchase);
@@ -122,15 +124,15 @@ class IAPService {
   }) async {
     try {
       debugPrint('📱 SUBSCRIPTION: Starting subscription purchase');
-      
+
       if (!available || products.isEmpty) {
         debugPrint('❌ SUBSCRIPTION: IAP not available or no products loaded');
         onFailure();
         return;
       }
-      
+
       final product = products.firstWhere((p) => p.id == _subscriptionId);
-      
+
       // Set application username to user ID for server-to-server notifications
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
@@ -138,15 +140,16 @@ class IAPService {
         onFailure();
         return;
       }
-      
+
       final purchaseParam = PurchaseParam(
         productDetails: product,
-        applicationUserName: user.uid, // This helps Apple link purchases to users
+        applicationUserName:
+            user.uid, // This helps Apple link purchases to users
       );
-      
+
       // Use buyConsumable for subscriptions (not buyNonConsumable)
       final success = await _iap.buyConsumable(purchaseParam: purchaseParam);
-      
+
       if (success) {
         debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully');
         onSuccess();
@@ -154,7 +157,6 @@ class IAPService {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');
         onFailure();
       }
-      
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error purchasing subscription: $e');
       onFailure();
@@ -162,7 +164,7 @@ class IAPService {
       onComplete?.call();
     }
   }
-  
+
   /// Legacy method for backward compatibility
   Future<void> purchaseMonthlyUpgrade({
     required VoidCallback onSuccess,
@@ -175,32 +177,33 @@ class IAPService {
       onComplete: onComplete,
     );
   }
-  
+
   /// Check current subscription status from Firebase
   Future<Map<String, dynamic>> checkSubscriptionStatus() async {
     try {
       debugPrint('📱 SUBSCRIPTION: Checking subscription status');
-      
-      final checkFunction = _functions.httpsCallable('checkUserSubscriptionStatus');
+
+      final checkFunction =
+          _functions.httpsCallable('checkUserSubscriptionStatus');
       final result = await checkFunction.call();
-      
+
       final statusData = result.data as Map<String, dynamic>;
-      
+
       // Update local state
       _currentSubscriptionStatus = statusData['subscriptionStatus'];
       _isTrialValid = statusData['isTrialValid'] ?? false;
       _trialDaysRemaining = statusData['trialDaysRemaining'] ?? 0;
-      
+
       if (statusData['subscriptionExpiry'] != null) {
         _subscriptionExpiry = DateTime.parse(statusData['subscriptionExpiry']);
       }
-      
+
       isPurchased = statusData['isActive'] ?? false;
-      
-      debugPrint('✅ SUBSCRIPTION: Status checked - Active: $isPurchased, Status: $_currentSubscriptionStatus');
-      
+
+      debugPrint(
+          '✅ SUBSCRIPTION: Status checked - Active: $isPurchased, Status: $_currentSubscriptionStatus');
+
       return statusData;
-      
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error checking subscription status: $e');
       return {
@@ -213,24 +216,23 @@ class IAPService {
       };
     }
   }
-  
+
   /// Validate current subscription with Apple
   Future<void> validateSubscription() async {
     try {
       debugPrint('📱 SUBSCRIPTION: Validating current subscription');
-      
+
       // For iOS, we'll use the receipt data from the most recent purchase
       // The getReceiptData method doesn't exist in the current package version
       // Instead, we'll rely on the purchase stream and server-to-server notifications
-      
+
       // Check subscription status from Firebase instead
       await checkSubscriptionStatus();
-      
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error validating subscription: $e');
     }
   }
-  
+
   /// Restore previous purchases
   Future<void> restorePurchases({
     VoidCallback? onSuccess,
@@ -238,40 +240,40 @@ class IAPService {
   }) async {
     try {
       debugPrint('📱 SUBSCRIPTION: Restoring purchases');
-      
+
       await _iap.restorePurchases();
-      
+
       // After restore, validate current subscription status
       await validateSubscription();
-      
+
       if (isPurchased) {
         debugPrint('✅ SUBSCRIPTION: Purchases restored successfully');
         onSuccess?.call();
       } else {
-        debugPrint('⚠️ SUBSCRIPTION: No active subscription found after restore');
+        debugPrint(
+            '⚠️ SUBSCRIPTION: No active subscription found after restore');
         onFailure?.call();
       }
-      
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error restoring purchases: $e');
       onFailure?.call();
     }
   }
-  
+
   // --- PHASE 3: Getters for subscription status ---
-  
+
   String get subscriptionStatus => _currentSubscriptionStatus ?? 'trial';
   DateTime? get subscriptionExpiry => _subscriptionExpiry;
   bool get isTrialValid => _isTrialValid;
   int get trialDaysRemaining => _trialDaysRemaining;
   bool get isSubscriptionActive => isPurchased;
-  
+
   bool get isInGracePeriod {
-    return _currentSubscriptionStatus == 'cancelled' && 
-           _subscriptionExpiry != null && 
-           DateTime.now().isBefore(_subscriptionExpiry!);
+    return _currentSubscriptionStatus == 'cancelled' &&
+        _subscriptionExpiry != null &&
+        DateTime.now().isBefore(_subscriptionExpiry!);
   }
-  
+
   bool get isExpired {
     if (_currentSubscriptionStatus == 'expired') return true;
     if (_subscriptionExpiry == null) return false;

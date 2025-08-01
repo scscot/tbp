@@ -43,14 +43,15 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       path: privacyEmail,
       query: 'subject=Privacy Policy Inquiry',
     );
-    
+
     if (await canLaunchUrl(emailUri)) {
       await launchUrl(emailUri);
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not open email client. Please contact $privacyEmail'),
+            content: Text(
+                'Could not open email client. Please contact $privacyEmail'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -226,7 +227,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             // Important Notice
             _buildHighlightBox(
               title: 'Your Privacy Matters',
-              content: 'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
+              content:
+                  'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
               icon: Icons.shield_outlined,
               backgroundColor: AppColors.successBackground,
               borderColor: AppColors.success,
@@ -287,7 +289,8 @@ Legal Compliance:
             _buildSection(
               title: '3. Information Sharing and Disclosure',
               icon: Icons.share_outlined,
-              content: '''We do not sell your personal information. We may share information in these limited circumstances:
+              content:
+                  '''We do not sell your personal information. We may share information in these limited circumstances:
 
 Within Your Network:
 • Your name and profile photo are visible to your team members
@@ -332,7 +335,8 @@ Data Retention:
             _buildSection(
               title: '5. Your Rights and Choices',
               icon: Icons.account_circle_outlined,
-              content: '''You have the following rights regarding your personal information:
+              content:
+                  '''You have the following rights regarding your personal information:
 
 Access and Control:
 • View and update your profile information
@@ -354,7 +358,8 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
             // Apple-Specific Privacy
             _buildHighlightBox(
               title: 'Apple Privacy Compliance',
-              content: 'This professional networking app complies with Apple\'s App Store privacy requirements. We use Apple\'s In-App Purchase system for subscriptions and do not collect payment information directly. All data collection is transparent and with your consent.',
+              content:
+                  'This professional networking app complies with Apple\'s App Store privacy requirements. We use Apple\'s In-App Purchase system for subscriptions and do not collect payment information directly. All data collection is transparent and with your consent.',
               icon: Icons.apple,
               backgroundColor: AppColors.backgroundTertiary,
               borderColor: AppColors.textSecondary,
@@ -364,7 +369,8 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
             _buildSection(
               title: '6. Children\'s Privacy',
               icon: Icons.child_care_outlined,
-              content: '''Team Build Pro is intended for a general audience and is not directed to children under the age of 18. We do not knowingly collect personal information from children under 18.
+              content:
+                  '''Team Build Pro is intended for a general audience and is not directed to children under the age of 18. We do not knowingly collect personal information from children under 18.
 
 If we discover that we have collected information from a child under 18:
 • We will delete the information immediately
@@ -378,7 +384,8 @@ Parents who believe their child has provided information to us should contact $p
             _buildSection(
               title: '7. International Data Transfers',
               icon: Icons.public_outlined,
-              content: '''Team Build Pro is available globally. Your information may be transferred to and processed in:
+              content:
+                  '''Team Build Pro is available globally. Your information may be transferred to and processed in:
 
 • United States (Firebase/Google servers)
 • Other countries where our service providers operate
@@ -395,7 +402,8 @@ All transfers comply with applicable data protection laws including GDPR and CCP
             _buildSection(
               title: '8. Changes to This Privacy Policy',
               icon: Icons.update_outlined,
-              content: '''We may update this Privacy Policy from time to time. When we make changes:
+              content:
+                  '''We may update this Privacy Policy from time to time. When we make changes:
 
 • We will notify you through the app
 • We will update the "Last Updated" date

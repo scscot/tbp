@@ -64,7 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '312163687148',
     projectId: 'teambuilder-plus-fe74d',
     storageBucket: 'teambuilder-plus-fe74d.firebasestorage.app',
-    iosClientId: '312163687148-uj2v3ldugflpr6b0iuph9412eoderjf7.apps.googleusercontent.com',
+    iosClientId:
+        '312163687148-uj2v3ldugflpr6b0iuph9412eoderjf7.apps.googleusercontent.com',
     iosBundleId: 'com.scott.ultimatefix',
   );
 

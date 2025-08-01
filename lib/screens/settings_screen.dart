@@ -227,8 +227,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content:
-                  Text('Organization Name fields must match for confirmation.')),
+              content: Text(
+                  'Organization Name fields must match for confirmation.')),
         );
         return;
       }
@@ -651,7 +651,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 32),
-          
+
           // Privacy Policy Section
           const Divider(thickness: 1),
           const SizedBox(height: 16),
@@ -662,17 +662,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
           Card(
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               leading: const Icon(Icons.privacy_tip, color: Colors.blue),
               title: const Text('Privacy Policy'),
-              subtitle: const Text('View our privacy practices and data handling'),
+              subtitle:
+                  const Text('View our privacy practices and data handling'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PrivacyPolicyScreen(appId: widget.appId),
+                    builder: (context) =>
+                        PrivacyPolicyScreen(appId: widget.appId),
                   ),
                 );
               },
@@ -681,7 +684,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
           Card(
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               leading: const Icon(Icons.gavel, color: Colors.blue),
               title: const Text('Terms of Service'),
@@ -691,7 +695,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TermsOfServiceScreen(appId: widget.appId),
+                    builder: (context) =>
+                        TermsOfServiceScreen(appId: widget.appId),
                   ),
                 );
               },

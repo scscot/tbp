@@ -79,9 +79,9 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Last Updated
             Container(
               padding: const EdgeInsets.all(16),
@@ -114,20 +114,20 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
 
             // IMPORTANT DISCLAIMER - Direct Sales
             _buildImportantDisclaimer(),
-            
+
             const SizedBox(height: 32),
 
             // Terms Sections
             _buildSection(
               '1. ACCEPTANCE OF TERMS',
-            '''By downloading, installing, accessing, or using the Team Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
+              '''By downloading, installing, accessing, or using the Team Build Pro mobile application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
 
 These Terms constitute a legally binding agreement between you and Team Build Pro regarding your use of our professional networking platform service.''',
             ),
 
             _buildSection(
               '2. SERVICE DESCRIPTION',
-            '''Team Build Pro is a subscription-based professional networking platform that provides:
+              '''Team Build Pro is a subscription-based professional networking platform that provides:
 • Relationship management and tracking tools
 • Professional team analytics and insights
 • Pre-building tools for aspiring leaders to build momentum
@@ -139,7 +139,7 @@ The platform operates on a subscription model with a 30-day free trial, followed
 
             _buildSection(
               '3. SUBSCRIPTION TERMS',
-            '''BILLING AND PAYMENT:
+              '''BILLING AND PAYMENT:
 • 30-day free trial for new users
 • Monthly subscription fee of \$4.95 after trial period
 • Automatic renewal unless cancelled
@@ -155,7 +155,7 @@ CANCELLATION:
 
             _buildSection(
               '4. BUSINESS OPPORTUNITIES',
-            '''THIRD-PARTY OPPORTUNITIES:
+              '''THIRD-PARTY OPPORTUNITIES:
 • Business opportunities are provided by independent representatives
 • Team Build Pro does not own or operate these businesses
 • All business partnerships are separate from Team Build Pro
@@ -186,10 +186,9 @@ PROFESSIONAL CONDUCT:
 • Use platform features as intended''',
             ),
 
-
             _buildSection(
               '6. ACCEPTABLE USE',
-            '''Users agree to:
+              '''Users agree to:
 • Use the platform for legitimate networking purposes only
 • Maintain professional conduct in all interactions
 • Comply with applicable laws and regulations
@@ -203,7 +202,7 @@ Users must not engage in spam, harassment, illegal activities, or misuse of plat
 
             _buildSection(
               '7. PROHIBITED ACTIVITIES',
-            '''The following activities are strictly prohibited:
+              '''The following activities are strictly prohibited:
 • Spam, unsolicited messages, or bulk communications
 • Harassment, threats, or abusive behavior
 • Impersonation or misrepresentation of identity
@@ -413,7 +412,8 @@ Team Build Pro operates as a networking platform and does not guarantee business
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+              border:
+                  Border.all(color: AppColors.border.withValues(alpha: 0.5)),
             ),
             child: Text(
               content,

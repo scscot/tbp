@@ -37,7 +37,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
+
   String? _sponsorName;
   String? _initialReferralCode;
   bool _isLoading = true;
@@ -59,7 +59,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
     // First, try to get cached referral data from SessionManager
     final cachedReferralData = await SessionManager.instance.getReferralData();
-    
+
     if (cachedReferralData != null) {
       debugPrint('🔍 Using cached referral data');
       _initialReferralCode = cachedReferralData['referralCode'];
@@ -77,7 +77,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint('🔍   _initialReferralCode: $_initialReferralCode');
 
     if (isDevMode && _initialReferralCode == null) {
-       //_initialReferralCode = '88888888'; // Admin
+      //_initialReferralCode = '88888888'; // Admin
       // _initialReferralCode = '28F37ECD'; // Direct
     }
 
@@ -91,7 +91,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     }
 
     // Only make HTTP request if we don't have cached data (fallback scenario)
-    debugPrint('🔍 Making HTTP request to get referral code data (fallback)...');
+    debugPrint(
+        '🔍 Making HTTP request to get referral code data (fallback)...');
     try {
       final uri = Uri.parse(
           'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code');
@@ -103,14 +104,15 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         final data = jsonDecode(response.body);
         final sponsorName =
             '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
-        
+
         setState(() {
           _sponsorName = sponsorName;
         });
 
         // Cache this data for future use
         await SessionManager.instance.setReferralData(code, sponsorName);
-        debugPrint('✅ NewRegistrationScreen: Referral data cached from fallback');
+        debugPrint(
+            '✅ NewRegistrationScreen: Referral data cached from fallback');
       } else {
         debugPrint(
             'Failed to get sponsor data. Status code: ${response.statusCode}');
@@ -134,17 +136,18 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
-    
+
     if (!_acceptedPrivacyPolicy) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please accept the Privacy Policy and Terms of Service to continue'),
+          content: Text(
+              'Please accept the Privacy Policy and Terms of Service to continue'),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
-    
+
     setState(() => _isLoading = true);
 
     final authService = context.read<AuthService>();
@@ -154,9 +157,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
     try {
       debugPrint('🔍 REGISTER: Starting registration process...');
-      
+
       final HttpsCallable callable =
-          FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('registerUser');
+          FirebaseFunctions.instanceFor(region: 'us-central1')
+              .httpsCallable('registerUser');
 
       // Prepare registration data
       final registrationData = <String, dynamic>{
@@ -168,10 +172,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'role': _initialReferralCode == null ? 'admin' : 'user',
       };
 
-      debugPrint('🔍 REGISTER: Registration data prepared: ${registrationData.toString()}');
+      debugPrint(
+          '🔍 REGISTER: Registration data prepared: ${registrationData.toString()}');
       debugPrint('🔍 REGISTER: Calling registerUser Cloud Function...');
 
-      final result = await callable.call<Map<String, dynamic>>(registrationData);
+      final result =
+          await callable.call<Map<String, dynamic>>(registrationData);
       debugPrint('🔍 REGISTER: Cloud Function call successful: ${result.data}');
 
       debugPrint('🔍 REGISTER: Attempting to sign in user...');
@@ -179,7 +185,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
-      debugPrint('🔍 REGISTER: Sign in successful, UID: ${userCredential.user?.uid}');
+      debugPrint(
+          '🔍 REGISTER: Sign in successful, UID: ${userCredential.user?.uid}');
 
       debugPrint('🔍 REGISTER: Fetching user model from Firestore...');
       final userModel =
@@ -190,41 +197,47 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         throw Exception("Failed to fetch new user profile.");
       }
 
-      debugPrint('✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
+      debugPrint(
+          '✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
 
       // Clear referral data after successful registration
       await SessionManager.instance.clearReferralData();
-      debugPrint('🧹 REGISTER: Referral data cleared after successful registration');
+      debugPrint(
+          '🧹 REGISTER: Referral data cleared after successful registration');
 
       if (!mounted) return;
-      
+
       // Navigate based on user role - bypass WelcomeScreen
       if (userModel.role == 'admin') {
-        debugPrint('🔍 REGISTER: Navigating admin user to AdminEditProfileScreen...');
+        debugPrint(
+            '🔍 REGISTER: Navigating admin user to AdminEditProfileScreen...');
         navigator.pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) =>
-                AdminEditProfileScreen(appId: widget.appId),
+            builder: (context) => AdminEditProfileScreen(appId: widget.appId),
           ),
           (Route<dynamic> route) => false,
         );
       } else {
-        debugPrint('🔍 REGISTER: Navigating regular user to EditProfileScreen...');
+        debugPrint(
+            '🔍 REGISTER: Navigating regular user to EditProfileScreen...');
         navigator.pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) =>
-                EditProfileScreen(appId: widget.appId, user: userModel, isFirstTimeSetup: true),
+            builder: (context) => EditProfileScreen(
+                appId: widget.appId, user: userModel, isFirstTimeSetup: true),
           ),
           (Route<dynamic> route) => false,
         );
       }
     } on FirebaseFunctionsException catch (e) {
-      debugPrint('❌ REGISTER: FirebaseFunctionsException - Code: ${e.code}, Message: ${e.message}');
-      debugPrint('❌ REGISTER: FirebaseFunctionsException - Details: ${e.details}');
+      debugPrint(
+          '❌ REGISTER: FirebaseFunctionsException - Code: ${e.code}, Message: ${e.message}');
+      debugPrint(
+          '❌ REGISTER: FirebaseFunctionsException - Details: ${e.details}');
       _showErrorSnackbar(
           scaffoldMessenger, e.message ?? 'Registration failed.');
     } on FirebaseAuthException catch (e) {
-      debugPrint('❌ REGISTER: FirebaseAuthException - Code: ${e.code}, Message: ${e.message}');
+      debugPrint(
+          '❌ REGISTER: FirebaseAuthException - Code: ${e.code}, Message: ${e.message}');
       _showErrorSnackbar(scaffoldMessenger, e.message ?? 'Login failed.');
     } catch (e, stackTrace) {
       debugPrint('❌ REGISTER: Unexpected error: $e');
@@ -344,7 +357,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         decoration: const InputDecoration(
                           labelText: 'First Name',
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null),
@@ -354,11 +368,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Last Name',
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null),
-                    
+
                     // Create Your Login section with privacy assurance
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 16),
@@ -367,29 +382,34 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         children: [
                           Text(
                             'Create Your Login',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '🔒 Your email will never be shared with anyone',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.black,
-                              fontStyle: FontStyle.italic,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.black,
+                                      fontStyle: FontStyle.italic,
+                                    ),
                           ),
                         ],
                       ),
                     ),
-                    
+
                     TextFormField(
                         controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: 'Email Address',
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) => v == null || !v.contains('@')
@@ -401,7 +421,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Password',
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         obscureText: true,
                         validator: (v) => (v?.length ?? 0) < 6
@@ -413,14 +434,15 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Confirm Password',
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                         obscureText: true,
                         validator: (v) => v != _passwordController.text
                             ? 'Passwords do not match'
                             : null),
                     const SizedBox(height: 24),
-                    
+
                     // Privacy Policy Agreement
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -448,7 +470,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _acceptedPrivacyPolicy = !_acceptedPrivacyPolicy;
+                                      _acceptedPrivacyPolicy =
+                                          !_acceptedPrivacyPolicy;
                                     });
                                   },
                                   child: Padding(
@@ -461,14 +484,16 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                           height: 1.4,
                                         ),
                                         children: [
-                                          const TextSpan(text: 'I agree to the '),
+                                          const TextSpan(
+                                              text: 'I agree to the '),
                                           WidgetSpan(
                                             child: GestureDetector(
                                               onTap: () {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => PrivacyPolicyScreen(
+                                                    builder: (context) =>
+                                                        PrivacyPolicyScreen(
                                                       appId: widget.appId,
                                                     ),
                                                   ),
@@ -480,7 +505,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                                   fontSize: 14,
                                                   color: AppColors.primary,
                                                   fontWeight: FontWeight.w600,
-                                                  decoration: TextDecoration.underline,
+                                                  decoration:
+                                                      TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -492,7 +518,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => TermsOfServiceScreen(
+                                                    builder: (context) =>
+                                                        TermsOfServiceScreen(
                                                       appId: widget.appId,
                                                     ),
                                                   ),
@@ -504,7 +531,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                                   fontSize: 14,
                                                   color: AppColors.primary,
                                                   fontWeight: FontWeight.w600,
-                                                  decoration: TextDecoration.underline,
+                                                  decoration:
+                                                      TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -529,7 +557,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,

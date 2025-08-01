@@ -22,22 +22,26 @@ class AuthService {
         debugPrint('🔐 AUTH_SERVICE: No Firebase user, returning null');
         return Stream.value(null);
       } else {
-        debugPrint('🔐 AUTH_SERVICE: Firebase user found: ${firebaseUser.uid}, fetching user data from Firestore');
+        debugPrint(
+            '🔐 AUTH_SERVICE: Firebase user found: ${firebaseUser.uid}, fetching user data from Firestore');
         return _firestore
             .collection('users')
             .doc(firebaseUser.uid)
             .snapshots()
             .map((snapshot) {
-              if (snapshot.exists) {
-                debugPrint('🔐 AUTH_SERVICE: User document exists, creating UserModel');
-                final userModel = UserModel.fromFirestore(snapshot);
-                debugPrint('🔐 AUTH_SERVICE: UserModel created - uid: ${userModel.uid}, role: ${userModel.role}, firstName: ${userModel.firstName}');
-                return userModel;
-              } else {
-                debugPrint('🔐 AUTH_SERVICE: User document does not exist for uid: ${firebaseUser.uid}');
-                return null;
-              }
-            });
+          if (snapshot.exists) {
+            debugPrint(
+                '🔐 AUTH_SERVICE: User document exists, creating UserModel');
+            final userModel = UserModel.fromFirestore(snapshot);
+            debugPrint(
+                '🔐 AUTH_SERVICE: UserModel created - uid: ${userModel.uid}, role: ${userModel.role}, firstName: ${userModel.firstName}');
+            return userModel;
+          } else {
+            debugPrint(
+                '🔐 AUTH_SERVICE: User document does not exist for uid: ${firebaseUser.uid}');
+            return null;
+          }
+        });
       }
     });
   }
@@ -92,7 +96,8 @@ class AuthService {
     }
     try {
       final result = await _firebaseAuth.signInWithCredential(credential);
-      debugPrint("🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
+      debugPrint(
+          "🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
       return result;
     } catch (e) {
       debugPrint("🔥 DEBUG: Firebase Auth failed: $e");
@@ -124,24 +129,29 @@ class AuthService {
   /// Returns true if user should be shown subscription screen
   Future<bool> shouldShowSubscriptionScreen(UserModel user) async {
     try {
-      debugPrint('🔐 AUTH_SERVICE: Checking subscription status for user ${user.uid}');
-      debugPrint('🔐 AUTH_SERVICE: User subscription status: ${user.subscriptionStatus}');
-      debugPrint('🔐 AUTH_SERVICE: User trial start date: ${user.trialStartDate}');
+      debugPrint(
+          '🔐 AUTH_SERVICE: Checking subscription status for user ${user.uid}');
+      debugPrint(
+          '🔐 AUTH_SERVICE: User subscription status: ${user.subscriptionStatus}');
+      debugPrint(
+          '🔐 AUTH_SERVICE: User trial start date: ${user.trialStartDate}');
       debugPrint('🔐 AUTH_SERVICE: User is trial valid: ${user.isTrialValid}');
-      
+
       // First check local user model for quick assessment
       final localCheck = _checkLocalSubscriptionStatus(user);
-      debugPrint('🔐 AUTH_SERVICE: Local subscription check - needs subscription: $localCheck');
-      
+      debugPrint(
+          '🔐 AUTH_SERVICE: Local subscription check - needs subscription: $localCheck');
+
       // If local check suggests subscription is needed, verify with cloud function
       if (localCheck) {
-        debugPrint('🔐 AUTH_SERVICE: Local check suggests subscription needed, verifying with cloud function...');
+        debugPrint(
+            '🔐 AUTH_SERVICE: Local check suggests subscription needed, verifying with cloud function...');
         return await _verifySubscriptionStatusViaFunction();
       }
-      
-      debugPrint('🔐 AUTH_SERVICE: Local check passed, no subscription screen needed');
+
+      debugPrint(
+          '🔐 AUTH_SERVICE: Local check passed, no subscription screen needed');
       return false;
-      
     } catch (e) {
       debugPrint('❌ AUTH_SERVICE: Error checking subscription status: $e');
       // Fail-safe: if we can't check, don't block access but log the issue
@@ -153,17 +163,17 @@ class AuthService {
   bool _checkLocalSubscriptionStatus(UserModel user) {
     // Check subscription status from user model
     final subscriptionStatus = user.subscriptionStatus;
-    
+
     // If status is active, no need for subscription screen
     if (subscriptionStatus == 'active') {
       return false;
     }
-    
+
     // If status is trial, check if trial is still valid
     if (subscriptionStatus == 'trial') {
       return !user.isTrialValid;
     }
-    
+
     // For cancelled, expired, or any other status, show subscription screen
     return true;
   }
@@ -172,37 +182,43 @@ class AuthService {
   Future<bool> _verifySubscriptionStatusViaFunction() async {
     try {
       debugPrint('🔐 AUTH_SERVICE: Verifying subscription via cloud function');
-      
-      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'us-central1')
-          .httpsCallable('checkUserSubscriptionStatus');
-      
+
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'us-central1')
+              .httpsCallable('checkUserSubscriptionStatus');
+
       debugPrint('🔐 AUTH_SERVICE: Calling cloud function...');
       final result = await callable.call().timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          debugPrint('❌ AUTH_SERVICE: Cloud function call timed out after 10 seconds');
-          throw TimeoutException('Cloud function call timed out', const Duration(seconds: 10));
+          debugPrint(
+              '❌ AUTH_SERVICE: Cloud function call timed out after 10 seconds');
+          throw TimeoutException(
+              'Cloud function call timed out', const Duration(seconds: 10));
         },
       );
-      
+
       debugPrint('🔐 AUTH_SERVICE: Cloud function call completed');
       final data = result.data;
-      
+
       final isActive = data['isActive'] as bool? ?? false;
       final isTrialValid = data['isTrialValid'] as bool? ?? false;
-      
-      debugPrint('🔐 AUTH_SERVICE: Cloud Function check - Active: $isActive, Trial Valid: $isTrialValid');
-      
+
+      debugPrint(
+          '🔐 AUTH_SERVICE: Cloud Function check - Active: $isActive, Trial Valid: $isTrialValid');
+
       // Show subscription screen if neither active subscription nor valid trial
       final needsSubscription = !isActive && !isTrialValid;
-      debugPrint('🔐 AUTH_SERVICE: User needs subscription screen: $needsSubscription');
-      
+      debugPrint(
+          '🔐 AUTH_SERVICE: User needs subscription screen: $needsSubscription');
+
       return needsSubscription;
-      
     } catch (e) {
-      debugPrint('❌ AUTH_SERVICE: Error checking subscription via Cloud Function: $e');
+      debugPrint(
+          '❌ AUTH_SERVICE: Error checking subscription via Cloud Function: $e');
       // On error, be conservative - allow access but log the issue
-      debugPrint('🔐 AUTH_SERVICE: Allowing access due to cloud function error');
+      debugPrint(
+          '🔐 AUTH_SERVICE: Allowing access due to cloud function error');
       return false;
     }
   }
@@ -212,18 +228,20 @@ class AuthService {
     try {
       final firebaseUser = _firebaseAuth.currentUser;
       if (firebaseUser == null) return false;
-      
-      debugPrint('🔐 AUTH_SERVICE: Checking subscription on app resume for user ${firebaseUser.uid}');
-      
+
+      debugPrint(
+          '🔐 AUTH_SERVICE: Checking subscription on app resume for user ${firebaseUser.uid}');
+
       // Get current user data
-      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+      final userDoc =
+          await _firestore.collection('users').doc(firebaseUser.uid).get();
       if (!userDoc.exists) return false;
-      
+
       final user = UserModel.fromFirestore(userDoc);
       return await shouldShowSubscriptionScreen(user);
-      
     } catch (e) {
-      debugPrint('❌ AUTH_SERVICE: Error checking subscription on app resume: $e');
+      debugPrint(
+          '❌ AUTH_SERVICE: Error checking subscription on app resume: $e');
       return false;
     }
   }

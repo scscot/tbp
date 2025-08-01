@@ -179,7 +179,6 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,7 +218,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                         labelText: 'Your Business Opportunity Name',
                         helperText: 'This cannot be changed once set',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,
                     ),
@@ -231,7 +231,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                       decoration: const InputDecoration(
                         labelText: 'Confirm Business Opportunity Name',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,
                     ),
@@ -270,7 +271,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                               labelText: 'Your Referral Link',
                               helperText: 'This cannot be changed once set',
                               border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
                             ),
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,
@@ -282,7 +284,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             decoration: const InputDecoration(
                               labelText: 'Confirm Referral Link URL',
                               border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
                             ),
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,

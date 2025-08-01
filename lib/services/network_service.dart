@@ -25,11 +25,12 @@ class CachedResult<T> {
 }
 
 class NetworkService {
-  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+  final FirebaseFunctions _functions =
+      FirebaseFunctions.instanceFor(region: 'us-central1');
 
   // Static cache storage - survives widget rebuilds but clears on app restart
   static final Map<String, CachedResult> _cache = {};
-  
+
   // Cache configuration
   static const int _networkCountsCacheDuration = 5; // 5 minutes
   static const int _filteredNetworkCacheDuration = 3; // 3 minutes
@@ -45,15 +46,13 @@ class NetworkService {
     if (params == null || params.isEmpty) {
       return '${operation}_$userId';
     }
-    
+
     // Create deterministic key from parameters
     final sortedParams = Map.fromEntries(
-      params.entries.toList()..sort((a, b) => a.key.compareTo(b.key))
-    );
-    final paramString = sortedParams.entries
-        .map((e) => '${e.key}:${e.value}')
-        .join('|');
-    
+        params.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+    final paramString =
+        sortedParams.entries.map((e) => '${e.key}:${e.value}').join('|');
+
     return '${operation}_${userId}_${paramString.hashCode}';
   }
 
@@ -64,7 +63,8 @@ class NetworkService {
     // Remove expired entries first
     final expiredKeys = <String>[];
     _cache.forEach((key, cached) {
-      if (cached.isExpired(15)) { // Remove anything older than 15 minutes
+      if (cached.isExpired(15)) {
+        // Remove anything older than 15 minutes
         expiredKeys.add(key);
       }
     });
@@ -80,7 +80,7 @@ class NetworkService {
     if (_cache.length > _maxCacheSize) {
       final sortedEntries = _cache.entries.toList()
         ..sort((a, b) => a.value.timestamp.compareTo(b.value.timestamp));
-      
+
       final entriesToRemove = sortedEntries.take(_cache.length - _maxCacheSize);
       for (final entry in entriesToRemove) {
         _cache.remove(entry.key);
@@ -96,15 +96,17 @@ class NetworkService {
     final cached = _cache[cacheKey];
     if (cached != null && !cached.isExpired(cacheDurationMinutes)) {
       if (kDebugMode) {
-        debugPrint('✅ CACHE HIT: $cacheKey (age: ${cached.getAgeMinutes()}min)');
+        debugPrint(
+            '✅ CACHE HIT: $cacheKey (age: ${cached.getAgeMinutes()}min)');
       }
       return cached.data as T?;
     }
-    
+
     if (cached != null && kDebugMode) {
-      debugPrint('⏰ CACHE EXPIRED: $cacheKey (age: ${cached.getAgeMinutes()}min)');
+      debugPrint(
+          '⏰ CACHE EXPIRED: $cacheKey (age: ${cached.getAgeMinutes()}min)');
     }
-    
+
     return null;
   }
 
@@ -113,7 +115,8 @@ class NetworkService {
     _cleanupCache();
     _cache[cacheKey] = CachedResult(data, DateTime.now(), cacheKey);
     if (kDebugMode) {
-      debugPrint('💾 CACHE STORED: $cacheKey (total entries: ${_cache.length})');
+      debugPrint(
+          '💾 CACHE STORED: $cacheKey (total entries: ${_cache.length})');
     }
   }
 
@@ -122,16 +125,16 @@ class NetworkService {
     final userId = _currentUserId;
     if (userId == null) return;
 
-    final keysToRemove = _cache.keys
-        .where((key) => key.contains(userId))
-        .toList();
+    final keysToRemove =
+        _cache.keys.where((key) => key.contains(userId)).toList();
 
     for (final key in keysToRemove) {
       _cache.remove(key);
     }
 
     if (kDebugMode) {
-      debugPrint('🧹 CACHE: Cleared ${keysToRemove.length} entries for user $userId');
+      debugPrint(
+          '🧹 CACHE: Cleared ${keysToRemove.length} entries for user $userId');
     }
   }
 
@@ -174,9 +177,10 @@ class NetworkService {
 
   Future<List<UserModel>> getNetwork() async {
     final cacheKey = _generateCacheKey('network');
-    
+
     // Try to get from cache first
-    final cached = _getCachedResult<List<UserModel>>(cacheKey, _fullNetworkCacheDuration);
+    final cached =
+        _getCachedResult<List<UserModel>>(cacheKey, _fullNetworkCacheDuration);
     if (cached != null) {
       return cached;
     }
@@ -200,7 +204,8 @@ class NetworkService {
       _setCachedResult(cacheKey, networkUsers);
 
       if (kDebugMode) {
-        debugPrint('✅ NETWORK: Fetched ${networkUsers.length} users from server');
+        debugPrint(
+            '✅ NETWORK: Fetched ${networkUsers.length} users from server');
       }
 
       return networkUsers;
@@ -224,9 +229,10 @@ class NetworkService {
 
   Future<Map<String, int>> getNetworkCounts() async {
     final cacheKey = _generateCacheKey('networkCounts');
-    
+
     // Try to get from cache first
-    final cached = _getCachedResult<Map<String, int>>(cacheKey, _networkCountsCacheDuration);
+    final cached = _getCachedResult<Map<String, int>>(
+        cacheKey, _networkCountsCacheDuration);
     if (cached != null) {
       return cached;
     }
@@ -287,15 +293,17 @@ class NetworkService {
       'offset': offset,
     };
     final cacheKey = _generateCacheKey('filteredNetwork', params);
-    
+
     // Try to get from cache first
-    final cached = _getCachedResult<Map<String, dynamic>>(cacheKey, _filteredNetworkCacheDuration);
+    final cached = _getCachedResult<Map<String, dynamic>>(
+        cacheKey, _filteredNetworkCacheDuration);
     if (cached != null) {
       return cached;
     }
 
     if (kDebugMode) {
-      debugPrint('🔍 FILTERED: Cache miss, fetching from server (filter: $filter, search: "$searchQuery")...');
+      debugPrint(
+          '🔍 FILTERED: Cache miss, fetching from server (filter: $filter, search: "$searchQuery")...');
     }
 
     try {
@@ -351,7 +359,8 @@ class NetworkService {
       _setCachedResult(cacheKey, processedData);
 
       if (kDebugMode) {
-        debugPrint('✅ FILTERED: Fetched ${networkUsers.length} users from server (total: ${data['totalCount']})');
+        debugPrint(
+            '✅ FILTERED: Fetched ${networkUsers.length} users from server (total: ${data['totalCount']})');
       }
 
       return processedData;

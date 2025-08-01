@@ -62,8 +62,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     try {
       // Check if current user is admin
       final currentUserDoc = await _firestoreService.getUser(_currentUserId!);
-      if (currentUserDoc != null) {
-      }
+      if (currentUserDoc != null) {}
 
       // Use the new backend aggregation method
       final memberDetails =
@@ -75,7 +74,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
         // Parse the member data
         if (memberDetails['member'] != null) {
           final memberData = Map<String, dynamic>.from(memberDetails['member']);
-          
+
           // Fetch biz_opp from admin_settings if upline_admin exists
           final uplineAdmin = memberData['upline_admin'] as String?;
           if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
@@ -84,7 +83,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   .collection('admin_settings')
                   .doc(uplineAdmin)
                   .get();
-                  
+
               if (adminSettingsDoc.exists) {
                 final adminData = adminSettingsDoc.data();
                 final bizOpp = adminData?['biz_opp'] as String?;
@@ -99,7 +98,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
               _log('Error fetching biz_opp from admin_settings: $e');
             }
           }
-          
+
           setState(() {
             _user = UserModel.fromMap(memberData);
           });
@@ -198,20 +197,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildInfoRow('City', _user!.city ?? 'N/A'),
                       _buildInfoRow('State', _user!.state ?? 'N/A'),
                       _buildInfoRow('Country', _user!.country ?? 'N/A'),
-
-
-                        _buildInfoRow('Joined Network',
-                            DateFormat.yMMMd().format(_user!.createdAt!)),
-
-                       _buildInfoRow('Direct Sponsors',
+                      _buildInfoRow('Joined Network',
+                          DateFormat.yMMMd().format(_user!.createdAt!)),
+                      _buildInfoRow('Direct Sponsors',
                           _user!.directSponsorCount.toString()),
-
-                       _buildInfoRow(
-                          'Total Team',
-                          _user!.totalTeamCount.toString()),
-
-
-
+                      _buildInfoRow(
+                          'Total Team', _user!.totalTeamCount.toString()),
                       if (_user!.currentPartner == true)
                         _buildQualifiedInfoRow('Qualified', 'Yes')
                       else ...[
@@ -220,30 +211,21 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                               DateFormat.yMMMd().format(_user!.qualifiedDate!))
                         else
                           _buildQualifiedInfoRow('Qualified', 'Not Yet'),
-
                         if (_user!.bizJoinDate != null)
                           _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
                               DateFormat.yMMMd().format(_user!.bizJoinDate!))
                         else
-                          _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
-                              'Not Yet'),
+                          _buildInfoRow(
+                              'Joined ${_bizOpp ?? 'organization'}', 'Not Yet'),
                       ],
-
-
-
-
                       if (_sponsorName != null)
                         _buildClickableInfoRow(
                             'Sponsor', _sponsorName!, _sponsorUid!),
-
-
                       if (_teamLeaderName != null &&
                           _teamLeaderUid != null &&
                           _user!.referredBy != _teamLeaderUid)
                         _buildClickableInfoRow(
                             'Team Leader', _teamLeaderName!, _teamLeaderUid!),
-
-
                       const SizedBox(height: 30),
                       if (_currentUserId != widget.userId)
                         Center(
@@ -393,7 +375,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                     children: [
                       _buildMetricCard(
                         icon: Icons.people,
-                        value: AppConstants.projectWideDirectSponsorMin.toString(),
+                        value:
+                            AppConstants.projectWideDirectSponsorMin.toString(),
                         label: 'Direct Sponsors',
                       ),
                       const SizedBox(width: 16),

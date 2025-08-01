@@ -84,12 +84,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     if (state == AppLifecycleState.resumed) {
       // App became active - sync badge with server
       debugPrint('🔔 APP LIFECYCLE: App resumed, syncing badge');
       _syncAppBadge();
-      
+
       // Check subscription status on app resume
       _checkSubscriptionOnResume();
     }
@@ -99,12 +99,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     try {
       final context = navigatorKey.currentContext;
       if (context == null) return;
-      
+
       final authService = Provider.of<AuthService>(context, listen: false);
-      final needsSubscription = await authService.checkSubscriptionOnAppResume();
-      
+      final needsSubscription =
+          await authService.checkSubscriptionOnAppResume();
+
       if (needsSubscription && context.mounted) {
-        debugPrint('🔔 APP LIFECYCLE: User needs subscription on resume, navigating to subscription screen');
+        debugPrint(
+            '🔔 APP LIFECYCLE: User needs subscription on resume, navigating to subscription screen');
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
           (route) => false,
@@ -237,29 +239,33 @@ class _AuthWrapperState extends State<AuthWrapper> {
     debugPrint(
         '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}, country: ${user.country}, firstName: ${user.firstName}');
 
-        // Check subscription status first (before profile completion)
-        return FutureBuilder<bool>(
-          future: context.read<AuthService>().shouldShowSubscriptionScreen(user),
-          builder: (context, snapshot) {
-            // Show loading while checking subscription
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              debugPrint('🔐 AUTH_WRAPPER: Waiting for subscription check...');
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
+    // Check subscription status first (before profile completion)
+    return FutureBuilder<bool>(
+      future: context.read<AuthService>().shouldShowSubscriptionScreen(user),
+      builder: (context, snapshot) {
+        // Show loading while checking subscription
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          debugPrint('🔐 AUTH_WRAPPER: Waiting for subscription check...');
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-            // Handle errors in subscription check
-            if (snapshot.hasError) {
-              debugPrint('🔐 AUTH_WRAPPER: Error in subscription check: ${snapshot.error}');
-              debugPrint('🔐 AUTH_WRAPPER: Proceeding to profile completion/dashboard');
-              // Continue with normal flow on error
-            } else if (snapshot.hasData && snapshot.data == true) {
-              debugPrint('🔐 AUTH_WRAPPER: User needs subscription, showing SubscriptionScreen');
-              return const SubscriptionScreen(key: ValueKey('SubscriptionScreen'));
-            } else {
-              debugPrint('🔐 AUTH_WRAPPER: Subscription check passed, proceeding to profile completion/dashboard');
-            }
+        // Handle errors in subscription check
+        if (snapshot.hasError) {
+          debugPrint(
+              '🔐 AUTH_WRAPPER: Error in subscription check: ${snapshot.error}');
+          debugPrint(
+              '🔐 AUTH_WRAPPER: Proceeding to profile completion/dashboard');
+          // Continue with normal flow on error
+        } else if (snapshot.hasData && snapshot.data == true) {
+          debugPrint(
+              '🔐 AUTH_WRAPPER: User needs subscription, showing SubscriptionScreen');
+          return const SubscriptionScreen(key: ValueKey('SubscriptionScreen'));
+        } else {
+          debugPrint(
+              '🔐 AUTH_WRAPPER: Subscription check passed, proceeding to profile completion/dashboard');
+        }
 
         // Continue with profile completion logic
         // Profile completion logic based on user role
@@ -293,7 +299,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
         }
 
         // Profile is complete and subscription is valid, show dashboard
-        debugPrint('🔐 AUTH_WRAPPER: Profile complete and subscription valid, showing DashboardScreen');
+        debugPrint(
+            '🔐 AUTH_WRAPPER: Profile complete and subscription valid, showing DashboardScreen');
         return DashboardScreen(
             key: const ValueKey('DashboardScreen'), appId: appId);
       },

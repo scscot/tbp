@@ -15,7 +15,14 @@ import '../config/app_colors.dart';
 
 enum ViewMode { grid, list, analytics }
 
-enum FilterBy { selectReport, allMembers, directSponsors, newMembers, qualifiedMembers, joinedMembers }
+enum FilterBy {
+  selectReport,
+  allMembers,
+  directSponsors,
+  newMembers,
+  qualifiedMembers,
+  joinedMembers
+}
 
 enum SortBy { name, joinDate, level, location }
 
@@ -54,7 +61,7 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   // Analytics data
   Map<String, dynamic> _analytics = {};
-  
+
   // Business opportunity name
   String _bizOppName = 'biz_opp';
 
@@ -62,7 +69,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    
+
     // Set initial filter based on notification parameter
     if (widget.initialFilter != null) {
       switch (widget.initialFilter) {
@@ -82,7 +89,7 @@ class _NetworkScreenState extends State<NetworkScreen>
           _filterBy = FilterBy.allMembers;
       }
     }
-    
+
     _initializeData();
     _searchController.addListener(_onSearchChanged);
   }
@@ -97,15 +104,16 @@ class _NetworkScreenState extends State<NetworkScreen>
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.toLowerCase();
-      
+
       // Auto-load "All Members" data if user is searching but no report is selected
       if (_searchQuery.isNotEmpty && _filterBy == FilterBy.selectReport) {
         _filterBy = FilterBy.allMembers;
         if (kDebugMode) {
-          debugPrint('🔍 SEARCH: Auto-loading All Members for search query: "$_searchQuery"');
+          debugPrint(
+              '🔍 SEARCH: Auto-loading All Members for search query: "$_searchQuery"');
         }
       }
-      
+
       _applyFiltersAndSort();
     });
   }
@@ -130,7 +138,7 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     // Fetch business opportunity name
     await _fetchBizOppName();
-    
+
     await _fetchData();
   }
 
@@ -142,12 +150,13 @@ class _NetworkScreenState extends State<NetworkScreen>
             .collection('users')
             .doc(authUser.uid)
             .get();
-            
+
         if (currentUserDoc.exists) {
           final userData = currentUserDoc.data();
           final uplineAdmin = userData?['upline_admin'] as String?;
-          debugPrint('🔍 BIZ_OPP DEBUG: Current user upline_admin: $uplineAdmin');
-          
+          debugPrint(
+              '🔍 BIZ_OPP DEBUG: Current user upline_admin: $uplineAdmin');
+
           if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
             // Get admin settings for the upline admin
             final adminSettingsDoc = await FirebaseFirestore.instance
@@ -160,34 +169,38 @@ class _NetworkScreenState extends State<NetworkScreen>
               final bizOpp = data?['biz_opp'] as String?;
               debugPrint('🔍 BIZ_OPP DEBUG: Admin settings data: $data');
               debugPrint('🔍 BIZ_OPP DEBUG: biz_opp field: $bizOpp');
-              
+
               if (bizOpp != null && bizOpp.isNotEmpty) {
                 setState(() {
                   _bizOppName = bizOpp;
                 });
-                debugPrint('🔍 BIZ_OPP DEBUG: Set bizOppName from admin settings: $_bizOppName');
+                debugPrint(
+                    '🔍 BIZ_OPP DEBUG: Set bizOppName from admin settings: $_bizOppName');
                 return;
               }
             } else {
-              debugPrint('🔍 BIZ_OPP DEBUG: Admin settings document does not exist for admin: $uplineAdmin');
+              debugPrint(
+                  '🔍 BIZ_OPP DEBUG: Admin settings document does not exist for admin: $uplineAdmin');
             }
           }
-          
+
           // Fallback: try to get bizOpp from current user's data
           final userBizOpp = userData?['bizOpp'] as String?;
           debugPrint('🔍 BIZ_OPP DEBUG: Current user bizOpp: $userBizOpp');
-          
+
           if (userBizOpp != null && userBizOpp.isNotEmpty) {
             setState(() {
               _bizOppName = userBizOpp;
             });
-            debugPrint('🔍 BIZ_OPP DEBUG: Set bizOppName from current user: $_bizOppName');
+            debugPrint(
+                '🔍 BIZ_OPP DEBUG: Set bizOppName from current user: $_bizOppName');
             return;
           }
         }
       }
-      
-      debugPrint('🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
+
+      debugPrint(
+          '🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
     } catch (e) {
       debugPrint('🔍 BIZ_OPP DEBUG: Error fetching biz opp name: $e');
     }
@@ -229,10 +242,10 @@ class _NetworkScreenState extends State<NetworkScreen>
   Future<void> _refreshData() async {
     try {
       debugPrint('🔄 REFRESH: Force refreshing network data...');
-      
+
       // Force refresh counts and network data
       final counts = await _networkService.refreshNetworkCounts();
-      
+
       if (!mounted) return;
 
       final result = await _networkService.refreshFilteredNetwork(
@@ -245,7 +258,7 @@ class _NetworkScreenState extends State<NetworkScreen>
       _allMembers = result['network'] as List<UserModel>;
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -307,14 +320,14 @@ class _NetworkScreenState extends State<NetworkScreen>
       // If there's a search query, we keep the filtered results from search
     } else if (_filterBy == FilterBy.directSponsors) {
       // Filter for direct sponsors (level 1 relative to current user)
-      filtered = filtered
-          .where((m) => (m.level - _levelOffset) == 1)
-          .toList();
+      filtered = filtered.where((m) => (m.level - _levelOffset) == 1).toList();
     } else if (_filterBy == FilterBy.newMembers) {
       final now = DateTime.now();
       final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
       filtered = filtered
-          .where((m) => m.createdAt != null && m.createdAt!.isAfter(sinceYesterday) &&
+          .where((m) =>
+              m.createdAt != null &&
+              m.createdAt!.isAfter(sinceYesterday) &&
               m.photoUrl != null)
           .toList();
     } else if (_filterBy == FilterBy.qualifiedMembers) {
@@ -356,22 +369,23 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   void _groupMembersByLevel() {
     _membersByLevel.clear();
-    
+
     for (var member in _filteredMembers) {
       // Calculate display level relative to current user
       final displayLevel = member.level - _levelOffset;
-      
+
       // Only show levels > 0 (members below current user)
       if (displayLevel > 0) {
         _membersByLevel.putIfAbsent(displayLevel, () => []).add(member);
       }
     }
-    
+
     // Debug logging
-    debugPrint('🔍 team DEBUG: Total filtered members: ${_filteredMembers.length}');
+    debugPrint(
+        '🔍 team DEBUG: Total filtered members: ${_filteredMembers.length}');
     debugPrint('🔍 team DEBUG: Level offset: $_levelOffset');
     debugPrint('🔍 team DEBUG: Members by level: $_membersByLevel');
-    
+
     // Ensure levels are sorted
     final sortedEntries = _membersByLevel.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
@@ -457,7 +471,6 @@ class _NetworkScreenState extends State<NetworkScreen>
             ),
           ),
           const SizedBox(width: 8),
-          
           Expanded(
             child: _buildAnalyticsCard(
               'New Members',
@@ -478,7 +491,8 @@ class _NetworkScreenState extends State<NetworkScreen>
   }
 
   Widget _buildAnalyticsCard(
-      String title, String value, IconData icon, Color color, {VoidCallback? onTap}) {
+      String title, String value, IconData icon, Color color,
+      {VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -609,7 +623,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   String _getFilterDisplayName(FilterBy filter) {
     // Use the directly fetched business opportunity name
     // debugPrint('🔍 FILTER DEBUG: Using bizOppName: $_bizOppName');
-    
+
     switch (filter) {
       case FilterBy.selectReport:
         return 'Select Team Report';
@@ -691,7 +705,8 @@ class _NetworkScreenState extends State<NetworkScreen>
               const SizedBox(height: 4),
               Text(
                 '${member.city ?? ''}, ${member.state ?? ''}',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 12),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -708,9 +723,10 @@ class _NetworkScreenState extends State<NetworkScreen>
     if (_membersByLevel.isEmpty) {
       String message;
       if (_filterBy == FilterBy.selectReport && _searchQuery.isEmpty) {
-        message = 'Please select a team report from the dropdown above to view your team data.';
+        message =
+            'Please select a team report from the dropdown above to view your team data.';
       } else if (_searchQuery.isNotEmpty) {
-        message = _filterBy == FilterBy.selectReport 
+        message = _filterBy == FilterBy.selectReport
             ? 'Showing search results from All Members. No members match your search.'
             : 'No members match your search.';
       } else {
@@ -725,13 +741,16 @@ class _NetworkScreenState extends State<NetworkScreen>
             children: [
               Text(
                 message,
-                style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                style: const TextStyle(
+                    fontSize: 16, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
-              if (_filterBy == FilterBy.selectReport && _searchQuery.isNotEmpty) ...[
+              if (_filterBy == FilterBy.selectReport &&
+                  _searchQuery.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
@@ -763,7 +782,8 @@ class _NetworkScreenState extends State<NetworkScreen>
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                border:
+                    Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
@@ -791,11 +811,12 @@ class _NetworkScreenState extends State<NetworkScreen>
             final level = entry.key;
             final users = entry.value;
             final isExpanded = _expandedPanels.contains(level);
-            
+
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
               child: Column(
                 children: [
                   InkWell(
@@ -822,7 +843,8 @@ class _NetworkScreenState extends State<NetworkScreen>
                           ),
                           Text(
                             '${users.length} Members',
-                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                            style: const TextStyle(
+                                color: AppColors.textSecondary, fontSize: 14),
                           ),
                           const SizedBox(width: 8),
                           Icon(
@@ -835,7 +857,9 @@ class _NetworkScreenState extends State<NetworkScreen>
                   ),
                   if (isExpanded)
                     Column(
-                      children: users.map((user) => _buildMemberListCard(user)).toList(),
+                      children: users
+                          .map((user) => _buildMemberListCard(user))
+                          .toList(),
                     ),
                 ],
               ),
@@ -890,8 +914,8 @@ class _NetworkScreenState extends State<NetworkScreen>
                       const SizedBox(height: 4),
                       Text(
                         'Joined ${DateFormat('MMM d, yyyy').format(member.createdAt!)}',
-                        style:
-                            const TextStyle(color: AppColors.textTertiary, fontSize: 12),
+                        style: const TextStyle(
+                            color: AppColors.textTertiary, fontSize: 12),
                       ),
                     ],
                   ],

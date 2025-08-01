@@ -26,7 +26,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _bizOppRefUrlController = TextEditingController();
-  final TextEditingController _bizOppRefUrlConfirmController = TextEditingController();
+  final TextEditingController _bizOppRefUrlConfirmController =
+      TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
 
   String? _baseUrl;
@@ -106,7 +107,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             _bizOppName = data?['biz_opp'] ?? 'business opportunity';
             if (originalUrl != null && originalUrl.isNotEmpty) {
               final uri = Uri.parse(originalUrl);
-              
+
               // Store base URL as scheme + host for validation
               _baseUrl = "${uri.scheme}://${uri.host}";
             }
@@ -158,7 +159,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
       }
 
       // Ensure the entered URL is not just the homepage (must have additional path/parameters)
-      if (url.trim() == _baseUrl!.trim() || url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
+      if (url.trim() == _baseUrl!.trim() ||
+          url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
         return 'Please enter your unique referral link,\nnot just the homepage';
       }
 
@@ -185,7 +187,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
       final completeReferralUrl = _bizOppRefUrlController.text.trim();
 
       // Validate the referral URL accessibility using Firebase Cloud Function
-      final isValidUrl = await LinkValidatorService.validateReferralUrl(completeReferralUrl);
+      final isValidUrl =
+          await LinkValidatorService.validateReferralUrl(completeReferralUrl);
       if (!isValidUrl) {
         if (mounted) {
           setState(() => _isSaving = false);
@@ -452,7 +455,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
-                      text: ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
+                      text:
+                          ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
                     ),
                   ],
                 ),
@@ -467,7 +471,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColors.warning, size: 20),
+                    Icon(Icons.info_outline,
+                        color: AppColors.warning, size: 20),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -826,12 +831,15 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             controller: _bizOppRefUrlController,
             decoration: InputDecoration(
               labelText: 'Enter Your Referral Link',
-              helperText: _baseUrl != null 
+              helperText: _baseUrl != null
                   ? 'Must start with $_baseUrl\nThis cannot be changed once set'
                   : 'This cannot be changed once set',
-              hintText: _baseUrl != null ? 'e.g., ${_baseUrl}your_username_here' : null,
+              hintText: _baseUrl != null
+                  ? 'e.g., ${_baseUrl}your_username_here'
+                  : null,
               border: const OutlineInputBorder(),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -869,24 +877,29 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                     title: const Text(
                       'Very Important!',
                       style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold),
+                          color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     content: RichText(
                       text: TextSpan(
-                        style: const TextStyle(fontSize: 16, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.black),
                         children: [
-                          const TextSpan(text: 'You must enter the exact referral link you received from '),
+                          const TextSpan(
+                              text:
+                                  'You must enter the exact referral link you received from '),
                           TextSpan(
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: '. This will ensure your team members that join '),
+                          const TextSpan(
+                              text:
+                                  '. This will ensure your team members that join '),
                           TextSpan(
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: ' are automatically placed in your '),
+                          const TextSpan(
+                              text: ' are automatically placed in your '),
                           TextSpan(
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -913,7 +926,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             decoration: const InputDecoration(
               labelText: 'Confirm Referral Link URL',
               border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {

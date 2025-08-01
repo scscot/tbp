@@ -80,7 +80,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           .collection('admin_settings')
           .doc(adminUid)
           .get();
-      
+
       String? retrievedBizOpp;
       if (adminSettingsDoc.exists) {
         final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
@@ -91,9 +91,10 @@ class _BusinessScreenState extends State<BusinessScreen>
       String? retrievedBizOppRefUrl;
       String? retrievedSponsorName;
       String? retrievedSponsorUid;
-      
+
       if (user.uplineRefs.isNotEmpty) {
-        final result = await _findBizOppRefUrlAndSponsorInUpline(user.uplineRefs);
+        final result =
+            await _findBizOppRefUrlAndSponsorInUpline(user.uplineRefs);
         retrievedBizOppRefUrl = result['bizOppRefUrl'];
         retrievedSponsorName = result['sponsorName'];
         retrievedSponsorUid = result['sponsorUid'];
@@ -112,14 +113,14 @@ class _BusinessScreenState extends State<BusinessScreen>
       });
 
       _animationController.forward();
-
     } catch (e) {
       debugPrint('Error loading opportunity data: $e');
       if (mounted) setState(() => loading = false);
     }
   }
 
-  Future<Map<String, String?>> _findBizOppRefUrlAndSponsorInUpline(List<String> uplineRefs) async {
+  Future<Map<String, String?>> _findBizOppRefUrlAndSponsorInUpline(
+      List<String> uplineRefs) async {
     try {
       // Traverse upline_refs in REVERSE order (UP the upline: closest to furthest)
       // uplineRefs structure: [furthest_upline, ..., direct_sponsor]
@@ -127,45 +128,46 @@ class _BusinessScreenState extends State<BusinessScreen>
       for (int i = uplineRefs.length - 1; i >= 0; i--) {
         final uplineUid = uplineRefs[i];
         debugPrint('🔍 Checking upline user at index $i: $uplineUid');
-        
+
         final uplineUserDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(uplineUid)
             .get();
-        
+
         if (uplineUserDoc.exists) {
           final uplineUserData = uplineUserDoc.data() as Map<String, dynamic>?;
           final bizOppRefUrl = uplineUserData?['biz_opp_ref_url'] as String?;
-          final subscriptionStatus = uplineUserData?['subscriptionStatus'] as String?;
+          final subscriptionStatus =
+              uplineUserData?['subscriptionStatus'] as String?;
 
-          final validStatuses = [
-            'active',
-            'trial'
-          ];
+          final validStatuses = ['active', 'trial'];
 
           if (bizOppRefUrl != null &&
               bizOppRefUrl.isNotEmpty &&
               validStatuses.contains(subscriptionStatus)) {
-            debugPrint('✅ Found biz_opp_ref_url in upline user at index $i: $uplineUid');
-            
+            debugPrint(
+                '✅ Found biz_opp_ref_url in upline user at index $i: $uplineUid');
+
             // Get sponsor name from the same user
             final firstName = uplineUserData?['firstName'] as String? ?? '';
             final lastName = uplineUserData?['lastName'] as String? ?? '';
             final sponsorName = '$firstName $lastName'.trim();
-            
+
             return {
               'bizOppRefUrl': bizOppRefUrl,
               'sponsorName': sponsorName.isNotEmpty ? sponsorName : null,
               'sponsorUid': uplineUid,
             };
           } else {
-            debugPrint('❌ No biz_opp_ref_url found for upline user at index $i: $uplineUid');
+            debugPrint(
+                '❌ No biz_opp_ref_url found for upline user at index $i: $uplineUid');
           }
         } else {
-          debugPrint('❌ Upline user document does not exist at index $i: $uplineUid');
+          debugPrint(
+              '❌ Upline user document does not exist at index $i: $uplineUid');
         }
       }
-      
+
       debugPrint('🚫 No biz_opp_ref_url found in entire upline chain');
       return {
         'bizOppRefUrl': null,
@@ -191,7 +193,8 @@ class _BusinessScreenState extends State<BusinessScreen>
         context: context,
         barrierDismissible: false, // Prevent dismissing by tapping outside
         builder: (BuildContext dialogContext) => Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             constraints: const BoxConstraints(maxWidth: 400),
             padding: const EdgeInsets.all(24),
@@ -201,7 +204,8 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColors.primary, size: 24),
+                    Icon(Icons.info_outline,
+                        color: AppColors.primary, size: 24),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -233,7 +237,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.textInverse,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
                     child: const Text(
                       'I Understand',
@@ -262,15 +267,17 @@ class _BusinessScreenState extends State<BusinessScreen>
     // This ensures the sponsor notification is only sent on the first copy
     if (!hasVisitedOpp) {
       try {
-        HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'us-central1')
-            .httpsCallable('notifySponsorOfBizOppVisit');
+        HttpsCallable callable =
+            FirebaseFunctions.instanceFor(region: 'us-central1')
+                .httpsCallable('notifySponsorOfBizOppVisit');
         await callable.call();
 
         if (mounted) {
           // Update the local state to reflect the change immediately
           setState(() => hasVisitedOpp = true);
           if (kDebugMode) {
-            debugPrint("Successfully triggered sponsor notification function on first copy.");
+            debugPrint(
+                "Successfully triggered sponsor notification function on first copy.");
           }
         }
       } on FirebaseFunctionsException catch (e) {
@@ -281,7 +288,8 @@ class _BusinessScreenState extends State<BusinessScreen>
       }
     } else {
       if (kDebugMode) {
-        debugPrint("User has already visited opportunity - skipping notification call.");
+        debugPrint(
+            "User has already visited opportunity - skipping notification call.");
       }
     }
 
@@ -300,7 +308,8 @@ class _BusinessScreenState extends State<BusinessScreen>
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
@@ -317,7 +326,8 @@ class _BusinessScreenState extends State<BusinessScreen>
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
@@ -338,7 +348,8 @@ class _BusinessScreenState extends State<BusinessScreen>
         showDialog(
           context: context,
           builder: (BuildContext dialogContext) => Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Container(
               constraints: const BoxConstraints(maxWidth: 400),
               padding: const EdgeInsets.all(24),
@@ -348,7 +359,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.warning_amber, color: AppColors.warning, size: 24),
+                      Icon(Icons.warning_amber,
+                          color: AppColors.warning, size: 24),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -380,7 +392,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.textInverse,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text(
                         'OK',
@@ -503,17 +516,20 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'Congratulations! Your team growth has unlocked access to premium opportunities with ',
+                  text:
+                      'Congratulations! Your team growth has unlocked access to premium opportunities with ',
                 ),
                 TextSpan(
                   text: bizOpp ?? 'established business partners',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(
-                  text: '. This represents a carefully curated opportunity that operates as ',
+                  text:
+                      '. This represents a carefully curated opportunity that operates as ',
                 ),
                 const TextSpan(
-                  text: 'an independent partnership opportunity through the Team Build Pro platform',
+                  text:
+                      'an independent partnership opportunity through the Team Build Pro platform',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -536,7 +552,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                'The Team Build Pro App facilitates access to organizations. Evaluate each opportunity based on your professional goals and interests.',
+                    'The Team Build Pro App facilitates access to organizations. Evaluate each opportunity based on your professional goals and interests.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -599,7 +615,8 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 const TextSpan(
-                  text: 'If you choose to explore this opportunity, your referral contact will be ',
+                  text:
+                      'If you choose to explore this opportunity, your referral contact will be ',
                 ),
                 if (sponsorName != null && sponsorUid != null)
                   WidgetSpan(
@@ -634,7 +651,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                     ),
                   ),
                 const TextSpan(
-                  text: '. This person is a member of your team who has already joined this opportunity.',
+                  text:
+                      '. This person is a member of your team who has already joined this opportunity.',
                 ),
               ],
             ),

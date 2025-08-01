@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' show kDebugMode; // Import kDebugMode
-import 'dart:developer' as developer; // Import the developer package for logging
+import 'dart:developer'
+    as developer; // Import the developer package for logging
 import '../services/eligibility_service.dart';
 
 class InvitationService {

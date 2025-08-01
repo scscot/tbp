@@ -51,7 +51,7 @@ class DeepLinkService {
     // Only handle deep links that have actual referral codes
     if (referralCode != null && referralCode.isNotEmpty) {
       debugPrint('🔗 Deep Link: Found referral code: $referralCode');
-      
+
       // Navigate to homepage screen with referral code
       navigatorKey.currentState?.push(
         MaterialPageRoute(

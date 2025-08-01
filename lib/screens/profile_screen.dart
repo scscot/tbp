@@ -81,10 +81,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (user.role == 'admin') {
       try {
-
         if (mounted) {
-          setState(() {
-          });
+          setState(() {});
         }
       } catch (e) {
         debugPrint("Error checking super admin status: $e");
@@ -151,8 +149,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (mounted) setState(() => _isRecalculating = false);
     }
   } */
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -245,8 +241,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 secondary: const Icon(Icons.fingerprint),
               )
             ],
-          
-          
           ],
         ),
       ),

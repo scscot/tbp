@@ -30,7 +30,7 @@ class UserModel {
   final DateTime? bizJoinDate;
   // --- MODIFICATION: Added field to track if user is a current business partner ---
   final bool currentPartner;
-  
+
   // --- PHASE 1: Apple Store Subscription Fields ---
   final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired'
   final DateTime? subscriptionExpiry;
@@ -81,7 +81,7 @@ class UserModel {
   static Future<UserModel> fromFirestoreWithBizOpp(DocumentSnapshot doc) async {
     final data = doc.data() as Map<String, dynamic>;
     data['uid'] = doc.id;
-    
+
     // Fetch biz_opp from admin_settings if upline_admin exists
     final uplineAdmin = data['upline_admin'] as String?;
     if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
@@ -90,7 +90,7 @@ class UserModel {
             .collection('admin_settings')
             .doc(uplineAdmin)
             .get();
-            
+
         if (adminSettingsDoc.exists) {
           final adminData = adminSettingsDoc.data();
           final bizOpp = adminData?['biz_opp'] as String?;
@@ -103,7 +103,7 @@ class UserModel {
         debugPrint('Error fetching biz_opp from admin_settings: $e');
       }
     }
-    
+
     return UserModel.fromMap(data);
   }
 
@@ -195,44 +195,51 @@ class UserModel {
       'currentPartner': currentPartner,
       // --- PHASE 1: Convert subscription fields to Firestore format ---
       'subscriptionStatus': subscriptionStatus,
-      'subscriptionExpiry': subscriptionExpiry != null ? Timestamp.fromDate(subscriptionExpiry!) : null,
-      'trialStartDate': trialStartDate != null ? Timestamp.fromDate(trialStartDate!) : null,
-      'subscriptionUpdated': subscriptionUpdated != null ? Timestamp.fromDate(subscriptionUpdated!) : null,
+      'subscriptionExpiry': subscriptionExpiry != null
+          ? Timestamp.fromDate(subscriptionExpiry!)
+          : null,
+      'trialStartDate':
+          trialStartDate != null ? Timestamp.fromDate(trialStartDate!) : null,
+      'subscriptionUpdated': subscriptionUpdated != null
+          ? Timestamp.fromDate(subscriptionUpdated!)
+          : null,
     };
   }
 
   // --- PHASE 1: Subscription Helper Methods ---
-  
+
   /// Returns true if the user has an active subscription or valid trial
-  bool get isSubscriptionActive => 
-    subscriptionStatus == 'active' || 
-    (subscriptionStatus == 'trial' && isTrialValid);
-    
+  bool get isSubscriptionActive =>
+      subscriptionStatus == 'active' ||
+      (subscriptionStatus == 'trial' && isTrialValid);
+
   /// Returns true if the trial period is still valid (30 days from start)
   bool get isTrialValid {
     if (trialStartDate == null) return false;
-    final daysSinceTrialStart = DateTime.now().difference(trialStartDate!).inDays;
+    final daysSinceTrialStart =
+        DateTime.now().difference(trialStartDate!).inDays;
     return daysSinceTrialStart <= 30;
   }
-  
+
   /// Returns the number of days remaining in trial period
   int get trialDaysRemaining {
     if (trialStartDate == null) return 0;
-    final daysSinceTrialStart = DateTime.now().difference(trialStartDate!).inDays;
+    final daysSinceTrialStart =
+        DateTime.now().difference(trialStartDate!).inDays;
     return (30 - daysSinceTrialStart).clamp(0, 30);
   }
-  
+
   /// Returns true if subscription has expired
   bool get isSubscriptionExpired {
     if (subscriptionStatus == 'expired') return true;
     if (subscriptionExpiry == null) return false;
     return DateTime.now().isAfter(subscriptionExpiry!);
   }
-  
+
   /// Returns true if user is in grace period (cancelled but still active)
   bool get isInGracePeriod {
-    return subscriptionStatus == 'cancelled' && 
-           subscriptionExpiry != null && 
-           DateTime.now().isBefore(subscriptionExpiry!);
+    return subscriptionStatus == 'cancelled' &&
+        subscriptionExpiry != null &&
+        DateTime.now().isBefore(subscriptionExpiry!);
   }
 }

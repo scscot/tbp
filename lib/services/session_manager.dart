@@ -79,7 +79,8 @@ class SessionManager {
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
     await prefs.setString(_referralDataKey, jsonEncode(referralData));
-    debugPrint('📂 SessionManager — Referral data cached: $referralCode -> $sponsorName');
+    debugPrint(
+        '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName');
   }
 
   Future<Map<String, String>?> getReferralData() async {
@@ -95,7 +96,8 @@ class SessionManager {
         'referralCode': data['referralCode'] as String,
         'sponsorName': data['sponsorName'] as String,
       };
-      debugPrint('✅ SessionManager — Loaded referral data: ${referralData['referralCode']} -> ${referralData['sponsorName']}');
+      debugPrint(
+          '✅ SessionManager — Loaded referral data: ${referralData['referralCode']} -> ${referralData['sponsorName']}');
       return referralData;
     } catch (e) {
       debugPrint('❌ SessionManager — Error decoding referral data: $e');

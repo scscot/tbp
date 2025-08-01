@@ -192,15 +192,18 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
       if (country.isNotEmpty && state.isNotEmpty) {
         // Call backend function to recalculate timezone based on new location
         try {
-          final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+          final HttpsCallable callable =
+              FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
           await callable.call({
             'userId': user.uid,
             'country': country,
             'state': state,
           });
-          debugPrint('✅ ADMIN PROFILE UPDATE: Timezone recalculated for country: $country, state: $state');
+          debugPrint(
+              '✅ ADMIN PROFILE UPDATE: Timezone recalculated for country: $country, state: $state');
         } catch (e) {
-          debugPrint('⚠️ ADMIN PROFILE UPDATE: Failed to recalculate timezone: $e');
+          debugPrint(
+              '⚠️ ADMIN PROFILE UPDATE: Failed to recalculate timezone: $e');
           // Continue with profile update even if timezone update fails
         }
       }
@@ -317,7 +320,8 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Country',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       value: _countryController.text.isEmpty
                           ? null
@@ -349,7 +353,8 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'State/Province',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       value: _stateController.text.isEmpty
                           ? null
@@ -382,7 +387,8 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'City',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your city' : null,

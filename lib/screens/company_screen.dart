@@ -64,7 +64,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
               .collection('admin_settings')
               .doc(uid)
               .get();
-          
+
           if (adminDoc.exists) {
             final adminData = adminDoc.data();
             setState(() {
@@ -175,7 +175,6 @@ class _CompanyScreenState extends State<CompanyScreen> {
                           height: 1.5),
                     ),
                   ),
-                  
                 ],
               ),
             ),

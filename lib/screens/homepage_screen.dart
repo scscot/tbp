@@ -247,7 +247,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     super.dispose();
   }
 
-void _navigateToLogin() {
+  void _navigateToLogin() {
     if (_hasPerformedLogout) {
       // Dismiss the homepage to reveal the underlying login screen
       Navigator.of(context).pop();
@@ -318,23 +318,29 @@ void _navigateToLogin() {
     height += isLandscape ? 60 : 80; // platform logo (smaller in landscape)
     height += isLandscape ? 12 : 24; // spacing
     height += isLandscape ? 45 : 60; // main title (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing  
+    height += isLandscape ? 12 : 24; // spacing
     height += isLandscape ? 35 : 50; // subtitle badge (smaller in landscape)
     height += isLandscape ? 12 : 24; // spacing
-    height += isLandscape ? 100 : 140; // value proposition text (less in landscape)
+    height +=
+        isLandscape ? 100 : 140; // value proposition text (less in landscape)
     height += isLandscape ? 12 : 24; // spacing
-    height += _estimateWelcomeCardHeight(isLandscape); // dynamic card with landscape consideration
+    height += _estimateWelcomeCardHeight(
+        isLandscape); // dynamic card with landscape consideration
     height += isLandscape ? 6 : 12; // bottom spacing
     height += isLandscape ? 20 : 30; // safety buffer (less needed in landscape)
-    
+
     return height;
   }
 
   double _estimateWelcomeCardHeight(bool isLandscape) {
     if (_sponsorName != null && _sponsorName!.isNotEmpty) {
-      return isLandscape ? 100 : 120; // Personal invitation card (shorter in landscape)
+      return isLandscape
+          ? 100
+          : 120; // Personal invitation card (shorter in landscape)
     } else {
-      return isLandscape ? 140 : 180; // Innovative approach card (shorter in landscape)
+      return isLandscape
+          ? 140
+          : 180; // Innovative approach card (shorter in landscape)
     }
   }
 
@@ -439,15 +445,15 @@ void _navigateToLogin() {
     );
   }
 
-
   Widget _buildHeroSection() {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isLandscape = screenWidth > screenHeight;
-    
+
     // Calculate content-based height
     final baseContentHeight = _calculateContentHeight(isLandscape);
-    final safeHeight = screenHeight - MediaQuery.of(context).padding.top - kToolbarHeight;
+    final safeHeight =
+        screenHeight - MediaQuery.of(context).padding.top - kToolbarHeight;
     final optimalHeight = math.min(baseContentHeight, safeHeight);
 
     return Container(
@@ -475,92 +481,89 @@ void _navigateToLogin() {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                      FadeTransition(
-                        opacity: _heroFadeAnimation,
-                        child: SlideTransition(
-                          position: _heroSlideAnimation,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(height: isLandscape ? 16 : 32),
-                              _buildPlatformLogo(),
-                              SizedBox(height: isLandscape ? 16 : 24),
+                  FadeTransition(
+                    opacity: _heroFadeAnimation,
+                    child: SlideTransition(
+                      position: _heroSlideAnimation,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: isLandscape ? 16 : 32),
+                          _buildPlatformLogo(),
+                          SizedBox(height: isLandscape ? 16 : 24),
 
-                              // Main headline
-                              ShaderMask(
-                                shaderCallback: (bounds) => LinearGradient(
-                                  colors: [Colors.white, Colors.blue.shade200],
-                                ).createShader(bounds),
-                                child: Text(
-                                  'TEAM BUILD PRO',
-                                  style: TextStyle(
-                                    fontSize: isLandscape ? 28 : 32,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 2.5,
-                                    height: 1.1,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
+                          // Main headline
+                          ShaderMask(
+                            shaderCallback: (bounds) => LinearGradient(
+                              colors: [Colors.white, Colors.blue.shade200],
+                            ).createShader(bounds),
+                            child: Text(
+                              'TEAM BUILD PRO',
+                              style: TextStyle(
+                                fontSize: isLandscape ? 28 : 32,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: 2.5,
+                                height: 1.1,
                               ),
-
-                              SizedBox(height: isLandscape ? 16 : 32),
-
-                              // Subtitle
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 6),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [Colors.orange, Colors.deepOrange],
-                                  ),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  (_sponsorName != null &&
-                                          _sponsorName!.isNotEmpty)
-                                      ? 'JUMPSTART YOUR TEAM GROWTH'
-                                      : 'PROVEN TEAM BUILDING SYSTEM',
-                                  style: TextStyle(
-                                    fontSize: isLandscape ? 12 : 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    letterSpacing: 1.2,
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(height: isLandscape ? 16 : 24),
-
-                              // Value proposition
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: Text(
-                                  (_sponsorName != null &&
-                                          _sponsorName!.isNotEmpty)
-                                      ? 'Get the ultimate head start. This platform empowers aspiring leaders to pre-build their team before day one, ensuring you launch your new venture with powerful, immediate momentum.'
-                                      : 'From aspiring leaders to seasoned mentors, Team Build Pro provides the tools to build, manage, and scale your global network at every stage of your direct sales journey.',
-                                  style: TextStyle(
-                                    fontSize: isLandscape ? 14 : 16,
-                                    color: Colors.white,
-                                    height: 1.4,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-
-                              SizedBox(height: isLandscape ? 16 : 24),
-
-                              // Sponsor welcome or stats
-                              _buildDynamicWelcomeSection(),
-
-                              // SizedBox(height: isLandscape ? 8 : 12),
-                            ],
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
+
+                          SizedBox(height: isLandscape ? 16 : 32),
+
+                          // Subtitle
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 6),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Colors.orange, Colors.deepOrange],
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Text(
+                              (_sponsorName != null && _sponsorName!.isNotEmpty)
+                                  ? 'JUMPSTART YOUR TEAM GROWTH'
+                                  : 'PROVEN TEAM BUILDING SYSTEM',
+                              style: TextStyle(
+                                fontSize: isLandscape ? 12 : 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: isLandscape ? 16 : 24),
+
+                          // Value proposition
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              (_sponsorName != null && _sponsorName!.isNotEmpty)
+                                  ? 'Get the ultimate head start. This platform empowers aspiring leaders to pre-build their team before day one, ensuring you launch your new venture with powerful, immediate momentum.'
+                                  : 'From aspiring leaders to seasoned mentors, Team Build Pro provides the tools to build, manage, and scale your global network at every stage of your direct sales journey.',
+                              style: TextStyle(
+                                fontSize: isLandscape ? 14 : 16,
+                                color: Colors.white,
+                                height: 1.4,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+
+                          SizedBox(height: isLandscape ? 16 : 24),
+
+                          // Sponsor welcome or stats
+                          _buildDynamicWelcomeSection(),
+
+                          // SizedBox(height: isLandscape ? 8 : 12),
+                        ],
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -913,13 +916,16 @@ void _navigateToLogin() {
 
   Widget _buildBulletPointList(String description) {
     // Split the description by newlines and filter out empty lines
-    final lines = description.split('\n').where((line) => line.trim().isNotEmpty).toList();
-    
+    final lines = description
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: lines.asMap().entries.map((entry) {
         final line = entry.value.trim();
-        
+
         // Check if line starts with bullet point
         if (line.startsWith('•')) {
           final bulletText = line.substring(1).trim(); // Remove bullet and trim
@@ -970,8 +976,6 @@ void _navigateToLogin() {
       }).toList(),
     );
   }
-
-  
 
   Widget _buildSmartOnboarding() {
     return Container(
@@ -1243,9 +1247,7 @@ void _navigateToLogin() {
                 ),
                 const SizedBox(height: 16),
                 Text(
-
-
-(_sponsorName != null && _sponsorName!.isNotEmpty)
+                  (_sponsorName != null && _sponsorName!.isNotEmpty)
                       ? 'For the forward-thinking leader about to join $_bizOpp, the Team Build Pro app is your tool to build your team before day one, positioning you for immediate success.'
                       : 'For the ambitious direct sales professional, whether a beginner, rising star, or seasoned leader, the Team Build Pro app is your tool for building a powerful global organization, one meaningful connection at a time.',
                   style: TextStyle(
@@ -1431,7 +1433,6 @@ void _navigateToLogin() {
                         "Team members receive an invitation to join ${_bizOpp ?? 'your opportunity'} upon achieving key growth targets.",
                     icon: Icons.handshake,
                   ),
-
                 ],
               ),
             ),
@@ -1553,7 +1554,6 @@ void _navigateToLogin() {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

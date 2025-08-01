@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 
 class DownlineService {
-  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+  final FirebaseFunctions _functions =
+      FirebaseFunctions.instanceFor(region: 'us-central1');
 
   Future<List<UserModel>> getDownline() async {
     try {

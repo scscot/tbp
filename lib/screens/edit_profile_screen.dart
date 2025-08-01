@@ -68,13 +68,18 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     _firstNameController = TextEditingController(text: widget.user.firstName);
     _lastNameController = TextEditingController(text: widget.user.lastName);
     _cityController = TextEditingController(text: widget.user.city);
-    _bizOppRefUrlController = TextEditingController(text: widget.user.bizOppRefUrl);
-    _bizOppRefUrlConfirmController = TextEditingController(text: widget.user.bizOppRefUrl);
+    _bizOppRefUrlController =
+        TextEditingController(text: widget.user.bizOppRefUrl);
+    _bizOppRefUrlConfirmController =
+        TextEditingController(text: widget.user.bizOppRefUrl);
 
-    _selectedCountry = widget.user.country?.isNotEmpty == true ? widget.user.country : null;
-    _selectedState = widget.user.state?.isNotEmpty == true ? widget.user.state : null;
-    _isBizOppRepresentative = widget.user.bizOppRefUrl != null && widget.user.bizOppRefUrl!.isNotEmpty;
-    
+    _selectedCountry =
+        widget.user.country?.isNotEmpty == true ? widget.user.country : null;
+    _selectedState =
+        widget.user.state?.isNotEmpty == true ? widget.user.state : null;
+    _isBizOppRepresentative = widget.user.bizOppRefUrl != null &&
+        widget.user.bizOppRefUrl!.isNotEmpty;
+
     _fetchBizOppName();
   }
 
@@ -82,7 +87,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     try {
       // Get the upline admin ID from current user's data
       final uplineAdmin = widget.user.uplineAdmin;
-      
+
       if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
         // Get admin settings for the upline admin
         final adminSettingsDoc = await FirebaseFirestore.instance
@@ -95,7 +100,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           if (data != null) {
             final bizOpp = data['biz_opp'] as String?;
             final bizOppRefUrl = data['biz_opp_ref_url'] as String?;
-            
+
             if (bizOpp != null && bizOpp.isNotEmpty) {
               setState(() {
                 _bizOppName = bizOpp;
@@ -106,10 +111,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
             if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
               try {
                 final uri = Uri.parse(bizOppRefUrl);
-                
+
                 // Store base URL as scheme + host for validation
                 _baseUrl = "${uri.scheme}://${uri.host}";
-                
+
                 setState(() {});
               } catch (e) {
                 debugPrint('Error parsing base URL: $e');
@@ -179,7 +184,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       }
 
       // Ensure the entered URL is not just the homepage (must have additional path/parameters)
-      if (url.trim() == _baseUrl!.trim() || url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
+      if (url.trim() == _baseUrl!.trim() ||
+          url.trim() == _baseUrl!.trim().replaceAll(RegExp(r'/$'), '')) {
         return 'Please enter your unique referral link,\nnot just the homepage';
       }
 
@@ -218,9 +224,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
       // Comprehensive Referral Link link Validation
       final referralLink = _bizOppRefUrlController.text.trim();
-      
+
       // Basic link validation
-      if (!referralLink.startsWith('http://') && !referralLink.startsWith('https://')) {
+      if (!referralLink.startsWith('http://') &&
+          !referralLink.startsWith('https://')) {
         _scrollToField(_bizOppRefUrlKey);
         return 'Please enter a complete link starting with\nhttp:// or https://';
       }
@@ -297,7 +304,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
-                      text: ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
+                      text:
+                          ' referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.',
                     ),
                   ],
                 ),
@@ -377,9 +385,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     // Validate referral URL accessibility if user is a business opportunity representative
-    if (_isBizOppRepresentative && _bizOppRefUrlController.text.trim().isNotEmpty) {
+    if (_isBizOppRepresentative &&
+        _bizOppRefUrlController.text.trim().isNotEmpty) {
       final referralUrl = _bizOppRefUrlController.text.trim();
-      final isValidUrl = await LinkValidatorService.validateReferralUrl(referralUrl);
+      final isValidUrl =
+          await LinkValidatorService.validateReferralUrl(referralUrl);
       if (!isValidUrl) {
         if (mounted) {
           _showUrlValidationFailedDialog();
@@ -435,7 +445,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           // Call backend function to recalculate timezone based on new location
           try {
             final HttpsCallable callable =
-                FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('updateUserTimezone');
+                FirebaseFunctions.instanceFor(region: 'us-central1')
+                    .httpsCallable('updateUserTimezone');
             await callable.call({
               'userId': widget.user.uid,
               'country': _selectedCountry,
@@ -574,7 +585,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'First Name',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value!.isEmpty ? 'First name cannot be empty' : null,
@@ -585,7 +597,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Last Name',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value!.isEmpty ? 'Last name cannot be empty' : null,
@@ -597,13 +610,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     isExpanded: true,
                     items: statesByCountry.keys
                         .map((country) => DropdownMenuItem(
-                          value: country,
-                          child: Text(
-                            country,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ))
+                              value: country,
+                              child: Text(
+                                country,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ))
                         .toList(),
                     onChanged: (newValue) {
                       setState(() {
@@ -614,7 +627,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Country',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value == null ? 'Please select a country' : null,
@@ -629,13 +643,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         : null,
                     items: statesForSelectedCountry
                         .map((state) => DropdownMenuItem(
-                          value: state,
-                          child: Text(
-                            state,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ))
+                              value: state,
+                              child: Text(
+                                state,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ))
                         .toList(),
                     onChanged: _selectedCountry == null
                         ? null
@@ -647,7 +661,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'State/Province',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value == null ? 'Please select a state/province' : null,
@@ -658,17 +673,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'City',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value!.isEmpty ? 'Please enter a city' : null,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Business Opportunity Representative Section
                   RichText(
                     text: TextSpan(
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black),
                       children: [
                         const TextSpan(text: 'Are you currently a '),
                         TextSpan(
@@ -716,7 +735,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ],
                   ),
-                  
+
                   // Conditional Referral Link Fields
                   if (_isBizOppRepresentative) ...[
                     const SizedBox(height: 16),
@@ -752,7 +771,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             text: _bizOppName,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: ' referral link. This will be used to track referrals from your team.'),
+                          const TextSpan(
+                              text:
+                                  ' referral link. This will be used to track referrals from your team.'),
                         ],
                       ),
                     ),
@@ -762,19 +783,25 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       controller: _bizOppRefUrlController,
                       decoration: InputDecoration(
                         labelText: 'Enter Your Referral Link',
-                        helperText: _baseUrl != null 
+                        helperText: _baseUrl != null
                             ? 'Must start with $_baseUrl\nThis cannot be changed once set'
                             : 'This cannot be changed once set',
-                        hintText: _baseUrl != null ? 'e.g., ${_baseUrl}your_username_here' : null,
+                        hintText: _baseUrl != null
+                            ? 'e.g., ${_baseUrl}your_username_here'
+                            : null,
                         border: const OutlineInputBorder(),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                       ),
                       validator: (value) {
-                        if (_isBizOppRepresentative && (value == null || value.isEmpty)) {
+                        if (_isBizOppRepresentative &&
+                            (value == null || value.isEmpty)) {
                           return 'Required when you are a representative';
                         }
-                        
-                        if (_isBizOppRepresentative && value != null && value.isNotEmpty) {
+
+                        if (_isBizOppRepresentative &&
+                            value != null &&
+                            value.isNotEmpty) {
                           // Basic link validation
                           if (!value.trim().startsWith('http://') &&
                               !value.trim().startsWith('https://')) {
@@ -788,12 +815,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           }
 
                           // Comprehensive link structure validation
-                          final validationError = _validateUrlStructure(value.trim());
+                          final validationError =
+                              _validateUrlStructure(value.trim());
                           if (validationError != null) {
                             return validationError;
                           }
                         }
-                        
+
                         return null;
                       },
                       onTap: () {
@@ -812,22 +840,32 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               ),
                               content: RichText(
                                 text: TextSpan(
-                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  style: const TextStyle(
+                                      fontSize: 16, color: Colors.black),
                                   children: [
-                                    const TextSpan(text: 'You must enter the exact referral link you received from '),
+                                    const TextSpan(
+                                        text:
+                                            'You must enter the exact referral link you received from '),
                                     TextSpan(
                                       text: _bizOppName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: '. This will ensure your team members that join '),
+                                    const TextSpan(
+                                        text:
+                                            '. This will ensure your team members that join '),
                                     TextSpan(
                                       text: _bizOppName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    const TextSpan(text: ' are automatically placed in your '),
+                                    const TextSpan(
+                                        text:
+                                            ' are automatically placed in your '),
                                     TextSpan(
                                       text: _bizOppName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     const TextSpan(text: ' team.'),
                                   ],
@@ -851,14 +889,17 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Confirm Referral Link',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      validator: (value) => _isBizOppRepresentative && (value == null || value.isEmpty) 
-                          ? 'Required when you are a representative' : null,
+                      validator: (value) => _isBizOppRepresentative &&
+                              (value == null || value.isEmpty)
+                          ? 'Required when you are a representative'
+                          : null,
                     ),
                     const SizedBox(height: 16),
                   ],
-                  
+
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: _isLoading ? null : _saveProfile,

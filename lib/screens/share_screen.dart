@@ -19,7 +19,8 @@ class ShareScreen extends StatefulWidget {
   State<ShareScreen> createState() => _ShareScreenState();
 }
 
-class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin {
+class _ShareScreenState extends State<ShareScreen>
+    with TickerProviderStateMixin {
   UserModel? _currentUser;
   bool _isLoading = true;
   String? _referralLink;
@@ -80,7 +81,7 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               .collection('admin_settings')
               .doc(uplineAdmin)
               .get();
-              
+
           if (adminSettingsDoc.exists) {
             final adminData = adminSettingsDoc.data();
             final bizOpp = adminData?['biz_opp'] as String?;
@@ -88,14 +89,16 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
               setState(() {
                 _bizOppName = bizOpp;
               });
-              debugPrint('🔍 BIZ_OPP DEBUG: Set bizOppName from admin_settings: $_bizOppName');
+              debugPrint(
+                  '🔍 BIZ_OPP DEBUG: Set bizOppName from admin_settings: $_bizOppName');
               return;
             }
           }
         }
       }
-      
-      debugPrint('🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
+
+      debugPrint(
+          '🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
     } catch (e) {
       debugPrint('🔍 BIZ_OPP DEBUG: Error fetching biz opp name: $e');
     }
@@ -104,7 +107,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
   void _buildReferralLink() {
     if (_currentUser != null) {
       // Unified referral link format
-      _referralLink = 'https://teambuildpro.com/?ref=${_currentUser!.referralCode}';
+      _referralLink =
+          'https://teambuildpro.com/?ref=${_currentUser!.referralCode}';
     }
   }
 
@@ -146,7 +150,8 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -169,15 +174,15 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
                       // Header Section
                       _buildHeader(),
                       const SizedBox(height: 32),
-                      
+
                       // Sharing Strategies (MOVED UP)
                       _buildSharingStrategies(),
                       const SizedBox(height: 24),
-                      
+
                       // Your Referral Link Section (MOVED DOWN)
                       _buildReferralLinkCard(),
                       const SizedBox(height: 32),
-                      
+
                       // Pro Tips
                       _buildProTips(),
                     ],
@@ -495,6 +500,4 @@ class _ShareScreenState extends State<ShareScreen> with TickerProviderStateMixin
       ),
     );
   }
-
-  
 }

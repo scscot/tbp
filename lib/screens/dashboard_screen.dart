@@ -45,7 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   String? _bizOpp;
-  
+
   // Network service for cached counts
   final NetworkService _networkService = NetworkService();
   Map<String, int> _cachedNetworkCounts = {};
@@ -73,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   /// Load cached network counts from NetworkService
   Future<void> _loadNetworkCounts() async {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoadingCounts = true;
     });
@@ -82,15 +82,15 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (kDebugMode) {
         debugPrint('📊 DASHBOARD: Loading cached network counts...');
       }
-      
+
       final counts = await _networkService.getNetworkCounts();
-      
+
       if (mounted) {
         setState(() {
           _cachedNetworkCounts = counts;
           _isLoadingCounts = false;
         });
-        
+
         if (kDebugMode) {
           debugPrint('✅ DASHBOARD: Cached counts loaded: $counts');
         }
@@ -99,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (kDebugMode) {
         debugPrint('❌ DASHBOARD: Error loading cached counts: $e');
       }
-      
+
       if (mounted) {
         setState(() {
           _isLoadingCounts = false;
@@ -111,19 +111,19 @@ class _DashboardScreenState extends State<DashboardScreen>
   /// Force refresh network counts (bypasses cache)
   Future<void> _refreshNetworkCounts() async {
     if (!mounted) return;
-    
+
     try {
       if (kDebugMode) {
         debugPrint('🔄 DASHBOARD: Force refreshing network counts...');
       }
-      
+
       final counts = await _networkService.refreshNetworkCounts();
-      
+
       if (mounted) {
         setState(() {
           _cachedNetworkCounts = counts;
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('✅ Team stats refreshed'),
@@ -131,7 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             backgroundColor: Colors.green,
           ),
         );
-        
+
         if (kDebugMode) {
           debugPrint('✅ DASHBOARD: Force refresh completed: $counts');
         }
@@ -140,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (kDebugMode) {
         debugPrint('❌ DASHBOARD: Error refreshing counts: $e');
       }
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -500,9 +500,10 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Widget _buildStatsCard(UserModel user) {
     // Use cached network counts if available, fallback to user model data
-    final directSponsors = _cachedNetworkCounts['directSponsors'] ?? user.directSponsorCount;
+    final directSponsors =
+        _cachedNetworkCounts['directSponsors'] ?? user.directSponsorCount;
     final totalTeam = _cachedNetworkCounts['all'] ?? user.totalTeamCount;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(20),
@@ -530,7 +531,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               // Refresh button for manual cache refresh
               IconButton(
                 onPressed: _isLoadingCounts ? null : _refreshNetworkCounts,
-                icon: _isLoadingCounts 
+                icon: _isLoadingCounts
                     ? SizedBox(
                         width: 16,
                         height: 16,
@@ -580,7 +581,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           const SizedBox(height: 12),
           LinearProgressIndicator(
             value: AppConstants.projectWideDirectSponsorMin > 0
-                ? (directSponsors / AppConstants.projectWideDirectSponsorMin).clamp(0.0, 1.0)
+                ? (directSponsors / AppConstants.projectWideDirectSponsorMin)
+                    .clamp(0.0, 1.0)
                 : 0.0,
             backgroundColor: AppColors.borderLight,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -827,9 +829,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.manage_accounts,
             title: 'Platform Management',
             color: AppColors.opportunityPrimary,
-            onTap: () => _navigateTo(PlatformManagementScreen(appId: widget.appId)),
+            onTap: () =>
+                _navigateTo(PlatformManagementScreen(appId: widget.appId)),
           ),
-        
+
         // The Log Out button remains unchanged
         _buildActionCard(
           icon: Icons.logout,

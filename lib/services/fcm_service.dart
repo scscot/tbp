@@ -136,11 +136,13 @@ class FCMService {
       final notificationId = message.data['notification_id'] as String?;
       _markNotificationAsRead(notificationId);
       if (kDebugMode) {
-        debugPrint("📨 FCM: Marking notification as read due to user click (isTerminated: $isTerminated, shouldNavigate: $shouldNavigate)");
+        debugPrint(
+            "📨 FCM: Marking notification as read due to user click (isTerminated: $isTerminated, shouldNavigate: $shouldNavigate)");
       }
     } else {
       if (kDebugMode) {
-        debugPrint("📨 FCM: Foreground notification - NOT marking as read automatically");
+        debugPrint(
+            "📨 FCM: Foreground notification - NOT marking as read automatically");
       }
     }
     // --- END MODIFIED ---

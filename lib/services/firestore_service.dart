@@ -8,7 +8,8 @@ import '../models/message_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final FirebaseFunctions _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+  final FirebaseFunctions _functions =
+      FirebaseFunctions.instanceFor(region: 'us-central1');
 
 // In lib/services/firestore_service.dart
 
@@ -102,10 +103,12 @@ class FirestoreService {
 
   /// Check if a referral URL is unique across all users
   /// Returns true if the URL is unique, false if it's already in use
-  Future<bool> checkReferralUrlUniqueness(String referralUrl, String currentUserId) async {
+  Future<bool> checkReferralUrlUniqueness(
+      String referralUrl, String currentUserId) async {
     try {
-      debugPrint('FirestoreService: Checking uniqueness for referral URL: $referralUrl');
-      
+      debugPrint(
+          'FirestoreService: Checking uniqueness for referral URL: $referralUrl');
+
       // Query all users with the same biz_opp_ref_url
       final querySnapshot = await _db
           .collection('users')
@@ -121,7 +124,8 @@ class FirestoreService {
       // If documents found, check if any belong to a different user
       for (final doc in querySnapshot.docs) {
         if (doc.id != currentUserId) {
-          debugPrint('FirestoreService: Referral URL already exists for user: ${doc.id}');
+          debugPrint(
+              'FirestoreService: Referral URL already exists for user: ${doc.id}');
           return false;
         }
       }
@@ -130,7 +134,8 @@ class FirestoreService {
       debugPrint('FirestoreService: Referral URL exists only for current user');
       return true;
     } catch (e) {
-      debugPrint('FirestoreService: Error checking referral URL uniqueness: $e');
+      debugPrint(
+          'FirestoreService: Error checking referral URL uniqueness: $e');
       // In case of error, assume it's not unique to be safe
       return false;
     }

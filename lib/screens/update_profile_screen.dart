@@ -126,13 +126,15 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         if (_selectedCountry != null && _selectedState != null) {
           // Call backend function to recalculate timezone based on new location
           try {
-            final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
+            final HttpsCallable callable =
+                FirebaseFunctions.instance.httpsCallable('updateUserTimezone');
             await callable.call({
               'userId': widget.user.uid,
               'country': _selectedCountry,
               'state': _selectedState,
             });
-            debugPrint('✅ UPDATE PROFILE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
+            debugPrint(
+                '✅ UPDATE PROFILE: Timezone recalculated for country: $_selectedCountry, state: $_selectedState');
           } catch (e) {
             debugPrint('⚠️ UPDATE PROFILE: Failed to recalculate timezone: $e');
             // Continue with profile update even if timezone update fails
@@ -178,7 +180,6 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
             // Profile Photo Section
             Center(
               child: GestureDetector(
@@ -218,14 +219,15 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
               ),
             ),
-            
+
             // User Name and Email Display
             const SizedBox(height: 16),
             Center(
               child: Column(
                 children: [
                   Text(
-                    '${widget.user.firstName ?? ''} ${widget.user.lastName ?? ''}'.trim(),
+                    '${widget.user.firstName ?? ''} ${widget.user.lastName ?? ''}'
+                        .trim(),
                     style: Theme.of(context).textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
@@ -238,7 +240,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ],
               ),
             ),
-            
+
             // Image validation error
             if (_imageErrorText != null) ...[
               const SizedBox(height: 8),
@@ -252,17 +254,16 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 24),
             const Divider(),
-            
+
             // Form Section
             Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  
                   // Location Information
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
@@ -271,13 +272,13 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     isExpanded: true,
                     items: statesByCountry.keys
                         .map((country) => DropdownMenuItem(
-                          value: country,
-                          child: Text(
-                            country,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ))
+                              value: country,
+                              child: Text(
+                                country,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ))
                         .toList(),
                     onChanged: (newValue) {
                       setState(() {
@@ -288,7 +289,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Country',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value == null ? 'Please select a country' : null,
@@ -303,13 +305,13 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         : null,
                     items: statesForSelectedCountry
                         .map((state) => DropdownMenuItem(
-                          value: state,
-                          child: Text(
-                            state,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ))
+                              value: state,
+                              child: Text(
+                                state,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ))
                         .toList(),
                     onChanged: _selectedCountry == null
                         ? null
@@ -321,7 +323,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'State/Province',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value == null ? 'Please select a state/province' : null,
@@ -332,14 +335,15 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       labelText: 'City',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
                         value!.isEmpty ? 'Please enter a city' : null,
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Save Button
                   Center(
                     child: ElevatedButton(

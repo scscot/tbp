@@ -37,14 +37,12 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             .collection('users')
             .doc(user.uid)
             .get();
-            
+
         if (userDoc.exists) {
           final userData = userDoc.data();
           final userRole = userData?['role'] as String?;
-         role = userData?['role'];
+          role = userData?['role'];
 
-
-          
           // Determine which admin settings to fetch
           String? adminUid;
           if (userRole == 'admin') {
@@ -54,13 +52,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // If user is not admin, use their upline_admin
             adminUid = userData?['upline_admin'] as String?;
           }
-          
+
           if (adminUid != null && adminUid.isNotEmpty) {
             final adminSettingsDoc = await FirebaseFirestore.instance
                 .collection('admin_settings')
                 .doc(adminUid)
                 .get();
-                
+
             if (adminSettingsDoc.exists) {
               final adminData = adminSettingsDoc.data();
               final bizOpp = adminData?['biz_opp'] as String?;
@@ -137,7 +135,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.withOpacity(color, 0.2), width: 2),
+          border:
+              Border.all(color: AppColors.withOpacity(color, 0.2), width: 2),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -301,12 +300,15 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Featured Collaboration Section
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.withOpacity(AppColors.primary, 0.2), width: 2),
+                  border: Border.all(
+                      color: AppColors.withOpacity(AppColors.primary, 0.2),
+                      width: 2),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,10 +318,12 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.withOpacity(AppColors.primary, 0.1),
+                            color:
+                                AppColors.withOpacity(AppColors.primary, 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.star, color: AppColors.primary, size: 28),
+                          child: Icon(Icons.star,
+                              color: AppColors.primary, size: 28),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -345,7 +349,9 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1),
+                        border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            width: 1),
                       ),
                       child: Row(
                         children: [
@@ -385,7 +391,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Challenge
             _buildSectionCard(
               title: 'THE CHALLENGE',
-              content: 'Starting from zero is the biggest hurdle in direct sales. Professionals often struggle to find motivated prospects and build momentum quickly, leading to frustration and slow growth.',
+              content:
+                  'Starting from zero is the biggest hurdle in direct sales. Professionals often struggle to find motivated prospects and build momentum quickly, leading to frustration and slow growth.',
               icon: Icons.warning_amber,
               color: AppColors.error,
             ),
@@ -394,7 +401,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Solution
             _buildSectionCard(
               title: 'THE SOLUTION',
-              content: 'The Team Build Pro app offers a unique system for pre-building your team. Our platform provides the tools to cultivate a network of interested prospects before day one, turning a cold start into a running start.',
+              content:
+                  'The Team Build Pro app offers a unique system for pre-building your team. Our platform provides the tools to cultivate a network of interested prospects before day one, turning a cold start into a running start.',
               icon: Icons.lightbulb,
               color: AppColors.primary,
             ),
@@ -403,7 +411,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Why It Works
             _buildSectionCard(
               title: 'WHY IT WORKS',
-              content: 'By focusing on relationship-building first, our platform creates genuine momentum. When prospects are part of a growing community from the beginning, they are more engaged, motivated, and prepared for success the moment they officially join.',
+              content:
+                  'By focusing on relationship-building first, our platform creates genuine momentum. When prospects are part of a growing community from the beginning, they are more engaged, motivated, and prepared for success the moment they officially join.',
               icon: Icons.trending_up,
               color: AppColors.growthPrimary,
             ),
@@ -412,7 +421,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // The Process
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -423,10 +433,12 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.withOpacity(AppColors.teamAccent, 0.1),
+                            color: AppColors.withOpacity(
+                                AppColors.teamAccent, 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.settings, color: AppColors.teamAccent, size: 28),
+                          child: Icon(Icons.settings,
+                              color: AppColors.teamAccent, size: 28),
                         ),
                         const SizedBox(width: 16),
                         Text(
@@ -443,19 +455,22 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'INVITE - Expand Your Network',
-                      description: 'Connect with like-minded professionals open to exploring $_bizOpp .',
+                      description:
+                          'Connect with like-minded professionals open to exploring $_bizOpp .',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
                       title: 'CULTIVATE - Nurture Professional Bonds',
-                      description: 'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
+                      description:
+                          'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
                       title: 'PARTNER - Work Together For Mutual Success',
-                      description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
+                      description:
+                          'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
                     ),
                   ],
@@ -467,7 +482,8 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             // Minimum Eligibility Requirements
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -486,13 +502,15 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       children: [
                         _buildMetricCard(
                           icon: Icons.connect_without_contact,
-                          value: AppConstants.projectWideDirectSponsorMin.toString(),
+                          value: AppConstants.projectWideDirectSponsorMin
+                              .toString(),
                           label: 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
-                          value: AppConstants.projectWideTotalTeamMin.toString(),
+                          value:
+                              AppConstants.projectWideTotalTeamMin.toString(),
                           label: 'Total Team Members',
                         ),
                       ],
@@ -544,14 +562,16 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ShareScreen(appId: widget.appId),
+                          builder: (context) =>
+                              ShareScreen(appId: widget.appId),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.textInverse,
                       foregroundColor: AppColors.growthPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

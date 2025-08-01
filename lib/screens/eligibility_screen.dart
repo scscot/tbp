@@ -39,21 +39,22 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             .collection('users')
             .doc(user.uid)
             .get();
-            
+
         if (userDoc.exists) {
           final userData = userDoc.data();
-          
+
           // Get current user's team stats
           _currentDirectCount = userData?['directSponsorCount']?.toInt() ?? 0;
           _currentTotalCount = userData?['totalTeamCount']?.toInt() ?? 0;
-          
+
           // Check if qualified
-          _isQualified = _currentDirectCount >= AppConstants.projectWideDirectSponsorMin &&
-                        _currentTotalCount >= AppConstants.projectWideTotalTeamMin;
-          
+          _isQualified =
+              _currentDirectCount >= AppConstants.projectWideDirectSponsorMin &&
+                  _currentTotalCount >= AppConstants.projectWideTotalTeamMin;
+
           // Get biz_opp from admin settings
           final userRole = userData?['role'] as String?;
-          
+
           // Determine which admin settings to fetch
           String? adminUid;
           if (userRole == 'admin') {
@@ -63,13 +64,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             // If user is not admin, use their upline_admin
             adminUid = userData?['upline_admin'] as String?;
           }
-          
+
           if (adminUid != null && adminUid.isNotEmpty) {
             final adminSettingsDoc = await FirebaseFirestore.instance
                 .collection('admin_settings')
                 .doc(adminUid)
                 .get();
-                
+
             if (adminSettingsDoc.exists) {
               final adminData = adminSettingsDoc.data();
               final bizOppValue = adminData?['biz_opp'] as String?;
@@ -164,8 +165,6 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     );
   }
 
- 
-
   Widget _buildProgressCard({
     required IconData icon,
     required String label,
@@ -174,19 +173,25 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
   }) {
     final progress = current / target;
     final isComplete = current >= target;
-    
+
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: isComplete 
+          gradient: isComplete
               ? LinearGradient(
-                  colors: [AppColors.teamAccent, AppColors.darker(AppColors.teamAccent)],
+                  colors: [
+                    AppColors.teamAccent,
+                    AppColors.darker(AppColors.teamAccent)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
               : LinearGradient(
-                  colors: [AppColors.growthPrimary, AppColors.darker(AppColors.growthPrimary)],
+                  colors: [
+                    AppColors.growthPrimary,
+                    AppColors.darker(AppColors.growthPrimary)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -222,7 +227,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             const SizedBox(height: 12),
             LinearProgressIndicator(
               value: progress.clamp(0.0, 1.0),
-              backgroundColor: AppColors.withOpacity(AppColors.textInverse, 0.3),
+              backgroundColor:
+                  AppColors.withOpacity(AppColors.textInverse, 0.3),
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.textInverse),
             ),
           ],
@@ -230,7 +236,6 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
       ),
     );
   }
-
 
   Widget _buildProcessStep({
     required int step,
@@ -388,7 +393,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                   ],
                 ),
               ),
-            ), 
+            ),
             // Progress Cards
             Card(
               elevation: 4,
@@ -434,7 +439,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             // The Process
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -445,10 +451,12 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.withOpacity(AppColors.teamAccent, 0.1),
+                            color: AppColors.withOpacity(
+                                AppColors.teamAccent, 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.settings, color: AppColors.teamAccent, size: 28),
+                          child: Icon(Icons.settings,
+                              color: AppColors.teamAccent, size: 28),
                         ),
                         const SizedBox(width: 16),
                         Text(
@@ -465,19 +473,22 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     _buildProcessStep(
                       step: 1,
                       title: 'INVITE - Expand Your Network',
-                      description: 'Connect with like-minded professionals open to exploring $_bizOpp .',
+                      description:
+                          'Connect with like-minded professionals open to exploring $_bizOpp .',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
                       title: 'CULTIVATE - Nurture Professional Bonds',
-                      description: 'Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other\'s success.',
+                      description:
+                          'Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
                       title: 'PARTNER - Work Together For Mutual Success',
-                      description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
+                      description:
+                          'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
                     ),
                   ],
@@ -485,12 +496,9 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
-            
           ],
         ),
       ),
     );
   }
-
 }
