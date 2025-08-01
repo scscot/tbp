@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
+import 'share_screen.dart';
 
 class EligibilityScreen extends StatefulWidget {
   final String appId;
@@ -94,43 +95,76 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: AppColors.growthGradient,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.heavyShadow,
       ),
       child: Column(
         children: [
           Icon(
-            _isQualified ? Icons.celebration : Icons.trending_up,
+            Icons.rocket_launch,
             size: 48,
             color: AppColors.textInverse,
           ),
           const SizedBox(height: 16),
           Text(
-            'KEEP GROWING!',
+            // REVISED TITLE LOGIC
+            _isQualified
+                ? 'CONGRATULATIONS\nYou\'re Qualified!'
+                : 'Build Your Momentum',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               color: AppColors.textInverse,
-              letterSpacing: 1.2,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
-            'Continue building your team to unlock your opportunity with $_bizOpp.',
+            // REVISED MESSAGE LOGIC
+            _isQualified
+                ? 'Incredible work! You\'ve built your foundational team and unlocked the $_bizOpp opportunity. Continue growing your network to help others achieve the same success.'
+                : 'You\'re on your way! Every professional you connect with builds momentum for your future launch in the $_bizOpp opportunity. Keep sharing to reach your goals!',
             style: TextStyle(
               fontSize: 16,
-              color: AppColors.withOpacity(AppColors.textInverse, 0.9),
-              height: 1.5,
+              color: AppColors.textInverse.withValues(alpha: 0.9),
+              height: 1.4,
             ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ShareScreen(appId: widget.appId),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.textInverse,
+              foregroundColor: AppColors.growthPrimary,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 4,
+            ),
+            child: const Text(
+              'Proven Growth Strategies',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  
+ 
 
   Widget _buildProgressCard({
     required IconData icon,
@@ -325,7 +359,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'COMMUNITY ENGAGEMENT THRESHOLDS',
+                      'TEAM GROWTH\nQUALIFICATION THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -365,7 +399,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'YOUR PROGRESS',
+                      'YOUR CURRENT TEAM COUNTS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -446,74 +480,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                       description: 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.successBackground,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.withOpacity(AppColors.success, 0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: AppColors.success, size: 24),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Note: Team Build Pro focuses on building genuine professional relationships and networks that can lead to meaningful long-term success.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.darker(AppColors.success),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 16),
 
-        Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: _isQualified ? AppColors.successGradient : AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: AppColors.mediumShadow,
-      ),
-      child: Column(
-        children: [
-          Icon(
-            _isQualified ? Icons.celebration : Icons.share_rounded,
-            size: 48,
-            color: Colors.white,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _isQualified ? 'You\'re Qualified!' : 'Grow Your Team',
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _isQualified
-                ? 'Congratulations! You\'ve unlocked the $_bizOpp opportunity. Keep growing your community!'
-                : 'Share your referral link and start building your network!',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    ),
-            const SizedBox(height: 16),
+            
           ],
         ),
       ),
