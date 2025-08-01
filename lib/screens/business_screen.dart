@@ -221,7 +221,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "Important: After completing your ${bizOpp ?? 'organization'} registration, you must return here to add your new referral link to your team profile. This ensures your ${bizOpp ?? 'organization'} team is built correctly.",
+                  "Important: After completing your $bizOpp registration, you must return here to add your new referral link to your team profile. This ensures your $bizOpp team is built correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -376,7 +376,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit '${bizOpp ?? 'the opportunity'}' and complete your registration.",
+                    "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit $bizOpp and complete your registration.",
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
@@ -449,7 +449,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'You\'ve reached the team growth threshold',
+            'You\'ve reached the team growth milestones that unlock access to $bizOpp.',
             style: TextStyle(
               fontSize: 18,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -517,19 +517,19 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 const TextSpan(
                   text:
-                      'Congratulations! Your team growth has unlocked access to premium opportunities with ',
+                      'Congratulations! Your team growth has unlocked access to  ',
                 ),
                 TextSpan(
-                  text: bizOpp ?? 'established business partners',
+                  text: bizOpp,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(
                   text:
-                      '. This represents a carefully curated opportunity that operates as ',
+                      '. This opportunity operates as ',
                 ),
                 const TextSpan(
                   text:
-                      'an independent partnership opportunity through the Team Build Pro platform',
+                      'an independent opportunity through the Team Build Pro platform',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -552,7 +552,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'The Team Build Pro App facilitates access to organizations. Evaluate each opportunity based on your professional goals and interests.',
+                    'The Team Build Pro App facilitates access to opportunities. Evaluate each opportunity based on your professional goals and interests.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -689,10 +689,10 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            '1. Copy the collaboration link below\n'
+            '1. Copy the opportunity link below\n'
             '2. Open your web browser\n'
             '3. Paste the link and complete partnership registration\n'
-            '4. Return here to add your collaboration link',
+            '4. Return here to add your opportunity link',
             style: TextStyle(
               fontSize: 14,
               color: Colors.blue.shade800,
@@ -837,7 +837,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                     ),
                   ),
                   Text(
-                    "Add my collaboration link now",
+                    "Add my opportunity link now",
                     style: TextStyle(
                       fontSize: 14,
                     ),
