@@ -9,11 +9,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
-import '../services/firestore_service.dart';
-import '../widgets/header_widgets.dart';
-import '../services/auth_service.dart';
 import '../screens/new_registration_screen.dart';
-
+import '../services/firestore_service.dart';
+import '../services/auth_service.dart';
+import '../services/session_manager.dart';
+import '../widgets/header_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String appId;
@@ -164,20 +164,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-Future<void> _createNewAdminAccount() async {
+  Future<void> _createNewAdminAccount() async {
     // Show confirmation dialog
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Row(
             children: [
               Icon(Icons.person_add, color: Colors.blue, size: 24),
               const SizedBox(width: 12),
-              const Text('Create New Account',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text('Create New Account', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ],
           ),
           content: const Text(
@@ -192,8 +190,7 @@ Future<void> _createNewAdminAccount() async {
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              child:
-                  const Text('Continue', style: TextStyle(color: Colors.white)),
+              child: const Text('Continue', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -202,7 +199,7 @@ Future<void> _createNewAdminAccount() async {
 
     if (result == true && mounted) {
       // Perform logout and navigation
-      final authService = context.read<AuthService>();
+      final authService = AuthService();
       final navigator = Navigator.of(context);
 
       // Clear navigation stack
@@ -210,6 +207,10 @@ Future<void> _createNewAdminAccount() async {
         navigator.popUntil((route) => route.isFirst);
       }
 
+      // Clear all session data including referral data
+      await SessionManager.instance.clearSession();
+      await SessionManager.instance.clearReferralData();
+      
       // Sign out user
       await authService.signOut();
 
@@ -363,9 +364,6 @@ Future<void> _createNewAdminAccount() async {
                 ),
               ),
             ],
-
-
-// In profile_screen.dart - add after existing admin tools section
             if (currentUser.role == 'admin') ...[
               const Divider(height: 40),
               Text('Admin Actions',
@@ -399,11 +397,6 @@ Future<void> _createNewAdminAccount() async {
                 ),
               ),
             ],
-
-
-
-
-
           ],
         ),
       ),
