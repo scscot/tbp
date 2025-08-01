@@ -120,7 +120,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'Opportunity Details',
+                      'Your Opportunity Hub',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -167,7 +167,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      "From this point forward, anyone in your team that joins $bizOpp will automatically be placed in your $bizOpp team.",
+                      "Your account is linked! As your team members build momentum and qualify, they will be placed in your $bizOpp organization, ensuring seamless growth.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,

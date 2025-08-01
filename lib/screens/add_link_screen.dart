@@ -672,7 +672,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               ),
               const SizedBox(width: 12),
               Text(
-                'How This Works',
+                'Unlocking Your Growth Engine',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -686,7 +686,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'Should your team members decide to join ${_bizOpp ?? 'this business'} after you, they will automatically be placed in your ${_bizOpp ?? 'business'} team.',
+            'When your team members qualify and join the $_bizOpp opportunity, they will automatically be placed in your official team',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',
@@ -768,7 +768,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.withOpacity(AppColors.primary, 0.1),
+                  color: AppColors.primary
+                      .withValues(alpha: 0.1), // Updated for deprecation
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -779,13 +780,27 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  'Your ${_bizOpp ?? 'Business'} Referral Link',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Final Step: Link Your Account',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    // --- NEWLY ADDED SUBTITLE ---
+                    const SizedBox(height: 4),
+                    Text(
+                      'This ensures your new team members are automatically placed in your $_bizOpp organization.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

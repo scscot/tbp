@@ -425,7 +425,7 @@ class _NetworkScreenState extends State<NetworkScreen>
         gradient: AppColors.primaryGradient,
       ),
       child: const Text(
-        'My Global Team',
+        'Your Global Network',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,
@@ -626,7 +626,7 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     switch (filter) {
       case FilterBy.selectReport:
-        return 'Select Team Report';
+        return 'View Team Report';
       case FilterBy.allMembers:
         return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
       case FilterBy.directSponsors:
@@ -724,7 +724,7 @@ class _NetworkScreenState extends State<NetworkScreen>
       String message;
       if (_filterBy == FilterBy.selectReport && _searchQuery.isEmpty) {
         message =
-            'Please select a team report from the dropdown above to view your team data.';
+            'Select a report from the dropdown above or use the search bar to view and manage your team.';
       } else if (_searchQuery.isNotEmpty) {
         message = _filterBy == FilterBy.selectReport
             ? 'Showing search results from All Members. No members match your search.'

@@ -757,7 +757,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.rocket_launch,
-            title: 'Opportunity Details',
+            title: 'Your Opportunity Details',
             color: AppColors.opportunityPrimary,
             onTap: () => _navigateTo(CompanyScreen(appId: widget.appId)),
           ),
@@ -765,7 +765,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           _buildActionCard(
             icon: Icons.rocket_launch,
             title: user.bizOppRefUrl != null
-                ? 'Opportunity Details'
+                ? 'Your Opportunity Details'
                 : 'Get Started Today',
             color: AppColors.opportunityPrimary,
             onTap: () {
@@ -783,20 +783,20 @@ class _DashboardScreenState extends State<DashboardScreen>
         ] else ...[
           _buildActionCard(
             icon: Icons.assessment,
-            title: 'Eligibility Status',
+            title: 'Your Eligibility Status',
             color: AppColors.opportunityPrimary,
             onTap: () => _navigateTo(EligibilityScreen(appId: widget.appId)),
           ),
         ],
         _buildActionCard(
           icon: Icons.trending_up,
-          title: 'Grow My Team',
+          title: 'Grow Your Team',
           color: AppColors.growthPrimary,
           onTap: () => _navigateTo(ShareScreen(appId: widget.appId)),
         ),
         _buildActionCard(
           icon: Icons.groups,
-          title: 'View My Team',
+          title: 'View Your Team',
           color: AppColors.teamPrimary,
           onTap: () => _navigateTo(NetworkScreen(appId: widget.appId)),
         ),
@@ -819,7 +819,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
         _buildActionCard(
           icon: Icons.person,
-          title: 'My Profile',
+          title: 'View Your Profile',
           color: AppColors.primary,
           onTap: () => _navigateTo(ProfileScreen(appId: widget.appId)),
         ),
