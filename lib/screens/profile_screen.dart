@@ -218,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _teamLeaderUid != null &&
                   _teamLeaderUid != _sponsorUid)
                 _buildClickableInfoRow(
-                    'Network Leader', _teamLeaderName!, _teamLeaderUid!),
+                    'Team Leader', _teamLeaderName!, _teamLeaderUid!),
             ],
             const SizedBox(height: 20),
             Center(
