@@ -9,12 +9,12 @@ import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
-import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
+import 'login_screen.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
@@ -244,10 +244,77 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     ));
   }
 
+  void _navigateToLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(appId: widget.appId),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF0A0E27),
+              Color(0xFF1A237E),
+              Color(0xFF3949AB),
+            ],
+          ),
+        ),
+      ),
+      title: const Text(
+        'TEAM BUILD PRO',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        TextButton(
+          onPressed: _navigateToLogin,
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.login,
+                color: Colors.white,
+                size: 18,
+              ),
+              SizedBox(width: 6),
+              Text(
+                'Log In',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: _buildCustomAppBar(context),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

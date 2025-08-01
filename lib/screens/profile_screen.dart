@@ -11,6 +11,9 @@ import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
 import '../services/firestore_service.dart';
 import '../widgets/header_widgets.dart';
+import '../services/auth_service.dart';
+import '../screens/new_registration_screen.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   final String appId;
@@ -161,6 +164,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+Future<void> _createNewAdminAccount() async {
+    // Show confirmation dialog
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              Icon(Icons.person_add, color: Colors.blue, size: 24),
+              const SizedBox(width: 12),
+              const Text('Create New Account',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          content: const Text(
+            'You will be logged out and redirected to create a new admin account. Continue?',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              child:
+                  const Text('Continue', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true && mounted) {
+      // Perform logout and navigation
+      final authService = context.read<AuthService>();
+      final navigator = Navigator.of(context);
+
+      // Clear navigation stack
+      if (navigator.canPop()) {
+        navigator.popUntil((route) => route.isFirst);
+      }
+
+      // Sign out user
+      await authService.signOut();
+
+      // Navigate to registration screen without referral code (admin mode)
+      if (mounted) {
+        navigator.pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => NewRegistrationScreen(
+              referralCode: null, // No referral code = admin registration
+              appId: widget.appId,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -297,6 +363,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ],
+
+
+// In profile_screen.dart - add after existing admin tools section
+            if (currentUser.role == 'admin') ...[
+              const Divider(height: 40),
+              Text('Admin Actions',
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 10),
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Create a new admin account. You will be logged out and redirected to the registration screen.',
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: _createNewAdminAccount,
+                          icon: const Icon(Icons.person_add),
+                          label: const Text('Create New Account'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
+
+
+
+
           ],
         ),
       ),
