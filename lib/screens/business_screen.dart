@@ -678,7 +678,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
               const SizedBox(width: 8),
               Text(
-                'How to Join ${bizOpp ?? 'Collaborative Venture'}',
+                'How to Join $bizOpp',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
