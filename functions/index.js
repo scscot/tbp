@@ -649,7 +649,7 @@ const updateUserBadge = async (userId) => {
 
     const notificationCount = unreadNotificationsSnapshot.size;
 
-    // Count unread chat messages  
+    // Count unread chat messages (count threads with unread messages)
     const unreadChatsSnapshot = await db.collection("chats")
       .where("participants", "array-contains", userId)
       .get();
@@ -658,8 +658,16 @@ const updateUserBadge = async (userId) => {
     unreadChatsSnapshot.docs.forEach(doc => {
       const chatData = doc.data();
       const isReadMap = chatData.isRead || {};
-      if (isReadMap[userId] === false) {
+      
+      // Debug logging to identify the issue
+      console.log(`🔔 BADGE DEBUG: Chat ${doc.id} - isReadMap:`, JSON.stringify(isReadMap));
+      console.log(`🔔 BADGE DEBUG: User ${userId} read status:`, isReadMap[userId]);
+      
+      // Only count if this chat thread has unread messages for this user
+      // Check that isRead exists and is explicitly false (not undefined/null)
+      if (isReadMap.hasOwnProperty(userId) && isReadMap[userId] === false) {
         messageCount++;
+        console.log(`🔔 BADGE DEBUG: Counting unread chat thread ${doc.id} for user ${userId}`);
       }
     });
 

@@ -541,7 +541,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
-              Icons.keyboard_double_arrow_right_outlined,
+              Icons.link,
               size: 48,
               color: AppColors.textInverse,
             ),
@@ -629,7 +629,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 ),
                 const TextSpan(
                   text:
-                      'NOT owned, operated, or affiliated with Team Build Pro',
+                      'NOT owned, operated, or affiliated with\nTeam Build Pro',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
@@ -671,12 +671,17 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 ),
               ),
               const SizedBox(width: 12),
-              Text(
-                'Unlocking Your Growth Engine',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.growthPrimary,
+              Expanded(
+                child: Text(
+                  'Unlocking Your Growth Engine',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.growthPrimary,
+                  ),
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -686,7 +691,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            'When your team members qualify and join the $_bizOpp opportunity, they will automatically be placed in your official team',
+            'When your team members qualify and join the ${_bizOpp ?? 'business'} opportunity, they will automatically be placed in your official team',
           ),
           _buildBulletPoint(
             'This link can only be set once, so please verify it\'s correct before saving.',
@@ -700,6 +705,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               border: Border.all(color: AppColors.warning.withOpacity(0.3)),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
                 const SizedBox(width: 8),
@@ -710,7 +716,9 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                       fontSize: 13,
                       color: AppColors.darker(AppColors.warning),
                       fontWeight: FontWeight.w600,
+                      height: 1.3,
                     ),
+                    softWrap: true,
                   ),
                 ),
               ],
@@ -794,11 +802,13 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                     // --- NEWLY ADDED SUBTITLE ---
                     const SizedBox(height: 4),
                     Text(
-                      'This ensures your new team members are automatically placed in your $_bizOpp organization.',
+                      'This ensures your new team members are automatically placed in your ${_bizOpp ?? 'business'} organization.',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -817,17 +827,18 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Enter your $_bizOpp referral link below. This will be used to track referrals from your team.',
+                  'Enter your ${_bizOpp ?? 'business'} referral link below. This will be used to track referrals from your team.',
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
                     height: 1.3,
                   ),
+                  softWrap: true,
                 ),
                 if (_baseUrl != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                    'Must begin with: $_baseUrl',
+                    'Must begin with:\n$_baseUrl',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.primary,
