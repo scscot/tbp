@@ -321,7 +321,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'Don\'t Miss Out on Growing Your $_bizOpp Organization!',
+                  'Finalize Your $_bizOpp Connection',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -336,7 +336,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'You\'ve joined the $_bizOpp opportunity — great! Update your profile now so every Team member that joins the $_bizOpp opportunity after you is placed directly into your $_bizOpp team.',
+                  'Update your profile now to ensure new team members are automatically placed in your organization.',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textInverse.withAlpha(240),
@@ -376,7 +376,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         child: Column(
                           children: [
                             Text(
-                              "Add My $_bizOpp Organization Link Now",
+                              "Add My $_bizOpp Referral Link Now",
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -393,13 +393,16 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                  _navigateTo(BusinessScreen(appId: widget.appId));
+                },
                 style: TextButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: Text(
-                  'Skip for now - I haven’t joined $_bizOpp',
+                  'Skip for now!\nI haven\'t joined $_bizOpp',
                   style: TextStyle(
                     color: AppColors.textInverse,
                     fontSize: 15,
@@ -407,6 +410,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     decoration: TextDecoration.underline,
                     decorationColor: AppColors.textInverse.withAlpha(180),
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 24),

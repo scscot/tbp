@@ -221,7 +221,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "This is the next step in your journey. After joining $bizOpp through your sponsor's link, you must return here to add your new referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
+                  "This is the next step in your journey. After joining $bizOpp through your sponsor's link, you must return here to add your new $bizOpp referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -494,7 +494,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'COLLABORATIVE BUSINESS VENTURE AVAILABLE',
+                  'Disclaimer Notice',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -516,7 +516,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 const TextSpan(
                   text:
-                      'Congratulations! Your team growth has unlocked access to  ',
+                      'Your team growth has unlocked access to ',
                 ),
                 TextSpan(
                   text: bizOpp,
@@ -528,7 +528,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const TextSpan(
                   text:
-                      'an independent opportunity through the Team Build Pro platform',
+                      'an independent business and has no affiliation with the Team Build Pro platform',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -551,7 +551,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'The Team Build Pro App facilitates access to opportunities. Evaluate each opportunity based on your professional goals and interests.',
+                    'The Team Build Pro App simply facilitates access to $bizOpp via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -613,9 +613,9 @@ class _BusinessScreenState extends State<BusinessScreen>
                 height: 1.5,
               ),
               children: [
-                const TextSpan(
+                TextSpan(
                   text:
-                      'If you choose to explore this opportunity, your referral contact will be ',
+                      'If you choose to explore $bizOpp, your referral contact will be ',
                 ),
                 if (sponsorName != null && sponsorUid != null)
                   WidgetSpan(
@@ -688,10 +688,10 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            '1. Copy the opportunity link below\n'
+            '1. Copy the referral link below\n'
             '2. Open your web browser\n'
-            '3. Paste the link and complete partnership registration\n'
-            '4. Return here to add your opportunity link',
+            '3. Paste the link and complete the $bizOpp registration\n'
+            '4. Return here to add your $bizOpp referral link',
             style: TextStyle(
               fontSize: 14,
               color: Colors.blue.shade800,
@@ -734,7 +734,7 @@ class _BusinessScreenState extends State<BusinessScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Collaboration Partnership Link:',
+          'Your Sponsors Referral Link:',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -755,9 +755,9 @@ class _BusinessScreenState extends State<BusinessScreen>
                 child: Text(
                   bizOppRefUrl!,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     color: Colors.blue,
-                    decoration: TextDecoration.underline,
+                    decoration: TextDecoration.underline, fontWeight: FontWeight.w600
                   ),
                 ),
               ),
@@ -805,7 +805,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring the organization, you must return here and add your new partnership link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
+            "After exploring $bizOpp, you must return here and add your new $bizOpp referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -835,10 +835,12 @@ class _BusinessScreenState extends State<BusinessScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Text(
-                    "Add My Opportunity Link",
+                    "Add My New Referral Link",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
