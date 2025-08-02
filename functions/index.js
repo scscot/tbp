@@ -1005,17 +1005,6 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
   }
 });
 
-exports.checkAdminSubscriptionStatus = onCall(async (request) => {
-  const { uid } = request.data;
-  const adminRef = db.collection("admins").doc(uid);
-  try {
-    const doc = await adminRef.get();
-    return { isSubscribed: doc.exists && doc.data().isSubscribed };
-  } catch (error) {
-    console.error("Error checking subscription status:", error);
-    throw new HttpsError("internal", "Could not check subscription status.");
-  }
-});
 
 exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{notificationId}", async (event) => {
   const snap = event.data;
