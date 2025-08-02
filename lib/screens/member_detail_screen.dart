@@ -197,35 +197,38 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       _buildInfoRow('City', _user!.city ?? 'N/A'),
                       _buildInfoRow('State', _user!.state ?? 'N/A'),
                       _buildInfoRow('Country', _user!.country ?? 'N/A'),
-                      _buildInfoRow('Joined Network',
-                          DateFormat.yMMMd().format(_user!.createdAt!)),
-                      _buildInfoRow('Direct Sponsors',
-                          _user!.directSponsorCount.toString()),
-                      _buildInfoRow(
-                          'Total Team', _user!.totalTeamCount.toString()),
-                      if (_user!.currentPartner == true)
-                        _buildQualifiedInfoRow('Qualified', 'Yes')
-                      else ...[
-                        if (_user!.qualifiedDate != null)
-                          _buildQualifiedInfoRow('Qualified',
-                              DateFormat.yMMMd().format(_user!.qualifiedDate!))
-                        else
-                          _buildQualifiedInfoRow('Qualified', 'Not Yet'),
-                        if (_user!.bizJoinDate != null)
-                          _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
-                              DateFormat.yMMMd().format(_user!.bizJoinDate!))
-                        else
-                          _buildInfoRow(
-                              'Joined ${_bizOpp ?? 'organization'}', 'Not Yet'),
+                      // Hide these rows if the profile being viewed has role == admin
+                      if (_user!.role != 'admin') ...[
+                        _buildInfoRow('Joined Network',
+                            DateFormat.yMMMd().format(_user!.createdAt!)),
+                        _buildInfoRow('Direct Sponsors',
+                            _user!.directSponsorCount.toString()),
+                        _buildInfoRow(
+                            'Total Team', _user!.totalTeamCount.toString()),
+                        if (_user!.currentPartner == true)
+                          _buildQualifiedInfoRow('Qualified', 'Yes')
+                        else ...[
+                          if (_user!.qualifiedDate != null)
+                            _buildQualifiedInfoRow('Qualified',
+                                DateFormat.yMMMd().format(_user!.qualifiedDate!))
+                          else
+                            _buildQualifiedInfoRow('Qualified', 'Not Yet'),
+                          if (_user!.bizJoinDate != null)
+                            _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
+                                DateFormat.yMMMd().format(_user!.bizJoinDate!))
+                          else
+                            _buildInfoRow(
+                                'Joined ${_bizOpp ?? 'organization'}', 'Not Yet'),
+                        ],
+                        if (_sponsorName != null)
+                          _buildClickableInfoRow(
+                              'Sponsor', _sponsorName!, _sponsorUid!),
+                        if (_teamLeaderName != null &&
+                            _teamLeaderUid != null &&
+                            _user!.referredBy != _teamLeaderUid)
+                          _buildClickableInfoRow(
+                              'Team Leader', _teamLeaderName!, _teamLeaderUid!),
                       ],
-                      if (_sponsorName != null)
-                        _buildClickableInfoRow(
-                            'Sponsor', _sponsorName!, _sponsorUid!),
-                      if (_teamLeaderName != null &&
-                          _teamLeaderUid != null &&
-                          _user!.referredBy != _teamLeaderUid)
-                        _buildClickableInfoRow(
-                            'Team Leader', _teamLeaderName!, _teamLeaderUid!),
                       const SizedBox(height: 30),
                       if (_currentUserId != widget.userId)
                         Center(

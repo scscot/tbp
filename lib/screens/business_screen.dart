@@ -108,7 +108,7 @@ class _BusinessScreenState extends State<BusinessScreen>
         sponsorName = retrievedSponsorName;
         sponsorUid = retrievedSponsorUid;
         hasVisitedOpp = user.bizVisitDate != null;
-        bizJoinDate = user.bizVisitDate;
+        bizJoinDate = user.bizJoinDate;
         loading = false;
       });
 
