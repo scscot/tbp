@@ -255,7 +255,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                               ),
                               const SizedBox(height: 8),
                               const Text(
-                                'Create a separate admin account to manage a new business opportunity. Please review the terms below before proceeding.',
+                                'Create a separate admin account to manage a new business opportunity.',
                                 style: TextStyle(color: Colors.black54),
                               ),
                               const SizedBox(height: 16),

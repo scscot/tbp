@@ -87,6 +87,23 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
         };
         break;
 
+      case 'expiring_soon':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+          const formattedDate = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}`;
+          
+          notificationContent = {
+            title: "⏰ Subscription Expiring Soon",
+            message: `Your subscription will end on ${formattedDate}. Renew to continue accessing premium features.`,
+            type: "subscription_expiring_soon",
+            route: "/subscription",
+            route_params: JSON.stringify({ "action": "renew" })
+          };
+        }
+        break;
+
       default:
         // Don't send notifications for trial or other statuses
         return;
@@ -331,6 +348,79 @@ exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
 
   } catch (error) {
     console.error('❌ TRIAL WARNING: Error checking trials expiring soon:', error);
+  }
+});
+
+/**
+ * Warning notification for paid subscriptions expiring soon
+ * Runs daily at 9 AM UTC to check for subscriptions expiring in 3 days
+ */
+exports.checkSubscriptionsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
+  console.log('⚠️ SUBSCRIPTION WARNING: Checking for paid subscriptions expiring soon');
+
+  try {
+    const now = new Date();
+    const threeDaysFromNow = new Date();
+    threeDaysFromNow.setDate(now.getDate() + 3);
+    threeDaysFromNow.setHours(0, 0, 0, 0); // Start of day
+
+    const fourDaysFromNow = new Date();
+    fourDaysFromNow.setDate(now.getDate() + 4);
+    fourDaysFromNow.setHours(0, 0, 0, 0); // Start of day
+
+    console.log(`⚠️ SUBSCRIPTION WARNING: Looking for subscriptions expiring between ${threeDaysFromNow.toISOString()} and ${fourDaysFromNow.toISOString()}`);
+
+    // Find users with active or cancelled subscriptions expiring in exactly 3 days
+    const expiringSoonQuery = await db.collection('users')
+      .where('subscriptionStatus', 'in', ['active', 'cancelled'])
+      .where('subscriptionExpiry', '>=', threeDaysFromNow)
+      .where('subscriptionExpiry', '<', fourDaysFromNow)
+      .get();
+
+    if (expiringSoonQuery.empty) {
+      console.log('⚠️ SUBSCRIPTION WARNING: No paid subscriptions expiring in 3 days');
+      return;
+    }
+
+    console.log(`⚠️ SUBSCRIPTION WARNING: Found ${expiringSoonQuery.size} paid subscriptions expiring in 3 days`);
+
+    // Check for users who already received expiration warning today to prevent duplicates
+    const todayDateString = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    // Send warning notifications
+    const promises = expiringSoonQuery.docs.map(async (doc) => {
+      const userId = doc.id;
+      const userData = doc.data();
+
+      try {
+        // Check if user already received expiration warning today
+        const lastExpirationWarningDate = userData.lastExpirationWarningDate;
+        
+        if (lastExpirationWarningDate === todayDateString) {
+          console.log(`⚠️ SUBSCRIPTION WARNING: User ${userId} already received expiration warning today. Skipping.`);
+          return;
+        }
+
+        // Send the expiration warning using the enhanced createSubscriptionNotification function
+        await createSubscriptionNotification(userId, 'expiring_soon', userData.subscriptionExpiry);
+
+        // Update user document to track that warning was sent today
+        await db.collection('users').doc(userId).update({
+          lastExpirationWarningDate: todayDateString
+        });
+
+        console.log(`✅ SUBSCRIPTION WARNING: Sent expiration warning to user ${userId}`);
+
+      } catch (error) {
+        console.error(`❌ SUBSCRIPTION WARNING: Failed to send warning to user ${userId}:`, error);
+      }
+    });
+
+    await Promise.all(promises);
+    console.log(`✅ SUBSCRIPTION WARNING: Completed processing ${expiringSoonQuery.size} expiring subscriptions`);
+
+  } catch (error) {
+    console.error('❌ SUBSCRIPTION WARNING: Error checking subscriptions expiring soon:', error);
   }
 });
 
