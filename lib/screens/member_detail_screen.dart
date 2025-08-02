@@ -221,8 +221,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                                 'Joined ${_bizOpp ?? 'organization'}', 'Not Yet'),
                         ],
                         if (_sponsorName != null)
-                          _buildClickableInfoRow(
-                              'Sponsor', _sponsorName!, _sponsorUid!),
+                          // If current user is the sponsor, show as plain text, otherwise as clickable link
+                          _currentUserId == _sponsorUid
+                              ? _buildInfoRow('Sponsor', _sponsorName!)
+                              : _buildClickableInfoRow(
+                                  'Sponsor', _sponsorName!, _sponsorUid!),
                         if (_teamLeaderName != null &&
                             _teamLeaderUid != null &&
                             _user!.referredBy != _teamLeaderUid)
