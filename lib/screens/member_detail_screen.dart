@@ -229,8 +229,13 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         if (_teamLeaderName != null &&
                             _teamLeaderUid != null &&
                             _user!.referredBy != _teamLeaderUid)
-                          _buildClickableInfoRow(
-                              'Team Leader', _teamLeaderName!, _teamLeaderUid!),
+
+
+                          _currentUserId == _teamLeaderUid
+                              ? _buildInfoRow('Team Leader', _teamLeaderName!)
+                              : _buildClickableInfoRow(
+                                  'Team Leader',
+                                  _teamLeaderName!, _teamLeaderUid!),
                       ],
                       const SizedBox(height: 30),
                       if (_currentUserId != widget.userId)

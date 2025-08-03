@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +47,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   final NetworkService _networkService = NetworkService();
   final TextEditingController _searchController = TextEditingController();
 
-  List<UserModel> _allMembers = [];
+  final List<UserModel> _allMembers = [];
   List<UserModel> _filteredMembers = [];
   final Map<int, List<UserModel>> _membersByLevel = {};
 
@@ -64,6 +65,14 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   // Business opportunity name
   String _bizOppName = 'biz_opp';
+
+  // Pagination state
+  bool _hasMoreData = false;
+  bool _isLoadingMore = false;
+  int _currentOffset = 0;
+  int _pageSize = 1000;
+  int _totalNetworkSize = 0;
+  bool _useIntelligentPagination = false;
 
   @override
   void initState() {
@@ -212,18 +221,21 @@ class _NetworkScreenState extends State<NetworkScreen>
     try {
       // Get counts for analytics
       final counts = await _networkService.getNetworkCounts();
-
       if (!mounted) return;
 
-      // Fetch all team data
-      final result = await _networkService.getFilteredNetwork(
-        filter: 'all',
-        searchQuery: '',
-        levelOffset: _levelOffset,
-        limit: 1000,
-      );
+      _totalNetworkSize = counts['all'] ?? 0;
+      debugPrint('🔍 PAGINATION DEBUG: Total network size: $_totalNetworkSize');
 
-      _allMembers = result['network'] as List<UserModel>;
+      // Determine pagination strategy based on network size
+      _determineOptimalPaginationStrategy();
+
+      // Reset pagination state
+      _currentOffset = 0;
+      _allMembers.clear();
+
+      // Load initial data
+      await _loadMoreData();
+
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
     } catch (e) {
@@ -232,8 +244,63 @@ class _NetworkScreenState extends State<NetworkScreen>
       if (mounted) {
         setState(() {
           _isLoading = false;
-          // Force rebuild of dropdown with updated analytics
         });
+      }
+    }
+  }
+
+  void _determineOptimalPaginationStrategy() {
+    if (_totalNetworkSize <= 2000) {
+      // Small network: Load all data at once
+      _useIntelligentPagination = false;
+      _pageSize = _totalNetworkSize + 100; // Add buffer
+      debugPrint('🔍 PAGINATION DEBUG: Small network - loading all $_pageSize members');
+    } else if (_totalNetworkSize <= 5000) {
+      // Medium network: Use moderate pagination
+      _useIntelligentPagination = true;
+      _pageSize = 1500;
+      debugPrint('🔍 PAGINATION DEBUG: Medium network - using pagination with $_pageSize per page');
+    } else {
+      // Large network: Use aggressive pagination
+      _useIntelligentPagination = true;
+      _pageSize = 1000;
+      debugPrint('🔍 PAGINATION DEBUG: Large network - using aggressive pagination with $_pageSize per page');
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore) return;
+
+    setState(() => _isLoadingMore = true);
+
+    try {
+      final result = await _networkService.getFilteredNetwork(
+        filter: 'all',
+        searchQuery: '',
+        levelOffset: _levelOffset,
+        limit: _pageSize,
+        offset: _currentOffset,
+      );
+
+      final newMembers = result['network'] as List<UserModel>;
+      final totalCount = result['totalCount'] as int? ?? _totalNetworkSize;
+
+      if (mounted) {
+        setState(() {
+          _allMembers.addAll(newMembers);
+          _currentOffset += newMembers.length;
+          _hasMoreData = _allMembers.length < totalCount && newMembers.isNotEmpty;
+        });
+
+        debugPrint('🔍 PAGINATION DEBUG: Loaded ${newMembers.length} more members');
+        debugPrint('🔍 PAGINATION DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
+        debugPrint('🔍 PAGINATION DEBUG: Has more data: $_hasMoreData');
+      }
+    } catch (e) {
+      debugPrint('Error loading more data: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
       }
     }
   }
@@ -245,17 +312,18 @@ class _NetworkScreenState extends State<NetworkScreen>
 
       // Force refresh counts and network data
       final counts = await _networkService.refreshNetworkCounts();
-
       if (!mounted) return;
 
-      final result = await _networkService.refreshFilteredNetwork(
-        filter: 'all',
-        searchQuery: '',
-        levelOffset: _levelOffset,
-        limit: 1000,
-      );
+      _totalNetworkSize = counts['all'] ?? 0;
+      _determineOptimalPaginationStrategy();
 
-      _allMembers = result['network'] as List<UserModel>;
+      // Reset pagination state
+      _currentOffset = 0;
+      _allMembers.clear();
+
+      // Load initial data with refresh
+      await _loadMoreDataWithRefresh();
+
       _calculateAnalytics(counts);
       _applyFiltersAndSort();
 
@@ -278,6 +346,42 @@ class _NetworkScreenState extends State<NetworkScreen>
             backgroundColor: Colors.red,
           ),
         );
+      }
+    }
+  }
+
+  Future<void> _loadMoreDataWithRefresh() async {
+    if (_isLoadingMore) return;
+
+    setState(() => _isLoadingMore = true);
+
+    try {
+      final result = await _networkService.refreshFilteredNetwork(
+        filter: 'all',
+        searchQuery: '',
+        levelOffset: _levelOffset,
+        limit: _pageSize,
+        offset: _currentOffset,
+      );
+
+      final newMembers = result['network'] as List<UserModel>;
+      final totalCount = result['totalCount'] as int? ?? _totalNetworkSize;
+
+      if (mounted) {
+        setState(() {
+          _allMembers.addAll(newMembers);
+          _currentOffset += newMembers.length;
+          _hasMoreData = _allMembers.length < totalCount && newMembers.isNotEmpty;
+        });
+
+        debugPrint('🔄 REFRESH DEBUG: Loaded ${newMembers.length} members');
+        debugPrint('🔄 REFRESH DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
+      }
+    } catch (e) {
+      debugPrint('Error refreshing more data: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
       }
     }
   }
@@ -319,8 +423,29 @@ class _NetworkScreenState extends State<NetworkScreen>
       }
       // If there's a search query, we keep the filtered results from search
     } else if (_filterBy == FilterBy.directSponsors) {
-      // Filter for direct sponsors (level 1 relative to current user)
-      filtered = filtered.where((m) => (m.level - _levelOffset) == 1).toList();
+      // Filter for direct sponsors (users who have current user as sponsor)
+      final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+      debugPrint('🔍 DIRECT SPONSORS DEBUG: Current user ID: $currentUserId');
+      debugPrint('🔍 DIRECT SPONSORS DEBUG: Total members to filter: ${filtered.length}');
+      
+      if (currentUserId != null) {
+        // Debug: Check first few members' sponsor IDs
+        for (int i = 0; i < math.min(5, filtered.length); i++) {
+          final member = filtered[i];
+          debugPrint('🔍 DIRECT SPONSORS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, sponsorId: "${member.sponsorId}", matches: ${member.sponsorId == currentUserId}');
+        }
+        
+        filtered = filtered.where((m) => m.sponsorId == currentUserId).toList();
+        debugPrint('🔍 DIRECT SPONSORS DEBUG: After filtering: ${filtered.length} members');
+        
+        // If we're using pagination and found no results, suggest loading more data
+        if (filtered.isEmpty && _useIntelligentPagination && _hasMoreData) {
+          debugPrint('🔍 DIRECT SPONSORS DEBUG: No results found, but more data available. Consider loading more.');
+        }
+      } else {
+        debugPrint('🔍 DIRECT SPONSORS DEBUG: No current user ID, clearing filtered list');
+        filtered = [];
+      }
     } else if (_filterBy == FilterBy.newMembers) {
       final now = DateTime.now();
       final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
@@ -333,7 +458,21 @@ class _NetworkScreenState extends State<NetworkScreen>
     } else if (_filterBy == FilterBy.qualifiedMembers) {
       filtered = filtered.where((m) => m.qualifiedDate != null).toList();
     } else if (_filterBy == FilterBy.joinedMembers) {
+      debugPrint('🔍 JOINED MEMBERS DEBUG: Total members to filter: ${filtered.length}');
+      
+      // Debug: Check first few members' bizJoinDate
+      for (int i = 0; i < math.min(5, filtered.length); i++) {
+        final member = filtered[i];
+        debugPrint('🔍 JOINED MEMBERS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, bizJoinDate: ${member.bizJoinDate}, hasJoinDate: ${member.bizJoinDate != null}');
+      }
+      
       filtered = filtered.where((m) => m.bizJoinDate != null).toList();
+      debugPrint('🔍 JOINED MEMBERS DEBUG: After filtering: ${filtered.length} members');
+      
+      // If we're using pagination and found no results, suggest loading more data
+      if (filtered.isEmpty && _useIntelligentPagination && _hasMoreData) {
+        debugPrint('🔍 JOINED MEMBERS DEBUG: No results found, but more data available. Consider loading more.');
+      }
     }
 
     // Apply sorting (default descending by join date)
@@ -807,6 +946,40 @@ class _NetworkScreenState extends State<NetworkScreen>
               ),
             ),
           ],
+          
+          // Show pagination info for large networks
+          if (_useIntelligentPagination) ...[
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundSecondary,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: AppColors.textSecondary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Showing ${_allMembers.length} of $_totalNetworkSize members',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           ..._membersByLevel.entries.map((entry) {
             final level = entry.key;
             final users = entry.value;
@@ -865,6 +1038,77 @@ class _NetworkScreenState extends State<NetworkScreen>
               ),
             );
           }),
+
+          // Load More button for paginated data
+          if (_useIntelligentPagination && _hasMoreData) ...[
+            Container(
+              margin: const EdgeInsets.all(16),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoadingMore ? null : () async {
+                  await _loadMoreData();
+                  _applyFiltersAndSort();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: _isLoadingMore
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text('Loading more members...'),
+                        ],
+                      )
+                    : Text('Load More Members (${_totalNetworkSize - _allMembers.length} remaining)'),
+              ),
+            ),
+          ],
+
+          // Show completion message when all data is loaded
+          if (_useIntelligentPagination && !_hasMoreData && _allMembers.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 16,
+                    color: Colors.green,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'All ${_allMembers.length} members loaded',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
