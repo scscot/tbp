@@ -133,7 +133,13 @@
             justify-content: center;
             margin: 0 auto 1.5rem;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .platform-logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
         }
 
         .hero-title {
@@ -212,9 +218,9 @@
         }
 
         .section-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 2rem;
         }
 
         .section-title {
@@ -235,7 +241,10 @@
             background: var(--background-primary);
             border-radius: 1rem;
             padding: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 900px;
             border: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -605,14 +614,16 @@
         .loading-logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .loading-logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
         }
 
         .loading-title {
@@ -682,12 +693,15 @@
 
             .org-cards-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 1rem;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 2rem;
+                max-width: 1000px;
+                margin: 0 auto;
             }
 
             .org-card {
                 margin-bottom: 0;
+                max-width: none;
             }
         }
 
@@ -717,7 +731,9 @@
 <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">🔗</div>
+        <div class="loading-logo">
+            <img src="assets/icons/app_icon.png" alt="Team Build Pro Logo">
+        </div>
         <div class="loading-title">TEAM BUILD PRO</div>
         <div class="loading-spinner"></div>
         <div class="loading-text">Initializing platform...</div>
@@ -734,7 +750,9 @@
     <section class="hero-section">
         <canvas class="network-background" id="networkCanvas"></canvas>
         <div class="hero-content">
-            <div class="platform-logo">👥</div>
+            <div class="platform-logo">
+                <img src="assets/icons/app_icon.png" alt="Team Build Pro Logo">
+            </div>
             <h1 class="hero-title">TEAM BUILD PRO</h1>
             <div class="hero-subtitle">PROVEN TEAM BUILDING SYSTEM</div>
             <p class="hero-description">
@@ -1124,9 +1142,9 @@
                             using the Team Build Pro app to grow their teams.</div>
                     </div>
                 </div>
-                <button class="cta-button" onclick="handleRegistration()">
+                <!-- <button class="cta-button" onclick="handleRegistration()">
                     BEGIN FREE 30-DAY TRIAL!
-                </button>
+                </button> -->
             </div>
 
             <div class="trust-indicators">
