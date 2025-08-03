@@ -748,7 +748,11 @@ class _NetworkScreenState extends State<NetworkScreen>
               }).toList(),
               onChanged: (value) {
                 if (value != null) {
-                  setState(() => _filterBy = value);
+                  setState(() {
+                    _filterBy = value;
+                    // Clear expanded panels when switching reports to avoid UI confusion
+                    _expandedPanels.clear();
+                  });
                   _applyFiltersAndSort();
                 }
               },
