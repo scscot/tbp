@@ -35,9 +35,8 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('🚀 MAIN: Flutter binding initialized');
 
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // Initialize Firebase with retry logic
+    await _initializeFirebaseWithRetry();
     debugPrint('🚀 MAIN: Firebase initialized');
 
     await AppConstants.initialize();
@@ -46,8 +45,8 @@ void main() async {
     await initializeDateFormatting('en_US', null);
     debugPrint('🚀 MAIN: Date formatting initialized');
 
-    // Initialize deep linking
-    await DeepLinkService().initialize();
+    // Initialize deep linking with error handling
+    await _initializeDeepLinkService();
     debugPrint('🚀 MAIN: Deep link service initialized');
 
     debugPrint('🚀 MAIN: Starting app...');
@@ -58,6 +57,46 @@ void main() async {
     debugPrint('❌ MAIN: Stack trace: $stackTrace');
     // Still try to run the app with basic initialization
     runApp(RestartWidget(child: const MyApp()));
+  }
+}
+
+/// Initialize Firebase with retry logic and better error handling
+Future<void> _initializeFirebaseWithRetry() async {
+  int retryCount = 0;
+  const maxRetries = 3;
+  const retryDelay = Duration(seconds: 2);
+
+  while (retryCount < maxRetries) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      debugPrint('🚀 MAIN: Firebase initialized successfully on attempt ${retryCount + 1}');
+      return;
+    } catch (e) {
+      retryCount++;
+      debugPrint('❌ MAIN: Firebase initialization failed (attempt $retryCount/$maxRetries): $e');
+      
+      if (retryCount >= maxRetries) {
+        debugPrint('❌ MAIN: Firebase initialization failed after $maxRetries attempts');
+        // Don't rethrow - allow app to continue with degraded functionality
+        return;
+      }
+      
+      debugPrint('🔄 MAIN: Retrying Firebase initialization in ${retryDelay.inSeconds} seconds...');
+      await Future.delayed(retryDelay);
+    }
+  }
+}
+
+/// Initialize deep link service with error handling
+Future<void> _initializeDeepLinkService() async {
+  try {
+    await DeepLinkService().initialize();
+    debugPrint('🚀 MAIN: Deep link service initialized successfully');
+  } catch (e) {
+    debugPrint('❌ MAIN: Deep link service initialization failed: $e');
+    // Continue without deep linking functionality
   }
 }
 

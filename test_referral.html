@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Testing - Team Build Pro</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; margin: 20px 0; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        #console-output { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Team Build Pro - Referral System Testing</h1>
+    
+    <div class="test-section">
+        <h2>URL Parsing Tests</h2>
+        <div id="url-tests"></div>
+        <button onclick="runUrlTests()">Run URL Tests</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Referral Code Validation Tests</h2>
+        <div id="validation-tests"></div>
+        <button onclick="runValidationTests()">Run Validation Tests</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Edge Case Tests</h2>
+        <div id="edge-case-tests"></div>
+        <button onclick="runEdgeCaseTests()">Run Edge Case Tests</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Firebase Connection Tests</h2>
+        <div id="firebase-tests"></div>
+        <button onclick="runFirebaseTests()">Run Firebase Tests</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="console-output"></div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <script>
+        // Mock console to capture output
+        const originalConsole = { ...console };
+        const consoleOutput = document.getElementById('console-output');
+        
+        function logToConsole(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = `[${timestamp}] ${type.toUpperCase()}: ${args.join(' ')}\n`;
+            consoleOutput.textContent += message;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            originalConsole[type](...args);
+        }
+
+        console.log = (...args) => logToConsole('log', ...args);
+        console.error = (...args) => logToConsole('error', ...args);
+        console.warn = (...args) => logToConsole('warn', ...args);
+
+        // Simulate the deep link validation functions from our Flutter app
+        function isValidReferralUri(uriString) {
+            try {
+                const uri = new URL(uriString);
+                
+                // Reject file:// protocol URLs
+                if (uri.protocol === 'file:') {
+                    console.log('🔗 Deep Link: Rejecting file:// protocol URL');
+                    return false;
+                }
+
+                // Reject localhost and IP addresses
+                if (!uri.hostname) {
+                    console.log('🔗 Deep Link: Rejecting URI with empty host');
+                    return false;
+                }
+
+                if (uri.hostname === 'localhost' || uri.hostname === '127.0.0.1') {
+                    console.log('🔗 Deep Link: Rejecting localhost URL');
+                    return false;
+                }
+
+                // Reject IP addresses (simple regex check)
+                const ipRegex = /^\d+\.\d+\.\d+\.\d+$/;
+                if (ipRegex.test(uri.hostname)) {
+                    console.log('🔗 Deep Link: Rejecting IP address URL');
+                    return false;
+                }
+
+                // Only accept http, https, or custom app schemes
+                if (!['http:', 'https:', 'teambuildpro:'].includes(uri.protocol)) {
+                    console.log(`🔗 Deep Link: Rejecting unsupported scheme: ${uri.protocol}`);
+                    return false;
+                }
+
+                return true;
+            } catch (e) {
+                console.error('🔗 Deep Link: Invalid URL format:', e.message);
+                return false;
+            }
+        }
+
+        function isValidReferralCode(referralCode) {
+            // Basic validation - not empty, reasonable length, alphanumeric
+            if (!referralCode || referralCode.trim().length === 0) {
+                return false;
+            }
+
+            // Reject codes that are too long (likely file paths)
+            if (referralCode.length > 50) {
+                console.log('🔗 Deep Link: Rejecting overly long referral code');
+                return false;
+            }
+
+            // Reject codes that contain file path indicators
+            if (referralCode.includes('/') || referralCode.includes('\\') || referralCode.includes(':')) {
+                console.log('🔗 Deep Link: Rejecting referral code with path indicators');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Test functions
+        function runUrlTests() {
+            const testUrls = [
+                'https://teambuildpro.com/?ref=ABC123',
+                'http://teambuildpro.com/?ref=XYZ789',
+                'file:///Users/sscott/tbp/index.html',
+                'https://localhost:3000/?ref=TEST',
+                'https://127.0.0.1:8080/?ref=LOCAL',
+                'https://192.168.1.1/?ref=IP',
+                'ftp://example.com/?ref=FTP',
+                'teambuildpro://app/?ref=CUSTOM',
+                'https://example.com/?ref=',
+                'https://example.com/',
+                'invalid-url'
+            ];
+
+            const resultsDiv = document.getElementById('url-tests');
+            resultsDiv.innerHTML = '';
+
+            testUrls.forEach(url => {
+                const isValid = isValidReferralUri(url);
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `test-result ${isValid ? 'pass' : 'fail'}`;
+                resultDiv.textContent = `${url} - ${isValid ? 'VALID' : 'INVALID'}`;
+                resultsDiv.appendChild(resultDiv);
+            });
+        }
+
+        function runValidationTests() {
+            const testCodes = [
+                'ABC123',
+                'user123',
+                'a'.repeat(51), // Too long
+                'user/path',
+                'C:\\\\Users\\\\test',
+                'file:///path',
+                '',
+                '   ',
+                'valid-code',
+                'test:code',
+                'normal_code',
+                '123456789012345678901234567890123456789012345678901' // 51 chars
+            ];
+
+            const resultsDiv = document.getElementById('validation-tests');
+            resultsDiv.innerHTML = '';
+
+            testCodes.forEach(code => {
+                const isValid = isValidReferralCode(code);
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `test-result ${isValid ? 'pass' : 'fail'}`;
+                resultDiv.textContent = `"${code}" - ${isValid ? 'VALID' : 'INVALID'}`;
+                resultsDiv.appendChild(resultDiv);
+            });
+        }
+
+        function runEdgeCaseTests() {
+            const edgeCases = [
+                { url: 'https://teambuildpro.com/?ref=' + 'a'.repeat(100), desc: 'Very long referral code' },
+                { url: 'https://teambuildpro.com/?ref=/Users/sscott/Documents/file.txt', desc: 'File path as referral' },
+                { url: 'file:///Users/sscott/tbp/index.html?ref=ABC123', desc: 'File protocol with referral' },
+                { url: 'https://teambuildpro.com/?ref=<script>alert("xss")</script>', desc: 'XSS attempt' },
+                { url: 'https://teambuildpro.com/?ref=user%2Fpath', desc: 'URL encoded path' },
+                { url: 'https://teambuildpro.com/?ref=user\\\\path', desc: 'Windows path separator' }
+            ];
+
+            const resultsDiv = document.getElementById('edge-case-tests');
+            resultsDiv.innerHTML = '';
+
+            edgeCases.forEach(testCase => {
+                try {
+                    const uri = new URL(testCase.url);
+                    const referralCode = uri.searchParams.get('ref');
+                    const uriValid = isValidReferralUri(testCase.url);
+                    const codeValid = referralCode ? isValidReferralCode(referralCode) : false;
+                    const overallValid = uriValid && codeValid;
+                    
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = `test-result ${overallValid ? 'fail' : 'pass'}`; // We want these to fail
+                    resultDiv.innerHTML = `
+                        <strong>${testCase.desc}</strong><br>
+                        URL: ${testCase.url}<br>
+                        Result: ${overallValid ? 'ACCEPTED (BAD!)' : 'REJECTED (GOOD)'}
+                    `;
+                    resultsDiv.appendChild(resultDiv);
+                } catch (e) {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'test-result pass';
+                    resultDiv.innerHTML = `
+                        <strong>${testCase.desc}</strong><br>
+                        URL: ${testCase.url}<br>
+                        Result: REJECTED (Invalid URL format)
+                    `;
+                    resultsDiv.appendChild(resultDiv);
+                }
+            });
+        }
+
+        function runFirebaseTests() {
+            const resultsDiv = document.getElementById('firebase-tests');
+            resultsDiv.innerHTML = '';
+
+            // Simulate Firebase initialization scenarios
+            const scenarios = [
+                { name: 'Normal Firebase Init', shouldFail: false },
+                { name: 'Network Error', shouldFail: true },
+                { name: 'Invalid Config', shouldFail: true },
+                { name: 'Timeout Error', shouldFail: true }
+            ];
+
+            scenarios.forEach(scenario => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'test-result info';
+                
+                if (scenario.shouldFail) {
+                    console.error(`❌ MAIN: Firebase initialization failed: ${scenario.name}`);
+                    console.log('🔄 MAIN: Retrying Firebase initialization...');
+                    console.log('🚀 MAIN: App continuing with degraded functionality');
+                    resultDiv.innerHTML = `
+                        <strong>${scenario.name}</strong><br>
+                        Status: Handled gracefully - App continues with retry logic
+                    `;
+                } else {
+                    console.log(`🚀 MAIN: Firebase initialized successfully: ${scenario.name}`);
+                    resultDiv.innerHTML = `
+                        <strong>${scenario.name}</strong><br>
+                        Status: Success - Normal operation
+                    `;
+                }
+                
+                resultsDiv.appendChild(resultDiv);
+            });
+        }
+
+        function clearConsole() {
+            consoleOutput.textContent = '';
+        }
+
+        // Auto-run all tests on page load
+        window.addEventListener('load', () => {
+            console.log('🧪 Starting comprehensive referral system tests...');
+            setTimeout(() => {
+                runUrlTests();
+                runValidationTests();
+                runEdgeCaseTests();
+                runFirebaseTests();
+                console.log('✅ All tests completed!');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Invite Positioning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .gradient-bg {
+            background-color: #0f172a;
+            background-image:
+                radial-gradient(at 27% 37%, hsla(215, 98%, 60%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 21%, hsla(135, 98%, 60%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 75% 80%, hsla(285, 98%, 60%, 0.1) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white pt-20 pb-24">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto">
+                <span class="inline-block bg-blue-500/10 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-lg mb-4">
+                    The #1 Platform for Team Builders
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                    Build Your Foundation. <span class="text-blue-500">Accelerate Your Momentum.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-10">
+                    The ultimate app for direct sales professionals to build, manage, and scale your
+                    organization with unstoppable momentum.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Function to create and insert invite section
+        function createInviteSection(firstName, lastName) {
+            const inviteSection = document.createElement('div');
+            inviteSection.id = 'invite-section';
+            inviteSection.className = 'text-center mb-4';
+            inviteSection.innerHTML = `
+                <p class="text-white text-lg md:text-xl">
+                    <span class="text-white">Welcome!</span> You were invited by 
+                    <span class="font-semibold text-white">${firstName} ${lastName}</span>
+                </p>
+            `;
+            
+            // Insert just above "The #1 Platform for Team Builders"
+            const heroSection = document.querySelector('.gradient-bg .container .max-w-4xl');
+            const platformSpan = heroSection.querySelector('span');
+            heroSection.insertBefore(inviteSection, platformSpan);
+        }
+
+        // Test the function
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate finding a user
+            createInviteSection('John', 'Doe');
+        });
+    </script>
+</body>
+</html>

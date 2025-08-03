@@ -72,15 +72,62 @@ class SessionManager {
 
   // Referral data caching methods
   Future<void> setReferralData(String referralCode, String sponsorName) async {
+    // Validate referral code before caching
+    if (!_isValidReferralCode(referralCode)) {
+      debugPrint('❌ SessionManager — Invalid referral code, not caching: $referralCode');
+      return;
+    }
+
+    // Sanitize the data
+    final sanitizedReferralCode = _sanitizeReferralCode(referralCode);
+    final sanitizedSponsorName = _sanitizeSponsorName(sponsorName);
+
     final prefs = await SharedPreferences.getInstance();
     final referralData = {
-      'referralCode': referralCode,
-      'sponsorName': sponsorName,
+      'referralCode': sanitizedReferralCode,
+      'sponsorName': sanitizedSponsorName,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
     await prefs.setString(_referralDataKey, jsonEncode(referralData));
     debugPrint(
-        '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName');
+        '📂 SessionManager — Referral data cached: $sanitizedReferralCode -> $sanitizedSponsorName');
+  }
+
+  /// Validate if the referral code is valid
+  bool _isValidReferralCode(String referralCode) {
+    if (referralCode.trim().isEmpty) {
+      return false;
+    }
+
+    // Reject codes that are too long (likely file paths)
+    if (referralCode.length > 50) {
+      debugPrint('❌ SessionManager — Rejecting overly long referral code');
+      return false;
+    }
+
+    // Reject codes that contain file path indicators
+    if (referralCode.contains('/') || referralCode.contains('\\') || referralCode.contains(':')) {
+      debugPrint('❌ SessionManager — Rejecting referral code with path indicators');
+      return false;
+    }
+
+    // Reject codes that look like file paths or URLs
+    if (referralCode.startsWith('file://') || referralCode.startsWith('C:') || referralCode.startsWith('/')) {
+      debugPrint('❌ SessionManager — Rejecting file path referral code');
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Sanitize referral code by removing unwanted characters
+  String _sanitizeReferralCode(String referralCode) {
+    return referralCode.trim().replaceAll(RegExp(r'[^\w\-]'), '');
+  }
+
+  /// Sanitize sponsor name by removing unwanted characters
+  String _sanitizeSponsorName(String sponsorName) {
+    return sponsorName.trim().replaceAll(RegExp(r'[<>"\'']'), '');
   }
 
   Future<Map<String, String>?> getReferralData() async {
