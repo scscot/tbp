@@ -1765,7 +1765,7 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
 
 /**
  * Scheduled function that runs every hour to send daily team growth notifications
- * at 12 noon local time to users who had new team members join the previous day.
+ * at 10am local time to users who had new team members join the previous day.
  * 
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
@@ -1881,8 +1881,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
 
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
 
-        // Check if it's 12 noon in their timezone
-        if (userLocalHour === 12) {
+        // Check if it's 10 AM in their timezone
+        if (userLocalHour === 10) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
 
@@ -1906,10 +1906,10 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
       }
     }
 
-    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 12 noon timezone and will receive notifications`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 10am timezone and will receive notifications`);
 
     if (usersToNotify.length === 0) {
-      console.log("🔔 DAILY NOTIFICATIONS: No users in 12 noon timezone to notify at this time");
+      console.log("🔔 DAILY NOTIFICATIONS: No users in 10am timezone to notify at this time");
       return;
     }
 
