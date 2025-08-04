@@ -2,20 +2,27 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onRequest } = require("firebase-functions/v2/https");
 const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
-const { initializeApp } = require("firebase-admin/app");
-const { getFirestore, FieldValue, DocumentReference } = require("firebase-admin/firestore");
-const { getAuth } = require("firebase-admin/auth");
-const { getMessaging } = require("firebase-admin/messaging");
-const cors = require("cors")({ origin: true });
-const { getRemoteConfig } = require("firebase-admin/remote-config");
+const admin = require("firebase-admin");
 const { getTimezoneFromLocation, getTimezonesAtHour } = require("./timezone_mapping");
+const cors = require("cors")({ origin: true });
 
-// Initialize Firebase Admin SDK
-initializeApp();
-const db = getFirestore();
-const auth = getAuth();
-const messaging = getMessaging();
-const remoteConfig = getRemoteConfig();
+const { submitContactForm, submitContactFormHttp } = require('./submitContactForm');
+
+// This makes the callable function available for your apps
+exports.submitContactForm = submitContactForm;
+
+// This makes the HTTPS function available for your contact_us.html page
+exports.submitContactFormHttp = submitContactFormHttp; 
+
+// Initialize Firebase Admin SDK only if not already initialized
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+const db = admin.firestore();
+const auth = admin.auth();
+const messaging = admin.messaging();
+const remoteConfig = admin.remoteConfig();
 
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
@@ -93,7 +100,7 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
           const monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"];
           const formattedDate = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}`;
-          
+
           notificationContent = {
             title: "⏰ Subscription Expiring Soon",
             message: `Your subscription will end on ${formattedDate}. Renew to continue accessing premium features.`,
@@ -395,7 +402,7 @@ exports.checkSubscriptionsExpiringSoon = onSchedule("0 9 * * *", async (event) =
       try {
         // Check if user already received expiration warning today
         const lastExpirationWarningDate = userData.lastExpirationWarningDate;
-        
+
         if (lastExpirationWarningDate === todayDateString) {
           console.log(`⚠️ SUBSCRIPTION WARNING: User ${userId} already received expiration warning today. Skipping.`);
           return;
@@ -432,30 +439,30 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Authentication required");
   }
-  
+
   const userId = request.auth.uid;
   const { receiptData } = request.data;
-  
+
   if (!receiptData) {
     throw new HttpsError("invalid-argument", "Receipt data is required");
   }
-  
+
   console.log(`📱 RECEIPT VALIDATION: Validating receipt for user ${userId}`);
-  
+
   try {
     // Apple's receipt validation endpoint
     const appleValidationUrl = 'https://buy.itunes.apple.com/verifyReceipt';
     const sandboxValidationUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
-    
+
     // Prepare validation request
     const validationRequest = {
       'receipt-data': receiptData,
       'password': process.env.APPLE_SHARED_SECRET, // Set this in your Firebase Functions config
       'exclude-old-transactions': true
     };
-    
+
     console.log(`📱 RECEIPT VALIDATION: Sending validation request to Apple`);
-    
+
     // Try production first, then sandbox if needed
     let response = await fetch(appleValidationUrl, {
       method: 'POST',
@@ -464,9 +471,9 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
       },
       body: JSON.stringify(validationRequest),
     });
-    
+
     let validationResult = await response.json();
-    
+
     // If production returns sandbox receipt error, try sandbox
     if (validationResult.status === 21007) {
       console.log(`📱 RECEIPT VALIDATION: Trying sandbox validation`);
@@ -479,9 +486,9 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
       });
       validationResult = await response.json();
     }
-    
+
     console.log(`📱 RECEIPT VALIDATION: Apple validation result:`, JSON.stringify(validationResult, null, 2));
-    
+
     // Check validation status
     if (validationResult.status !== 0) {
       console.log(`📱 RECEIPT VALIDATION: Invalid receipt, status: ${validationResult.status}`);
@@ -491,11 +498,11 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
         message: 'Receipt validation failed'
       };
     }
-    
+
     // Extract subscription info from latest receipt
     const latestReceiptInfo = validationResult.latest_receipt_info;
     const pendingRenewalInfo = validationResult.pending_renewal_info;
-    
+
     if (!latestReceiptInfo || latestReceiptInfo.length === 0) {
       console.log(`📱 RECEIPT VALIDATION: No subscription info found`);
       return {
@@ -503,14 +510,14 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
         message: 'No subscription information found'
       };
     }
-    
+
     // Get the most recent transaction
     const latestTransaction = latestReceiptInfo[latestReceiptInfo.length - 1];
     const expiresDate = new Date(parseInt(latestTransaction.expires_date_ms));
     const now = new Date();
-    
+
     console.log(`📱 RECEIPT VALIDATION: Latest transaction expires: ${expiresDate.toISOString()}`);
-    
+
     // Determine subscription status
     let subscriptionStatus = 'expired';
     if (expiresDate > now) {
@@ -522,12 +529,12 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
         subscriptionStatus = 'active';
       }
     }
-    
+
     console.log(`📱 RECEIPT VALIDATION: Determined status: ${subscriptionStatus}`);
-    
+
     // Update user subscription status
     await updateUserSubscription(userId, subscriptionStatus, expiresDate);
-    
+
     return {
       isValid: true,
       subscriptionStatus: subscriptionStatus,
@@ -535,7 +542,7 @@ exports.validateAppleReceipt = onCall({ region: "us-central1" }, async (request)
       productId: latestTransaction.product_id,
       transactionId: latestTransaction.transaction_id
     };
-    
+
   } catch (error) {
     console.error(`❌ RECEIPT VALIDATION: Error validating receipt for user ${userId}:`, error);
     throw new HttpsError("internal", "Receipt validation failed", error.message);
@@ -549,52 +556,52 @@ exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (r
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Authentication required");
   }
-  
+
   const userId = request.auth.uid;
-  
+
   try {
     console.log(`📱 SUBSCRIPTION CHECK: Checking subscription status for user ${userId}`);
-    
+
     const userDoc = await db.collection("users").doc(userId).get();
-    
+
     if (!userDoc.exists) {
       throw new HttpsError("not-found", "User not found");
     }
-    
+
     const userData = userDoc.data();
     const subscriptionStatus = userData.subscriptionStatus || 'trial';
     const subscriptionExpiry = userData.subscriptionExpiry;
     const trialStartDate = userData.trialStartDate || userData.createdAt;
-    
+
     // Calculate trial validity
     let isTrialValid = false;
     let trialDaysRemaining = 0;
-    
+
     if (trialStartDate) {
       const trialStart = trialStartDate.toDate ? trialStartDate.toDate() : new Date(trialStartDate);
       const daysSinceTrialStart = Math.floor((Date.now() - trialStart.getTime()) / (1000 * 60 * 60 * 24));
       trialDaysRemaining = Math.max(0, 30 - daysSinceTrialStart);
       isTrialValid = trialDaysRemaining > 0;
     }
-    
+
     // Check if subscription is active
-    const isSubscriptionActive = subscriptionStatus === 'active' || 
-                                (subscriptionStatus === 'trial' && isTrialValid);
-    
+    const isSubscriptionActive = subscriptionStatus === 'active' ||
+      (subscriptionStatus === 'trial' && isTrialValid);
+
     // Check if subscription has expired
     let isExpired = false;
     if (subscriptionExpiry) {
       const expiry = subscriptionExpiry.toDate ? subscriptionExpiry.toDate() : new Date(subscriptionExpiry);
       isExpired = Date.now() > expiry.getTime();
     }
-    
+
     // Check if in grace period (cancelled but still active)
-    const isInGracePeriod = subscriptionStatus === 'cancelled' && 
-                           subscriptionExpiry && 
-                           !isExpired;
-    
+    const isInGracePeriod = subscriptionStatus === 'cancelled' &&
+      subscriptionExpiry &&
+      !isExpired;
+
     console.log(`✅ SUBSCRIPTION CHECK: User ${userId} status: ${subscriptionStatus}, active: ${isSubscriptionActive}`);
-    
+
     return {
       subscriptionStatus,
       isActive: isSubscriptionActive,
@@ -605,7 +612,7 @@ exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (r
       subscriptionExpiry: subscriptionExpiry ? (subscriptionExpiry.toDate ? subscriptionExpiry.toDate().toISOString() : subscriptionExpiry) : null,
       subscriptionUpdated: userData.subscriptionUpdated ? (userData.subscriptionUpdated.toDate ? userData.subscriptionUpdated.toDate().toISOString() : userData.subscriptionUpdated) : null
     };
-    
+
   } catch (error) {
     console.error(`❌ SUBSCRIPTION CHECK: Error checking subscription for user ${userId}:`, error);
     if (error instanceof HttpsError) {
@@ -658,11 +665,11 @@ const updateUserBadge = async (userId) => {
     unreadChatsSnapshot.docs.forEach(doc => {
       const chatData = doc.data();
       const isReadMap = chatData.isRead || {};
-      
+
       // Debug logging to identify the issue
       console.log(`🔔 BADGE DEBUG: Chat ${doc.id} - isReadMap:`, JSON.stringify(isReadMap));
       console.log(`🔔 BADGE DEBUG: User ${userId} read status:`, isReadMap[userId]);
-      
+
       // Only count if this chat thread has unread messages for this user
       // Check that isRead exists and is explicitly false (not undefined/null)
       if (isReadMap.hasOwnProperty(userId) && isReadMap[userId] === false) {
@@ -2002,5 +2009,4 @@ exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) 
     };
   }
 });
-
 

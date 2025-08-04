@@ -488,6 +488,24 @@
                                 behavior: 'smooth',
                                 block: 'center'
                             });
+                        } else {
+                            // Handle failure (optional)
+                            alert('Failed to send message. Please try again later.');
+                            const submitBtn = document.querySelector('.submit-btn');
+                            submitBtn.textContent = 'Send Message';
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again later.');
+                        const submitBtn = document.querySelector('.submit-btn');
+                        submitBtn.textContent = 'Send Message';
+                        submitBtn.disabled = false;
+                    });
+                });
+            });
+        }
 
         // Add form validation feedback
         document.addEventListener('DOMContentLoaded', function() {
