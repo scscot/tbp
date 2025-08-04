@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Handle referral codes in URL path
+# Redirect /referralcode to /?ref=referralcode
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/(privacy_policy\.html|terms_of_service\.html|contact_us\.html|index\.html|favicon\.ico|robots\.txt|sitemap\.xml|assets/)
+RewriteRule ^([a-zA-Z0-9_-]+)/?$ /?ref=$1 [R=302,L]
+
+# Fallback: serve index.html for any other non-existent files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
