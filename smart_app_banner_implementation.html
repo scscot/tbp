@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart App Banner Implementation</title>
+    
+    <!-- Smart App Banner Meta Tag -->
+    <!-- This will be dynamically updated with referral code -->
+    <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID, app-argument=teambuildpro://app/?ref=REFERRAL_CODE">
+    
+    <!-- Universal Links Association (for your domain) -->
+    <link rel="apple-touch-icon" href="assets/icons/app_icon.png">
+</head>
+<body>
+    <script>
+        // Function to update Smart App Banner with referral code
+        function updateSmartAppBanner(referralCode) {
+            const appId = 'YOUR_APP_ID'; // Replace with your actual App Store ID
+            const metaTag = document.querySelector('meta[name="apple-itunes-app"]');
+            
+            if (referralCode && referralCode.trim() !== '') {
+                // Update the meta tag with the referral code
+                const content = `app-id=${appId}, app-argument=teambuildpro://app/?ref=${referralCode}`;
+                metaTag.setAttribute('content', content);
+                console.log('Smart App Banner updated with referral code:', referralCode);
+            } else {
+                // Default without referral code
+                const content = `app-id=${appId}`;
+                metaTag.setAttribute('content', content);
+                console.log('Smart App Banner set without referral code');
+            }
+        }
+
+        // Function to create manual App Store button (fallback for non-Safari browsers)
+        function createAppStoreButton(referralCode) {
+            const appId = 'YOUR_APP_ID'; // Replace with your actual App Store ID
+            const appStoreUrl = `https://apps.apple.com/app/id${appId}`;
+            
+            // Create button container
+            const buttonContainer = document.createElement('div');
+            buttonContainer.id = 'app-store-button-container';
+            buttonContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: #000;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                z-index: 9999;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            `;
+            
+            // Create button
+            const button = document.createElement('a');
+            button.href = appStoreUrl;
+            button.target = '_blank';
+            button.style.cssText = `
+                background: #007AFF;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 500;
+                margin-left: 10px;
+            `;
+            button.textContent = 'Download App';
+            
+            // Create message
+            const message = document.createElement('span');
+            if (referralCode) {
+                message.textContent = `Get the Team Build Pro app to join with referral code: ${referralCode}`;
+            } else {
+                message.textContent = 'Get the Team Build Pro app';
+            }
+            
+            // Create close button
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '×';
+            closeButton.style.cssText = `
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                float: right;
+                cursor: pointer;
+                padding: 0 10px;
+            `;
+            closeButton.onclick = () => buttonContainer.remove();
+            
+            buttonContainer.appendChild(closeButton);
+            buttonContainer.appendChild(message);
+            buttonContainer.appendChild(button);
+            
+            return buttonContainer;
+        }
+
+        // Function to detect if running on iOS Safari
+        function isIOSSafari() {
+            const ua = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(ua);
+            const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS/.test(ua);
+            return isIOS && isSafari;
+        }
+
+        // Main initialization function
+        function initializeAppBanner() {
+            const referralCode = getReferralCode(); // Use your existing function
+            
+            if (isIOSSafari()) {
+                // Use Smart App Banner for iOS Safari
+                updateSmartAppBanner(referralCode);
+                console.log('Smart App Banner initialized for iOS Safari');
+            } else {
+                // Show manual button for other browsers/platforms
+                const button = createAppStoreButton(referralCode);
+                document.body.insertBefore(button, document.body.firstChild);
+                console.log('Manual App Store button created for non-Safari browser');
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeAppBanner);
+    </script>
+</body>
+</html>
