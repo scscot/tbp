@@ -4,9 +4,8 @@ const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require("fir
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const { getTimezoneFromLocation, getTimezonesAtHour } = require("./timezone_mapping");
-const cors = require("cors")({ origin: true });
-
-const { submitContactForm, submitContactFormHttp } = require('./submitContactForm');
+const { submitContactForm } = require('./submitContactForm');
+const { submitContactFormHttp } = require('./submitContactFormHttp');
 
 // This makes the callable function available for your apps
 exports.submitContactForm = submitContactForm;
@@ -23,6 +22,9 @@ const db = admin.firestore();
 const auth = admin.auth();
 const messaging = admin.messaging();
 const remoteConfig = admin.remoteConfig();
+const { FieldValue, DocumentReference } = admin.firestore;
+const fetch = global.fetch || require('node-fetch');
+const cors = require('cors')({ origin: true });
 
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
@@ -771,52 +773,55 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-exports.getUserByReferralCode = onRequest({ region: "us-central1" }, (req, res) => {
-  cors(req, res, async () => {
-    if (req.method !== 'GET') {
-      return res.status(405).send('Method Not Allowed');
+// index.js - NEW CODE
+exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true }, async (req, res) => {
+  // The cors(req, res, ...) wrapper is no longer needed
+  if (req.method !== 'GET') {
+    res.status(405).send('Method Not Allowed');
+    return; // Explicitly return after sending response
+  }
+
+  const code = req.query.code;
+  if (!code) {
+    res.status(400).json({ error: 'Referral code is required.' });
+    return; // Explicitly return
+  }
+
+  try {
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef.where("referralCode", "==", code).limit(1).get();
+
+    if (snapshot.empty) {
+      res.status(404).json({ error: 'Sponsor not found.' });
+      return; // Explicitly return
     }
 
-    const code = req.query.code;
-    if (!code) {
-      return res.status(400).json({ error: 'Referral code is required.' });
-    }
+    const sponsorDoc = snapshot.docs[0];
+    const sponsorData = sponsorDoc.data();
+    const uplineAdminId = sponsorData.upline_admin;
+    let availableCountries = [];
 
-    try {
-      const usersRef = db.collection("users");
-      const snapshot = await usersRef.where("referralCode", "==", code).limit(1).get();
-
-      if (snapshot.empty) {
-        return res.status(404).json({ error: 'Sponsor not found.' });
-      }
-
-      const sponsorDoc = snapshot.docs[0];
-      const sponsorData = sponsorDoc.data();
-      const uplineAdminId = sponsorData.upline_admin;
-      let availableCountries = [];
-
-      if (uplineAdminId) {
-        const adminSettingsDoc = await db.collection("admin_settings").doc(uplineAdminId).get();
-        if (adminSettingsDoc.exists) {
-          const adminSettingsData = adminSettingsDoc.data();
-          if (adminSettingsData.countries && Array.isArray(adminSettingsData.countries)) {
-            availableCountries = adminSettingsData.countries;
-          }
+    if (uplineAdminId) {
+      const adminSettingsDoc = await db.collection("admin_settings").doc(uplineAdminId).get();
+      if (adminSettingsDoc.exists) {
+        const adminSettingsData = adminSettingsDoc.data();
+        if (adminSettingsData.countries && Array.isArray(adminSettingsData.countries)) {
+          availableCountries = adminSettingsData.countries;
         }
       }
-
-      return res.status(200).json({
-        firstName: sponsorData.firstName,
-        lastName: sponsorData.lastName,
-        uid: sponsorDoc.id,
-        availableCountries: availableCountries,
-      });
-
-    } catch (error) {
-      console.error("Critical Error in getUserByReferralCode:", error);
-      return res.status(500).json({ error: 'Internal server error.' });
     }
-  });
+
+    res.status(200).json({
+      firstName: sponsorData.firstName,
+      lastName: sponsorData.lastName,
+      uid: sponsorDoc.id,
+      availableCountries: availableCountries,
+    });
+
+  } catch (error) {
+    console.error("Critical Error in getUserByReferralCode:", error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {

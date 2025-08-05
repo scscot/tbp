@@ -32,14 +32,15 @@
             "port": 9099
         },
         "functions": {
-            "port": 5001
+            "port": 5050,
+            "host": "localhost"
         },
         "firestore": {
             "port": 8585
         },
         "ui": {
             "enabled": true,
-            "port": 4000
+            "port": 4050
         },
         "singleProjectMode": true
     },

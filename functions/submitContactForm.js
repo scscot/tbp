@@ -1,4 +1,4 @@
-const functions = require('firebase-functions');
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 
 // Initialize admin if not already initialized
@@ -20,10 +20,10 @@ exports.submitContactForm = onCall(async (request) => {
 
     const secretKey = '6Lfwj5orAAAAAM_4a6UOeYs8n5VFeflZfmliAAQk';
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`;
-    
+
     const response = await fetch(verificationUrl, { method: 'POST' });
     const verificationResult = await response.json();
-    
+
     if (!verificationResult.success || verificationResult.score < 0.5) {
       console.error('reCAPTCHA verification failed. Score:', verificationResult.score);
       throw new HttpsError('permission-denied', 'reCAPTCHA verification failed. Suspicious activity detected.');
