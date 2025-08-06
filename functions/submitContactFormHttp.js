@@ -65,7 +65,7 @@ exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecre
     // Create the email message object
     const msg = {
       to: 'support@teambuildpro.com', // Your support email
-      from: 'noreply@your-verified-domain.com', // IMPORTANT: Use the domain you verified with SendGrid
+      from: 'support@teambuildpro.comm', // IMPORTANT: Use the domain you verified with SendGrid
       subject: `New Contact Form Submission: ${data.subject}`,
       replyTo: data.email, // Allows you to reply directly to the user from your email client
       html: `
