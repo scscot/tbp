@@ -514,7 +514,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- NEW: Global variable to store the business opportunity name ---
+        // Global variable to store the business opportunity name
         let bizOppName = 'your opportunity'; // Default fallback value
 
         // FAQ Toggle Function
@@ -531,17 +531,32 @@
             icon.classList.toggle('rotated');
         }
 
-        // Function to parse referral code from URL
-        function getReferralCode() {
+        // --- MODIFIED: Function to parse referral code AND type from URL ---
+        function getReferralInfo() {
             if (window.location.protocol === 'file:') return null;
+
             const urlParams = new URLSearchParams(window.location.search);
-            const queryRef = urlParams.get('ref');
-            if (queryRef && isValidReferralCode(queryRef)) return queryRef;
+            const newProspectCode = urlParams.get('new');
+            const partnerCode = urlParams.get('ref');
+
+            if (newProspectCode && isValidReferralCode(newProspectCode)) {
+                return { code: newProspectCode, type: 'new' };
+            }
+
+            if (partnerCode && isValidReferralCode(partnerCode)) {
+                return { code: partnerCode, type: 'partner' };
+            }
+
+            // Fallback for path-based referral code (optional, can be removed if not needed)
             const path = window.location.pathname;
             const referralCode = path.substring(1);
             const excludedPaths = ['privacy_policy.html', 'terms_of_service.html', 'contact_us.html', 'index.html', 'index2.html', '', 'favicon.ico'];
-            if (excludedPaths.includes(referralCode) || referralCode.includes('.') || !isValidReferralCode(referralCode)) return null;
-            return referralCode;
+            if (!excludedPaths.includes(referralCode) && !referralCode.includes('.') && isValidReferralCode(referralCode)) {
+                // Default to 'partner' type for path-based links
+                return { code: referralCode, type: 'partner' };
+            }
+
+            return null;
         }
 
         // Function to validate referral codes
@@ -549,11 +564,20 @@
             return code && code.trim().length >= 3 && code.length <= 50 && !/[:/\\]/.test(code) && !/^(file|C:)/.test(code);
         }
 
-        // Function to create and insert invite section
-        function createInviteSection(firstName, lastName) {
+        // --- MODIFIED: Function to accept referral type ---
+        function createInviteSection(firstName, lastName, referralType) {
             const inviteSection = document.createElement('div');
             inviteSection.className = 'personal-invitation-card';
-            const message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> is inviting you to get a head start on building your <strong>${bizOppName}</strong> team. They've found this app to be an effective tool for creating momentum and wanted to share it with you.`;
+
+            let message;
+            if (referralType === 'new') {
+                // Message for New Prospects
+                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> is inviting you to get a head start on your <strong>${bizOppName}</strong> journey. They're using this app to pre-build their team and create powerful momentum before day one, and they thought you'd want to as well.`;
+            } else {
+                // Default/Partner Message
+                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> invites you to accelerate your team's growth in <strong>${bizOppName}</strong>. They use this the Team Build Pro app to manage their network and build momentum, and they highly recommend it.`;
+            }
+
             inviteSection.innerHTML = `
                 <div class="personal-invitation-header">
                     <div class="personal-invitation-icon">
@@ -567,7 +591,7 @@
             heroContent.insertBefore(inviteSection, platformBadge);
         }
 
-        // --- NEW: Function to fetch the business opportunity name ---
+        // Function to fetch the business opportunity name
         async function fetchBizOppName(adminId) {
             if (!adminId) {
                 console.log('No admin ID provided, using default biz opp name.');
@@ -580,43 +604,30 @@
                     if (adminData.biz_opp && adminData.biz_opp.trim() !== '') {
                         bizOppName = adminData.biz_opp;
                         console.log('Successfully fetched biz_opp:', bizOppName);
-                    } else {
-                        console.log('biz_opp field is empty or missing in admin_settings.');
                     }
-                } else {
-                    console.log('admin_settings document not found for ID:', adminId);
                 }
             } catch (error) {
                 console.error('Error fetching biz_opp name:', error);
             }
         }
 
-        // --- MODIFIED: Function to query Firestore for user and then biz_opp ---
-        async function fetchUserByReferralCode(referralCode) {
+        // --- MODIFIED: Function to accept referral info object ---
+        async function fetchUserAndDisplayInvite(referralInfo) {
             try {
-                const querySnapshot = await db.collection('users').where('referralCode', '==', referralCode).limit(1).get();
+                const querySnapshot = await db.collection('users').where('referralCode', '==', referralInfo.code).limit(1).get();
                 if (!querySnapshot.empty) {
                     const userDoc = querySnapshot.docs[0];
                     const userData = userDoc.data();
 
-                    // Create the invitation section with the user's name
-                    if (userData.firstName && userData.lastName) {
-                        createInviteSection(userData.firstName, userData.lastName);
-                    }
-
-                    // Determine the admin ID to fetch the biz_opp
-                    let adminId;
-                    if (userData.role === 'admin') {
-                        adminId = userDoc.id; // The user is the admin
-                    } else {
-                        adminId = userData.uplineAdmin; // Use the upline admin's ID
-                    }
-
-                    // Fetch the biz_opp name using the determined admin ID
+                    let adminId = (userData.role === 'admin') ? userDoc.id : userData.uplineAdmin;
                     await fetchBizOppName(adminId);
 
+                    if (userData.firstName && userData.lastName) {
+                        // Pass the referral type to the createInviteSection function
+                        createInviteSection(userData.firstName, userData.lastName, referralInfo.type);
+                    }
                 } else {
-                    console.log('No user found with referral code:', referralCode);
+                    console.log('No user found with referral code:', referralInfo.code);
                 }
             } catch (error) {
                 console.error('Error fetching user data by referral code:', error);
@@ -660,11 +671,16 @@
             }
         }
 
-        // Main initialization function
+        // --- MODIFIED: Main initialization function ---
+        // This is the corrected code
         async function initializePage() {
-            const referralCode = getReferralCode();
-            if (referralCode) {
-                await fetchUserByReferralCode(referralCode);
+            const referralInfo = getReferralInfo();
+            if (referralInfo) {
+                console.log('Processing referral:', referralInfo);
+                // 'await' is now correctly placed here
+                await fetchUserAndDisplayInvite(referralInfo);
+            } else {
+                console.log('No referral code found in URL');
             }
             updateCTAs();
         }
@@ -689,4 +705,3 @@
 </body>
 
 </html>
-}
