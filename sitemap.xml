@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Main Homepage -->
+  <url>
+    <loc>https://www.teambuildpro.com/</loc>
+    <lastmod>2025-08-05</lastmod>
+    <priority>1.00</priority>
+  </url>
+  
+  <!-- Index.html (Canonical version of homepage) -->
+  <url>
+    <loc>https://www.teambuildpro.com/index.html</loc>
+    <lastmod>2025-08-05</lastmod>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- Legal & Support Pages -->
+  <url>
+    <loc>https://www.teambuildpro.com/privacy_policy.html</loc>
+    <lastmod>2025-08-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.teambuildpro.com/terms_of_service.html</loc>
+    <lastmod>2025-08-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.teambuildpro.com/contact_us.html</loc>
+    <lastmod>2025-08-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>

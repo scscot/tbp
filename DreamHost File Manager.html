@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="MonstaFTP">
+<head>
+    <title>DreamHost File Manager</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="shortcut icon" type="image/x-icon" href="application/frontend/images/logo-favicon.png">
+    <link rel="apple-touch-icon" href="application/frontend/images/logo-webclip.png">
+
+    <input type="hidden" id="g_defaultLanguage" value="en_us"/>
+    <input type="hidden" id="g_xhrTimeoutSeconds" value="30"/>
+    <input type="hidden" id="g_isNewWindowsInstall" value="false"/>
+    <input type="hidden" id="g_ftpConnectionAvailable" value="true"/>
+    <input type="hidden" id="g_openSslAvailable" value="true"/>
+    <input type="hidden" id="g_resetPasswordAvailable" value="false"/>
+    <input type="hidden" id="g_forgotPasswordAvailable" value="false"/>
+    
+    <script>
+        var g_defaultLanguage = document.getElementById('g_defaultLanguage').value;
+        var g_upgradeURL = "http://www.monstaftp.com/upgrade";
+        var g_loadComplete = false;
+        var g_xhrTimeoutSeconds = +document.getElementById('g_xhrTimeoutSeconds').value;
+        var g_isMonstaPostEntry = false;
+        var g_isNewWindowsInstall = document.getElementById('g_isNewWindowsInstall').value == 'true';
+        var g_ftpConnectionAvailable = document.getElementById('g_ftpConnectionAvailable').value == 'true';
+        var g_openSslAvailable = document.getElementById('g_openSslAvailable').value == 'true';
+        var g_resetPasswordAvailable = document.getElementById('g_resetPasswordAvailable').value == 'true';
+        var g_forgotPasswordAvailable = document.getElementById('g_forgotPasswordAvailable').value == 'true';
+
+            </script>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,600,300">
+    <script src="application/frontend/assets-2.10.4/vendor.js"></script>
+
+    <link rel="stylesheet" href="application/frontend/css/monsta.css">
+    <link rel="stylesheet" href="settings/theme.css">
+    
+    <script src="application/frontend/js/monsta-min-2.10.4.js"></script>
+    <script src="application/frontend/js/templates-2.10.4.js"></script>
+
+                <script src="application/frontend/vs/loader.js"></script>
+                <script>
+        var g_languageFiles = [["en_us","English (US)"]];
+    </script>
+</head>
+<body>
+
+    <div id="spinner" ng-controller="SpinnerController" ng-show="spinnerVisible">
+        <div>
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        </div>
+    </div>
+    <div id="file-xfer-drop" ng-controller="DragDropController">
+        <div translate>DROP_FILES_INSTRUCTION</div>
+    </div>
+    <ng-include src="'application/frontend/templates/modal-chmod.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-login.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-password-management.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-editor.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-transfers.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-prompt.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-confirm.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-error.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-addons.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-settings.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-properties.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-login-link.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-choice.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-update.html'"></ng-include>
+    <ng-include src="'application/frontend/templates/modal-upgrade-required.html'"></ng-include>
+
+    <div id="sb-site" canvas="container">
+        <ng-include src="'application/frontend/templates/body-header.html'"></ng-include>
+        <ng-include src="'application/frontend/templates/body-history.html'"></ng-include>
+        <ng-include src="'application/frontend/templates/body-files.html'"></ng-include>
+        <ng-include src="'application/frontend/templates/body-footer.html'"></ng-include>
+    </div>
+
+    <ng-include src="'application/frontend/templates/body-slidebar.html'"></ng-include>
+    <iframe src="about:blank" id="download-iframe"></iframe>
+</body>
+</html>
