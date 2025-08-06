@@ -11,7 +11,7 @@ const { submitContactFormHttp } = require('./submitContactFormHttp');
 exports.submitContactForm = submitContactForm;
 
 // This makes the HTTPS function available for your contact_us.html page
-exports.submitContactFormHttp = submitContactFormHttp; 
+exports.submitContactFormHttp = submitContactFormHttp;
 
 // Initialize Firebase Admin SDK only if not already initialized
 if (!admin.apps.length) {
@@ -773,18 +773,18 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-// index.js - NEW CODE
+// ============================================================================
+// *** MODIFIED FUNCTION: getUserByReferralCode ***
+// Now returns bizOppName for personalization
+// ============================================================================
 exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true }, async (req, res) => {
-  // The cors(req, res, ...) wrapper is no longer needed
   if (req.method !== 'GET') {
-    res.status(405).send('Method Not Allowed');
-    return; // Explicitly return after sending response
+    return res.status(405).send('Method Not Allowed');
   }
 
   const code = req.query.code;
   if (!code) {
-    res.status(400).json({ error: 'Referral code is required.' });
-    return; // Explicitly return
+    return res.status(400).json({ error: 'Referral code is required.' });
   }
 
   try {
@@ -792,14 +792,17 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
     const snapshot = await usersRef.where("referralCode", "==", code).limit(1).get();
 
     if (snapshot.empty) {
-      res.status(404).json({ error: 'Sponsor not found.' });
-      return; // Explicitly return
+      return res.status(404).json({ error: 'Sponsor not found.' });
     }
 
     const sponsorDoc = snapshot.docs[0];
     const sponsorData = sponsorDoc.data();
-    const uplineAdminId = sponsorData.upline_admin;
+
+    // Determine the admin ID: if sponsor is admin, it's their own ID, otherwise it's their upline_admin
+    const uplineAdminId = sponsorData.role === 'admin' ? sponsorDoc.id : sponsorData.upline_admin;
+
     let availableCountries = [];
+    let bizOppName = 'your opportunity'; // Default value
 
     if (uplineAdminId) {
       const adminSettingsDoc = await db.collection("admin_settings").doc(uplineAdminId).get();
@@ -808,21 +811,27 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
         if (adminSettingsData.countries && Array.isArray(adminSettingsData.countries)) {
           availableCountries = adminSettingsData.countries;
         }
+        // Fetch biz_opp name
+        if (adminSettingsData.biz_opp && adminSettingsData.biz_opp.trim() !== '') {
+          bizOppName = adminSettingsData.biz_opp;
+        }
       }
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       firstName: sponsorData.firstName,
       lastName: sponsorData.lastName,
       uid: sponsorDoc.id,
       availableCountries: availableCountries,
+      bizOppName: bizOppName, // *** NEW: Return bizOppName ***
     });
 
   } catch (error) {
     console.error("Critical Error in getUserByReferralCode:", error);
-    res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   console.log("🔍 REGISTER FUNCTION: Starting registerUser function");
@@ -1778,7 +1787,7 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
 /**
  * Scheduled function that runs every hour to send daily team growth notifications
  * at 10am local time to users who had new team members join the previous day.
- * 
+ *
  * This function uses an efficient approach:
  * 1. Query all users who joined yesterday with photoUrl != null
  * 2. Use their upline_refs arrays to identify which users should receive notifications
@@ -2014,4 +2023,3 @@ exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) 
     };
   }
 });
-

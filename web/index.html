@@ -5,160 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Build Pro - The Ultimate Team Building App</title>
-    <link rel="stylesheet" href="css/style.css">
-
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-
     <!-- Favicon -->
     <link rel="icon" href="https://img.icons8.com/plasticine/100/organization.png" type="image/png">
-
     <!-- Smart App Banner for iOS Safari -->
     <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID">
-
     <!-- Apple Touch Icon for Universal Links -->
     <link rel="apple-touch-icon" href="assets/icons/app_icon.png">
-
-    <style>
-        /* --- Modal Styles --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-content h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .modal-content p {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-close-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .modal-close-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .platform-badge {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e40af;
-            font-weight: 600;
-            padding: 0.375rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        /* --- Personal Invitation Card Styles --- */
-        .personal-invitation-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .personal-invitation-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .personal-invitation-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(5, 235, 135, 0.2);
-            /* A soft green */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #05eb87;
-        }
-
-        .personal-invitation-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: white;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .personal-invitation-body {
-            font-size: 1.125rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-28LP2SPR3X"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-28LP2SPR3X');
-</script>
 
 <body>
     <!-- Header -->
@@ -182,14 +41,12 @@
         <section class="hero gradient-bg">
             <div class="container">
                 <div class="hero-content">
-                    <span class="platform-badge">Your Blueprint for Team Growth</span>
-                    <h1>
-                        Build Your Foundation
+                    <!-- Dynamic content will be injected here -->
+                    <span id="hero-badge" class="platform-badge">Your Blueprint for Team Growth</span>
+                    <h1 id="hero-headline">
+                        Build Your Foundation <br> <span class="accent">Accelerate Your Momentum</span>
                     </h1>
-                    <h1>
-                        <span class="accent">Accelerate Your Momentum</span>
-                    </h1>
-                    <p>
+                    <p id="hero-subheadline">
                         The ultimate app for direct sales professionals to build, manage, and
                         scale your team with unstoppable momentum.
                     </p>
@@ -205,27 +62,31 @@
         <section id="who-its-for" class="section section-white">
             <div class="container">
                 <div class="section-header">
-                    <h2>Built for Every Stage of Success</h2>
-                    <p>Whether you're an aspiring leader, an active builder, or a seasoned mentor, our tools grow with
+                    <h2 id="who-headline">Built for Every Stage of Success</h2>
+                    <p id="who-subheadline">Whether you're an aspiring leader, an active builder, or a seasoned mentor,
+                        our tools grow with
                         you.</p>
                 </div>
                 <div class="grid grid-3">
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon orange">🚀</div>
-                        <h3>For Aspiring Leaders</h3>
-                        <p>Get a powerful head start. Begin building your team before you officially join an opportunity
+                        <h3 id="who-card1-headline">For Aspiring Leaders</h3>
+                        <p id="who-card1-text">Get a powerful head start. Begin building your team before you officially
+                            join an opportunity
                             and launch with unstoppable momentum.</p>
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon blue">📈</div>
-                        <h3>For Active Team Builders</h3>
-                        <p>Efficiently track, manage, and expand your organization with powerful analytics and seamless,
+                        <h3 id="who-card2-headline">For Active Team Builders</h3>
+                        <p id="who-card2-text">Efficiently track, manage, and expand your organization with powerful
+                            analytics and seamless,
                             secure communication tools.</p>
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon purple">👥</div>
-                        <h3>For Seasoned Mentors</h3>
-                        <p>Cultivate a thriving global network, mentor emerging leaders, and ensure sustainable growth
+                        <h3 id="who-card3-headline">For Seasoned Mentors</h3>
+                        <p id="who-card3-text">Cultivate a thriving global network, mentor emerging leaders, and ensure
+                            sustainable growth
                             across your entire organization.</p>
                     </div>
                 </div>
@@ -236,26 +97,30 @@
         <section id="the-why" class="section">
             <div class="container">
                 <div class="section-header">
-                    <h2>Turn a Cold Start into a Running Start</h2>
-                    <p>We solve the biggest hurdle in direct sales: building momentum from day one.</p>
+                    <h2 id="why-headline">Turn a Cold Start into a Running Start</h2>
+                    <p id="why-subheadline">We solve the biggest hurdle in direct sales: building momentum from day one.
+                    </p>
                 </div>
                 <div class="grid grid-3">
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon red">⚠️</div>
-                        <h3>The Challenge</h3>
-                        <p>Starting from zero is tough. Professionals often struggle to find motivated prospects and
+                        <h3 id="why-card1-headline">The Challenge</h3>
+                        <p id="why-card1-text">Starting from zero is tough. Professionals often struggle to find
+                            motivated prospects and
                             build momentum quickly, leading to frustration and slow growth.</p>
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon blue">💡</div>
-                        <h3>The Solution</h3>
-                        <p>Team Build Pro offers a unique system for pre-building your team, allowing you to cultivate a
+                        <h3 id="why-card2-headline">The Solution</h3>
+                        <p id="why-card2-text">Team Build Pro offers a unique system for pre-building your team,
+                            allowing you to cultivate a
                             network of interested prospects before you even launch.</p>
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-icon green">📈</div>
-                        <h3>Why It Works</h3>
-                        <p>By focusing on relationships first, our platform creates genuine momentum. Prospects in a
+                        <h3 id="why-card3-headline">Why It Works</h3>
+                        <p id="why-card3-text">By focusing on relationships first, our platform creates genuine
+                            momentum. Prospects in a
                             growing community are more engaged, motivated, and prepared for success.</p>
                     </div>
                 </div>
@@ -457,10 +322,11 @@
         <!-- CTA Section -->
         <section class="cta-section gradient-bg">
             <div class="container">
-                <h2>Ready to Build Your Empire?</h2>
-                <p>Join thousands of professionals who are building their teams faster than ever before. Start your free
+                <h2 id="cta-final-headline">Ready to Build Your Empire?</h2>
+                <p id="cta-final-subheadline">Join thousands of professionals who are building their teams faster than
+                    ever before. Start your free
                     30-day trial today.</p>
-                <a href="#" id="cta-final">Claim Your Free Trial</a>
+                <a href="#" id="cta-final" class="cta-button">Claim Your Free Trial</a>
             </div>
         </section>
     </main>
@@ -514,8 +380,251 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Global variable to store the business opportunity name
-        let bizOppName = 'your opportunity'; // Default fallback value
+        // ============================================================================
+        // DYNAMIC CONTENT FOR DIFFERENT USER JOURNEYS
+        // ============================================================================
+        const contentFor = {
+            partner: {
+                heroBadge: "Your Blueprint for Team Growth",
+                heroHeadline: `Empower Your Team <br> <span class="accent">Accelerate Duplication</span>`,
+                heroSubheadline: "The ultimate app for direct sales professionals to manage and scale your existing team with unstoppable momentum.",
+                whoHeadline: "Built for Every Stage of Success",
+                whoSubheadline: "Whether you're an aspiring leader, an active builder, or a seasoned mentor, our tools grow with you.",
+                whoCard1Headline: "For Aspiring Leaders",
+                whoCard1Text: "Get a powerful head start. Begin building your team before you officially join an opportunity and launch with unstoppable momentum.",
+                whoCard2Headline: "For Active Team Builders",
+                whoCard2Text: "Efficiently track, manage, and expand your organization with powerful analytics and seamless, secure communication tools.",
+                whoCard3Headline: "For Seasoned Mentors",
+                whoCard3Text: "Cultivate a thriving global network, mentor emerging leaders, and ensure sustainable growth across your entire organization.",
+                whyHeadline: "Solve the Duplication Dilemma",
+                whySubheadline: "We solve the biggest hurdle in direct sales: getting your team to duplicate your success.",
+                whyCard1Headline: "The Challenge",
+                whyCard1Text: "It's hard to get new team members to duplicate your success. Without a simple system to follow, momentum stalls and growth becomes a struggle.",
+                whyCard2Headline: "The Solution",
+                whyCard2Text: "Team Build Pro provides your entire organization with a simple, unified system to follow, ensuring everyone can build effectively from day one.",
+                whyCard3Headline: "Why It Works",
+                whyCard3Text: "By providing a clear roadmap and powerful tools for everyone, we remove the guesswork from team building, leading to faster, more sustainable duplication.",
+                ctaFinalHeadline: "Ready to Empower Your Team?",
+                ctaFinalSubheadline: "Give your entire organization the tools they need to succeed. Start your free 30-day trial today.",
+                ctaHeader: "Get Started Free",
+                ctaHero: "Start Your 30-Day Free Trial",
+                ctaPricing: "Start 30-Day Free Trial",
+                ctaFinal: "Claim Your Free Trial"
+            },
+            new: {
+                heroBadge: "Your Head Start to Success",
+                heroHeadline: `Build Your Foundation <br> <span class="accent">Before Day One</span>`,
+                heroSubheadline: "The ultimate system to pre-build a large team BEFORE joining the business opportunity, positioning you for immediate success.",
+                whoHeadline: "A New Way to Launch Your Business",
+                whoSubheadline: "This isn't just an app; it's a strategic advantage for ambitious professionals ready to start strong.",
+                whoCard1Headline: "Pre-Build Your Team",
+                whoCard1Text: "Use our system to invite and organize a network of interested prospects before you even join the business. No more starting from zero.",
+                whoCard2Headline: "Create Real Momentum",
+                whoCard2Text: "Cultivate a thriving community that's ready to launch with you. When your team sees growth from day one, their belief and motivation skyrockets.",
+                whoCard3Headline: "Launch with Confidence",
+                whoCard3Text: "Step into your new opportunity with a pre-built foundation, ready to achieve success and earn income from the very beginning.",
+                whyHeadline: "Turn a Cold Start into a Running Start",
+                whySubheadline: "We solve the biggest hurdle in direct sales: building momentum from day one.",
+                whyCard1Headline: "The Challenge",
+                whyCard1Text: "Starting a new business from zero is the biggest hurdle. It's a slow, uphill battle to build initial momentum, often leading to frustration.",
+                whyCard2Headline: "The Solution",
+                whyCard2Text: "Team Build Pro lets you build a network of motivated prospects first. You cultivate a ready-to-go team that can launch with you.",
+                whyCard3Headline: "Why It Works",
+                whyCard3Text: "By focusing on community and momentum before the sale, you de-risk the opportunity for your prospects and ensure a powerful, successful launch.",
+                ctaFinalHeadline: "Ready to Build Your Foundation?",
+                ctaFinalSubheadline: "Join thousands of professionals who are building their teams faster than ever before. Start building your team for free today.",
+                ctaHeader: "Start Building Free",
+                ctaHero: "Start Building Your Team for Free",
+                ctaPricing: "Start Building for Free",
+                ctaFinal: "Claim Your Free Spot"
+            }
+        };
+
+        // Function to update the DOM with dynamic content
+        function updatePageContent(type = 'partner') {
+            const content = contentFor[type] || contentFor.partner;
+
+            // Helper to safely update element content
+            const updateElement = (id, content, isHtml = false) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (isHtml) {
+                        element.innerHTML = content;
+                    } else {
+                        element.textContent = content;
+                    }
+                }
+            };
+
+            // Update Hero Section
+            updateElement('hero-badge', content.heroBadge);
+            updateElement('hero-headline', content.heroHeadline, true);
+            updateElement('hero-subheadline', content.heroSubheadline);
+
+            // Update "Who It's For" Section
+            updateElement('who-headline', content.whoHeadline);
+            updateElement('who-subheadline', content.whoSubheadline);
+            updateElement('who-card1-headline', content.whoCard1Headline);
+            updateElement('who-card1-text', content.whoCard1Text);
+            updateElement('who-card2-headline', content.whoCard2Headline);
+            updateElement('who-card2-text', content.whoCard2Text);
+            updateElement('who-card3-headline', content.whoCard3Headline);
+            updateElement('who-card3-text', content.whoCard3Text);
+
+            // Update "The Why" Section
+            updateElement('why-headline', content.whyHeadline);
+            updateElement('why-subheadline', content.whySubheadline);
+            updateElement('why-card1-headline', content.whyCard1Headline);
+            updateElement('why-card1-text', content.whyCard1Text);
+            updateElement('why-card2-headline', content.whyCard2Headline);
+            updateElement('why-card2-text', content.whyCard2Text);
+            updateElement('why-card3-headline', content.whyCard3Headline);
+            updateElement('why-card3-text', content.whyCard3Text);
+
+            // Update Final CTA
+            updateElement('cta-final-headline', content.ctaFinalHeadline);
+            updateElement('cta-final-subheadline', content.ctaFinalSubheadline);
+
+            // Update all CTA buttons
+            updateElement('cta-header', content.ctaHeader);
+            updateElement('cta-hero', content.ctaHero);
+            updateElement('cta-pricing', content.ctaPricing);
+            updateElement('cta-final', content.ctaFinal);
+        }
+
+        // ============================================================================
+        // REFERRAL LOGIC
+        // ============================================================================
+
+        function getReferralInfo() {
+            if (window.location.protocol === 'file:') return null;
+            const urlParams = new URLSearchParams(window.location.search);
+            const newProspectCode = urlParams.get('new');
+            const partnerCode = urlParams.get('ref');
+
+            if (newProspectCode && isValidReferralCode(newProspectCode)) {
+                return { code: newProspectCode, type: 'new' };
+            }
+            if (partnerCode && isValidReferralCode(partnerCode)) {
+                return { code: partnerCode, type: 'partner' };
+            }
+            return null;
+        }
+
+        function isValidReferralCode(code) {
+            return code && code.trim().length >= 3 && code.length <= 50 && !/[:/\\]/.test(code) && !/^(file|C:)/.test(code);
+        }
+
+        function createInviteSection(firstName, lastName, referralType, bizOppName) {
+            const inviteSection = document.createElement('div');
+            inviteSection.className = 'personal-invitation-card';
+            let message;
+
+            if (referralType === 'new') {
+                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> is inviting you to get a head start on your <strong>${bizOppName}</strong> journey. They're using this app to pre-build their team and create powerful momentum before day one, and they thought you'd want to as well.`;
+            } else {
+                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> invites you to accelerate your team's growth in <strong>${bizOppName}</strong>. They use the Team Build Pro app to manage their network and build momentum, and they highly recommend it.`;
+            }
+
+            inviteSection.innerHTML = `
+                <div class="personal-invitation-header">
+                    <div class="personal-invitation-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                    </div>
+                    <div class="personal-invitation-title">A Personal Invitation</div>
+                </div>
+                <p class="personal-invitation-body">${message}</p>`;
+            const heroContent = document.querySelector('.hero-content');
+            const heroBadge = heroContent.querySelector('#hero-badge');
+            heroContent.insertBefore(inviteSection, heroBadge);
+        }
+
+        async function fetchUserAndDisplayInvite(referralInfo) {
+            try {
+                const url = `https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=${referralInfo.code}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    console.error('Sponsor not found or server error:', response.status);
+                    return;
+                }
+
+                const userData = await response.json();
+
+                if (userData.firstName && userData.lastName) {
+                    const bizOppName = userData.bizOppName || 'their opportunity';
+                    createInviteSection(userData.firstName, userData.lastName, referralInfo.type, bizOppName);
+                }
+
+            } catch (error) {
+                console.error('Error fetching user data by referral code:', error);
+            }
+        }
+
+        // ============================================================================
+        // INITIALIZATION & UTILITIES
+        // ============================================================================
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        const modal = document.getElementById('comingSoonModal');
+        function openModal() { if (modal) modal.style.display = 'flex'; }
+        function closeModal() { if (modal) modal.style.display = 'none'; }
+        window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeModal(); });
+
+        function updateCTAsForMobile() {
+            const ctaIds = ['cta-header', 'cta-hero', 'cta-pricing', 'cta-final'];
+            if (isMobileDevice()) {
+                ctaIds.forEach(id => {
+                    const button = document.getElementById(id);
+                    if (button) {
+                        button.textContent = 'Download on the App Store';
+                        button.href = 'javascript:void(0);';
+                        button.target = '_self';
+                        button.onclick = openModal;
+                    }
+                });
+                const secondaryHeroButton = document.querySelector('.hero-buttons .secondary-button');
+                if (secondaryHeroButton) {
+                    secondaryHeroButton.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializePage() {
+            const referralInfo = getReferralInfo();
+            const referralType = referralInfo ? referralInfo.type : 'partner';
+
+            updatePageContent(referralType);
+
+            if (referralInfo) {
+                console.log('Processing referral:', referralInfo);
+                await fetchUserAndDisplayInvite(referralInfo);
+            } else {
+                console.log('No referral code found. Displaying default partner content.');
+            }
+
+            updateCTAsForMobile();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYearEl = document.getElementById('currentYear');
+            if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+        document.addEventListener('DOMContentLoaded', initializePage);
 
         // FAQ Toggle Function
         function toggleFAQ(index) {
@@ -530,177 +639,6 @@
             content.classList.toggle('open');
             icon.classList.toggle('rotated');
         }
-
-        // --- MODIFIED: Function to parse referral code AND type from URL ---
-        function getReferralInfo() {
-            if (window.location.protocol === 'file:') return null;
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const newProspectCode = urlParams.get('new');
-            const partnerCode = urlParams.get('ref');
-
-            if (newProspectCode && isValidReferralCode(newProspectCode)) {
-                return { code: newProspectCode, type: 'new' };
-            }
-
-            if (partnerCode && isValidReferralCode(partnerCode)) {
-                return { code: partnerCode, type: 'partner' };
-            }
-
-            // Fallback for path-based referral code (optional, can be removed if not needed)
-            const path = window.location.pathname;
-            const referralCode = path.substring(1);
-            const excludedPaths = ['privacy_policy.html', 'terms_of_service.html', 'contact_us.html', 'index.html', 'index2.html', '', 'favicon.ico'];
-            if (!excludedPaths.includes(referralCode) && !referralCode.includes('.') && isValidReferralCode(referralCode)) {
-                // Default to 'partner' type for path-based links
-                return { code: referralCode, type: 'partner' };
-            }
-
-            return null;
-        }
-
-        // Function to validate referral codes
-        function isValidReferralCode(code) {
-            return code && code.trim().length >= 3 && code.length <= 50 && !/[:/\\]/.test(code) && !/^(file|C:)/.test(code);
-        }
-
-        // --- MODIFIED: Function to accept referral type ---
-        function createInviteSection(firstName, lastName, referralType) {
-            const inviteSection = document.createElement('div');
-            inviteSection.className = 'personal-invitation-card';
-
-            let message;
-            if (referralType === 'new') {
-                // Message for New Prospects
-                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> is inviting you to get a head start on your <strong>${bizOppName}</strong> journey. They're using this app to pre-build their team and create powerful momentum before day one, and they thought you'd want to as well.`;
-            } else {
-                // Default/Partner Message
-                message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> invites you to accelerate your team's growth in <strong>${bizOppName}</strong>. They use this the Team Build Pro app to manage their network and build momentum, and they highly recommend it.`;
-            }
-
-            inviteSection.innerHTML = `
-                <div class="personal-invitation-header">
-                    <div class="personal-invitation-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
-                    </div>
-                    <div class="personal-invitation-title">A Personal Invitation</div>
-                </div>
-                <p class="personal-invitation-body">${message}</p>`;
-            const heroContent = document.querySelector('.hero-content');
-            const platformBadge = heroContent.querySelector('.platform-badge');
-            heroContent.insertBefore(inviteSection, platformBadge);
-        }
-
-        // Function to fetch the business opportunity name
-        async function fetchBizOppName(adminId) {
-            if (!adminId) {
-                console.log('No admin ID provided, using default biz opp name.');
-                return;
-            }
-            try {
-                const doc = await db.collection('admin_settings').doc(adminId).get();
-                if (doc.exists) {
-                    const adminData = doc.data();
-                    if (adminData.biz_opp && adminData.biz_opp.trim() !== '') {
-                        bizOppName = adminData.biz_opp;
-                        console.log('Successfully fetched biz_opp:', bizOppName);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching biz_opp name:', error);
-            }
-        }
-
-        // --- MODIFIED: Function to accept referral info object ---
-        async function fetchUserAndDisplayInvite(referralInfo) {
-            try {
-                const querySnapshot = await db.collection('users').where('referralCode', '==', referralInfo.code).limit(1).get();
-                if (!querySnapshot.empty) {
-                    const userDoc = querySnapshot.docs[0];
-                    const userData = userDoc.data();
-
-                    let adminId = (userData.role === 'admin') ? userDoc.id : userData.uplineAdmin;
-                    await fetchBizOppName(adminId);
-
-                    if (userData.firstName && userData.lastName) {
-                        // Pass the referral type to the createInviteSection function
-                        createInviteSection(userData.firstName, userData.lastName, referralInfo.type);
-                    }
-                } else {
-                    console.log('No user found with referral code:', referralInfo.code);
-                }
-            } catch (error) {
-                console.error('Error fetching user data by referral code:', error);
-            }
-        }
-
-        // Function to detect if running on mobile device
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        // Modal Functions
-        const modal = document.getElementById('comingSoonModal');
-        function openModal() { if (modal) modal.style.display = 'flex'; }
-        function closeModal() { if (modal) modal.style.display = 'none'; }
-        window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeModal(); });
-
-        // Function to update main CTA buttons based on device
-        function updateCTAs() {
-            const ctaIds = ['cta-header', 'cta-hero', 'cta-pricing', 'cta-final'];
-            const isMobile = isMobileDevice();
-            ctaIds.forEach(id => {
-                const button = document.getElementById(id);
-                if (button) {
-                    if (isMobile) {
-                        button.textContent = 'Download on the App Store';
-                        button.href = 'javascript:void(0);';
-                        button.target = '_self';
-                        button.onclick = openModal;
-                    } else {
-                        button.href = '#features';
-                        button.textContent = 'Learn More';
-                        button.target = '_self';
-                        button.onclick = null;
-                    }
-                }
-            });
-            const secondaryHeroButton = document.querySelector('.hero-buttons .secondary-button');
-            if (secondaryHeroButton) {
-                secondaryHeroButton.style.display = 'none';
-            }
-        }
-
-        // --- MODIFIED: Main initialization function ---
-        // This is the corrected code
-        async function initializePage() {
-            const referralInfo = getReferralInfo();
-            if (referralInfo) {
-                console.log('Processing referral:', referralInfo);
-                // 'await' is now correctly placed here
-                await fetchUserAndDisplayInvite(referralInfo);
-            } else {
-                console.log('No referral code found in URL');
-            }
-            updateCTAs();
-        }
-
-        // Set current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        // Intersection Observer for scroll animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-
-        // Initialize systems when page loads
-        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 
