@@ -122,7 +122,7 @@ class _ShareScreenState extends State<ShareScreen>
       final message =
           'Thanks for your interest in joining our $_bizOppName team! If you want to maximize your chances of immediate success, you can pre-build your $_bizOppName team *before* you even join, so you can launch with momentum. Check it out: $_prospectReferralLink';
 
-      Share.share(message, subject: 'How to pre-build your $_bizOppName team before joining');
+      Share.share(message, subject: 'A better way to start with $_bizOppName');
     }
   }
 
@@ -130,9 +130,9 @@ class _ShareScreenState extends State<ShareScreen>
   void _shareForExistingMembers() {
     if (_partnerReferralLink != null) {
       final message =
-          'Greetings! I highly recommend using this app in your $_bizOppName recruiting. It helps your recruiting prospects pre-build their own teams for a stronger start and gives you a simple system to accelerate the growth of your team. Check it out: $_partnerReferralLink';
+          'Hey team, I highly recommend this app for our $_bizOppName recruiting. It helps our prospects pre-build their own teams for a stronger start and gives us a simple system to accelerate duplication. Here\'s the link: $_partnerReferralLink';
 
-      Share.share(message, subject: 'A tool for successful $_bizOppName recruiting');
+      Share.share(message, subject: 'A tool for our $_bizOppName team');
     }
   }
 
@@ -196,14 +196,14 @@ class _ShareScreenState extends State<ShareScreen>
         children: [
           const Icon(Icons.share_rounded, size: 48, color: Colors.white),
           const SizedBox(height: 16),
-          const Text('Grow Your Team',
+          const Text('How To Grow Your Team',
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
           const SizedBox(height: 8),
           Text(
-            'Share your referral links with recruiting prospects and $_bizOppName partners to achieve exponential team growth.',
+            'Share your referral links to pre-build a new team with aspiring leaders or expand your existing team.',
             style:
                 TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
             textAlign: TextAlign.center,
@@ -217,14 +217,14 @@ class _ShareScreenState extends State<ShareScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Business Growth Strategies',
+        const Text('Proven Growth Strategies',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🌟 Recruiting Prospects',
-          subtitle: 'Invite aspiring leaders to get a head start.',
+          title: '🌟 New Recruiting Prospects',
+          subtitle: 'Invite recruiting prospects to get a head start.',
           description:
-              'Invite recruiting prospects to pre-build their team on this platform. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
+              'Invite recruiting prospects to pre-build their $_bizOppName with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
           onShare: _shareForNewProspects,
           onCopy: () => _copyLink(_prospectReferralLink),
           buttonColor: AppColors.growthPrimary,
@@ -232,10 +232,10 @@ class _ShareScreenState extends State<ShareScreen>
         ),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🚀 Current Partners',
-          subtitle: 'Great for your existing $_bizOppName network',
+          title: '🚀 Current Business Partners',
+          subtitle: 'Great for your existing $_bizOppName team',
           description:
-              'Empower your existing partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
+              'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
           onShare: _shareForExistingMembers,
           onCopy: () => _copyLink(_partnerReferralLink),
           buttonColor: AppColors.opportunityPrimary,
@@ -357,7 +357,8 @@ class _ShareScreenState extends State<ShareScreen>
           _buildTip('📱 Share consistently across all social platforms'),
           _buildTip('🤝 Follow up with prospects who show interest'),
           _buildTip('📈 Track your results and adjust your approach'),
-          _buildTip('🎯 Use both strategies for maximum growth potential'),
+          if (_currentUser?.role == 'admin')
+            _buildTip('🎯 Use both strategies for maximum growth potential'),
         ],
       ),
     );
@@ -373,8 +374,8 @@ class _ShareScreenState extends State<ShareScreen>
             margin: const EdgeInsets.only(top: 6),
             width: 6,
             height: 6,
-            /* decoration:
-                BoxDecoration(color: AppColors.primary, shape: BoxShape.circle), */
+            decoration:
+                BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
           ),
           const SizedBox(width: 12),
           Expanded(
