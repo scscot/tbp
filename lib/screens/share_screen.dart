@@ -61,7 +61,7 @@ class _ShareScreenState extends State<ShareScreen>
         if (doc.exists) {
           _currentUser = UserModel.fromMap(doc.data()!);
           await _fetchBizOppName();
-          _buildReferralLinks(); // Updated method name
+          _buildReferralLinks();
         }
       }
     } catch (e) {
@@ -69,9 +69,11 @@ class _ShareScreenState extends State<ShareScreen>
         print('Error loading current user: $e');
       }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       _animationController.forward();
     }
   }
@@ -107,7 +109,6 @@ class _ShareScreenState extends State<ShareScreen>
 
   void _buildReferralLinks() {
     if (_currentUser != null) {
-      // Create two distinct links
       _prospectReferralLink =
           'https://teambuildpro.com/?new=${_currentUser!.referralCode}';
       _partnerReferralLink =
@@ -115,22 +116,23 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
+  // === MODIFIED: Implemented your new preferred message ===
   void _shareForNewProspects() {
     if (_prospectReferralLink != null) {
-      final userName =
-          '${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}'
-              .trim();
       final message =
-          '🚀 Get a head start on building your $_bizOppName team! I\'m inviting you to use the Team Build Pro app to pre-build your network so you can launch with momentum. Join me ($userName): $_prospectReferralLink';
-      Share.share(message);
+          'Thanks for your interest in joining our $_bizOppName team! If you want to maximize your chances of immediate success, you can pre-build your $_bizOppName team *before* you even join, so you can launch with momentum. Check it out: $_prospectReferralLink';
+
+      Share.share(message, subject: 'How to pre-build your $_bizOppName team before joining');
     }
   }
 
+  // === MODIFIED: Implemented simplified message ===
   void _shareForExistingMembers() {
     if (_partnerReferralLink != null) {
       final message =
-          '🎯 Let\'s duplicate our success in $_bizOppName! I\'m using the Team Build Pro app to help our whole team grow faster. Get on the same system with me: $_partnerReferralLink';
-      Share.share(message);
+          'Greetings! I highly recommend using this app in your $_bizOppName recruiting. It helps your recruiting prospects pre-build their own teams for a stronger start and gives you a simple system to accelerate the growth of your team. Check it out: $_partnerReferralLink';
+
+      Share.share(message, subject: 'A tool for successful $_bizOppName recruiting');
     }
   }
 
@@ -194,14 +196,14 @@ class _ShareScreenState extends State<ShareScreen>
         children: [
           const Icon(Icons.share_rounded, size: 48, color: Colors.white),
           const SizedBox(height: 16),
-          const Text('How To Grow Your Team',
+          const Text('Grow Your Team',
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
           const SizedBox(height: 8),
           Text(
-            'Share your referral links to pre-build a new team with aspiring leaders or expand your existing network.',
+            'Share your referral links with recruiting prospects and $_bizOppName partners to achieve exponential team growth.',
             style:
                 TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
             textAlign: TextAlign.center,
@@ -219,10 +221,10 @@ class _ShareScreenState extends State<ShareScreen>
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🌟 New Business Prospects',
+          title: '🌟 Recruiting Prospects',
           subtitle: 'Invite aspiring leaders to get a head start.',
           description:
-              'Invite professionals to pre-build their team on this platform. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
+              'Invite recruiting prospects to pre-build their team on this platform. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
           onShare: _shareForNewProspects,
           onCopy: () => _copyLink(_prospectReferralLink),
           buttonColor: AppColors.growthPrimary,
@@ -230,7 +232,7 @@ class _ShareScreenState extends State<ShareScreen>
         ),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🚀 Current Business Partners',
+          title: '🚀 Current Partners',
           subtitle: 'Great for your existing $_bizOppName network',
           description:
               'Empower your existing partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
@@ -355,8 +357,7 @@ class _ShareScreenState extends State<ShareScreen>
           _buildTip('📱 Share consistently across all social platforms'),
           _buildTip('🤝 Follow up with prospects who show interest'),
           _buildTip('📈 Track your results and adjust your approach'),
-          if (_currentUser?.role == 'admin')
-            _buildTip('🎯 Use both strategies for maximum growth potential'),
+          _buildTip('🎯 Use both strategies for maximum growth potential'),
         ],
       ),
     );
@@ -372,8 +373,8 @@ class _ShareScreenState extends State<ShareScreen>
             margin: const EdgeInsets.only(top: 6),
             width: 6,
             height: 6,
-            decoration:
-                BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+            /* decoration:
+                BoxDecoration(color: AppColors.primary, shape: BoxShape.circle), */
           ),
           const SizedBox(width: 12),
           Expanded(
