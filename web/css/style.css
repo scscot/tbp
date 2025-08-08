@@ -94,11 +94,8 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
-}
-
-.nav.container {
-    padding: 0 1rem;
+    /* This applies 1rem of padding to top/bottom and sides */
+    padding: 1rem;
 }
 
 .logo {
