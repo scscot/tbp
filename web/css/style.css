@@ -583,16 +583,19 @@ p {
 .personal-invitation-icon {
     width: 3rem;
     height: 3rem;
-    background: #3b82f6;
     border-radius: 50%;
+    overflow: hidden;
+    background: #3b82f6;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.personal-invitation-icon .material-symbols-outlined {
-    color: #ffffff;
-    font-size: 1.5rem;
+.referrer-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .personal-invitation-title {
