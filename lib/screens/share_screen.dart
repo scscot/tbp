@@ -196,7 +196,7 @@ class _ShareScreenState extends State<ShareScreen>
         children: [
           const Icon(Icons.share_rounded, size: 48, color: Colors.white),
           const SizedBox(height: 16),
-          const Text('How To Grow Your Team',
+          const Text('Grow Your Team',
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -224,7 +224,7 @@ class _ShareScreenState extends State<ShareScreen>
           title: '🌟 New Recruiting Prospects',
           subtitle: 'Invite recruiting prospects to get a head start.',
           description:
-              'Invite recruiting prospects to pre-build their $_bizOppName with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
+              'Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
           onShare: _shareForNewProspects,
           onCopy: () => _copyLink(_prospectReferralLink),
           buttonColor: AppColors.growthPrimary,
