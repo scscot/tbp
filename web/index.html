@@ -41,31 +41,32 @@
                 <a href="#features" role="menuitem">Features</a>
                 <a href="#pricing" role="menuitem">Pricing</a>
                 <a href="#faq" role="menuitem">FAQ</a>
-                <a href="#" id="cta-header" class="cta-button" role="menuitem">Get Started Free</a>
             </div>
         </nav>
     </header>
 
     <main>
         <!-- Hero Section -->
-        <section class="hero gradient-bg">
-            <div class="container">
-                <div class="hero-content">
-                    <span id="hero-badge" class="platform-badge">Your Blueprint for Team Growth</span>
-                    <h1 id="hero-headline">
-                        Build Your Foundation <br />
-                        <span class="accent">Accelerate Your Momentum</span>
-                    </h1>
-                    <p id="hero-subheadline">
-                        The ultimate app for direct sales professionals to build, manage, and scale your team with
-                        unstoppable momentum.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#" id="cta-hero" class="primary-button cta-button">Start Your 30-Day Free Trial</a>
-                    </div>
-                </div>
+<section class="hero gradient-bg">
+    <div class="container">
+        <div class="hero-content">
+            <div id="personal-invite-container"></div>
+
+            <span id="hero-badge" class="platform-badge">Your Blueprint for Team Growth</span>
+            <h1 id="hero-headline">
+                Build Your Foundation <br />
+                <span class="accent">Accelerate Your Momentum</span>
+            </h1>
+            <p id="hero-subheadline">
+                The ultimate app for direct sales professionals to build, manage, and scale your team with
+                unstoppable momentum.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" id="cta-hero" class="primary-button cta-button">Start Your 30-Day Free Trial</a>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
         <!-- "Who It's For" Section -->
         <section id="who-its-for" class="section section-gray">
@@ -168,34 +169,40 @@
             <div class="container">
                 <div class="section-header">
                     <h2>Simple 3-Step Process</h2>
-                    <p>Our proven 3-step process helps you build momentum from the very beginning.</p>
+                    <p>Our proven process helps you build momentum from the very beginning.</p>
                 </div>
-                <div class="steps">
-                    <div class="step reveal-on-scroll">
-                        <div class="step-number">
-                            <div class="step-number-inner">1</div>
+                <div class="grid grid-3">
+                    <div class="feature-card reveal-on-scroll">
+                        <div class="feature-card-header">
+                            <div class="feature-icon blue">
+                                <span class="material-symbols-outlined">filter_1</span>
+                            </div>
+                            <h3>Invite & Connect</h3>
                         </div>
-                        <h3>Invite & Connect</h3>
                         <p>
                             Connect with like-minded professionals who are open to exploring your opportunity and invite
                             them to your pre-build network.
                         </p>
                     </div>
-                    <div class="step reveal-on-scroll">
-                        <div class="step-number">
-                            <div class="step-number-inner">2</div>
+                    <div class="feature-card reveal-on-scroll">
+                        <div class="feature-card-header">
+                            <div class="feature-icon blue">
+                                <span class="material-symbols-outlined">filter_2</span>
+                            </div>
+                            <h3>Cultivate Momentum</h3>
                         </div>
-                        <h3>Cultivate Momentum</h3>
                         <p>
                             Foster authentic relationships as your network grows, creating a thriving community of
                             professionals who support each other's success.
                         </p>
                     </div>
-                    <div class="step reveal-on-scroll">
-                        <div class="step-number">
-                            <div class="step-number-inner">3</div>
+                    <div class="feature-card reveal-on-scroll">
+                        <div class="feature-card-header">
+                            <div class="feature-icon blue">
+                                <span class="material-symbols-outlined">filter_3</span>
+                            </div>
+                            <h3>Launch with Success</h3>
                         </div>
-                        <h3>Launch with Success</h3>
                         <p>
                             Team members who achieve key growth goals earn an automatic invitation to join your official
                             opportunity and turn their potential into performance.
@@ -555,30 +562,48 @@
         }
 
         function createInviteSection(firstName, lastName, referralType, bizOppName, photoUrl) {
-                const inviteSection = document.createElement("div");
-                inviteSection.className = "personal-invitation-card";
-                let message;
+                const inviteContainer = document.getElementById('personal-invite-container');
+                const heroHeadline = document.getElementById('hero-headline');
+                const heroSubheadline = document.getElementById('hero-subheadline');
+                const ctaHero = document.getElementById('cta-hero');
 
-                if (referralType === "new") {
-                    message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> is inviting you to get a head start on your <strong>${bizOppName}</strong> journey. Use the Team Build Pro app to pre-build your team and create powerful momentum <strong>before</strong> you join <strong>${bizOppName}</strong>!`;
-                } else {
-                    message = `<span style="font-weight: 800; color: #a5b4fc;">${firstName} ${lastName}</span> invites you to accelerate your team's growth in <strong>${bizOppName}</strong>. They use the Team Build Pro app to manage their network and build momentum, and they highly recommend it.`;
+                if (typeof kDebugMode !== 'undefined' && kDebugMode) {
+                    if (!inviteContainer || !heroHeadline || !heroSubheadline || !ctaHero) {
+                        console.error("Hero elements not found for personalization.");
+                    }
                 }
 
-                inviteSection.innerHTML = `
-        <div class="personal-invitation-header">
-            <div class="personal-invitation-icon">
-                <img src="${photoUrl || 'assets/images/default_avatar.png'}" 
-                     alt="${firstName} ${lastName}" 
-                     class="referrer-avatar"
-                     onerror="this.src='assets/images/default_avatar.png'">
-            </div>
-            <div class="personal-invitation-title">A Personal Invitation</div>
+                const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
+                const referrerFullName = `${firstName} ${lastName}`;
+                const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
+
+                // 1. Create the integrated invitation bar (this part is the same)
+                inviteContainer.innerHTML = `
+        <div class="invite-bar">
+            <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
+            <span class="invite-text">You've been personally invited by <strong>${referrerFullName}</strong></span>
         </div>
-        <p class="personal-invitation-body">${message}</p>`;
-                const heroContent = document.querySelector(".hero-content");
-                const heroBadge = heroContent.querySelector("#hero-badge");
-                heroContent.insertBefore(inviteSection, heroBadge);
+    `;
+
+                // 2. Personalize the hero content based on the referral type
+                if (referralType === "new") {
+                    // Journey for a new prospect invited to pre-build a team
+                    heroHeadline.innerHTML = `Build Your Foundation <br> <span class="accent">Before Day One</span>`;
+                    heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use Team Build Pro to build a powerful team for the ${opportunityName} journey before you even join.`;
+                    ctaHero.textContent = `Accept & Start Building Free`;
+
+                } else { // "partner"
+                    // Journey for an existing leader referred by a colleague
+                    heroHeadline.innerHTML = `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`;
+                    heroSubheadline.innerHTML = `Your colleague, ${referrerFullName}, uses Team Build Pro to manage team growth and recommends it to help you achieve the same success.`;
+                    ctaHero.textContent = `Start Your 30-Day Free Trial`;
+                }
+
+                // Hide the generic badge now that a personal invitation is shown
+                const heroBadge = document.getElementById('hero-badge');
+                if (heroBadge) {
+                    heroBadge.style.display = 'none';
+                }
             }
 
             // Update fetchUserAndDisplayInvite to include photoUrl
