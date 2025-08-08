@@ -47,26 +47,26 @@
 
     <main>
         <!-- Hero Section -->
-<section class="hero gradient-bg">
-    <div class="container">
-        <div class="hero-content">
-            <div id="personal-invite-container"></div>
+        <section class="hero gradient-bg">
+            <div class="container">
+                <div class="hero-content">
+                    <div id="personal-invite-container"></div>
 
-            <span id="hero-badge" class="platform-badge">Your Blueprint for Team Growth</span>
-            <h1 id="hero-headline">
-                Build Your Foundation <br />
-                <span class="accent">Accelerate Your Momentum</span>
-            </h1>
-            <p id="hero-subheadline">
-                The ultimate app for direct sales professionals to build, manage, and scale your team with
-                unstoppable momentum.
-            </p>
-            <div class="hero-buttons">
-                <a href="#" id="cta-hero" class="primary-button cta-button">Start Your 30-Day Free Trial</a>
+                    <span id="hero-badge" class="platform-badge">Your Blueprint for Team Growth</span>
+                    <h1 id="hero-headline">
+                        Build Your Foundation <br />
+                        <span class="accent">Accelerate Your Momentum</span>
+                    </h1>
+                    <p id="hero-subheadline">
+                        The ultimate app for direct sales professionals to build, manage, and scale your team with
+                        unstoppable momentum.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#" id="cta-hero" class="primary-button cta-button">Start Your 30-Day Free Trial</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <!-- "Who It's For" Section -->
         <section id="who-its-for" class="section section-gray">
@@ -175,7 +175,7 @@
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-card-header">
                             <div class="feature-icon blue">
-                                <span class="material-symbols-outlined">filter_1</span>
+                                <span class="material-symbols-outlined">timer_1</span>
                             </div>
                             <h3>Invite & Connect</h3>
                         </div>
@@ -186,8 +186,8 @@
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-card-header">
-                            <div class="feature-icon blue">
-                                <span class="material-symbols-outlined">filter_2</span>
+                            <div class="feature-icon green">
+                                <span class="material-symbols-outlined">timer_2</span>
                             </div>
                             <h3>Cultivate Momentum</h3>
                         </div>
@@ -198,8 +198,8 @@
                     </div>
                     <div class="feature-card reveal-on-scroll">
                         <div class="feature-card-header">
-                            <div class="feature-icon blue">
-                                <span class="material-symbols-outlined">filter_3</span>
+                            <div class="feature-icon purple">
+                                <span class="material-symbols-outlined">timer_3</span>
                             </div>
                             <h3>Launch with Success</h3>
                         </div>
@@ -562,82 +562,82 @@
         }
 
         function createInviteSection(firstName, lastName, referralType, bizOppName, photoUrl) {
-                const inviteContainer = document.getElementById('personal-invite-container');
-                const heroHeadline = document.getElementById('hero-headline');
-                const heroSubheadline = document.getElementById('hero-subheadline');
-                const ctaHero = document.getElementById('cta-hero');
+            const inviteContainer = document.getElementById('personal-invite-container');
+            const heroHeadline = document.getElementById('hero-headline');
+            const heroSubheadline = document.getElementById('hero-subheadline');
+            const ctaHero = document.getElementById('cta-hero');
 
-                if (typeof kDebugMode !== 'undefined' && kDebugMode) {
-                    if (!inviteContainer || !heroHeadline || !heroSubheadline || !ctaHero) {
-                        console.error("Hero elements not found for personalization.");
-                    }
+            if (typeof kDebugMode !== 'undefined' && kDebugMode) {
+                if (!inviteContainer || !heroHeadline || !heroSubheadline || !ctaHero) {
+                    console.error("Hero elements not found for personalization.");
                 }
+            }
 
-                const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
-                const referrerFullName = `${firstName} ${lastName}`;
-                const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
+            const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
+            const referrerFullName = `${firstName} ${lastName}`;
+            const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
 
-                // 1. Create the integrated invitation bar (this part is the same)
-                inviteContainer.innerHTML = `
+            // 1. Create the integrated invitation bar (this part is the same)
+            inviteContainer.innerHTML = `
         <div class="invite-bar">
             <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
             <span class="invite-text">You've been personally invited by <strong>${referrerFullName}</strong></span>
         </div>
     `;
 
-                // 2. Personalize the hero content based on the referral type
-                if (referralType === "new") {
-                    // Journey for a new prospect invited to pre-build a team
-                    heroHeadline.innerHTML = `Build Your Foundation <br> <span class="accent">Before Day One</span>`;
-                    heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use Team Build Pro to build a powerful team for the ${opportunityName} journey before you even join.`;
-                    ctaHero.textContent = `Accept & Start Building Free`;
+            // 2. Personalize the hero content based on the referral type
+            if (referralType === "new") {
+                // Journey for a new prospect invited to pre-build a team
+                heroHeadline.innerHTML = `Build Your Foundation <br> <span class="accent">Before Day One</span>`;
+                heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use Team Build Pro to build a powerful team for the ${opportunityName} journey before you even join.`;
+                ctaHero.textContent = `Accept & Start Building Free`;
 
-                } else { // "partner"
-                    // Journey for an existing leader referred by a colleague
-                    heroHeadline.innerHTML = `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`;
-                    heroSubheadline.innerHTML = `Your colleague, ${referrerFullName}, uses Team Build Pro to manage team growth and recommends it to help you achieve the same success.`;
-                    ctaHero.textContent = `Start Your 30-Day Free Trial`;
-                }
-
-                // Hide the generic badge now that a personal invitation is shown
-                const heroBadge = document.getElementById('hero-badge');
-                if (heroBadge) {
-                    heroBadge.style.display = 'none';
-                }
+            } else { // "partner"
+                // Journey for an existing leader referred by a colleague
+                heroHeadline.innerHTML = `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`;
+                heroSubheadline.innerHTML = `Your colleague, ${referrerFullName}, uses Team Build Pro to manage team growth and recommends it to help you achieve the same success.`;
+                ctaHero.textContent = `Start Your 30-Day Free Trial`;
             }
 
-            // Update fetchUserAndDisplayInvite to include photoUrl
-            async function fetchUserAndDisplayInvite(referralInfo) {
-                try {
-                    const url = `https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=${referralInfo.code}`;
-                    const response = await fetch(url);
-
-                    if (!response.ok) {
-                        console.error("Sponsor not found or server error:", response.status);
-                        return;
-                    }
-
-                    const userData = await response.json();
-                    console.log("User data received:", userData);
-                    // Adjusted to check for photoUrl in different possible fields
-                    const photoUrl = userData.photoUrl || userData.photoURL || userData.profilePhotoUrl || null;
-                    console.log("Photo URL from database (adjusted):", photoUrl);
-
-                    if (userData.firstName && userData.lastName) {
-                        const bizOppName = userData.bizOppName || "their opportunity";
-                        const validPhotoUrl = photoUrl && photoUrl.trim() !== '' ? photoUrl : null;
-                        createInviteSection(
-                            userData.firstName,
-                            userData.lastName,
-                            referralInfo.type,
-                            bizOppName,
-                            validPhotoUrl
-                        );
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data by referral code:", error);
-                }
+            // Hide the generic badge now that a personal invitation is shown
+            const heroBadge = document.getElementById('hero-badge');
+            if (heroBadge) {
+                heroBadge.style.display = 'none';
             }
+        }
+
+        // Update fetchUserAndDisplayInvite to include photoUrl
+        async function fetchUserAndDisplayInvite(referralInfo) {
+            try {
+                const url = `https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=${referralInfo.code}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    console.error("Sponsor not found or server error:", response.status);
+                    return;
+                }
+
+                const userData = await response.json();
+                console.log("User data received:", userData);
+                // Adjusted to check for photoUrl in different possible fields
+                const photoUrl = userData.photoUrl || userData.photoURL || userData.profilePhotoUrl || null;
+                console.log("Photo URL from database (adjusted):", photoUrl);
+
+                if (userData.firstName && userData.lastName) {
+                    const bizOppName = userData.bizOppName || "their opportunity";
+                    const validPhotoUrl = photoUrl && photoUrl.trim() !== '' ? photoUrl : null;
+                    createInviteSection(
+                        userData.firstName,
+                        userData.lastName,
+                        referralInfo.type,
+                        bizOppName,
+                        validPhotoUrl
+                    );
+                }
+            } catch (error) {
+                console.error("Error fetching user data by referral code:", error);
+            }
+        }
 
 
         async function fetchUserAndDisplayInvite(referralInfo) {
@@ -656,8 +656,8 @@
 
                 if (userData.firstName && userData.lastName) {
                     const bizOppName = userData.bizOppName || "their opportunity";
-                    const photoUrl = userData.photoUrl && userData.photoUrl.trim() !== '' 
-                        ? userData.photoUrl 
+                    const photoUrl = userData.photoUrl && userData.photoUrl.trim() !== ''
+                        ? userData.photoUrl
                         : null;
                     createInviteSection(
                         userData.firstName,
