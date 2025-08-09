@@ -472,31 +472,6 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.withOpacity(AppColors.textInverse, 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.rocket_launch,
-                    color: AppColors.textInverse, size: 24),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Ready to grow your team!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.withOpacity(AppColors.textInverse, 0.95),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -757,11 +732,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'How It Works',
           color: AppColors.teamAccent,
           onTap: () => _navigateTo(HowItWorksScreen(appId: widget.appId)),
-        ),
+        ), 
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.rocket_launch,
-            title: 'Your Opportunity Details',
+            title: 'Company Details',
             color: AppColors.opportunityPrimary,
             onTap: () => _navigateTo(CompanyScreen(appId: widget.appId)),
           ),
@@ -769,7 +744,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           _buildActionCard(
             icon: Icons.rocket_launch,
             title: user.bizOppRefUrl != null
-                ? 'Your Opportunity Details'
+                ? 'Company Details'
                 : 'Get Started Today',
             color: AppColors.opportunityPrimary,
             onTap: () {
@@ -791,7 +766,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             color: AppColors.opportunityPrimary,
             onTap: () => _navigateTo(EligibilityScreen(appId: widget.appId)),
           ),
-        ],
+        ], 
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow Your Team',

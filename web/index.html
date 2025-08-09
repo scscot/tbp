@@ -38,9 +38,10 @@
             </button>
             <!-- Dropdown Menu -->
             <div id="mobile-menu" class="mobile-menu" role="menu">
-                <a href="#features" role="menuitem">Features</a>
+                <a href="#screenshots" role="menuitem">Screenshots</a>
                 <a href="#pricing" role="menuitem">Pricing</a>
                 <a href="#faq" role="menuitem">FAQ</a>
+                <a href="/contact_us.html" role="menuitem">Contact Us</a>
             </div>
         </nav>
     </header>
@@ -67,6 +68,9 @@
                 </div>
             </div>
         </section>
+
+
+
 
         <!-- "Who It's For" Section -->
         <section id="who-its-for" class="section section-gray">
@@ -117,8 +121,9 @@
             </div>
         </section>
 
+        
         <!-- "The Why" Section -->
-        <section id="the-why" class="section section-white">
+        <section id="the-why" class="section section-gray">
             <div class="container">
                 <div class="section-header">
                     <h2 id="why-headline">Turn a Cold Start into a Running Start</h2>
@@ -163,6 +168,58 @@
                 </div>
             </div>
         </section>
+
+        <!-- App Screenshots -->
+        <section id="screenshots" class="section section-white">
+            <div class="container">
+                <div class="section-header">
+                    <h2>A Glimpse Inside</h2>
+                    <p>Explore the tools that empower your teams growth.</p>
+                </div>
+        
+                <div class="shots-grid" aria-label="App screenshots">
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/dashboard1.png" alt="Dashboard with welcome card and team growth"
+                                loading="lazy">
+                        </div>
+                    </figure>
+        
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/dashboard2.png" alt="Main actions and quick access cards"
+                                loading="lazy">
+                        </div>
+                    </figure>
+        
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/team-report1.png" alt="Team reports overview" loading="lazy">
+                        </div>
+                    </figure>
+        
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/team-report2.png" alt="Detailed team report" loading="lazy">
+                        </div>
+                    </figure>
+        
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/team-member.png" alt="Team member profile and messaging"
+                                loading="lazy">
+                        </div>
+                    </figure>
+        
+                    <figure class="shot">
+                        <div class="phone">
+                            <img src="assets/images/screens/sharing.png" alt="Growth strategies and share links" loading="lazy">
+                        </div>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
 
         <!-- "How It Works" Section -->
         <section id="how-it-works" class="section section-gray">
@@ -282,7 +339,7 @@
         </section>
 
         <!-- FAQ Section -->
-        <section id="faq" class="section">
+        <section id="faq" class="section section-white">
             <div class="container">
                 <div class="section-header">
                     <h2>Frequently Asked Questions</h2>
@@ -358,14 +415,15 @@
                 <img src="assets/icons/app_icon.png" alt="Team Build Pro Logo" />
                 <span>Team Build Pro</span>
             </div>
-            <div class="footer-links">
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#faq">FAQ</a>
-                <a href="contact_us.html">Contact</a>
-                <a href="privacy_policy.html">Privacy Policy</a>
-                <a href="terms_of_service.html">Terms of Service</a>
-            </div>
+<div class="footer-links">
+    <a href="/#pricing">Pricing</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/contact_us.html">Contact</a>
+    <a href="/privacy_policy.html">Privacy Policy</a>
+    <a href="/terms_of_service.html">Terms of Service</a>
+</div>
+
+
             <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
         </div>
     </footer>
@@ -781,7 +839,26 @@
                 }
             }
         });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = menuBtn.querySelector('.material-symbols-outlined');
+
+            // Add click listeners to all menu links to close menu on selection
+            const menuLinks = mobileMenu.querySelectorAll('a[role="menuitem"]');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mobileMenu.classList.contains('open')) {
+                        mobileMenu.classList.remove('open');
+                        menuBtn.setAttribute('aria-expanded', 'false');
+                        menuIcon.textContent = 'menu';
+                    }
+                });
+            });
+        });
+    
+    
     </script>
 </body>
-
 </html>
