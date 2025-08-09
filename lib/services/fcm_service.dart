@@ -77,17 +77,62 @@ class FCMService {
       });
 
       // Handle foreground messages (when app is open)
+  void _showForegroundNotificationWithContent(String? title, String? body) {
+    // Only show if we have valid notification data and can access the navigator
+    if (title != null && navigatorKey.currentState != null) {
+      final context = navigatorKey.currentState!.context;
+
+      // Show a SnackBar with the notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              if (body != null && body.isNotEmpty)
+                Text(
+                  body.replaceAll('\nREPLY', ''),
+                  style: const TextStyle(color: Colors.white),
+                ),
+            ],
+          ),
+          backgroundColor: Colors.blue[700],
+          duration: const Duration(seconds: 4),
+          // Remove automatic navigation - let user manually go to notifications
+        ),
+      );
+
+      if (kDebugMode) {
+        debugPrint("🔔 Showed foreground notification: $title");
+      }
+    }
+  }
+
       FirebaseMessaging.onMessage.listen((message) {
+        String? title = message.notification?.title;
+        String? body = message.notification?.body;
+
+        if (title == null && body == null) {
+          title = message.data['title'] ?? 'New Notification';
+          body = message.data['body'] ?? '';
+        }
+
         if (kDebugMode) {
-          debugPrint(
-              "📱 Received foreground FCM message: ${message.messageId}");
-          debugPrint("📱 Title: ${message.notification?.title}");
-          debugPrint("📱 Body: ${message.notification?.body}");
+          debugPrint("📱 Received foreground FCM message: ${message.messageId}");
+          debugPrint("📱 Title: $title");
+          debugPrint("📱 Body: $body");
           debugPrint("📱 Data: ${message.data}");
         }
 
         // Show in-app notification when app is in foreground
-        _showForegroundNotification(message);
+        _showForegroundNotificationWithContent(title, body);
 
         // Handle the message data for navigation
         _handleMessage(notificationService, message);
