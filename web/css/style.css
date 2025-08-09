@@ -684,22 +684,66 @@ p {
 
 
 /* === Screenshot rail (Option A style) === */
-.rail{margin:1.5rem 0 0;padding:0 0 0.5rem;overflow:auto;display:flex;gap:1rem;scroll-snap-type:x mandatory}
-.shot{flex:0 0 260px;scroll-snap-align:start;background:#ffffff;border:1px solid #e2e8f0;border-radius:1.25rem;padding:0.75rem;box-shadow:0 10px 25px rgba(2,6,23,0.06)}
-.phone{border-radius:1rem;background:#0b1020;border:1px solid rgba(2,6,23,0.08);aspect-ratio:9/19.5;overflow:hidden;display:block}
-.phone img{width:100%;height:100%;object-fit:cover;display:block}
-.cap{font-size:.85rem;color:#64748b;margin:.5rem .25rem 0}
-@media (max-width:640px){.shot{flex-basis:220px}}
+.rail {
+    margin: 1.5rem 0 0;
+    padding: 0 0 0.5rem;
+    overflow: auto;
+    display: flex;
+    gap: 1rem;
+    scroll-snap-type: x mandatory
+}
+
+.shot {
+    flex: 0 0 260px;
+    scroll-snap-align: start;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 0.75rem;
+    box-shadow: 0 10px 25px rgba(2, 6, 23, 0.06)
+}
+
+.phone {
+    border-radius: 1rem;
+    background: #0b1020;
+    border: 1px solid rgba(2, 6, 23, 0.08);
+    aspect-ratio: 9/19.5;
+    overflow: hidden;
+    display: block
+}
+
+.phone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block
+}
+
+.cap {
+    font-size: .85rem;
+    color: #64748b;
+    margin: .5rem .25rem 0
+}
+
+@media (max-width:640px) {
+    .shot {
+        flex-basis: 220px
+    }
+}
 
 
 /* Screenshots grid */
 #screenshots .shots-grid {
+    /* Limit the overall width of the grid and center it */
+    max-width: 900px;
+    margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
 #screenshots .shot {
+    /* ... existing styles for padding, border, etc. ... */
     margin: 0;
     background: #fff;
     border: 1px solid #e2e8f0;
@@ -724,9 +768,17 @@ p {
 }
 
 /* Responsive columns */
+/* Adjust the breakpoints to make sense with the new max-width */
+@media (max-width: 900px) {
+    #screenshots .shots-grid {
+        /* No max-width on smaller screens to allow it to fill the container */
+        max-width: none;
+    }
+}
+
 @media (max-width: 1024px) {
     #screenshots .shots-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
