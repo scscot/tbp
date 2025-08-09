@@ -1163,32 +1163,27 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
 
     const imageUrl = notificationData?.imageUrl;
 
-    // Ensure we have valid title and message
-    const title = notificationData?.title || "New Notification";
-    const body = notificationData?.message || "You have a new message.";
-    
     // Send the push notification without badge (badge will be updated by centralized function)
     const message = {
       token: fcmToken,
       notification: {
-        title: title,
-        body: body,
+        title: notificationData?.title || "New Notification",
+        body: notificationData?.message || "You have a new message.",
+        // Removed imageUrl to prevent iOS notification failures
       },
       data: {
         notification_id: notificationId,
         type: notificationData?.type || "generic",
         route: notificationData?.route || "/",
         route_params: notificationData?.route_params || "{}",
-        imageUrl: imageUrl || "",
-        title: title,
-        body: body,
+        imageUrl: imageUrl || "", // Keep in data for app handling
       },
       apns: {
         payload: {
           aps: {
             alert: {
-              title: title,
-              body: body,
+              title: notificationData?.title || "New Notification",
+              body: notificationData?.message || "You have a new message.",
             },
             sound: "default",
             // Badge will be set by updateUserBadge function
@@ -1260,28 +1255,14 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
       return;
     }
     const senderData = senderDoc.data();
-    const senderName = `${senderData.firstName || 'Someone'} ${senderData.lastName || ''}`.trim();
+    const senderName = `${senderData.firstName || ''} ${senderData.lastName || ''}`.trim();
 
     const senderPhotoUrl = senderData.photoUrl;
-    
-    // Ensure we have proper message content
-    let messageText = "You received a new message.";
-    if (message.text && message.text.trim() !== '') {
-      messageText = message.text;
-    } else if (message.content && message.content.trim() !== '') {
-      messageText = message.content;
-    } else if (message.body && message.body.trim() !== '') {
-      messageText = message.body;
-    }
-
-    // Truncate long messages for notification
-    if (messageText.length > 100) {
-      messageText = messageText.substring(0, 97) + '...';
-    }
+    const messageText = message.text || "You received a new message.";
 
     const notificationContent = {
       title: `New Message from ${senderName}`,
-      message: messageText,
+      message: `${messageText}`,
       imageUrl: senderPhotoUrl || null,
       createdAt: FieldValue.serverTimestamp(),
       read: false,
