@@ -194,7 +194,7 @@ class _ShareScreenState extends State<ShareScreen>
       ),
       child: Column(
         children: [
-          const Icon(Icons.share_rounded, size: 48, color: Colors.white),
+          const Icon(Icons.share_rounded, size: 40, color: Colors.white),
           const SizedBox(height: 16),
           const Text('Grow Your Team',
               style: TextStyle(
@@ -221,7 +221,7 @@ class _ShareScreenState extends State<ShareScreen>
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🌟 New Recruiting Prospects',
+          title: 'New Recruiting Prospects',
           subtitle: 'Invite recruiting prospects to get a head start.',
           description:
               'Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
@@ -232,7 +232,7 @@ class _ShareScreenState extends State<ShareScreen>
         ),
         const SizedBox(height: 16),
         _buildStrategyCard(
-          title: '🚀 Current Business Partners',
+          title: 'Current Business Partners',
           subtitle: 'Great for your existing $_bizOppName team',
           description:
               'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
