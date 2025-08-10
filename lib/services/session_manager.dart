@@ -122,11 +122,12 @@ class SessionManager {
 
   /// Sanitize referral code by removing unwanted characters
   String _sanitizeReferralCode(String referralCode) {
-    return referralCode.trim().replaceAll(RegExp(r'[^\w\-]'), '');
+    return referralCode.trim().replaceAll(RegExp(r'[^\w-]'), '');
   }
 
   /// Sanitize sponsor name by removing unwanted characters
   String _sanitizeSponsorName(String sponsorName) {
+    // ignore: valid_regexps
     return sponsorName.trim().replaceAll(RegExp(r'[<>"\'']'), '');
   }
 

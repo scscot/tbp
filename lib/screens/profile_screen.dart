@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
@@ -21,48 +20,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirestoreService _firestoreService = FirestoreService();
 
-  bool _biometricEnabled = false;
-  bool _biometricsAvailable = false;
-
-  bool _checkingSuperAdminStatus = true;
+   bool _checkingSuperAdminStatus = true;
 
   String? _sponsorName;
   String? _sponsorUid;
   String? _teamLeaderName;
   String? _teamLeaderUid;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkBiometricSupport();
-    _loadBiometricSetting();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _refreshData();
-      }
-    });
-  }
-
-  Future<void> _checkBiometricSupport() async {
-    final auth = LocalAuthentication();
-    try {
-      final available =
-          await auth.canCheckBiometrics && await auth.isDeviceSupported();
-      if (mounted) setState(() => _biometricsAvailable = available);
-    } catch (e) {
-      debugPrint("Error checking biometric support: $e");
-      if (mounted) setState(() => _biometricsAvailable = false);
-    }
-  }
-
-  Future<void> _loadBiometricSetting() async {
-    // This should contain logic to load the user's preference, e.g., from SharedPreferences
-  }
-
-  Future<void> _toggleBiometric(bool value) async {
-    // This should contain logic to save the user's preference
-    setState(() => _biometricEnabled = value);
-  }
 
   void _refreshData() {
     final user = Provider.of<UserModel?>(context, listen: false);
@@ -232,15 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: const Text('Edit Profile'),
               ),
             ),
-            if (_biometricsAvailable) ...[
-              const Divider(height: 40),
-              SwitchListTile(
-                title: const Text('Enable Biometric Login'),
-                value: _biometricEnabled,
-                onChanged: _toggleBiometric,
-                secondary: const Icon(Icons.fingerprint),
-              )
-            ],
+            
           ],
         ),
       ),
