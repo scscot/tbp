@@ -120,7 +120,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                   const SizedBox(height: 20),
                   const Center(
                     child: Text(
-                      'Your Opportunity Hub',
+                      'Company Details',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -166,13 +166,28 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       color: Colors.indigo.shade50,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
-                      "Your account is linked! As your team members build momentum and qualify, they will be placed in your $bizOpp organization, ensuring seamless growth.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.indigo.shade800,
-                          height: 1.5),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Account Linked!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.indigo.shade800,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                            height:
+                                8), // Add some spacing between the two lines
+                        Text(
+                          "Great news! As your team members gain momentum and qualify, they will receive an invitation to join your $bizOpp organization.",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.indigo.shade800,
+                              height: 1.5),
+                        ),
+                      ],
                     ),
                   ),
                 ],
