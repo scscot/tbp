@@ -81,7 +81,10 @@ class _ShareScreenState extends State<ShareScreen>
   Future<void> _fetchBizOppName() async {
     try {
       if (_currentUser != null) {
-        final uplineAdmin = _currentUser!.uplineAdmin;
+        final uplineAdmin = _currentUser!.role == 'admin' 
+            ? _currentUser!.uid 
+            : _currentUser!.uplineAdmin;
+        
         if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
           final adminSettingsDoc = await FirebaseFirestore.instance
               .collection('admin_settings')

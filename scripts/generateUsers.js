@@ -6,8 +6,8 @@ const crypto = require("crypto");
 
 // ======================= IMPORTANT =======================
 // CONFIGURE YOUR EXISTING ADMIN USER'S DETAILS HERE
-const ROOT_ADMIN_UID = "KJ8uFnlhKhWgBa4NVcwT";
-const ROOT_ADMIN_REFERRAL_CODE = "88888888";
+const ROOT_ADMIN_UID = "X64tWY9OFqdg3KAu0ScKioX0X9k2";
+const ROOT_ADMIN_REFERRAL_CODE = "dave5651";
 const STATIC_PASSWORD = '11111111'; // Static password for all test users
 // =========================================================
 
@@ -340,7 +340,7 @@ function createUser(sponsor, uplineAdminId) {
   }
 
   // Generate sequential email address
-  const email = `test${userEmailCounter}@ztest.com`;
+  const email = `test${userEmailCounter}@xtest.com`;
   userEmailCounter++;
 
   return {
@@ -666,7 +666,7 @@ async function createAuthUsers(users) {
       };
 
       // Generate target number of users (adjust this number as needed)
-      const targetUserCount = 1100; // Creates 1,100 users (within 1,000-1,200 range)
+      const targetUserCount = 55; // Creates 55 users (within 50-60 range)
       const usersToCreate = buildHierarchy(rootAdmin, targetUserCount);
 
       if (isDryRun) {
