@@ -81,10 +81,10 @@ class _ShareScreenState extends State<ShareScreen>
   Future<void> _fetchBizOppName() async {
     try {
       if (_currentUser != null) {
-        final uplineAdmin = _currentUser!.role == 'admin' 
-            ? _currentUser!.uid 
+        final uplineAdmin = _currentUser!.role == 'admin'
+            ? _currentUser!.uid
             : _currentUser!.uplineAdmin;
-        
+
         if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
           final adminSettingsDoc = await FirebaseFirestore.instance
               .collection('admin_settings')
@@ -207,8 +207,8 @@ class _ShareScreenState extends State<ShareScreen>
           const SizedBox(height: 8),
           Text(
             'Share your referral links to pre-build a new team with aspiring leaders or expand your existing team.',
-            style:
-                TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
+            style: TextStyle(
+                fontSize: 16, color: Colors.white.withValues(alpha: 0.9)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -273,7 +273,7 @@ class _ShareScreenState extends State<ShareScreen>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                    color: buttonColor.withOpacity(0.1),
+                    color: buttonColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8)),
                 child: Icon(icon, color: buttonColor, size: 20),
               ),
@@ -342,7 +342,7 @@ class _ShareScreenState extends State<ShareScreen>
       decoration: BoxDecoration(
         color: AppColors.infoBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.info.withOpacity(0.2)),
+        border: Border.all(color: AppColors.info.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

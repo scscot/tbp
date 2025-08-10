@@ -74,6 +74,13 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
+    // Check if this is the demo user
+    if (widget.user.uid == 'a6f3b223-993b-4efd-9f62-df1961aa8f46') {
+      // Show popup for demo user
+      _showDemoModeDialog();
+      return;
+    }
+
     // First, validate the standard form fields.
     final isFormValid = _formKey.currentState!.validate();
 
@@ -169,6 +176,27 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         }
       }
     }
+  }
+
+  void _showDemoModeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Demo Mode'),
+          content: const Text('Profile editing disabled in demo mode.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('I Understand'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
