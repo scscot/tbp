@@ -8,17 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import 'notification_service.dart';
-import '../screens/member_detail_screen.dart';
-import '../screens/message_thread_screen.dart';
-import '../screens/add_link_screen.dart';
-import '../screens/network_screen.dart';
-import '../screens/subscription_screen.dart';
 
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // --- NEW: Private helper method to mark notification as read ---
   Future<void> _markNotificationAsRead(String? notificationId) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (notificationId == null || currentUser == null) return;
@@ -62,7 +56,6 @@ class FCMService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // Wait for APNS token to be available before getting FCM token
       await _waitForAPNSToken();
       await _saveToken();
 
@@ -83,7 +76,6 @@ class FCMService {
         _handleMessage(notificationService, message, shouldNavigate: true);
       });
 
-      // Handle foreground messages (when app is open)
       FirebaseMessaging.onMessage.listen((message) {
         if (kDebugMode) {
           debugPrint(
@@ -93,10 +85,8 @@ class FCMService {
           debugPrint("📱 Data: ${message.data}");
         }
 
-        // Show in-app notification when app is in foreground
         _showForegroundNotification(message);
 
-        // Handle the message data for navigation
         _handleMessage(notificationService, message);
       });
     }
@@ -107,7 +97,6 @@ class FCMService {
       debugPrint("--- WAITING FOR APNS TOKEN ---");
     }
 
-    // Try to get APNS token with retries
     for (int i = 0; i < 10; i++) {
       try {
         final apnsToken = await _messaging.getAPNSToken();
@@ -124,7 +113,6 @@ class FCMService {
         }
       }
 
-      // Wait before retrying
       await Future.delayed(Duration(milliseconds: 500));
     }
 
@@ -133,12 +121,9 @@ class FCMService {
     }
   }
 
-  // --- MODIFIED: This function now conditionally marks the notification as read ---
   void _handleMessage(
       NotificationService notificationService, RemoteMessage message,
       {bool isTerminated = false, bool shouldNavigate = false}) {
-    // --- MODIFIED: Only mark as read when user actually clicks system notification ---
-    // Don't mark as read for foreground SnackBar notifications
     if (isTerminated || shouldNavigate) {
       final notificationId = message.data['notification_id'] as String?;
       _markNotificationAsRead(notificationId);
@@ -152,7 +137,6 @@ class FCMService {
             "📨 FCM: Foreground notification - NOT marking as read automatically");
       }
     }
-    // --- END MODIFIED ---
 
     if (kDebugMode) {
       debugPrint(
@@ -180,14 +164,12 @@ class FCMService {
             debugPrint(
                 "📨 FCM: App was terminated - storing pending notification");
           }
-          // Store pending notification for terminated app
           notificationService.setPendingNotification(pendingNotification);
         } else if (shouldNavigate) {
           if (kDebugMode) {
             debugPrint(
                 "📨 FCM: App opened from background - scheduling navigation");
           }
-          // Navigate when app is opened from background, with a small delay to ensure navigator is ready
           Future.delayed(Duration(milliseconds: 500), () {
             navigateToRoute(pendingNotification);
           });
@@ -226,14 +208,12 @@ class FCMService {
     }
 
     try {
-      // Check APNS token availability first
       final apnsToken = await _messaging.getAPNSToken();
       if (apnsToken == null) {
         if (kDebugMode) {
           debugPrint(
               "--- SAVE TOKEN FAILED: APNS token not available, will retry later");
         }
-        // Retry after a delay
         Future.delayed(Duration(seconds: 2), () => _saveToken());
         return;
       }
@@ -269,7 +249,6 @@ class FCMService {
             "❌❌❌ SAVE TOKEN FAILED: Error during token generation or Firestore write: $error");
       }
 
-      // If it's an APNS token error, retry after a delay
       if (error.toString().contains('apns-token-not-set')) {
         if (kDebugMode) {
           debugPrint(
@@ -301,15 +280,12 @@ class FCMService {
   }
 
   void _showForegroundNotification(RemoteMessage message) {
-    // Only show if we have valid notification data and can access the navigator
     if (message.notification != null && navigatorKey.currentState != null) {
       final context = navigatorKey.currentState!.context;
 
-      // Create the notification content
       final title = message.notification!.title ?? 'New Notification';
       final body = message.notification!.body ?? '';
 
-      // Show a SnackBar with the notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Column(
@@ -332,7 +308,6 @@ class FCMService {
           ),
           backgroundColor: Colors.blue[700],
           duration: const Duration(seconds: 4),
-          // Remove automatic navigation - let user manually go to notifications
         ),
       );
 
@@ -343,6 +318,7 @@ class FCMService {
   }
 }
 
+// This function exists outside of the FCMService class
 void navigateToRoute(PendingNotification notification) {
   if (kDebugMode) {
     debugPrint(
@@ -353,75 +329,17 @@ void navigateToRoute(PendingNotification notification) {
   }
 
   if (navigatorKey.currentState != null) {
-    if (notification.route == '/member_detail') {
-      final userId = notification.arguments['userId'] as String?;
-      if (userId != null) {
-        if (kDebugMode) {
-          debugPrint(
-              "🚀 NAVIGATION: Navigating to MemberDetailScreen for userId: $userId");
-        }
-        const String appId = 'L8n1tJqHqYd3F5j6';
-        navigatorKey.currentState!.push(MaterialPageRoute(
-          builder: (_) => MemberDetailScreen(userId: userId, appId: appId),
-        ));
-      } else {
-        if (kDebugMode) {
-          debugPrint("❌ NAVIGATION: userId is null for member_detail route");
-        }
-      }
-    }
-    // ADD THIS NEW HANDLER
-    else if (notification.route == '/subscription') {
-      if (kDebugMode) {
-        debugPrint("🚀 NAVIGATION: Navigating to SubscriptionScreen");
-      }
-      navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => const SubscriptionScreen(),
-      ));
-    } else if (notification.route == '/message_thread') {
-      final threadId = notification.arguments['threadId'] as String?;
-      if (threadId != null) {
-        // Navigate to message thread - the screen will determine participants from threadId
-        const String appId = 'L8n1tJqHqYd3F5j6';
-        navigatorKey.currentState!.push(MaterialPageRoute(
-          builder: (_) => MessageThreadScreen(
-            threadId: threadId,
-            recipientId: '', // Will be determined from threadId in the screen
-            recipientName: '', // Will be determined from threadId in the screen
-            appId: appId,
-          ),
-        ));
-      }
-    } else if (notification.route == '/join_opportunity') {
-      const String appId = 'L8n1tJqHqYd3F5j6';
-      navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => AddLinkScreen(appId: appId),
-      ));
-    } else if (notification.route == '/team') {
-      const String appId = 'L8n1tJqHqYd3F5j6';
-      final filter = notification.arguments['filter'] as String?;
-
-      // Navigate to NetworkScreen with initial filter
-      navigatorKey.currentState!.push(MaterialPageRoute(
-        builder: (_) => NetworkScreen(
-          appId: appId,
-          initialFilter: filter,
-        ),
-      ));
-    }
-    // ADD FALLBACK HANDLER
-    else {
-      if (kDebugMode) {
-        debugPrint("❌ NAVIGATION: Unknown route: ${notification.route}");
-      }
-    }
+    navigatorKey.currentState!.pushNamed(
+      notification.route,
+      arguments: notification.arguments,
+    );
   } else {
     if (kDebugMode) {
-      debugPrint("❌ NAVIGATION: Navigator state is null, cannot navigate");
+      debugPrint(
+          "❌ NAVIGATION: Cannot navigate. Navigator state is null.");
       debugPrint("❌ NAVIGATION: Will retry navigation in 1 second...");
     }
-    // Retry navigation after a longer delay if navigator is not ready
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       navigateToRoute(notification);
     });
   }

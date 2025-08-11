@@ -6,8 +6,8 @@ const crypto = require("crypto");
 
 // ======================= IMPORTANT =======================
 // CONFIGURE YOUR EXISTING ADMIN USER'S DETAILS HERE
-const ROOT_ADMIN_UID = "X64tWY9OFqdg3KAu0ScKioX0X9k2";
-const ROOT_ADMIN_REFERRAL_CODE = "dave5651";
+const ROOT_ADMIN_UID = "KJ8uFnlhKhWgBa4NVcwT";
+const ROOT_ADMIN_REFERRAL_CODE = "88888888";
 const STATIC_PASSWORD = '11111111'; // Static password for all test users
 // =========================================================
 

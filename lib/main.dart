@@ -19,6 +19,7 @@ import 'services/deep_link_service.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
+import 'screens/network_screen.dart'; //
 
 // --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -204,6 +205,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           debugShowCheckedModeBanner: false,
           // --- Add RouteObserver to track navigation events ---
           navigatorObservers: [routeObserver],
+          onGenerateRoute: (settings) {
+            if (settings.name == '/network') {
+              final args = settings.arguments as Map<String, dynamic>?;
+
+              return MaterialPageRoute(
+                builder: (context) => NetworkScreen(
+                  appId: appId,
+                  initialFilter: args != null && args.containsKey('filter') ? args['filter'] as String : null,
+                ),
+                settings: settings,
+              );
+            }
+            // Add other routes here as needed
+
+            // Default fallback
+            return MaterialPageRoute(
+              builder: (context) => const AuthWrapper(),
+              settings: settings,
+            );
+          },
           home: const AuthWrapper(),
         ),
       ),

@@ -21,9 +21,8 @@ enum FilterBy {
   allMembers,
   directSponsors,
   newMembers,
-  newMembersYesterday,
   qualifiedMembers,
-  joinedMembers,
+  joinedMembers
 }
 
 enum SortBy { name, joinDate, level, location }
@@ -88,9 +87,6 @@ class _NetworkScreenState extends State<NetworkScreen>
           break;
         case 'newMembers':
           _filterBy = FilterBy.newMembers;
-          break;
-        case 'newMembersYesterday':
-          _filterBy = FilterBy.newMembersYesterday;
           break;
         case 'directSponsors':
           _filterBy = FilterBy.directSponsors;
@@ -261,20 +257,17 @@ class _NetworkScreenState extends State<NetworkScreen>
       // Small network: Load all data at once
       _useIntelligentPagination = false;
       _pageSize = _totalNetworkSize + 100; // Add buffer
-      debugPrint(
-          '🔍 PAGINATION DEBUG: Small network - loading all $_pageSize members');
+      debugPrint('🔍 PAGINATION DEBUG: Small network - loading all $_pageSize members');
     } else if (_totalNetworkSize <= 5000) {
       // Medium network: Use moderate pagination
       _useIntelligentPagination = true;
       _pageSize = 1500;
-      debugPrint(
-          '🔍 PAGINATION DEBUG: Medium network - using pagination with $_pageSize per page');
+      debugPrint('🔍 PAGINATION DEBUG: Medium network - using pagination with $_pageSize per page');
     } else {
       // Large network: Use aggressive pagination
       _useIntelligentPagination = true;
       _pageSize = 1000;
-      debugPrint(
-          '🔍 PAGINATION DEBUG: Large network - using aggressive pagination with $_pageSize per page');
+      debugPrint('🔍 PAGINATION DEBUG: Large network - using aggressive pagination with $_pageSize per page');
     }
   }
 
@@ -299,14 +292,11 @@ class _NetworkScreenState extends State<NetworkScreen>
         setState(() {
           _allMembers.addAll(newMembers);
           _currentOffset += newMembers.length;
-          _hasMoreData =
-              _allMembers.length < totalCount && newMembers.isNotEmpty;
+          _hasMoreData = _allMembers.length < totalCount && newMembers.isNotEmpty;
         });
 
-        debugPrint(
-            '🔍 PAGINATION DEBUG: Loaded ${newMembers.length} more members');
-        debugPrint(
-            '🔍 PAGINATION DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
+        debugPrint('🔍 PAGINATION DEBUG: Loaded ${newMembers.length} more members');
+        debugPrint('🔍 PAGINATION DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
         debugPrint('🔍 PAGINATION DEBUG: Has more data: $_hasMoreData');
       }
     } catch (e) {
@@ -384,13 +374,11 @@ class _NetworkScreenState extends State<NetworkScreen>
         setState(() {
           _allMembers.addAll(newMembers);
           _currentOffset += newMembers.length;
-          _hasMoreData =
-              _allMembers.length < totalCount && newMembers.isNotEmpty;
+          _hasMoreData = _allMembers.length < totalCount && newMembers.isNotEmpty;
         });
 
         debugPrint('🔄 REFRESH DEBUG: Loaded ${newMembers.length} members');
-        debugPrint(
-            '🔄 REFRESH DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
+        debugPrint('🔄 REFRESH DEBUG: Total loaded: ${_allMembers.length}/$totalCount');
       }
     } catch (e) {
       debugPrint('Error refreshing more data: $e');
@@ -408,8 +396,6 @@ class _NetworkScreenState extends State<NetworkScreen>
       'directSponsors': counts['directSponsors'] ?? 0, // From new backend logic
       'newMembers':
           counts['last24'] ?? 0, // Use the 'last24' count from backend
-      'newMembersYesterday':
-          counts['newMembersYesterday'] ?? 0, // Use the 'newMembersYesterday' count from backend
       'qualified': counts['newQualified'] ?? 0,
       'withOpportunity': counts['joinedOpportunity'] ?? 0,
     };
@@ -443,72 +429,52 @@ class _NetworkScreenState extends State<NetworkScreen>
       // Filter for direct sponsors (users who have current user as sponsor)
       final currentUserId = FirebaseAuth.instance.currentUser?.uid;
       debugPrint('🔍 DIRECT SPONSORS DEBUG: Current user ID: $currentUserId');
-      debugPrint(
-          '🔍 DIRECT SPONSORS DEBUG: Total members to filter: ${filtered.length}');
-
+      debugPrint('🔍 DIRECT SPONSORS DEBUG: Total members to filter: ${filtered.length}');
+      
       if (currentUserId != null) {
         // Debug: Check first few members' sponsor IDs
         for (int i = 0; i < math.min(5, filtered.length); i++) {
           final member = filtered[i];
-          debugPrint(
-              '🔍 DIRECT SPONSORS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, sponsorId: "${member.sponsorId}", matches: ${member.sponsorId == currentUserId}');
+          debugPrint('🔍 DIRECT SPONSORS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, sponsorId: "${member.sponsorId}", matches: ${member.sponsorId == currentUserId}');
         }
-
+        
         filtered = filtered.where((m) => m.sponsorId == currentUserId).toList();
-        debugPrint(
-            '🔍 DIRECT SPONSORS DEBUG: After filtering: ${filtered.length} members');
-
+        debugPrint('🔍 DIRECT SPONSORS DEBUG: After filtering: ${filtered.length} members');
+        
         // If we're using pagination and found no results, suggest loading more data
         if (filtered.isEmpty && _useIntelligentPagination && _hasMoreData) {
-          debugPrint(
-              '🔍 DIRECT SPONSORS DEBUG: No results found, but more data available. Consider loading more.');
+          debugPrint('🔍 DIRECT SPONSORS DEBUG: No results found, but more data available. Consider loading more.');
         }
       } else {
-        debugPrint(
-            '🔍 DIRECT SPONSORS DEBUG: No current user ID, clearing filtered list');
+        debugPrint('🔍 DIRECT SPONSORS DEBUG: No current user ID, clearing filtered list');
         filtered = [];
       }
     } else if (_filterBy == FilterBy.newMembers) {
       final now = DateTime.now();
-      final todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      final sinceYesterday = DateTime(now.year, now.month, now.day - 1, 0, 1);
       filtered = filtered
           .where((m) =>
               m.createdAt != null &&
-              m.createdAt!.isAfter(todayStart) &&
-              m.photoUrl != null)
-          .toList();
-    } else if (_filterBy == FilterBy.newMembersYesterday) {
-      final now = DateTime.now();
-      final yesterdayStart = DateTime(now.year, now.month, now.day - 1, 0, 0, 0);
-      final yesterdayEnd = DateTime(now.year, now.month, now.day - 1, 23, 59, 59);
-      filtered = filtered
-          .where((m) =>
-              m.createdAt != null &&
-              m.createdAt!.isAfter(yesterdayStart) &&
-              m.createdAt!.isBefore(yesterdayEnd) &&
+              m.createdAt!.isAfter(sinceYesterday) &&
               m.photoUrl != null)
           .toList();
     } else if (_filterBy == FilterBy.qualifiedMembers) {
       filtered = filtered.where((m) => m.qualifiedDate != null).toList();
     } else if (_filterBy == FilterBy.joinedMembers) {
-      debugPrint(
-          '🔍 JOINED MEMBERS DEBUG: Total members to filter: ${filtered.length}');
-
+      debugPrint('🔍 JOINED MEMBERS DEBUG: Total members to filter: ${filtered.length}');
+      
       // Debug: Check first few members' bizJoinDate
       for (int i = 0; i < math.min(5, filtered.length); i++) {
         final member = filtered[i];
-        debugPrint(
-            '🔍 JOINED MEMBERS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, bizJoinDate: ${member.bizJoinDate}, hasJoinDate: ${member.bizJoinDate != null}');
+        debugPrint('🔍 JOINED MEMBERS DEBUG: Member ${i + 1}: ${member.firstName} ${member.lastName}, bizJoinDate: ${member.bizJoinDate}, hasJoinDate: ${member.bizJoinDate != null}');
       }
-
+      
       filtered = filtered.where((m) => m.bizJoinDate != null).toList();
-      debugPrint(
-          '🔍 JOINED MEMBERS DEBUG: After filtering: ${filtered.length} members');
-
+      debugPrint('🔍 JOINED MEMBERS DEBUG: After filtering: ${filtered.length} members');
+      
       // If we're using pagination and found no results, suggest loading more data
       if (filtered.isEmpty && _useIntelligentPagination && _hasMoreData) {
-        debugPrint(
-            '🔍 JOINED MEMBERS DEBUG: No results found, but more data available. Consider loading more.');
+        debugPrint('🔍 JOINED MEMBERS DEBUG: No results found, but more data available. Consider loading more.');
       }
     }
 
@@ -812,9 +778,7 @@ class _NetworkScreenState extends State<NetworkScreen>
       case FilterBy.directSponsors:
         return 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
       case FilterBy.newMembers:
-        return 'New Members - Today (${_analytics['newMembers'] ?? 0})';
-      case FilterBy.newMembersYesterday:
-        return 'New Members - Yesterday (${_analytics['newMembersYesterday'] ?? 0})';
+        return 'New Members (${_analytics['newMembers'] ?? 0})';
       case FilterBy.qualifiedMembers:
         return 'Qualified Members (${_analytics['qualified'] ?? 0})';
       case FilterBy.joinedMembers:
@@ -989,7 +953,7 @@ class _NetworkScreenState extends State<NetworkScreen>
               ),
             ),
           ],
-
+          
           // Show pagination info for large networks
           if (_useIntelligentPagination) ...[
             Container(
@@ -1088,12 +1052,10 @@ class _NetworkScreenState extends State<NetworkScreen>
               margin: const EdgeInsets.all(16),
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoadingMore
-                    ? null
-                    : () async {
-                        await _loadMoreData();
-                        _applyFiltersAndSort();
-                      },
+                onPressed: _isLoadingMore ? null : () async {
+                  await _loadMoreData();
+                  _applyFiltersAndSort();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -1111,24 +1073,20 @@ class _NetworkScreenState extends State<NetworkScreen>
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           ),
                           SizedBox(width: 8),
                           Text('Loading more members...'),
                         ],
                       )
-                    : Text(
-                        'Load More Members (${_totalNetworkSize - _allMembers.length} remaining)'),
+                    : Text('Load More Members (${_totalNetworkSize - _allMembers.length} remaining)'),
               ),
             ),
           ],
 
           // Show completion message when all data is loaded
-          if (_useIntelligentPagination &&
-              !_hasMoreData &&
-              _allMembers.isNotEmpty) ...[
+          if (_useIntelligentPagination && !_hasMoreData && _allMembers.isNotEmpty) ...[
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

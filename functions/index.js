@@ -1043,6 +1043,32 @@ exports.getNetworkCounts = onCall({ region: "us-central1" }, async (request) => 
   }
 });
 
+exports.getNewMembersYesterdayCount = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+  const currentUserId = request.auth.uid;
+
+  try {
+    const now = new Date();
+    const yesterdayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0);
+    const yesterdayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59);
+
+    const query = db.collection("users")
+      .where("upline_refs", "array-contains", currentUserId)
+      .where("createdAt", ">=", yesterdayStart)
+      .where("createdAt", "<=", yesterdayEnd);
+
+    const snapshot = await query.count().get();
+    const count = snapshot.data().count;
+
+    return { count };
+  } catch (error) {
+    console.error(`CRITICAL ERROR in getNewMembersYesterdayCount for user ${currentUserId}:`, error);
+    throw new HttpsError("internal", "An unexpected error occurred.");
+  }
+});
+
 exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -1795,6 +1821,7 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
  * 2. Use their upline_refs arrays to identify which users should receive notifications
  * 3. Count new members per user and send notifications
  */
+
 exports.sendDailyTeamGrowthNotifications = onSchedule({
   schedule: "0 * * * *", // Run every hour
   timeZone: "UTC",
@@ -1803,7 +1830,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   console.log("🔔 DAILY NOTIFICATIONS: Starting daily team growth notification process");
 
   try {
-    const now = new Date();
+    const now = new Date(event.scheduleTime);
     const currentHour = now.getUTCHours();
 
     console.log(`🔔 DAILY NOTIFICATIONS: Current UTC time: ${now.toISOString()}, Hour: ${currentHour}`);
@@ -1905,7 +1932,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
 
         // Check if it's 10 AM in their timezone
-        if (userLocalHour === 10) {
+        if (userLocalHour === 9) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
 
@@ -1948,8 +1975,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
           read: false,
           type: "new_network_members",
           route: "/network",
-          // route_params: JSON.stringify({ "userId": newUserId }),
-          route_params: JSON.stringify({ "filter": last24 }),
+          // The route_params are now updated to be more specific to the new report
+          route_params: JSON.stringify({ "filter": "newMembersYesterday" }),
         };
 
         // Use a batch to atomically create notification and update the tracking date
@@ -1990,6 +2017,7 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
     console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
   }
 });
+
 
 exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) => {
   const url = request.data.url;
