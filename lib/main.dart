@@ -13,6 +13,9 @@ import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
 import 'screens/edit_profile_screen.dart';
 import 'screens/subscription_screen.dart';
+import 'screens/member_detail_screen.dart';
+import 'screens/business_screen.dart';
+import 'screens/message_thread_screen.dart';
 import 'services/auth_service.dart';
 import 'services/fcm_service.dart' show FCMService, navigateToRoute;
 import 'services/deep_link_service.dart';
@@ -216,8 +219,37 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ),
                 settings: settings,
               );
+            } else if (settings.name == '/subscription') {
+              return MaterialPageRoute(
+                builder: (context) => const SubscriptionScreen(),
+                settings: settings,
+              );
+            } else if (settings.name == '/member_detail') {
+              final args = settings.arguments as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => MemberDetailScreen(
+                  userId: args?['userId'] as String? ?? '',
+                  appId: appId,
+                ),
+                settings: settings,
+              );
+            } else if (settings.name == '/business') {
+              return MaterialPageRoute(
+                builder: (context) => BusinessScreen(appId: appId),
+                settings: settings,
+              );
+            } else if (settings.name == '/message_thread') {
+              final args = settings.arguments as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => MessageThreadScreen(
+                  threadId: args?['threadId'] as String? ?? '',
+                  recipientId: args?['recipientId'] as String? ?? '',
+                  recipientName: args?['recipientName'] as String? ?? '',
+                  appId: appId,
+                ),
+                settings: settings,
+              );
             }
-            // Add other routes here as needed
 
             // Default fallback
             return MaterialPageRoute(

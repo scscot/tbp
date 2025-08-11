@@ -77,7 +77,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint('🔍   _initialReferralCode: $_initialReferralCode');
 
     if (isDevMode && _initialReferralCode == null) {
-      //_initialReferralCode = '88888888'; // Admin
+      // _initialReferralCode = '88888888'; // Admin
       // _initialReferralCode = '28F37ECD'; // Direct
     }
 
