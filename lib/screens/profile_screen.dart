@@ -186,7 +186,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildClickableInfoRow(
                     'Your Sponsor', _sponsorName!, _sponsorUid!),
               if (_teamLeaderName != null &&
-                  _teamLeaderUid != null)
+                  _teamLeaderUid != null &&
+                  _teamLeaderUid != _sponsorUid)
                 _buildClickableInfoRow(
                     'Team Leader', _teamLeaderName!, _teamLeaderUid!),
             ],
