@@ -1948,7 +1948,8 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
           read: false,
           type: "new_network_members",
           route: "/network",
-          route_params: JSON.stringify({ filter: "last24" }),
+          // route_params: JSON.stringify({ "userId": newUserId }),
+          route_params: JSON.stringify({ "filter": last24 }),
         };
 
         // Use a batch to atomically create notification and update the tracking date
