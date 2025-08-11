@@ -1,5 +1,7 @@
 // lib/screens/profile_screen.dart
 
+import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +29,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _teamLeaderName;
   String? _teamLeaderUid;
 
+  @override
+  void initState() {
+    super.initState();
+    // Load data when screen is first created
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
+  }
 
   void _refreshData() {
     final user = Provider.of<UserModel?>(context, listen: false);
@@ -49,7 +59,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           setState(() {});
         }
       } catch (e) {
-        debugPrint("Error checking super admin status: $e");
+        if (kDebugMode) {
+          debugPrint("Error checking super admin status: $e");
+        }
       }
     }
     if (mounted) {
@@ -60,60 +72,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadUplineData(UserModel user) {
-    if (user.role == 'admin') return;
+    if (user.role == 'admin') {
+      developer.log('Admin user detected, skipping upline data load');
+      return;
+    }
+    
+    developer.log('🔍 _loadUplineData called for user: ${user.uid}');
+    developer.log('🔍 user.role: ${user.role}');
+    developer.log('🔍 user.sponsorId: ${user.sponsorId}');
+    developer.log('🔍 user.uplineAdmin: ${user.uplineAdmin}');
 
-    // Fetch Sponsor info (remains unchanged)
+    // Fetch Sponsor info
     if (user.sponsorId != null && user.sponsorId!.isNotEmpty) {
+      developer.log('🔍 Fetching sponsor with ID: ${user.sponsorId}');
+  
       _firestoreService.getUser(user.sponsorId!).then((sponsor) {
+        developer.log('🔍 Sponsor fetch result: ${sponsor != null ? 'found' : 'not found'}');
+        
         if (mounted && sponsor != null) {
           setState(() {
             _sponsorName =
                 '${sponsor.firstName ?? ''} ${sponsor.lastName ?? ''}'.trim();
             _sponsorUid = sponsor.uid;
           });
+          developer.log('🔍 _sponsorName set to: $_sponsorName');
+          developer.log('🔍 _sponsorUid set to: $_sponsorUid');
+        } else {
+          developer.log('🔍 Sponsor not found for ID: ${user.sponsorId}');
         }
+      }).catchError((error) {
+        developer.log('🔍 Error fetching sponsor: $error', error: error);
       });
+    } else {
+      developer.log('🔍 No sponsorId found for user');
     }
 
-    // --- MODIFICATION: Using your suggested, simpler logic ---
-    // Fetch Team Leader info using the dedicated 'upline_admin' field.
+    // Fetch Team Leader info
     if (user.uplineAdmin != null && user.uplineAdmin!.isNotEmpty) {
-      final leaderId = user.uplineAdmin!; // Get the UID directly.
+      final leaderId = user.uplineAdmin!;
+      developer.log('🔍 Fetching team leader with ID: $leaderId');
+      
       _firestoreService.getUser(leaderId).then((leader) {
+        developer.log('🔍 Team leader fetch result: ${leader != null ? 'found' : 'not found'}');
         if (mounted && leader != null) {
           setState(() {
             _teamLeaderName =
                 '${leader.firstName ?? ''} ${leader.lastName ?? ''}'.trim();
             _teamLeaderUid = leader.uid;
           });
+          developer.log('🔍 _teamLeaderName set to: $_teamLeaderName');
+          developer.log('🔍 _teamLeaderUid set to: $_teamLeaderUid');
+        } else {
+          developer.log('🔍 Team leader not found for ID: $leaderId');
         }
+      }).catchError((error) {
+        developer.log('🔍 Error fetching team leader: $error', error: error);
       });
+    } else {
+      developer.log('🔍 No uplineAdmin found for user');
     }
-    // --- END MODIFICATION ---
   }
-
-/*   Future<void> _runRecalculation() async {
-    setState(() => _isRecalculating = true);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    try {
-      final HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('recalculateTeamCounts');
-      final result = await callable.call();
-      final message = result.data['message'] ?? 'Operation completed.';
-      scaffoldMessenger.showSnackBar(
-          SnackBar(content: Text(message), backgroundColor: Colors.green));
-    } on FirebaseFunctionsException catch (e) {
-      scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text('Error: ${e.message}'), backgroundColor: Colors.red));
-    } catch (e) {
-      scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text('An unexpected error occurred: $e'),
-          backgroundColor: Colors.red));
-    } finally {
-      if (mounted) setState(() => _isRecalculating = false);
-    }
-  } */
-
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -168,8 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildClickableInfoRow(
                     'Your Sponsor', _sponsorName!, _sponsorUid!),
               if (_teamLeaderName != null &&
-                  _teamLeaderUid != null &&
-                  _teamLeaderUid != _sponsorUid)
+                  _teamLeaderUid != null)
                 _buildClickableInfoRow(
                     'Team Leader', _teamLeaderName!, _teamLeaderUid!),
             ],
