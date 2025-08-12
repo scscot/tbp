@@ -630,119 +630,122 @@ exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (r
 
 /**
  * Centralized function to calculate and update badge count for a user
- * Includes both notifications and chat messages
+ * Includes both notifications and chat messages - with optimizations
  */
 const updateUserBadge = async (userId) => {
   try {
     console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
 
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists) {
-      console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
-      return;
-    }
-
-    const userData = userDoc.data();
-    const fcmToken = userData?.fcm_token;
-    if (!fcmToken) {
-      console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
-      return;
-    }
-
-    // Count unread notifications using aggregation if available
-let notificationCount = 0;
-try {
-  const unreadNotifQuery = db.collection("users")
-    .doc(userId)
-    .collection("notifications")
-    .where("read", "==", false);
-
-  if (typeof unreadNotifQuery.count === 'function') {
-    const agg = await unreadNotifQuery.count().get();
-    notificationCount = agg.data().count || 0;
-  } else {
-    // Fallback for older SDKs
-    const snap = await unreadNotifQuery.get();
-    notificationCount = snap.size;
-  }
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
-  // soft-fail to 0
-  notificationCount = 0;
-}
-
-    // Count unread chat messages conservatively:
-    // Only count a thread if the most recent message was sent by someone else
-    // AND the thread-level isRead[userId] is explicitly false.
-    // This avoids false positives when the user sent the last message.
-    const unreadChatsSnapshot = await db.collection("chats")
-      .where("participants", "array-contains", userId)
-      .get();
-
-    let messageCount = 0;
-    for (const doc of unreadChatsSnapshot.docs) {
-      const chatData = doc.data();
-      const isReadMap = chatData.isRead || {};
-
-      // Quick check: skip if not explicitly unread
-      if (!(Object.prototype.hasOwnProperty.call(isReadMap, userId) && isReadMap[userId] === false)) {
-        continue;
+    // Use transaction for consistent badge calculation
+    const result = await db.runTransaction(async (transaction) => {
+      const userDoc = await transaction.get(db.collection('users').doc(userId));
+      if (!userDoc.exists) {
+        console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
+        return { success: false, error: "User not found" };
       }
 
-      // Fetch the most recent message to confirm the sender is NOT this user
+      const userData = userDoc.data();
+      const fcmToken = userData?.fcm_token;
+      
+      if (!fcmToken) {
+        console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
+        return { success: false, error: "No FCM token" };
+      }
+
+      // Count unread notifications using optimized query
+      let notificationCount = 0;
       try {
-        const lastMsgSnap = await db.collection("chats").doc(doc.id)
-          .collection("messages")
-          .orderBy("createdAt", "desc")
-          .limit(1)
-          .get();
-
-        if (!lastMsgSnap.empty) {
-          const lastMsg = lastMsgSnap.docs[0].data();
-          const lastSender = lastMsg.senderId;
-          if (lastSender && lastSender !== userId) {
-            messageCount++;
-            console.log(`🔔 BADGE DEBUG: Counting unread chat thread ${doc.id} for user ${userId} (lastSender=${lastSender})`);
-          } else {
-            console.log(`🔔 BADGE DEBUG: Skipping thread ${doc.id} — last message was from user or missing senderId`);
-          }
-        } else {
-          console.log(`🔔 BADGE DEBUG: Thread ${doc.id} has no messages; skipping`);
-        }
+        const unreadNotifQuery = db.collection("users")
+          .doc(userId)
+          .collection("notifications")
+          .where("read", "==", false);
+        
+        const unreadNotifSnapshot = await transaction.get(unreadNotifQuery);
+        notificationCount = unreadNotifSnapshot.size;
       } catch (e) {
-        console.warn(`🔔 BADGE DEBUG: Failed to fetch last message for ${doc.id}:`, e.message);
+        console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
+        notificationCount = 0;
       }
+
+      // Count unread chat messages with pagination and optimization
+      let messageCount = 0;
+      try {
+        // Use a more efficient approach - query only chats with unread messages
+        const unreadChatsQuery = db.collection("chats")
+          .where("participants", "array-contains", userId)
+          .where(`isRead.${userId}`, "==", false)
+          .limit(100); // Add pagination limit
+
+        const unreadChatsSnapshot = await transaction.get(unreadChatsQuery);
+        
+        // Process chats in parallel with proper error handling
+        const chatPromises = unreadChatsSnapshot.docs.map(async (doc) => {
+          const chatData = doc.data();
+          
+          // Check if last message exists and is from someone else
+          const lastMessageRef = doc.ref.collection("messages")
+            .orderBy("createdAt", "desc")
+            .limit(1);
+          
+          const lastMessageSnapshot = await transaction.get(lastMessageRef);
+          
+          if (!lastMessageSnapshot.empty) {
+            const lastMessage = lastMessageSnapshot.docs[0].data();
+            if (lastMessage.senderId && lastMessage.senderId !== userId) {
+              return 1; // Count this chat
+            }
+          }
+          return 0;
+        });
+
+        const chatResults = await Promise.allSettled(chatPromises);
+        messageCount = chatResults.reduce((sum, result) => {
+          return sum + (result.status === 'fulfilled' ? result.value : 0);
+        }, 0);
+        
+      } catch (e) {
+        console.warn(`🔔 BADGE WARN: Failed to count unread messages for ${userId}:`, e.message);
+        messageCount = 0;
+      }
+
+      const totalBadgeCount = notificationCount + messageCount;
+
+      console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
+
+      // Update badge count in user document
+      transaction.update(db.collection("users").doc(userId), {
+        currentBadge: totalBadgeCount,
+        lastBadgeUpdate: FieldValue.serverTimestamp()
+      });
+
+      return { 
+        success: true, 
+        fcmToken, 
+        badgeCount: totalBadgeCount,
+        notificationCount,
+        messageCount
+      };
+    });
+
+    if (!result.success) {
+      console.error(`❌ BADGE UPDATE: Failed to calculate badge for user ${userId}:`, result.error);
+      return;
     }
 
-    const totalBadgeCount = notificationCount + messageCount;
+    // Send badge update with retry mechanism
+    await sendBadgeUpdateWithRetry(userId, result.fcmToken, result.badgeCount);
 
-    console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
-
-    // Send badge update message
-    const message = {
-      token: fcmToken,
-      apns: {
-        payload: {
-          aps: {
-            badge: totalBadgeCount,
-          },
-        },
-      },
-      android: {
-        // Android handles badges differently, but we include for completeness
-      },
-    };
-
-    await messaging.send(message);
-try {
-  await db.collection("users").doc(userId).update({ currentBadge: totalBadgeCount });
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: failed to persist currentBadge for ${userId}:`, e.message);
-}
-    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
+    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${result.badgeCount}`);
 
   } catch (error) {
     console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
+    
+    // Handle specific error cases
+    if (error.code === 'NOT_FOUND') {
+      console.log(`🔔 BADGE UPDATE: User ${userId} not found, skipping update`);
+    } else if (error.code === 'PERMISSION_DENIED') {
+      console.log(`🔔 BADGE UPDATE: Permission denied for user ${userId}, skipping update`);
+    }
   }
 };
 
