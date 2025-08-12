@@ -649,27 +649,14 @@ const updateUserBadge = async (userId) => {
       return;
     }
 
-    // Count unread notifications using aggregation if available
-let notificationCount = 0;
-try {
-  const unreadNotifQuery = db.collection("users")
-    .doc(userId)
-    .collection("notifications")
-    .where("read", "==", false);
+    // Count unread notifications
+    const unreadNotificationsSnapshot = await db.collection("users")
+      .doc(userId)
+      .collection("notifications")
+      .where("read", "==", false)
+      .get();
 
-  if (typeof unreadNotifQuery.count === 'function') {
-    const agg = await unreadNotifQuery.count().get();
-    notificationCount = agg.data().count || 0;
-  } else {
-    // Fallback for older SDKs
-    const snap = await unreadNotifQuery.get();
-    notificationCount = snap.size;
-  }
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
-  // soft-fail to 0
-  notificationCount = 0;
-}
+    const notificationCount = unreadNotificationsSnapshot.size;
 
     // Count unread chat messages conservatively:
     // Only count a thread if the most recent message was sent by someone else
@@ -734,11 +721,6 @@ try {
     };
 
     await messaging.send(message);
-try {
-  await db.collection("users").doc(userId).update({ currentBadge: totalBadgeCount });
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: failed to persist currentBadge for ${userId}:`, e.message);
-}
     console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
 
   } catch (error) {

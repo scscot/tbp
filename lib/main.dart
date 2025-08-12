@@ -23,6 +23,7 @@ import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
 import 'screens/network_screen.dart'; //
+import 'services/badge_service.dart';
 
 // --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -133,8 +134,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       debugPrint('🔔 APP LIFECYCLE: App resumed, syncing badge');
       _syncAppBadge();
 
+      // Clear app badge on resume
+      _clearAppBadge();
+
       // Check subscription status on app resume
       _checkSubscriptionOnResume();
+    }
+  }
+
+  Future<void> _clearAppBadge() async {
+    try {
+      await BadgeService.clearBadge();
+      debugPrint('✅ APP LIFECYCLE: Cleared app badge on resume');
+    } catch (e) {
+      debugPrint('❌ APP LIFECYCLE: Failed to clear app badge: $e');
     }
   }
 

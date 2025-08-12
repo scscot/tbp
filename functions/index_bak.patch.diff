@@ -1,0 +1,63 @@
+--- index_bak.js
++++ index_bak.patched.js
+@@ -658,27 +658,48 @@
+ 
+     const notificationCount = unreadNotificationsSnapshot.size;
+ 
+-    // Count unread chat messages (count threads with unread messages)
++    // Count unread chat messages conservatively:
++    // Only count a thread if the most recent message was sent by someone else
++    // AND the thread-level isRead[userId] is explicitly false.
++    // This avoids false positives when the user sent the last message.
+     const unreadChatsSnapshot = await db.collection("chats")
+       .where("participants", "array-contains", userId)
+       .get();
+ 
+     let messageCount = 0;
+-    unreadChatsSnapshot.docs.forEach(doc => {
++    for (const doc of unreadChatsSnapshot.docs) {
+       const chatData = doc.data();
+       const isReadMap = chatData.isRead || {};
+ 
+-      // Debug logging to identify the issue
+-      console.log(`🔔 BADGE DEBUG: Chat ${doc.id} - isReadMap:`, JSON.stringify(isReadMap));
+-      console.log(`🔔 BADGE DEBUG: User ${userId} read status:`, isReadMap[userId]);
+-
+-      // Only count if this chat thread has unread messages for this user
+-      // Check that isRead exists and is explicitly false (not undefined/null)
+-      if (isReadMap.hasOwnProperty(userId) && isReadMap[userId] === false) {
+-        messageCount++;
+-        console.log(`🔔 BADGE DEBUG: Counting unread chat thread ${doc.id} for user ${userId}`);
++      // Quick check: skip if not explicitly unread
++      if (!(Object.prototype.hasOwnProperty.call(isReadMap, userId) && isReadMap[userId] === false)) {
++        continue;
+       }
+-    });
++
++      // Fetch the most recent message to confirm the sender is NOT this user
++      try {
++        const lastMsgSnap = await db.collection("chats").doc(doc.id)
++          .collection("messages")
++          .orderBy("createdAt", "desc")
++          .limit(1)
++          .get();
++
++        if (!lastMsgSnap.empty) {
++          const lastMsg = lastMsgSnap.docs[0].data();
++          const lastSender = lastMsg.senderId;
++          if (lastSender && lastSender !== userId) {
++            messageCount++;
++            console.log(`🔔 BADGE DEBUG: Counting unread chat thread ${doc.id} for user ${userId} (lastSender=${lastSender})`);
++          } else {
++            console.log(`🔔 BADGE DEBUG: Skipping thread ${doc.id} — last message was from user or missing senderId`);
++          }
++        } else {
++          console.log(`🔔 BADGE DEBUG: Thread ${doc.id} has no messages; skipping`);
++        }
++      } catch (e) {
++        console.warn(`🔔 BADGE DEBUG: Failed to fetch last message for ${doc.id}:`, e.message);
++      }
++    }
+ 
+     const totalBadgeCount = notificationCount + messageCount;
+ 
