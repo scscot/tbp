@@ -7,7 +7,6 @@ import 'config/app_constants.dart';
 import 'firebase_options.dart';
 import 'models/user_model.dart';
 import 'models/admin_settings_model.dart';
-import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
@@ -24,6 +23,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
 import 'screens/network_screen.dart'; //
 import 'services/badge_service.dart';
+// import 'screens/login_screen.dart';
+import 'screens/homepage_screen.dart';
 
 // --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -336,9 +337,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
     debugPrint(
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
-    if (user == null) {
+    /* if (user == null) {
       debugPrint('🔐 AUTH_WRAPPER: No user found, showing LoginScreen');
       return LoginScreen(key: const ValueKey('LoginScreen'), appId: appId);
+    } */
+
+    if (user == null) {
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HomepageScreen');
+      return HomepageScreen(key: const ValueKey('HomepageScreen'), appId: appId);
     }
 
     debugPrint(

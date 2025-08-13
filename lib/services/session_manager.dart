@@ -120,7 +120,7 @@ class SessionManager {
     return true;
   }
 
-  /// Sanitize referral code by removing unwanted characters
+/// Sanitize referral code by removing unwanted characters
   String _sanitizeReferralCode(String referralCode) {
     return referralCode.trim().replaceAll(RegExp(r'[^\w-]'), '');
   }
@@ -128,7 +128,7 @@ class SessionManager {
   /// Sanitize sponsor name by removing unwanted characters
   String _sanitizeSponsorName(String sponsorName) {
     // ignore: valid_regexps
-    return sponsorName.trim().replaceAll(RegExp(r'[<>"\'']'), '');
+    return sponsorName.trim().replaceAll('[<>"\' ]', '');
   }
 
   Future<Map<String, String>?> getReferralData() async {

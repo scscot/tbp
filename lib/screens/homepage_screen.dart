@@ -285,32 +285,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildPlatformLogo() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            Colors.white.withOpacity(0.2),
-            Colors.white.withOpacity(0.1),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.groups_3,
-        size: 48,
-        color: Colors.white,
-      ),
-    );
-  }
+
 
   double _calculateContentHeight(bool isLandscape) {
     double height = 0;
@@ -488,29 +463,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(height: isLandscape ? 16 : 32),
-                          _buildPlatformLogo(),
-                          SizedBox(height: isLandscape ? 16 : 24),
-
-                          // Main headline
-                          ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                              colors: [Colors.white, Colors.blue.shade200],
-                            ).createShader(bounds),
-                            child: Text(
-                              'TEAM BUILD PRO',
-                              style: TextStyle(
-                                fontSize: isLandscape ? 28 : 32,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                                letterSpacing: 2.5,
-                                height: 1.1,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-
-                          SizedBox(height: isLandscape ? 16 : 32),
+                         SizedBox(height: isLandscape ? 16 : 32),
 
                           // Subtitle
                           Container(
@@ -543,7 +496,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             child: Text(
                               (_sponsorName != null && _sponsorName!.isNotEmpty)
                                   ? 'Get the ultimate head start. This platform empowers aspiring leaders to pre-build their team before day one, ensuring you launch your new venture with powerful, immediate momentum.'
-                                  : 'From aspiring leaders to seasoned mentors, Team Build Pro provides the tools to build, manage, and scale your global network at every stage of your direct sales journey.',
+                                  : 'The ultimate app for direct sales professionals to manage and scale your existing team with unstoppable momentum and exponential growth.',
                               style: TextStyle(
                                 fontSize: isLandscape ? 14 : 16,
                                 color: Colors.white,
@@ -1636,6 +1589,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           children: [
             _buildStatusBanner(),
             _buildHeroSection(),
+            _buildSmartOnboarding(),
             _buildOrganizationShowcase(),
             _buildHighPerformance(),
             _buildHowItWorks(),
@@ -1734,15 +1688,26 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
         ),
       ),
-      title: const Text(
-        'TEAM BUILD PRO',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+      title: Row(
+        children: [
+          Image.asset(
+            'assets/icons/app_icon.png',
+            width: 28,
+            height: 28,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 12),
+          const Text(
+            'Team Build Pro',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
-      centerTitle: true,
+      centerTitle: false,
       actions: [
         TextButton(
           onPressed: _navigateToLogin,
