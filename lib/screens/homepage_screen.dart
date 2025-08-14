@@ -38,6 +38,7 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   // Referral code related state
   String? _sponsorName;
+  String? _sponsorPhotoUrl;
   String? _bizOpp = 'your opportunity';
   String? _bizOpp1;
   bool _isLoggingOut = true;
@@ -169,6 +170,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     setState(() {});
 
     String? fetchedSponsorName;
+    String? fetchedSponsorPhotoUrl;
     String? fetchedSponsorUid;
     String? fetchedBizOpp;
 
@@ -181,6 +183,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         final data = jsonDecode(response.body);
         fetchedSponsorName =
             '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+        fetchedSponsorPhotoUrl = data['photoUrl'] as String?;
         fetchedSponsorUid = data['uid'] as String?;
 
         if (fetchedSponsorName.isNotEmpty) {
@@ -250,9 +253,10 @@ class _HomepageScreenState extends State<HomepageScreen>
         print("Error finding sponsor: $e.");
       }
     } finally {
-      if (mounted) {
+        if (mounted) {
         setState(() {
           _sponsorName = fetchedSponsorName;
+          _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
           _bizOpp = fetchedBizOpp;
           _bizOpp1 = fetchedBizOpp;
         });
@@ -345,18 +349,32 @@ class _HomepageScreenState extends State<HomepageScreen>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            shape: BoxShape.circle,
+        if (hasReferralCode && _sponsorPhotoUrl != null)
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              image: DecorationImage(
+                image: NetworkImage(_sponsorPhotoUrl!),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: hasReferralCode ? Colors.green : Colors.blue,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              hasReferralCode ? Icons.person_add : Icons.trending_up,
+              color: Colors.white,
+              size: 16,
+            ),
           ),
-          child: Icon(
-            hasReferralCode ? Icons.person_add : Icons.trending_up,
-            color: Colors.white,
-            size: 16,
-          ),
-        ),
         const SizedBox(width: 10),
         Flexible(
           child: Text(
