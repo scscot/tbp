@@ -35,7 +35,6 @@ class _HomepageScreenState extends State<HomepageScreen>
   late AnimationController _networkAnimationController;
   late Animation<double> _heroFadeAnimation;
   late Animation<Offset> _heroSlideAnimation;
-  late Animation<double> _networkAnimation;
 
   // Referral code related state
   String? _sponsorName;
@@ -128,13 +127,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
     ));
 
-    _networkAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _networkAnimationController,
-      curve: Curves.linear,
-    ));
 
     _heroAnimationController.forward();
     _networkAnimationController.repeat();
@@ -272,20 +264,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       ),
     );
   }
-
-  Widget _buildAnimatedNetworkBackground() {
-    return AnimatedBuilder(
-      animation: _networkAnimation,
-      builder: (context, child) {
-        return CustomPaint(
-          painter: NetworkNodesPainter(_networkAnimation.value),
-          size: Size.infinite,
-        );
-      },
-    );
-  }
-
-
 
   double _calculateContentHeight(bool isLandscape) {
     double height = 0;
@@ -447,8 +425,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       child: Stack(
         children: [
           // Animated network nodes background
-          _buildAnimatedNetworkBackground(),
-
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
@@ -463,7 +439,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                         SizedBox(height: isLandscape ? 16 : 32),
+                          SizedBox(height: isLandscape ? 16 : 32),
 
                           // Subtitle
                           Container(
@@ -1147,11 +1123,6 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildStatusBanner() {
-    // Remove redundant banner - invitation info is shown in hero section
-    return const SizedBox.shrink();
-  }
-
   Widget _buildHowItWorks() {
     return Container(
       padding: const EdgeInsets.all(24),
@@ -1587,7 +1558,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildStatusBanner(),
             _buildHeroSection(),
             _buildSmartOnboarding(),
             _buildOrganizationShowcase(),

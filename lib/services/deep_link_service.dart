@@ -58,8 +58,11 @@ class DeepLinkService {
     if (referralCode != null && referralCode.isNotEmpty && _isValidReferralCode(referralCode)) {
       debugPrint('🔗 Deep Link: Found valid referral code: $referralCode');
 
+      // Store the referral code for later use
+      _pendingReferralCode = referralCode;
+
       // Navigate to homepage screen with referral code
-      navigatorKey.currentState?.push(
+      navigatorKey.currentState?.pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomepageScreen(
             referralCode: referralCode,
