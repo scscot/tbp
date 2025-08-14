@@ -65,11 +65,10 @@ class DeepLinkService {
       // ✅ IMMEDIATELY SAVE THE CODE TO THE SESSION
       await SessionManager.instance.setPendingReferralCode(referralCode);
 
-      // Navigate to homepage screen with referral code
+      // Navigate to homepage screen - referral code will be retrieved from SessionManager
       navigatorKey.currentState?.pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomepageScreen(
-            referralCode: referralCode,
             appId: appId,
           ),
         ),

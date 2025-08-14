@@ -59,8 +59,18 @@ class _HomepageScreenState extends State<HomepageScreen>
 
       final authService = AuthService();
       final currentUser = FirebaseAuth.instance.currentUser;
-      final hasReferralCode =
-          widget.referralCode != null && widget.referralCode!.isNotEmpty;
+      
+      // Check both widget parameter and SessionManager for referral code
+      final pendingReferralCode = await SessionManager.instance.consumePendingReferralCode();
+      final widgetReferralCode = widget.referralCode;
+      final hasReferralCode = pendingReferralCode != null || 
+          (widgetReferralCode != null && widgetReferralCode.isNotEmpty);
+
+      if (kDebugMode) {
+        print('🔐 HOMEPAGE: Pending referral code: $pendingReferralCode');
+        print('🔐 HOMEPAGE: Widget referral code: $widgetReferralCode');
+        print('🔐 HOMEPAGE: Has referral code: $hasReferralCode');
+      }
 
       if (hasReferralCode && currentUser != null) {
         if (kDebugMode) {
@@ -127,13 +137,27 @@ class _HomepageScreenState extends State<HomepageScreen>
       curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
     ));
 
-
     _heroAnimationController.forward();
     _networkAnimationController.repeat();
   }
 
   Future<void> _initializeReferralData() async {
-    final code = widget.referralCode;
+    // Check both widget parameter and cached referral data
+    String? code = widget.referralCode;
+    
+    // If widget doesn't have referral code, check cached data
+    if (code == null || code.isEmpty) {
+      final cachedData = await SessionManager.instance.getReferralData();
+      if (cachedData != null) {
+        code = cachedData['referralCode'];
+      }
+    }
+    
+    // If still no code, check for pending referral code
+    if (code == null || code.isEmpty) {
+      code = await SessionManager.instance.consumePendingReferralCode();
+    }
+
     if (kDebugMode) {
       print('🔍 Initializing with referral code: $code');
     }
@@ -190,8 +214,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               }
 
               if (kDebugMode) {
-                print(
-                    '✅ UplineAdmin: $uplineAdmin');
+                print('✅ UplineAdmin: $uplineAdmin');
               }
 
               // Fetch biz_opp from admin_settings
@@ -244,6 +267,24 @@ class _HomepageScreenState extends State<HomepageScreen>
     super.dispose();
   }
 
+  Future<String?> _getCurrentReferralCode() async {
+    // Priority: widget parameter > cached data > pending code
+    String? code = widget.referralCode;
+    
+    if (code == null || code.isEmpty) {
+      final cachedData = await SessionManager.instance.getReferralData();
+      if (cachedData != null) {
+        code = cachedData['referralCode'];
+      }
+    }
+    
+    if (code == null || code.isEmpty) {
+      code = await SessionManager.instance.consumePendingReferralCode();
+    }
+    
+    return code;
+  }
+
   void _navigateToLogin() {
     if (_hasPerformedLogout) {
       // Dismiss the homepage to reveal the underlying login screen
@@ -258,12 +299,26 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
   }
 
-  void _navigateToRegistration() {
+  void _navigateToRegistration() async {
+    // Get the referral code from session manager or widget
+    String? referralCode = widget.referralCode;
+    
+    if (referralCode == null || referralCode.isEmpty) {
+      final cachedData = await SessionManager.instance.getReferralData();
+      if (cachedData != null) {
+        referralCode = cachedData['referralCode'];
+      }
+    }
+    
+    if (kDebugMode) {
+      print('🚀 Navigating to registration with referral code: $referralCode');
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => NewRegistrationScreen(
-          referralCode: widget.referralCode,
+          referralCode: referralCode,
           appId: widget.appId,
         ),
       ),
@@ -377,8 +432,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   Widget _buildDynamicWelcomeSection() {
-    final bool hasReferralCode =
-        widget.referralCode != null && widget.referralCode!.isNotEmpty;
+    final bool hasReferralCode = _sponsorName != null && _sponsorName!.isNotEmpty;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -403,8 +457,6 @@ class _HomepageScreenState extends State<HomepageScreen>
       ),
     );
   }
-
-  
 
   Widget _buildHeroSection() {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -1575,7 +1627,6 @@ class _HomepageScreenState extends State<HomepageScreen>
             _buildSmartOnboarding(),
             _buildFooterSection(),
             _buildDynamicWelcomeSection(),
-            
           ],
         ),
       ),
