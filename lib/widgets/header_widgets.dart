@@ -459,7 +459,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     ]);
 
     // Platform Management (admin only)
-    if (currentUser?.role == 'admin') {
+    if (currentUser?.role == 'adminXX') {
       items.add(
         _buildMenuItem(
           value: 'platform_management',
