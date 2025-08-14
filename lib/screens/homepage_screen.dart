@@ -267,24 +267,6 @@ class _HomepageScreenState extends State<HomepageScreen>
     super.dispose();
   }
 
-  Future<String?> _getCurrentReferralCode() async {
-    // Priority: widget parameter > cached data > pending code
-    String? code = widget.referralCode;
-    
-    if (code == null || code.isEmpty) {
-      final cachedData = await SessionManager.instance.getReferralData();
-      if (cachedData != null) {
-        code = cachedData['referralCode'];
-      }
-    }
-    
-    if (code == null || code.isEmpty) {
-      code = await SessionManager.instance.consumePendingReferralCode();
-    }
-    
-    return code;
-  }
-
   void _navigateToLogin() {
     if (_hasPerformedLogout) {
       // Dismiss the homepage to reveal the underlying login screen
@@ -314,6 +296,8 @@ class _HomepageScreenState extends State<HomepageScreen>
       print('🚀 Navigating to registration with referral code: $referralCode');
     }
 
+    if (!mounted) return;
+    
     Navigator.push(
       context,
       MaterialPageRoute(
