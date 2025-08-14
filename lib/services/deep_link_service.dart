@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app_links/app_links.dart';
 import '../screens/homepage_screen.dart';
 import '../main.dart' show navigatorKey, appId;
+import 'session_manager.dart';
 
 class DeepLinkService {
   static final DeepLinkService _instance = DeepLinkService._internal();
@@ -60,6 +61,9 @@ class DeepLinkService {
 
       // Store the referral code for later use
       _pendingReferralCode = referralCode;
+
+      // ✅ IMMEDIATELY SAVE THE CODE TO THE SESSION
+      await SessionManager.instance.setPendingReferralCode(referralCode);
 
       // Navigate to homepage screen with referral code
       navigatorKey.currentState?.pushReplacement(

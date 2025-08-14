@@ -163,7 +163,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           await SessionManager.instance
               .setReferralData(code, fetchedSponsorName);
           if (kDebugMode) {
-            print('✅ HomepageScreen: Referral data cached successfully');
+            print('✅ HomepageScreen: Referral data cached successfully $code');
           }
         } else {
           fetchedSponsorName = null;
@@ -187,6 +187,11 @@ class _HomepageScreenState extends State<HomepageScreen>
                 uplineAdmin = fetchedSponsorUid;
               } else {
                 uplineAdmin = sponsorData?['upline_admin'] as String?;
+              }
+
+              if (kDebugMode) {
+                print(
+                    '✅ UplineAdmin: $uplineAdmin');
               }
 
               // Fetch biz_opp from admin_settings
@@ -297,34 +302,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
   }
 
-  Widget _buildDynamicWelcomeSection() {
-    final bool hasReferral = _sponsorName != null && _sponsorName!.isNotEmpty;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.green.withOpacity(0.2),
-            Colors.green.withOpacity(0.1)
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildWelcomeHeader(hasReferral),
-          const SizedBox(height: 16),
-          _buildWelcomeContent(hasReferral),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWelcomeHeader(bool hasReferral) {
+  Widget _buildWelcomeHeader(bool hasReferralCode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -335,7 +313,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             shape: BoxShape.circle,
           ),
           child: Icon(
-            hasReferral ? Icons.person_add : Icons.trending_up,
+            hasReferralCode ? Icons.person_add : Icons.trending_up,
             color: Colors.white,
             size: 16,
           ),
@@ -343,7 +321,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         const SizedBox(width: 10),
         Flexible(
           child: Text(
-            hasReferral ? 'PERSONAL INVITATION' : 'INNOVATIVE APPROACH',
+            hasReferralCode ? 'PERSONAL INVITATION' : 'INNOVATIVE APPROACH',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -356,8 +334,8 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildWelcomeContent(bool hasReferral) {
-    if (hasReferral) {
+  Widget _buildWelcomeContent(bool hasReferralCode) {
+    if (hasReferralCode) {
       // REVISED RichText for a more direct and personal invitation
       return RichText(
         textAlign: TextAlign.center,
@@ -397,6 +375,36 @@ class _HomepageScreenState extends State<HomepageScreen>
       textAlign: TextAlign.center,
     );
   }
+
+  Widget _buildDynamicWelcomeSection() {
+    final bool hasReferralCode =
+        widget.referralCode != null && widget.referralCode!.isNotEmpty;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.green.withOpacity(0.2),
+            Colors.green.withOpacity(0.1)
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.green.withOpacity(0.3)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildWelcomeHeader(hasReferralCode),
+          const SizedBox(height: 16),
+          _buildWelcomeContent(hasReferralCode),
+        ],
+      ),
+    );
+  }
+
+  
 
   Widget _buildHeroSection() {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -1566,6 +1574,8 @@ class _HomepageScreenState extends State<HomepageScreen>
             _buildWhyChooseTeamBuildPro(),
             _buildSmartOnboarding(),
             _buildFooterSection(),
+            _buildDynamicWelcomeSection(),
+            
           ],
         ),
       ),

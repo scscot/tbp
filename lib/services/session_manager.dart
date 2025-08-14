@@ -12,6 +12,7 @@ class SessionManager {
   static const String _biometricKey = 'biometric_enabled';
   static const String _logoutTimeKey = 'last_logout_time';
   static const String _referralDataKey = 'referral_data';
+  static const String _pendingReferralKey = 'pending_referral_code';
 
   Future<void> setCurrentUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
@@ -68,6 +69,24 @@ class SessionManager {
       return DateTime.fromMillisecondsSinceEpoch(millis);
     }
     return null;
+  }
+
+  /// Saves a referral code received from a deep link
+  Future<void> setPendingReferralCode(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_pendingReferralKey, code);
+    debugPrint('📂 SessionManager — Pending referral code saved: $code');
+  }
+
+  /// Retrieves and clears the pending referral code
+  Future<String?> consumePendingReferralCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString(_pendingReferralKey);
+    if (code != null) {
+      await prefs.remove(_pendingReferralKey);
+      debugPrint('✅ SessionManager — Pending referral code consumed: $code');
+    }
+    return code;
   }
 
   // Referral data caching methods
