@@ -503,6 +503,13 @@ class _HomepageScreenState extends State<HomepageScreen>
                         children: [
                           SizedBox(height: isLandscape ? 16 : 32),
 
+
+
+
+                          // Sponsor welcome or stats
+                          _buildDynamicWelcomeSection(),
+
+                          SizedBox(height: isLandscape ? 16 : 32),
                           // Subtitle
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -544,11 +551,6 @@ class _HomepageScreenState extends State<HomepageScreen>
                               textAlign: TextAlign.center,
                             ),
                           ),
-
-                          SizedBox(height: isLandscape ? 16 : 24),
-
-                          // Sponsor welcome or stats
-                          _buildDynamicWelcomeSection(),
 
                           // SizedBox(height: isLandscape ? 8 : 12),
                         ],
