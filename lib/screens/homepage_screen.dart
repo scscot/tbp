@@ -41,7 +41,6 @@ class _HomepageScreenState extends State<HomepageScreen>
   String? _sponsorName;
   String? _sponsorPhotoUrl;
   String? _bizOpp = 'your opportunity';
-  String? _bizOpp1;
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
 
@@ -260,7 +259,6 @@ class _HomepageScreenState extends State<HomepageScreen>
           _sponsorName = fetchedSponsorName;
           _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
           _bizOpp = fetchedBizOpp;
-          _bizOpp1 = fetchedBizOpp;
         });
       }
     }
@@ -378,7 +376,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         const SizedBox(width: 10),
         Flexible(
           child: Text(
-            hasReferralCode ? 'PERSONAL INVITATION' : 'INNOVATIVE APPROACH',
+            hasReferralCode ? 'A Message From $_sponsorName' : 'INNOVATIVE APPROACH',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -395,7 +393,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     if (hasReferralCode) {
       // REVISED RichText for a more direct and personal invitation
       return RichText(
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.left,
         text: TextSpan(
           style: const TextStyle(
             fontSize: 14,
@@ -404,17 +402,13 @@ class _HomepageScreenState extends State<HomepageScreen>
           ),
           children: [
             TextSpan(
-              text: _sponsorName ?? 'A team leader',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const TextSpan(
-                text: ' is inviting you to get a head start on building your '),
+                text: 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
             TextSpan(
               text: _bizOpp ?? 'direct sales',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(
-              text: ' team with the Team Build Pro app.',
+              text: ' team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!',
             ),
           ],
         ),
@@ -503,14 +497,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                         children: [
                           SizedBox(height: isLandscape ? 16 : 32),
 
-
-
-
-                          // Sponsor welcome or stats
-                          _buildDynamicWelcomeSection(),
-
-                          SizedBox(height: isLandscape ? 16 : 32),
-                          // Subtitle
+                         // Subtitle
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 6),
@@ -533,7 +520,14 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ),
                           ),
 
-                          SizedBox(height: isLandscape ? 16 : 24),
+                          SizedBox(height: isLandscape ? 16 : 32),
+
+                           // Sponsor welcome or stats
+                          _buildDynamicWelcomeSection(),
+
+
+                          SizedBox(height: isLandscape ? 16 : 32),
+                          
 
                           // Value proposition
                           Padding(
@@ -566,409 +560,11 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildOrganizationShowcase() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue.shade50],
-        ),
-      ),
-      child: Column(
-        children: [
-          const Center(
-            child: Text(
-              'BUILT FOR EVERY\nSTAGE OF SUCCESS', // Title subtly revised for inclusivity
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1A237E),
-                letterSpacing: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 32),
 
-          // Card 1: For those who haven't started yet.
-          _buildOrganizationType(
-            icon: Icons.rocket_launch,
-            title: 'For Aspiring Leaders',
-            examples: 'Pre-Building • Head Start • Momentum',
-            description:
-                'Get a powerful head start. Begin building your team before you officially join an opportunity and launch with unstoppable momentum.',
-            color: Colors.orange,
-          ),
 
-          // Card 2: For those actively building.
-          _buildOrganizationType(
-            icon: Icons.trending_up,
-            title: 'For Active Team Builders',
-            examples: 'Team Growth • Prospecting • Analytics',
-            description:
-                'Efficiently track, manage, and expand your organization with powerful analytics and seamless, secure communication tools.',
-            color: Colors.blue,
-          ),
 
-          // Card 3: For established leaders.
-          _buildOrganizationType(
-            icon: Icons.groups,
-            title: 'For Seasoned Mentors',
-            examples: 'Leadership • Duplication • Global Reach',
-            description:
-                'Cultivate a thriving global network, mentor emerging leaders, and ensure sustainable growth across your entire organization.',
-            color: Colors.purple,
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildOrganizationType({
-    required IconData icon,
-    required String title,
-    required String examples,
-    required String description,
-    required Color color,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title row with icon
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          // Examples subtitle
-          Padding(
-            padding: const EdgeInsets.only(left: 44),
-            child: Text(
-              examples,
-              style: TextStyle(
-                fontSize: 12,
-                color: color.withOpacity(0.7),
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Description
-          Padding(
-            padding: const EdgeInsets.only(left: 44),
-            child: Text(
-              description,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
-                height: 1.5,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildHighPerformance() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Colors.blue.shade50],
-        ),
-      ),
-      child: Column(
-        children: [
-          const Center(
-            child: Text(
-              'HIGH-PERFORMANCE TEAM BUILDING',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1A237E),
-                letterSpacing: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 32),
-
-          _buildOrganizationType1(
-            icon: Icons.rocket_launch,
-            title: 'BUILD & GROW - Complete Team Development',
-            description:
-                '• Expand your team reach across multiple countries worldwide\n'
-                '• Connect with like-minded direct sales professionals\n'
-                '• Track team growth and engagement metrics in real-time\n'
-                '• Monitor qualification progress and achievements\n'
-                '• Foster collaborative team building relationships',
-            color: Colors.orange,
-          ),
-
-          // REVISED Card 2: Focuses on user benefits instead of technical jargon.
-          _buildOrganizationType1(
-            icon: Icons.insights, // Changed icon to better reflect "insights"
-            title: 'POWERFUL INSIGHTS, INSTANTLY', // New, benefit-driven title
-            description: '• Access real-time team analytics with zero delays\n'
-                '• Generate comprehensive team reports in an instant\n'
-                '• Instantly track growth and monitor key performance metrics\n'
-                '• Experience a lightning-fast interface that never slows you down\n'
-                '• Make smarter decisions with essential data at your fingertips',
-            color: Colors.purple,
-          ),
-
-          _buildOrganizationType1(
-            icon: Icons.message,
-            title: 'SECURE GLOBAL COMMUNICATION & COLLABORATION',
-            description:
-                '• Built-in messaging system with enterprise-grade security\n'
-                '• Daily team growth updates and milestone notifications\n'
-                '• Share updates and opportunities safely across your network\n'
-                '• Customizable notification preferences for optimal workflow',
-            color: Colors.blue,
-          ),
-
-          _buildOrganizationType1(
-            icon: Icons.info,
-            title: 'Important Disclaimers',
-            description:
-                '• Team Build Pro is NOT a business opportunity or income platform\n'
-                '• We do NOT pay users any money or compensation\n'
-                '• We are a team building tool and tracking platform ONLY',
-            color: Colors.green,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrganizationType1({
-    required IconData icon,
-    required String title,
-    required String description,
-    required Color color,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title row with icon
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Description with improved bullet point formatting
-          Padding(
-            padding: const EdgeInsets.only(left: 44),
-            child: _buildBulletPointList(description),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWhyChooseTeamBuildPro() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.grey.shade50, Colors.white],
-        ),
-      ),
-      child: Column(
-        children: [
-          const Center(
-            child: Text(
-              'WHY CHOOSE\nTEAM BUILD PRO',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1A237E),
-                letterSpacing: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 32),
-
-          // Card 1: Focuses on the transparent business model. (No changes)
-          _buildOrganizationType1(
-            icon: Icons.credit_card,
-            title: 'TRANSPARENT SUBSCRIPTION MODEL',
-            description:
-                '• 30-day free trial with full access to all premium features\n'
-                '• Clear monthly subscription fee with no hidden costs\n'
-                '• Complete transparency in pricing and billing\n'
-                '• Access to all team management and networking tools\n'
-                '• Cancel anytime with no long-term commitments',
-            color: Colors.green,
-          ),
-
-          // Card 2: Clearly defines the target audience. (No changes)
-          _buildOrganizationType1(
-            icon: Icons.people,
-            title: 'PERFECT FOR PROFESSIONALS',
-            description:
-                '• Direct sales professionals building and managing teams\n'
-                '• Team leaders managing growing organizations\n'
-                '• Entrepreneurs building collaborative partnerships\n'
-                '• Sales professionals nurturing team relationships\n'
-                '• Anyone serious about professional team building excellence',
-            color: Colors.blue,
-          ),
-
-          // REVISED Card 3: Focuses on Trust, Security, and Quality.
-          _buildOrganizationType1(
-            icon: Icons.verified_user, // Changed icon for better specificity
-            title: 'TRUST, SECURITY & PERFORMANCE', // New, clearer title
-            description:
-                '• Apple Store compliant with enterprise-grade security\n'
-                '• Engineered for a lightning-fast, reliable experience\n'
-                '• User-friendly interface designed for efficient team management\n'
-                '• Global reach to support worldwide network building\n'
-                '• Continuous improvements with regular feature updates',
-            color: Colors.purple,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBulletPointList(String description) {
-    // Split the description by newlines and filter out empty lines
-    final lines = description
-        .split('\n')
-        .where((line) => line.trim().isNotEmpty)
-        .toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.asMap().entries.map((entry) {
-        final line = entry.value.trim();
-
-        // Check if line starts with bullet point
-        if (line.startsWith('•')) {
-          final bulletText = line.substring(1).trim(); // Remove bullet and trim
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 6.0),
-                  width: 4,
-                  height: 4,
-                  decoration: const BoxDecoration(
-                    color: Colors.black54,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    bulletText,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                      height: 1.5,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          // Handle non-bullet text (fallback)
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              line,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
-                height: 1.5,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          );
-        }
-      }).toList(),
-    );
-  }
 
   Widget _buildSmartOnboarding() {
     return Container(
@@ -1187,361 +783,8 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  Widget _buildHowItWorks() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      color: Colors.grey.shade50,
-      child: Column(
-        children: [
-          // Section Title
-          const Text(
-            'HOW IT WORKS',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1A237E),
-              letterSpacing: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
 
-          // Hero Section
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1A237E), Color(0xFF3949AB)],
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.groups,
-                  size: 48,
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'CREATING MOMENTUM',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  (_sponsorName != null && _sponsorName!.isNotEmpty)
-                      ? 'For the forward-thinking leader about to join $_bizOpp, the Team Build Pro app is your tool to build your team before day one, positioning you for immediate success.'
-                      : 'For the ambitious direct sales professional, whether a beginner, rising star, or seasoned leader, the Team Build Pro app is your tool for building a powerful global organization, one meaningful connection at a time.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white.withOpacity(0.9),
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
 
-          // Featured Collaboration Section
-          Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                    color: const Color(0xFF1A237E).withOpacity(0.2), width: 2),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A237E).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.star,
-                            color: Color(0xFF1A237E), size: 28),
-                      ),
-                      const SizedBox(width: 16),
-                      const Expanded(
-                        child: Text(
-                          'Featured Opportuntiy',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A237E),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF1A237E).withOpacity(0.05),
-                          Colors.green.withOpacity(0.05),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: const Color(0xFF1A237E).withOpacity(0.3),
-                          width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1A237E).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.business,
-                            color: Color(0xFF1A237E),
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            _bizOpp1 ?? 'Your Company',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1A237E),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // The Challenge, Solution, Why It Works
-          _buildHowItWorksSectionCard(
-            title: 'THE CHALLENGE',
-            content:
-                'Starting from zero is the biggest hurdle in direct sales. Professionals often struggle to find motivated prospects and build momentum quickly, leading to frustration and slow growth.',
-            icon: Icons.warning,
-            color: Colors.red,
-          ),
-          const SizedBox(height: 16),
-
-          _buildHowItWorksSectionCard(
-            title: 'THE SOLUTION',
-            content:
-                'The Team Build Pro app offers a unique system for pre-building your team. Our platform provides the tools to cultivate a network of interested prospects before day one, turning a cold start into a running start.',
-            icon: Icons.lightbulb,
-            color: const Color(0xFF1A237E),
-          ),
-          const SizedBox(height: 16),
-
-          _buildHowItWorksSectionCard(
-            title: 'WHY IT WORKS',
-            content:
-                'By focusing on relationship-building first, our platform creates genuine momentum. When prospects are part of a growing community from the beginning, they are more engaged, motivated, and prepared for success the moment they officially join.',
-            icon: Icons.trending_up,
-            color: Colors.green,
-          ),
-          const SizedBox(height: 24),
-
-          // The Process
-          Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.settings,
-                            color: Colors.orange, size: 28),
-                      ),
-                      const SizedBox(width: 16),
-                      const Text(
-                        'THE PROCESS',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  _buildHowItWorksProcessStep(
-                    step: 1,
-                    title: 'INVITE - Build Your Foundation',
-                    description:
-                        'Connect with like-minded professionals open to exploring ${_bizOpp ?? 'your opportunity'}.',
-                    icon: Icons.connect_without_contact,
-                  ),
-                  _buildHowItWorksProcessStep(
-                    step: 2,
-                    title: 'CULTIVATE - Create Momentum',
-                    description:
-                        'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
-                    icon: Icons.psychology,
-                  ),
-                  _buildHowItWorksProcessStep(
-                    step: 3,
-                    title: 'PARTNER - Launch with Success',
-                    description:
-                        "Team members receive an invitation to join ${_bizOpp ?? 'your opportunity'} upon achieving key growth targets.",
-                    icon: Icons.handshake,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHowItWorksSectionCard({
-    required String title,
-    required String content,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2), width: 2),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: color, size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              content,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.6,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHowItWorksProcessStep({
-    required int step,
-    required String title,
-    required String description,
-    required IconData icon,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: Colors.orange, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.only(left: 44),
-            child: Text(
-              description,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1624,13 +867,12 @@ class _HomepageScreenState extends State<HomepageScreen>
           children: [
             _buildHeroSection(),
             _buildSmartOnboarding(),
-            _buildOrganizationShowcase(),
-            _buildHighPerformance(),
-            _buildHowItWorks(),
-            _buildWhyChooseTeamBuildPro(),
-            _buildSmartOnboarding(),
+            // _buildOrganizationShowcase(),
+            // _buildHighPerformance(),
+            // _buildHowItWorks(),
+            // _buildWhyChooseTeamBuildPro(),
+            // _buildSmartOnboarding(),
             _buildFooterSection(),
-            _buildDynamicWelcomeSection(),
           ],
         ),
       ),

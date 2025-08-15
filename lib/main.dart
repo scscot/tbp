@@ -24,7 +24,7 @@ import 'services/notification_service.dart';
 import 'screens/network_screen.dart'; //
 import 'services/badge_service.dart';
 // import 'screens/login_screen.dart';
-import 'screens/homepage_screen.dart';
+import 'screens/homepage1_screen.dart';
 
 // --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -343,8 +343,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
     } */
 
     if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HomepageScreen');
-      return HomepageScreen(key: const ValueKey('HomepageScreen'), appId: appId);
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing Homepage1Screen');
+      return Homepage1Screen(key: const ValueKey('Homepage1Screen'), appId: appId);
     }
 
     debugPrint(
