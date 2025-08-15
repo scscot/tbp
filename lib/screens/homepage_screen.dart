@@ -13,6 +13,7 @@ import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
+import 'login_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class HomepageScreen extends StatefulWidget {
@@ -273,10 +274,15 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   void _navigateToLogin() {
     if (_hasPerformedLogout) {
-      // Dismiss the homepage to reveal the underlying login screen
-      Navigator.of(context).pop();
+      // Navigate to LoginScreen instead of popping back
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(appId: widget.appId),
+        ),
+      );
     } else {
-      // This logic ensures the pop only happens after the initial logout check is complete
+      // Wait for logout check to complete, then navigate
       Future.delayed(const Duration(milliseconds: 100), () {
         if (mounted) {
           _navigateToLogin();
