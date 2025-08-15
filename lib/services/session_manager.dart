@@ -89,6 +89,16 @@ class SessionManager {
     return code;
   }
 
+  /// Retrieves the pending referral code without consuming it
+  Future<String?> getPendingReferralCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString(_pendingReferralKey);
+    if (code != null) {
+      debugPrint('📂 SessionManager — Pending referral code retrieved: $code');
+    }
+    return code;
+  }
+
   // Referral data caching methods
   Future<void> setReferralData(String referralCode, String sponsorName) async {
     // Validate referral code before caching

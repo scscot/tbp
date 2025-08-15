@@ -62,15 +62,21 @@ class _HomepageScreenState extends State<HomepageScreen>
       final authService = AuthService();
       final currentUser = FirebaseAuth.instance.currentUser;
       
-      // Check both widget parameter and SessionManager for referral code
-      final pendingReferralCode = await SessionManager.instance.consumePendingReferralCode();
-      final widgetReferralCode = widget.referralCode;
-      final hasReferralCode = pendingReferralCode != null || 
-          (widgetReferralCode != null && widgetReferralCode.isNotEmpty);
+      // Get referral code exclusively from SessionManager - DO NOT consume yet
+      String? referralCode = await SessionManager.instance.getPendingReferralCode();
+      
+      // If no pending code, check cached referral data
+      if (referralCode == null || referralCode.isEmpty) {
+        final cachedData = await SessionManager.instance.getReferralData();
+        if (cachedData != null) {
+          referralCode = cachedData['referralCode'];
+        }
+      }
+      
+      final hasReferralCode = referralCode != null && referralCode.isNotEmpty;
 
       if (kDebugMode) {
-        print('🔐 HOMEPAGE: Pending referral code: $pendingReferralCode');
-        print('🔐 HOMEPAGE: Widget referral code: $widgetReferralCode');
+        print('🔐 HOMEPAGE: Session Manager referral code: $referralCode');
         print('🔐 HOMEPAGE: Has referral code: $hasReferralCode');
       }
 
@@ -144,20 +150,15 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   Future<void> _initializeReferralData() async {
-    // Check both widget parameter and cached referral data
-    String? code = widget.referralCode;
+    // Get referral code exclusively from SessionManager
+    String? code = await SessionManager.instance.consumePendingReferralCode();
     
-    // If widget doesn't have referral code, check cached data
+    // If no pending code, check cached referral data
     if (code == null || code.isEmpty) {
       final cachedData = await SessionManager.instance.getReferralData();
       if (cachedData != null) {
         code = cachedData['referralCode'];
       }
-    }
-    
-    // If still no code, check for pending referral code
-    if (code == null || code.isEmpty) {
-      code = await SessionManager.instance.consumePendingReferralCode();
     }
 
     if (kDebugMode) {
@@ -292,15 +293,8 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   void _navigateToRegistration() async {
-    // Get the referral code from session manager or widget
-    String? referralCode = widget.referralCode;
-    
-    if (referralCode == null || referralCode.isEmpty) {
-      final cachedData = await SessionManager.instance.getReferralData();
-      if (cachedData != null) {
-        referralCode = cachedData['referralCode'];
-      }
-    }
+    // Get the referral code exclusively from SessionManager
+    String? referralCode = await SessionManager.instance.getReferralData().then((data) => data?['referralCode']);
     
     if (kDebugMode) {
       print('🚀 Navigating to registration with referral code: $referralCode');
