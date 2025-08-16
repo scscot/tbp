@@ -41,6 +41,9 @@ class _Homepage1ScreenState extends State<Homepage1Screen>
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
 
+  // Add this variable to track the current operation
+  String? _activeReferralOperation;
+
   @override
   void initState() {
     super.initState();
@@ -48,7 +51,7 @@ class _Homepage1ScreenState extends State<Homepage1Screen>
     _performLogoutAndInitialize();
   }
 
-Future<void> _performLogoutAndInitialize() async {
+  Future<void> _performLogoutAndInitialize() async {
     try {
       if (kDebugMode) {
         print(
@@ -58,29 +61,23 @@ Future<void> _performLogoutAndInitialize() async {
       final authService = AuthService();
       final currentUser = FirebaseAuth.instance.currentUser;
 
-      // Get referral code exclusively from SessionManager - DO NOT consume yet
-      String? referralCode =
+      // Only check for pending referral code for logout logic
+      String? pendingCode =
           await SessionManager.instance.getPendingReferralCode();
 
-      // If no pending code, check cached referral data
-      if (referralCode == null || referralCode.isEmpty) {
-        final cachedData = await SessionManager.instance.getReferralData();
-        if (cachedData != null) {
-          referralCode = cachedData['referralCode'];
-        }
-      }
-
-      final hasReferralCode = referralCode != null && referralCode.isNotEmpty;
+      // For logout logic, only consider pending codes, not cached ones
+      final hasPendingReferralCode =
+          pendingCode != null && pendingCode.isNotEmpty;
 
       if (kDebugMode) {
-        print('🔐 HOMEPAGE: Session Manager referral code: $referralCode');
-        print('🔐 HOMEPAGE: Has referral code: $hasReferralCode');
+        print('🔐 HOMEPAGE: Pending referral code: $pendingCode');
+        print('🔐 HOMEPAGE: Has pending referral code: $hasPendingReferralCode');
       }
 
-      if (hasReferralCode && currentUser != null) {
+      if (hasPendingReferralCode && currentUser != null) {
         if (kDebugMode) {
           print(
-              '🔐 HOMEPAGE: Found referral code and existing user session, performing logout...');
+              '🔐 HOMEPAGE: Found pending referral code and existing user session, performing logout...');
         }
 
         await authService.signOut();
@@ -95,7 +92,7 @@ Future<void> _performLogoutAndInitialize() async {
       } else {
         if (kDebugMode) {
           print(
-              '🔐 HOMEPAGE: No referral code or no user session, skipping logout');
+              '🔐 HOMEPAGE: No pending referral code or no user session, skipping logout');
         }
       }
 
@@ -125,40 +122,67 @@ Future<void> _performLogoutAndInitialize() async {
   }
 
   Future<void> _initializeReferralData() async {
-    String? code = await SessionManager.instance.consumePendingReferralCode();
-    
-    if (code == null || code.isEmpty) {
-      final cachedData = await SessionManager.instance.getReferralData();
-      if (cachedData != null) {
-        code = cachedData['referralCode'];
-      }
+    String? pendingCode =
+        await SessionManager.instance.consumePendingReferralCode();
+
+    // Set the active operation to this new code.
+    // Use a unique identifier like DateTime if the code could be null.
+    final String currentOperationId =
+        pendingCode ?? DateTime.now().toIso8601String();
+    _activeReferralOperation = currentOperationId;
+
+    // Reset state to ensure a clean slate for every new operation
+    if (mounted) {
+      setState(() {
+        _sponsorName = null;
+        _sponsorPhotoUrl = null;
+        _bizOpp = 'your opportunity';
+      });
     }
 
-    if (code == null || code.isEmpty) {
+    // If there's no pending code, we are done.
+    if (pendingCode == null || pendingCode.isEmpty) {
+      if (kDebugMode) {
+        print("🔍 No pending code. Clearing state and stopping.");
+      }
       return;
     }
 
-    String? fetchedSponsorName;
-    String? fetchedSponsorPhotoUrl;
-    String? fetchedBizOpp;
+    if (kDebugMode) {
+      print("🔍 Initializing with NEW pending referral code: $pendingCode");
+    }
 
     try {
       final uri = Uri.parse(
-          'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code');
+          'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$pendingCode');
       final response = await http.get(uri);
+
+      // CRITICAL FIX: Check if this operation is still the active one.
+      if (_activeReferralOperation != currentOperationId) {
+        if (kDebugMode) {
+          print(
+              "🏃‍♂️ Race condition detected. Discarding stale result for code: $pendingCode");
+        }
+        return; // Exit without updating state
+      }
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        fetchedSponsorName =
-            '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
-        fetchedSponsorPhotoUrl = data['photoUrl'] as String?;
 
-        if (fetchedSponsorName.isNotEmpty) {
-          await SessionManager.instance
-              .setReferralData(code, fetchedSponsorName);
-        } else {
-          fetchedSponsorName = null;
+        if (data == null || data['uid'] == null) {
+          await SessionManager.instance.clearReferralData();
+          if (kDebugMode) {
+            print(
+                "❌ HOMEPAGE: New referral code '$pendingCode' does not exist, clearing ALL cached data");
+          }
+          return;
         }
+
+        // Valid new referral code - update state and cache
+        final fetchedSponsorName =
+            '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+        final fetchedSponsorPhotoUrl = data['photoUrl'] as String?;
+        String? fetchedBizOpp;
 
         // Fetch biz_opp from admin_settings
         String? fetchedSponsorUid = data['uid'] as String?;
@@ -197,19 +221,33 @@ Future<void> _performLogoutAndInitialize() async {
             }
           }
         }
+
+        if (fetchedSponsorName.isNotEmpty) {
+            await SessionManager.instance
+                .setReferralData(pendingCode, fetchedSponsorName);
+        }
+
+        if (mounted) {
+          setState(() {
+            _sponsorName = fetchedSponsorName;
+            _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
+            _bizOpp = fetchedBizOpp;
+          });
+        }
+      } else {
+        // API error for new referral code
+        await SessionManager.instance.clearReferralData();
+        if (kDebugMode) {
+          print(
+              "❌ HOMEPAGE: API error ${response.statusCode} for new referral code '$pendingCode', clearing cached data");
+        }
       }
     } catch (e) {
       if (kDebugMode) {
-        print("Error finding sponsor: $e");
+        print(
+            "❌ HOMEPAGE: Network error for new referral code '$pendingCode': $e");
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _sponsorName = fetchedSponsorName;
-          _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
-          _bizOpp = fetchedBizOpp;
-        });
-      }
+      await SessionManager.instance.clearReferralData();
     }
   }
 
@@ -219,7 +257,7 @@ Future<void> _performLogoutAndInitialize() async {
     super.dispose();
   }
 
-void _navigateToLogin() {
+  void _navigateToLogin() {
     if (_hasPerformedLogout) {
       // Navigate to LoginScreen instead of popping back
       Navigator.push(
@@ -239,10 +277,12 @@ void _navigateToLogin() {
   }
 
   void _navigateToRegistration() async {
-    String? referralCode = await SessionManager.instance.getReferralData().then((data) => data?['referralCode']);
-    
+    String? referralCode = await SessionManager.instance
+        .getReferralData()
+        .then((data) => data?['referralCode']);
+
     if (!mounted) return;
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -256,8 +296,9 @@ void _navigateToLogin() {
 
   // Subtitle
   Widget _buildSubtitle() {
-    final bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    
+    final bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       decoration: BoxDecoration(
@@ -281,14 +322,14 @@ void _navigateToLogin() {
   }
 
   Widget _buildDynamicWelcomeSection() {
-    final bool hasReferralCode = _sponsorName != null && _sponsorName!.isNotEmpty;
-
+    final bool hasReferralCode =
+        _sponsorName != null && _sponsorName!.isNotEmpty;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             Color(0xFF0A0E27),
             Color(0xFF1A237E),
@@ -309,7 +350,6 @@ void _navigateToLogin() {
                   height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
                     image: DecorationImage(
                       image: NetworkImage(_sponsorPhotoUrl!),
                       fit: BoxFit.cover,
@@ -320,11 +360,15 @@ void _navigateToLogin() {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: hasReferralCode ? Colors.green : Colors.blue,
+                    color: hasReferralCode && _sponsorPhotoUrl != null
+                        ? Colors.green
+                        : Colors.blue,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    hasReferralCode ? Icons.person_add : Icons.trending_up,
+                    hasReferralCode && _sponsorPhotoUrl != null
+                        ? Icons.person_add
+                        : Icons.trending_up,
                     color: Colors.white,
                     size: 16,
                   ),
@@ -332,9 +376,11 @@ void _navigateToLogin() {
               const SizedBox(width: 10),
               Flexible(
                 child: Text(
-                  hasReferralCode ? 'A Message From $_sponsorName' : 'INNOVATIVE APPROACH',
+                  hasReferralCode && _sponsorPhotoUrl != null
+                      ? 'A Message From $_sponsorName'
+                      : 'INNOVATIVE APPROACH',
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                     letterSpacing: 1.0,
@@ -346,7 +392,7 @@ void _navigateToLogin() {
           ),
           const SizedBox(height: 16),
           Text(
-            hasReferralCode
+            hasReferralCode && _sponsorPhotoUrl != null
                 ? 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your ${_bizOpp ?? 'direct sales'} team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'
                 : 'Transform your recruitment and team building strategy! Help prospects start building their organization immediately.',
             style: const TextStyle(
@@ -367,20 +413,12 @@ void _navigateToLogin() {
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          const Text(
-            'GET STARTED TODAY!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _navigateToRegistration,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -390,6 +428,7 @@ void _navigateToLogin() {
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
+                color: Colors.white,
               ),
             ),
           ),
@@ -414,7 +453,8 @@ void _navigateToLogin() {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PrivacyPolicyScreen(appId: widget.appId),
+                      builder: (context) =>
+                          PrivacyPolicyScreen(appId: widget.appId),
                     ),
                   );
                 },
@@ -431,7 +471,8 @@ void _navigateToLogin() {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TermsOfServiceScreen(appId: widget.appId),
+                      builder: (context) =>
+                          TermsOfServiceScreen(appId: widget.appId),
                     ),
                   );
                 },
@@ -450,7 +491,7 @@ void _navigateToLogin() {
     );
   }
 
-PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
+  PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
