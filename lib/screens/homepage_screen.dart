@@ -5,11 +5,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/session_manager.dart';
 import '../services/auth_service.dart';
+import '../config/app_colors.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
@@ -33,9 +33,6 @@ class HomepageScreen extends StatefulWidget {
 class _HomepageScreenState extends State<HomepageScreen>
     with TickerProviderStateMixin {
   late AnimationController _heroAnimationController;
-  late AnimationController _networkAnimationController;
-  late Animation<double> _heroFadeAnimation;
-  late Animation<Offset> _heroSlideAnimation;
 
   // Referral code related state
   String? _sponsorName;
@@ -43,6 +40,9 @@ class _HomepageScreenState extends State<HomepageScreen>
   String? _bizOpp = 'your opportunity';
   bool _isLoggingOut = true;
   bool _hasPerformedLogout = false;
+
+  // Add this variable to track the current operation
+  String? _activeReferralOperation;
 
   @override
   void initState() {
@@ -60,29 +60,25 @@ class _HomepageScreenState extends State<HomepageScreen>
 
       final authService = AuthService();
       final currentUser = FirebaseAuth.instance.currentUser;
-      
-      // Get referral code exclusively from SessionManager - DO NOT consume yet
-      String? referralCode = await SessionManager.instance.getPendingReferralCode();
-      
-      // If no pending code, check cached referral data
-      if (referralCode == null || referralCode.isEmpty) {
-        final cachedData = await SessionManager.instance.getReferralData();
-        if (cachedData != null) {
-          referralCode = cachedData['referralCode'];
-        }
-      }
-      
-      final hasReferralCode = referralCode != null && referralCode.isNotEmpty;
+
+      // Only check for pending referral code for logout logic
+      String? pendingCode =
+          await SessionManager.instance.getPendingReferralCode();
+
+      // For logout logic, only consider pending codes, not cached ones
+      final hasPendingReferralCode =
+          pendingCode != null && pendingCode.isNotEmpty;
 
       if (kDebugMode) {
-        print('🔐 HOMEPAGE: Session Manager referral code: $referralCode');
-        print('🔐 HOMEPAGE: Has referral code: $hasReferralCode');
+        print('🔐 HOMEPAGE: Pending referral code: $pendingCode');
+        print(
+            '🔐 HOMEPAGE: Has pending referral code: $hasPendingReferralCode');
       }
 
-      if (hasReferralCode && currentUser != null) {
+      if (hasPendingReferralCode && currentUser != null) {
         if (kDebugMode) {
           print(
-              '🔐 HOMEPAGE: Found referral code and existing user session, performing logout...');
+              '🔐 HOMEPAGE: Found pending referral code and existing user session, performing logout...');
         }
 
         await authService.signOut();
@@ -97,7 +93,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       } else {
         if (kDebugMode) {
           print(
-              '🔐 HOMEPAGE: No referral code or no user session, skipping logout');
+              '🔐 HOMEPAGE: No pending referral code or no user session, skipping logout');
         }
       }
 
@@ -123,84 +119,76 @@ class _HomepageScreenState extends State<HomepageScreen>
       vsync: this,
     );
 
-    _networkAnimationController = AnimationController(
-      duration: const Duration(seconds: 8),
-      vsync: this,
-    );
-
-    _heroFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _heroAnimationController,
-      curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-    ));
-
-    _heroSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _heroAnimationController,
-      curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
-    ));
-
     _heroAnimationController.forward();
-    _networkAnimationController.repeat();
   }
 
   Future<void> _initializeReferralData() async {
-    // Get referral code exclusively from SessionManager
-    String? code = await SessionManager.instance.consumePendingReferralCode();
-    
-    // If no pending code, check cached referral data
-    if (code == null || code.isEmpty) {
-      final cachedData = await SessionManager.instance.getReferralData();
-      if (cachedData != null) {
-        code = cachedData['referralCode'];
+    String? pendingCode =
+        await SessionManager.instance.consumePendingReferralCode();
+
+    // Set the active operation to this new code.
+    // Use a unique identifier like DateTime if the code could be null.
+    final String currentOperationId =
+        pendingCode ?? DateTime.now().toIso8601String();
+    _activeReferralOperation = currentOperationId;
+
+    // Reset state to ensure a clean slate for every new operation
+    if (mounted) {
+      setState(() {
+        _sponsorName = null;
+        _sponsorPhotoUrl = null;
+        _bizOpp = 'your opportunity';
+      });
+    }
+
+    // If there's no pending code, we are done.
+    if (pendingCode == null || pendingCode.isEmpty) {
+      if (kDebugMode) {
+        print("🔍 No pending code. Clearing state and stopping.");
       }
-    }
-
-    if (kDebugMode) {
-      print('🔍 Initializing with referral code: $code');
-    }
-
-    if (code == null || code.isEmpty) {
       return;
     }
 
-    setState(() {});
-
-    String? fetchedSponsorName;
-    String? fetchedSponsorPhotoUrl;
-    String? fetchedSponsorUid;
-    String? fetchedBizOpp;
+    if (kDebugMode) {
+      print("🔍 Initializing with NEW pending referral code: $pendingCode");
+    }
 
     try {
       final uri = Uri.parse(
-          'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code');
+          'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$pendingCode');
       final response = await http.get(uri);
+
+      // CRITICAL FIX: Check if this operation is still the active one.
+      if (_activeReferralOperation != currentOperationId) {
+        if (kDebugMode) {
+          print(
+              "🏃‍♂️ Race condition detected. Discarding stale result for code: $pendingCode");
+        }
+        return; // Exit without updating state
+      }
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        fetchedSponsorName =
-            '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
-        fetchedSponsorPhotoUrl = data['photoUrl'] as String?;
-        fetchedSponsorUid = data['uid'] as String?;
 
-        if (fetchedSponsorName.isNotEmpty) {
-          await SessionManager.instance
-              .setReferralData(code, fetchedSponsorName);
+        if (data == null || data['uid'] == null) {
+          await SessionManager.instance.clearReferralData();
           if (kDebugMode) {
-            print('✅ HomepageScreen: Referral data cached successfully $code');
+            print(
+                "❌ HOMEPAGE: New referral code '$pendingCode' does not exist, clearing ALL cached data");
           }
-        } else {
-          fetchedSponsorName = null;
+          return;
         }
 
-        // Fetch biz_opp from admin_settings using sponsor's upline_admin
+        // Valid new referral code - update state and cache
+        final fetchedSponsorName =
+            '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+        final fetchedSponsorPhotoUrl = data['photoUrl'] as String?;
+        String? fetchedBizOpp;
+
+        // Fetch biz_opp from admin_settings
+        String? fetchedSponsorUid = data['uid'] as String?;
         if (fetchedSponsorUid != null) {
           try {
-            // Get sponsor's user document to find their upline_admin
             final sponsorDoc = await FirebaseFirestore.instance
                 .collection('users')
                 .doc(fetchedSponsorUid)
@@ -210,18 +198,12 @@ class _HomepageScreenState extends State<HomepageScreen>
               final sponsorData = sponsorDoc.data();
               String? uplineAdmin;
 
-              // If sponsor is admin, use their UID, otherwise use their upline_admin
               if (sponsorData?['role'] == 'admin') {
                 uplineAdmin = fetchedSponsorUid;
               } else {
                 uplineAdmin = sponsorData?['upline_admin'] as String?;
               }
 
-              if (kDebugMode) {
-                print('✅ UplineAdmin: $uplineAdmin');
-              }
-
-              // Fetch biz_opp from admin_settings
               if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
                 final adminSettingsDoc = await FirebaseFirestore.instance
                     .collection('admin_settings')
@@ -231,43 +213,48 @@ class _HomepageScreenState extends State<HomepageScreen>
                 if (adminSettingsDoc.exists) {
                   final adminData = adminSettingsDoc.data();
                   fetchedBizOpp = adminData?['biz_opp'] as String?;
-                  if (kDebugMode) {
-                    print('✅ HomepageScreen: Fetched biz_opp: $fetchedBizOpp');
-                  }
                 }
               }
             }
           } catch (e) {
             if (kDebugMode) {
-              print('❌ Error fetching biz_opp: $e');
+              print('Error fetching biz_opp: $e');
             }
           }
         }
+
+        if (fetchedSponsorName.isNotEmpty) {
+          await SessionManager.instance
+              .setReferralData(pendingCode, fetchedSponsorName);
+        }
+
+        if (mounted) {
+          setState(() {
+            _sponsorName = fetchedSponsorName;
+            _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
+            _bizOpp = fetchedBizOpp;
+          });
+        }
       } else {
+        // API error for new referral code
+        await SessionManager.instance.clearReferralData();
         if (kDebugMode) {
           print(
-              'Failed to get sponsor data. Status code: ${response.statusCode}');
+              "❌ HOMEPAGE: API error ${response.statusCode} for new referral code '$pendingCode', clearing cached data");
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print("Error finding sponsor: $e.");
+        print(
+            "❌ HOMEPAGE: Network error for new referral code '$pendingCode': $e");
       }
-    } finally {
-        if (mounted) {
-        setState(() {
-          _sponsorName = fetchedSponsorName;
-          _sponsorPhotoUrl = fetchedSponsorPhotoUrl;
-          _bizOpp = fetchedBizOpp;
-        });
-      }
+      await SessionManager.instance.clearReferralData();
     }
   }
 
   @override
   void dispose() {
     _heroAnimationController.dispose();
-    _networkAnimationController.dispose();
     super.dispose();
   }
 
@@ -291,15 +278,12 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   void _navigateToRegistration() async {
-    // Get the referral code exclusively from SessionManager
-    String? referralCode = await SessionManager.instance.getReferralData().then((data) => data?['referralCode']);
-    
-    if (kDebugMode) {
-      print('🚀 Navigating to registration with referral code: $referralCode');
-    }
+    String? referralCode = await SessionManager.instance
+        .getReferralData()
+        .then((data) => data?['referralCode']);
 
     if (!mounted) return;
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -311,570 +295,144 @@ class _HomepageScreenState extends State<HomepageScreen>
     );
   }
 
-  double _calculateContentHeight(bool isLandscape) {
-    double height = 0;
-    height += isLandscape ? 12 : 32; // top spacing (reduced for landscape)
-    height += isLandscape ? 60 : 80; // platform logo (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += isLandscape ? 45 : 60; // main title (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += isLandscape ? 35 : 50; // subtitle badge (smaller in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height +=
-        isLandscape ? 100 : 140; // value proposition text (less in landscape)
-    height += isLandscape ? 12 : 24; // spacing
-    height += _estimateWelcomeCardHeight(
-        isLandscape); // dynamic card with landscape consideration
-    height += isLandscape ? 6 : 12; // bottom spacing
-    height += isLandscape ? 20 : 30; // safety buffer (less needed in landscape)
+  // Subtitle
+  Widget _buildSubtitle() {
+    final bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
-    return height;
-  }
-
-  double _estimateWelcomeCardHeight(bool isLandscape) {
-    if (_sponsorName != null && _sponsorName!.isNotEmpty) {
-      return isLandscape
-          ? 100
-          : 120; // Personal invitation card (shorter in landscape)
-    } else {
-      return isLandscape
-          ? 140
-          : 180; // Innovative approach card (shorter in landscape)
-    }
-  }
-
-  Widget _buildWelcomeHeader(bool hasReferralCode) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (hasReferralCode && _sponsorPhotoUrl != null)
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              image: DecorationImage(
-                image: NetworkImage(_sponsorPhotoUrl!),
-                fit: BoxFit.cover,
-              ),
-            ),
-          )
-        else
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: hasReferralCode ? Colors.green : Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              hasReferralCode ? Icons.person_add : Icons.trending_up,
-              color: Colors.white,
-              size: 16,
-            ),
-          ),
-        const SizedBox(width: 10),
-        Flexible(
-          child: Text(
-            hasReferralCode ? 'A Message From $_sponsorName' : 'INNOVATIVE APPROACH',
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 1.0,
-            ),
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Colors.orange, Colors.deepOrange],
         ),
-      ],
-    );
-  }
-
-  Widget _buildWelcomeContent(bool hasReferralCode) {
-    if (hasReferralCode) {
-      // REVISED RichText for a more direct and personal invitation
-      return RichText(
-        textAlign: TextAlign.left,
-        text: TextSpan(
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-          children: [
-            TextSpan(
-                text: 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
-            TextSpan(
-              text: _bizOpp ?? 'direct sales',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const TextSpan(
-              text: ' team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!',
-            ),
-          ],
-        ),
-      );
-    }
-
-    // This text is already excellent. No changes needed.
-    return const Text(
-      'Transform your recruitment and team building strategy! Help prospects start building their organization immediately and your existing team members accelerate their growth - creating unstoppable momentum throughout your entire network!',
-      style: TextStyle(
-        fontSize: 14,
-        color: Colors.white,
-        fontWeight: FontWeight.w500,
+        borderRadius: BorderRadius.circular(30),
       ),
-      textAlign: TextAlign.center,
+      child: Text(
+        (_sponsorName != null && _sponsorName!.isNotEmpty)
+            ? 'JUMPSTART YOUR TEAM GROWTH'
+            : 'PROVEN TEAM BUILDING SYSTEM',
+        style: TextStyle(
+          fontSize: isLandscape ? 12 : 14,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+          letterSpacing: 1.2,
+        ),
+      ),
     );
   }
 
   Widget _buildDynamicWelcomeSection() {
-    final bool hasReferralCode = _sponsorName != null && _sponsorName!.isNotEmpty;
+    final bool hasReferralCode =
+        _sponsorName != null && _sponsorName!.isNotEmpty;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
-            Colors.green.withOpacity(0.2),
-            Colors.green.withOpacity(0.1)
+            Color(0xFF0A0E27),
+            Color(0xFF1A237E),
+            Color(0xFF3949AB),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildWelcomeHeader(hasReferralCode),
-          const SizedBox(height: 16),
-          _buildWelcomeContent(hasReferralCode),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeroSection() {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isLandscape = screenWidth > screenHeight;
-
-    // Calculate content-based height
-    final baseContentHeight = _calculateContentHeight(isLandscape);
-    final safeHeight =
-        screenHeight - MediaQuery.of(context).padding.top - kToolbarHeight;
-    final optimalHeight = math.min(baseContentHeight, safeHeight);
-
-    return Container(
-      height: optimalHeight, // Use calculated height instead of BoxConstraints
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0A0E27), // Deep navy
-            Color(0xFF1A237E), // Indigo
-            Color(0xFF3949AB), // Material indigo
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Animated network nodes background
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FadeTransition(
-                    opacity: _heroFadeAnimation,
-                    child: SlideTransition(
-                      position: _heroSlideAnimation,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: isLandscape ? 16 : 32),
-
-                         // Subtitle
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 6),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Colors.orange, Colors.deepOrange],
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              (_sponsorName != null && _sponsorName!.isNotEmpty)
-                                  ? 'JUMPSTART YOUR TEAM GROWTH'
-                                  : 'PROVEN TEAM BUILDING SYSTEM',
-                              style: TextStyle(
-                                fontSize: isLandscape ? 12 : 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(height: isLandscape ? 16 : 32),
-
-                           // Sponsor welcome or stats
-                          _buildDynamicWelcomeSection(),
-
-
-                          SizedBox(height: isLandscape ? 16 : 32),
-                          
-
-                          // Value proposition
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              (_sponsorName != null && _sponsorName!.isNotEmpty)
-                                  ? 'Get the ultimate head start. This platform empowers aspiring leaders to pre-build their team before day one, ensuring you launch your new venture with powerful, immediate momentum.'
-                                  : 'The ultimate app for direct sales professionals to manage and scale your existing team with unstoppable momentum and exponential growth.',
-                              style: TextStyle(
-                                fontSize: isLandscape ? 14 : 16,
-                                color: Colors.white,
-                                height: 1.4,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-
-                          // SizedBox(height: isLandscape ? 8 : 12),
-                        ],
-                      ),
+          Row(
+            children: [
+              if (hasReferralCode && _sponsorPhotoUrl != null)
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(_sponsorPhotoUrl!),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ],
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: hasReferralCode && _sponsorPhotoUrl != null
+                        ? Colors.green
+                        : Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    hasReferralCode && _sponsorPhotoUrl != null
+                        ? Icons.person_add
+                        : Icons.trending_up,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  hasReferralCode && _sponsorPhotoUrl != null
+                      ? 'A Message From $_sponsorName'
+                      : 'INNOVATIVE APPROACH',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            hasReferralCode && _sponsorPhotoUrl != null
+                ? 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your ${_bizOpp ?? 'direct sales'} team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'
+                : 'Transform your recruitment and team building strategy! Help prospects start building their organization immediately.',
+            style: const TextStyle(
+              fontSize: 15,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
             ),
+            textAlign: TextAlign.left,
           ),
         ],
       ),
     );
   }
-
-
-
-
-
-
 
   Widget _buildSmartOnboarding() {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          const Text(
-            'GET STARTED TODAY!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1A237E),
-              letterSpacing: 1.5,
+          ElevatedButton(
+            onPressed: _navigateToRegistration,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-
-          // Dynamic onboarding based on referral
-          if (_sponsorName != null)
-            _buildInvitedUserFlow()
-          else
-            _buildDirectJoinFlow(),
-
-          const SizedBox(height: 24),
-
-          // Trust indicators
-          _buildTrustIndicators(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInvitedUserFlow() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green.shade50, Colors.green.shade100],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.shade300),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-                child:
-                    const Icon(Icons.person_add, color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Personal Invitation',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.green,
-                      ),
-                    ),
-                    Text(
-                      '$_sponsorName has invited you to download the app and get started!',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green.shade800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _navigateToRegistration,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Begin Free 30-Day Trial!',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
+            child: const Text(
+              'BEGIN FREE 30-DAY TRIAL!',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDirectJoinFlow() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue.shade50, Colors.blue.shade100],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.shade300),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.rocket_launch,
-                    color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Join The Revolution',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    Text(
-                      'Join thousands of direct sales professionals worldwide who are using the Team Build Pro app to grow their teams.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _navigateToRegistration,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'BEGIN FREE 30-DAY TRIAL!',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTrustIndicators() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildTrustBadge(Icons.security, 'Enterprise\nSecurity'),
-        _buildTrustBadge(Icons.verified_user, 'Verified\nPlatform'),
-        _buildTrustBadge(Icons.support_agent, '24/7\nSupport'),
-      ],
-    );
-  }
-
-  Widget _buildTrustBadge(IconData icon, String label) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.grey.shade600, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    // Show loading screen while logout is in progress
-    if (_isLoggingOut) {
-      return Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF0A0E27),
-                Color(0xFF1A237E),
-                Color(0xFF3949AB),
-              ],
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withOpacity(0.2),
-                        Colors.white.withOpacity(0.1),
-                      ],
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.hub_outlined,
-                    size: 60,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'TEAM BUILD PRO',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Initializing platform...',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white.withOpacity(0.8),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: _buildCustomAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeroSection(),
-            _buildSmartOnboarding(),
-            // _buildOrganizationShowcase(),
-            // _buildHighPerformance(),
-            // _buildHowItWorks(),
-            // _buildWhyChooseTeamBuildPro(),
-            // _buildSmartOnboarding(),
-            _buildFooterSection(),
-          ],
-        ),
       ),
     );
   }
@@ -882,13 +440,13 @@ class _HomepageScreenState extends State<HomepageScreen>
   Widget _buildFooterSection() {
     return Container(
       padding: const EdgeInsets.all(24),
-      color: Colors.grey.shade100,
+      color: AppColors.backgroundSecondary,
       child: Column(
         children: [
-          const Divider(color: Colors.grey),
+          const Divider(color: AppColors.border),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
                 onPressed: () {
@@ -904,14 +462,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                   'Privacy Policy',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
-                    decoration: TextDecoration.underline,
+                    color: AppColors.textSecondary,
                   ),
                 ),
-              ),
-              const Text(
-                ' | ',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               TextButton(
                 onPressed: () {
@@ -927,21 +480,11 @@ class _HomepageScreenState extends State<HomepageScreen>
                   'Terms of Service',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
-                    decoration: TextDecoration.underline,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -1016,52 +559,93 @@ class _HomepageScreenState extends State<HomepageScreen>
       ],
     );
   }
-}
-
-// Custom painter for animated network background
-class NetworkNodesPainter extends CustomPainter {
-  final double animationValue;
-
-  NetworkNodesPainter(this.animationValue);
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    final nodePaint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
-      ..style = PaintingStyle.fill;
-
-    // Create animated network nodes
-    final nodes = <Offset>[];
-    for (int i = 0; i < 8; i++) {
-      final angle = (i * 2 * math.pi / 8) + (animationValue * 2 * math.pi);
-      final radius = size.width * 0.3;
-      final x = size.width / 2 + radius * math.cos(angle);
-      final y = size.height / 2 + radius * math.sin(angle);
-      nodes.add(Offset(x, y));
+  Widget build(BuildContext context) {
+    if (_isLoggingOut) {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF0A0E27),
+                Color(0xFF1A237E),
+                Color(0xFF3949AB),
+              ],
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.2),
+                        Colors.white.withOpacity(0.1),
+                      ],
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.hub_outlined,
+                    size: 60,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'TEAM BUILD PRO',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Initializing platform...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
-
-    // Draw connections
-    for (int i = 0; i < nodes.length; i++) {
-      for (int j = i + 1; j < nodes.length; j++) {
-        if ((i - j).abs() <= 2) {
-          canvas.drawLine(nodes[i], nodes[j], paint);
-        }
-      }
-    }
-
-    // Draw nodes
-    for (final node in nodes) {
-      canvas.drawCircle(node, 4, nodePaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(NetworkNodesPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue;
+    return Scaffold(
+      appBar: _buildCustomAppBar(context),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(child: _buildSubtitle()),
+            const SizedBox(height: 20),
+            _buildDynamicWelcomeSection(),
+            _buildSmartOnboarding(),
+            _buildFooterSection(),
+          ],
+        ),
+      ),
+    );
   }
 }
