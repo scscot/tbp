@@ -15,6 +15,9 @@ class DeepLinkService {
    String? _latestReferralCode; // NEW
   String? get latestReferralCode => _latestReferralCode; // NEW
 
+  String? _latestQueryType; // 'ref' or 'new'
+  String? get latestQueryType => _latestQueryType;
+
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
 
@@ -35,7 +38,7 @@ class DeepLinkService {
           debugPrint(
               "🔗 Deep Link: No initial URI found. Navigating to generic homepage.");
         }
-        _navigateToHomepage(null); // Pass null to show the generic page
+        _navigateToHomepage(null, null); // Pass null to show the generic page
       }
 
       // Listen for deep links while the app is running
@@ -59,44 +62,38 @@ class DeepLinkService {
     }
   }
 
-  /// Parses the URI and navigates to the homepage.
-  void _handleDeepLink(Uri uri) {
+    void _handleDeepLink(Uri uri) {
     if (kDebugMode) {
       debugPrint('🔗 Deep Link: Processing URI: $uri');
     }
-    final queryParams = uri.queryParameters;
-    final referralCode = queryParams['ref'] ?? queryParams['new'];
 
-    _latestReferralCode = (referralCode != null && referralCode.isNotEmpty)
-        ? referralCode
-        : null; // NEW: remember
+    final qp = uri.queryParameters;
+    final referralCode = (qp['ref'] ?? qp['new'])?.trim();
+    final queryType =
+        qp.containsKey('new') ? 'new' : (qp.containsKey('ref') ? 'ref' : null);
 
-    if (referralCode != null && referralCode.isNotEmpty) {
-      if (kDebugMode) {
-        debugPrint('🔗 Deep Link: Found referral code: $referralCode');
-      }
-      _navigateToHomepage(referralCode);
-    } else {
-      if (kDebugMode) {
-        debugPrint('🔗 Deep Link: No valid referral code found in URI.');
-      }
-      _navigateToHomepage(null);
-    }
+    _latestReferralCode =
+        (referralCode != null && referralCode.isNotEmpty) ? referralCode : null;
+    _latestQueryType = queryType;
+
+    // Navigate with both values (may be nulls)
+    _navigateToHomepage(_latestReferralCode, _latestQueryType);
   }
 
-  /// Centralized function to navigate to the HomepageScreen.
-  void _navigateToHomepage(String? referralCode) {
-    // This function is now the single entry point for initial navigation.
+
+  void _navigateToHomepage(String? referralCode, String? queryType) {
     navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) => HomepageScreen(
           appId: appId,
-          referralCode: referralCode, // Pass the code (or null)
+          referralCode: referralCode,
+          queryType: queryType, // <-- new
         ),
       ),
-      (route) => false, // Clear the navigation stack
+      (route) => false,
     );
   }
+
 
   /// Dispose of the stream subscription.
   void dispose() {

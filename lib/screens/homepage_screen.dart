@@ -13,11 +13,13 @@ import 'terms_of_service_screen.dart';
 class HomepageScreen extends StatefulWidget {
   final String appId;
   final String? referralCode;
+  final String? queryType; // New parameter to track query type
 
   const HomepageScreen({
     super.key,
     required this.appId,
     this.referralCode,
+    this.queryType,
   });
 
   @override
@@ -42,6 +44,11 @@ class _HomepageScreenState extends State<HomepageScreen>
       duration: const Duration(milliseconds: 600),
     )..forward();
 
+    // Debug print for queryType
+    if (kDebugMode) {
+      print('🏠 HOMEPAGE: queryType = ${widget.queryType}');
+    }
+
     // Kick off referral init with code (if any) passed into the widget
     _initializeReferralData(widget.referralCode);
   }
@@ -56,7 +63,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   // Fully inclusive referral initializer (Map-based cache)
   // -------------------------------------------------------------
   Future<bool> _hydrateSponsorFromCache({String? fallbackCode}) async {
-    final Map<String, String>? cached =
+    final Map<String, dynamic>? cached =
         await SessionManager.instance.getReferralData();
     if (cached == null) {
       if (kDebugMode) print("📦 HOMEPAGE: No referral cache found.");
@@ -87,8 +94,9 @@ class _HomepageScreenState extends State<HomepageScreen>
     required String referralCode,
     required String sponsorName,
     String? sponsorPhotoUrl,
+    String? queryType,
   }) async {
-    await SessionManager.instance.setReferralData(referralCode, sponsorName);
+    await SessionManager.instance.setReferralData(referralCode, sponsorName, queryType: queryType);
     if (!mounted) return;
     setState(() {
       _sponsorName = sponsorName;
@@ -96,7 +104,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     });
     if (kDebugMode) {
       print(
-          "📂 SessionManager — Referral data cached: $referralCode -> $sponsorName");
+          "📂 SessionManager — Referral data cached: $referralCode -> $sponsorName (type: $queryType)");
     }
   }
 
@@ -158,6 +166,7 @@ class _HomepageScreenState extends State<HomepageScreen>
           referralCode: code!,
           sponsorName: sponsorName,
           sponsorPhotoUrl: sponsorPhotoUrl,
+          queryType: widget.queryType,
         );
         return;
       }
@@ -249,7 +258,11 @@ class _HomepageScreenState extends State<HomepageScreen>
         children: [
           Text(
             (_sponsorName ?? '').isNotEmpty
-                ? 'JUMPSTART YOUR TEAM GROWTH'
+                ? (widget.queryType == 'new'
+                    ? 'JUMPSTART YOUR TEAM GROWTH'
+                    : (widget.queryType == 'ref'
+                        ? 'GROW AND MANAGE YOUR TEAM'
+                        : 'PROVEN TEAM BUILDING SYSTEM'))
                 : 'PROVEN TEAM BUILDING SYSTEM',
             textAlign: TextAlign.center,
             style: const TextStyle(

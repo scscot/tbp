@@ -64,21 +64,22 @@ class SessionManager {
   // --- Biometric and Logout time methods remain the same ---
 
   /// Caches data for a successfully validated referral code.
-  Future<void> setReferralData(String referralCode, String sponsorName) async {
+  Future<void> setReferralData(String referralCode, String sponsorName, {String? queryType}) async {
     final prefs = await SharedPreferences.getInstance();
     final referralData = {
       'referralCode': referralCode,
       'sponsorName': sponsorName,
+      'queryType': queryType,
     };
     await prefs.setString(_referralDataKey, jsonEncode(referralData));
     if (kDebugMode) {
       debugPrint(
-          '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName');
+          '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName (type: $queryType)');
     }
   }
 
   /// Retrieves cached referral data.
-  Future<Map<String, String>?> getReferralData() async {
+  Future<Map<String, dynamic>?> getReferralData() async {
     final prefs = await SharedPreferences.getInstance();
     final referralDataString = prefs.getString(_referralDataKey);
     if (referralDataString == null) {
@@ -89,6 +90,7 @@ class SessionManager {
       return {
         'referralCode': data['referralCode'] as String,
         'sponsorName': data['sponsorName'] as String,
+        'queryType': data['queryType'] as String?,
       };
     } catch (e) {
       return null;

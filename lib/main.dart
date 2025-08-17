@@ -300,9 +300,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
 if (user == null) {
       debugPrint('🔐 AUTH_WRAPPER: No user found, showing HOMEPAGE');
-      final code = DeepLinkService().latestReferralCode; // NEW
-      return HomepageScreen(appId: appId, referralCode: code); // pass it
+      final dls = DeepLinkService();
+      return HomepageScreen(
+        appId: appId,
+        referralCode: dls.latestReferralCode,
+        queryType: dls.latestQueryType, // <-- pass the type as well
+      );
     }
+
 
 
     debugPrint(
