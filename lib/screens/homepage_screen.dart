@@ -111,12 +111,17 @@ class _HomepageScreenState extends State<HomepageScreen>
   Future<void> _initializeReferralData(String? code) async {
     if (mounted) setState(() => _isLoading = true);
     try {
-      // 1) No code passed → try cache once and return
+      // 1) No code passed → clear cache and treat as new user
       if ((code ?? '').isEmpty) {
         if (kDebugMode) {
-          print("🔍 HOMEPAGE: No referral code provided. Trying cache.");
+          print("🔍 HOMEPAGE: No referral code provided. Clearing cache and treating as new user.");
         }
-        await _hydrateSponsorFromCache();
+        await SessionManager.instance.clearReferralData();
+        if (!mounted) return;
+        setState(() {
+          _sponsorName = null;
+          _sponsorPhotoUrl = null;
+        });
         return;
       }
       // 2) Code present → fetch
@@ -309,9 +314,13 @@ class _HomepageScreenState extends State<HomepageScreen>
                       Text(
                         _isLoading
                             ? 'Loading sponsor...'
-                            : ((_sponsorName ?? '').isNotEmpty
-                                ? 'A Message From $_sponsorName'
-                                : 'A NEW INNOVATIVE APPROACH'),
+                            : (_sponsorName ?? '').isNotEmpty
+                ? (widget.queryType == 'new'
+                    ? 'A Message From $_sponsorName'
+                    : (widget.queryType == 'ref'
+                        ? 'A Message From $_sponsorName'
+                        : 'A Message From Team Build Pro'))
+                : 'A Message From Team Build Pro',
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                         ),
@@ -332,7 +341,7 @@ Text.rich(
                             text: _bizOpp,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const TextSpan(text: '  team. The next step is easy—just create your account below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                          const TextSpan(text: '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                         ]
                       : (widget.queryType == 'ref'
                           ? <InlineSpan>[
@@ -346,18 +355,18 @@ Text.rich(
                               ),
                               const TextSpan(
                                   text:
-                                      ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                                      ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                             ]
                           : <InlineSpan>[
                               const TextSpan(
                                 text:
-                                    'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.',
+                                    'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
                               ),
                             ]))
                   : <InlineSpan>[
                       const TextSpan(
                         text:
-                            'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.',
+                            'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
                       ),
                     ],
             ),
