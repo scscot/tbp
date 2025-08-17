@@ -170,18 +170,30 @@ class _HomepageScreenState extends State<HomepageScreen>
         );
         return;
       }
-      // 3) Non-200 → single cache attempt
+      // 3) Non-200 → skip cache fallback entirely and clear cache
       if (kDebugMode) {
         print(
-            "⚠️ HOMEPAGE: Referral fetch failed (${response.statusCode}). Trying cache.");
+            "⚠️ HOMEPAGE: Referral fetch failed (${response.statusCode}). Skipping cache fallback and clearing cache.");
       }
-      await _hydrateSponsorFromCache(fallbackCode: code);
+      // Clear cached referral data and treat as not referred
+      await SessionManager.instance.clearReferralData();
+      if (!mounted) return;
+      setState(() {
+        _sponsorName = null;
+        _sponsorPhotoUrl = null;
+      });
     } catch (e, st) {
       if (kDebugMode) {
         print('❌ HOMEPAGE: Error during referral init: $e');
         print('❌ HOMEPAGE: Stack: $st');
       }
-      await _hydrateSponsorFromCache(fallbackCode: code);
+      // On error, clear cache and treat as not referred
+      await SessionManager.instance.clearReferralData();
+      if (!mounted) return;
+      setState(() {
+        _sponsorName = null;
+        _sponsorPhotoUrl = null;
+      });
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -270,12 +282,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Use Team Build Pro to build a powerful team for your ${_bizOpp ?? 'business'} journey before you even join.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, height: 1.4),
-          ),
+          
           const SizedBox(height: 16),
           AnimatedOpacity(
             opacity: _isLoading ? 0.5 : 1.0,
@@ -304,7 +311,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                             ? 'Loading sponsor...'
                             : ((_sponsorName ?? '').isNotEmpty
                                 ? 'A Message From $_sponsorName'
-                                : 'INNOVATIVE APPROACH'),
+                                : 'A NEW INNOVATIVE APPROACH'),
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                         ),
@@ -312,11 +319,51 @@ class _HomepageScreenState extends State<HomepageScreen>
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    (_sponsorName ?? '').isNotEmpty
-                        ? 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your ${_bizOpp ?? 'bizOpp'} team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'
-                        : 'Create an account or log in to continue.',
-                  ),
+                  
+Text.rich(
+            TextSpan(
+              children: (_sponsorName ?? '').isNotEmpty
+                  ? (widget.queryType == 'new'
+                      ? <InlineSpan>[
+                          const TextSpan(
+                              text:
+                                  'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
+                          TextSpan(
+                            text: _bizOpp,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: '  team. The next step is easy—just create your account below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                        ]
+                      : (widget.queryType == 'ref'
+                          ? <InlineSpan>[
+                              const TextSpan(
+                                  text:
+                                      'Welcome!\n\nI\'m using the Team Build Pro app to accelerate the growth of my '),
+                              TextSpan(
+                                text: _bizOpp,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(
+                                  text:
+                                      ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                            ]
+                          : <InlineSpan>[
+                              const TextSpan(
+                                text:
+                                    'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.',
+                              ),
+                            ]))
+                  : <InlineSpan>[
+                      const TextSpan(
+                        text:
+                            'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.',
+                      ),
+                    ],
+            ),
+            textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 15, height: 1.4),
+          ),
                 ],
               ),
             ),
@@ -336,7 +383,10 @@ class _HomepageScreenState extends State<HomepageScreen>
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => NewRegistrationScreen(appId: widget.appId),
+                    builder: (_) => NewRegistrationScreen(
+                      appId: widget.appId,
+                      referralCode: null, // Explicitly null for admin registration
+                    ),
                   ),
                 );
               },
