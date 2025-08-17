@@ -14,7 +14,7 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Favicon -->
-    <link rel="icon" href="https://img.icons8.com/plasticine/100/organization.png" type="image/png" />
+    <link rel="icon" href="assets/icons/app_icon.png" type="image/png" />
     <!-- Smart App Banner for iOS Safari -->
     <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID" />
     <!-- Apple Touch Icon for Universal Links -->
@@ -63,7 +63,7 @@
                         unstoppable momentum.
                     </p>
                     <div class="hero-buttons">
-                        <a href="#" id="cta-hero" class="primary-button cta-button">Start Your 30-Day Free Trial</a>
+                        <a href="#" id="cta-hero" class="primary-button cta-button large-button">Download on Apple Store<br>Enjoy Free 30-Day Trial!</a>
                     </div>
                 </div>
             </div>
@@ -404,7 +404,7 @@
                     Join thousands of professionals who are building their teams faster than ever before. Start your
                     free 30-day trial today.
                 </p>
-                <a href="#" id="cta-final" class="cta-button">Claim Your Free Trial</a>
+                <a href="#" id="cta-final" class="cta-button">Download on Apple Store<br>Enjoy Free 30-Day Trial!</a>
             </div>
         </section>
     </main>
@@ -496,10 +496,10 @@
                 ctaFinalHeadline: "Ready to Empower Your Team?",
                 ctaFinalSubheadline:
                     "Give your entire organization the tools they need to succeed. Start your free 30-day trial today.",
-                ctaHeader: "Get Started Free",
-                ctaHero: "Start Your 30-Day Free Trial",
-                ctaPricing: "Start 30-Day Free Trial",
-                ctaFinal: "Claim Your Free Trial",
+                ctaHeader: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaHero: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaPricing: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaFinal: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
             },
             new: {
                 heroBadge: "Your Head Start to Success",
@@ -532,10 +532,10 @@
                 ctaFinalHeadline: "Ready to Build Your Foundation?",
                 ctaFinalSubheadline:
                     "Join thousands of professionals who are building their teams faster than ever before. Start building your team for free today.",
-                ctaHeader: "Start Building Free",
-                ctaHero: "Start Building Your Team for Free",
-                ctaPricing: "Start Building for Free",
-                ctaFinal: "Claim Your Free Spot",
+                ctaHeader: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaHero: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaPricing: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
+                ctaFinal: "Download on Apple Store<br>Enjoy Free 30-Day Trial!",
             },
         };
 
@@ -585,10 +585,10 @@
             updateElement("cta-final-subheadline", content.ctaFinalSubheadline);
 
             // Update all CTA buttons
-            updateElement("cta-header", content.ctaHeader);
-            updateElement("cta-hero", content.ctaHero);
-            updateElement("cta-pricing", content.ctaPricing);
-            updateElement("cta-final", content.ctaFinal);
+            updateElement("cta-header", content.ctaHeader, true);
+            updateElement("cta-hero", content.ctaHero, true);
+            updateElement("cta-pricing", content.ctaPricing, true);
+            updateElement("cta-final", content.ctaFinal, true);
         }
 
         // ============================================================================
@@ -647,15 +647,15 @@
             // 2. Personalize the hero content based on the referral type
             if (referralType === "new") {
                 // Journey for a new prospect invited to pre-build a team
-                heroHeadline.innerHTML = `Build Your Foundation <br> <span class="accent">Before Day One</span>`;
-                heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use Team Build Pro to build a powerful team for the ${opportunityName} journey before you even join.`;
-                ctaHero.textContent = `Accept & Start Building Free`;
+                heroHeadline.innerHTML = `Pre-Build Your Foundation <br> <span class="accent">Before Launch!</span>`;
+                heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use Team Build Pro to pre-build your ${opportunityName} team, before you officially join. Give it a try!`;
+                ctaHero.innerHTML = `Download on Apple Store<br>Enjoy Free 30-Day Trial!`;
 
             } else { // "partner"
                 // Journey for an existing leader referred by a colleague
                 heroHeadline.innerHTML = `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`;
-                heroSubheadline.innerHTML = `Your colleague, ${referrerFullName}, uses Team Build Pro to manage team growth and recommends it to help you achieve the same success.`;
-                ctaHero.textContent = `Start Your 30-Day Free Trial`;
+                heroSubheadline.innerHTML = `Your ${opportunityName} colleague, ${referrerFullName} recommends the Team Build Pro app. Give it a try and experience incredible growth!`;
+                ctaHero.innerHTML = `Download on Apple Store<br>Enjoy Free 30-Day Trial!`;
             }
 
             // Hide the generic badge now that a personal invitation is shown

@@ -62,33 +62,6 @@ class _HomepageScreenState extends State<HomepageScreen>
   // -------------------------------------------------------------
   // Fully inclusive referral initializer (Map-based cache)
   // -------------------------------------------------------------
-  Future<bool> _hydrateSponsorFromCache({String? fallbackCode}) async {
-    final Map<String, dynamic>? cached =
-        await SessionManager.instance.getReferralData();
-    if (cached == null) {
-      if (kDebugMode) print("📦 HOMEPAGE: No referral cache found.");
-      return false;
-    }
-    final String? cachedCode = cached['referralCode'] ?? fallbackCode;
-    final String? cachedName = cached['sponsorName'];
-    final String? cachedPhoto = cached['sponsorPhotoUrl'];
-    if ((cachedName ?? '').isEmpty) {
-      if (kDebugMode) {
-        print("📦 HOMEPAGE: Cache exists but missing usable sponsor name.");
-      }
-      return false;
-    }
-    if (!mounted) return false;
-    setState(() {
-      _sponsorName = cachedName;
-      _sponsorPhotoUrl = cachedPhoto;
-    });
-    if (kDebugMode) {
-      print(
-          "📦 HOMEPAGE: Hydrated sponsor from cache: $cachedName (${cachedCode ?? '-'})");
-    }
-    return true;
-  }
 
   Future<void> _applySponsorFromNetwork({
     required String referralCode,

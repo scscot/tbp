@@ -657,6 +657,12 @@ p {
     }
 }
 
+/* New styles for the large button on mobile */
+.large-button {
+    width: 80%;
+    max-width: 300px;
+}
+
 /* Utility Classes */
 .text-center {
     text-align: center;
