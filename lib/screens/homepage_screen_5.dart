@@ -63,7 +63,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     }
     final String? cachedCode = cached['referralCode'] ?? fallbackCode;
     final String? cachedName = cached['sponsorName'];
-    final String? cachedPhoto = cached['sponsorPhotoUrl'];
+    // final String? cachedPhoto = cached['sponsorPhotoUrl'];
     if ((cachedName ?? '').isEmpty) {
       if (kDebugMode) {
         print("📦 HOMEPAGE: Cache exists but missing usable sponsor name.");
@@ -73,7 +73,7 @@ class _HomepageScreenState extends State<HomepageScreen>
     if (!mounted) return false;
     setState(() {
       _sponsorName = cachedName;
-      _sponsorPhotoUrl = cachedPhoto;
+      // _sponsorPhotoUrl = cachedPhoto;
     });
     if (kDebugMode) {
       print(
@@ -139,7 +139,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 : (display.isNotEmpty ? display : 'Sponsor'));
 
         final sponsorPhotoUrl = data['photoUrl'];
-
+        
         await _applySponsorFromNetwork(
           referralCode: code!,
           sponsorName: sponsorName,

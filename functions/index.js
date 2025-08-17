@@ -860,7 +860,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       }
     }
 
-    // Include photoUrl in the response
+    // Include photoUrl and isProfileComplete in the response
     return res.status(200).json({
       firstName: sponsorData.firstName,
       lastName: sponsorData.lastName,
@@ -868,6 +868,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       availableCountries: availableCountries,
       bizOppName: bizOppName, // *** NEW: Return bizOppName ***
       photoUrl: sponsorData.photoUrl || null, // Added photoUrl here
+      isProfileComplete: sponsorData.isProfileComplete || false, // *** NEW: Return isProfileComplete ***
     });
 
   } catch (error) {

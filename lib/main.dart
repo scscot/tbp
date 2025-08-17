@@ -21,52 +21,38 @@ import 'services/deep_link_service.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
-import 'screens/network_screen.dart'; //
+import 'screens/network_screen.dart';
 import 'services/badge_service.dart';
-// import 'screens/login_screen.dart';
 import 'screens/homepage_screen.dart';
 
-// --- The global key is now defined here, at the top level ---
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-// --- RouteObserver for tracking navigation events ---
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
 const String appId = 'L8n1tJqHqYd3F5j6';
 
 void main() async {
   try {
     debugPrint('🚀 MAIN: Starting app initialization...');
-
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('🚀 MAIN: Flutter binding initialized');
-
-    // Initialize Firebase with retry logic
     await _initializeFirebaseWithRetry();
     debugPrint('🚀 MAIN: Firebase initialized');
-
     await AppConstants.initialize();
     debugPrint('🚀 MAIN: AppConstants initialized');
-
     await initializeDateFormatting('en_US', null);
     debugPrint('🚀 MAIN: Date formatting initialized');
-
-    // Initialize deep linking with error handling
-    await _initializeDeepLinkService();
+    // The DeepLinkService is now the single source of truth for initial navigation.
+    await DeepLinkService().initialize();
     debugPrint('🚀 MAIN: Deep link service initialized');
-
     debugPrint('🚀 MAIN: Starting app...');
     runApp(RestartWidget(child: const MyApp()));
     debugPrint('🚀 MAIN: App started successfully');
   } catch (e, stackTrace) {
     debugPrint('❌ MAIN: Error during app initialization: $e');
     debugPrint('❌ MAIN: Stack trace: $stackTrace');
-    // Still try to run the app with basic initialization
     runApp(RestartWidget(child: const MyApp()));
   }
 }
 
-/// Initialize Firebase with retry logic and better error handling
 Future<void> _initializeFirebaseWithRetry() async {
   int retryCount = 0;
   const maxRetries = 3;
@@ -77,38 +63,29 @@ Future<void> _initializeFirebaseWithRetry() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      debugPrint('🚀 MAIN: Firebase initialized successfully on attempt ${retryCount + 1}');
+      debugPrint(
+          '🚀 MAIN: Firebase initialized successfully on attempt ${retryCount + 1}');
       return;
     } catch (e) {
       retryCount++;
-      debugPrint('❌ MAIN: Firebase initialization failed (attempt $retryCount/$maxRetries): $e');
-      
+      debugPrint(
+          '❌ MAIN: Firebase initialization failed (attempt $retryCount/$maxRetries): $e');
+
       if (retryCount >= maxRetries) {
-        debugPrint('❌ MAIN: Firebase initialization failed after $maxRetries attempts');
-        // Don't rethrow - allow app to continue with degraded functionality
+        debugPrint(
+            '❌ MAIN: Firebase initialization failed after $maxRetries attempts');
         return;
       }
-      
-      debugPrint('🔄 MAIN: Retrying Firebase initialization in ${retryDelay.inSeconds} seconds...');
+
+      debugPrint(
+          '🔄 MAIN: Retrying Firebase initialization in ${retryDelay.inSeconds} seconds...');
       await Future.delayed(retryDelay);
     }
   }
 }
 
-/// Initialize deep link service with error handling
-Future<void> _initializeDeepLinkService() async {
-  try {
-    await DeepLinkService().initialize();
-    debugPrint('🚀 MAIN: Deep link service initialized successfully');
-  } catch (e) {
-    debugPrint('❌ MAIN: Deep link service initialization failed: $e');
-    // Continue without deep linking functionality
-  }
-}
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -131,14 +108,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      // App became active - sync badge with server
       debugPrint('🔔 APP LIFECYCLE: App resumed, syncing badge');
       _syncAppBadge();
-
-      // Clear app badge on resume
       _clearAppBadge();
-
-      // Check subscription status on app resume
       _checkSubscriptionOnResume();
     }
   }
@@ -212,7 +184,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
         ],
         child: MaterialApp(
-          // --- The key is assigned here ---
           navigatorKey: navigatorKey,
           title: 'Team Build Pro',
           theme: ThemeData(
@@ -220,16 +191,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             fontFamily: 'Inter',
           ),
           debugShowCheckedModeBanner: false,
-          // --- Add RouteObserver to track navigation events ---
           navigatorObservers: [routeObserver],
           onGenerateRoute: (settings) {
             if (settings.name == '/network') {
               final args = settings.arguments as Map<String, dynamic>?;
-
               return MaterialPageRoute(
                 builder: (context) => NetworkScreen(
                   appId: appId,
-                  initialFilter: args != null && args.containsKey('filter') ? args['filter'] as String : null,
+                  initialFilter: args != null && args.containsKey('filter')
+                      ? args['filter'] as String
+                      : null,
                 ),
                 settings: settings,
               );
@@ -264,8 +235,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 settings: settings,
               );
             }
-
-            // Default fallback
             return MaterialPageRoute(
               builder: (context) => const AuthWrapper(),
               settings: settings,
@@ -280,7 +249,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
-
   @override
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
@@ -291,20 +259,15 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     final user = Provider.of<UserModel?>(context);
-
     if (user != null && !_hasInitializedServices) {
       setState(() {
         _hasInitializedServices = true;
       });
-
       FCMService().initialize(context);
-
       final notificationService =
           Provider.of<NotificationService>(context, listen: false);
       final pending = notificationService.pendingNotification;
-
       if (pending != null) {
         navigateToRoute(pending);
         notificationService.clearPendingNotification();
@@ -322,10 +285,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Widget build(BuildContext context) {
     final user = context.watch<UserModel?>();
     final adminSettings = context.watch<AdminSettingsModel?>();
-
     debugPrint(
         '🔐 AUTH_WRAPPER: Building with user: ${user?.uid ?? 'null'}, admin settings: ${adminSettings != null ? 'loaded' : 'null'}');
-
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: _buildContent(context, user, adminSettings),
@@ -337,30 +298,23 @@ class _AuthWrapperState extends State<AuthWrapper> {
     debugPrint(
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
-    /* if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing LoginScreen');
-      return LoginScreen(key: const ValueKey('LoginScreen'), appId: appId);
-    } */
-
-    if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HomepageScreen');
-      return HomepageScreen(key: const ValueKey('HomepageScreen'), appId: appId);
+if (user == null) {
+      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HOMEPAGE');
+      final code = DeepLinkService().latestReferralCode; // NEW
+      return HomepageScreen(appId: appId, referralCode: code); // pass it
     }
+
 
     debugPrint(
         '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}, country: ${user.country}, firstName: ${user.firstName}');
 
-    // Profile completion logic based on user role
     if (user.role == 'admin') {
-      // Admin user profile completion check
       if (user.country == null || user.country!.isEmpty) {
         debugPrint(
             '🔐 AUTH_WRAPPER: Admin missing country, showing AdminEditProfileScreen');
         return AdminEditProfileScreen(
             key: const ValueKey('AdminEditProfileScreen'), appId: appId);
       }
-
-      // Admin has country, check if admin_settings exist
       if (adminSettings == null) {
         debugPrint(
             '🔐 AUTH_WRAPPER: Admin missing business settings, showing AdminEditProfileScreen1');
@@ -368,7 +322,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
             key: const ValueKey('AdminEditProfileScreen1'), appId: appId);
       }
     } else {
-      // Non-admin user profile completion check
       if (user.photoUrl == null || user.photoUrl!.isEmpty) {
         debugPrint(
             '🔐 AUTH_WRAPPER: User missing photo, showing EditProfileScreen');
@@ -379,10 +332,29 @@ class _AuthWrapperState extends State<AuthWrapper> {
             isFirstTimeSetup: true);
       }
     }
-
-    // Profile is complete, show dashboard
     debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing DashboardScreen');
     return DashboardScreen(
         key: const ValueKey('DashboardScreen'), appId: appId);
+  }
+}
+
+/// A simple splash screen to show while the app initializes.
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 20),
+            Text('Loading...'),
+          ],
+        ),
+      ),
+    );
   }
 }

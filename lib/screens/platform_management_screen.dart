@@ -167,7 +167,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
         navigator.popUntil((route) => route.isFirst);
       }
 
-      await SessionManager.instance.clearSession();
+      await SessionManager.instance.clearAllData();
       await SessionManager.instance.clearReferralData();
       await authService.signOut();
 
