@@ -32,6 +32,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   bool _isLoading = true;
   String? _sponsorName;
   String? _sponsorPhotoUrl; // optional, used if backend returns photo URL
+  String? _bizOpp; // NEW: Added to store biz_opp value
 
   @override
   void initState() {
@@ -139,6 +140,19 @@ class _HomepageScreenState extends State<HomepageScreen>
                 : (display.isNotEmpty ? display : 'Sponsor'));
 
         final sponsorPhotoUrl = data['photoUrl'];
+        final bizOppName = data['bizOppName'];
+
+        if (kDebugMode) {
+          print(
+              "bizOppName: $bizOppName");
+        }
+
+        // Use the bizOppName directly from the response
+        if (bizOppName != null && mounted) {
+          setState(() {
+            _bizOpp = bizOppName;
+          });
+        }
 
         await _applySponsorFromNetwork(
           referralCode: code!,
@@ -244,8 +258,8 @@ class _HomepageScreenState extends State<HomepageScreen>
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Tools that help you grow, manage, and support your team without hype or hassle.',
+          Text(
+            'Use Team Build Pro to build a powerful team for your ${_bizOpp ?? 'business'} journey before you even join.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15, height: 1.4),
           ),
@@ -287,7 +301,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   const SizedBox(height: 12),
                   Text(
                     (_sponsorName ?? '').isNotEmpty
-                        ? 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your bizOpp team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'
+                        ? 'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your ${_bizOpp ?? 'bizOpp'} team. The next step is easy—just begin your free trial below. Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'
                         : 'Create an account or log in to continue.',
                   ),
                 ],
