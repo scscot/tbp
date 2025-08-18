@@ -1,0 +1,192 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ultimatefix/screens/how_it_works_screen.dart';
+
+import '../models/user_model.dart';
+import '../screens/dashboard_screen.dart';
+import '../screens/message_center_screen.dart';
+import '../screens/share_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/platform_management_screen.dart';
+import '../screens/notifications_screen.dart';
+import '../screens/network_screen.dart';
+import '../screens/eligibility_screen.dart';
+import '../screens/business_screen.dart';
+import '../screens/company_screen.dart';
+
+class NavigationShell extends StatefulWidget {
+  final String appId;
+  final void Function(int)? onTabChange;
+
+  const NavigationShell({
+    super.key,
+    required this.appId,
+    this.onTabChange,
+  });
+
+  @override
+  State<NavigationShell> createState() => NavigationShellState();
+}
+
+class NavigationShellState extends State<NavigationShell> {
+  // Interpret command codes from child screens: 0..3 = tab switch; 4+ = push inside Dashboard tab
+  void handleCommand(int code) {
+    if (code >= 0 && code <= 3) {
+      navigateToTab(code);
+      return;
+    }
+    // Default to using Dashboard tab's navigator for detail flows
+    final nav = _navigatorKeys[0].currentState;
+    if (nav == null) return;
+
+    switch (code) {
+      case 4:
+        nav.push(MaterialPageRoute(
+            builder: (_) => HowItWorksScreen(appId: widget.appId)));
+        break;
+      case 5:
+        nav.push(MaterialPageRoute(
+            builder: (_) => CompanyScreen(appId: widget.appId)));
+        break;
+      case 6:
+        nav.push(MaterialPageRoute(
+            builder: (_) => BusinessScreen(appId: widget.appId)));
+        break;
+      case 7:
+        nav.push(MaterialPageRoute(
+            builder: (_) => EligibilityScreen(appId: widget.appId)));
+        break;
+      case 8:
+        nav.push(MaterialPageRoute(
+            builder: (_) => NetworkScreen(appId: widget.appId)));
+        break;
+      case 9:
+        nav.push(MaterialPageRoute(
+            builder: (_) => NotificationsScreen(appId: widget.appId)));
+        break;
+      case 10:
+        nav.push(MaterialPageRoute(
+            builder: (_) => PlatformManagementScreen(appId: widget.appId)));
+        break;
+      default:
+        break;
+    }
+  }
+
+  int _currentIndex = 0;
+
+  /// One Navigator per tab to keep the bottom bar persistent while pushing detail pages.
+  final List<GlobalKey<NavigatorState>> _navigatorKeys =
+      List.generate(4, (_) => GlobalKey<NavigatorState>());
+
+  void navigateToTab(int index) {
+    if (!mounted) return;
+    if (index == _currentIndex) {
+      final nav = _navigatorKeys[index].currentState;
+      if (nav != null) {
+        while (nav.canPop()) {
+          nav.pop();
+        }
+      }
+      return;
+    }
+    setState(() => _currentIndex = index);
+    widget.onTabChange?.call(index);
+  }
+
+  void _onItemTapped(int index) => handleCommand(index);
+
+  Widget _buildTabNavigator(int index, Widget child) {
+    return Offstage(
+      offstage: _currentIndex != index,
+      child: Navigator(
+        key: _navigatorKeys[index],
+        onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => child),
+      ),
+    );
+  }
+
+  Widget _buildProfileIcon(UserModel? user) {
+    final photo = user?.photoUrl;
+    if (photo != null && photo.isNotEmpty) {
+      return CircleAvatar(
+        radius: 12,
+        backgroundImage: NetworkImage(photo),
+      );
+    }
+    return const Icon(Icons.person_outline);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final UserModel? user = context.watch<UserModel?>();
+
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        final nav = _navigatorKeys[_currentIndex].currentState;
+        if (nav != null && nav.canPop()) {
+          nav.pop();
+          return;
+        }
+        Navigator.maybePop(context);
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIndex,
+          children: [
+            _buildTabNavigator(
+              0,
+              DashboardScreen(
+                appId: widget.appId,
+                onTabSelected: _onItemTapped,
+              ),
+            ),
+            _buildTabNavigator(
+              1,
+              MessageCenterScreen(appId: widget.appId),
+            ),
+            _buildTabNavigator(
+              2,
+              ShareScreen(appId: widget.appId),
+            ),
+            _buildTabNavigator(
+              3,
+              ProfileScreen(appId: widget.appId),
+            ),
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: _onItemTapped,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            unselectedItemColor:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            items: [
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.dashboard_outlined),
+                label: 'Home',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.message_outlined),
+                label: 'Messages',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.share_outlined),
+                label: 'Share',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildProfileIcon(user),
+                label: 'Profile',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

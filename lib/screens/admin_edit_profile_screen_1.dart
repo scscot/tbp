@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ultimatefix/screens/dashboard_screen.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/navigation_shell.dart';
 
 class AdminEditProfileScreen1 extends StatefulWidget {
   final String appId;
@@ -160,7 +160,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
         // Navigate to profile screen
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => DashboardScreen(appId: widget.appId),
+            builder: (_) => NavigationShell(appId: widget.appId),
           ),
         );
       }

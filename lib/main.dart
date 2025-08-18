@@ -7,7 +7,6 @@ import 'config/app_constants.dart';
 import 'firebase_options.dart';
 import 'models/user_model.dart';
 import 'models/admin_settings_model.dart';
-import 'screens/dashboard_screen.dart';
 import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
 import 'screens/edit_profile_screen.dart';
@@ -24,6 +23,8 @@ import 'services/notification_service.dart';
 import 'screens/network_screen.dart';
 import 'services/badge_service.dart';
 import 'screens/homepage_screen.dart';
+import 'widgets/navigation_shell.dart';
+
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -337,9 +338,9 @@ if (user == null) {
             isFirstTimeSetup: true);
       }
     }
-    debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing DashboardScreen');
-    return DashboardScreen(
-        key: const ValueKey('DashboardScreen'), appId: appId);
+    debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing NavigationShell');
+    return NavigationShell(appId: appId);
+
   }
 }
 

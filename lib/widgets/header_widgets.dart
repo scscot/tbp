@@ -1,4 +1,3 @@
-// lib/widgets/header_widgets.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ultimatefix/screens/add_link_screen.dart';
@@ -8,7 +7,6 @@ import 'package:ultimatefix/screens/eligibility_screen.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../config/app_colors.dart';
-import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/network_screen.dart';
 import '../screens/share_screen.dart';
@@ -20,8 +18,10 @@ import '../screens/terms_of_service_screen.dart';
 import '../screens/platform_management_screen.dart';
 import '../services/auth_service.dart';
 import '../widgets/restart_widget.dart';
-// --- MODIFICATION: Import main.dart for the navigatorKey, remove fcm_service import ---
 import '../main.dart';
+import 'navigation_shell.dart';
+import '../services/navigation_service.dart';
+import 'package:flutter/services.dart';
 
 class AppHeaderWithMenu extends StatefulWidget implements PreferredSizeWidget {
   final String appId;
@@ -64,7 +64,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
         break;
       case 'dashboard':
         navigator.push(MaterialPageRoute(
-            builder: (_) => DashboardScreen(appId: widget.appId)));
+            builder: (_) => NavigationShell(appId: widget.appId)));
         break;
       case 'how_it_works':
         navigator.push(MaterialPageRoute(
@@ -306,7 +306,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
                 'Once you\'ve registered with ${user.bizOpp ?? 'your business opportunity'}, add your referral link to your Team Build Pro profile. This ensures anyone from your team who joins is placed in your network.',
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppColors.withOpacity(AppColors.textInverse, 0.9),
+                  color: AppColors.textInverse.withValues(alpha: 0.9),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -383,7 +383,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.withOpacity(AppColors.textInverse, 0.15),
+        color: AppColors.textInverse.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Icon(
@@ -401,12 +401,6 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     if (isProfileComplete) {
       // Main navigation items
       items.addAll([
-        _buildMenuItem(
-          value: 'dashboard',
-          icon: Icons.dashboard,
-          title: 'Dashboard',
-          color: AppColors.primary,
-        ),
         _buildMenuItem(
           value: 'how_it_works',
           icon: Icons.help_outline,
@@ -459,7 +453,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
     ]);
 
     // Platform Management (admin only)
-    if (currentUser?.role == 'adminXX') {
+    if (currentUser?.role == 'admin') {
       items.add(
         _buildMenuItem(
           value: 'platform_management',
@@ -517,7 +511,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.withOpacity(color, 0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -619,7 +613,7 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
           ? Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.withOpacity(AppColors.textInverse, 0.15),
+                color: AppColors.textInverse.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const BackButton(color: AppColors.textInverse),
@@ -629,10 +623,11 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       title: GestureDetector(
         onTap: () {
           if (isProfileComplete) {
-            Navigator.pushReplacement(
+            Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => DashboardScreen(appId: widget.appId)));
+                    builder: (_) => NavigationShell(appId: widget.appId)),
+                (route) => false);
           }
         },
         child: Row(
@@ -652,23 +647,76 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       ),
       centerTitle: true,
       actions: [
-        if (currentUser != null)
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: PopupMenuButton<String>(
-              onSelected: (value) =>
-                  _handleMenuSelection(value, isProfileComplete),
-              icon: _buildMenuIcon(),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 8,
-              offset: const Offset(0, 8),
-              itemBuilder: (BuildContext context) =>
-                  _buildMenuItems(isProfileComplete, currentUser),
-            ),
-          ),
+        PopupMenuButton<String>(
+          icon: _buildMenuIcon(),
+          onSelected: (value) => _handleMenuSelection(value, isProfileComplete),
+          itemBuilder: (context) =>
+              _buildMenuItems(isProfileComplete, currentUser),
+        ),
       ],
+    );
+  }
+}
+
+class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final List<Widget>? actions;
+
+  const PrimaryAppBar({
+    super.key,
+    required this.title,
+    this.actions,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient, // your blue header
+        ),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white), // white title
+      ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new,
+            color: Colors.white), // white chevron
+        onPressed: () {
+          // Robust back behavior for nested navigators:
+          // 1) Try the nearest Navigator (tab's navigator)
+          final nav = Navigator.of(context);
+          if (nav.canPop()) {
+            nav.pop();
+          } else {
+            // 2) Try the root navigator (e.g., if a modal or external push was used)
+            final rootNav = Navigator.of(context, rootNavigator: true);
+            if (rootNav.canPop()) {
+              rootNav.pop();
+            } else {
+              // 3) Fallback to the NavigationShell (switch to Dashboard)
+              final shell =
+                  context.findAncestorStateOfType<NavigationShellState>();
+              if (shell != null) {
+                shell.navigateToTab(0);
+              } else {
+                // 4) Last resort: use the global service
+                NavigationService.navigateToTab(0);
+              }
+            }
+          }
+        },
+      ),
+      actions: actions,
+      iconTheme: const IconThemeData(color: Colors.white), // white action icons
     );
   }
 }

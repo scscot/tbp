@@ -601,7 +601,7 @@ class _NetworkScreenState extends State<NetworkScreen>
         gradient: AppColors.primaryGradient,
       ),
       child: const Text(
-        'Your Global Network',
+        'Your Global Team',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 28,

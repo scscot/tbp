@@ -36,7 +36,7 @@ Starting from zero is the biggest hurdle in direct sales. Team Build Pro is THE 
 • Foster authentic relationships that create a thriving team culture.
 • Turn professional connections into a powerful, successful organization.
 • Mentor emerging leaders and ensure sustainable growth.
-• Secure, in-app messaging to collaborate with your global network.
+• Secure, in-app messaging to collaborate with Your Global Team.
 
 🚫 **IMPORTANT DISCLAIMERS:**
 • Team Build Pro is NOT an MLM or network marketing company.

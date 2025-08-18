@@ -379,7 +379,10 @@ Text.rich(
           const SizedBox(width: 12),
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: () {
+              onPressed: () async {
+                // Clear all cached user information before navigating to login
+                await SessionManager.instance.clearAllData();
+                if (!mounted) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => LoginScreen(appId: widget.appId),

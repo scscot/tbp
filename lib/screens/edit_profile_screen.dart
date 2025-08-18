@@ -13,7 +13,7 @@ import '../services/storage_service.dart';
 import '../services/link_validator_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
-import 'dashboard_screen.dart';
+import '../widgets/navigation_shell.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -483,7 +483,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         if (widget.isFirstTimeSetup) {
           navigator.pushAndRemoveUntil(
               MaterialPageRoute(
-                  builder: (_) => DashboardScreen(appId: widget.appId)),
+                  builder: (_) => NavigationShell(appId: widget.appId)),
               (route) => false);
         } else {
           navigator.pop();

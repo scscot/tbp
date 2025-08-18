@@ -6,17 +6,8 @@ import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
-import 'company_screen.dart';
-import 'message_center_screen.dart';
-import 'notifications_screen.dart';
-import 'eligibility_screen.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
-import 'network_screen.dart';
-import 'profile_screen.dart';
-import 'platform_management_screen.dart';
-import 'share_screen.dart';
-import 'how_it_works_screen.dart';
 import 'package:flutter/foundation.dart';
 import '../services/auth_service.dart';
 import '../services/network_service.dart'; // Added for caching
@@ -27,9 +18,12 @@ import 'subscription_screen.dart'; // --- 1. New import for SubscriptionScreen -
 class DashboardScreen extends StatefulWidget {
   final String appId;
 
+  /// Callback to switch tabs in the persistent bottom navigation
+  final void Function(int)? onTabSelected;
   const DashboardScreen({
     super.key,
     required this.appId,
+    this.onTabSelected,
   });
 
   @override
@@ -155,6 +149,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // --- 2. New helper method to check subscription before navigating ---
   Future<void> _navigateTo(Widget screen) async {
+    // Map known screens to bottom navigation indices
+
     final authService = context.read<AuthService>();
     final user = context.read<UserModel?>();
 
@@ -166,14 +162,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!mounted) return;
 
     if (needsSubscription) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => const SubscriptionScreen(),
       );
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => screen),
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => screen,
       );
     }
   }
@@ -711,7 +709,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  // --- 3. All onTap handlers updated to use the new _navigateTo method ---
   Widget _buildQuickActions(UserModel user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -731,14 +728,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.help_outline,
           title: 'How It Works',
           color: AppColors.teamAccent,
-          onTap: () => _navigateTo(HowItWorksScreen(appId: widget.appId)),
-        ), 
+          onTap: () => widget.onTabSelected?.call(4),
+        ),
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.rocket_launch,
             title: 'Company Details',
             color: AppColors.opportunityPrimary,
-            onTap: () => _navigateTo(CompanyScreen(appId: widget.appId)),
+            onTap: () => widget.onTabSelected?.call(5),
           ),
         ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
           _buildActionCard(
@@ -747,37 +744,27 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ? 'Company Details'
                 : 'Get Started Today',
             color: AppColors.opportunityPrimary,
-            onTap: () {
-              if (user.bizOppRefUrl != null) {
-                _navigateTo(CompanyScreen(appId: widget.appId));
-              } else {
-                if (user.bizVisitDate != null && user.bizOppRefUrl == null) {
-                  _showBizOppFollowUpModal(user);
-                } else {
-                  _navigateTo(BusinessScreen(appId: widget.appId));
-                }
-              }
-            },
+            onTap: () => widget.onTabSelected?.call(6),
           ),
         ] else ...[
           _buildActionCard(
             icon: Icons.assessment,
             title: 'Your Eligibility Status',
             color: AppColors.opportunityPrimary,
-            onTap: () => _navigateTo(EligibilityScreen(appId: widget.appId)),
+            onTap: () => widget.onTabSelected?.call(7),
           ),
-        ], 
+        ],
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow Your Team',
           color: AppColors.growthPrimary,
-          onTap: () => _navigateTo(ShareScreen(appId: widget.appId)),
+          onTap: () => widget.onTabSelected?.call(2),
         ),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View Your Team',
           color: AppColors.teamPrimary,
-          onTap: () => _navigateTo(NetworkScreen(appId: widget.appId)),
+          onTap: () => widget.onTabSelected?.call(8),
         ),
         _buildActionCard(
           icon: Icons.notifications,
@@ -785,7 +772,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
-          onTap: () => _navigateTo(NotificationsScreen(appId: widget.appId)),
+          onTap: () => widget.onTabSelected?.call(9),
         ),
         _buildActionCard(
           icon: Icons.message,
@@ -793,14 +780,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
           badgeCount: _unreadMessageCount,
-          onTap: () => _navigateTo(MessageCenterScreen(appId: widget.appId)),
+          onTap: () => widget.onTabSelected?.call(1),
         ),
 
         _buildActionCard(
           icon: Icons.person,
           title: 'View Your Profile',
           color: AppColors.primary,
-          onTap: () => _navigateTo(ProfileScreen(appId: widget.appId)),
+          onTap: () => widget.onTabSelected?.call(3),
         ),
 
         if (user.role == 'admin')
@@ -808,25 +795,17 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.manage_accounts,
             title: 'Platform Management',
             color: AppColors.opportunityPrimary,
-            onTap: () =>
-                _navigateTo(PlatformManagementScreen(appId: widget.appId)),
+            onTap: () => widget.onTabSelected?.call(10),
           ),
 
-        // The Log Out button remains unchanged
+        // Log Out button uses NavigationShell navigation
         _buildActionCard(
           icon: Icons.logout,
           title: 'Log Out',
           color: AppColors.errorLight,
           onTap: () async {
             final authService = context.read<AuthService>();
-            final navigator = Navigator.of(context);
-
-            if (navigator.canPop()) {
-              navigator.popUntil((route) => route.isFirst);
-            }
-
             await authService.signOut();
-
             final rootNavigatorContext = navigatorKey.currentContext;
             if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
               RestartWidget.restartApp(rootNavigatorContext);

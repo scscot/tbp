@@ -138,13 +138,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (currentUser == null) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const PrimaryAppBar(title: 'Profile'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const PrimaryAppBar(title: 'Profile'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
