@@ -744,7 +744,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 16),
           child: Text(
-            'Quick Actions',
+            'Dashboard',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

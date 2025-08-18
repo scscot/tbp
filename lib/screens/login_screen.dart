@@ -15,7 +15,9 @@ import '../services/auth_service.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
-import '../widgets/header_widgets.dart'; // Already imported, which is great.
+import '../widgets/header_widgets.dart';
+import 'dart:async';
+
 
 class LoginScreen extends StatefulWidget {
   final String appId;
@@ -30,18 +32,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  StreamSubscription<User?>? _authSub;
 
   @override
-  void initState() {
+void initState() {
     super.initState();
+    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null && mounted) {
+        // Give AuthWrapper a frame to rebuild, then reveal it.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context, rootNavigator: true)
+              .popUntil((route) => route.isFirst);
+        });
+      }
+    });
   }
 
-  @override
+ @override
   void dispose() {
+    _authSub?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
@@ -50,11 +64,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final authService = context.read<AuthService>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    try {
+try {
       await authService.signInWithEmailAndPassword(
-          _emailController.text.trim(), _passwordController.text.trim());
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
 
-      // Don't navigate - let AuthWrapper handle routing based on auth state
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+      }
     } on FirebaseAuthException catch (e) {
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -80,6 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint("🔄 DEBUG: Credential obtained, signing in with Firebase...");
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
+
+if (mounted) {
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+      }
+
+
+
+
       debugPrint("✅ DEBUG: Firebase sign-in successful!");
 
       // Don't navigate - let AuthWrapper handle routing based on auth state
