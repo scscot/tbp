@@ -739,7 +739,8 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (actions != null) ...actions!,
         PopupMenuButton<String>(
           icon: _buildMenuIcon(),
-          onSelected: (value) => _handleMenuSelection(value, isProfileComplete, context),
+          onSelected: (value) =>
+              _handleMenuSelection(value, isProfileComplete, context),
           itemBuilder: (context) =>
               _buildMenuItems(isProfileComplete, currentUser),
         ),
@@ -763,7 +764,8 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  void _handleMenuSelection(String value, bool isProfileComplete, BuildContext context) async {
+  void _handleMenuSelection(
+      String value, bool isProfileComplete, BuildContext context) async {
     if (value == 'logout') {
       final authService = AuthService();
       await authService.signOut();
@@ -773,8 +775,8 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
     final navigator = Navigator.of(context);
     switch (value) {
       case 'company':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => CompanyScreen(appId: 'default')));
+        navigator.push(
+            MaterialPageRoute(builder: (_) => CompanyScreen(appId: 'default')));
         break;
       case 'business':
         navigator.push(MaterialPageRoute(
@@ -793,12 +795,12 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
             builder: (_) => HowItWorksScreen(appId: 'default')));
         break;
       case 'team':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => NetworkScreen(appId: 'default')));
+        navigator.push(
+            MaterialPageRoute(builder: (_) => NetworkScreen(appId: 'default')));
         break;
       case 'share':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => ShareScreen(appId: 'default')));
+        navigator.push(
+            MaterialPageRoute(builder: (_) => ShareScreen(appId: 'default')));
         break;
       case 'messages':
         navigator.push(MaterialPageRoute(
@@ -809,8 +811,8 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
             builder: (_) => NotificationsScreen(appId: 'default')));
         break;
       case 'profile':
-        navigator.push(MaterialPageRoute(
-            builder: (_) => ProfileScreen(appId: 'default')));
+        navigator.push(
+            MaterialPageRoute(builder: (_) => ProfileScreen(appId: 'default')));
         break;
       case 'platform_management':
         navigator.push(MaterialPageRoute(

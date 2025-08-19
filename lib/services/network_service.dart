@@ -254,9 +254,12 @@ class NetworkService {
       }
 
       // Fetch newMembersYesterday count separately
-      final newMembersYesterdayCallable = _functions.httpsCallable('getNewMembersYesterdayCount');
-      final newMembersYesterdayResult = await newMembersYesterdayCallable.call();
-      final newMembersYesterdayCount = newMembersYesterdayResult.data['count'] as int? ?? 0;
+      final newMembersYesterdayCallable =
+          _functions.httpsCallable('getNewMembersYesterdayCount');
+      final newMembersYesterdayResult =
+          await newMembersYesterdayCallable.call();
+      final newMembersYesterdayCount =
+          newMembersYesterdayResult.data['count'] as int? ?? 0;
 
       // Add newMembersYesterday count to counts map
       counts['newMembersYesterday'] = newMembersYesterdayCount;
@@ -265,7 +268,8 @@ class NetworkService {
       _setCachedResult(cacheKey, counts);
 
       if (kDebugMode) {
-        debugPrint('✅ COUNTS: Fetched counts from server including newMembersYesterday: $counts');
+        debugPrint(
+            '✅ COUNTS: Fetched counts from server including newMembersYesterday: $counts');
       }
 
       return counts;

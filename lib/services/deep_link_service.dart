@@ -12,7 +12,7 @@ class DeepLinkService {
   factory DeepLinkService() => _instance;
   DeepLinkService._internal();
 
-   String? _latestReferralCode; // NEW
+  String? _latestReferralCode; // NEW
   String? get latestReferralCode => _latestReferralCode; // NEW
 
   String? _latestQueryType; // 'ref' or 'new'
@@ -62,7 +62,7 @@ class DeepLinkService {
     }
   }
 
-    void _handleDeepLink(Uri uri) {
+  void _handleDeepLink(Uri uri) {
     if (kDebugMode) {
       debugPrint('🔗 Deep Link: Processing URI: $uri');
     }
@@ -80,7 +80,6 @@ class DeepLinkService {
     _navigateToHomepage(_latestReferralCode, _latestQueryType);
   }
 
-
   void _navigateToHomepage(String? referralCode, String? queryType) {
     navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(
@@ -93,7 +92,6 @@ class DeepLinkService {
       (route) => false,
     );
   }
-
 
   /// Dispose of the stream subscription.
   void dispose() {

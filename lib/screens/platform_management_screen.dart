@@ -42,7 +42,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
 
   Future<void> _loadAdminData() async {
     final user = Provider.of<UserModel?>(context, listen: false);
-    if (user == null  || user.role != 'admin') {
+    if (user == null || user.role != 'admin') {
       if (mounted) setState(() => _isLoading = false);
       return;
     }

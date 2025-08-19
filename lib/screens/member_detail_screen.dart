@@ -209,16 +209,18 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                           _buildQualifiedInfoRow('Qualified', 'Yes')
                         else ...[
                           if (_user!.qualifiedDate != null)
-                            _buildQualifiedInfoRow('Qualified',
-                                DateFormat.yMMMd().format(_user!.qualifiedDate!))
+                            _buildQualifiedInfoRow(
+                                'Qualified',
+                                DateFormat.yMMMd()
+                                    .format(_user!.qualifiedDate!))
                           else
                             _buildQualifiedInfoRow('Qualified', 'Not Yet'),
                           if (_user!.bizJoinDate != null)
                             _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
                                 DateFormat.yMMMd().format(_user!.bizJoinDate!))
                           else
-                            _buildInfoRow(
-                                'Joined ${_bizOpp ?? 'organization'}', 'Not Yet'),
+                            _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
+                                'Not Yet'),
                         ],
                         if (_sponsorName != null)
                           // If current user is the sponsor, show as plain text, otherwise as clickable link
@@ -229,12 +231,9 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         if (_teamLeaderName != null &&
                             _teamLeaderUid != null &&
                             _user!.referredBy != _teamLeaderUid)
-
-
                           _currentUserId == _teamLeaderUid
                               ? _buildInfoRow('Team Leader', _teamLeaderName!)
-                              : _buildClickableInfoRow(
-                                  'Team Leader',
+                              : _buildClickableInfoRow('Team Leader',
                                   _teamLeaderName!, _teamLeaderUid!),
                       ],
                       const SizedBox(height: 30),

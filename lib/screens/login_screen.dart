@@ -18,7 +18,6 @@ import 'terms_of_service_screen.dart';
 import '../widgets/header_widgets.dart';
 import 'dart:async';
 
-
 class LoginScreen extends StatefulWidget {
   final String appId;
   const LoginScreen({super.key, required this.appId});
@@ -35,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   StreamSubscription<User?>? _authSub;
 
   @override
-void initState() {
+  void initState() {
     super.initState();
     _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user != null && mounted) {
@@ -48,14 +47,13 @@ void initState() {
     });
   }
 
- @override
+  @override
   void dispose() {
     _authSub?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
@@ -64,7 +62,7 @@ void initState() {
     final authService = context.read<AuthService>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-try {
+    try {
       await authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -100,13 +98,10 @@ try {
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
 
-if (mounted) {
+      if (mounted) {
         Navigator.of(context, rootNavigator: true)
             .popUntil((route) => route.isFirst);
       }
-
-
-
 
       debugPrint("✅ DEBUG: Firebase sign-in successful!");
 

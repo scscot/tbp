@@ -335,8 +335,7 @@ void navigateToRoute(PendingNotification notification) {
     );
   } else {
     if (kDebugMode) {
-      debugPrint(
-          "❌ NAVIGATION: Cannot navigate. Navigator state is null.");
+      debugPrint("❌ NAVIGATION: Cannot navigate. Navigator state is null.");
       debugPrint("❌ NAVIGATION: Will retry navigation in 1 second...");
     }
     Future.delayed(const Duration(seconds: 1), () {

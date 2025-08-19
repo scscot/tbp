@@ -25,7 +25,6 @@ import 'services/badge_service.dart';
 import 'screens/homepage_screen.dart';
 import 'widgets/navigation_shell.dart';
 
-
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const String appId = 'L8n1tJqHqYd3F5j6';
@@ -299,7 +298,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     debugPrint(
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
-if (user == null) {
+    if (user == null) {
       debugPrint('🔐 AUTH_WRAPPER: No user found, showing HOMEPAGE');
       final dls = DeepLinkService();
       return HomepageScreen(
@@ -308,8 +307,6 @@ if (user == null) {
         queryType: dls.latestQueryType, // <-- pass the type as well
       );
     }
-
-
 
     debugPrint(
         '🔐 AUTH_WRAPPER: User found: ${user.uid}, role: ${user.role}, photoUrl: ${user.photoUrl}, country: ${user.country}, firstName: ${user.firstName}');
@@ -340,7 +337,6 @@ if (user == null) {
     }
     debugPrint('🔐 AUTH_WRAPPER: Profile complete, showing NavigationShell');
     return NavigationShell(appId: appId);
-
   }
 }
 

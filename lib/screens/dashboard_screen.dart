@@ -165,8 +165,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (adminSettingsDoc.exists && mounted) {
         adminSettingsDoc.data();
 
-        setState(() {
-        });
+        setState(() {});
       }
     } catch (e) {
       debugPrint('Error loading biz_opp data: $e');
@@ -237,7 +236,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     _animationController.dispose();
     super.dispose();
   }
-
 
   Widget _buildWelcomeSection(UserModel user) {
     return Container(

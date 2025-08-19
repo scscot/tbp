@@ -408,8 +408,8 @@ class _NetworkScreenState extends State<NetworkScreen>
       'directSponsors': counts['directSponsors'] ?? 0, // From new backend logic
       'newMembers':
           counts['last24'] ?? 0, // Use the 'last24' count from backend
-      'newMembersYesterday':
-          counts['newMembersYesterday'] ?? 0, // Use the 'newMembersYesterday' count from backend
+      'newMembersYesterday': counts['newMembersYesterday'] ??
+          0, // Use the 'newMembersYesterday' count from backend
       'qualified': counts['newQualified'] ?? 0,
       'withOpportunity': counts['joinedOpportunity'] ?? 0,
     };
@@ -479,8 +479,10 @@ class _NetworkScreenState extends State<NetworkScreen>
           .toList();
     } else if (_filterBy == FilterBy.newMembersYesterday) {
       final now = DateTime.now();
-      final yesterdayStart = DateTime(now.year, now.month, now.day - 1, 0, 0, 0);
-      final yesterdayEnd = DateTime(now.year, now.month, now.day - 1, 23, 59, 59);
+      final yesterdayStart =
+          DateTime(now.year, now.month, now.day - 1, 0, 0, 0);
+      final yesterdayEnd =
+          DateTime(now.year, now.month, now.day - 1, 23, 59, 59);
       filtered = filtered
           .where((m) =>
               m.createdAt != null &&

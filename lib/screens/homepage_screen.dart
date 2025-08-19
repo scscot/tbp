@@ -69,7 +69,8 @@ class _HomepageScreenState extends State<HomepageScreen>
     String? sponsorPhotoUrl,
     String? queryType,
   }) async {
-    await SessionManager.instance.setReferralData(referralCode, sponsorName, queryType: queryType);
+    await SessionManager.instance
+        .setReferralData(referralCode, sponsorName, queryType: queryType);
     if (!mounted) return;
     setState(() {
       _sponsorName = sponsorName;
@@ -87,7 +88,8 @@ class _HomepageScreenState extends State<HomepageScreen>
       // 1) No code passed → clear cache and treat as new user
       if ((code ?? '').isEmpty) {
         if (kDebugMode) {
-          print("🔍 HOMEPAGE: No referral code provided. Clearing cache and treating as new user.");
+          print(
+              "🔍 HOMEPAGE: No referral code provided. Clearing cache and treating as new user.");
         }
         await SessionManager.instance.clearReferralData();
         if (!mounted) return;
@@ -129,8 +131,7 @@ class _HomepageScreenState extends State<HomepageScreen>
         final bizOppName = data['bizOppName'];
 
         if (kDebugMode) {
-          print(
-              "bizOppName: $bizOppName");
+          print("bizOppName: $bizOppName");
         }
 
         // Use the bizOppName directly from the response
@@ -260,7 +261,6 @@ class _HomepageScreenState extends State<HomepageScreen>
               fontWeight: FontWeight.w800,
             ),
           ),
-          
           const SizedBox(height: 16),
           AnimatedOpacity(
             opacity: _isLoading ? 0.5 : 1.0,
@@ -288,12 +288,12 @@ class _HomepageScreenState extends State<HomepageScreen>
                         _isLoading
                             ? 'Loading sponsor...'
                             : (_sponsorName ?? '').isNotEmpty
-                ? (widget.queryType == 'new'
-                    ? 'A Message From $_sponsorName'
-                    : (widget.queryType == 'ref'
-                        ? 'A Message From $_sponsorName'
-                        : 'A Message From Team Build Pro'))
-                : 'A Message From Team Build Pro',
+                                ? (widget.queryType == 'new'
+                                    ? 'A Message From $_sponsorName'
+                                    : (widget.queryType == 'ref'
+                                        ? 'A Message From $_sponsorName'
+                                        : 'A Message From Team Build Pro'))
+                                : 'A Message From Team Build Pro',
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                         ),
@@ -301,51 +301,53 @@ class _HomepageScreenState extends State<HomepageScreen>
                     ],
                   ),
                   const SizedBox(height: 12),
-                  
-Text.rich(
-            TextSpan(
-              children: (_sponsorName ?? '').isNotEmpty
-                  ? (widget.queryType == 'new'
-                      ? <InlineSpan>[
-                          const TextSpan(
-                              text:
-                                  'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
-                          TextSpan(
-                            text: _bizOpp,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const TextSpan(text: '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
-                        ]
-                      : (widget.queryType == 'ref'
-                          ? <InlineSpan>[
-                              const TextSpan(
-                                  text:
-                                      'Welcome!\n\nI\'m using the Team Build Pro app to accelerate the growth of my '),
-                              TextSpan(
-                                text: _bizOpp,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const TextSpan(
-                                  text:
-                                      ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
-                            ]
+                  Text.rich(
+                    TextSpan(
+                      children: (_sponsorName ?? '').isNotEmpty
+                          ? (widget.queryType == 'new'
+                              ? <InlineSpan>[
+                                  const TextSpan(
+                                      text:
+                                          'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
+                                  TextSpan(
+                                    text: _bizOpp,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const TextSpan(
+                                      text:
+                                          '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                                ]
+                              : (widget.queryType == 'ref'
+                                  ? <InlineSpan>[
+                                      const TextSpan(
+                                          text:
+                                              'Welcome!\n\nI\'m using the Team Build Pro app to accelerate the growth of my '),
+                                      TextSpan(
+                                        text: _bizOpp,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const TextSpan(
+                                          text:
+                                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                                    ]
+                                  : <InlineSpan>[
+                                      const TextSpan(
+                                        text:
+                                            'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+                                      ),
+                                    ]))
                           : <InlineSpan>[
                               const TextSpan(
                                 text:
-                                    'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+                                    'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
                               ),
-                            ]))
-                  : <InlineSpan>[
-                      const TextSpan(
-                        text:
-                            'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
-                      ),
-                    ],
-            ),
-            textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 15, height: 1.4),
-          ),
+                            ],
+                    ),
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 15, height: 1.4),
+                  ),
                 ],
               ),
             ),
@@ -368,7 +370,8 @@ Text.rich(
                   MaterialPageRoute(
                     builder: (_) => NewRegistrationScreen(
                       appId: widget.appId,
-                      referralCode: null, // Explicitly null for admin registration
+                      referralCode:
+                          null, // Explicitly null for admin registration
                     ),
                   ),
                 );
@@ -392,7 +395,6 @@ Text.rich(
                   ),
                 );
               },
-
               icon: const Icon(Icons.login),
               label: const Text('Log In'),
             ),

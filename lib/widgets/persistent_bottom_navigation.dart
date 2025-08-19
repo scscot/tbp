@@ -17,10 +17,12 @@ class PersistentBottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<PersistentBottomNavigation> createState() => _PersistentBottomNavigationState();
+  State<PersistentBottomNavigation> createState() =>
+      _PersistentBottomNavigationState();
 }
 
-class _PersistentBottomNavigationState extends State<PersistentBottomNavigation> {
+class _PersistentBottomNavigationState
+    extends State<PersistentBottomNavigation> {
   int _currentIndex = 0;
 
   late final List<Widget> screens;
@@ -45,8 +47,6 @@ class _PersistentBottomNavigationState extends State<PersistentBottomNavigation>
       ShareScreen(appId: widget.appId),
       ProfileScreen(appId: widget.appId),
     ];
-
-
   }
 
   void _onItemTapped(int index) {
@@ -75,7 +75,7 @@ class _PersistentBottomNavigationState extends State<PersistentBottomNavigation>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel?>(context);
-    
+
     if (user == null) {
       return widget.child;
     }

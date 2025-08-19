@@ -366,7 +366,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "Welcome $_adminFirstName!\n\nLet's set up the foundation for your team's success. Please complete these settings carefully, as they will define the opportunity for your entire network and cannot be changed once saved.",
+                    text:
+                        "Welcome $_adminFirstName!\n\nLet's set up the foundation for your team's success. Please complete these settings carefully, as they will define the opportunity for your entire network and cannot be changed once saved.",
                   ),
                 ],
               ),

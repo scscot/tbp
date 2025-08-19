@@ -64,7 +64,8 @@ class SessionManager {
   // --- Biometric and Logout time methods remain the same ---
 
   /// Caches data for a successfully validated referral code.
-  Future<void> setReferralData(String referralCode, String sponsorName, {String? queryType}) async {
+  Future<void> setReferralData(String referralCode, String sponsorName,
+      {String? queryType}) async {
     final prefs = await SharedPreferences.getInstance();
     final referralData = {
       'referralCode': referralCode,

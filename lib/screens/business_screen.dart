@@ -515,16 +515,14 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 const TextSpan(
-                  text:
-                      'Your team growth has unlocked access to ',
+                  text: 'Your team growth has unlocked access to ',
                 ),
                 TextSpan(
                   text: bizOpp,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(
-                  text:
-                      '. This opportunity operates as ',
+                  text: '. This opportunity operates as ',
                 ),
                 const TextSpan(
                   text:
@@ -755,10 +753,10 @@ class _BusinessScreenState extends State<BusinessScreen>
                 child: Text(
                   bizOppRefUrl!,
                   style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline, fontWeight: FontWeight.w600
-                  ),
+                      fontSize: 16,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(width: 8),

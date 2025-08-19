@@ -17,7 +17,7 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel?>(context);
-    
+
     // Don't show navigation bar if user is not logged in
     if (user == null) {
       return const SizedBox.shrink();
