@@ -230,13 +230,14 @@ class _HomepageScreenState extends State<HomepageScreen>
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      automaticallyImplyLeading: false,
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withValues(alpha: 0.6),
+              const Color.fromARGB(255, 0, 79, 248).withValues(alpha: 0.6),
               AppColors.secondary.withValues(alpha: 0.4),
             ],
           ),
@@ -245,10 +246,16 @@ class _HomepageScreenState extends State<HomepageScreen>
       title: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Image.asset(
               'assets/icons/app_icon.png',
@@ -261,7 +268,7 @@ class _HomepageScreenState extends State<HomepageScreen>
             child: Text(
               'Team Build Pro',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 letterSpacing: 0.5,
@@ -318,56 +325,89 @@ class _HomepageScreenState extends State<HomepageScreen>
         // Main hero text with enhanced styling
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              Text(
-                'Empower Your Team',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  height: 1.1,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      offset: const Offset(0, 2),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text.rich(
-                TextSpan(
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    height: 1.1,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        offset: const Offset(0, 2),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
+          child: widget.queryType == 'new'
+              ? Column(
                   children: [
-                    const TextSpan(text: 'Accelerate '),
-                    TextSpan(
-                      text: 'Growth',
-                      style: TextStyle(
-                        color: Colors.amber.shade300,
-                        fontWeight: FontWeight.w900,
+                    Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          height: 1.1,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 8,
+                            ),
+                          ],
+                        ),
+                        children: [
+                          const TextSpan(text: 'Build Your Foundation\n'),
+                          TextSpan(
+                            text: 'Before Day One',
+                            style: TextStyle(
+                              color: Colors.amber.shade300,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
                       ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Text(
+                      'Empower Your Team',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.1,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            offset: const Offset(0, 2),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          height: 1.1,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 8,
+                            ),
+                          ],
+                        ),
+                        children: [
+                          const TextSpan(text: 'Accelerate '),
+                          TextSpan(
+                            text: 'Growth',
+                            style: TextStyle(
+                              color: Colors.amber.shade300,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
         ),
       ],
     );
@@ -498,7 +538,6 @@ class _HomepageScreenState extends State<HomepageScreen>
                           fontSize: 18,
                         ),
                       ),
-                     
                     ],
                   ),
                 ),

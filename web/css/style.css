@@ -738,18 +738,18 @@ p {
 }
 
 
-/* Screenshots grid */
+/* Screenshots grid - Updated responsive breakpoints */
 #screenshots .shots-grid {
     /* Limit the overall width of the grid and center it */
     max-width: 900px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    /* Default 4 columns */
     gap: 16px;
 }
 
 #screenshots .shot {
-    /* ... existing styles for padding, border, etc. ... */
     margin: 0;
     background: #fff;
     border: 1px solid #e2e8f0;
@@ -773,23 +773,17 @@ p {
     display: block;
 }
 
-/* Responsive columns */
-/* Adjust the breakpoints to make sense with the new max-width */
-@media (max-width: 900px) {
-    #screenshots .shots-grid {
-        /* No max-width on smaller screens to allow it to fill the container */
-        max-width: none;
-    }
+/* Responsive columns - Always display 4 columns */
+#screenshots .shots-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 480px) {
     #screenshots .shots-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    #screenshots .shots-grid {
-        grid-template-columns: 1fr;
     }
 }
