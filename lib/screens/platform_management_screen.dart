@@ -9,7 +9,6 @@ import '../services/auth_service.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
 import 'new_registration_screen.dart';
-import '../config/app_colors.dart';
 
 class PlatformManagementScreen extends StatefulWidget {
   final String appId;

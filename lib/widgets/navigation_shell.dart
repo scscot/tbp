@@ -123,14 +123,15 @@ class NavigationShellState extends State<NavigationShell> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
+
         final nav = _navigatorKeys[_currentIndex].currentState;
         if (nav != null && nav.canPop()) {
-          nav.pop();
+          nav.pop(result); // pass result through
           return;
         }
-        Navigator.maybePop(context);
+        Navigator.maybePop(context, result);
       },
       child: Scaffold(
         body: IndexedStack(

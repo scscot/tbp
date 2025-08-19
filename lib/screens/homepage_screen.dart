@@ -363,6 +363,7 @@ Text.rich(
           Expanded(
             child: ElevatedButton.icon(
               onPressed: () {
+                if (!mounted) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => NewRegistrationScreen(
@@ -381,14 +382,17 @@ Text.rich(
             child: OutlinedButton.icon(
               onPressed: () async {
                 // Clear all cached user information before navigating to login
+                final navigator =
+                    Navigator.of(context); // <-- capture before await
                 await SessionManager.instance.clearAllData();
-                if (!mounted) return;
-                Navigator.of(context).push(
+                navigator.push(
+                  // <-- use captured navigator
                   MaterialPageRoute(
                     builder: (_) => LoginScreen(appId: widget.appId),
                   ),
                 );
               },
+
               icon: const Icon(Icons.login),
               label: const Text('Log In'),
             ),
