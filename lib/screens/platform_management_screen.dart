@@ -40,9 +40,10 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
   }
 
   /// Fetches necessary data for the admin, like the current business opportunity name.
+
   Future<void> _loadAdminData() async {
     final user = Provider.of<UserModel?>(context, listen: false);
-    if (user == null || user.role != 'admin') {
+    if (user == null  || user.role != 'admin') {
       if (mounted) setState(() => _isLoading = false);
       return;
     }
@@ -220,18 +221,10 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                     children: [
                       // Screen Header
                       Text(
-                        'Platform Management',
+                        'Create New Account',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Tools for administering your opportunities.',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                      ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
 
                       // "Manage a New Opportunity" Card
                       Card(
@@ -245,7 +238,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Manage a New Opportunity',
+                                'Manage Another Opportunity',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -255,7 +248,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                               ),
                               const SizedBox(height: 8),
                               const Text(
-                                'Create a separate account to manage a new business opportunity.',
+                                'Create a separate account to manage and grow a different opportunity.',
                                 style: TextStyle(color: Colors.black54),
                               ),
                               const SizedBox(height: 16),

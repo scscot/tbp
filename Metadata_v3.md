@@ -84,7 +84,7 @@ Download Team Build Pro and transform how you build your business. Start with mo
 This major update introduces comprehensive admin management capabilities and refined dynamic messaging for all user types.
 
 🎯 **Enhanced Admin Management System**
-- New Platform Management Screen for admin users
+- New Create New Account Screen for admin users
 - Create separate admin accounts for different business opportunities
 - Maintain strict data isolation between business ventures
 - Comprehensive terms & conditions enforcement
@@ -179,7 +179,7 @@ This major update introduces comprehensive admin management capabilities and ref
 - Enhanced admin management system
 
 ### New Features in v3.0.0
-- **Platform Management Screen**: Admin-only interface for managing multiple business opportunities
+- **Create New Account Screen**: Admin-only interface for managing multiple business opportunities
 - **Enhanced User Role System**: Improved handling of admin vs. regular user permissions
 - **Dynamic uplineAdmin Resolution**: Smart determination of business opportunity ownership
 - **Refined Share System**: Updated referral link generation with role-based logic

@@ -452,13 +452,13 @@ class _AppHeaderWithMenuState extends State<AppHeaderWithMenu> {
       ),
     ]);
 
-    // Platform Management (admin only)
+    // Create New Account (admin only)
     if (currentUser?.role == 'admin') {
       items.add(
         _buildMenuItem(
           value: 'platform_management',
           icon: Icons.settings,
-          title: 'Platform Management',
+          title: 'Create New Account',
           color: AppColors.primary,
         ),
       );
@@ -890,13 +890,13 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     ]);
 
-    // Platform Management (admin only)
+    // Create New Account (admin only)
     if (currentUser?.role == 'admin') {
       items.add(
         _buildMenuItem(
           value: 'platform_management',
           icon: Icons.settings,
-          title: 'Platform Management',
+          title: 'Create New Account',
           color: AppColors.primary,
         ),
       );

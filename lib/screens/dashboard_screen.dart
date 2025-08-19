@@ -613,7 +613,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (user.role == 'admin')
           _buildActionCard(
             icon: Icons.manage_accounts,
-            title: 'Platform Management',
+            title: 'Create New Account',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(10),
           ),
