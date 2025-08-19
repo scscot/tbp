@@ -352,7 +352,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       body: Column(
         children: [
           // --- MODIFICATION: Added CircleAvatar for the recipient's photo ---
-          const SizedBox(height: 16),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text('Message Center',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(height: 6),
           CircleAvatar(
             radius: 40,
             backgroundImage:
@@ -360,7 +365,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                     ? NetworkImage(_recipientPhotoUrl!)
                     : null,
             child: (_recipientPhotoUrl == null || _recipientPhotoUrl!.isEmpty)
-                ? const Icon(Icons.person, size: 40)
+                ? const Icon(Icons.person, size: 30)
                 : null,
           ),
           const SizedBox(height: 8),

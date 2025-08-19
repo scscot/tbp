@@ -255,7 +255,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                               ),
                               const SizedBox(height: 8),
                               const Text(
-                                'Create a separate admin account to manage a new business opportunity.',
+                                'Create a separate account to manage a new business opportunity.',
                                 style: TextStyle(color: Colors.black54),
                               ),
                               const SizedBox(height: 16),
@@ -264,7 +264,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                                   onPressed: () =>
                                       _createNewAdminAccount(currentUser),
                                   icon: const Icon(Icons.person_add),
-                                  label: const Text('Create New Admin Account'),
+                                  label: const Text('Create New Account'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,

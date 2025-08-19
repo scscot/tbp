@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'add_link_screen.dart';
-import 'business_screen.dart';
 import 'dart:async';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -13,7 +11,7 @@ import '../services/auth_service.dart';
 import '../services/network_service.dart'; // Added for caching
 import '../widgets/restart_widget.dart';
 import '../main.dart';
-import 'subscription_screen.dart'; // --- 1. New import for SubscriptionScreen ---
+// --- 1. New import for SubscriptionScreen ---
 
 class DashboardScreen extends StatefulWidget {
   final String appId;
@@ -38,7 +36,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   int _unreadMessageCount = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  String? _bizOpp;
 
   // Network service for cached counts
   final NetworkService _networkService = NetworkService();
@@ -148,33 +145,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // --- 2. New helper method to check subscription before navigating ---
-  Future<void> _navigateTo(Widget screen) async {
-    // Map known screens to bottom navigation indices
-
-    final authService = context.read<AuthService>();
-    final user = context.read<UserModel?>();
-
-    if (user == null || !mounted) return;
-
-    final needsSubscription =
-        await authService.shouldShowSubscriptionScreen(user);
-
-    if (!mounted) return;
-
-    if (needsSubscription) {
-      await showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (_) => const SubscriptionScreen(),
-      );
-    } else {
-      await showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (_) => screen,
-      );
-    }
-  }
 
   Future<void> _loadBizOppData() async {
     final user = Provider.of<UserModel?>(context, listen: false);
@@ -193,11 +163,9 @@ class _DashboardScreenState extends State<DashboardScreen>
           .get();
 
       if (adminSettingsDoc.exists && mounted) {
-        final adminData = adminSettingsDoc.data();
-        final retrievedBizOpp = adminData?['biz_opp'] as String?;
+        adminSettingsDoc.data();
 
         setState(() {
-          _bizOpp = retrievedBizOpp;
         });
       }
     } catch (e) {
@@ -270,154 +238,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  void _showBizOppFollowUpModal(UserModel user) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 400),
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFFFF8A00),
-                const Color(0xFFFF6B00),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(75),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(50),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(
-                  Icons.assignment_return_outlined,
-                  size: 40,
-                  color: AppColors.textInverse,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  'Finalize Your $_bizOpp Connection',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textInverse,
-                    height: 1.2,
-                    letterSpacing: -0.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  'Update your profile now to ensure new team members are automatically placed in your organization.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.textInverse.withAlpha(240),
-                    height: 1.4,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.textInverse,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(dialogContext);
-                        _navigateTo(AddLinkScreen(appId: widget.appId));
-                      },
-                      borderRadius: BorderRadius.circular(16),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 16),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Add My $_bizOpp Referral Link Now",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFFFF6B00),
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  _navigateTo(BusinessScreen(appId: widget.appId));
-                },
-                style: TextButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-                child: Text(
-                  'Skip for now!\nI haven\'t joined $_bizOpp',
-                  style: TextStyle(
-                    color: AppColors.textInverse,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.underline,
-                    decorationColor: AppColors.textInverse.withAlpha(180),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildWelcomeSection(UserModel user) {
     return Container(
