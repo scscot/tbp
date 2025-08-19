@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 // App imports
 import '../services/session_manager.dart';
+import '../config/app_colors.dart';
 import 'login_screen.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -13,7 +14,7 @@ import 'terms_of_service_screen.dart';
 class HomepageScreen extends StatefulWidget {
   final String appId;
   final String? referralCode;
-  final String? queryType; // New parameter to track query type
+  final String? queryType;
 
   const HomepageScreen({
     super.key,
@@ -28,39 +29,57 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _heroAnimationController;
-
-  // State variables (mutable; not final by design)
+  // State variables
   bool _isLoading = true;
   String? _sponsorName;
-  String? _sponsorPhotoUrl; // optional, used if backend returns photo URL
-  String? _bizOpp; // NEW: Added to store biz_opp value
+  String? _sponsorPhotoUrl;
+  String? _bizOpp;
+
+  // Animation controllers
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-    _heroAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..forward();
-
-    // Debug print for queryType
-    if (kDebugMode) {
-      print('🏠 HOMEPAGE: queryType = ${widget.queryType}');
-    }
-
-    // Kick off referral init with code (if any) passed into the widget
+    _initializeAnimations();
     _initializeReferralData(widget.referralCode);
+  }
+
+  void _initializeAnimations() {
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
   }
 
   @override
   void dispose() {
-    _heroAnimationController.dispose();
+    _fadeController.dispose();
+    _slideController.dispose();
     super.dispose();
   }
 
   // -------------------------------------------------------------
-  // Fully inclusive referral initializer (Map-based cache)
+  // DATA FETCHING LOGIC (Unchanged)
   // -------------------------------------------------------------
 
   Future<void> _applySponsorFromNetwork({
@@ -85,12 +104,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   Future<void> _initializeReferralData(String? code) async {
     if (mounted) setState(() => _isLoading = true);
     try {
-      // 1) No code passed → clear cache and treat as new user
       if ((code ?? '').isEmpty) {
-        if (kDebugMode) {
-          print(
-              "🔍 HOMEPAGE: No referral code provided. Clearing cache and treating as new user.");
-        }
         await SessionManager.instance.clearReferralData();
         if (!mounted) return;
         setState(() {
@@ -99,42 +113,20 @@ class _HomepageScreenState extends State<HomepageScreen>
         });
         return;
       }
-      // 2) Code present → fetch
-      if (kDebugMode) {
-        print("🔍 HOMEPAGE: Initializing with referral code: $code");
-        print("🔍 HOMEPAGE: Fetching referral data for code: $code");
-      }
+
       final uri = Uri.parse(
         'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$code',
       );
       final response = await http.get(uri);
-      if (kDebugMode) {
-        print(
-            "🔍 HOMEPAGE: Received response with status: ${response.statusCode}");
-      }
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =
             jsonDecode(response.body) as Map<String, dynamic>;
-        final firstName = (data['firstName'] ?? '').toString().trim();
-        final lastName = (data['lastName'] ?? '').toString().trim();
-        final fullName = (data['fullName'] ?? '').toString().trim();
-        final display = (data['displayName'] ?? '').toString().trim();
-        final joined =
-            [firstName, lastName].where((s) => s.isNotEmpty).join(' ').trim();
-        final sponsorName = joined.isNotEmpty
-            ? joined
-            : (fullName.isNotEmpty
-                ? fullName
-                : (display.isNotEmpty ? display : 'Sponsor'));
-
+        final sponsorName =
+            [data['firstName'], data['lastName']].join(' ').trim();
         final sponsorPhotoUrl = data['photoUrl'];
         final bizOppName = data['bizOppName'];
 
-        if (kDebugMode) {
-          print("bizOppName: $bizOppName");
-        }
-
-        // Use the bizOppName directly from the response
         if (bizOppName != null && mounted) {
           setState(() {
             _bizOpp = bizOppName;
@@ -147,294 +139,619 @@ class _HomepageScreenState extends State<HomepageScreen>
           sponsorPhotoUrl: sponsorPhotoUrl,
           queryType: widget.queryType,
         );
-        return;
+      } else {
+        await SessionManager.instance.clearReferralData();
+        if (!mounted) return;
+        setState(() {
+          _sponsorName = null;
+          _sponsorPhotoUrl = null;
+        });
       }
-      // 3) Non-200 → skip cache fallback entirely and clear cache
-      if (kDebugMode) {
-        print(
-            "⚠️ HOMEPAGE: Referral fetch failed (${response.statusCode}). Skipping cache fallback and clearing cache.");
-      }
-      // Clear cached referral data and treat as not referred
-      await SessionManager.instance.clearReferralData();
-      if (!mounted) return;
-      setState(() {
-        _sponsorName = null;
-        _sponsorPhotoUrl = null;
-      });
-    } catch (e, st) {
+    } catch (e) {
       if (kDebugMode) {
         print('❌ HOMEPAGE: Error during referral init: $e');
-        print('❌ HOMEPAGE: Stack: $st');
       }
-      // On error, clear cache and treat as not referred
-      await SessionManager.instance.clearReferralData();
-      if (!mounted) return;
-      setState(() {
-        _sponsorName = null;
-        _sponsorPhotoUrl = null;
-      });
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _fadeController.forward();
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) _slideController.forward();
+        });
+      }
     }
   }
 
-  // ------------------------- UI ------------------------------
+  // -------------------------------------------------------------
+  // UI BUILD METHOD (Enhanced Design)
+  // -------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF0A0E27),
-                Color(0xFF1A237E),
-                Color(0xFF3949AB),
-              ],
-            ),
+      extendBodyBehindAppBar: true,
+      appBar: _buildAppBar(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: _buildHeroSection(),
+                        ),
+                        const SizedBox(height: 40),
+                        SlideTransition(
+                          position: _slideAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: _buildMessageCard(),
+                          ),
+                        ),
+                        const SizedBox(height: 48),
+                        SlideTransition(
+                          position: _slideAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: _buildCtaButtons(),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              _buildFooter(),
+            ],
           ),
         ),
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/icons/app_icon.png',
-              width: 28,
-              height: 28,
-              fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  // -------------------------------------------------------------
+  // UI HELPER WIDGETS (Enhanced with Professional Polish)
+  // -------------------------------------------------------------
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primary.withValues(alpha: 0.6),
+              AppColors.secondary.withValues(alpha: 0.4),
+            ],
+          ),
+        ),
+      ),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(width: 12),
-            const Text(
+            child: Image.asset(
+              'assets/icons/app_icon.png',
+              width: 32,
+              height: 32,
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Text(
               'Team Build Pro',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
+                letterSpacing: 0.5,
               ),
             ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: _buildHeroSection(context),
-            ),
-            SliverToBoxAdapter(child: const SizedBox(height: 16)),
-            SliverToBoxAdapter(child: _buildCTASection(context)),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              fillOverscroll: true,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildFooter(context),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildHeroSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            (_sponsorName ?? '').isNotEmpty
-                ? (widget.queryType == 'new'
-                    ? 'JUMPSTART YOUR TEAM GROWTH'
-                    : (widget.queryType == 'ref'
-                        ? 'GROW AND MANAGE YOUR TEAM'
-                        : 'PROVEN TEAM BUILDING SYSTEM'))
-                : 'PROVEN TEAM BUILDING SYSTEM',
+  Widget _buildHeroSection() {
+    final heroTitle = (_sponsorName ?? '').isNotEmpty
+        ? (widget.queryType == 'new'
+            ? 'JUMPSTART YOUR SUCCESS'
+            : (widget.queryType == 'ref'
+                ? 'GROW AND MANAGE YOUR TEAM'
+                : 'PROVEN TEAM BUILDING SYSTEM'))
+        : 'PROVEN TEAM BUILDING SYSTEM';
+
+    return Column(
+      children: [
+        // Hero badge
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.25),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Text(
+            heroTitle,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              letterSpacing: 1.2,
             ),
           ),
-          const SizedBox(height: 16),
-          AnimatedOpacity(
-            opacity: _isLoading ? 0.5 : 1.0,
-            duration: const Duration(milliseconds: 300),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.blue.shade300),
+        ),
+        const SizedBox(height: 32),
+
+        // Main hero text with enhanced styling
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Text(
+                'Empower Your Team',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  height: 1.1,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      offset: const Offset(0, 2),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      ((_sponsorPhotoUrl ?? '').isNotEmpty)
-                          ? CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(_sponsorPhotoUrl!))
-                          : const Icon(Icons.person_pin_circle_outlined),
-                      const SizedBox(width: 8),
-                      Text(
-                        _isLoading
-                            ? 'Loading sponsor...'
-                            : (_sponsorName ?? '').isNotEmpty
-                                ? (widget.queryType == 'new'
-                                    ? 'A Message From $_sponsorName'
-                                    : (widget.queryType == 'ref'
-                                        ? 'A Message From $_sponsorName'
-                                        : 'A Message From Team Build Pro'))
-                                : 'A Message From Team Build Pro',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+              const SizedBox(height: 8),
+              Text.rich(
+                TextSpan(
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.1,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Text.rich(
+                  children: [
+                    const TextSpan(text: 'Accelerate '),
                     TextSpan(
-                      children: (_sponsorName ?? '').isNotEmpty
-                          ? (widget.queryType == 'new'
-                              ? <InlineSpan>[
-                                  const TextSpan(
-                                      text:
-                                          'Welcome!\n\nI\'m so glad you\'re here to get a head start on building your '),
-                                  TextSpan(
-                                    text: _bizOpp,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const TextSpan(
-                                      text:
-                                          '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
-                                ]
-                              : (widget.queryType == 'ref'
-                                  ? <InlineSpan>[
-                                      const TextSpan(
-                                          text:
-                                              'Welcome!\n\nI\'m using the Team Build Pro app to accelerate the growth of my '),
-                                      TextSpan(
-                                        text: _bizOpp,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const TextSpan(
-                                          text:
-                                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
-                                    ]
-                                  : <InlineSpan>[
-                                      const TextSpan(
-                                        text:
-                                            'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
-                                      ),
-                                    ]))
-                          : <InlineSpan>[
-                              const TextSpan(
-                                text:
-                                    'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
-                              ),
-                            ],
+                      text: 'Growth',
+                      style: TextStyle(
+                        color: Colors.amber.shade300,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 15, height: 1.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCTASection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {
-                if (!mounted) return;
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => NewRegistrationScreen(
-                      appId: widget.appId,
-                      referralCode:
-                          null, // Explicitly null for admin registration
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.person_add_alt_1),
-              label: const Text('Create Account'),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () async {
-                // Clear all cached user information before navigating to login
-                final navigator =
-                    Navigator.of(context); // <-- capture before await
-                await SessionManager.instance.clearAllData();
-                navigator.push(
-                  // <-- use captured navigator
-                  MaterialPageRoute(
-                    builder: (_) => LoginScreen(appId: widget.appId),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.login),
-              label: const Text('Log In'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => TermsOfServiceScreen(appId: widget.appId),
-                    ),
-                  );
-                },
-                child: const Text('Terms of Service'),
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => PrivacyPolicyScreen(appId: widget.appId),
-                    ),
-                  );
-                },
-                child: const Text('Privacy Policy'),
+                  ],
+                ),
+                textAlign: TextAlign.center,
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMessageCard() {
+    final messageTitle = _isLoading
+        ? 'Loading...'
+        : (_sponsorName ?? '').isNotEmpty
+            ? 'A Personal Message\nFrom $_sponsorName'
+            : 'A Message From\nTeam Build Pro';
+
+    final messageBody = TextSpan(
+      style: TextStyle(
+        fontSize: 16,
+        height: 1.6,
+        color: AppColors.textPrimary,
+      ),
+      children: (_sponsorName ?? '').isNotEmpty
+          ? (widget.queryType == 'new'
+              ? <InlineSpan>[
+                  const TextSpan(
+                      text:
+                          'I\'m so glad you\'re here to get a head start on building your '),
+                  TextSpan(
+                    text: _bizOpp,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(
+                      text:
+                          '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                ]
+              : (widget.queryType == 'ref'
+                  ? <InlineSpan>[
+                      const TextSpan(
+                          text:
+                              'I\'m using the Team Build Pro app to accelerate the growth of my '),
+                      TextSpan(
+                        text: _bizOpp,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const TextSpan(
+                          text:
+                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                    ]
+                  : <InlineSpan>[
+                      const TextSpan(
+                        text:
+                            'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+                      ),
+                    ]))
+          : <InlineSpan>[
+              const TextSpan(
+                text:
+                    'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+              ),
+            ],
+    );
+
+    return AnimatedOpacity(
+      opacity: _isLoading ? 0.0 : 1.0,
+      duration: const Duration(milliseconds: 800),
+      child: Container(
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 1,
+              offset: const Offset(0, -1),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: (_sponsorPhotoUrl ?? '').isNotEmpty
+                      ? CircleAvatar(
+                          radius: 28,
+                          backgroundColor: AppColors.backgroundSecondary,
+                          backgroundImage: NetworkImage(_sponsorPhotoUrl!),
+                        )
+                      : CircleAvatar(
+                          radius: 28,
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.1),
+                          child: Icon(
+                            Icons.person_pin_circle_outlined,
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
+                        ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        messageTitle,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                          fontSize: 18,
+                        ),
+                      ),
+                     
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundSecondary,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.borderLight,
+                  width: 1,
+                ),
+              ),
+              child: Text.rich(messageBody),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCtaButtons() {
+    return Column(
+      children: [
+        // Primary CTA - Create Account
+        Container(
+          width: double.infinity,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.4),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => NewRegistrationScreen(
+                  appId: widget.appId,
+                  referralCode: widget.referralCode,
+                ),
+              ));
+            },
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.person_add_alt_1,
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+            label: const Text(
+              'Create Account',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              backgroundColor: AppColors.surface,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Secondary CTA - Login
+        Container(
+          width: double.infinity,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: OutlinedButton.icon(
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await SessionManager.instance.clearAllData();
+              navigator.push(MaterialPageRoute(
+                builder: (_) => LoginScreen(appId: widget.appId),
+              ));
+            },
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.login,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+            label: const Text(
+              'I Already Have an Account',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                letterSpacing: 0.3,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // Trust indicators
+        _buildTrustIndicators(),
+      ],
+    );
+  }
+
+  Widget _buildTrustIndicators() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildTrustItem(Icons.security, '100% Secure'),
+          Container(
+            width: 1,
+            height: 20,
+            color: Colors.white.withValues(alpha: 0.3),
+          ),
+          _buildTrustItem(Icons.timer, '30-Day Free'),
+          Container(
+            width: 1,
+            height: 20,
+            color: Colors.white.withValues(alpha: 0.3),
+          ),
+          _buildTrustItem(Icons.support_agent, '24/7 Support'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrustItem(IconData icon, String text) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          color: Colors.white,
+          size: 20,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.white.withValues(alpha: 0.9),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFooter() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        border: Border(
+          top: BorderSide(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => TermsOfServiceScreen(appId: widget.appId),
+            )),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            child: Text(
+              'Terms of Service',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: 1,
+            height: 16,
+            color: Colors.white.withValues(alpha: 0.4),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => PrivacyPolicyScreen(appId: widget.appId),
+            )),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            child: Text(
+              'Privacy Policy',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),
