@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirestoreService _firestoreService = FirestoreService();
 
-   bool _checkingSuperAdminStatus = true;
+  bool _checkingSuperAdminStatus = true;
 
   String? _sponsorName;
   String? _sponsorUid;
@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       developer.log('Admin user detected, skipping upline data load');
       return;
     }
-    
+
     developer.log('🔍 _loadUplineData called for user: ${user.uid}');
     developer.log('🔍 user.role: ${user.role}');
     developer.log('🔍 user.sponsorId: ${user.sponsorId}');
@@ -85,10 +85,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Fetch Sponsor info
     if (user.sponsorId != null && user.sponsorId!.isNotEmpty) {
       developer.log('🔍 Fetching sponsor with ID: ${user.sponsorId}');
-  
+
       _firestoreService.getUser(user.sponsorId!).then((sponsor) {
-        developer.log('🔍 Sponsor fetch result: ${sponsor != null ? 'found' : 'not found'}');
-        
+        developer.log(
+            '🔍 Sponsor fetch result: ${sponsor != null ? 'found' : 'not found'}');
+
         if (mounted && sponsor != null) {
           setState(() {
             _sponsorName =
@@ -111,9 +112,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (user.uplineAdmin != null && user.uplineAdmin!.isNotEmpty) {
       final leaderId = user.uplineAdmin!;
       developer.log('🔍 Fetching team leader with ID: $leaderId');
-      
+
       _firestoreService.getUser(leaderId).then((leader) {
-        developer.log('🔍 Team leader fetch result: ${leader != null ? 'found' : 'not found'}');
+        developer.log(
+            '🔍 Team leader fetch result: ${leader != null ? 'found' : 'not found'}');
         if (mounted && leader != null) {
           setState(() {
             _teamLeaderName =
@@ -132,6 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       developer.log('🔍 No uplineAdmin found for user');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -214,7 +217,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: const Text('Edit Profile'),
               ),
             ),
-            
           ],
         ),
       ),

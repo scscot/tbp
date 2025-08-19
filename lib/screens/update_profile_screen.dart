@@ -52,6 +52,17 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     _selectedCountry = widget.user.country;
     _selectedState = widget.user.state;
+    // Guard against invalid dropdown values if saved values are not in the lists
+    if (_selectedCountry != null &&
+        !statesByCountry.keys.contains(_selectedCountry)) {
+      _selectedCountry = null;
+    }
+    if (_selectedCountry != null) {
+      final states = statesByCountry[_selectedCountry] ?? const <String>[];
+      if (_selectedState != null && !states.contains(_selectedState)) {
+        _selectedState = null;
+      }
+    }
   }
 
   @override
