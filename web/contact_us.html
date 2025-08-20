@@ -27,7 +27,8 @@
     <meta property="twitter:image" content="https://www.teambuildpro.com/assets/images/social-preview.jpg" />
     <!-- === END: SEO & METADATA === -->
 
-    <script src="https://www.google.com/recaptcha/api.js?render=6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"></script>
+    <script
+        src="https://www.google.com/recaptcha/enterprise.js?render=6LdLa5orAAAAAHiAdQq3NHCT1W52_R__xGN1MYZM"></script>
 
 
     <link rel="stylesheet" href="css/style1.css" />
@@ -81,7 +82,7 @@
 
     <div class="container">
         <div class="hero-section">
-            <div class="hero-icon">📧</div>
+            <div class="hero-icon">🔧</div>
             <h1 class="hero-title">Contact Us</h1>
             <p class="hero-subtitle">Get in touch with our team - we're here to help!</p>
         </div>
@@ -147,12 +148,12 @@
                 <span>Team Build Pro</span>
             </div>
             <div class="footer-links">
-    <a href="/#pricing">Pricing</a>
-    <a href="/#faq">FAQ</a>
-    <a href="/contact_us.html">Contact</a>
-    <a href="/privacy_policy.html">Privacy Policy</a>
-    <a href="/terms_of_service.html">Terms of Service</a>
-</div>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#faq">FAQ</a>
+                <a href="/contact_us.html">Contact</a>
+                <a href="/privacy_policy.html">Privacy Policy</a>
+                <a href="/terms_of_service.html">Terms of Service</a>
+            </div>
             <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
         </div>
     </footer>
@@ -177,48 +178,47 @@
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData);
 
-            // Execute reCAPTCHA v3
-            grecaptcha.ready(function () {
-                grecaptcha.execute('6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE', { action: 'submit' }).then(function (token) {
-                    // Add reCAPTCHA token to form data
-                    data.recaptchaToken = token;
+            // Execute reCAPTCHA Enterprise
+            grecaptcha.enterprise.ready(async () => {
+                const token = await grecaptcha.enterprise.execute('6LdLa5orAAAAAHiAdQq3NHCT1W52_R__xGN1MYZM', { action: 'submit' });
+                // Add reCAPTCHA token to form data
+                data.recaptchaToken = token;
 
-                    // Send form data with reCAPTCHA token
-                    fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/submitContactFormHttp', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                // Hide form and show success message
-                                document.querySelector('.contact-form').style.display = 'none';
-                                document.getElementById('responseSection').style.display = 'block';
+                // Send form data with reCAPTCHA token
+                fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/submitContactFormHttp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            // Hide form and show success message
+                            document.querySelector('.contact-form').style.display = 'none';
+                            document.getElementById('responseSection').style.display = 'block';
 
-                                // Scroll to response section
-                                document.getElementById('responseSection').scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'center'
-                                });
-                            } else {
-                                // Handle failure (optional)
-                                alert('Failed to send message. Please try again later.');
-                                const submitBtn = document.querySelector('.submit-btn');
-                                submitBtn.textContent = 'Send Message';
-                                submitBtn.disabled = false;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('An error occurred. Please try again later.');
+                            // Scroll to response section
+                            document.getElementById('responseSection').scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        } else {
+                            // Handle failure (optional)
+                            alert('Failed to send message. Please try again later.');
                             const submitBtn = document.querySelector('.submit-btn');
                             submitBtn.textContent = 'Send Message';
                             submitBtn.disabled = false;
-                        });
-                });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again later.');
+                        const submitBtn = document.querySelector('.submit-btn');
+                        submitBtn.textContent = 'Send Message';
+                        submitBtn.disabled = false;
+                    });
             });
         }
 
