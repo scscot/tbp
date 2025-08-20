@@ -189,16 +189,51 @@ p {
     color: #ffffff;
 }
 
+/* Enhanced Platform Badge Styles */
 .platform-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: #ffffff;
-    padding: 0.75rem 1.5rem;
+    padding: 1rem 2rem;
     border-radius: 2rem;
-    font-size: 1.5rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    /* Increased margin-bottom to create more space below the badge */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.platform-badge:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .platform-badge {
+        padding: 0.875rem 1.75rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .platform-badge {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
 }
 
 .hero h1 {
@@ -786,4 +821,8 @@ p {
     #screenshots .shots-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+.logo {
+    text-decoration: none;
 }
