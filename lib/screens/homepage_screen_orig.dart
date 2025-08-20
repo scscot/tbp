@@ -316,7 +316,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                                   ),
                                   const TextSpan(
                                       text:
-                                          '  team. The next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                                          '  team. The next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                                 ]
                               : (widget.queryType == 'ref'
                                   ? <InlineSpan>[
@@ -330,18 +330,18 @@ class _HomepageScreenState extends State<HomepageScreen>
                                       ),
                                       const TextSpan(
                                           text:
-                                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                                     ]
                                   : <InlineSpan>[
                                       const TextSpan(
                                         text:
-                                            'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+                                            'Welcome!\n\nTeam Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
                                       ),
                                     ]))
                           : <InlineSpan>[
                               const TextSpan(
                                 text:
-                                    'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your free 30-day trial!',
+                                    'Welcome!\n\nThe ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
                               ),
                             ],
                     ),
