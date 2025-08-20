@@ -1,11 +1,6 @@
-// All your existing imports
 const { onRequest } = require("firebase-functions/v2/https");
-const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { defineSecret } = require('firebase-functions/params');
-const fetch = require('node-fetch');
-
-// --- NEW: Import SendGrid ---
 const sgMail = require('@sendgrid/mail');
 
 if (!admin.apps.length) {
@@ -13,13 +8,13 @@ if (!admin.apps.length) {
 }
 
 // Define your secrets
-const recaptchaSecretKey = defineSecret('RECAPTCHA_SECRET_KEY');
-// --- NEW: Define SendGrid Secret ---
 const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
+const recaptchaSecretKey = defineSecret('RECAPTCHA_SECRET_KEY');
 
-// --- NEW: Update function signature to include the new secret ---
-exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecretKey, sendgridApiKey] }, async (req, res) => {
-  // ... (All existing CORS and method checks remain the same) ...
+exports.submitContactFormHttp = onRequest({ 
+  cors: true, 
+  secrets: [sendgridApiKey, recaptchaSecretKey] 
+}, async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.status(204).send('');
     return;
@@ -33,30 +28,89 @@ exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecre
     const data = req.body;
     const recaptchaToken = data.recaptchaToken;
 
-    // ... (All existing reCAPTCHA verification logic remains exactly the same) ...
-    // ... This includes checking the token, verifying with Google, and checking the score ...
-    const secretKey = recaptchaSecretKey.value();
-    // (verification logic continues here...)
-
-    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify`;
-    const verificationBody = new URLSearchParams({
-      secret: secretKey,
-      response: recaptchaToken
-    });
-    const response = await fetch(verificationUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: verificationBody
-    });
-    const verificationResult = await response.json();
-
-    if (!verificationResult.success || verificationResult.score < 0.3) {
-      console.error('reCAPTCHA verification failed or score too low.');
-      res.status(403).json({ success: false, error: 'reCAPTCHA verification failed.' });
+    if (!recaptchaToken) {
+      console.error('No reCAPTCHA token provided');
+      res.status(400).json({ success: false, error: 'reCAPTCHA token required' });
       return;
     }
 
-    // --- THIS IS THE MODIFIED SECTION ---
+    // Get the API key from environment variables
+    const recaptchaApiKey = recaptchaSecretKey.value();
+    if (!recaptchaApiKey) {
+      console.error('reCAPTCHA API key not configured');
+      res.status(500).json({ success: false, error: 'Server configuration error' });
+      return;
+    }
+
+    const projectId = '994629973621';
+
+    console.log('Attempting reCAPTCHA Enterprise verification...');
+
+    // Use reCAPTCHA Enterprise API for verification
+    const assessmentUrl = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${recaptchaApiKey}`;
+    
+    const assessmentBody = {
+      event: {
+        token: recaptchaToken,
+        expectedAction: 'submit',
+        // Updated to use the same site key as in the HTML
+        siteKey: '6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE'
+      }
+    };
+
+    // Use native fetch (available in Node.js 18+)
+    const response = await fetch(assessmentUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(assessmentBody)
+    });
+
+    const assessment = await response.json();
+    console.log('reCAPTCHA Enterprise assessment response:', JSON.stringify(assessment, null, 2));
+
+    // Check if the assessment was successful
+    if (!response.ok) {
+      console.error('reCAPTCHA Enterprise API error:', assessment);
+      res.status(403).json({ success: false, error: 'reCAPTCHA verification failed' });
+      return;
+    }
+
+    // Validate the token properties
+    const tokenProperties = assessment.tokenProperties;
+    if (!tokenProperties.valid) {
+      console.error('Invalid reCAPTCHA token:', tokenProperties.invalidReason);
+      res.status(403).json({ 
+        success: false, 
+        error: `reCAPTCHA token invalid: ${tokenProperties.invalidReason}` 
+      });
+      return;
+    }
+
+    // Check the action matches
+    if (tokenProperties.action !== 'submit') {
+      console.error('reCAPTCHA action mismatch. Expected: submit, Got:', tokenProperties.action);
+      res.status(403).json({ 
+        success: false, 
+        error: 'reCAPTCHA action mismatch' 
+      });
+      return;
+    }
+
+    // Check the risk analysis score
+    const riskScore = assessment.riskAnalysis.score;
+    console.log('reCAPTCHA risk score:', riskScore);
+    
+    if (riskScore < 0.3) {
+      console.error('reCAPTCHA score too low:', riskScore);
+      res.status(403).json({ 
+        success: false, 
+        error: 'reCAPTCHA verification failed - low score' 
+      });
+      return;
+    }
+
     console.log("reCAPTCHA verification successful, preparing to send email...");
 
     // Set the SendGrid API key
@@ -64,10 +118,10 @@ exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecre
 
     // Create the email message object
     const msg = {
-      to: 'support@teambuildpro.com', // Your support email
-      from: 'support@teambuildpro.com', // IMPORTANT: Use the domain you verified with SendGrid
+      to: 'support@teambuildpro.com',
+      from: 'support@teambuildpro.com',
       subject: `New Contact Form Submission: ${data.subject}`,
-      replyTo: data.email, // Allows you to reply directly to the user from your email client
+      replyTo: data.email,
       html: `
         <p>You have received a new contact form submission.</p>
         <hr>
@@ -78,7 +132,7 @@ exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecre
         <p><strong>Message:</strong></p>
         <p>${data.message}</p>
         <br>
-        <p><em>reCAPTCHA Score: ${verificationResult.score}</em></p>
+        <p><em>reCAPTCHA Score: ${riskScore}</em></p>
       `,
     };
 
@@ -86,8 +140,11 @@ exports.submitContactFormHttp = onRequest({ cors: true, secrets: [recaptchaSecre
     await sgMail.send(msg);
     console.log("Contact form email sent successfully to support@teambuildpro.com");
 
-    res.status(200).json({ success: true, message: 'Contact form submitted successfully.' });
-    // --- END OF MODIFIED SECTION ---
+    res.status(200).json({ 
+      success: true, 
+      message: 'Contact form submitted successfully.',
+      score: riskScore 
+    });
 
   } catch (error) {
     console.error('ERROR processing contact form:', error);

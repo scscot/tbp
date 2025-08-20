@@ -22,7 +22,7 @@ cat > "$TEMP_REQUEST" << EOF
   "event": {
     "token": "$TOKEN",
     "expectedAction": "$USER_ACTION",
-    "siteKey": "6LdLa5orAAAAAHiAdQq3NHCT1W52_R__xGN1MYZM"
+    "siteKey": "6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"
   }
 }
 EOF

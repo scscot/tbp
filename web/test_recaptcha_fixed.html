@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test reCAPTCHA Token - Fixed</title>
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdLa5orAAAAAHiAdQq3NHCT1W52_R__xGN1MYZM"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -130,7 +130,7 @@
             try {
                 // Use the correct reCAPTCHA Enterprise API
                 grecaptcha.enterprise.ready(function() {
-                    grecaptcha.enterprise.execute('6LdLa5orAAAAAHiAdQq3NHCT1W52_R__xGN1MYZM', {action: 'test'})
+                    grecaptcha.enterprise.execute('6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE', {action: 'test'})
                         .then(function(token) {
                             currentToken = token;
                             
