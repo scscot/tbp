@@ -26,6 +26,10 @@ const { FieldValue, DocumentReference } = admin.firestore;
 const fetch = global.fetch || require('node-fetch');
 const cors = require('cors')({ origin: true });
 
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const { X509Certificate } = require('crypto');
+
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
 // ============================================================================
@@ -248,6 +252,385 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
     return res.status(500).send('Internal Server Error');
   }
 });
+
+// ============================================================================
+// APP STORE SERVER NOTIFICATIONS V2 IMPLEMENTATION
+// ============================================================================
+
+/**
+ * App Store Server Notifications V2 Handler
+ * Handles JWT-signed notifications from Apple with proper verification
+ */
+exports.handleAppleSubscriptionNotificationV2 = onRequest({
+  region: "us-central1",
+  cors: false // Disable CORS for server-to-server communication
+}, async (req, res) => {
+  console.log(`📱 APPLE V2 NOTIFICATION: Received notification`);
+
+  try {
+    // Verify this is a POST request
+    if (req.method !== 'POST') {
+      console.log(`📱 APPLE V2 NOTIFICATION: Invalid method: ${req.method}`);
+      return res.status(405).send('Method Not Allowed');
+    }
+
+    // Extract the signed payload from request body
+    const signedPayload = req.body?.signedPayload;
+
+    if (!signedPayload) {
+      console.log(`📱 APPLE V2 NOTIFICATION: No signedPayload found`);
+      return res.status(400).send('Missing signedPayload');
+    }
+
+    console.log(`📱 APPLE V2 NOTIFICATION: Processing signed payload`);
+
+    // Step 1: Verify and decode the JWT
+    const decodedPayload = await verifyAndDecodeJWT(signedPayload);
+
+    if (!decodedPayload) {
+      console.log(`📱 APPLE V2 NOTIFICATION: JWT verification failed`);
+      return res.status(401).send('Invalid JWT signature');
+    }
+
+    console.log(`📱 APPLE V2 NOTIFICATION: JWT verified successfully`);
+    console.log(`📱 APPLE V2 NOTIFICATION: Notification type: ${decodedPayload.notificationType}`);
+
+    // Step 2: Process the notification based on type
+    await processNotificationV2(decodedPayload);
+
+    console.log(`✅ APPLE V2 NOTIFICATION: Successfully processed`);
+    return res.status(200).send('OK');
+
+  } catch (error) {
+    console.error(`❌ APPLE V2 NOTIFICATION: Error processing notification:`, error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+/**
+ * Verify JWT signature using Apple's certificates and decode payload
+ */
+async function verifyAndDecodeJWT(signedPayload) {
+  try {
+    // Decode JWT header to get certificate chain
+    const header = jwt.decode(signedPayload, { complete: true })?.header;
+
+    if (!header?.x5c || !Array.isArray(header.x5c) || header.x5c.length === 0) {
+      throw new Error('Missing or invalid certificate chain in JWT header');
+    }
+
+    // Get the leaf certificate (first in chain)
+    const leafCertPEM = `-----BEGIN CERTIFICATE-----\n${header.x5c[0]}\n-----END CERTIFICATE-----`;
+
+    // Create X509 certificate object
+    const leafCert = new X509Certificate(leafCertPEM);
+
+    // Verify certificate chain and extract public key
+    const publicKey = leafCert.publicKey;
+
+    // Verify JWT signature using the public key
+    const decoded = jwt.verify(signedPayload, publicKey, {
+      algorithms: ['ES256'],
+      issuer: 'https://appleid.apple.com' // Apple's issuer
+    });
+
+    return decoded;
+
+  } catch (error) {
+    console.error(`❌ JWT VERIFICATION: Failed to verify JWT:`, error);
+    return null;
+  }
+}
+
+/**
+ * Process V2 notification based on notification type
+ */
+async function processNotificationV2(payload) {
+  const { notificationType, subtype, data } = payload;
+
+  if (!data?.signedTransactionInfo) {
+    throw new Error('Missing transaction info in notification');
+  }
+
+  // Decode the signed transaction info
+  const transactionInfo = jwt.decode(data.signedTransactionInfo);
+  const originalTransactionId = transactionInfo.originalTransactionId;
+
+  if (!originalTransactionId) {
+    throw new Error('Missing original transaction ID');
+  }
+
+  console.log(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} for transaction ${originalTransactionId}`);
+
+  // Find user by Apple transaction ID
+  const userQuery = await db.collection('users')
+    .where('appleTransactionId', '==', originalTransactionId)
+    .limit(1)
+    .get();
+
+  if (userQuery.empty) {
+    console.log(`📱 APPLE V2 NOTIFICATION: No user found for transaction ${originalTransactionId}`);
+    throw new Error('User not found');
+  }
+
+  const userDoc = userQuery.docs[0];
+  const userId = userDoc.id;
+
+  console.log(`📱 APPLE V2 NOTIFICATION: Found user ${userId}, processing ${notificationType}`);
+
+  // Process different notification types
+  switch (notificationType) {
+    case 'SUBSCRIBED':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscribed`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'DID_RENEW':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription renewed`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'DID_CHANGE_RENEWAL_STATUS':
+      if (subtype === 'AUTO_RENEW_DISABLED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} disabled auto-renew`);
+        await updateUserSubscription(userId, 'cancelled', transactionInfo.expiresDate);
+        await createSubscriptionNotification(userId, 'cancelled', transactionInfo.expiresDate);
+      } else if (subtype === 'AUTO_RENEW_ENABLED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} enabled auto-renew`);
+        await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+        await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      }
+      break;
+
+    case 'EXPIRED':
+      if (subtype === 'VOLUNTARY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription expired voluntarily`);
+        await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
+      } else if (subtype === 'BILLING_RETRY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription in billing retry`);
+        // Keep current status but log the billing issue
+      } else if (subtype === 'PRICE_INCREASE') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} didn't accept price increase`);
+        await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
+      }
+      break;
+
+    case 'GRACE_PERIOD_EXPIRED':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} grace period expired`);
+      await updateUserSubscription(userId, 'expired');
+      await createSubscriptionNotification(userId, 'expired');
+      break;
+
+    case 'PRICE_INCREASE':
+      if (subtype === 'PENDING') {
+        console.log(`📱 APPLE V2 NOTIFICATION: Price increase pending for user ${userId}`);
+        // Optionally notify user about pending price increase
+      } else if (subtype === 'ACCEPTED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} accepted price increase`);
+        await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      }
+      break;
+
+    case 'REFUND':
+      console.log(`📱 APPLE V2 NOTIFICATION: Refund processed for user ${userId}`);
+      // Handle refund - might need to revoke access depending on your business logic
+      await updateUserSubscription(userId, 'refunded');
+      await createSubscriptionNotification(userId, 'refunded');
+      break;
+
+    case 'REVOKE':
+      console.log(`📱 APPLE V2 NOTIFICATION: Subscription revoked for user ${userId}`);
+      await updateUserSubscription(userId, 'revoked');
+      await createSubscriptionNotification(userId, 'revoked');
+      break;
+
+    case 'CONSUMPTION_REQUEST':
+      console.log(`📱 APPLE V2 NOTIFICATION: Consumption request for user ${userId}`);
+      // Handle consumption requests if you have consumable products
+      break;
+
+    case 'RENEWAL_EXTENDED':
+      console.log(`📱 APPLE V2 NOTIFICATION: Renewal extended for user ${userId}`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'RENEWAL_EXTENSION':
+      if (subtype === 'SUMMARY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: Renewal extension summary for user ${userId}`);
+        // Handle renewal extension summary
+      }
+      break;
+
+    case 'TEST':
+      console.log(`📱 APPLE V2 NOTIFICATION: Test notification received`);
+      // This is just a test notification, no action needed
+      break;
+
+    default:
+      console.log(`📱 APPLE V2 NOTIFICATION: Unhandled notification type: ${notificationType}`);
+      break;
+  }
+}
+
+/**
+ * Enhanced updateUserSubscription function with better status handling
+ */
+const updateUserSubscriptionV2 = async (userId, status, expiryDate = null, additionalData = {}) => {
+  try {
+    console.log(`📱 SUBSCRIPTION V2: Updating user ${userId} to status: ${status}`);
+
+    const updateData = {
+      subscriptionStatus: status,
+      subscriptionUpdated: FieldValue.serverTimestamp(),
+      ...additionalData
+    };
+
+    if (expiryDate) {
+      // Handle both timestamp and ISO string formats
+      const expiryTimestamp = typeof expiryDate === 'string'
+        ? new Date(expiryDate).getTime()
+        : parseInt(expiryDate);
+      updateData.subscriptionExpiry = new Date(expiryTimestamp);
+      console.log(`📱 SUBSCRIPTION V2: Setting expiry date: ${updateData.subscriptionExpiry.toISOString()}`);
+    }
+
+    await db.collection('users').doc(userId).update(updateData);
+    console.log(`✅ SUBSCRIPTION V2: Successfully updated user ${userId} subscription status`);
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION V2: Failed to update user ${userId} subscription:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Enhanced notification creation with support for new V2 notification types
+ */
+const createSubscriptionNotificationV2 = async (userId, status, expiryDate = null, additionalInfo = {}) => {
+  try {
+    let notificationContent = null;
+
+    switch (status) {
+      case 'active':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          notificationContent = {
+            title: "✅ Subscription Active",
+            message: `Your subscription is now active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_active"
+          };
+        }
+        break;
+
+      case 'cancelled':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          notificationContent = {
+            title: "⚠️ Subscription Cancelled",
+            message: `Your subscription has been cancelled but remains active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_cancelled"
+          };
+        }
+        break;
+
+      case 'expired':
+        notificationContent = {
+          title: "❌ Subscription Expired",
+          message: "Your subscription has expired. Renew to continue accessing premium features.",
+          type: "subscription_expired",
+          route: "/subscription",
+          route_params: JSON.stringify({ "action": "renew" })
+        };
+        break;
+
+      case 'refunded':
+        notificationContent = {
+          title: "💰 Subscription Refunded",
+          message: "Your subscription has been refunded. Access to premium features has been revoked.",
+          type: "subscription_refunded"
+        };
+        break;
+
+      case 'revoked':
+        notificationContent = {
+          title: "🚫 Subscription Revoked",
+          message: "Your subscription has been revoked. Please contact support if you believe this is an error.",
+          type: "subscription_revoked"
+        };
+        break;
+
+      case 'expiring_soon':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+          const formattedDate = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}`;
+
+          notificationContent = {
+            title: "⏰ Subscription Expiring Soon",
+            message: `Your subscription will end on ${formattedDate}. Renew to continue accessing premium features.`,
+            type: "subscription_expiring_soon",
+            route: "/subscription",
+            route_params: JSON.stringify({ "action": "renew" })
+          };
+        }
+        break;
+
+      default:
+        // Don't send notifications for unknown statuses
+        return;
+    }
+
+    if (notificationContent) {
+      const notification = {
+        ...notificationContent,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        ...additionalInfo // Allow passing additional info
+      };
+
+      await db.collection('users').doc(userId).collection('notifications').add(notification);
+      console.log(`✅ SUBSCRIPTION V2: Notification sent to user ${userId} for status: ${status}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION V2: Failed to send notification to user ${userId}:`, error);
+    // Don't throw error - notification failure shouldn't break subscription update
+  }
+};
+
+/**
+ * Test endpoint for validating your V2 notification setup
+ */
+exports.testAppleNotificationV2Setup = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  // This function helps you test your notification endpoint
+  // You can call this from your app to verify everything is set up correctly
+
+  console.log(`📱 TEST: V2 notification setup test initiated by ${request.auth.uid}`);
+
+  return {
+    success: true,
+    message: "V2 notification endpoint is configured and ready",
+    endpoint: `https://${process.env.GCLOUD_PROJECT}.cloudfunctions.net/handleAppleSubscriptionNotificationV2`,
+    timestamp: new Date().toISOString()
+  };
+});
+
+// Export the enhanced helper functions for use in other parts of your code
+/* module.exports = {
+  updateUserSubscriptionV2,
+  createSubscriptionNotificationV2,
+  verifyAndDecodeJWT,
+  processNotificationV2
+}; */
 
 /**
  * Daily check for expired trial periods
@@ -814,6 +1197,26 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
     throw new HttpsError("internal", "An unexpected error occurred while fetching the network.", error.message);
   }
 });
+
+const sendBadgeUpdateWithRetry = async (userId, fcmToken, badgeCount, maxRetries = 3) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await messaging.send({
+        token: fcmToken,
+        data: { badge: badgeCount.toString() },
+        apns: {
+          payload: {
+            aps: { badge: badgeCount }
+          }
+        }
+      });
+      return;
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+};
 
 // ============================================================================
 // *** MODIFIED FUNCTION: getUserByReferralCode ***

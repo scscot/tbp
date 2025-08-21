@@ -11,6 +11,8 @@ import '../services/auth_service.dart';
 import '../services/network_service.dart'; // Added for caching
 import '../widgets/restart_widget.dart';
 import '../main.dart';
+import '../services/subscription_service.dart'; // Add this line
+
 // --- 1. New import for SubscriptionScreen ---
 
 class DashboardScreen extends StatefulWidget {
@@ -664,6 +666,43 @@ class _DashboardScreenState extends State<DashboardScreen>
                 _buildStatsCard(user),
                 _buildQuickActions(user),
                 const SizedBox(height: 32),
+
+                // 🔧 DEBUG: Apple Test Widget for specific admin only
+                if (user.uid == 'KJ8uFnlhKhWgBa4NVcwT') ...[
+                  Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.red, width: 2),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(14),
+                              topRight: Radius.circular(14),
+                            ),
+                          ),
+                          child: const Text(
+                            '🔧 ADMIN DEBUG TOOLS',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const AppleNotificationTestWidget(),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
