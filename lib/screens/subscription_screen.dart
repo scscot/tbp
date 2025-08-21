@@ -300,8 +300,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] ==
                                         'trial'
-                                    ? 'Upgrade Now - \$4.95/month'
-                                    : 'Subscribe - \$4.95/month',
+                                    ? 'Upgrade Now - \$4.99/month'
+                                    : 'Subscribe - \$4.99/month',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color:
