@@ -437,7 +437,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            'Congratulations, You\'re Qualified!',
+            'Congratulations\nYou\'re Qualified!',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -827,15 +827,15 @@ class _BusinessScreenState extends State<BusinessScreen>
               child: Column(
                 children: [
                   Text(
-                    "I've completed my $bizOpp registration",
+                    "Registration Complete",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
-                    "Add My New Referral Link",
+                    "Add My Referral Link",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
