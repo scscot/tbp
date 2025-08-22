@@ -136,6 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
 
@@ -178,22 +179,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            _buildInfoRow('City', currentUser.city ?? 'N/A'),
-            _buildInfoRow('State', currentUser.state ?? 'N/A'),
-            _buildInfoRow('Country', currentUser.country ?? 'N/A'),
-            if (currentUser.createdAt != null)
-              _buildInfoRow(
-                  'Joined', DateFormat.yMMMd().format(currentUser.createdAt!)),
-            if (currentUser.role != 'admin') ...[
-              if (_sponsorName != null && _sponsorUid != null)
-                _buildClickableInfoRow(
-                    'Your Sponsor', _sponsorName!, _sponsorUid!),
-              if (_teamLeaderName != null &&
-                  _teamLeaderUid != null &&
-                  _teamLeaderUid != _sponsorUid)
-                _buildClickableInfoRow(
-                    'Team Leader', _teamLeaderName!, _teamLeaderUid!),
-            ],
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 300),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInfoRow('City', currentUser.city ?? 'N/A'),
+                    _buildInfoRow('State', currentUser.state ?? 'N/A'),
+                    _buildInfoRow('Country', currentUser.country ?? 'N/A'),
+                    if (currentUser.createdAt != null)
+                      _buildInfoRow('Joined',
+                          DateFormat.yMMMd().format(currentUser.createdAt!)),
+                    if (currentUser.role != 'admin') ...[
+                      if (_sponsorName != null && _sponsorUid != null)
+                        _buildClickableInfoRow(
+                            'Your Sponsor', _sponsorName!, _sponsorUid!),
+                      if (_teamLeaderName != null &&
+                          _teamLeaderUid != null &&
+                          _teamLeaderUid != _sponsorUid)
+                        _buildClickableInfoRow(
+                            'Team Leader', _teamLeaderName!, _teamLeaderUid!),
+                    ],
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
