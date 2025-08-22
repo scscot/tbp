@@ -194,48 +194,65 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      _buildInfoRow('City', _user!.city ?? 'N/A'),
-                      _buildInfoRow('State', _user!.state ?? 'N/A'),
-                      _buildInfoRow('Country', _user!.country ?? 'N/A'),
-                      // Hide these rows if the profile being viewed has role == admin
-                      if (_user!.role != 'admin') ...[
-                        _buildInfoRow('Joined Network',
-                            DateFormat.yMMMd().format(_user!.createdAt!)),
-                        _buildInfoRow('Direct Sponsors',
-                            _user!.directSponsorCount.toString()),
-                        _buildInfoRow(
-                            'Total Team', _user!.totalTeamCount.toString()),
-                        if (_user!.currentPartner == true)
-                          _buildQualifiedInfoRow('Qualified', 'Yes')
-                        else ...[
-                          if (_user!.qualifiedDate != null)
-                            _buildQualifiedInfoRow(
-                                'Qualified',
-                                DateFormat.yMMMd()
-                                    .format(_user!.qualifiedDate!))
-                          else
-                            _buildQualifiedInfoRow('Qualified', 'Not Yet'),
-                          if (_user!.bizJoinDate != null)
-                            _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
-                                DateFormat.yMMMd().format(_user!.bizJoinDate!))
-                          else
-                            _buildInfoRow('Joined ${_bizOpp ?? 'organization'}',
-                                'Not Yet'),
-                        ],
-                        if (_sponsorName != null)
-                          // If current user is the sponsor, show as plain text, otherwise as clickable link
-                          _currentUserId == _sponsorUid
-                              ? _buildInfoRow('Sponsor', _sponsorName!)
-                              : _buildClickableInfoRow(
-                                  'Sponsor', _sponsorName!, _sponsorUid!),
-                        if (_teamLeaderName != null &&
-                            _teamLeaderUid != null &&
-                            _user!.referredBy != _teamLeaderUid)
-                          _currentUserId == _teamLeaderUid
-                              ? _buildInfoRow('Team Leader', _teamLeaderName!)
-                              : _buildClickableInfoRow('Team Leader',
-                                  _teamLeaderName!, _teamLeaderUid!),
-                      ],
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 300),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildInfoRow('City', _user!.city ?? 'N/A'),
+                              _buildInfoRow('State', _user!.state ?? 'N/A'),
+                              _buildInfoRow('Country', _user!.country ?? 'N/A'),
+                              // Hide these rows if the profile being viewed has role == admin
+                              if (_user!.role != 'admin') ...[
+                                _buildInfoRow(
+                                    'Joined Network',
+                                    DateFormat.yMMMd()
+                                        .format(_user!.createdAt!)),
+                                _buildInfoRow('Direct Sponsors',
+                                    _user!.directSponsorCount.toString()),
+                                _buildInfoRow('Total Team',
+                                    _user!.totalTeamCount.toString()),
+                                if (_user!.currentPartner == true)
+                                  _buildQualifiedInfoRow('Qualified', 'Yes')
+                                else ...[
+                                  if (_user!.qualifiedDate != null)
+                                    _buildQualifiedInfoRow(
+                                        'Qualified',
+                                        DateFormat.yMMMd()
+                                            .format(_user!.qualifiedDate!))
+                                  else
+                                    _buildQualifiedInfoRow(
+                                        'Qualified', 'Not Yet'),
+                                  if (_user!.bizJoinDate != null)
+                                    _buildInfoRow(
+                                        'Joined ${_bizOpp ?? 'organization'}',
+                                        DateFormat.yMMMd()
+                                            .format(_user!.bizJoinDate!))
+                                  else
+                                    _buildInfoRow(
+                                        'Joined ${_bizOpp ?? 'organization'}',
+                                        'Not Yet'),
+                                ],
+                                if (_sponsorName != null)
+                                  // If current user is the sponsor, show as plain text, otherwise as clickable link
+                                  _currentUserId == _sponsorUid
+                                      ? _buildInfoRow('Sponsor', _sponsorName!)
+                                      : _buildClickableInfoRow('Sponsor',
+                                          _sponsorName!, _sponsorUid!),
+                                if (_teamLeaderName != null &&
+                                    _teamLeaderUid != null &&
+                                    _user!.referredBy != _teamLeaderUid)
+                                  _currentUserId == _teamLeaderUid
+                                      ? _buildInfoRow(
+                                          'Team Leader', _teamLeaderName!)
+                                      : _buildClickableInfoRow('Team Leader',
+                                          _teamLeaderName!, _teamLeaderUid!),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 30),
                       if (_currentUserId != widget.userId)
                         Center(
