@@ -1,13 +1,13 @@
 // lib/services/badge_service.dart
-import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:app_badge_plus/app_badge_plus.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class BadgeService {
   /// Clears the app badge count on the device.
   static Future<void> clearBadge() async {
     try {
-      if (await FlutterAppBadger.isAppBadgeSupported()) {
-        FlutterAppBadger.removeBadge();
+      if (await AppBadgePlus.isSupported()) {
+        await AppBadgePlus.updateBadge(0);
         if (kDebugMode) {
           print('✅ BadgeService: Badge cleared successfully.');
         }
@@ -26,14 +26,10 @@ class BadgeService {
   /// Updates the badge count to the specified [count].
   static Future<void> updateBadgeCount(int count) async {
     try {
-      if (await FlutterAppBadger.isAppBadgeSupported()) {
-        if (count > 0) {
-          FlutterAppBadger.updateBadgeCount(count);
-          if (kDebugMode) {
-            print('✅ BadgeService: Badge updated to $count.');
-          }
-        } else {
-          await clearBadge();
+      if (await AppBadgePlus.isSupported()) {
+        await AppBadgePlus.updateBadge(count);
+        if (kDebugMode) {
+          print('✅ BadgeService: Badge updated to $count.');
         }
       } else {
         if (kDebugMode) {

@@ -1,4 +1,4 @@
-package com.example.tbp
+package com.scott.ultimatefix
 
 import io.flutter.embedding.android.FlutterActivity
 
