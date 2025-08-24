@@ -630,7 +630,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: const AppScreenBar(title: 'Dashboard'),
+      appBar: const TabScreenBar(title: 'Dashboard'),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(

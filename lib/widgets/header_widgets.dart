@@ -60,6 +60,76 @@ class EntryAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+// Tab screen header: Screen Title (centered) + Profile Image (right) - NO back arrow
+class TabScreenBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final List<Widget>? actions;
+
+  const TabScreenBar({
+    super.key,
+    required this.title,
+    this.actions,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      automaticallyImplyLeading: false, // No back arrow for tab screens
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primary.withValues(alpha: 0.9),
+              AppColors.secondary.withValues(alpha: 0.7),
+            ],
+          ),
+        ),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      actions: actions ?? [
+        Consumer<UserModel?>(
+          builder: (context, user, child) {
+            return GestureDetector(
+              onTap: () {
+                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
+                navigationShell?.handleCommand(9);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                      ? NetworkImage(user.photoUrl!)
+                      : null,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                  child: user?.photoUrl == null || user!.photoUrl!.isEmpty
+                      ? const Icon(Icons.person, color: Colors.white, size: 20)
+                      : null,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+      centerTitle: true,
+    );
+  }
+}
+
 // App screen header: Back Arrow (left) + Screen Title (centered) + Profile Image (right)
 class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

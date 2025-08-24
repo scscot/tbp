@@ -576,7 +576,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PrimaryAppBar(title: 'Your Global Team'),
+      appBar: const TabScreenBar(title: 'Team'),
       body: Column(
         children: [
           _buildAnalyticsCards(),
@@ -594,24 +594,6 @@ class _NetworkScreenState extends State<NetworkScreen>
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        gradient: AppColors.primaryGradient,
-      ),
-      child: const Text(
-        'Your Global Team',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textInverse,
-        ),
-      ),
-    );
-  }
 
   Widget _buildAnalyticsCards() {
     return Container(

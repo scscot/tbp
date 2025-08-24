@@ -72,7 +72,7 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PrimaryAppBar(title: 'Message Center'),
+      appBar: const TabScreenBar(title: 'Messages'),
       body: _currentUserId == null
           ? const Center(child: Text('Please log in to see messages.'))
           : Column(
