@@ -548,14 +548,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.help_outline,
           title: 'How It Works',
           color: AppColors.teamAccent,
-          onTap: () => widget.onTabSelected?.call(4),
+          onTap: () => widget.onTabSelected?.call(5),
         ),
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.rocket_launch,
             title: 'Company Details',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(5),
+            onTap: () => widget.onTabSelected?.call(8),
           ),
         ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
           _buildActionCard(
@@ -564,27 +564,27 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ? 'Company Details'
                 : 'Get Started Today',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(6),
+            onTap: () => widget.onTabSelected?.call(8),
           ),
         ] else ...[
           _buildActionCard(
             icon: Icons.assessment,
             title: 'Your Eligibility Status',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(7),
+            onTap: () => widget.onTabSelected?.call(8),
           ),
         ],
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow Your Team',
           color: AppColors.growthPrimary,
-          onTap: () => widget.onTabSelected?.call(2),
+          onTap: () => widget.onTabSelected?.call(3),
         ),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View Your Team',
           color: AppColors.teamPrimary,
-          onTap: () => widget.onTabSelected?.call(8),
+          onTap: () => widget.onTabSelected?.call(9),
         ),
         _buildActionCard(
           icon: Icons.notifications,
@@ -592,7 +592,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
-          onTap: () => widget.onTabSelected?.call(9),
+          onTap: () => widget.onTabSelected?.call(2),
         ),
         _buildActionCard(
           icon: Icons.message,
@@ -607,7 +607,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.person,
           title: 'View Your Profile',
           color: AppColors.primary,
-          onTap: () => widget.onTabSelected?.call(3),
+          onTap: () => widget.onTabSelected?.call(4),
         ),
 
         if (user.role == 'admin')
@@ -615,7 +615,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.manage_accounts,
             title: 'Create New Account',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(10),
+            onTap: () => widget.onTabSelected?.call(11),
           ),
       ],
     );

@@ -29,9 +29,9 @@ class NavigationShell extends StatefulWidget {
 }
 
 class NavigationShellState extends State<NavigationShell> {
-  // Interpret command codes from child screens: 0..3 = tab switch; 4+ = push inside Dashboard tab
+  // Interpret command codes from child screens: 0..4 = tab switch; 5+ = push inside Dashboard tab
   void handleCommand(int code) {
-    if (code >= 0 && code <= 3) {
+    if (code >= 0 && code <= 4) {
       navigateToTab(code);
       return;
     }
@@ -40,31 +40,31 @@ class NavigationShellState extends State<NavigationShell> {
     if (nav == null) return;
 
     switch (code) {
-      case 4:
+      case 5:
         nav.push(MaterialPageRoute(
             builder: (_) => HowItWorksScreen(appId: widget.appId)));
         break;
-      case 5:
+      case 6:
         nav.push(MaterialPageRoute(
             builder: (_) => CompanyScreen(appId: widget.appId)));
         break;
-      case 6:
+      case 7:
         nav.push(MaterialPageRoute(
             builder: (_) => BusinessScreen(appId: widget.appId)));
         break;
-      case 7:
+      case 8:
         nav.push(MaterialPageRoute(
             builder: (_) => EligibilityScreen(appId: widget.appId)));
         break;
-      case 8:
+      case 9:
         nav.push(MaterialPageRoute(
             builder: (_) => NetworkScreen(appId: widget.appId)));
         break;
-      case 9:
+      case 10:
         nav.push(MaterialPageRoute(
             builder: (_) => NotificationsScreen(appId: widget.appId)));
         break;
-      case 10:
+      case 11:
         nav.push(MaterialPageRoute(
             builder: (_) => PlatformManagementScreen(appId: widget.appId)));
         break;
@@ -77,7 +77,7 @@ class NavigationShellState extends State<NavigationShell> {
 
   /// One Navigator per tab to keep the bottom bar persistent while pushing detail pages.
   final List<GlobalKey<NavigatorState>> _navigatorKeys =
-      List.generate(4, (_) => GlobalKey<NavigatorState>());
+      List.generate(5, (_) => GlobalKey<NavigatorState>());
 
   void navigateToTab(int index) {
     if (!mounted) return;
@@ -150,10 +150,14 @@ class NavigationShellState extends State<NavigationShell> {
             ),
             _buildTabNavigator(
               2,
-              ShareScreen(appId: widget.appId),
+              NotificationsScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               3,
+              ShareScreen(appId: widget.appId),
+            ),
+            _buildTabNavigator(
+              4,
               ProfileScreen(appId: widget.appId),
             ),
           ],
@@ -175,6 +179,10 @@ class NavigationShellState extends State<NavigationShell> {
               const BottomNavigationBarItem(
                 icon: Icon(Icons.message_outlined),
                 label: 'Messages',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.notifications_outlined),
+                label: 'Notifications',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.share_outlined),
