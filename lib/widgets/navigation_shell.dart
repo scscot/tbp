@@ -58,7 +58,7 @@ class NavigationShellState extends State<NavigationShell> {
         break;
       case 9:
         nav.push(MaterialPageRoute(
-            builder: (_) => NetworkScreen(appId: widget.appId)));
+            builder: (_) => ProfileScreen(appId: widget.appId)));
         break;
       case 10:
         nav.push(MaterialPageRoute(
@@ -146,19 +146,19 @@ class NavigationShellState extends State<NavigationShell> {
             ),
             _buildTabNavigator(
               1,
-              MessageCenterScreen(appId: widget.appId),
+              NetworkScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               2,
-              NotificationsScreen(appId: widget.appId),
+              MessageCenterScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               3,
-              ShareScreen(appId: widget.appId),
+              NotificationsScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               4,
-              ProfileScreen(appId: widget.appId),
+              ShareScreen(appId: widget.appId),
             ),
           ],
         ),
@@ -177,6 +177,10 @@ class NavigationShellState extends State<NavigationShell> {
                 label: 'Home',
               ),
               const BottomNavigationBarItem(
+                icon: Icon(Icons.people_outline),
+                label: 'Team',
+              ),
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.message_outlined),
                 label: 'Messages',
               ),
@@ -187,10 +191,6 @@ class NavigationShellState extends State<NavigationShell> {
               const BottomNavigationBarItem(
                 icon: Icon(Icons.share_outlined),
                 label: 'Share',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildProfileIcon(user),
-                label: 'Profile',
               ),
             ],
           ),

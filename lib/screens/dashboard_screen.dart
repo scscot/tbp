@@ -578,13 +578,13 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.trending_up,
           title: 'Grow Your Team',
           color: AppColors.growthPrimary,
-          onTap: () => widget.onTabSelected?.call(3),
+          onTap: () => widget.onTabSelected?.call(4),
         ),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View Your Team',
           color: AppColors.teamPrimary,
-          onTap: () => widget.onTabSelected?.call(9),
+          onTap: () => widget.onTabSelected?.call(1),
         ),
         _buildActionCard(
           icon: Icons.notifications,
@@ -592,7 +592,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
-          onTap: () => widget.onTabSelected?.call(2),
+          onTap: () => widget.onTabSelected?.call(3),
         ),
         _buildActionCard(
           icon: Icons.message,
@@ -600,14 +600,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
           badgeCount: _unreadMessageCount,
-          onTap: () => widget.onTabSelected?.call(1),
+          onTap: () => widget.onTabSelected?.call(2),
         ),
 
         _buildActionCard(
           icon: Icons.person,
           title: 'View Your Profile',
           color: AppColors.primary,
-          onTap: () => widget.onTabSelected?.call(4),
+          onTap: () => widget.onTabSelected?.call(9),
         ),
 
         if (user.role == 'admin')

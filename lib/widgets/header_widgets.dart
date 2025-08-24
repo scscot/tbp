@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
+import '../widgets/navigation_shell.dart';
 
 class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
   final String appId;
@@ -56,6 +58,31 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      actions: [
+        Consumer<UserModel?>(
+          builder: (context, user, child) {
+            return GestureDetector(
+              onTap: () {
+                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
+                navigationShell?.handleCommand(9);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                      ? NetworkImage(user.photoUrl!)
+                      : null,
+                  child: user?.photoUrl == null || user!.photoUrl!.isEmpty
+                      ? const Icon(Icons.person, color: Colors.white, size: 20)
+                      : null,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
       centerTitle: true,
     );
   }
