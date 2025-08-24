@@ -149,7 +149,20 @@ class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      automaticallyImplyLeading: false, // Disable automatic back arrow
       iconTheme: const IconThemeData(color: Colors.white),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            // For tab screens with no navigation stack, navigate to dashboard
+            final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
+            navigationShell?.handleCommand(0); // Navigate to dashboard
+          }
+        },
+      ),
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
