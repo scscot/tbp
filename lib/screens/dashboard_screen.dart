@@ -236,7 +236,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  Widget _buildWelcomeSection(UserModel user) {
+  /* Widget _buildWelcomeSection(UserModel user) {
     return Container(
       margin: const EdgeInsets.only(bottom: 32),
       padding: const EdgeInsets.all(24),
@@ -290,7 +290,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ],
       ),
     );
-  }
+  } */
 
   Widget _buildStatsCard(UserModel user) {
     // Use cached network counts if available, fallback to user model data
@@ -530,17 +530,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 16),
-          child: Text(
-            'Control Center',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
         _buildActionCard(
           icon: Icons.help_outline,
           title: 'How It Works',
@@ -630,7 +619,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: const TabScreenBar(title: 'Dashboard'),
+      appBar: const TabScreenBar(title: 'Control Center'),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(
@@ -644,7 +633,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildWelcomeSection(user),
+               // _buildWelcomeSection(user),
                 _buildStatsCard(user),
                 _buildQuickActions(user),
                 const SizedBox(height: 32),
