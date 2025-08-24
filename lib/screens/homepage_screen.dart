@@ -642,7 +642,8 @@ class _HomepageScreenState extends State<HomepageScreen>
           child: OutlinedButton.icon(
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await SessionManager.instance.clearAllData();
+              // Don't clear user data here - only clear referral data to avoid conflicts
+              await SessionManager.instance.clearReferralData();
               navigator.push(MaterialPageRoute(
                 builder: (_) => LoginScreen(appId: widget.appId),
               ));

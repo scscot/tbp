@@ -197,6 +197,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         throw Exception("Failed to fetch new user profile.");
       }
 
+      // Store user data for biometric authentication
+      await SessionManager.instance.setCurrentUser(userModel);
+      debugPrint('✅ REGISTER: User data stored for biometric authentication');
+
       debugPrint(
           '✅ REGISTER: User model fetched successfully: ${userModel.firstName} ${userModel.lastName}');
 

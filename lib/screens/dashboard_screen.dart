@@ -617,21 +617,6 @@ class _DashboardScreenState extends State<DashboardScreen>
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(10),
           ),
-
-        // Log Out button uses NavigationShell navigation
-        _buildActionCard(
-          icon: Icons.logout,
-          title: 'Log Out',
-          color: AppColors.errorLight,
-          onTap: () async {
-            final authService = context.read<AuthService>();
-            await authService.signOut();
-            final rootNavigatorContext = navigatorKey.currentContext;
-            if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
-              RestartWidget.restartApp(rootNavigatorContext);
-            }
-          },
-        ),
       ],
     );
   }

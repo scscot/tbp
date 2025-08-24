@@ -10,6 +10,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart'; // Import the new model
 import 'fcm_service.dart';
+import 'session_manager.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -117,6 +118,10 @@ class AuthService {
         debugPrint('AuthService: Error clearing FCM token: $e');
       }
     }
+    
+    // Clear logout data but preserve user data and biometric settings for biometric login
+    await SessionManager.instance.clearLogoutData();
+    
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
   }

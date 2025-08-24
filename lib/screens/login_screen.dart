@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'dart:io' show Platform;
@@ -12,11 +13,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../services/auth_service.dart';
+import '../models/user_model.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 import '../widgets/header_widgets.dart';
 import 'dart:async';
+import '../services/biometric_service.dart';
+import '../services/session_manager.dart';
 
 class LoginScreen extends StatefulWidget {
   final String appId;
@@ -31,6 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _biometricAvailable = false;
+  bool _biometricEnabled = false;
+  bool _hasStoredUser = false;
+  String? _storedEmail;
   StreamSubscription<User?>? _authSub;
 
   @override
@@ -45,6 +53,31 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     });
+    _initializeBiometric();
+  }
+
+  Future<void> _initializeBiometric() async {
+    try {
+      final available = await BiometricService.isDeviceSupported();
+      final enabled = await BiometricService.isBiometricEnabled();
+      final storedUser = await SessionManager.instance.getCurrentUser();
+      
+      if (mounted) {
+        setState(() {
+          _biometricAvailable = available;
+          _biometricEnabled = enabled;
+          _hasStoredUser = storedUser != null;
+          _storedEmail = storedUser?.email;
+        });
+      }
+      
+      // Auto-prompt biometric if conditions are met
+      if (available && enabled && storedUser != null) {
+        _showBiometricLogin();
+      }
+    } catch (e) {
+      debugPrint('❌ LOGIN: Error initializing biometric: $e');
+    }
   }
 
   @override
@@ -68,6 +101,20 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text.trim(),
       );
 
+      // Store user data for biometric authentication
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+        if (userDoc.exists) {
+          final userModel = UserModel.fromFirestore(userDoc);
+          await SessionManager.instance.setCurrentUser(userModel);
+          debugPrint('✅ LOGIN: User data stored for biometric authentication');
+        }
+      }
+
       if (mounted) {
         Navigator.of(context, rootNavigator: true)
             .popUntil((route) => route.isFirst);
@@ -77,6 +124,84 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(
             content: Text(e.message ?? 'Login failed'),
             backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _showBiometricLogin() async {
+    // Small delay to ensure UI is ready
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    if (!mounted) return;
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
+    try {
+      final authenticated = await BiometricService.authenticate(
+        localizedReason: 'Use your biometric to sign in to Team Build Pro',
+      );
+      
+      if (authenticated && mounted) {
+        await _signInWithStoredCredentials();
+      }
+    } catch (e) {
+      debugPrint('❌ LOGIN: Biometric auth error: $e');
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Biometric authentication failed: $e'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+  }
+
+  Future<void> _signInWithStoredCredentials() async {
+    if (_isLoading) return;
+    
+    final storedUser = await SessionManager.instance.getCurrentUser();
+    if (storedUser == null || storedUser.email == null) {
+      debugPrint('❌ LOGIN: No stored user found for biometric login');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Check if user is already signed in via Firebase
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        debugPrint('✅ LOGIN: User already authenticated via Firebase');
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true)
+              .popUntil((route) => route.isFirst);
+        }
+        return;
+      }
+      
+      // Pre-populate email field with stored user's email for convenience
+      _emailController.text = storedUser.email!;
+      
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Biometric authentication successful! Please enter your password for ${storedUser.email}'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      
+    } catch (e) {
+      debugPrint('❌ LOGIN: Stored credential sign-in error: $e');
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Sign-in failed: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (mounted) {
@@ -97,6 +222,20 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint("🔄 DEBUG: Credential obtained, signing in with Firebase...");
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
       await authService.signInWithCredential(credential);
+
+      // Store user data for biometric authentication
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+        if (userDoc.exists) {
+          final userModel = UserModel.fromFirestore(userDoc);
+          await SessionManager.instance.setCurrentUser(userModel);
+          debugPrint('✅ SOCIAL_LOGIN: User data stored for biometric authentication');
+        }
+      }
 
       if (mounted) {
         Navigator.of(context, rootNavigator: true)
@@ -178,6 +317,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              if (_biometricAvailable && _biometricEnabled && _hasStoredUser) ...[
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.fingerprint, size: 24),
+                  label: Text('Sign in with ${_storedEmail ?? 'Biometric'}'),
+                  onPressed: _isLoading ? null : _showBiometricLogin,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('or', style: TextStyle(color: Colors.grey)),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
               if (!kIsWeb && Platform.isIOS) ...[
                 ElevatedButton.icon(
                   icon: const FaIcon(FontAwesomeIcons.apple,
@@ -199,20 +361,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _isLoading
                     ? null
                     : () => _signInWithSocial(_getGoogleCredential),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have an account?"),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                NewRegistrationScreen(appId: widget.appId))),
-                    child: const Text('Create Account'),
-                  )
-                ],
               ),
               const SizedBox(height: 32),
               // Privacy Policy Footer

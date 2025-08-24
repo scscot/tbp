@@ -9,7 +9,10 @@ import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
 import '../services/firestore_service.dart';
+import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/restart_widget.dart';
+import '../main.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String appId;
@@ -135,7 +138,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  @override
+  Future<void> _showLogoutConfirmation() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.logout,
+                color: Colors.red.shade600,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Sign Out',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Are you sure you want to sign out of your account?',
+            style: TextStyle(fontSize: 16),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.shade600,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Sign Out'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true && mounted) {
+      final authService = context.read<AuthService>();
+      await authService.signOut();
+
+      // Use mounted check before accessing context after await
+      if (!mounted) return;
+
+      final rootNavigatorContext = navigatorKey.currentContext;
+      if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
+        RestartWidget.restartApp(rootNavigatorContext);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -207,25 +272,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => UpdateProfileScreen(
-                        user: currentUser,
-                        appId: widget.appId,
-                      ),
-                    ),
-                  ).then((_) {
-                    if (mounted) {
-                      setState(() {
-                        _refreshData();
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => UpdateProfileScreen(
+                            user: currentUser,
+                            appId: widget.appId,
+                          ),
+                        ),
+                      ).then((_) {
+                        if (mounted) {
+                          setState(() {
+                            _refreshData();
+                          });
+                        }
                       });
-                    }
-                  });
-                },
-                child: const Text('Edit Profile'),
+                    },
+                    child: const Text('Edit Profile'),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => _showLogoutConfirmation(),
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Sign Out'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade600,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

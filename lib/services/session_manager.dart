@@ -61,6 +61,16 @@ class SessionManager {
     }
   }
 
+  /// Clears only logout time and referral data, preserving user data and biometric settings for biometric login
+  Future<void> clearLogoutData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_logoutTimeKey);
+    await prefs.remove(_referralDataKey);
+    if (kDebugMode) {
+      debugPrint('🧹 SessionManager — Logout and referral data cleared (preserving user and biometric data)');
+    }
+  }
+
   // --- Biometric and Logout time methods remain the same ---
 
   /// Caches data for a successfully validated referral code.
