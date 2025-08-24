@@ -576,7 +576,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TabScreenBar(title: 'Team'),
+      appBar: const AppScreenBar(title: 'Team'),
       body: Column(
         children: [
           _buildAnalyticsCards(),
