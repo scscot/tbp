@@ -856,14 +856,14 @@ class _BusinessScreenState extends State<BusinessScreen>
 
     if (user == null) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const AppScreenBar(title: 'Business'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Business'),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(

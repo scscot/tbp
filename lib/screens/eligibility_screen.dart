@@ -339,13 +339,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const AppScreenBar(title: 'Eligibility Status'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Eligibility Status'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

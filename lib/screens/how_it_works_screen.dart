@@ -281,13 +281,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const AppScreenBar(title: 'How It Works'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'How It Works'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

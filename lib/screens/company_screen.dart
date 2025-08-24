@@ -108,7 +108,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Company Details'),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
