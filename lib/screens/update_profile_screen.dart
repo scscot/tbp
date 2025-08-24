@@ -330,7 +330,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Update Profile'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(

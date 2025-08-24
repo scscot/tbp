@@ -342,7 +342,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   Widget build(BuildContext context) {
     if (!_isThreadReady) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const AppScreenBar(title: 'Messages'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }

@@ -174,7 +174,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const EntryAppBar(),
       backgroundColor: AppColors.backgroundSecondary,
       body: SingleChildScrollView(
         controller: _scrollController,

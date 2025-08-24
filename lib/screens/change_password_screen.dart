@@ -22,7 +22,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Change Password'),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

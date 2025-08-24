@@ -1077,7 +1077,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
 
     if (user == null) {
       return Scaffold(
-        appBar: AppHeaderWithMenu(appId: widget.appId),
+        appBar: const AppScreenBar(title: 'Add Link'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }

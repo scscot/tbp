@@ -163,7 +163,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     // final bool isCurrentUserAnAdmin = authUser?.role == 'admin';
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Member Details'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null

@@ -122,7 +122,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
     );
   }
 
-  Widget _buildSectionCard({
+  /* Widget _buildSectionCard({
     required String title,
     required String content,
     required IconData icon,
@@ -177,7 +177,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
         ),
       ),
     );
-  }
+  } */
 
   Widget _buildProcessStep({
     required int step,

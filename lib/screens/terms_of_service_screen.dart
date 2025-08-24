@@ -32,7 +32,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const EntryAppBar(),
       backgroundColor: AppColors.backgroundPrimary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

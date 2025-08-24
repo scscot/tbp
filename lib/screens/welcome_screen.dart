@@ -1,6 +1,5 @@
 // lib/screens/welcome_screen.dart
 import 'package:flutter/material.dart';
-import '../main.dart' as widget;
 import '../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
@@ -15,7 +14,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const EntryAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
