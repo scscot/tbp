@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 // App imports
 import '../services/session_manager.dart';
 import '../config/app_colors.dart';
+import '../widgets/header_widgets.dart';
 import 'login_screen.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -170,7 +171,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(),
+      appBar: const EntryAppBar(),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -226,59 +227,6 @@ class _HomepageScreenState extends State<HomepageScreen>
   // UI HELPER WIDGETS (Enhanced with Professional Polish)
   // -------------------------------------------------------------
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              const Color.fromARGB(255, 0, 79, 248).withValues(alpha: 0.6),
-              AppColors.secondary.withValues(alpha: 0.4),
-            ],
-          ),
-        ),
-      ),
-      title: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.groups,
-              size: 32,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Text(
-              'Team Build Pro',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildHeroSection() {
     final heroTitle = (_sponsorName ?? '').isNotEmpty

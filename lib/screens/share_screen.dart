@@ -199,7 +199,7 @@ class _ShareScreenState extends State<ShareScreen>
         children: [
           const Icon(Icons.share_rounded, size: 40, color: Colors.white),
           const SizedBox(height: 16),
-          const Text('Grow Your Team',
+          const Text('Powerful Referral System',
               style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,

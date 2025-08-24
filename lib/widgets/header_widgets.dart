@@ -4,11 +4,9 @@ import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../widgets/navigation_shell.dart';
 
-class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
-  final String appId;
-  final UserModel? user;
-
-  const AppHeaderWithMenu({super.key, required this.appId, this.user});
+// Entry screen header: Groups Icon + "Team Build Pro" (left justified)
+class EntryAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const EntryAppBar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -32,6 +30,7 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
@@ -46,53 +45,27 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
-            child: Text(
-              'Team Build Pro',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+          const Text(
+            'Team Build Pro',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
         ],
       ),
-      actions: [
-        Consumer<UserModel?>(
-          builder: (context, user, child) {
-            return GestureDetector(
-              onTap: () {
-                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
-                navigationShell?.handleCommand(9);
-              },
-              child: Container(
-                margin: const EdgeInsets.only(right: 16),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
-                      ? NetworkImage(user.photoUrl!)
-                      : null,
-                  backgroundColor: Colors.white.withValues(alpha: 0.2),
-                  child: user?.photoUrl == null || user!.photoUrl!.isEmpty
-                      ? const Icon(Icons.person, color: Colors.white, size: 20)
-                      : null,
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-      centerTitle: true,
+      centerTitle: false,
     );
   }
 }
 
-class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
+// App screen header: Back Arrow (left) + Screen Title (centered) + Profile Image (right)
+class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
 
-  const PrimaryAppBar({
+  const AppScreenBar({
     super.key,
     required this.title,
     this.actions,
@@ -154,5 +127,40 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
       centerTitle: true,
     );
+  }
+}
+
+// Legacy widgets for backward compatibility - use EntryAppBar and AppScreenBar instead
+class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
+  final String appId;
+  final UserModel? user;
+
+  const AppHeaderWithMenu({super.key, required this.appId, this.user});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return const EntryAppBar();
+  }
+}
+
+class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final List<Widget>? actions;
+
+  const PrimaryAppBar({
+    super.key,
+    required this.title,
+    this.actions,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScreenBar(title: title, actions: actions);
   }
 }

@@ -206,7 +206,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
     final currentUser = Provider.of<UserModel?>(context);
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: const AppScreenBar(title: 'Create Account'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : currentUser == null || currentUser.role != 'admin'
@@ -218,13 +218,6 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Screen Header
-                      Text(
-                        'Create New Account',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 20),
-
                       // "Manage a New Opportunity" Card
                       Card(
                         elevation: 2,

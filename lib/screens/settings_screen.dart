@@ -332,11 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeaderWithMenu(
-        // firebaseConfig: widget.firebaseConfig,
-
-        appId: widget.appId,
-      ),
+      appBar: const AppScreenBar(title: 'Settings'),
       backgroundColor: Colors.white,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
