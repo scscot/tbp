@@ -45,11 +45,14 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user != null && mounted) {
+        debugPrint('🔐 LOGIN: Auth state changed - user signed in: ${user.email}');
         // Give AuthWrapper a frame to rebuild, then reveal it.
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.of(context, rootNavigator: true)
               .popUntil((route) => route.isFirst);
         });
+      } else {
+        debugPrint('🔐 LOGIN: Auth state changed - user signed out');
       }
     });
     _initializeBiometric();
@@ -61,6 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
       final enabled = await BiometricService.isBiometricEnabled();
       final storedUser = await SessionManager.instance.getCurrentUser();
       
+      debugPrint('🔐 LOGIN: Biometric debug info:');
+      debugPrint('  - Device supported: $available');
+      debugPrint('  - Biometric enabled: $enabled');
+      debugPrint('  - Stored user exists: ${storedUser != null}');
+      debugPrint('  - Stored email: ${storedUser?.email}');
+      
       if (mounted) {
         setState(() {
           _biometricAvailable = available;
@@ -71,7 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       
       // Auto-prompt biometric if conditions are met
-      if (available && enabled && storedUser != null) {
+      final shouldAutoPrompt = available && enabled && storedUser != null;
+      debugPrint('🔐 LOGIN: Should auto-prompt biometric: $shouldAutoPrompt');
+      
+      if (shouldAutoPrompt) {
+        debugPrint('🔐 LOGIN: Auto-prompting biometric login...');
         _showBiometricLogin();
       }
     } catch (e) {
@@ -103,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Store user data for biometric authentication
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
+        debugPrint('🔐 LOGIN: Storing user data for biometric authentication...');
         final userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(currentUser.uid)
@@ -110,8 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userDoc.exists) {
           final userModel = UserModel.fromFirestore(userDoc);
           await SessionManager.instance.setCurrentUser(userModel);
-          debugPrint('✅ LOGIN: User data stored for biometric authentication');
+          debugPrint('✅ LOGIN: User data stored - UID: ${userModel.uid}, Email: ${userModel.email}');
+        } else {
+          debugPrint('❌ LOGIN: User document does not exist in Firestore');
         }
+      } else {
+        debugPrint('❌ LOGIN: No current user found after authentication');
       }
 
       if (mounted) {
