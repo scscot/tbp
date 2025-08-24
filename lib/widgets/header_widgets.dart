@@ -17,6 +17,7 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
+      automaticallyImplyLeading: false,
       elevation: 0,
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -105,6 +106,7 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      iconTheme: const IconThemeData(color: Colors.white),
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

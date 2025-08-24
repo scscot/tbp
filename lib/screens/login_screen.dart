@@ -265,7 +265,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // --- FIX: Added the AppHeaderWithMenu here ---
         appBar: AppHeaderWithMenu(appId: widget.appId),
         body: Center(
           child: SingleChildScrollView(
