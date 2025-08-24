@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
-import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 import '../widgets/header_widgets.dart';
@@ -162,15 +161,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signInWithStoredCredentials() async {
     if (_isLoading) return;
     
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     final storedUser = await SessionManager.instance.getCurrentUser();
     if (storedUser == null || storedUser.email == null) {
       debugPrint('❌ LOGIN: No stored user found for biometric login');
       return;
     }
 
-    setState(() => _isLoading = true);
-    
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    if (mounted) setState(() => _isLoading = true);
 
     try {
       // Check if user is already signed in via Firebase
@@ -181,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.of(context, rootNavigator: true)
               .popUntil((route) => route.isFirst);
         }
+        if (mounted) setState(() => _isLoading = false);
         return;
       }
       

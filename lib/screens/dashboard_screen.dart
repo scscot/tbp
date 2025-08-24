@@ -7,10 +7,7 @@ import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'package:flutter/foundation.dart';
-import '../services/auth_service.dart';
-import '../services/network_service.dart'; // Added for caching
-import '../widgets/restart_widget.dart';
-import '../main.dart';
+import '../services/network_service.dart';
 import '../services/subscription_service.dart'; // Add this line
 
 // --- 1. New import for SubscriptionScreen ---

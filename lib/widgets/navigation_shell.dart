@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ultimatefix/screens/how_it_works_screen.dart';
-
-import '../models/user_model.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/message_center_screen.dart';
 import '../screens/share_screen.dart';
@@ -106,20 +103,9 @@ class NavigationShellState extends State<NavigationShell> {
     );
   }
 
-  Widget _buildProfileIcon(UserModel? user) {
-    final photo = user?.photoUrl;
-    if (photo != null && photo.isNotEmpty) {
-      return CircleAvatar(
-        radius: 12,
-        backgroundImage: NetworkImage(photo),
-      );
-    }
-    return const Icon(Icons.person_outline);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final UserModel? user = context.watch<UserModel?>();
 
     return PopScope(
       canPop: false,

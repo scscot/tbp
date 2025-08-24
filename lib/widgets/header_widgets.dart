@@ -73,10 +73,10 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
                   backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
                       ? NetworkImage(user.photoUrl!)
                       : null,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                   child: user?.photoUrl == null || user!.photoUrl!.isEmpty
                       ? const Icon(Icons.person, color: Colors.white, size: 20)
                       : null,
-                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                 ),
               ),
             );
