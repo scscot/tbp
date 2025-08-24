@@ -119,11 +119,23 @@ class AuthService {
       }
     }
     
+    // Check if user data exists before logout
+    final userBeforeLogout = await SessionManager.instance.getCurrentUser();
+    debugPrint('🔐 AUTH_SERVICE: User data before logout: ${userBeforeLogout?.email}');
+    
     // Clear logout data but preserve user data and biometric settings for biometric login
     await SessionManager.instance.clearLogoutData();
     
+    // Verify user data is preserved after clearLogoutData
+    final userAfterClear = await SessionManager.instance.getCurrentUser();
+    debugPrint('🔐 AUTH_SERVICE: User data after clearLogoutData: ${userAfterClear?.email}');
+    
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
+    
+    // Final check after Firebase signOut
+    final userFinal = await SessionManager.instance.getCurrentUser();
+    debugPrint('🔐 AUTH_SERVICE: User data after Firebase signOut: ${userFinal?.email}');
   }
 
   Future<void> sendPasswordResetEmail(String email) async {

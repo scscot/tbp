@@ -17,7 +17,7 @@ class SessionManager {
 
   Future<void> setCurrentUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
-    final userMap = jsonEncode(user.toMap());
+    final userMap = jsonEncode(user.toJsonMap());
     await prefs.setString(_userKey, userMap);
     if (kDebugMode) {
       debugPrint(

@@ -62,25 +62,28 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final available = await BiometricService.isDeviceSupported();
       final enabled = await BiometricService.isBiometricEnabled();
+      final hasStoredCredentials = await BiometricService.hasStoredCredentials();
+      final storedEmail = await BiometricService.getStoredEmail();
       final storedUser = await SessionManager.instance.getCurrentUser();
       
       debugPrint('🔐 LOGIN: Biometric debug info:');
       debugPrint('  - Device supported: $available');
       debugPrint('  - Biometric enabled: $enabled');
-      debugPrint('  - Stored user exists: ${storedUser != null}');
-      debugPrint('  - Stored email: ${storedUser?.email}');
+      debugPrint('  - Has stored credentials: $hasStoredCredentials');
+      debugPrint('  - Stored email: $storedEmail');
+      debugPrint('  - Session user exists: ${storedUser != null}');
       
       if (mounted) {
         setState(() {
           _biometricAvailable = available;
           _biometricEnabled = enabled;
-          _hasStoredUser = storedUser != null;
-          _storedEmail = storedUser?.email;
+          _hasStoredUser = hasStoredCredentials;
+          _storedEmail = storedEmail ?? storedUser?.email;
         });
       }
       
-      // Auto-prompt biometric if conditions are met
-      final shouldAutoPrompt = available && enabled && storedUser != null;
+      // Auto-prompt biometric if device supports it, biometric is enabled, and we have stored credentials
+      final shouldAutoPrompt = available && enabled && hasStoredCredentials;
       debugPrint('🔐 LOGIN: Should auto-prompt biometric: $shouldAutoPrompt');
       
       if (shouldAutoPrompt) {
@@ -102,31 +105,74 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate() || _isLoading) return;
+    
+    await _signInWithCredentials(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      isBiometricLogin: false,
+    );
+  }
+
+  Future<void> _signInWithCredentials({
+    required String email,
+    required String password,
+    required bool isBiometricLogin,
+  }) async {
+    if (_isLoading) return;
     setState(() => _isLoading = true);
 
     final authService = context.read<AuthService>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
-      await authService.signInWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+      debugPrint('🔐 LOGIN: Signing in with email: $email (biometric: $isBiometricLogin)');
+      
+      await authService.signInWithEmailAndPassword(email, password);
 
-      // Store user data for biometric authentication
+      // Store user data for SessionManager (for compatibility)
       final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('🔐 LOGIN: Current user after auth: ${currentUser?.uid}');
+      
       if (currentUser != null) {
-        debugPrint('🔐 LOGIN: Storing user data for biometric authentication...');
+        debugPrint('🔐 LOGIN: Fetching user document from Firestore...');
         final userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(currentUser.uid)
             .get();
+            
+        debugPrint('🔐 LOGIN: User document exists: ${userDoc.exists}');
+        
         if (userDoc.exists) {
+          debugPrint('🔐 LOGIN: Creating UserModel from Firestore data...');
           final userModel = UserModel.fromFirestore(userDoc);
+          debugPrint('🔐 LOGIN: UserModel created - Email: ${userModel.email}, UID: ${userModel.uid}');
+          
+          debugPrint('🔐 LOGIN: Storing user data in SessionManager...');
           await SessionManager.instance.setCurrentUser(userModel);
-          debugPrint('✅ LOGIN: User data stored - UID: ${userModel.uid}, Email: ${userModel.email}');
+          debugPrint('✅ LOGIN: User data stored in SessionManager');
+
+          // Store credentials securely for biometric authentication (only for manual login)
+          if (!isBiometricLogin && _biometricAvailable) {
+            debugPrint('🔐 LOGIN: Storing credentials for biometric authentication...');
+            await BiometricService.storeCredentials(email: email, password: password);
+            
+            // Enable biometric authentication automatically after successful login
+            await BiometricService.setBiometricEnabled(true);
+            debugPrint('✅ LOGIN: Credentials stored securely and biometric enabled');
+            
+            // Show user that biometric login is now available
+            if (mounted) {
+              scaffoldMessenger.showSnackBar(
+                const SnackBar(
+                  content: Text('✅ Biometric login enabled! You can now use biometric authentication for future logins.'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 4),
+                ),
+              );
+            }
+          }
         } else {
-          debugPrint('❌ LOGIN: User document does not exist in Firestore');
+          debugPrint('❌ LOGIN: User document does not exist in Firestore for UID: ${currentUser.uid}');
         }
       } else {
         debugPrint('❌ LOGIN: No current user found after authentication');
@@ -137,9 +183,17 @@ class _LoginScreenState extends State<LoginScreen> {
             .popUntil((route) => route.isFirst);
       }
     } on FirebaseAuthException catch (e) {
+      debugPrint('❌ LOGIN: Firebase authentication error: ${e.code} - ${e.message}');
       scaffoldMessenger.showSnackBar(
         SnackBar(
             content: Text(e.message ?? 'Login failed'),
+            backgroundColor: Colors.red),
+      );
+    } catch (e) {
+      debugPrint('❌ LOGIN: Unexpected error: $e');
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+            content: Text('Login failed: $e'),
             backgroundColor: Colors.red),
       );
     } finally {
@@ -158,12 +212,28 @@ class _LoginScreenState extends State<LoginScreen> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     
     try {
-      final authenticated = await BiometricService.authenticate(
+      debugPrint('🔐 LOGIN: Starting biometric authentication and credential retrieval...');
+      
+      // Perform biometric authentication and get stored credentials
+      final credentials = await BiometricService.authenticateAndGetCredentials(
         localizedReason: 'Use your biometric to sign in to Team Build Pro',
       );
       
-      if (authenticated && mounted) {
-        await _signInWithStoredCredentials();
+      if (credentials != null && mounted) {
+        debugPrint('✅ LOGIN: Biometric authentication successful, signing in...');
+        await _signInWithCredentials(
+          email: credentials['email']!,
+          password: credentials['password']!,
+          isBiometricLogin: true,
+        );
+      } else if (mounted) {
+        debugPrint('❌ LOGIN: Biometric authentication failed or no credentials found');
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Biometric authentication failed or no stored credentials found'),
+            backgroundColor: Colors.orange,
+          ),
+        );
       }
     } catch (e) {
       debugPrint('❌ LOGIN: Biometric auth error: $e');
@@ -176,57 +246,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _signInWithStoredCredentials() async {
-    if (_isLoading) return;
-    
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
-    final storedUser = await SessionManager.instance.getCurrentUser();
-    if (storedUser == null || storedUser.email == null) {
-      debugPrint('❌ LOGIN: No stored user found for biometric login');
-      return;
-    }
-
-    if (mounted) setState(() => _isLoading = true);
-
-    try {
-      // Check if user is already signed in via Firebase
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        debugPrint('✅ LOGIN: User already authenticated via Firebase');
-        if (mounted) {
-          Navigator.of(context, rootNavigator: true)
-              .popUntil((route) => route.isFirst);
-        }
-        if (mounted) setState(() => _isLoading = false);
-        return;
-      }
-      
-      // Pre-populate email field with stored user's email for convenience
-      _emailController.text = storedUser.email!;
-      
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text('Biometric authentication successful! Please enter your password for ${storedUser.email}'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 4),
-        ),
-      );
-      
-    } catch (e) {
-      debugPrint('❌ LOGIN: Stored credential sign-in error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text('Sign-in failed: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
 
   Future<void> _signInWithSocial(
       Future<AuthCredential> Function() getCredential) async {
@@ -243,16 +262,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Store user data for biometric authentication
       final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('🔐 SOCIAL_LOGIN: Current user after auth: ${currentUser?.uid}');
+      
       if (currentUser != null) {
+        debugPrint('🔐 SOCIAL_LOGIN: Fetching user document from Firestore...');
         final userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(currentUser.uid)
             .get();
+            
+        debugPrint('🔐 SOCIAL_LOGIN: User document exists: ${userDoc.exists}');
+        
         if (userDoc.exists) {
+          debugPrint('🔐 SOCIAL_LOGIN: Creating UserModel from Firestore data...');
           final userModel = UserModel.fromFirestore(userDoc);
+          debugPrint('🔐 SOCIAL_LOGIN: UserModel created - Email: ${userModel.email}, UID: ${userModel.uid}');
+          
+          debugPrint('🔐 SOCIAL_LOGIN: Storing user data in SessionManager...');
           await SessionManager.instance.setCurrentUser(userModel);
           debugPrint('✅ SOCIAL_LOGIN: User data stored for biometric authentication');
+        } else {
+          debugPrint('❌ SOCIAL_LOGIN: User document does not exist in Firestore for UID: ${currentUser.uid}');
         }
+      } else {
+        debugPrint('❌ SOCIAL_LOGIN: No current user found after authentication');
       }
 
       if (mounted) {

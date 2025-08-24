@@ -20,6 +20,7 @@ dependencies:
   google_sign_in: ^6.1.5
   sign_in_with_apple: ^7.0.1
   local_auth: ^2.1.7
+  flutter_secure_storage: ^9.0.0
   image_picker: ^1.0.7
   firebase_storage: ^12.4.5
   firebase_auth: ^5.5.4

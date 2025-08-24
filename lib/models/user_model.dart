@@ -206,6 +206,42 @@ class UserModel {
     };
   }
 
+  /// JSON-serializable map for SessionManager storage (uses ISO strings for dates)
+  Map<String, dynamic> toJsonMap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'country': country,
+      'state': state,
+      'city': city,
+      'referralCode': referralCode,
+      'referredBy': referredBy,
+      'adminReferral': adminReferral,
+      'photoUrl': photoUrl,
+      'createdAt': createdAt?.toIso8601String(),
+      'joined': joined?.toIso8601String(),
+      'level': level,
+      'qualifiedDate': qualifiedDate?.toIso8601String(),
+      'sponsor_id': sponsorId,
+      'upline_refs': uplineRefs,
+      'directSponsorCount': directSponsorCount,
+      'totalTeamCount': totalTeamCount,
+      'biz_opp_ref_url': bizOppRefUrl,
+      'biz_opp': bizOpp,
+      'role': role,
+      'upline_admin': uplineAdmin,
+      'biz_visit_date': bizVisitDate?.toIso8601String(),
+      'biz_join_date': bizJoinDate?.toIso8601String(),
+      'currentPartner': currentPartner,
+      'subscriptionStatus': subscriptionStatus,
+      'subscriptionExpiry': subscriptionExpiry?.toIso8601String(),
+      'trialStartDate': trialStartDate?.toIso8601String(),
+      'subscriptionUpdated': subscriptionUpdated?.toIso8601String(),
+    };
+  }
+
   // --- PHASE 1: Subscription Helper Methods ---
 
   /// Returns true if the user has an active subscription or valid trial
