@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class IAPService {
   static final IAPService _instance = IAPService._internal();
@@ -62,43 +64,19 @@ class IAPService {
     }
   }
 
-  /// Enhanced verification that validates receipts with Apple and updates subscription status
+  /// Enhanced verification that validates receipts with Apple/Google Play and updates subscription status
   Future<void> _verifyAndCompleteSubscription(PurchaseDetails purchase) async {
     try {
       debugPrint('📱 SUBSCRIPTION: Verifying purchase: ${purchase.productID}');
 
-      // Get receipt data for validation
-      final receiptData = purchase.verificationData.serverVerificationData;
-
-      if (receiptData.isEmpty) {
-        debugPrint('❌ SUBSCRIPTION: No receipt data available');
-        return;
-      }
-
-      // Validate receipt with our Firebase Function
-      final validateFunction = _functions.httpsCallable('validateAppleReceipt');
-      final result = await validateFunction.call({
-        'receiptData': receiptData,
-      });
-
-      final validationResult = result.data as Map<String, dynamic>;
-
-      if (validationResult['isValid'] == true) {
-        debugPrint('✅ SUBSCRIPTION: Receipt validated successfully');
-
-        // Update local subscription status
-        _currentSubscriptionStatus = validationResult['subscriptionStatus'];
-        if (validationResult['expiresDate'] != null) {
-          _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
-        }
-
-        isPurchased = _currentSubscriptionStatus == 'active';
-
-        debugPrint(
-            '📱 SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
+      // Determine platform and use appropriate validation
+      if (Platform.isIOS) {
+        await _verifyApplePurchase(purchase);
+      } else if (Platform.isAndroid) {
+        await _verifyGooglePlayPurchase(purchase);
       } else {
-        debugPrint(
-            '❌ SUBSCRIPTION: Receipt validation failed: ${validationResult['message']}');
+        debugPrint('❌ SUBSCRIPTION: Unsupported platform');
+        return;
       }
 
       // Complete the purchase
@@ -113,6 +91,102 @@ class IAPService {
       if (purchase.pendingCompletePurchase) {
         await _iap.completePurchase(purchase);
       }
+    }
+  }
+
+  /// Verify Apple App Store purchase
+  Future<void> _verifyApplePurchase(PurchaseDetails purchase) async {
+    try {
+      // Get receipt data for validation
+      final receiptData = purchase.verificationData.serverVerificationData;
+
+      if (receiptData.isEmpty) {
+        debugPrint('❌ APPLE SUBSCRIPTION: No receipt data available');
+        return;
+      }
+
+      // Validate receipt with our Firebase Function
+      final validateFunction = _functions.httpsCallable('validateAppleReceipt');
+      final result = await validateFunction.call({
+        'receiptData': receiptData,
+      });
+
+      final validationResult = result.data as Map<String, dynamic>;
+
+      if (validationResult['isValid'] == true) {
+        debugPrint('✅ APPLE SUBSCRIPTION: Receipt validated successfully');
+
+        // Update local subscription status
+        _currentSubscriptionStatus = validationResult['subscriptionStatus'];
+        if (validationResult['expiresDate'] != null) {
+          _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
+        }
+
+        isPurchased = _currentSubscriptionStatus == 'active';
+
+        debugPrint('📱 APPLE SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
+      } else {
+        debugPrint('❌ APPLE SUBSCRIPTION: Receipt validation failed: ${validationResult['message']}');
+      }
+    } catch (e) {
+      debugPrint('❌ APPLE SUBSCRIPTION: Error validating receipt: $e');
+      rethrow;
+    }
+  }
+
+  /// Verify Google Play Store purchase
+  Future<void> _verifyGooglePlayPurchase(PurchaseDetails purchase) async {
+    try {
+      // Get purchase token for validation
+      final purchaseToken = purchase.verificationData.serverVerificationData;
+
+      if (purchaseToken.isEmpty) {
+        debugPrint('❌ GOOGLE PLAY SUBSCRIPTION: No purchase token available');
+        return;
+      }
+
+      // Get package name from the app
+      const packageName = 'com.scott.ultimatefix'; // Your app's package name
+
+      // Store purchase token in user document for webhook notifications
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'googlePlayPurchaseToken': purchaseToken,
+          'lastPurchaseUpdate': FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Validate purchase with our Firebase Function
+      final validateFunction = _functions.httpsCallable('validateGooglePlayPurchase');
+      final result = await validateFunction.call({
+        'purchaseToken': purchaseToken,
+        'productId': purchase.productID,
+        'packageName': packageName,
+      });
+
+      final validationResult = result.data as Map<String, dynamic>;
+
+      if (validationResult['isValid'] == true) {
+        debugPrint('✅ GOOGLE PLAY SUBSCRIPTION: Purchase validated successfully');
+
+        // Update local subscription status
+        _currentSubscriptionStatus = validationResult['subscriptionStatus'];
+        if (validationResult['expiresDate'] != null) {
+          _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
+        }
+
+        isPurchased = _currentSubscriptionStatus == 'active';
+
+        debugPrint('📱 GOOGLE PLAY SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
+        debugPrint('📱 GOOGLE PLAY SUBSCRIPTION: Order ID: ${validationResult['orderId']}');
+        debugPrint('📱 GOOGLE PLAY SUBSCRIPTION: Auto-renewing: ${validationResult['autoRenewing']}');
+      } else {
+        debugPrint('❌ GOOGLE PLAY SUBSCRIPTION: Purchase validation failed: ${validationResult['message']}');
+      }
+    } catch (e) {
+      debugPrint('❌ GOOGLE PLAY SUBSCRIPTION: Error validating purchase: $e');
+      rethrow;
     }
   }
 

@@ -1008,6 +1008,269 @@ exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (r
 });
 
 // ============================================================================
+// GOOGLE PLAY SUBSCRIPTION FUNCTIONS
+// ============================================================================
+
+/**
+ * Google Play Purchase Verification Function
+ * Validates purchases with Google Play and updates user subscription status
+ */
+exports.validateGooglePlayPurchase = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const userId = request.auth.uid;
+  const { purchaseToken, productId, packageName } = request.data;
+
+  if (!purchaseToken || !productId || !packageName) {
+    throw new HttpsError("invalid-argument", "Purchase token, product ID, and package name are required");
+  }
+
+  console.log(`🤖 GOOGLE PLAY: Validating purchase for user ${userId}, product: ${productId}`);
+
+  try {
+    // Import Google Auth Library (you'll need to install this)
+    const { GoogleAuth } = require('google-auth-library');
+    const auth = new GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+      // Use service account key from environment or Firebase Functions config
+      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || './serviceAccountKey.json'
+    });
+
+    const authClient = await auth.getClient();
+    const androidpublisher = google.androidpublisher('v3');
+
+    // Validate the subscription purchase
+    const result = await androidpublisher.purchases.subscriptions.get({
+      auth: authClient,
+      packageName: packageName,
+      subscriptionId: productId,
+      token: purchaseToken,
+    });
+
+    console.log(`🤖 GOOGLE PLAY: Validation result:`, JSON.stringify(result.data, null, 2));
+
+    const subscription = result.data;
+    
+    // Check if purchase is valid
+    if (!subscription) {
+      console.log(`🤖 GOOGLE PLAY: Invalid purchase token`);
+      return {
+        isValid: false,
+        message: 'Invalid purchase token'
+      };
+    }
+
+    // Determine subscription status
+    let subscriptionStatus = 'inactive';
+    let expiryDate = null;
+    
+    if (subscription.expiryTimeMillis) {
+      expiryDate = parseInt(subscription.expiryTimeMillis);
+      const isExpired = Date.now() > expiryDate;
+      
+      if (!isExpired) {
+        if (subscription.autoRenewing === false && subscription.cancelReason) {
+          subscriptionStatus = 'cancelled'; // Cancelled but still active
+        } else {
+          subscriptionStatus = 'active';
+        }
+      } else {
+        subscriptionStatus = 'expired';
+      }
+    }
+
+    console.log(`🤖 GOOGLE PLAY: Determined status: ${subscriptionStatus}, expires: ${expiryDate ? new Date(expiryDate).toISOString() : 'N/A'}`);
+
+    // Update user subscription status in Firestore
+    await updateUserSubscription(userId, subscriptionStatus, expiryDate);
+
+    // Create notification for user
+    await createSubscriptionNotification(userId, subscriptionStatus, expiryDate);
+
+    return {
+      isValid: true,
+      subscriptionStatus: subscriptionStatus,
+      expiresDate: expiryDate ? new Date(expiryDate).toISOString() : null,
+      autoRenewing: subscription.autoRenewing,
+      orderId: subscription.orderId,
+      purchaseTime: subscription.startTimeMillis ? new Date(parseInt(subscription.startTimeMillis)).toISOString() : null
+    };
+
+  } catch (error) {
+    console.error(`❌ GOOGLE PLAY: Error validating purchase for user ${userId}:`, error);
+    
+    if (error.code === 410) {
+      // Purchase token is no longer valid
+      console.log(`🤖 GOOGLE PLAY: Purchase token no longer valid for user ${userId}`);
+      await updateUserSubscription(userId, 'expired');
+      return {
+        isValid: false,
+        message: 'Purchase token expired'
+      };
+    }
+    
+    throw new HttpsError("internal", "Failed to validate Google Play purchase", error.message);
+  }
+});
+
+/**
+ * Google Play Real-time Developer Notification Handler
+ * Processes subscription lifecycle events from Google Play
+ */
+exports.handleGooglePlayNotification = onRequest({ region: "us-central1" }, async (req, res) => {
+  // Enable CORS
+  cors(req, res, async () => {
+    try {
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Received notification`);
+      console.log('Headers:', JSON.stringify(req.headers, null, 2));
+      console.log('Body:', JSON.stringify(req.body, null, 2));
+
+      // Verify the notification is from Google Play (optional but recommended)
+      // You can implement signature verification here if needed
+
+      const message = req.body.message;
+      if (!message || !message.data) {
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: Invalid message format`);
+        res.status(400).send('Invalid message format');
+        return;
+      }
+
+      // Decode the base64 message data
+      const notificationData = JSON.parse(Buffer.from(message.data, 'base64').toString());
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Decoded notification:`, JSON.stringify(notificationData, null, 2));
+
+      const { subscriptionNotification, testNotification } = notificationData;
+
+      // Handle test notifications
+      if (testNotification) {
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: Received test notification`);
+        res.status(200).send('Test notification received');
+        return;
+      }
+
+      // Handle subscription notifications
+      if (subscriptionNotification) {
+        const {
+          version,
+          notificationType,
+          purchaseToken,
+          subscriptionId
+        } = subscriptionNotification;
+
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing subscription notification type: ${notificationType}`);
+
+        // Find user by purchase token (you might need to store this mapping)
+        const usersQuery = await db.collection('users')
+          .where('googlePlayPurchaseToken', '==', purchaseToken)
+          .limit(1)
+          .get();
+
+        if (usersQuery.empty) {
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: No user found for purchase token: ${purchaseToken}`);
+          res.status(200).send('User not found');
+          return;
+        }
+
+        const userDoc = usersQuery.docs[0];
+        const userId = userDoc.id;
+
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: Found user ${userId} for purchase token`);
+
+        // Handle different notification types
+        let newStatus = null;
+        
+        switch (notificationType) {
+          case 1: // SUBSCRIPTION_RECOVERED
+            newStatus = 'active';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription recovered for user ${userId}`);
+            break;
+            
+          case 2: // SUBSCRIPTION_RENEWED
+            newStatus = 'active';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription renewed for user ${userId}`);
+            break;
+            
+          case 3: // SUBSCRIPTION_CANCELED
+            newStatus = 'cancelled';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription cancelled for user ${userId}`);
+            break;
+            
+          case 4: // SUBSCRIPTION_PURCHASED
+            newStatus = 'active';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: New subscription purchased for user ${userId}`);
+            break;
+            
+          case 5: // SUBSCRIPTION_ON_HOLD
+            newStatus = 'on_hold';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription on hold for user ${userId}`);
+            break;
+            
+          case 6: // SUBSCRIPTION_IN_GRACE_PERIOD
+            newStatus = 'grace_period';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription in grace period for user ${userId}`);
+            break;
+            
+          case 7: // SUBSCRIPTION_RESTARTED
+            newStatus = 'active';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription restarted for user ${userId}`);
+            break;
+            
+          case 8: // SUBSCRIPTION_PRICE_CHANGE_CONFIRMED
+            // No status change needed, just log
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Price change confirmed for user ${userId}`);
+            break;
+            
+          case 9: // SUBSCRIPTION_DEFERRED
+            newStatus = 'deferred';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription deferred for user ${userId}`);
+            break;
+            
+          case 10: // SUBSCRIPTION_PAUSED
+            newStatus = 'paused';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription paused for user ${userId}`);
+            break;
+            
+          case 11: // SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Pause schedule changed for user ${userId}`);
+            break;
+            
+          case 12: // SUBSCRIPTION_REVOKED
+            newStatus = 'revoked';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription revoked for user ${userId}`);
+            break;
+            
+          case 13: // SUBSCRIPTION_EXPIRED
+            newStatus = 'expired';
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription expired for user ${userId}`);
+            break;
+            
+          default:
+            console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type: ${notificationType}`);
+        }
+
+        // Update user subscription status if needed
+        if (newStatus) {
+          await updateUserSubscription(userId, newStatus);
+          await createSubscriptionNotification(userId, newStatus);
+        }
+
+        res.status(200).send('Notification processed');
+        return;
+      }
+
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type`);
+      res.status(400).send('Unknown notification type');
+
+    } catch (error) {
+      console.error('❌ GOOGLE PLAY WEBHOOK: Error processing notification:', error);
+      res.status(500).send('Internal server error');
+    }
+  });
+});
+
+// ============================================================================
 // CENTRALIZED BADGE UPDATE FUNCTION
 // ============================================================================
 
