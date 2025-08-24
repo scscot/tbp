@@ -388,7 +388,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             ),
             const SizedBox(height: 24),
 
-            // The Challenge
+/*             // The Challenge
             _buildSectionCard(
               title: 'THE CHALLENGE',
               content:
@@ -416,7 +416,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
               icon: Icons.trending_up,
               color: AppColors.growthPrimary,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 24), */
 
             // The Process
             Card(
