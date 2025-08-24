@@ -7,6 +7,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
+import '../services/biometric_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import 'dashboard_screen.dart';
@@ -41,6 +42,11 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   // Added state variable to hold the image validation error text.
   String? _imageErrorText;
+  
+  // Biometric authentication variables
+  bool _biometricAvailable = false;
+  bool _biometricEnabled = false;
+  bool _checkingBiometric = true;
 
   List<String> get statesForSelectedCountry =>
       statesByCountry[_selectedCountry] ?? [];
@@ -63,6 +69,33 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         _selectedState = null;
       }
     }
+    
+    // Initialize biometric settings
+    _initializeBiometric();
+  }
+  
+  Future<void> _initializeBiometric() async {
+    try {
+      final available = await BiometricService.isDeviceSupported();
+      final enabled = await BiometricService.isBiometricEnabled();
+      
+      if (mounted) {
+        setState(() {
+          _biometricAvailable = available;
+          _biometricEnabled = enabled && available; // Only enable if device supports it
+          _checkingBiometric = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error initializing biometric: $e');
+      if (mounted) {
+        setState(() {
+          _biometricAvailable = false;
+          _biometricEnabled = false;
+          _checkingBiometric = false;
+        });
+      }
+    }
   }
 
   @override
@@ -82,6 +115,90 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         _imageErrorText = null;
       });
     }
+  }
+  
+  Future<void> _handleBiometricToggle(bool value) async {
+    if (!_biometricAvailable) return;
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
+    if (value) {
+      // Enabling biometric - test authentication first
+      try {
+        final authenticated = await BiometricService.authenticate(
+          localizedReason: 'Test biometric authentication to enable this feature',
+        );
+        
+        if (authenticated) {
+          await BiometricService.setBiometricEnabled(true);
+          setState(() => _biometricEnabled = true);
+          
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('✅ Biometric login enabled successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Biometric authentication failed. Please try again.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('Biometric enable error: $e');
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Error enabling biometric: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      // Disabling biometric - show confirmation dialog
+      final confirmed = await _showDisableBiometricDialog();
+      if (confirmed) {
+        await BiometricService.setBiometricEnabled(false);
+        setState(() => _biometricEnabled = false);
+        
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Biometric login disabled'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }
+    }
+  }
+  
+  Future<bool> _showDisableBiometricDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Disable Biometric Login'),
+          content: const Text(
+            'Are you sure you want to disable biometric login? '
+            'You will need to use your email and password to sign in.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Disable'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
   }
 
   Future<void> _saveProfile() async {
@@ -379,6 +496,73 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     ),
                     validator: (value) =>
                         value!.isEmpty ? 'Please enter a city' : null,
+                  ),
+
+                  const SizedBox(height: 24),
+                  
+                  // Security Settings Section
+                  const Divider(),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.security,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Security Settings',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Biometric Login Toggle
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: SwitchListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      title: const Text('Enable Biometric Login'),
+                      subtitle: _checkingBiometric
+                          ? const Text('Checking device compatibility...')
+                          : Text(
+                              _biometricAvailable
+                                  ? 'Use fingerprint or face recognition to login'
+                                  : 'Not available on this device',
+                            ),
+                      value: _biometricEnabled && _biometricAvailable,
+                      onChanged: _biometricAvailable && !_checkingBiometric
+                          ? _handleBiometricToggle
+                          : null,
+                      secondary: _checkingBiometric
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Icon(
+                              _biometricAvailable
+                                  ? Icons.fingerprint
+                                  : Icons.fingerprint_outlined,
+                              color: _biometricAvailable
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey,
+                            ),
+                    ),
                   ),
 
                   const SizedBox(height: 24),
