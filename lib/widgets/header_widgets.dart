@@ -17,7 +17,6 @@ class AppHeaderWithMenu extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
-      automaticallyImplyLeading: false,
       elevation: 0,
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -106,7 +105,6 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      automaticallyImplyLeading: false,
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -127,7 +125,31 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
         ),
       ),
-      actions: actions,
+      actions: actions ?? [
+        Consumer<UserModel?>(
+          builder: (context, user, child) {
+            return GestureDetector(
+              onTap: () {
+                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
+                navigationShell?.handleCommand(9);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                      ? NetworkImage(user.photoUrl!)
+                      : null,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                  child: user?.photoUrl == null || user!.photoUrl!.isEmpty
+                      ? const Icon(Icons.person, color: Colors.white, size: 20)
+                      : null,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
       centerTitle: true,
     );
   }

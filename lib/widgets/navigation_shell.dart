@@ -172,7 +172,7 @@ class NavigationShellState extends State<NavigationShell> {
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_outlined),
-                label: 'Notifications',
+                label: 'Notices',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.share_outlined),
