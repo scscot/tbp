@@ -1,5 +1,6 @@
 // lib/services/fcm_service.dart
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -56,7 +57,10 @@ class FCMService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      await _waitForAPNSToken();
+      // Only wait for APNS token on iOS
+      if (Platform.isIOS) {
+        await _waitForAPNSToken();
+      }
       await _saveToken();
 
       _messaging.onTokenRefresh.listen((token) async {
@@ -93,8 +97,11 @@ class FCMService {
   }
 
   Future<void> _waitForAPNSToken() async {
+    // This method is iOS-specific for APNS token handling
+    if (!Platform.isIOS) return;
+    
     if (kDebugMode) {
-      debugPrint("--- WAITING FOR APNS TOKEN ---");
+      debugPrint("--- WAITING FOR APNS TOKEN (iOS) ---");
     }
 
     for (int i = 0; i < 10; i++) {
@@ -208,14 +215,17 @@ class FCMService {
     }
 
     try {
-      final apnsToken = await _messaging.getAPNSToken();
-      if (apnsToken == null) {
-        if (kDebugMode) {
-          debugPrint(
-              "--- SAVE TOKEN FAILED: APNS token not available, will retry later");
+      // Only check APNS token on iOS
+      if (Platform.isIOS) {
+        final apnsToken = await _messaging.getAPNSToken();
+        if (apnsToken == null) {
+          if (kDebugMode) {
+            debugPrint(
+                "--- SAVE TOKEN FAILED: APNS token not available, will retry later");
+          }
+          Future.delayed(Duration(seconds: 10), () => _saveToken()); // Retry less frequently
+          return;
         }
-        Future.delayed(Duration(seconds: 2), () => _saveToken());
-        return;
       }
 
       final token = await _messaging.getToken();
@@ -249,7 +259,8 @@ class FCMService {
             "❌❌❌ SAVE TOKEN FAILED: Error during token generation or Firestore write: $error");
       }
 
-      if (error.toString().contains('apns-token-not-set')) {
+      // Only retry for APNS token issues on iOS
+      if (Platform.isIOS && error.toString().contains('apns-token-not-set')) {
         if (kDebugMode) {
           debugPrint(
               "--- SAVE TOKEN: Will retry in 3 seconds due to APNS token issue");
