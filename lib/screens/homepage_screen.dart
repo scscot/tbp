@@ -257,10 +257,10 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
               ],
             ),
-            child: Image.asset(
-              'assets/icons/app_icon.png',
-              width: 32,
-              height: 32,
+            child: const Icon(
+              Icons.groups,
+              size: 32,
+              color: Colors.white,
             ),
           ),
           const SizedBox(width: 16),
