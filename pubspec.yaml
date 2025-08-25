@@ -1,7 +1,7 @@
 name: ultimatefix
-description: NetworkBuild Pro (Dart-only with SDK)
+description: Team Build Pro (Dart-only with SDK)
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+5
 
 environment:
   sdk: ^3.3.0
