@@ -136,15 +136,15 @@ class NavigationShellState extends State<NavigationShell> {
             ),
             _buildTabNavigator(
               2,
-              MessageCenterScreen(appId: widget.appId),
+              ShareScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               3,
-              NotificationsScreen(appId: widget.appId),
+              MessageCenterScreen(appId: widget.appId),
             ),
             _buildTabNavigator(
               4,
-              ShareScreen(appId: widget.appId),
+              NotificationsScreen(appId: widget.appId),
             ),
           ],
         ),
@@ -167,16 +167,16 @@ class NavigationShellState extends State<NavigationShell> {
                 label: 'Team',
               ),
               const BottomNavigationBarItem(
+                icon: Icon(Icons.trending_up),
+                label: 'Grow',
+              ),
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.message_outlined),
                 label: 'Messages',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_outlined),
                 label: 'Notices',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.share_outlined),
-                label: 'Share',
               ),
             ],
           ),
