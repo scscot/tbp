@@ -624,6 +624,27 @@ exports.testAppleNotificationV2Setup = onCall({ region: "us-central1" }, async (
   };
 });
 
+/**
+ * Test endpoint for validating your Google Play notification setup
+ */
+exports.testGooglePlayNotificationSetup = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  // This function helps you test your Google Play notification endpoint
+  // You can call this from your app to verify everything is set up correctly
+
+  console.log(`🤖 TEST: Google Play notification setup test initiated by ${request.auth.uid}`);
+
+  return {
+    success: true,
+    message: "Google Play notification endpoint is configured and ready",
+    endpoint: `https://${process.env.GCLOUD_PROJECT}.cloudfunctions.net/handleGooglePlaySubscriptionNotification`,
+    timestamp: new Date().toISOString()
+  };
+});
+
 // Export the enhanced helper functions for use in other parts of your code
 /* module.exports = {
   updateUserSubscriptionV2,

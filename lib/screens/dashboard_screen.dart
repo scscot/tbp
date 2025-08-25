@@ -300,7 +300,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
@@ -314,7 +314,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Icon(Icons.analytics, color: AppColors.growthPrimary, size: 24),
               const SizedBox(width: 12),
               Text(
-                'Your Team Growth',
+                'Your Current Team Stats',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -349,28 +349,33 @@ class _DashboardScreenState extends State<DashboardScreen>
             ],
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatItem(
-                  icon: Icons.people,
-                  value: directSponsors.toString(),
-                  label: 'Direct\nSponsors',
-                  color: Colors.blue.shade600,
-                  isLoading: _isLoadingCounts,
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: _buildStatItem(
+                    icon: Icons.people,
+                    value: directSponsors.toString(),
+                    label: 'Direct\nSponsors',
+                    color: Colors.blue.shade600,
+                    isLoading: _isLoadingCounts,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStatItem(
-                  icon: Icons.groups,
-                  value: totalTeam.toString(),
-                  label: 'Total Team\nMembers',
-                  color: Colors.green.shade600,
-                  isLoading: _isLoadingCounts,
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: _buildStatItem(
+                    icon: Icons.groups,
+                    value: totalTeam.toString(),
+                    label: 'Total Team\nMembers',
+                    color: Colors.green.shade600,
+                    isLoading: _isLoadingCounts,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 12),
           LinearProgressIndicator(
@@ -394,7 +399,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool isLoading = false,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.withOpacity(color, 0.1),
         borderRadius: BorderRadius.circular(12),
@@ -531,10 +536,32 @@ class _DashboardScreenState extends State<DashboardScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildActionCard(
-          icon: Icons.help_outline,
-          title: 'How It Works',
-          color: AppColors.teamAccent,
-          onTap: () => widget.onTabSelected?.call(5),
+          icon: Icons.groups,
+          title: 'View Your Team',
+          color: AppColors.teamPrimary,
+          onTap: () => widget.onTabSelected?.call(1),
+        ),
+        _buildActionCard(
+          icon: Icons.trending_up,
+          title: 'Grow Your Team',
+          color: AppColors.growthPrimary,
+          onTap: () => widget.onTabSelected?.call(2),
+        ),
+        _buildActionCard(
+          icon: Icons.message,
+          title: 'Message Center',
+          color: AppColors.messagePrimary,
+          hasBadge: _unreadMessageCount > 0,
+          badgeCount: _unreadMessageCount,
+          onTap: () => widget.onTabSelected?.call(3),
+        ),
+        _buildActionCard(
+          icon: Icons.notifications,
+          title: 'Notifications',
+          color: AppColors.notificationPrimary,
+          hasBadge: _unreadNotificationCount > 0,
+          badgeCount: _unreadNotificationCount,
+          onTap: () => widget.onTabSelected?.call(4),
         ),
         if (user.role == 'admin') ...[
           _buildActionCard(
@@ -561,34 +588,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ],
         _buildActionCard(
-          icon: Icons.trending_up,
-          title: 'Grow Your Team',
-          color: AppColors.growthPrimary,
-          onTap: () => widget.onTabSelected?.call(2),
+          icon: Icons.help_outline,
+          title: 'How It Works',
+          color: AppColors.teamAccent,
+          onTap: () => widget.onTabSelected?.call(5),
         ),
-        _buildActionCard(
-          icon: Icons.groups,
-          title: 'View Your Team',
-          color: AppColors.teamPrimary,
-          onTap: () => widget.onTabSelected?.call(1),
-        ),
-        _buildActionCard(
-          icon: Icons.notifications,
-          title: 'Notifications',
-          color: AppColors.notificationPrimary,
-          hasBadge: _unreadNotificationCount > 0,
-          badgeCount: _unreadNotificationCount,
-          onTap: () => widget.onTabSelected?.call(4),
-        ),
-        _buildActionCard(
-          icon: Icons.message,
-          title: 'Message Center',
-          color: AppColors.messagePrimary,
-          hasBadge: _unreadMessageCount > 0,
-          badgeCount: _unreadMessageCount,
-          onTap: () => widget.onTabSelected?.call(3),
-        ),
-
         _buildActionCard(
           icon: Icons.person,
           title: 'View Your Profile',
@@ -670,6 +674,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         ),
                         const AppleNotificationTestWidget(),
+                        const GoogleNotificationTestWidget(),
                       ],
                     ),
                   ),
