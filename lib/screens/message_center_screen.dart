@@ -72,17 +72,11 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Messages'),
+      appBar: AppScreenBar(title: 'Messages', appId: widget.appId),
       body: _currentUserId == null
           ? const Center(child: Text('Please log in to see messages.'))
           : Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Message Center',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                ),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: _threadsStream,

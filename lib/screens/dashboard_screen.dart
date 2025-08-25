@@ -9,6 +9,7 @@ import '../config/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import '../services/network_service.dart';
 import '../services/subscription_service.dart'; // Add this line
+import 'profile_screen.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -597,7 +598,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           icon: Icons.person,
           title: 'View Your Profile',
           color: AppColors.primary,
-          onTap: () => widget.onTabSelected?.call(9),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileScreen(appId: widget.appId),
+              ),
+            );
+          },
         ),
 
         if (user.role == 'admin')
@@ -623,7 +631,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: const TabScreenBar(title: 'Control Center'),
+      appBar: AppScreenBar(title: 'Control Center', appId: widget.appId),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(

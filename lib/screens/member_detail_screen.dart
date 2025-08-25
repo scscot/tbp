@@ -13,6 +13,7 @@ import '../models/user_model.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'message_thread_screen.dart';
+import 'view_profile_screen.dart';
 
 class MemberDetailScreen extends StatefulWidget {
   final String userId;
@@ -163,7 +164,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     // final bool isCurrentUserAnAdmin = authUser?.role == 'admin';
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Member Details'),
+      appBar: AppScreenBar(title: 'Member Details', appId: widget.appId),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
@@ -174,16 +175,34 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: _user!.photoUrl != null &&
-                                  _user!.photoUrl!.isNotEmpty
-                              ? NetworkImage(_user!.photoUrl!)
-                              : null,
-                          child: _user!.photoUrl == null ||
-                                  _user!.photoUrl!.isEmpty
-                              ? const Icon(Icons.person, size: 50)
-                              : null,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewProfileScreen(
+                                  name: '${_user!.firstName ?? ''} ${_user!.lastName ?? ''}',
+                                  city: _user!.city ?? '',
+                                  state: _user!.state ?? '',
+                                  country: _user!.country ?? '',
+                                  avatarUrl: _user!.photoUrl,
+                                  joinDateString: _user!.createdAt?.toIso8601String(),
+                                  isDirectDownline: true,
+                                ),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _user!.photoUrl != null &&
+                                    _user!.photoUrl!.isNotEmpty
+                                ? NetworkImage(_user!.photoUrl!)
+                                : null,
+                            child: _user!.photoUrl == null ||
+                                    _user!.photoUrl!.isEmpty
+                                ? const Icon(Icons.person, size: 50)
+                                : null,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),

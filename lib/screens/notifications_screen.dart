@@ -182,7 +182,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Notifications'),
+      appBar: AppScreenBar(title: 'Notifications', appId: widget.appId),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

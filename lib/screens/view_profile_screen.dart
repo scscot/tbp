@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../widgets/header_widgets.dart';
 
 class ViewProfileScreen extends StatelessWidget {
   final String name;
@@ -36,13 +37,7 @@ class ViewProfileScreen extends StatelessWidget {
     final cityState = [city, state].where((s) => s.isNotEmpty).join(', ');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
+      appBar: AppScreenBar(title: 'Profile', appId: 'profile'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

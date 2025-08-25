@@ -26,7 +26,7 @@ class NavigationShell extends StatefulWidget {
 }
 
 class NavigationShellState extends State<NavigationShell> {
-  // Interpret command codes from child screens: 0..4 = tab switch; 5+ = push inside Dashboard tab
+  // Interpret command codes from child screens: 0..4 = tab switch; 5+ = push inside current tab
   void handleCommand(int code) {
     if (code >= 0 && code <= 4) {
       navigateToTab(code);

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/iap_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
+import '../widgets/header_widgets.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
@@ -244,9 +245,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Team Build Pro'),
-        centerTitle: true,
+      appBar: AppScreenBar(
+        title: 'Team Build Pro',
+        appId: 'subscription', // Using static appId for subscription screen
         actions: [
           if (!isLoading && subscriptionStatus != null)
             IconButton(

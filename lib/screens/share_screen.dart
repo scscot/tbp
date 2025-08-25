@@ -164,7 +164,7 @@ class _ShareScreenState extends State<ShareScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Share'),
+      appBar: AppScreenBar(title: 'Share', appId: widget.appId),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(

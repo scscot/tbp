@@ -1,8 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../widgets/navigation_shell.dart';
+import '../screens/profile_screen.dart';
+import '../screens/notifications_screen.dart';
+
+// Notification Badge Widget with unread count
+class NotificationBadge extends StatelessWidget {
+  final String appId;
+
+  const NotificationBadge({
+    super.key,
+    required this.appId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final authUser = FirebaseAuth.instance.currentUser;
+    if (authUser == null) return const SizedBox.shrink();
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(authUser.uid)
+          .collection('notifications')
+          .where('read', isEqualTo: false)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final unreadCount = snapshot.hasData ? snapshot.data!.docs.length : 0;
+        
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NotificationsScreen(appId: appId),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(right: 8),
+            child: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                if (unreadCount > 0)
+                  Positioned(
+                    right: 2,
+                    top: 2,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 20,
+                        minHeight: 20,
+                      ),
+                      child: Text(
+                        unreadCount.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
 // Entry screen header: Groups Icon + "Team Build Pro" (left justified)
 class EntryAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -60,14 +143,16 @@ class EntryAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-// Tab screen header: Screen Title (centered) + Profile Image (right) - NO back arrow
+// Tab screen header: Screen Title (centered) + Notifications Badge + Profile Image (right) - NO back arrow
 class TabScreenBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String? appId;
   final List<Widget>? actions;
 
   const TabScreenBar({
     super.key,
     required this.title,
+    this.appId,
     this.actions,
   });
 
@@ -105,8 +190,12 @@ class TabScreenBar extends StatelessWidget implements PreferredSizeWidget {
           builder: (context, user, child) {
             return GestureDetector(
               onTap: () {
-                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
-                navigationShell?.handleCommand(9);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(appId: appId ?? 'default'),
+                  ),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 16),
@@ -133,11 +222,13 @@ class TabScreenBar extends StatelessWidget implements PreferredSizeWidget {
 // App screen header: Back Arrow (left) + Screen Title (centered) + Profile Image (right)
 class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String? appId;
   final List<Widget>? actions;
 
   const AppScreenBar({
     super.key,
     required this.title,
+    this.appId,
     this.actions,
   });
 
@@ -188,8 +279,12 @@ class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
           builder: (context, user, child) {
             return GestureDetector(
               onTap: () {
-                final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
-                navigationShell?.handleCommand(9);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(appId: appId ?? 'default'),
+                  ),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 16),
@@ -244,6 +339,6 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScreenBar(title: title, actions: actions);
+    return AppScreenBar(title: title, appId: 'legacy', actions: actions);
   }
 }
