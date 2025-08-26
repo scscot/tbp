@@ -56,10 +56,42 @@ class IAPService {
           purchase.status == PurchaseStatus.restored) {
         isPurchased = true;
         _verifyAndCompleteSubscription(purchase);
+        
+        // Call success callback if there's a pending purchase
+        if (_pendingOnSuccess != null) {
+          debugPrint('✅ SUBSCRIPTION: Purchase completed - calling success callback');
+          _pendingOnSuccess!();
+          _pendingOnSuccess = null;
+          _pendingOnFailure = null;
+          _pendingOnComplete?.call();
+          _pendingOnComplete = null;
+        }
       } else if (purchase.status == PurchaseStatus.error) {
         debugPrint('❌ Purchase error: ${purchase.error}');
+        
+        // Call failure callback if there's a pending purchase
+        if (_pendingOnFailure != null) {
+          debugPrint('❌ SUBSCRIPTION: Purchase failed - calling failure callback');
+          _pendingOnFailure!();
+          _pendingOnSuccess = null;
+          _pendingOnFailure = null;
+          _pendingOnComplete?.call();
+          _pendingOnComplete = null;
+        }
       } else if (purchase.status == PurchaseStatus.pending) {
         debugPrint('⏳ Purchase pending: ${purchase.productID}');
+      } else if (purchase.status == PurchaseStatus.canceled) {
+        debugPrint('🚫 Purchase canceled: ${purchase.productID}');
+        
+        // Call failure callback if there's a pending purchase
+        if (_pendingOnFailure != null) {
+          debugPrint('🚫 SUBSCRIPTION: Purchase canceled - calling failure callback');
+          _pendingOnFailure!();
+          _pendingOnSuccess = null;
+          _pendingOnFailure = null;
+          _pendingOnComplete?.call();
+          _pendingOnComplete = null;
+        }
       }
     }
   }
@@ -190,6 +222,11 @@ class IAPService {
     }
   }
 
+  // Store callbacks for purchase completion
+  VoidCallback? _pendingOnSuccess;
+  VoidCallback? _pendingOnFailure;
+  VoidCallback? _pendingOnComplete;
+
   /// Enhanced subscription purchase with proper subscription handling
   Future<void> purchaseMonthlySubscription({
     required VoidCallback onSuccess,
@@ -215,6 +252,11 @@ class IAPService {
         return;
       }
 
+      // Store callbacks to be called when purchase actually completes
+      _pendingOnSuccess = onSuccess;
+      _pendingOnFailure = onFailure;
+      _pendingOnComplete = onComplete;
+
       final purchaseParam = PurchaseParam(
         productDetails: product,
         applicationUserName:
@@ -225,18 +267,23 @@ class IAPService {
       final success = await _iap.buyConsumable(purchaseParam: purchaseParam);
 
       if (success) {
-        debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully');
-        onSuccess();
+        debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully - waiting for completion');
+        // Don't call onSuccess here - wait for _onPurchaseUpdated
       } else {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');
+        _pendingOnSuccess = null;
+        _pendingOnFailure = null;
+        _pendingOnComplete = null;
         onFailure();
       }
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error purchasing subscription: $e');
+      _pendingOnSuccess = null;
+      _pendingOnFailure = null;
+      _pendingOnComplete = null;
       onFailure();
-    } finally {
-      onComplete?.call();
     }
+    // Don't call onComplete here - wait for actual purchase completion
   }
 
   /// Legacy method for backward compatibility
@@ -356,5 +403,8 @@ class IAPService {
 
   void dispose() {
     _subscription.cancel();
+    _pendingOnSuccess = null;
+    _pendingOnFailure = null;
+    _pendingOnComplete = null;
   }
 }
