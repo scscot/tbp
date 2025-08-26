@@ -15,7 +15,7 @@ class IAPService {
   final FirebaseFunctions _functions =
       FirebaseFunctions.instanceFor(region: 'us-central1');
   late StreamSubscription<List<PurchaseDetails>> _subscription;
-  final String _subscriptionId = '1000';
+  final String _subscriptionId = '1001';
 
   bool available = false;
   List<ProductDetails> products = [];
