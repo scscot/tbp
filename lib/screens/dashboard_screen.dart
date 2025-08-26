@@ -663,7 +663,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 MaterialPageRoute(
                   builder: (context) {
                     debugPrint('🔄 DASHBOARD: Building SubscriptionScreen directly');
-                    return const SubscriptionScreen();
+                    return SubscriptionScreen(appId: widget.appId);
                   },
                 ),
               ).then((result) {

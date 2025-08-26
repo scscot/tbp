@@ -7,7 +7,9 @@ import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
 
 class SubscriptionScreen extends StatefulWidget {
-  const SubscriptionScreen({super.key});
+  final String? appId;
+  
+  const SubscriptionScreen({super.key, this.appId});
 
   @override
   State<SubscriptionScreen> createState() => _SubscriptionScreenState();
@@ -270,7 +272,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       backgroundColor: Colors.white,
       appBar: AppScreenBar(
         title: 'Team Build Pro',
-        appId: 'subscription', // Using static appId for subscription screen
+        appId: widget.appId ?? 'subscription', // Use passed appId or fallback
         actions: [
           if (!isLoading && subscriptionStatus != null)
             IconButton(

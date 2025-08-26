@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               return MaterialPageRoute(
                 builder: (context) {
                   debugPrint('🔄 MAIN: Building SubscriptionScreen');
-                  return const SubscriptionScreen();
+                  return SubscriptionScreen(appId: appId);
                 },
                 settings: settings,
               );
