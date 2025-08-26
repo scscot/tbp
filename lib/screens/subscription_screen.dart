@@ -22,6 +22,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Map<String, dynamic>? subscriptionStatus;
   String? _bizOpp; // --- 1. State variable for biz_opp added ---
   final IAPService _iapService = IAPService();
+  
+  // Debug info for TestFlight diagnosis
+  String _debugInfo = "Debug info will appear here...";
+  final List<String> _debugLogs = [];
 
   @override
   void initState() {
@@ -100,14 +104,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
+  void _addDebugLog(String message) {
+    setState(() {
+      _debugLogs.add('${DateTime.now().toString().substring(11, 19)}: $message');
+      if (_debugLogs.length > 10) _debugLogs.removeAt(0); // Keep only last 10
+      _debugInfo = _debugLogs.join('\n');
+    });
+    debugPrint(message);
+  }
+
   Future<void> _handleUpgrade() async {
-    debugPrint('🔄 SUBSCRIPTION_SCREEN: Starting upgrade process');
+    _addDebugLog('🔄 UPGRADE: Button clicked - starting upgrade process');
     setState(() => isPurchasing = true);
 
-    debugPrint('🔍 SUBSCRIPTION_SCREEN: IAP Service Status - Available: ${_iapService.available}, Products: ${_iapService.products.length}');
+    _addDebugLog('🔍 IAP Status: Available=${_iapService.available}, Products=${_iapService.products.length}');
     
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
+        _addDebugLog('🎉 SUCCESS CALLBACK: Called at ${DateTime.now()}');
         if (!mounted) return;
 
         // Refresh subscription status after successful purchase
@@ -118,10 +132,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           if (mounted) {
             final authService = Provider.of<AuthService>(context, listen: false);
             await authService.checkSubscriptionOnAppResume();
-            debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after successful purchase');
+            _addDebugLog('✅ User data refreshed after successful purchase');
           }
         } catch (e) {
-          debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data: $e');
+          _addDebugLog('❌ Error refreshing user data: $e');
         }
 
         setState(() => isPurchasing = false);
@@ -136,6 +150,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         }
       },
       onFailure: () {
+        _addDebugLog('❌ FAILURE CALLBACK: Called at ${DateTime.now()}');
         if (!mounted) return;
         setState(() => isPurchasing = false);
         showDialog(
@@ -362,6 +377,46 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       child: const Text('Restore Previous Purchases'),
                     ),
                   ),
+
+                  // Debug Info Display for TestFlight
+                  if (_debugLogs.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Debug Info (TestFlight Only):',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            height: 120,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                _debugInfo,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: 'Courier',
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
 
                   // Terms and Privacy
                   const SizedBox(height: 16),
