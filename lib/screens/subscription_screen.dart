@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/iap_service.dart';
+import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -113,6 +114,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         // Refresh subscription status after successful purchase
         await _loadSubscriptionStatus();
 
+        // Trigger user data refresh to update subscription status across the app
+        try {
+          final authService = Provider.of<AuthService>(context, listen: false);
+          await authService.checkSubscriptionOnAppResume();
+          debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after successful purchase');
+        } catch (e) {
+          debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data: $e');
+        }
+
         setState(() => isPurchasing = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -154,6 +164,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         // Refresh subscription status after restore
         await _loadSubscriptionStatus();
+
+        // Trigger user data refresh to update subscription status across the app
+        try {
+          final authService = Provider.of<AuthService>(context, listen: false);
+          await authService.checkSubscriptionOnAppResume();
+          debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after restore');
+        } catch (e) {
+          debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data after restore: $e');
+        }
 
         setState(() => isPurchasing = false);
         if (mounted) {
