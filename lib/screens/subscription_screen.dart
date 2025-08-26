@@ -274,42 +274,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       appBar: AppScreenBar(
         title: 'Team Build Pro',
         appId: widget.appId ?? 'subscription', // Use passed appId or fallback
-        actions: [
-          if (!isLoading && subscriptionStatus != null)
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: _loadSubscriptionStatus,
-              tooltip: 'Refresh Status',
-            ),
-          // Include the profile image from AppScreenBar
-          Consumer<UserModel?>(
-            builder: (context, user, child) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProfileScreen(appId: widget.appId ?? 'subscription'),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundImage: user?.photoUrl != null && user!.photoUrl!.isNotEmpty
-                        ? NetworkImage(user.photoUrl!)
-                        : null,
-                    backgroundColor: Colors.white.withValues(alpha: 0.2),
-                    child: user?.photoUrl == null || user!.photoUrl!.isEmpty
-                        ? const Icon(Icons.person, color: Colors.white, size: 20)
-                        : null,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
