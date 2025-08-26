@@ -6,7 +6,6 @@ import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
-import '../screens/profile_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   final String? appId;
@@ -116,9 +115,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         // Trigger user data refresh to update subscription status across the app
         try {
-          final authService = Provider.of<AuthService>(context, listen: false);
-          await authService.checkSubscriptionOnAppResume();
-          debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after successful purchase');
+          if (mounted) {
+            final authService = Provider.of<AuthService>(context, listen: false);
+            await authService.checkSubscriptionOnAppResume();
+            debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after successful purchase');
+          }
         } catch (e) {
           debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data: $e');
         }
@@ -167,9 +168,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         // Trigger user data refresh to update subscription status across the app
         try {
-          final authService = Provider.of<AuthService>(context, listen: false);
-          await authService.checkSubscriptionOnAppResume();
-          debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after restore');
+          if (mounted) {
+            final authService = Provider.of<AuthService>(context, listen: false);
+            await authService.checkSubscriptionOnAppResume();
+            debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after restore');
+          }
         } catch (e) {
           debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data after restore: $e');
         }
