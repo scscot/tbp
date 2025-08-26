@@ -28,31 +28,53 @@ class IAPService {
   int _trialDaysRemaining = 0;
 
   Future<void> init() async {
+    debugPrint('🚀 TESTFLIGHT_DEBUG: IAP Service initialization started');
+    
     available = await _iap.isAvailable();
     if (!available) {
-      debugPrint('⚠️ IAP not available');
+      debugPrint('⚠️ TESTFLIGHT_DEBUG: IAP not available');
       return;
     }
+    debugPrint('✅ TESTFLIGHT_DEBUG: IAP is available');
 
     final ProductDetailsResponse response =
         await _iap.queryProductDetails({_subscriptionId});
     if (response.error != null || response.productDetails.isEmpty) {
-      debugPrint('❌ Error loading products: ${response.error}');
+      debugPrint('❌ TESTFLIGHT_DEBUG: Error loading products: ${response.error}');
       return;
     }
     products = response.productDetails;
-    debugPrint('✅ Loaded IAP products');
+    debugPrint('✅ TESTFLIGHT_DEBUG: Loaded ${products.length} IAP products');
+    
+    for (var product in products) {
+      debugPrint('📦 TESTFLIGHT_DEBUG: Product loaded - ID: ${product.id}, Title: ${product.title}, Price: ${product.price}');
+    }
 
-    _subscription = _iap.purchaseStream.listen(_onPurchaseUpdated, onDone: () {
+    // Check for any existing purchases on startup
+    debugPrint('🔍 TESTFLIGHT_DEBUG: Setting up purchase stream listener');
+    _subscription = _iap.purchaseStream.listen((purchases) {
+      debugPrint('🔔 TESTFLIGHT_DEBUG: Purchase stream triggered with ${purchases.length} purchases');
+      for (var purchase in purchases) {
+        debugPrint('📋 TESTFLIGHT_DEBUG: Existing purchase found - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
+      }
+      _onPurchaseUpdated(purchases);
+    }, onDone: () {
+      debugPrint('✅ TESTFLIGHT_DEBUG: Purchase stream completed');
       _subscription.cancel();
     }, onError: (error) {
-      debugPrint('❌ Purchase stream error: $error');
+      debugPrint('❌ TESTFLIGHT_DEBUG: Purchase stream error: $error');
     });
+    
+    debugPrint('🎯 TESTFLIGHT_DEBUG: IAP Service initialization completed successfully');
   }
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
+    debugPrint('🔔 TESTFLIGHT_DEBUG: ===== PURCHASE UPDATE RECEIVED =====');
+    debugPrint('🔔 TESTFLIGHT_DEBUG: Number of purchases: ${purchases.length}');
+    debugPrint('🔔 TESTFLIGHT_DEBUG: Current pending state - Success: ${_pendingOnSuccess != null}, Failure: ${_pendingOnFailure != null}, Initiated: $_purchaseInitiatedAt');
+    
     for (var purchase in purchases) {
-      debugPrint('🔍 SUBSCRIPTION: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}');
+      debugPrint('🔍 TESTFLIGHT_DEBUG: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
       
       if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
@@ -261,13 +283,16 @@ class IAPService {
     VoidCallback? onComplete,
   }) async {
     try {
-      debugPrint('📱 SUBSCRIPTION: Starting subscription purchase');
+      debugPrint('📱 TESTFLIGHT_DEBUG: ===== SUBSCRIPTION PURCHASE STARTED =====');
+      debugPrint('📱 TESTFLIGHT_DEBUG: Current callback state - Success: ${_pendingOnSuccess != null}, Failure: ${_pendingOnFailure != null}, Initiated: $_purchaseInitiatedAt');
 
       // CRITICAL: Clear any existing callbacks to prevent interference from previous purchases
       _pendingOnSuccess = null;
       _pendingOnFailure = null;
       _pendingOnComplete = null;
       _purchaseInitiatedAt = null;
+      
+      debugPrint('📱 TESTFLIGHT_DEBUG: Callbacks cleared successfully');
 
       if (!available || products.isEmpty) {
         debugPrint('❌ SUBSCRIPTION: IAP not available or no products loaded');
