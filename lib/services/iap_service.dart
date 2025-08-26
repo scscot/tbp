@@ -28,118 +28,38 @@ class IAPService {
   int _trialDaysRemaining = 0;
 
   Future<void> init() async {
-    debugPrint('🚀 TESTFLIGHT_DEBUG: IAP Service initialization started');
-    
     available = await _iap.isAvailable();
     if (!available) {
-      debugPrint('⚠️ TESTFLIGHT_DEBUG: IAP not available');
+      debugPrint('⚠️ IAP not available');
       return;
     }
-    debugPrint('✅ TESTFLIGHT_DEBUG: IAP is available');
 
     final ProductDetailsResponse response =
         await _iap.queryProductDetails({_subscriptionId});
     if (response.error != null || response.productDetails.isEmpty) {
-      debugPrint('❌ TESTFLIGHT_DEBUG: Error loading products: ${response.error}');
+      debugPrint('❌ Error loading products: ${response.error}');
       return;
     }
     products = response.productDetails;
-    debugPrint('✅ TESTFLIGHT_DEBUG: Loaded ${products.length} IAP products');
-    
-    for (var product in products) {
-      debugPrint('📦 TESTFLIGHT_DEBUG: Product loaded - ID: ${product.id}, Title: ${product.title}, Price: ${product.price}');
-    }
+    debugPrint('✅ Loaded IAP products');
 
-    // Check for any existing purchases on startup
-    debugPrint('🔍 TESTFLIGHT_DEBUG: Setting up purchase stream listener');
-    _subscription = _iap.purchaseStream.listen((purchases) {
-      debugPrint('🔔 TESTFLIGHT_DEBUG: Purchase stream triggered with ${purchases.length} purchases');
-      for (var purchase in purchases) {
-        debugPrint('📋 TESTFLIGHT_DEBUG: Existing purchase found - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
-      }
-      _onPurchaseUpdated(purchases);
-    }, onDone: () {
-      debugPrint('✅ TESTFLIGHT_DEBUG: Purchase stream completed');
+    _subscription = _iap.purchaseStream.listen(_onPurchaseUpdated, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
-      debugPrint('❌ TESTFLIGHT_DEBUG: Purchase stream error: $error');
+      debugPrint('❌ Purchase stream error: $error');
     });
-    
-    debugPrint('🎯 TESTFLIGHT_DEBUG: IAP Service initialization completed successfully');
   }
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
-    debugPrint('🔔 TESTFLIGHT_DEBUG: ===== PURCHASE UPDATE RECEIVED =====');
-    debugPrint('🔔 TESTFLIGHT_DEBUG: Number of purchases: ${purchases.length}');
-    debugPrint('🔔 TESTFLIGHT_DEBUG: Current pending state - Success: ${_pendingOnSuccess != null}, Failure: ${_pendingOnFailure != null}, Initiated: $_purchaseInitiatedAt');
-    
     for (var purchase in purchases) {
-      debugPrint('🔍 TESTFLIGHT_DEBUG: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
-      
       if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         isPurchased = true;
         _verifyAndCompleteSubscription(purchase);
-        
-        // CRITICAL FIX: Only process callbacks if we have a pending purchase initiated in the last 30 seconds
-        if (_pendingOnSuccess != null && _purchaseInitiatedAt != null) {
-          final timeSincePurchaseInitiation = DateTime.now().difference(_purchaseInitiatedAt!);
-          
-          // Much stricter time window - only 30 seconds
-          if (timeSincePurchaseInitiation.inSeconds <= 30) {
-            debugPrint('✅ SUBSCRIPTION: FRESH purchase completed - calling success callback (${timeSincePurchaseInitiation.inSeconds}s ago)');
-            final successCallback = _pendingOnSuccess!;
-            final completeCallback = _pendingOnComplete;
-            
-            // Clear callbacks BEFORE calling them to prevent re-entrance
-            _pendingOnSuccess = null;
-            _pendingOnFailure = null;
-            _pendingOnComplete = null;
-            _purchaseInitiatedAt = null;
-            
-            // Now call the callbacks
-            successCallback();
-            completeCallback?.call();
-          } else {
-            debugPrint('⚠️ SUBSCRIPTION: Ignoring stale purchase - initiated ${timeSincePurchaseInitiation.inSeconds}s ago (too old)');
-          }
-        } else {
-          debugPrint('⚠️ SUBSCRIPTION: No active purchase request - ignoring purchase update (likely existing/restored)');
-        }
       } else if (purchase.status == PurchaseStatus.error) {
         debugPrint('❌ Purchase error: ${purchase.error}');
-        
-        if (_pendingOnFailure != null) {
-          debugPrint('❌ SUBSCRIPTION: Purchase failed - calling failure callback');
-          final failureCallback = _pendingOnFailure!;
-          final completeCallback = _pendingOnComplete;
-          
-          _pendingOnSuccess = null;
-          _pendingOnFailure = null;
-          _pendingOnComplete = null;
-          _purchaseInitiatedAt = null;
-          
-          failureCallback();
-          completeCallback?.call();
-        }
       } else if (purchase.status == PurchaseStatus.pending) {
         debugPrint('⏳ Purchase pending: ${purchase.productID}');
-      } else if (purchase.status == PurchaseStatus.canceled) {
-        debugPrint('🚫 Purchase canceled: ${purchase.productID}');
-        
-        if (_pendingOnFailure != null) {
-          debugPrint('🚫 SUBSCRIPTION: Purchase canceled - calling failure callback');
-          final failureCallback = _pendingOnFailure!;
-          final completeCallback = _pendingOnComplete;
-          
-          _pendingOnSuccess = null;
-          _pendingOnFailure = null;
-          _pendingOnComplete = null;
-          _purchaseInitiatedAt = null;
-          
-          failureCallback();
-          completeCallback?.call();
-        }
       }
     }
   }
@@ -270,12 +190,6 @@ class IAPService {
     }
   }
 
-  // Store callbacks for purchase completion
-  VoidCallback? _pendingOnSuccess;
-  VoidCallback? _pendingOnFailure;
-  VoidCallback? _pendingOnComplete;
-  DateTime? _purchaseInitiatedAt;
-
   /// Enhanced subscription purchase with proper subscription handling
   Future<void> purchaseMonthlySubscription({
     required VoidCallback onSuccess,
@@ -283,16 +197,7 @@ class IAPService {
     VoidCallback? onComplete,
   }) async {
     try {
-      debugPrint('📱 TESTFLIGHT_DEBUG: ===== SUBSCRIPTION PURCHASE STARTED =====');
-      debugPrint('📱 TESTFLIGHT_DEBUG: Current callback state - Success: ${_pendingOnSuccess != null}, Failure: ${_pendingOnFailure != null}, Initiated: $_purchaseInitiatedAt');
-
-      // CRITICAL: Clear any existing callbacks to prevent interference from previous purchases
-      _pendingOnSuccess = null;
-      _pendingOnFailure = null;
-      _pendingOnComplete = null;
-      _purchaseInitiatedAt = null;
-      
-      debugPrint('📱 TESTFLIGHT_DEBUG: Callbacks cleared successfully');
+      debugPrint('📱 SUBSCRIPTION: Starting subscription purchase');
 
       if (!available || products.isEmpty) {
         debugPrint('❌ SUBSCRIPTION: IAP not available or no products loaded');
@@ -310,14 +215,6 @@ class IAPService {
         return;
       }
 
-      // Store callbacks to be called when purchase actually completes - ONLY after validation
-      _pendingOnSuccess = onSuccess;
-      _pendingOnFailure = onFailure;
-      _pendingOnComplete = onComplete;
-      _purchaseInitiatedAt = DateTime.now();
-      
-      debugPrint('🎯 SUBSCRIPTION: Callbacks set at $_purchaseInitiatedAt');
-
       final purchaseParam = PurchaseParam(
         productDetails: product,
         applicationUserName:
@@ -328,37 +225,18 @@ class IAPService {
       final success = await _iap.buyConsumable(purchaseParam: purchaseParam);
 
       if (success) {
-        debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully - waiting for completion');
-        
-        // Set up a timeout to clear callbacks if no response within 5 minutes
-        Timer(const Duration(minutes: 5), () {
-          if (_pendingOnSuccess != null || _pendingOnFailure != null) {
-            debugPrint('⏰ SUBSCRIPTION: Purchase timeout - clearing stale callbacks');
-            _pendingOnSuccess = null;
-            _pendingOnFailure = null;
-            _pendingOnComplete = null;
-            _purchaseInitiatedAt = null;
-          }
-        });
-        
-        // Don't call onSuccess here - wait for _onPurchaseUpdated
+        debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully');
+        onSuccess();
       } else {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');
-        _pendingOnSuccess = null;
-        _pendingOnFailure = null;
-        _pendingOnComplete = null;
-        _purchaseInitiatedAt = null;
         onFailure();
       }
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error purchasing subscription: $e');
-      _pendingOnSuccess = null;
-      _pendingOnFailure = null;
-      _pendingOnComplete = null;
-      _purchaseInitiatedAt = null;
       onFailure();
+    } finally {
+      onComplete?.call();
     }
-    // Don't call onComplete here - wait for actual purchase completion
   }
 
   /// Legacy method for backward compatibility
@@ -478,9 +356,5 @@ class IAPService {
 
   void dispose() {
     _subscription.cancel();
-    _pendingOnSuccess = null;
-    _pendingOnFailure = null;
-    _pendingOnComplete = null;
-    _purchaseInitiatedAt = null;
   }
 }

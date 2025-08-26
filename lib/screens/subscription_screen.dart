@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/iap_service.dart';
-import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -22,16 +21,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Map<String, dynamic>? subscriptionStatus;
   String? _bizOpp; // --- 1. State variable for biz_opp added ---
   final IAPService _iapService = IAPService();
-  
-  // Debug info for TestFlight diagnosis
-  String _debugInfo = "Debug info will appear here...";
-  final List<String> _debugLogs = [];
 
   @override
   void initState() {
     super.initState();
-    _addDebugLog('🔄 SUBSCRIPTION_SCREEN: initState called');
-    _addDebugLog('📱 Starting IAP initialization...');
+    debugPrint('🔄 SUBSCRIPTION_SCREEN: initState called');
     _initializeIAP();
     _loadSubscriptionStatus();
     _loadBizOppData(); // --- 2. Call to fetch biz_opp data added ---
@@ -105,39 +99,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  void _addDebugLog(String message) {
-    setState(() {
-      _debugLogs.add('${DateTime.now().toString().substring(11, 19)}: $message');
-      if (_debugLogs.length > 10) _debugLogs.removeAt(0); // Keep only last 10
-      _debugInfo = _debugLogs.join('\n');
-    });
-    debugPrint(message);
-  }
-
   Future<void> _handleUpgrade() async {
-    _addDebugLog('🔄 UPGRADE: Button clicked - starting upgrade process');
+    debugPrint('🔄 SUBSCRIPTION_SCREEN: Starting upgrade process');
     setState(() => isPurchasing = true);
 
-    _addDebugLog('🔍 IAP Status: Available=${_iapService.available}, Products=${_iapService.products.length}');
+    debugPrint('🔍 SUBSCRIPTION_SCREEN: IAP Service Status - Available: ${_iapService.available}, Products: ${_iapService.products.length}');
     
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
-        _addDebugLog('🎉 SUCCESS CALLBACK: Called at ${DateTime.now()}');
         if (!mounted) return;
 
         // Refresh subscription status after successful purchase
         await _loadSubscriptionStatus();
-
-        // Trigger user data refresh to update subscription status across the app
-        try {
-          if (mounted) {
-            final authService = Provider.of<AuthService>(context, listen: false);
-            await authService.checkSubscriptionOnAppResume();
-            _addDebugLog('✅ User data refreshed after successful purchase');
-          }
-        } catch (e) {
-          _addDebugLog('❌ Error refreshing user data: $e');
-        }
 
         setState(() => isPurchasing = false);
         if (mounted) {
@@ -147,11 +120,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pop(context);
+          
+          // Safe dashboard update - just pop with result to trigger refresh
+          Navigator.pop(context, 'subscription_updated');
         }
       },
       onFailure: () {
-        _addDebugLog('❌ FAILURE CALLBACK: Called at ${DateTime.now()}');
         if (!mounted) return;
         setState(() => isPurchasing = false);
         showDialog(
@@ -182,17 +156,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         // Refresh subscription status after restore
         await _loadSubscriptionStatus();
 
-        // Trigger user data refresh to update subscription status across the app
-        try {
-          if (mounted) {
-            final authService = Provider.of<AuthService>(context, listen: false);
-            await authService.checkSubscriptionOnAppResume();
-            debugPrint('✅ SUBSCRIPTION_SCREEN: User data refreshed after restore');
-          }
-        } catch (e) {
-          debugPrint('❌ SUBSCRIPTION_SCREEN: Error refreshing user data after restore: $e');
-        }
-
         setState(() => isPurchasing = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -201,6 +164,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               backgroundColor: Colors.green,
             ),
           );
+          
+          // Safe dashboard update - pop with result to trigger refresh
+          Navigator.pop(context, 'subscription_updated');
         }
       },
       onFailure: () {
@@ -376,66 +342,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     child: TextButton(
                       onPressed: isPurchasing ? null : _handleRestorePurchases,
                       child: const Text('Restore Previous Purchases'),
-                    ),
-                  ),
-
-                  // Debug Info Display for TestFlight - ALWAYS VISIBLE
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade300, width: 2),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '🔧 TESTFLIGHT DEBUG (ALWAYS VISIBLE):',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red.shade700,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 150,
-                          child: SingleChildScrollView(
-                            child: Text(
-                              _debugLogs.isEmpty ? 'No debug logs yet - this is the problem!' : _debugInfo,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontFamily: 'Courier',
-                                color: Colors.red.shade600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              'Debug logs: ${_debugLogs.length} entries',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.red.shade500,
-                              ),
-                            ),
-                            const Spacer(),
-                            ElevatedButton(
-                              onPressed: () => _addDebugLog('🧪 TEST: Debug button clicked'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red.shade600,
-                                foregroundColor: Colors.white,
-                                minimumSize: const Size(80, 30),
-                              ),
-                              child: const Text('TEST', style: TextStyle(fontSize: 10)),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ),
 

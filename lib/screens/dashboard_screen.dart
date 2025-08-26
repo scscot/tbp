@@ -668,6 +668,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ).then((result) {
                 debugPrint('✅ DASHBOARD: Direct navigation to subscription completed with result: $result');
+                // If subscription was updated, trigger a simple state refresh
+                if (result == 'subscription_updated') {
+                  debugPrint('🔄 DASHBOARD: Refreshing after subscription update');
+                  setState(() {}); // Simple refresh to update subscription button text
+                }
               }).catchError((error) {
                 debugPrint('❌ DASHBOARD: Direct navigation to subscription failed: $error');
               });
