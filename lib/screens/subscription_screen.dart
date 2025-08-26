@@ -30,7 +30,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
-    debugPrint('🔄 SUBSCRIPTION_SCREEN: initState called');
+    _addDebugLog('🔄 SUBSCRIPTION_SCREEN: initState called');
+    _addDebugLog('📱 Starting IAP initialization...');
     _initializeIAP();
     _loadSubscriptionStatus();
     _loadBizOppData(); // --- 2. Call to fetch biz_opp data added ---
@@ -378,45 +379,65 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ),
                   ),
 
-                  // Debug Info Display for TestFlight
-                  if (_debugLogs.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Debug Info (TestFlight Only):',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade700,
-                            ),
+                  // Debug Info Display for TestFlight - ALWAYS VISIBLE
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.shade300, width: 2),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '🔧 TESTFLIGHT DEBUG (ALWAYS VISIBLE):',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red.shade700,
                           ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            height: 120,
-                            child: SingleChildScrollView(
-                              child: Text(
-                                _debugInfo,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontFamily: 'Courier',
-                                  color: Colors.grey.shade600,
-                                ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 150,
+                          child: SingleChildScrollView(
+                            child: Text(
+                              _debugLogs.isEmpty ? 'No debug logs yet - this is the problem!' : _debugInfo,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontFamily: 'Courier',
+                                color: Colors.red.shade600,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text(
+                              'Debug logs: ${_debugLogs.length} entries',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.red.shade500,
+                              ),
+                            ),
+                            const Spacer(),
+                            ElevatedButton(
+                              onPressed: () => _addDebugLog('🧪 TEST: Debug button clicked'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red.shade600,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(80, 30),
+                              ),
+                              child: const Text('TEST', style: TextStyle(fontSize: 10)),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
 
                   // Terms and Privacy
                   const SizedBox(height: 16),
