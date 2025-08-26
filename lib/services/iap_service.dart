@@ -52,63 +52,71 @@ class IAPService {
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
     for (var purchase in purchases) {
-      debugPrint('🔍 SUBSCRIPTION: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
+      debugPrint('🔍 SUBSCRIPTION: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}');
       
       if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         isPurchased = true;
         _verifyAndCompleteSubscription(purchase);
         
-        // Only call success callback if there's a pending purchase AND it was initiated recently
+        // CRITICAL FIX: Only process callbacks if we have a pending purchase initiated in the last 30 seconds
         if (_pendingOnSuccess != null && _purchaseInitiatedAt != null) {
-          // Check if this purchase update came after our purchase initiation
           final timeSincePurchaseInitiation = DateTime.now().difference(_purchaseInitiatedAt!);
           
-          // Only trigger success if the purchase update came within 2 minutes of initiation
-          // This prevents old/restored purchases from triggering the callback
-          if (timeSincePurchaseInitiation.inMinutes < 2) {
-            debugPrint('✅ SUBSCRIPTION: NEW purchase completed - calling success callback (initiated ${timeSincePurchaseInitiation.inSeconds}s ago)');
-            _pendingOnSuccess!();
+          // Much stricter time window - only 30 seconds
+          if (timeSincePurchaseInitiation.inSeconds <= 30) {
+            debugPrint('✅ SUBSCRIPTION: FRESH purchase completed - calling success callback (${timeSincePurchaseInitiation.inSeconds}s ago)');
+            final successCallback = _pendingOnSuccess!;
+            final completeCallback = _pendingOnComplete;
+            
+            // Clear callbacks BEFORE calling them to prevent re-entrance
             _pendingOnSuccess = null;
             _pendingOnFailure = null;
-            _pendingOnComplete?.call();
             _pendingOnComplete = null;
             _purchaseInitiatedAt = null;
+            
+            // Now call the callbacks
+            successCallback();
+            completeCallback?.call();
           } else {
-            debugPrint('⚠️ SUBSCRIPTION: Ignoring old purchase - initiated ${timeSincePurchaseInitiation.inMinutes} minutes ago');
+            debugPrint('⚠️ SUBSCRIPTION: Ignoring stale purchase - initiated ${timeSincePurchaseInitiation.inSeconds}s ago (too old)');
           }
-        } else if (_pendingOnSuccess != null) {
-          debugPrint('⚠️ SUBSCRIPTION: No purchase initiation timestamp - ignoring to prevent false positive');
         } else {
-          debugPrint('⚠️ SUBSCRIPTION: No pending purchase callback - this is likely a restored/existing purchase');
+          debugPrint('⚠️ SUBSCRIPTION: No active purchase request - ignoring purchase update (likely existing/restored)');
         }
       } else if (purchase.status == PurchaseStatus.error) {
         debugPrint('❌ Purchase error: ${purchase.error}');
         
-        // Call failure callback if there's a pending purchase
         if (_pendingOnFailure != null) {
           debugPrint('❌ SUBSCRIPTION: Purchase failed - calling failure callback');
-          _pendingOnFailure!();
+          final failureCallback = _pendingOnFailure!;
+          final completeCallback = _pendingOnComplete;
+          
           _pendingOnSuccess = null;
           _pendingOnFailure = null;
-          _pendingOnComplete?.call();
           _pendingOnComplete = null;
           _purchaseInitiatedAt = null;
+          
+          failureCallback();
+          completeCallback?.call();
         }
       } else if (purchase.status == PurchaseStatus.pending) {
         debugPrint('⏳ Purchase pending: ${purchase.productID}');
       } else if (purchase.status == PurchaseStatus.canceled) {
         debugPrint('🚫 Purchase canceled: ${purchase.productID}');
         
-        // Call failure callback if there's a pending purchase
         if (_pendingOnFailure != null) {
           debugPrint('🚫 SUBSCRIPTION: Purchase canceled - calling failure callback');
-          _pendingOnFailure!();
+          final failureCallback = _pendingOnFailure!;
+          final completeCallback = _pendingOnComplete;
+          
           _pendingOnSuccess = null;
           _pendingOnFailure = null;
-          _pendingOnComplete?.call();
           _pendingOnComplete = null;
           _purchaseInitiatedAt = null;
+          
+          failureCallback();
+          completeCallback?.call();
         }
       }
     }
@@ -255,6 +263,12 @@ class IAPService {
     try {
       debugPrint('📱 SUBSCRIPTION: Starting subscription purchase');
 
+      // CRITICAL: Clear any existing callbacks to prevent interference from previous purchases
+      _pendingOnSuccess = null;
+      _pendingOnFailure = null;
+      _pendingOnComplete = null;
+      _purchaseInitiatedAt = null;
+
       if (!available || products.isEmpty) {
         debugPrint('❌ SUBSCRIPTION: IAP not available or no products loaded');
         onFailure();
@@ -271,11 +285,13 @@ class IAPService {
         return;
       }
 
-      // Store callbacks to be called when purchase actually completes
+      // Store callbacks to be called when purchase actually completes - ONLY after validation
       _pendingOnSuccess = onSuccess;
       _pendingOnFailure = onFailure;
       _pendingOnComplete = onComplete;
       _purchaseInitiatedAt = DateTime.now();
+      
+      debugPrint('🎯 SUBSCRIPTION: Callbacks set at $_purchaseInitiatedAt');
 
       final purchaseParam = PurchaseParam(
         productDetails: product,
@@ -288,6 +304,18 @@ class IAPService {
 
       if (success) {
         debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully - waiting for completion');
+        
+        // Set up a timeout to clear callbacks if no response within 5 minutes
+        Timer(const Duration(minutes: 5), () {
+          if (_pendingOnSuccess != null || _pendingOnFailure != null) {
+            debugPrint('⏰ SUBSCRIPTION: Purchase timeout - clearing stale callbacks');
+            _pendingOnSuccess = null;
+            _pendingOnFailure = null;
+            _pendingOnComplete = null;
+            _purchaseInitiatedAt = null;
+          }
+        });
+        
         // Don't call onSuccess here - wait for _onPurchaseUpdated
       } else {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');
