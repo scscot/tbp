@@ -52,19 +52,35 @@ class IAPService {
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
     for (var purchase in purchases) {
+      debugPrint('🔍 SUBSCRIPTION: Processing purchase update - Status: ${purchase.status}, ProductID: ${purchase.productID}, TransactionDate: ${purchase.transactionDate}');
+      
       if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         isPurchased = true;
         _verifyAndCompleteSubscription(purchase);
         
-        // Call success callback if there's a pending purchase
-        if (_pendingOnSuccess != null) {
-          debugPrint('✅ SUBSCRIPTION: Purchase completed - calling success callback');
-          _pendingOnSuccess!();
-          _pendingOnSuccess = null;
-          _pendingOnFailure = null;
-          _pendingOnComplete?.call();
-          _pendingOnComplete = null;
+        // Only call success callback if there's a pending purchase AND it was initiated recently
+        if (_pendingOnSuccess != null && _purchaseInitiatedAt != null) {
+          // Check if this purchase update came after our purchase initiation
+          final timeSincePurchaseInitiation = DateTime.now().difference(_purchaseInitiatedAt!);
+          
+          // Only trigger success if the purchase update came within 2 minutes of initiation
+          // This prevents old/restored purchases from triggering the callback
+          if (timeSincePurchaseInitiation.inMinutes < 2) {
+            debugPrint('✅ SUBSCRIPTION: NEW purchase completed - calling success callback (initiated ${timeSincePurchaseInitiation.inSeconds}s ago)');
+            _pendingOnSuccess!();
+            _pendingOnSuccess = null;
+            _pendingOnFailure = null;
+            _pendingOnComplete?.call();
+            _pendingOnComplete = null;
+            _purchaseInitiatedAt = null;
+          } else {
+            debugPrint('⚠️ SUBSCRIPTION: Ignoring old purchase - initiated ${timeSincePurchaseInitiation.inMinutes} minutes ago');
+          }
+        } else if (_pendingOnSuccess != null) {
+          debugPrint('⚠️ SUBSCRIPTION: No purchase initiation timestamp - ignoring to prevent false positive');
+        } else {
+          debugPrint('⚠️ SUBSCRIPTION: No pending purchase callback - this is likely a restored/existing purchase');
         }
       } else if (purchase.status == PurchaseStatus.error) {
         debugPrint('❌ Purchase error: ${purchase.error}');
@@ -77,6 +93,7 @@ class IAPService {
           _pendingOnFailure = null;
           _pendingOnComplete?.call();
           _pendingOnComplete = null;
+          _purchaseInitiatedAt = null;
         }
       } else if (purchase.status == PurchaseStatus.pending) {
         debugPrint('⏳ Purchase pending: ${purchase.productID}');
@@ -91,6 +108,7 @@ class IAPService {
           _pendingOnFailure = null;
           _pendingOnComplete?.call();
           _pendingOnComplete = null;
+          _purchaseInitiatedAt = null;
         }
       }
     }
@@ -226,6 +244,7 @@ class IAPService {
   VoidCallback? _pendingOnSuccess;
   VoidCallback? _pendingOnFailure;
   VoidCallback? _pendingOnComplete;
+  DateTime? _purchaseInitiatedAt;
 
   /// Enhanced subscription purchase with proper subscription handling
   Future<void> purchaseMonthlySubscription({
@@ -256,6 +275,7 @@ class IAPService {
       _pendingOnSuccess = onSuccess;
       _pendingOnFailure = onFailure;
       _pendingOnComplete = onComplete;
+      _purchaseInitiatedAt = DateTime.now();
 
       final purchaseParam = PurchaseParam(
         productDetails: product,
@@ -274,6 +294,7 @@ class IAPService {
         _pendingOnSuccess = null;
         _pendingOnFailure = null;
         _pendingOnComplete = null;
+        _purchaseInitiatedAt = null;
         onFailure();
       }
     } catch (e) {
@@ -281,6 +302,7 @@ class IAPService {
       _pendingOnSuccess = null;
       _pendingOnFailure = null;
       _pendingOnComplete = null;
+      _purchaseInitiatedAt = null;
       onFailure();
     }
     // Don't call onComplete here - wait for actual purchase completion
@@ -406,5 +428,6 @@ class IAPService {
     _pendingOnSuccess = null;
     _pendingOnFailure = null;
     _pendingOnComplete = null;
+    _purchaseInitiatedAt = null;
   }
 }
