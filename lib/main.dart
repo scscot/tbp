@@ -205,8 +205,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 settings: settings,
               );
             } else if (settings.name == '/subscription') {
+              debugPrint('🔄 MAIN: Handling /subscription route');
               return MaterialPageRoute(
-                builder: (context) => const SubscriptionScreen(),
+                builder: (context) {
+                  debugPrint('🔄 MAIN: Building SubscriptionScreen');
+                  return const SubscriptionScreen();
+                },
                 settings: settings,
               );
             } else if (settings.name == '/member_detail') {

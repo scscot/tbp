@@ -275,7 +275,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/upgrade');
+                Navigator.pushNamed(context, '/subscription');
               },
               child: const Text('Upgrade Now'),
             ),

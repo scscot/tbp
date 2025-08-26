@@ -23,8 +23,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
+    debugPrint('🔄 SUBSCRIPTION_SCREEN: initState called');
+    _initializeIAP();
     _loadSubscriptionStatus();
     _loadBizOppData(); // --- 2. Call to fetch biz_opp data added ---
+  }
+
+  // Initialize IAP service
+  Future<void> _initializeIAP() async {
+    try {
+      debugPrint('🔄 SUBSCRIPTION_SCREEN: Initializing IAP service');
+      await _iapService.init();
+      debugPrint('✅ SUBSCRIPTION_SCREEN: IAP service initialized successfully');
+      debugPrint('🔍 SUBSCRIPTION_SCREEN: IAP available: ${_iapService.available}');
+      debugPrint('🔍 SUBSCRIPTION_SCREEN: Products loaded: ${_iapService.products.length}');
+      if (_iapService.products.isNotEmpty) {
+        for (var product in _iapService.products) {
+          debugPrint('🔍 SUBSCRIPTION_SCREEN: Product: ${product.id} - ${product.title} - ${product.price}');
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ SUBSCRIPTION_SCREEN: IAP service initialization failed: $e');
+    }
   }
 
   // --- 3. New function to load biz_opp data, similar to dashboard_screen.dart ---
@@ -78,8 +98,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   Future<void> _handleUpgrade() async {
+    debugPrint('🔄 SUBSCRIPTION_SCREEN: Starting upgrade process');
     setState(() => isPurchasing = true);
 
+    debugPrint('🔍 SUBSCRIPTION_SCREEN: IAP Service Status - Available: ${_iapService.available}, Products: ${_iapService.products.length}');
+    
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
         if (!mounted) return;
@@ -103,13 +126,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         setState(() => isPurchasing = false);
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Subscription Failed'),
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Subscription Not Available'),
             content: const Text(
-                'Unable to process your subscription. Please check your payment method and try again.'),
+                'In-app purchases are not available at the moment. This may be due to:\n\n• App Store configuration\n• Network connectivity\n• Device restrictions\n\nPlease try again later or contact support.'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(dialogContext).pop(),
                 child: const Text('OK'),
               ),
             ],

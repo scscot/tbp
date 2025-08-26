@@ -274,6 +274,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: Column(
                 children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/subscription');
+                    },
+                    icon: const Icon(Icons.diamond),
+                    label: const Text('Subscription'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(

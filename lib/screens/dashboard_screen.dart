@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import '../services/network_service.dart';
 import '../services/subscription_service.dart'; // Add this line
 import 'profile_screen.dart';
+import 'subscription_screen.dart'; // Import SubscriptionScreen directly
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -536,6 +537,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Dynamic Subscription button based on user's trial status
+        _buildDynamicSubscriptionCard(user),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View Your Team',
@@ -616,6 +619,110 @@ class _DashboardScreenState extends State<DashboardScreen>
             onTap: () => widget.onTabSelected?.call(11),
           ),
       ],
+    );
+  }
+
+  Widget _buildDynamicSubscriptionCard(UserModel user) {
+    // Calculate trial status using UserModel's built-in methods
+    final subscriptionStatus = user.subscriptionStatus;
+    
+    String buttonText;
+    IconData buttonIcon;
+    Color buttonColor;
+    
+    if (subscriptionStatus == 'active') {
+      // User has active subscription
+      buttonText = 'Manage Subscription';
+      buttonIcon = Icons.diamond;
+      buttonColor = Colors.green;
+    } else if (subscriptionStatus == 'trial' && user.isTrialValid) {
+      // User is in trial period - use built-in method with two-line format
+      final daysLeft = user.trialDaysRemaining;
+      buttonText = 'Upgrade to Pro\n($daysLeft days left in trial)';
+      buttonIcon = Icons.diamond;
+      buttonColor = Colors.deepPurple;
+    } else {
+      // Trial expired or no subscription
+      buttonText = 'Subscribe to Pro - Start Now';
+      buttonIcon = Icons.diamond;
+      buttonColor = Colors.red;
+    }
+    
+    // Use custom card for subscription to handle multi-line text
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: InkWell(
+          onTap: () {
+            debugPrint('🔄 DASHBOARD: Subscription button tapped, attempting direct navigation');
+            try {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    debugPrint('🔄 DASHBOARD: Building SubscriptionScreen directly');
+                    return const SubscriptionScreen();
+                  },
+                ),
+              ).then((result) {
+                debugPrint('✅ DASHBOARD: Direct navigation to subscription completed with result: $result');
+              }).catchError((error) {
+                debugPrint('❌ DASHBOARD: Direct navigation to subscription failed: $error');
+              });
+            } catch (e) {
+              debugPrint('❌ DASHBOARD: Exception during navigation: $e');
+            }
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.withOpacity(buttonColor, 0.1),
+                  AppColors.withOpacity(buttonColor, 0.05),
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.withOpacity(buttonColor, 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(buttonIcon, color: buttonColor, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                      height: 1.3, // Improved line spacing for multi-line text
+                    ),
+                    maxLines: 2, // Allow up to 2 lines
+                    overflow: TextOverflow.visible, // Ensure text shows properly
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.textTertiary,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

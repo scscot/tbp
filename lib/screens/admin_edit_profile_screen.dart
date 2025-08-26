@@ -239,7 +239,7 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Admin Profile'),
+      appBar: const AppScreenBar(title: 'Admin Profile', actions: []),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

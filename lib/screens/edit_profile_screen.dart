@@ -506,7 +506,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Edit Profile'),
+      appBar: const AppScreenBar(title: 'Edit Profile', actions: []),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
