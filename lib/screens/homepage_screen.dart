@@ -239,9 +239,11 @@ class _HomepageScreenState extends State<HomepageScreen>
 
     return Column(
       children: [
-        // Hero badge
+        // Hero badge - responsive width
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(30),
@@ -257,102 +259,133 @@ class _HomepageScreenState extends State<HomepageScreen>
               ),
             ],
           ),
-          child: Text(
-            heroTitle,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 1.2,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              heroTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                letterSpacing: 1.2,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 32),
 
-        // Main hero text with enhanced styling
+        // Main hero text with responsive sizing
         Container(
+          width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: widget.queryType == 'new'
               ? Column(
                   children: [
-                    Text.rich(
-                      TextSpan(
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          height: 1.1,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                        children: [
-                          const TextSpan(text: 'Build Your Foundation\n'),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenWidth = MediaQuery.of(context).size.width;
+                        final fontSize = screenWidth < 375 ? 26.0 : 30.0;
+                        
+                        return Text.rich(
                           TextSpan(
-                            text: 'Before Day One',
                             style: TextStyle(
-                              color: Colors.amber.shade300,
-                              fontWeight: FontWeight.w900,
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              height: 1.1,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 8,
+                                ),
+                              ],
                             ),
+                            children: [
+                              const TextSpan(text: 'Build Your Foundation\n'),
+                              TextSpan(
+                                text: 'Before Day One',
+                                style: TextStyle(
+                                  color: Colors.amber.shade300,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                          textAlign: TextAlign.center,
+                        );
+                      },
                     ),
                   ],
                 )
               : Column(
                   children: [
-                    Text(
-                      'Empower Your Team',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.1,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            offset: const Offset(0, 2),
-                            blurRadius: 8,
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenWidth = MediaQuery.of(context).size.width;
+                        final fontSize = screenWidth < 375 ? 28.0 : 32.0;
+                        
+                        return FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Empower Your Team',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              height: 1.1,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 8),
-                    Text.rich(
-                      TextSpan(
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          height: 1.1,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 8,
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenWidth = MediaQuery.of(context).size.width;
+                        final fontSize = screenWidth < 375 ? 28.0 : 32.0;
+                        
+                        return FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text.rich(
+                            TextSpan(
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                height: 1.1,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              children: [
+                                const TextSpan(text: 'Accelerate '),
+                                TextSpan(
+                                  text: 'Growth',
+                                  style: TextStyle(
+                                    color: Colors.amber.shade300,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        children: [
-                          const TextSpan(text: 'Accelerate '),
-                          TextSpan(
-                            text: 'Growth',
-                            style: TextStyle(
-                              color: Colors.amber.shade300,
-                              fontWeight: FontWeight.w900,
-                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                        );
+                      },
                     ),
                   ],
                 ),
