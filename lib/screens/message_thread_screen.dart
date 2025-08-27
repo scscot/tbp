@@ -348,7 +348,10 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     }
 
     return Scaffold(
-      appBar: AppHeaderWithMenu(appId: widget.appId),
+      appBar: AppScreenBar(
+        title: 'Messages',
+        appId: widget.appId,
+      ),
       body: Column(
         children: [
           // --- MODIFICATION: Added CircleAvatar for the recipient's photo ---
