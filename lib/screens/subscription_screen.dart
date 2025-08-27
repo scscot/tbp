@@ -108,21 +108,30 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
         if (!mounted) return;
+        await _loadSubscriptionStatus(); // pulls latest from Functions/Firestore
 
-        // Refresh subscription status after successful purchase
-        await _loadSubscriptionStatus();
-
+        final isActive = subscriptionStatus?['isActive'] == true;
         setState(() => isPurchasing = false);
-        if (mounted) {
+
+        if (mounted && isActive) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('✅ Subscription activated successfully!'),
               backgroundColor: Colors.green,
             ),
           );
-          
-          // Safe dashboard update - just pop with result to trigger refresh
           Navigator.pop(context, 'subscription_updated');
+        } else {
+          // Treat as failure if server says not active yet
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (_) => const AlertDialog(
+                title: Text('Subscription Not Active'),
+                content: Text('Purchase started but not active yet. Try again.'),
+              ),
+            );
+          }
         }
       },
       onFailure: () {

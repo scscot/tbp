@@ -26,6 +26,11 @@ class IAPService {
   DateTime? _subscriptionExpiry;
   bool _isTrialValid = false;
   int _trialDaysRemaining = 0;
+  
+  // Pending callbacks for proper purchase completion
+  VoidCallback? _pendingOnSuccess;
+  VoidCallback? _pendingOnFailure;
+  VoidCallback? _pendingOnComplete;
 
   Future<void> init() async {
     available = await _iap.isAvailable();
@@ -50,16 +55,38 @@ class IAPService {
     });
   }
 
-  void _onPurchaseUpdated(List<PurchaseDetails> purchases) {
-    for (var purchase in purchases) {
-      if (purchase.status == PurchaseStatus.purchased ||
-          purchase.status == PurchaseStatus.restored) {
-        isPurchased = true;
-        _verifyAndCompleteSubscription(purchase);
-      } else if (purchase.status == PurchaseStatus.error) {
-        debugPrint('❌ Purchase error: ${purchase.error}');
-      } else if (purchase.status == PurchaseStatus.pending) {
-        debugPrint('⏳ Purchase pending: ${purchase.productID}');
+  void _onPurchaseUpdated(List<PurchaseDetails> purchases) async {
+    for (final purchase in purchases) {
+      try {
+        if (purchase.status == PurchaseStatus.purchased ||
+            purchase.status == PurchaseStatus.restored) {
+          isPurchased = true;
+          await _verifyAndCompleteSubscription(purchase);
+
+          // Only treat as success if server verification set us active
+          if (_currentSubscriptionStatus == 'active') {
+            // Complete the transaction
+            if (purchase.pendingCompletePurchase) {
+              await _iap.completePurchase(purchase);
+              debugPrint('✅ SUBSCRIPTION: Purchase completed');
+            }
+            _pendingOnSuccess?.call();
+          } else {
+            debugPrint('❌ SUBSCRIPTION: Server verification failed - not active');
+            _pendingOnFailure?.call();
+          }
+        } else if (purchase.status == PurchaseStatus.error) {
+          debugPrint('❌ Purchase error: ${purchase.error}');
+          _pendingOnFailure?.call();
+        } else if (purchase.status == PurchaseStatus.pending) {
+          debugPrint('⏳ Purchase pending: ${purchase.productID}');
+        }
+      } catch (e) {
+        debugPrint('❌ Error handling purchase update: $e');
+        _pendingOnFailure?.call();
+      } finally {
+        _pendingOnComplete?.call();
+        _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
       }
     }
   }
@@ -200,14 +227,12 @@ class IAPService {
       debugPrint('📱 SUBSCRIPTION: Starting subscription purchase');
 
       if (!available || products.isEmpty) {
-        debugPrint('❌ SUBSCRIPTION: IAP not available or no products loaded');
+        debugPrint('❌ SUBSCRIPTION: IAP unavailable or no products');
         onFailure();
         return;
       }
 
       final product = products.firstWhere((p) => p.id == _subscriptionId);
-
-      // Set application username to user ID for server-to-server notifications
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         debugPrint('❌ SUBSCRIPTION: User not authenticated');
@@ -215,26 +240,28 @@ class IAPService {
         return;
       }
 
+      // Stash callbacks so the purchaseStream can call them after verification
+      _pendingOnSuccess = onSuccess;
+      _pendingOnFailure = onFailure;
+      _pendingOnComplete = onComplete;
+
       final purchaseParam = PurchaseParam(
         productDetails: product,
-        applicationUserName:
-            user.uid, // This helps Apple link purchases to users
+        applicationUserName: user.uid,
       );
 
-      // Use buyConsumable for subscriptions (not buyNonConsumable)
-      final success = await _iap.buyConsumable(purchaseParam: purchaseParam);
-
-      if (success) {
-        debugPrint('✅ SUBSCRIPTION: Purchase initiated successfully');
-        onSuccess();
-      } else {
+      // IMPORTANT: subscriptions are non-consumable in this plugin
+      final initiated = await _iap.buyNonConsumable(purchaseParam: purchaseParam);
+      if (!initiated) {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');
-        onFailure();
+        _pendingOnFailure?.call();
+        _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
+      } else {
+        debugPrint('✅ SUBSCRIPTION: Purchase initiated (waiting for updates)');
       }
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error purchasing subscription: $e');
       onFailure();
-    } finally {
       onComplete?.call();
     }
   }
@@ -356,5 +383,6 @@ class IAPService {
 
   void dispose() {
     _subscription.cancel();
+    _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
   }
 }
