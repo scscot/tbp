@@ -141,8 +141,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           context: context,
           builder: (dialogContext) => AlertDialog(
             title: const Text('Subscription Not Available'),
-            content: const Text(
-                'In-app purchases are not available at the moment. This may be due to:\n\n• App Store configuration\n• Network connectivity\n• Device restrictions\n\nPlease try again later or contact support.'),
+            content: Text(
+                'TestFlight Debug Info:\n'
+                'IAP Available: ${_iapService.available}\n'
+                'Products Loaded: ${_iapService.products.length}\n'
+                'Product IDs: ${_iapService.products.map((p) => p.id).join(", ")}\n\n'
+                'This may be due to:\n'
+                '• TestFlight sandbox limitations\n'
+                '• App Store Connect configuration\n'
+                '• Network connectivity\n\n'
+                'Should work in production App Store.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
