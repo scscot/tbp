@@ -1,18 +1,18 @@
 // lib/screens/profile_screen.dart
 
 import 'dart:developer' as developer;
+import 'dart:io';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
-import '../widgets/restart_widget.dart';
-import '../main.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String appId;
@@ -31,14 +31,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _sponsorUid;
   String? _teamLeaderName;
   String? _teamLeaderUid;
+  
+  // Android demo mode state
+  bool _isAndroidDemoMode = false;
+  String? _demoEmail;
 
   @override
   void initState() {
     super.initState();
     // Load data when screen is first created
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndroidDemoMode();
       _refreshData();
     });
+  }
+
+  Future<void> _checkAndroidDemoMode() async {
+    try {
+      if (Platform.isAndroid) {
+        final remoteConfig = FirebaseRemoteConfig.instance;
+        final isDemo = remoteConfig.getBool('android_demo_mode');
+        final demoEmail = remoteConfig.getString('demo_account_email');
+
+        if (mounted) {
+          setState(() {
+            _isAndroidDemoMode = isDemo;
+            _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+          });
+        }
+        debugPrint('🤖 PROFILE: Android demo mode: $isDemo');
+      }
+    } catch (e) {
+      debugPrint('❌ PROFILE: Error checking Android demo mode: $e');
+    }
   }
 
   void _refreshData() {
@@ -188,15 +213,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (result == true && mounted) {
-      final authService = context.read<AuthService>();
-      await authService.signOut();
+      try {
+        final authService = context.read<AuthService>();
+        debugPrint('🔓 PROFILE: Starting sign out process...');
+        
+        await authService.signOut();
+        debugPrint('✅ PROFILE: Auth service sign out completed');
 
-      // Use mounted check before accessing context after await
-      if (!mounted) return;
+        // Use mounted check before accessing context after await
+        if (!mounted) return;
 
-      final rootNavigatorContext = navigatorKey.currentContext;
-      if (rootNavigatorContext != null && rootNavigatorContext.mounted) {
-        RestartWidget.restartApp(rootNavigatorContext);
+        // Navigate to root and clear all routes - this works better on Android
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/', 
+          (route) => false,
+        );
+        debugPrint('✅ PROFILE: Navigation to root completed');
+        
+      } catch (e) {
+        debugPrint('❌ PROFILE: Error during sign out: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Sign out failed: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -274,18 +317,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: Column(
                 children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/subscription');
-                    },
-                    icon: const Icon(Icons.diamond),
-                    label: const Text('Subscription'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
-                      foregroundColor: Colors.white,
+                  // Hide subscription button for Android test users
+                  if (!(_isAndroidDemoMode && _demoEmail != null))
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/subscription');
+                      },
+                      icon: const Icon(Icons.diamond),
+                      label: const Text('Subscription'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue.shade600,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
+                  if (!(_isAndroidDemoMode && _demoEmail != null))
+                    const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
