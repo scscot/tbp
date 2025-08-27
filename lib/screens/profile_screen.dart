@@ -286,54 +286,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: Column(
-                children: [
-                  // Hide subscription button for Android test users
-                  if (!(_isAndroidDemoMode && _demoEmail != null))
-                    ElevatedButton.icon(
+              child: Material( // <— ensures correct gesture semantics for buttons
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    // Hide subscription button for Android test users
+                    if (!(_isAndroidDemoMode && _demoEmail != null))
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/subscription');
+                        },
+                        icon: const Icon(Icons.diamond),
+                        label: const Text('Subscription'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade600,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    if (!(_isAndroidDemoMode && _demoEmail != null))
+                      const SizedBox(height: 12),
+                    ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/subscription');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UpdateProfileScreen(
+                              user: currentUser,
+                              appId: widget.appId,
+                            ),
+                          ),
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {
+                              _refreshData();
+                            });
+                          }
+                        });
                       },
-                      icon: const Icon(Icons.diamond),
-                      label: const Text('Subscription'),
+                      child: const Text('Edit Profile'),
+                    ),
+                    const SizedBox(height: 16),
+                    // --- Sign Out button (patched) ---
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        debugPrint('🔘 PROFILE: Sign Out tapped'); // prove tap reached handler
+                        // Optional: brief UI feedback so you can "feel" the tap even if signOut is slow
+                        final messenger = ScaffoldMessenger.maybeOf(context);
+                        messenger?.hideCurrentSnackBar();
+                        messenger?.showSnackBar(
+                          const SnackBar(
+                            content: Text('Signing out...'),
+                            duration: Duration(milliseconds: 600),
+                          ),
+                        );
+
+                        await _performSignOut();
+                      },
+                      icon: const Icon(Icons.logout),
+                      label: const Text('Sign Out'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade600,
+                        backgroundColor: Colors.red.shade600,
                         foregroundColor: Colors.white,
                       ),
                     ),
-                  if (!(_isAndroidDemoMode && _demoEmail != null))
-                    const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => UpdateProfileScreen(
-                            user: currentUser,
-                            appId: widget.appId,
-                          ),
-                        ),
-                      ).then((_) {
-                        if (mounted) {
-                          setState(() {
-                            _refreshData();
-                          });
-                        }
-                      });
-                    },
-                    child: const Text('Edit Profile'),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () => _performSignOut(),
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Sign Out'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade600,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -355,6 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: const TextStyle(fontWeight: FontWeight.w600))),
           Expanded(
             child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild, // <— let children (buttons) handle taps first
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
