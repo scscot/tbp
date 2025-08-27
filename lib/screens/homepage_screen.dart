@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // App imports
 import '../services/session_manager.dart';
@@ -35,6 +38,10 @@ class _HomepageScreenState extends State<HomepageScreen>
   String? _sponsorName;
   String? _sponsorPhotoUrl;
   String? _bizOpp;
+  bool _isAndroidDemoMode = false;
+  String? _demoEmail;
+  String? _demoPassword;
+  bool _isDemoLoading = false;
 
   // Animation controllers
   late AnimationController _fadeController;
@@ -46,6 +53,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
+    _checkAndroidDemoMode();
     _initializeReferralData(widget.referralCode);
   }
 
@@ -77,6 +85,88 @@ class _HomepageScreenState extends State<HomepageScreen>
     _fadeController.dispose();
     _slideController.dispose();
     super.dispose();
+  }
+
+  // -------------------------------------------------------------
+  // DEMO MODE LOGIC
+  // -------------------------------------------------------------
+
+  Future<void> _checkAndroidDemoMode() async {
+    try {
+      if (Platform.isAndroid) {
+        final remoteConfig = FirebaseRemoteConfig.instance;
+        final isDemo = remoteConfig.getBool('android_demo_mode');
+        final demoEmail = remoteConfig.getString('demo_account_email');
+        final demoPassword = remoteConfig.getString('demo_account_password');
+
+        if (mounted) {
+          setState(() {
+            _isAndroidDemoMode = isDemo;
+            _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+            _demoPassword = demoPassword.isNotEmpty ? demoPassword : null;
+          });
+        }
+        debugPrint('🤖 HOMEPAGE: Android demo mode: $isDemo');
+      }
+    } catch (e) {
+      debugPrint('❌ HOMEPAGE: Error checking Android demo mode: $e');
+    }
+  }
+
+  Future<void> _performDemoLogin() async {
+    if (_demoEmail == null || _demoPassword == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Demo credentials not available'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isDemoLoading = true;
+    });
+
+    try {
+      debugPrint('🔐 DEMO LOGIN: Attempting login with $_demoEmail');
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _demoEmail!,
+        password: _demoPassword!,
+      );
+
+      if (credential.user != null && mounted) {
+        debugPrint('✅ DEMO LOGIN: Success, user authenticated');
+        // Auth state listener will handle navigation automatically
+        Navigator.of(context).pop();
+      }
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ DEMO LOGIN: Firebase Auth Error - ${e.code}: ${e.message}');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Demo login failed: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ DEMO LOGIN: Unexpected error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Demo login failed. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDemoLoading = false;
+        });
+      }
+    }
   }
 
   // -------------------------------------------------------------
@@ -544,6 +634,12 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   Widget _buildCtaButtons() {
+    // Android Demo Mode: Show demo login instead of signup/login
+    if (_isAndroidDemoMode && _demoEmail != null) {
+      return _buildDemoModeCard();
+    }
+
+    // Normal mode: Show regular signup and login buttons
     return Column(
       children: [
         // Primary CTA - Create Account
@@ -665,6 +761,206 @@ class _HomepageScreenState extends State<HomepageScreen>
         // Trust indicators
         _buildTrustIndicators(),
       ],
+    );
+  }
+
+  Widget _buildDemoModeCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.orange.withValues(alpha: 0.3),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Demo Mode Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  Icons.science,
+                  color: Colors.orange.shade700,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Demo Mode Active',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange.shade800,
+                      ),
+                    ),
+                    Text(
+                      'Testing Environment',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.orange.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Demo Description
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.orange.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome to the Team Build Pro Demo!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'This is a fully functional demo account pre-loaded with sample data. You can explore all features without affecting any real user accounts.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade700,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Demo Credentials:',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Email: ${_demoEmail ?? 'Loading...'}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'monospace',
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      Text(
+                        'Password: ${_demoPassword != null ? '••••••••••' : 'Loading...'}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'monospace',
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Demo Login Button
+          Container(
+            width: double.infinity,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.orange.withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
+              onPressed: _isDemoLoading ? null : _performDemoLogin,
+              icon: _isDemoLoading
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade700),
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.play_arrow,
+                        color: Colors.orange.shade700,
+                        size: 20,
+                      ),
+                    ),
+              label: Text(
+                _isDemoLoading ? 'Logging In...' : 'Start Demo Experience',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.orange.shade700,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
