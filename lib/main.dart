@@ -1,6 +1,8 @@
 // lib/main.dart
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'config/app_constants.dart';
@@ -259,11 +261,46 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   bool _hasInitializedServices = false;
+  bool _isCheckingAuth = false;
+  Timer? _authTimeoutTimer;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final user = Provider.of<UserModel?>(context);
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    
+    // Check if we have Firebase user but no UserModel yet (loading state)
+    if (firebaseUser != null && user == null && !_isCheckingAuth) {
+      setState(() {
+        _isCheckingAuth = true;
+      });
+      debugPrint('🔐 AUTH_WRAPPER: Firebase user exists but UserModel loading - showing loading state');
+      
+      // Set a timeout to prevent infinite loading (e.g., after account deletion)
+      _authTimeoutTimer?.cancel();
+      _authTimeoutTimer = Timer(const Duration(seconds: 5), () {
+        if (mounted && _isCheckingAuth) {
+          debugPrint('🔐 AUTH_WRAPPER: Auth loading timeout - assuming account was deleted, showing homepage');
+          setState(() {
+            _isCheckingAuth = false;
+          });
+        }
+      });
+    } else if (user != null && _isCheckingAuth) {
+      _authTimeoutTimer?.cancel();
+      setState(() {
+        _isCheckingAuth = false;
+      });
+      debugPrint('🔐 AUTH_WRAPPER: UserModel loaded - transitioning to app content');
+    } else if (firebaseUser == null && _isCheckingAuth) {
+      _authTimeoutTimer?.cancel();
+      setState(() {
+        _isCheckingAuth = false;
+      });
+      debugPrint('🔐 AUTH_WRAPPER: No Firebase user - showing homepage');
+    }
+    
     if (user != null && !_hasInitializedServices) {
       setState(() {
         _hasInitializedServices = true;
@@ -286,11 +323,26 @@ class _AuthWrapperState extends State<AuthWrapper> {
   }
 
   @override
+  void dispose() {
+    _authTimeoutTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final user = context.watch<UserModel?>();
     final adminSettings = context.watch<AdminSettingsModel?>();
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    
     debugPrint(
-        '🔐 AUTH_WRAPPER: Building with user: ${user?.uid ?? 'null'}, admin settings: ${adminSettings != null ? 'loaded' : 'null'}');
+        '🔐 AUTH_WRAPPER: Building with user: ${user?.uid ?? 'null'}, firebase user: ${firebaseUser?.uid ?? 'null'}, admin settings: ${adminSettings != null ? 'loaded' : 'null'}, checking auth: $_isCheckingAuth');
+    
+    // Show loading screen if we have Firebase user but UserModel is still loading
+    if (firebaseUser != null && user == null && _isCheckingAuth) {
+      debugPrint('🔐 AUTH_WRAPPER: Showing loading screen during auth transition');
+      return const SplashScreen();
+    }
+    
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: _buildContent(context, user, adminSettings),

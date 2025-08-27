@@ -43,14 +43,33 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
+    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null && mounted) {
         debugPrint('🔐 LOGIN: Auth state changed - user signed in: ${user.email}');
-        // Give AuthWrapper a frame to rebuild, then reveal it.
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context, rootNavigator: true)
-              .popUntil((route) => route.isFirst);
-        });
+        
+        // Check if user document exists in Firestore before navigating
+        try {
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+          
+          if (userDoc.exists) {
+            debugPrint('🔐 LOGIN: User document exists, navigating to app');
+            // Give AuthWrapper a frame to rebuild, then reveal it.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context, rootNavigator: true)
+                  .popUntil((route) => route.isFirst);
+            });
+          } else {
+            debugPrint('🔐 LOGIN: User document missing - likely deleted account, signing out');
+            // User document doesn't exist - this is likely a deleted account
+            // Sign out to clear the Firebase Auth state
+            await FirebaseAuth.instance.signOut();
+          }
+        } catch (e) {
+          debugPrint('❌ LOGIN: Error checking user document: $e');
+        }
       } else {
         debugPrint('🔐 LOGIN: Auth state changed - user signed out');
       }
@@ -60,6 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _initializeBiometric() async {
     try {
+      // Check if user is already authenticated - if so, don't auto-prompt biometric
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        debugPrint('🔐 LOGIN: User already authenticated, skipping biometric auto-prompt');
+        return;
+      }
+      
       final available = await BiometricService.isDeviceSupported();
       final enabled = await BiometricService.isBiometricEnabled();
       final hasStoredCredentials = await BiometricService.hasStoredCredentials();
