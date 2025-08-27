@@ -165,92 +165,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _showLogoutConfirmation() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(
-                Icons.logout,
-                color: Colors.red.shade600,
-                size: 24,
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Sign Out',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+  Future<void> _performSignOut() async {
+    try {
+      final authService = context.read<AuthService>();
+      debugPrint('🔓 PROFILE: Starting immediate sign out process...');
+      
+      await authService.signOut();
+      debugPrint('✅ PROFILE: Auth service sign out completed');
+
+      // Wait until Firebase reports "no user" to avoid race condition
+      debugPrint('🔄 PROFILE: Waiting for auth state to confirm null user...');
+      await FirebaseAuth.instance
+          .authStateChanges()
+          .firstWhere((u) => u == null);
+      debugPrint('✅ PROFILE: Auth state confirmed null user');
+      
+      if (!mounted) return;
+
+      // Close any lingering dialogs/sheets from the root just in case
+      while (navigatorKey.currentState?.canPop() == true) {
+        navigatorKey.currentState?.pop();
+      }
+      debugPrint('✅ PROFILE: Cleared any lingering dialogs');
+
+      // Reset the full app stack via root navigator using global key
+      navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
+      debugPrint('✅ PROFILE: Navigation to root completed via global navigator key');
+      
+    } catch (e) {
+      debugPrint('❌ PROFILE: Error during sign out: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Sign out failed: $e'),
+            backgroundColor: Colors.red,
           ),
-          content: const Text(
-            'Are you sure you want to sign out of your account?',
-            style: TextStyle(fontSize: 16),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade600,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Sign Out'),
-            ),
-          ],
         );
-      },
-    );
-
-    if (result == true && mounted) {
-      try {
-        final authService = context.read<AuthService>();
-        debugPrint('🔓 PROFILE: Starting sign out process...');
-        
-        await authService.signOut();
-        debugPrint('✅ PROFILE: Auth service sign out completed');
-
-        // Wait until Firebase reports "no user" to avoid race condition
-        debugPrint('🔄 PROFILE: Waiting for auth state to confirm null user...');
-        await FirebaseAuth.instance
-            .authStateChanges()
-            .firstWhere((u) => u == null);
-        debugPrint('✅ PROFILE: Auth state confirmed null user');
-        
-        if (!mounted) return;
-
-        // Close any lingering dialogs/sheets from the root just in case
-        while (navigatorKey.currentState?.canPop() == true) {
-          navigatorKey.currentState?.pop();
-        }
-        debugPrint('✅ PROFILE: Cleared any lingering dialogs');
-
-        // Reset the full app stack via root navigator using global key
-        navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
-        debugPrint('✅ PROFILE: Navigation to root completed via global navigator key');
-        
-      } catch (e) {
-        debugPrint('❌ PROFILE: Error during sign out: $e');
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Sign out failed: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
       }
     }
   }
@@ -260,10 +210,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentUser = Provider.of<UserModel?>(context);
 
     if (currentUser == null) {
-      return Scaffold(
-        appBar: const AppScreenBar(title: 'Profile'),
-        body: const Center(child: CircularProgressIndicator()),
-      );
+      // Immediately redirect out of Profile when signed out
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        // Pop any lingering overlays/dialogs from root navigator
+        while (navigatorKey.currentState?.canPop() == true) {
+          navigatorKey.currentState?.pop();
+        }
+
+        navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
+      });
+
+      // Render nothing instead of keeping Profile alive
+      return const SizedBox.shrink();
     }
 
     return Scaffold(
@@ -365,7 +325,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    onPressed: () => _showLogoutConfirmation(),
+                    onPressed: () => _performSignOut(),
                     icon: const Icon(Icons.logout),
                     label: const Text('Sign Out'),
                     style: ElevatedButton.styleFrom(
