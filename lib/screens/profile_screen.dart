@@ -13,6 +13,8 @@ import '../screens/update_profile_screen.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
+import '../main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String appId;
@@ -220,15 +222,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await authService.signOut();
         debugPrint('✅ PROFILE: Auth service sign out completed');
 
-        // Use mounted check before accessing context after await
+        // Wait until Firebase reports "no user" to avoid race condition
+        debugPrint('🔄 PROFILE: Waiting for auth state to confirm null user...');
+        await FirebaseAuth.instance
+            .authStateChanges()
+            .firstWhere((u) => u == null);
+        debugPrint('✅ PROFILE: Auth state confirmed null user');
+        
         if (!mounted) return;
 
-        // Navigate to root and clear all routes - this works better on Android
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/', 
-          (route) => false,
-        );
-        debugPrint('✅ PROFILE: Navigation to root completed');
+        // Close any lingering dialogs/sheets from the root just in case
+        while (navigatorKey.currentState?.canPop() == true) {
+          navigatorKey.currentState?.pop();
+        }
+        debugPrint('✅ PROFILE: Cleared any lingering dialogs');
+
+        // Reset the full app stack via root navigator using global key
+        navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
+        debugPrint('✅ PROFILE: Navigation to root completed via global navigator key');
         
       } catch (e) {
         debugPrint('❌ PROFILE: Error during sign out: $e');
