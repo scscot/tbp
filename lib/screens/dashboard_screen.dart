@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'dart:io';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
@@ -11,6 +12,7 @@ import '../services/network_service.dart';
 import '../services/subscription_service.dart'; // Add this line
 import 'profile_screen.dart';
 import 'subscription_screen.dart'; // Import SubscriptionScreen directly
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -42,6 +44,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   final NetworkService _networkService = NetworkService();
   Map<String, int> _cachedNetworkCounts = {};
   bool _isLoadingCounts = false;
+  
+  // Android demo mode state
+  bool _isAndroidDemoMode = false;
+  String? _demoEmail;
 
   @override
   void initState() {
@@ -58,8 +64,33 @@ class _DashboardScreenState extends State<DashboardScreen>
       curve: Curves.easeInOut,
     ));
     _animationController.forward();
+    _checkAndroidDemoMode();
     _loadBizOppData();
     _loadNetworkCounts();
+  }
+
+  // -------------------------------------------------------------
+  // ANDROID DEMO MODE LOGIC
+  // -------------------------------------------------------------
+
+  Future<void> _checkAndroidDemoMode() async {
+    try {
+      if (Platform.isAndroid) {
+        final remoteConfig = FirebaseRemoteConfig.instance;
+        final isDemo = remoteConfig.getBool('android_demo_mode');
+        final demoEmail = remoteConfig.getString('demo_account_email');
+
+        if (mounted) {
+          setState(() {
+            _isAndroidDemoMode = isDemo;
+            _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+          });
+        }
+        debugPrint('🤖 DASHBOARD: Android demo mode: $isDemo');
+      }
+    } catch (e) {
+      debugPrint('❌ DASHBOARD: Error checking Android demo mode: $e');
+    }
   }
 
   /// Load cached network counts from NetworkService
@@ -537,8 +568,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Dynamic Subscription button based on user's trial status
-        _buildDynamicSubscriptionCard(user),
+        // Hide subscription card for Android test users
+        if (!(_isAndroidDemoMode && _demoEmail != null))
+          _buildDynamicSubscriptionCard(user),
         _buildActionCard(
           icon: Icons.groups,
           title: 'View Your Team',
