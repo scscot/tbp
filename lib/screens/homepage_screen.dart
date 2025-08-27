@@ -284,14 +284,19 @@ class _HomepageScreenState extends State<HomepageScreen>
                           child: _buildHeroSection(),
                         ),
                         const SizedBox(height: 40),
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: _buildMessageCard(),
+                        // Hide message card for Android test users
+                        if (!(_isAndroidDemoMode && _demoEmail != null))
+                          SlideTransition(
+                            position: _slideAnimation,
+                            child: FadeTransition(
+                              opacity: _fadeAnimation,
+                              child: _buildMessageCard(),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 48),
+                        if (!(_isAndroidDemoMode && _demoEmail != null))
+                          const SizedBox(height: 48)
+                        else
+                          const SizedBox(height: 24),
                         SlideTransition(
                           position: _slideAnimation,
                           child: FadeTransition(
@@ -807,7 +812,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Demo Mode Active',
+                      'Test Mode Active',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -844,7 +849,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome to the Team Build Pro Demo!',
+                  'Welcome to the Team Build Pro',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -853,7 +858,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'This is a fully functional demo account pre-loaded with sample data. You can explore all features without affecting any real user accounts.',
+                  'This is a fully functional test account pre-loaded with sample data. You can explore all features without affecting any real user accounts.',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -871,7 +876,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Demo Credentials:',
+                        'Access Credentials:',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -942,7 +947,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
               label: Text(
-                _isDemoLoading ? 'Logging In...' : 'Start Demo Experience',
+                _isDemoLoading ? 'Logging In...' : 'Start Testing!',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
