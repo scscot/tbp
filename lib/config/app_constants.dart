@@ -19,6 +19,7 @@ class AppConstants {
   static final Map<String, dynamic> _defaultValues = {
     'projectWideDirectSponsorMin': 4,
     'projectWideTotalTeamMin': 20,
+    'enable_sharing': true,
   };
 
   static Future<void> initialize() async {

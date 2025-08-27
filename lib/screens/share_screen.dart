@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
@@ -66,7 +67,7 @@ class _ShareScreenState extends State<ShareScreen>
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error loading current user: $e');
+        debugPrint('Error loading current user: $e');
       }
     } finally {
       if (mounted) {
@@ -105,7 +106,7 @@ class _ShareScreenState extends State<ShareScreen>
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching biz opp name: $e');
+        debugPrint('Error fetching biz opp name: $e');
       }
     }
   }
@@ -119,8 +120,25 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
+  // Check if sharing is enabled via Firebase Remote Config
+  bool _isSharingEnabled() {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      return remoteConfig.getBool('enable_sharing');
+    } catch (e) {
+      // Default to enabled if Remote Config fails
+      return true;
+    }
+  }
+
   // === MODIFIED: Implemented your new preferred message ===
   void _shareForNewProspects() {
+    // Check if sharing is disabled via Remote Config
+    if (!_isSharingEnabled()) {
+      _showDemoModeDialog();
+      return;
+    }
+    
     if (_prospectReferralLink != null) {
       final message =
           'Thanks for your interest in joining our $_bizOppName team! If you want to maximize your chances of immediate success, you can pre-build your $_bizOppName team *before* you even join, so you can launch with momentum. Check it out: $_prospectReferralLink';
@@ -131,15 +149,48 @@ class _ShareScreenState extends State<ShareScreen>
 
   // === MODIFIED: Implemented simplified message ===
   void _shareForExistingMembers() {
+    // Check if sharing is disabled via Remote Config
+    if (!_isSharingEnabled()) {
+      _showDemoModeDialog();
+      return;
+    }
+    
     if (_partnerReferralLink != null) {
       final message =
-          'Hey team, I highly recommend this app for our $_bizOppName recruiting. It helps our prospects pre-build their own teams for a stronger start and gives us a simple system to accelerate duplication. Here\'s the link: $_partnerReferralLink';
+          'Hey team, I highly recommend this app for our $_bizOppName recruiting. It helps our prospects pre-build their own teams for a stronger start and gives us a simple system to accelerate growth. Here\'s the link: $_partnerReferralLink';
 
       Share.share(message, subject: 'A tool for our $_bizOppName team');
     }
   }
 
+  void _showDemoModeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Testing Mode'),
+          content: const Text('Sharing disabled during testing mode.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('I Understand'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _copyLink(String? link) {
+    // Check if sharing is disabled via Remote Config
+    if (!_isSharingEnabled()) {
+      _showDemoModeDialog();
+      return;
+    }
+    
     if (link != null) {
       Clipboard.setData(ClipboardData(text: link));
       ScaffoldMessenger.of(context).showSnackBar(
