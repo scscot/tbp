@@ -565,11 +565,13 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildQuickActions(UserModel user) {
+    final isActiveSubscriber = user.subscriptionStatus == 'active';
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Hide subscription card for Android test users
-        if (!(_isAndroidDemoMode && _demoEmail != null))
+        // Show subscription card at top for non-active subscribers (urgent action needed)
+        if (!(_isAndroidDemoMode && _demoEmail != null) && !isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
         _buildActionCard(
           icon: Icons.groups,
@@ -642,6 +644,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             );
           },
         ),
+        
+        // Show subscription card after profile for active subscribers (maintenance task)
+        if (!(_isAndroidDemoMode && _demoEmail != null) && isActiveSubscriber)
+          _buildDynamicSubscriptionCard(user),
 
         if (user.role == 'admin')
           _buildActionCard(

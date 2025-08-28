@@ -283,6 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+
   void _showAdminAccountProtectionModal(int teamSize) {
     showDialog(
       context: context,
@@ -293,59 +294,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Icon(Icons.business_center, color: Colors.amber, size: 24),
               SizedBox(width: 12),
-              Text('Admin Account Protection'),
+              Expanded(
+                child: Text(
+                  'Admin Account Protection',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Administrator accounts with active team members cannot be deleted as this would disrupt business operations.',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Administrator accounts with active team members cannot be deleted as this would disrupt business operations.',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.people, color: Colors.amber, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Your Team: $teamSize Direct Sponsors',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                  ],
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.people, color: Colors.amber, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Your Team: $teamSize Direct Sponsors',
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'To delete your admin account, please contact our support team to arrange proper account transfer procedures that protect your team members.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Contact: legal@teambuildpro.com',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
-              ),
-            ],
+                const SizedBox(height: 16),
+                const Text(
+                  'To delete your admin account, please contact our support team to arrange proper account transfer procedures that protect your team members.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Contact: legal@teambuildpro.com',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
+                ),
+              ],
+            ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.amber,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'I Understand',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
               ),
-              child: const Text('I Understand'),
             ),
           ],
         );
@@ -440,21 +461,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.transparent,
                 child: Column(
                   children: [
-                    // Hide subscription button for Android test users
-                    if (!(_isAndroidDemoMode && _demoEmail != null))
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/subscription');
-                        },
-                        icon: const Icon(Icons.diamond),
-                        label: const Text('Subscription'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade600,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    if (!(_isAndroidDemoMode && _demoEmail != null))
-                      const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
