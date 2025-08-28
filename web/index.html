@@ -431,7 +431,7 @@
                     Join thousands of professionals who are building their teams faster than ever before. Start your
                     30-day free trial today.
                 </p>
-                <a href="#" id="cta-final" class="cta-button">Download on Apple Store<br>Enjoy 30-Day Free Trial!</a>
+                <a href="#" id="cta-final" class="cta-button">Download on Google Play and Apple Store<br>Enjoy 30-Day Free Trial!</a>
             </div>
         </section>
     </main>
@@ -461,7 +461,7 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <h2>🚀 Coming Soon!</h2>
             <p>
-                Our app is putting on the final touches and will be launching on the App Store very soon. Get ready
+                Our app is putting on the final touches and will be launching on Google Play and Apple Store very soon. Get ready
                 to build like a pro!
             </p>
             <button class="modal-close-btn" onclick="closeModal()">Got it!</button>
@@ -777,22 +777,24 @@
             if (event.key === "Escape") closeModal();
         });
 
-        function updateCTAsForMobile() {
+        function updateCTAs() {
             const ctaIds = ["cta-header", "cta-hero", "cta-pricing", "cta-final"];
-            if (isMobileDevice()) {
-                ctaIds.forEach((id) => {
-                    const button = document.getElementById(id);
-                    if (button) {
+            ctaIds.forEach((id) => {
+                const button = document.getElementById(id);
+                if (button) {
+                    if (isMobileDevice()) {
                         button.textContent = "Download on the App Store";
-                        button.href = "javascript:void(0);";
-                        button.target = "_self";
-                        button.onclick = openModal;
+                    } else {
+                        button.innerHTML = "Coming Soon!<br>Get notified when we launch";
                     }
-                });
-                const secondaryHeroButton = document.querySelector(".hero-buttons .secondary-button");
-                if (secondaryHeroButton) {
-                    secondaryHeroButton.style.display = "none";
+                    button.href = "javascript:void(0);";
+                    button.target = "_self";
+                    button.onclick = openModal;
                 }
+            });
+            const secondaryHeroButton = document.querySelector(".hero-buttons .secondary-button");
+            if (secondaryHeroButton) {
+                secondaryHeroButton.style.display = "none";
             }
         }
 
@@ -809,7 +811,7 @@
                 console.log("No referral code found. Displaying default partner content.");
             }
 
-            updateCTAsForMobile();
+            updateCTAs();
         }
 
         document.addEventListener("DOMContentLoaded", () => {
