@@ -121,11 +121,28 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
         if (memberDetails['teamLeader'] != null) {
           final leaderData =
               Map<String, dynamic>.from(memberDetails['teamLeader']);
+          // Validate that the team leader data is complete
+          if (leaderData['uid'] != null && leaderData['uid'].toString().isNotEmpty) {
+            setState(() {
+              _teamLeaderUid = leaderData['uid'];
+              _teamLeaderName =
+                  '${leaderData['firstName'] ?? ''} ${leaderData['lastName'] ?? ''}'
+                      .trim();
+            });
+            _log('✅ Team leader data loaded: $_teamLeaderName ($_teamLeaderUid)');
+          } else {
+            _log('⚠️ Team leader data incomplete or admin account may have been deleted');
+            setState(() {
+              _teamLeaderUid = null;
+              _teamLeaderName = null;
+            });
+          }
+        } else {
+          _log('🔍 No team leader data available - may indicate deleted admin account');
+          // Explicitly set to null to ensure clean state
           setState(() {
-            _teamLeaderUid = leaderData['uid'];
-            _teamLeaderName =
-                '${leaderData['firstName'] ?? ''} ${leaderData['lastName'] ?? ''}'
-                    .trim();
+            _teamLeaderUid = null;
+            _teamLeaderName = null;
           });
         }
       }
@@ -260,7 +277,9 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                                       : _buildClickableInfoRow('Sponsor',
                                           _sponsorName!, _sponsorUid!),
                                 if (_teamLeaderName != null &&
+                                    _teamLeaderName!.isNotEmpty &&
                                     _teamLeaderUid != null &&
+                                    _teamLeaderUid!.isNotEmpty &&
                                     _user!.referredBy != _teamLeaderUid)
                                   _currentUserId == _teamLeaderUid
                                       ? _buildInfoRow(

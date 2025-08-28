@@ -156,10 +156,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           developer.log('🔍 _teamLeaderName set to: $_teamLeaderName');
           developer.log('🔍 _teamLeaderUid set to: $_teamLeaderUid');
         } else {
-          developer.log('🔍 Team leader not found for ID: $leaderId');
+          developer.log('⚠️ Team leader not found for ID: $leaderId - admin account may have been deleted');
+          // Explicitly set to null to ensure UI doesn't show stale data
+          if (mounted) {
+            setState(() {
+              _teamLeaderName = null;
+              _teamLeaderUid = null;
+            });
+          }
         }
       }).catchError((error) {
-        developer.log('🔍 Error fetching team leader: $error', error: error);
+        developer.log('❌ Error fetching team leader: $error', error: error);
+        // Explicitly set to null in case of error
+        if (mounted) {
+          setState(() {
+            _teamLeaderName = null;
+            _teamLeaderUid = null;
+          });
+        }
       });
     } else {
       developer.log('🔍 No uplineAdmin found for user');
@@ -252,6 +266,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _handleAdminAccountDeletion(UserModel currentUser) {
+    final directSponsorsCount = currentUser.directSponsorCount;
+    
+    if (directSponsorsCount > 0) {
+      // Admin has team members - show protection modal
+      _showAdminAccountProtectionModal(directSponsorsCount);
+    } else {
+      // Admin has no team members - allow deletion
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const DeleteAccountScreen(),
+        ),
+      );
+    }
+  }
+
+  void _showAdminAccountProtectionModal(int teamSize) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.business_center, color: Colors.amber, size: 24),
+              SizedBox(width: 12),
+              Text('Admin Account Protection'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Administrator accounts with active team members cannot be deleted as this would disrupt business operations.',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.people, color: Colors.amber, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Your Team: $teamSize Direct Sponsors',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'To delete your admin account, please contact our support team to arrange proper account transfer procedures that protect your team members.',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Contact: legal@teambuildpro.com',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text('I Understand'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -322,7 +423,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildClickableInfoRow(
                             'Your Sponsor', _sponsorName!, _sponsorUid!),
                       if (_teamLeaderName != null &&
+                          _teamLeaderName!.isNotEmpty &&
                           _teamLeaderUid != null &&
+                          _teamLeaderUid!.isNotEmpty &&
                           _teamLeaderUid != _sponsorUid)
                         _buildClickableInfoRow(
                             'Team Leader', _teamLeaderName!, _teamLeaderUid!),
@@ -404,7 +507,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (_isAndroidDemoMode && _demoEmail != null && 
                             currentUser.email?.toLowerCase() == _demoEmail?.toLowerCase()) {
                           _showDemoAccountDeletionModal();
-                        } else {
+                        } 
+                        // Check if this is an admin account with team members
+                        else if (currentUser.role == 'admin') {
+                          _handleAdminAccountDeletion(currentUser);
+                        } 
+                        else {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
