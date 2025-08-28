@@ -352,6 +352,12 @@ Data Portability:
 • Export your team structure data
 • Transfer your information to another service (where applicable)
 
+Account Deletion Rights:
+• Request complete account deletion through the Profile screen
+• All personal data will be permanently deleted within 30 days
+• Network relationships preserved for business continuity only
+• Deletion is irreversible and complies with GDPR "right to be forgotten"
+
 To exercise these rights, contact us at $privacyEmail or use the in-app settings.''',
             ),
 

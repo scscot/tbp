@@ -138,6 +138,31 @@ class AuthService {
     debugPrint('🔐 AUTH_SERVICE: User data after Firebase signOut: ${userFinal?.email}');
   }
 
+  /// Complete sign out with full data clearing - used for account deletion
+  Future<void> signOutAndClearAllData() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        await FCMService().clearFCMToken(user.uid);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('AuthService: Error clearing FCM token: $e');
+      }
+    }
+    
+    debugPrint('🗑️ AUTH_SERVICE: Starting complete data clearing for account deletion');
+    
+    // Clear ALL session data including user data and biometric settings
+    await SessionManager.instance.clearAllData();
+    debugPrint('✅ AUTH_SERVICE: All session data cleared');
+    
+    await _googleSignIn.signOut();
+    await _firebaseAuth.signOut();
+    
+    debugPrint('✅ AUTH_SERVICE: Firebase and Google sign out completed');
+  }
+
   Future<void> sendPasswordResetEmail(String email) async {
     return await _firebaseAuth.sendPasswordResetEmail(email: email);
   }

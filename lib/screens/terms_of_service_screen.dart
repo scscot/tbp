@@ -270,7 +270,31 @@ Your continued use of Team Build Pro after changes are posted constitutes accept
             ),
 
             _buildSection(
-              '15. CONTACT INFORMATION',
+              '15. ACCOUNT DELETION',
+              '''You have the right to delete your account at any time through the app's Profile screen. When you delete your account:
+
+WHAT IS DELETED:
+• All personal information (name, email, profile photo, location data)
+• Account preferences and settings
+• Private messages and notifications
+• Access to all app features and services
+
+WHAT IS PRESERVED:
+• Network relationships necessary for business operations
+• Team structure data to maintain organizational integrity
+• Referral codes to preserve existing business connections
+
+DELETION PROCESS:
+• Account deletion is permanent and cannot be undone
+• You will be immediately signed out of all devices
+• Deleted accounts cannot be recovered or reactivated
+• The deletion process is completed within 30 days
+
+This deletion policy complies with Apple App Store guidelines and applicable privacy laws including GDPR and CCPA.''',
+            ),
+
+            _buildSection(
+              '16. CONTACT INFORMATION',
               '''For questions about these Terms of Service, please contact us:
 
 Email: $legalEmail

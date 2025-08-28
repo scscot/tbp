@@ -11,9 +11,13 @@ import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
 import '../services/link_validator_service.dart';
+import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import '../widgets/navigation_shell.dart';
+import '../main.dart';
+import 'homepage_screen.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -62,9 +66,83 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   List<String> get statesForSelectedCountry =>
       statesByCountry[_selectedCountry] ?? [];
 
+  /// Check if user has incomplete deletion (null essential fields)
+  bool get _isIncompleteAccountDeletion {
+    return widget.user.firstName == null && 
+           widget.user.lastName == null && 
+           widget.user.photoUrl == null &&
+           widget.user.country == null;
+  }
+
+  /// Complete the account deletion process using Cloud Function
+  Future<void> _completeAccountDeletion() async {
+    try {
+      debugPrint('🗑️ EDIT_PROFILE: Completing incomplete account deletion via Cloud Function...');
+      
+      // Call the cloud function to complete the deletion
+      final FirebaseFunctions functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+      final callable = functions.httpsCallable('deleteUserAccount');
+      
+      final result = await callable.call({
+        'confirmationEmail': widget.user.email,
+      });
+      
+      debugPrint('✅ EDIT_PROFILE: Cloud function completed: ${result.data}');
+      
+      // Check if widget is still mounted before using context
+      if (!mounted) return;
+      
+      // Clear all cached data
+      final authService = context.read<AuthService>();
+      await authService.signOutAndClearAllData();
+      debugPrint('✅ EDIT_PROFILE: All cached data cleared');
+      
+      // Navigate to homepage
+      while (navigatorKey.currentState?.canPop() == true) {
+        navigatorKey.currentState?.pop();
+      }
+      
+      navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => HomepageScreen(appId: widget.appId),
+        ),
+        (route) => false,
+      );
+      
+      // Show completion message
+      final messenger = ScaffoldMessenger.of(navigatorKey.currentContext!);
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Account deletion completed. Thank you for using Team Build Pro.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 5),
+        ),
+      );
+      
+    } catch (e) {
+      debugPrint('❌ EDIT_PROFILE: Error completing account deletion: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error completing account deletion: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    
+    // Check if this is an incomplete account deletion
+    if (_isIncompleteAccountDeletion) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showIncompleteDeleteionDialog();
+      });
+    }
     _firstNameController = TextEditingController(text: widget.user.firstName);
     _lastNameController = TextEditingController(text: widget.user.lastName);
     _cityController = TextEditingController(text: widget.user.city);
@@ -252,6 +330,69 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       }
     }
     return null;
+  }
+
+  /// Show dialog for incomplete account deletion
+  void _showIncompleteDeleteionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning,
+                color: Colors.orange,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Account Deletion Incomplete',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Your account deletion was not completed properly. Your personal data has been removed but your authentication session is still active.',
+                style: TextStyle(fontSize: 16, height: 1.4),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'We will now complete the account deletion process.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _completeAccountDeletion();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Complete Deletion'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Show dialog when referral URL validation fails
