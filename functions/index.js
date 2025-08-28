@@ -2748,6 +2748,136 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   }
 });
 
+/**
+ * Daily Account Deletion Summary Notifications
+ * Runs once daily at 10 AM UTC to send batched deletion summaries to upline members
+ * Uses the same timezone-aware approach as team growth notifications
+ */
+exports.sendDailyAccountDeletionSummary = onSchedule({
+  schedule: "0 10 * * *", // Run daily at 10 AM UTC
+  timeZone: "UTC", 
+  region: "us-central1"
+}, async (event) => {
+  console.log("🗑️ DAILY DELETION SUMMARY: Starting daily account deletion summary process");
+
+  try {
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0);
+    const yesterdayEnd = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59);
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Processing deletions from ${yesterdayStart.toISOString()} to ${yesterdayEnd.toISOString()}`);
+
+    // Get all unprocessed deletion logs from yesterday
+    const deletionLogsQuery = await db.collection('account_deletion_logs')
+      .where('processedInDailyBatch', '==', false)
+      .where('deletedAt', '>=', yesterdayStart)
+      .where('deletedAt', '<=', yesterdayEnd)
+      .get();
+
+    if (deletionLogsQuery.empty) {
+      console.log("🗑️ DAILY DELETION SUMMARY: No account deletions to process from yesterday");
+      return;
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Found ${deletionLogsQuery.size} account deletion(s) to process`);
+
+    // Group deletions by affected upline members
+    const uplineNotifications = new Map();
+
+    for (const logDoc of deletionLogsQuery.docs) {
+      const logData = logDoc.data();
+      
+      // Find all upline members (excluding direct sponsor and downline who got immediate notifications)
+      if (logData.sponsorId) {
+        const uplineMembers = await findUplineMembers(logData.sponsorId);
+        
+        for (const uplineMemberId of uplineMembers) {
+          if (!uplineNotifications.has(uplineMemberId)) {
+            uplineNotifications.set(uplineMemberId, []);
+          }
+          uplineNotifications.get(uplineMemberId).push({
+            deletedUserName: logData.deletedUserName,
+            deletedAt: logData.deletedAt
+          });
+        }
+      }
+
+      // Mark this log as processed
+      await logDoc.ref.update({ processedInDailyBatch: true });
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Sending summary notifications to ${uplineNotifications.size} upline members`);
+
+    // Send summary notifications to upline members
+    const notificationPromises = Array.from(uplineNotifications.entries()).map(async ([userId, deletions]) => {
+      try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (!userDoc.exists) {
+          console.log(`🗑️ DAILY DELETION SUMMARY: User ${userId} no longer exists, skipping`);
+          return { success: false, userId, reason: 'User not found' };
+        }
+
+        const userData = userDoc.data();
+        const deletionCount = deletions.length;
+
+        // Create summary notification
+        const summaryNotification = {
+          title: "Team Network Update",
+          message: deletionCount === 1 
+            ? `One of your downline team members deleted their Team Build Pro account yesterday. No worries, it happens .. keep building!`
+            : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. No worries, it happens .. keep building!`,
+          type: "team_deletion_summary",
+          read: false,
+          createdAt: FieldValue.serverTimestamp(),
+          route: "/network",
+          route_params: JSON.stringify({ "filter": "all" })
+        };
+
+        await db.collection('users').doc(userId).collection('notifications').add(summaryNotification);
+
+        console.log(`✅ DAILY DELETION SUMMARY: Sent summary to ${userData.firstName || 'Unknown'} for ${deletionCount} deletion(s)`);
+        return { success: true, userId, deletionCount };
+
+      } catch (error) {
+        console.error(`❌ DAILY DELETION SUMMARY: Failed to send summary to user ${userId}:`, error);
+        return { success: false, userId, error: error.message };
+      }
+    });
+
+    const results = await Promise.allSettled(notificationPromises);
+    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Summary complete - Successful: ${successful}, Failed: ${failed}`);
+
+  } catch (error) {
+    console.error("❌ DAILY DELETION SUMMARY: Critical error in daily deletion summary:", error);
+  }
+});
+
+/**
+ * Helper function to find upline members (excluding direct sponsor)
+ * @param {string} sponsorId - The sponsor's user ID
+ * @returns {Array} - Array of upline member IDs
+ */
+async function findUplineMembers(sponsorId) {
+  try {
+    const sponsorDoc = await db.collection('users').doc(sponsorId).get();
+    if (!sponsorDoc.exists) {
+      return [];
+    }
+
+    const sponsorData = sponsorDoc.data();
+    const uplineRefs = sponsorData.upline_refs || [];
+    
+    // Return all upline members (excluding the direct sponsor themselves)
+    return uplineRefs;
+  } catch (error) {
+    console.error(`❌ UPLINE LOOKUP: Error finding upline members for sponsor ${sponsorId}:`, error);
+    return [];
+  }
+}
 
 exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) => {
   const url = request.data.url;
@@ -2805,7 +2935,7 @@ exports.deleteUserAccount = onCall({ region: "us-central1" }, async (request) =>
   console.log(`🗑️ DELETE_ACCOUNT: Starting account deletion for user ${userId}`);
 
   try {
-    // Get user data for validation
+    // Get user data for validation and network notification capture
     const userDoc = await db.collection('users').doc(userId).get();
     if (!userDoc.exists) {
       console.log(`🗑️ DELETE_ACCOUNT: User document not found for ${userId}`);
@@ -2821,6 +2951,10 @@ exports.deleteUserAccount = onCall({ region: "us-central1" }, async (request) =>
     }
 
     console.log(`🗑️ DELETE_ACCOUNT: Email validation passed for ${userId}`);
+
+    // IMPORTANT: Capture network relationships BEFORE deletion for notifications
+    const networkNotificationData = await captureNetworkForDeletionNotifications(userId, userData);
+    console.log(`📱 DELETE_ACCOUNT: Network notification data captured for ${userId}`);
 
     // Step 1: Delete user's private collections
     await deleteUserPrivateData(userId);
@@ -2839,6 +2973,11 @@ exports.deleteUserAccount = onCall({ region: "us-central1" }, async (request) =>
     console.log(`✅ DELETE_ACCOUNT: Firebase Auth user deleted for ${userId}`);
 
     console.log(`✅ DELETE_ACCOUNT: Account deletion completed successfully for ${userId}`);
+
+    // Step 5: Send push notifications to affected network members
+    // This happens AFTER successful deletion to ensure account is truly gone
+    await sendDeletionNotificationsToNetwork(networkNotificationData);
+    console.log(`📱 DELETE_ACCOUNT: Deletion notifications sent for ${userId}`);
 
     return {
       success: true,
@@ -2913,6 +3052,205 @@ async function deleteUserPrivateData(userId) {
   } catch (error) {
     console.error(`❌ DELETE_ACCOUNT: Error deleting private data for ${userId}:`, error);
     throw error;
+  }
+}
+
+/**
+ * Captures network relationship data before account deletion for push notifications
+ * @param {string} userId - The user ID being deleted
+ * @param {object} userData - The user's data from Firestore
+ * @returns {object} - Network notification data with sponsor and downline information
+ */
+async function captureNetworkForDeletionNotifications(userId, userData) {
+  try {
+    const notificationData = {
+      deletedUserId: userId,
+      deletedUserName: `${userData.firstName || 'Unknown'} ${userData.lastName || 'User'}`.trim(),
+      sponsorInfo: null,
+      downlineUsers: []
+    };
+
+    // 1. Capture sponsor information
+    if (userData.sponsor_id) {
+      try {
+        const sponsorDoc = await db.collection('users').doc(userData.sponsor_id).get();
+        if (sponsorDoc.exists) {
+          const sponsorData = sponsorDoc.data();
+          notificationData.sponsorInfo = {
+            userId: userData.sponsor_id,
+            name: `${sponsorData.firstName || 'Unknown'} ${sponsorData.lastName || 'User'}`.trim(),
+            fcmToken: sponsorData.fcm_token
+          };
+          console.log(`📱 NETWORK_CAPTURE: Sponsor data captured for ${userData.sponsor_id}`);
+        }
+      } catch (error) {
+        console.log(`⚠️ NETWORK_CAPTURE: Could not fetch sponsor ${userData.sponsor_id}: ${error.message}`);
+      }
+    }
+
+    // 2. Capture direct downline users (people this user sponsored)
+    try {
+      const downlineQuery = await db.collection('users')
+        .where('sponsor_id', '==', userId)
+        .get();
+      
+      for (const downlineDoc of downlineQuery.docs) {
+        const downlineData = downlineDoc.data();
+        notificationData.downlineUsers.push({
+          userId: downlineDoc.id,
+          name: `${downlineData.firstName || 'Unknown'} ${downlineData.lastName || 'User'}`.trim(),
+          fcmToken: downlineData.fcm_token
+        });
+      }
+      console.log(`📱 NETWORK_CAPTURE: ${notificationData.downlineUsers.length} downline users captured`);
+    } catch (error) {
+      console.log(`⚠️ NETWORK_CAPTURE: Could not fetch downline users: ${error.message}`);
+    }
+
+    return notificationData;
+  } catch (error) {
+    console.error(`❌ NETWORK_CAPTURE: Error capturing network data for ${userId}:`, error);
+    // Return minimal data structure to prevent breaking deletion process
+    return {
+      deletedUserId: userId,
+      deletedUserName: 'Team Member',
+      sponsorInfo: null,
+      downlineUsers: []
+    };
+  }
+}
+
+/**
+ * Sends immediate push notifications to direct network members affected by account deletion
+ * and logs upline members for daily batch notification
+ * @param {object} networkData - Network notification data from captureNetworkForDeletionNotifications
+ */
+async function sendDeletionNotificationsToNetwork(networkData) {
+  if (!networkData || (!networkData.sponsorInfo && networkData.downlineUsers.length === 0)) {
+    console.log(`📱 DELETION_NOTIFICATIONS: No network members to notify`);
+    return;
+  }
+
+  const immediateNotifications = [];
+
+  try {
+    // 1. IMMEDIATE: Notify direct sponsor (if exists)
+    if (networkData.sponsorInfo) {
+      const sponsorNotification = createAccountDeletionNotification(
+        'sponsor',
+        networkData.deletedUserName,
+        networkData.sponsorInfo.name
+      );
+      
+      immediateNotifications.push({
+        type: 'sponsor',
+        userId: networkData.sponsorInfo.userId,
+        notification: sponsorNotification
+      });
+
+      console.log(`📱 DELETION_NOTIFICATIONS: Prepared immediate notification for sponsor ${networkData.sponsorInfo.userId}`);
+    }
+
+    // 2. IMMEDIATE: Notify direct downline users
+    for (const downlineUser of networkData.downlineUsers) {
+      const downlineNotification = createAccountDeletionNotification(
+        'downline',
+        networkData.deletedUserName,
+        downlineUser.name
+      );
+      
+      immediateNotifications.push({
+        type: 'downline',
+        userId: downlineUser.userId,
+        notification: downlineNotification
+      });
+
+      console.log(`📱 DELETION_NOTIFICATIONS: Prepared immediate notification for downline user ${downlineUser.userId}`);
+    }
+
+    // 3. Send immediate notifications concurrently
+    const notificationPromises = immediateNotifications.map(async ({ userId, notification }) => {
+      try {
+        await db.collection('users').doc(userId).collection('notifications').add(notification);
+        console.log(`✅ DELETION_NOTIFICATIONS: Sent immediate notification to user ${userId}`);
+      } catch (error) {
+        console.error(`❌ DELETION_NOTIFICATIONS: Failed to send immediate notification to user ${userId}:`, error.message);
+      }
+    });
+
+    await Promise.all(notificationPromises);
+    console.log(`📱 DELETION_NOTIFICATIONS: Processed ${immediateNotifications.length} immediate deletion notifications`);
+
+    // 4. DAILY BATCH: Log deletion for daily upline notifications
+    await logDeletionForDailyNotification(networkData);
+
+  } catch (error) {
+    console.error(`❌ DELETION_NOTIFICATIONS: Error sending deletion notifications:`, error);
+    // Don't throw - notifications are nice-to-have, not critical
+  }
+}
+
+/**
+ * Creates a notification object for account deletion events
+ * @param {string} recipientType - 'sponsor' or 'downline'
+ * @param {string} deletedUserName - Name of the user who deleted their account
+ * @param {string} recipientName - Name of the notification recipient
+ * @returns {object} - Notification object for Firestore
+ */
+function createAccountDeletionNotification(recipientType, deletedUserName, recipientName) {
+  const baseNotification = {
+    type: 'account_deletion',
+    read: false,
+    createdAt: FieldValue.serverTimestamp(),
+    route: "/dashboard", // Route to main dashboard
+    route_params: null
+  };
+
+  if (recipientType === 'sponsor') {
+    return {
+      ...baseNotification,
+      title: "Team Member Account Update",
+      message: `${deletedUserName} has decided to delete their Team Build Pro account. This doesn't affect your account or team status in any way. Your networking journey continues uninterrupted!`
+    };
+  } else if (recipientType === 'downline') {
+    return {
+      ...baseNotification,
+      title: "Sponsor Account Update", 
+      message: `Your sponsor ${deletedUserName} has decided to delete their Team Build Pro account. This doesn't affect your account or opportunities in any way. You can continue building your network as usual!`
+    };
+  }
+
+  // Fallback for unexpected recipient types
+  return {
+    ...baseNotification,
+    title: "Team Network Update",
+    message: `A team member has updated their account status. This doesn't affect your account in any way.`
+  };
+}
+
+/**
+ * Logs account deletion for daily batch notification to upline members
+ * @param {object} networkData - Network notification data from captureNetworkForDeletionNotifications
+ */
+async function logDeletionForDailyNotification(networkData) {
+  try {
+    // Create a deletion log entry for daily batch processing
+    const deletionLog = {
+      deletedUserId: networkData.deletedUserId,
+      deletedUserName: networkData.deletedUserName,
+      sponsorId: networkData.sponsorInfo?.userId || null,
+      downlineUserIds: networkData.downlineUsers.map(user => user.userId),
+      deletedAt: FieldValue.serverTimestamp(),
+      processedInDailyBatch: false
+    };
+
+    // Store in a dedicated collection for daily batch processing
+    await db.collection('account_deletion_logs').add(deletionLog);
+    console.log(`📊 DELETION_LOG: Logged deletion of ${networkData.deletedUserName} for daily batch processing`);
+
+  } catch (error) {
+    console.error(`❌ DELETION_LOG: Error logging deletion for daily notification:`, error);
+    // Don't throw - this is non-critical logging
   }
 }
 
