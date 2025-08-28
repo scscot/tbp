@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
@@ -129,6 +130,42 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       }
     }
     return 'Account deletion failed. Please try again.';
+  }
+
+  Future<void> _launchSupportEmail() async {
+    final user = Provider.of<UserModel?>(context, listen: false);
+    final userEmail = user?.email ?? 'Unknown';
+    final userName = '${user?.firstName ?? ''} ${user?.lastName ?? ''}'.trim();
+    
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'support@teambuildpro.com',
+      query: 'subject=Account Deletion Support Request&body=Hello Team Build Pro Support,%0A%0AI need assistance with my account deletion request.%0A%0AAccount Details:%0A- Name: $userName%0A- Email: $userEmail%0A%0APlease describe your issue or question below:%0A%0A',
+    );
+
+    try {
+      if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildWarningSection() {
@@ -474,10 +511,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Navigate to contact or support screen
-                      Navigator.pushNamed(context, '/contact');
-                    },
+                    onPressed: _launchSupportEmail,
                     icon: const Icon(Icons.email, size: 16),
                     label: const Text('Contact Support'),
                     style: ElevatedButton.styleFrom(

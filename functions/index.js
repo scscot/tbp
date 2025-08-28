@@ -2825,8 +2825,8 @@ exports.sendDailyAccountDeletionSummary = onSchedule({
         const summaryNotification = {
           title: "Team Network Update",
           message: deletionCount === 1 
-            ? `One of your downline team members deleted their Team Build Pro account yesterday. No worries, it happens .. keep building!`
-            : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. No worries, it happens .. keep building!`,
+            ? `One of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identity. No worries, it happens .. keep building!`
+            : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identities. No worries, it happens .. keep building!`,
           type: "team_deletion_summary",
           read: false,
           createdAt: FieldValue.serverTimestamp(),
