@@ -45,7 +45,7 @@
         "singleProjectMode": true
     },
     "hosting": {
-        "public": "downline-react-app/dist",
+        "public": "web",
         "ignore": [
             "firebase.json",
             "**/.*",

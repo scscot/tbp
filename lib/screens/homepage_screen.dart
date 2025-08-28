@@ -137,8 +137,9 @@ class _HomepageScreenState extends State<HomepageScreen>
 
       if (credential.user != null && mounted) {
         debugPrint('✅ DEMO LOGIN: Success, user authenticated');
-        // Auth state listener will handle navigation automatically
-        Navigator.of(context).pop();
+        // Give a moment for auth state to propagate, then let auth wrapper handle navigation
+        await Future.delayed(const Duration(milliseconds: 100));
+        // Don't pop - let the auth wrapper detect the state change and navigate properly
       }
     } on FirebaseAuthException catch (e) {
       debugPrint('❌ DEMO LOGIN: Firebase Auth Error - ${e.code}: ${e.message}');
