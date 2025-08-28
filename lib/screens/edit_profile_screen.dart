@@ -865,7 +865,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           groupValue: _isBizOppRepresentative,
                           onChanged: (value) {
                             setState(() {
-                              _isBizOppRepresentative = !(value ?? true);
+                              _isBizOppRepresentative = value ?? false;
                               if (!_isBizOppRepresentative) {
                                 _bizOppRefUrlController.clear();
                                 _bizOppRefUrlConfirmController.clear();
