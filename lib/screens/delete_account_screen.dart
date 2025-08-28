@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
-import '../services/auth_service.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
@@ -67,7 +66,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       debugPrint('✅ DELETE_ACCOUNT: Firebase Auth sign out completed');
       
       // Clear ALL cached data (including biometric data)
-      final authService = context.read<AuthService>();
       debugPrint('🗑️ DELETE_ACCOUNT: Clearing all session data...');
       await SessionManager.instance.clearAllData();
       debugPrint('✅ DELETE_ACCOUNT: All cached data cleared');

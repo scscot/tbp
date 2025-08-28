@@ -206,6 +206,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _showDemoAccountDeletionModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.info_outline, color: Colors.blue, size: 24),
+              SizedBox(width: 12),
+              Text('Demo Account Information'),
+            ],
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'This is a demo account for testing purposes and cannot be deleted.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 12),
+              Text(
+                'Demo accounts are provided to showcase the app\'s features and functionality for review purposes.',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text('I Understand'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
@@ -354,12 +400,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Account Deletion button
                     OutlinedButton.icon(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const DeleteAccountScreen(),
-                          ),
-                        );
+                        // Check if this is a demo account
+                        if (_isAndroidDemoMode && _demoEmail != null && 
+                            currentUser.email?.toLowerCase() == _demoEmail?.toLowerCase()) {
+                          _showDemoAccountDeletionModal();
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const DeleteAccountScreen(),
+                            ),
+                          );
+                        }
                       },
                       icon: const Icon(Icons.delete_forever, size: 18),
                       label: const Text('Delete Account'),
