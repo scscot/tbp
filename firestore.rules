@@ -111,9 +111,10 @@ service cloud.firestore {
 
     // --- Rules for Launch Notifications ---
     match /launch_notifications/{notificationId} {
-      // Allow unauthenticated writes for website email signup
-      allow create: if true;
-      // Only admin access for reading/updating launch notifications
+      // Allow unauthenticated operations for website email signup and duplicate checking
+      allow create, read, update: if request.auth == null;
+      
+      // Admin access for all operations
       allow read, update, delete: if request.auth != null && 
                                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
                                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
