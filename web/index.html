@@ -476,6 +476,23 @@
                     <div class="form-group">
                         <input type="email" id="notificationEmail" placeholder="Enter your email address" required>
                     </div>
+                    
+                    <!-- Demo Interest Section -->
+                    <div class="form-group demo-section">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="demoInterest" onchange="toggleDemoOptions()">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">I'd love to try the demo version!</span>
+                        </label>
+                        <div id="deviceSelection" class="device-dropdown" style="display: none;">
+                            <select id="deviceType" name="deviceType">
+                                <option value="">Select Your Device</option>
+                                <option value="ios">iPhone (iOS)</option>
+                                <option value="android">Android</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <button type="submit" class="signup-btn">
                         <span id="signup-btn-text">Notify Me When It's Ready!</span>
                     </button>
@@ -485,9 +502,9 @@
             
             <div id="success-message" style="display: none;">
                 <h2>✅ You're All Set!</h2>
-                <p>
-                    Thanks for signing up! We'll send you an email as soon as Team Build Pro launches on the app stores.
-                </p>
+                <div id="success-content">
+                    <!-- Content will be dynamically inserted -->
+                </div>
                 <button class="modal-close-btn" onclick="closeModal()">Awesome!</button>
             </div>
         </div>
@@ -921,12 +938,27 @@
         // NOTIFICATION SIGNUP FUNCTIONALITY
         // ============================================================================
 
+        function toggleDemoOptions() {
+            const demoCheckbox = document.getElementById('demoInterest');
+            const deviceSelection = document.getElementById('deviceSelection');
+            
+            if (demoCheckbox.checked) {
+                deviceSelection.style.display = 'block';
+            } else {
+                deviceSelection.style.display = 'none';
+                // Clear device selection when hiding
+                document.getElementById('deviceType').value = '';
+            }
+        }
+
         async function handleNotificationSignup(event) {
             event.preventDefault();
             
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const demoCheckbox = document.getElementById('demoInterest');
+            const deviceSelect = document.getElementById('deviceType');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             const signupForm = document.getElementById('signup-form');
@@ -935,6 +967,8 @@
             const firstName = firstNameInput.value.trim();
             const lastName = lastNameInput.value.trim();
             const email = emailInput.value.trim();
+            const wantDemo = demoCheckbox.checked;
+            const deviceType = deviceSelect.value;
             
             if (!firstName || !lastName) {
                 alert('Please enter your first and last name.');
@@ -946,25 +980,39 @@
                 return;
             }
             
+            if (wantDemo && !deviceType) {
+                alert('Please select your device type to access the demo.');
+                return;
+            }
+            
             // Show loading state
             submitBtn.disabled = true;
             btnText.textContent = 'Signing you up...';
             
             try {
                 // Save to Firestore
-                await db.collection('launch_notifications').add({
+                const signupData = {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
+                    wantDemo: wantDemo,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     source: 'website_modal',
                     userAgent: navigator.userAgent,
                     referrer: document.referrer || 'direct'
-                });
+                };
                 
-                console.log('Email notification signup successful:', `${firstName} ${lastName} (${email})`);
+                // Add device type if demo was requested
+                if (wantDemo && deviceType) {
+                    signupData.deviceType = deviceType;
+                }
                 
-                // Show success message
+                await db.collection('launch_notifications').add(signupData);
+                
+                console.log('Email notification signup successful:', `${firstName} ${lastName} (${email})` + (wantDemo ? ` - Demo requested (${deviceType})` : ''));
+                
+                // Show dynamic success message
+                showSuccessMessage(wantDemo, deviceType);
                 signupForm.style.display = 'none';
                 successMessage.style.display = 'block';
                 
@@ -1004,12 +1052,35 @@
             return emailRegex.test(email);
         }
         
+        function showSuccessMessage(wantDemo, deviceType) {
+            const successContent = document.getElementById('success-content');
+            
+            if (wantDemo && deviceType) {
+                const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
+                successContent.innerHTML = `
+                    <p>Thanks for signing up! You'll receive two emails:</p>
+                    <ul style="text-align: left; margin: 20px 0;">
+                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on the app stores</li>
+                        <li><strong>Demo access instructions</strong> - You'll get step-by-step instructions on how to download and preview the ${deviceName} demo version</li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>Thanks for being an early supporter!</strong></p>
+                `;
+            } else {
+                successContent.innerHTML = `
+                    <p>Thanks for signing up! We'll send you an email as soon as Team Build Pro launches on the app stores.</p>
+                `;
+            }
+        }
+        
         function resetModal() {
             const signupForm = document.getElementById('signup-form');
             const successMessage = document.getElementById('success-message');
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const demoCheckbox = document.getElementById('demoInterest');
+            const deviceSelect = document.getElementById('deviceType');
+            const deviceSelection = document.getElementById('deviceSelection');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             
@@ -1021,6 +1092,9 @@
             firstNameInput.value = '';
             lastNameInput.value = '';
             emailInput.value = '';
+            demoCheckbox.checked = false;
+            deviceSelect.value = '';
+            deviceSelection.style.display = 'none';
             submitBtn.disabled = false;
             btnText.textContent = 'Notify Me When It\'s Ready!';
         }
