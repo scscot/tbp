@@ -3294,7 +3294,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName, email, wantDemo, deviceType } = req.body;
 
     if (!firstName || !lastName || !email) {
       return res.status(400).json({ error: 'First name, last name, and email address are required' });
@@ -3304,7 +3304,8 @@ exports.sendLaunchNotificationConfirmation = onRequest({
       return res.status(400).json({ error: 'Valid email address required' });
     }
 
-    console.log(`📧 LAUNCH_NOTIFICATION: Sending confirmation to ${firstName} ${lastName} (${email})`);
+    const demoInfo = wantDemo && deviceType ? ` (Demo requested: ${deviceType})` : '';
+    console.log(`📧 LAUNCH_NOTIFICATION: Sending confirmation to ${firstName} ${lastName} (${email})${demoInfo}`);
 
     // Set the SendGrid API key
     sgMail.setApiKey(sendgridApiKey.value());
@@ -3333,6 +3334,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
             <h3 style="color: #1e293b; margin: 0 0 15px; font-size: 20px;">What happens next?</h3>
             <ul style="color: #475569; line-height: 1.6; margin: 0; padding-left: 20px;">
               <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on the App Store and Google Play</li>
+              ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #667eea;">🎯 Demo Access:</strong> You'll receive step-by-step instructions on how to download and preview the ${deviceType === 'ios' ? 'iPhone' : 'Android'} demo version</li>` : ''}
               <li style="margin-bottom: 8px;">You'll get exclusive access to our 30-day free trial</li>
               <li style="margin-bottom: 8px;">No spam, just launch updates and valuable team building insights</li>
             </ul>
