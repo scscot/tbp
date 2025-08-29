@@ -3285,31 +3285,99 @@ async function cleanupUserReferences(userId) {
  * Send confirmation email when someone signs up for launch notifications
  */
 /**
- * Helper function to append tester information to CSV files
+ * Helper function to store tester information in Firestore for CSV generation
  */
 async function appendTesterToCSV(firstName, lastName, email, deviceType) {
-  const fs = require('fs').promises;
-  const path = require('path');
-  
   try {
-    // Determine which CSV file to append to based on device type
-    const fileName = deviceType === 'ios' ? 'ios_testers.csv' : 'android_testers.csv';
-    const filePath = path.join('/Users/sscott/tbp', fileName);
+    console.log(`📄 TESTER_STORE: Adding tester: ${firstName} ${lastName} (${email}) - ${deviceType}`);
     
-    // Format the new line to append
-    const csvLine = `${firstName},${lastName},${email}\n`;
+    // Store in Firestore beta_testers collection
+    const testerData = {
+      firstName,
+      lastName,
+      email,
+      deviceType,
+      createdAt: FieldValue.serverTimestamp(),
+      source: 'launch_notification'
+    };
     
-    console.log(`📄 CSV_APPEND: Adding tester to ${fileName}: ${firstName} ${lastName} (${email})`);
+    // Use email as document ID to prevent duplicates
+    const docId = `${deviceType}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`;
     
-    // Append the new line to the CSV file
-    await fs.appendFile(filePath, csvLine, 'utf8');
+    await db.collection('beta_testers').doc(docId).set(testerData, { merge: true });
     
-    console.log(`✅ CSV_APPEND: Successfully added ${firstName} ${lastName} to ${fileName}`);
+    console.log(`✅ TESTER_STORE: Successfully stored ${firstName} ${lastName} for ${deviceType} testing`);
   } catch (error) {
-    console.error(`❌ CSV_APPEND: Error appending to CSV file:`, error);
+    console.error(`❌ TESTER_STORE: Error storing tester data:`, error);
     // Don't throw error to avoid disrupting the email flow
   }
 }
+
+/**
+ * Generate CSV files from Firestore beta tester data
+ * Returns CSV content for both iOS and Android testers
+ */
+exports.generateBetaTesterCSVs = onCall({ region: "us-central1" }, async (request) => {
+  try {
+    console.log('📄 CSV_GENERATE: Starting generation of beta tester CSV files from Firestore');
+    
+    const results = {};
+    const deviceTypes = ['ios', 'android'];
+    
+    for (const deviceType of deviceTypes) {
+      try {
+        // Query beta testers for this device type
+        const snapshot = await db.collection('beta_testers')
+          .where('deviceType', '==', deviceType)
+          .orderBy('createdAt', 'asc')
+          .get();
+        
+        // Generate CSV content
+        let csvContent = '';
+        const testers = [];
+        
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          testers.push(data);
+          csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+        });
+        
+        const fileName = `${deviceType}_testers.csv`;
+        results[fileName] = {
+          content: csvContent,
+          lineCount: testers.length,
+          testers: testers.map(t => ({ 
+            firstName: t.firstName, 
+            lastName: t.lastName, 
+            email: t.email,
+            createdAt: t.createdAt?.toDate?.()?.toISOString() || null
+          })),
+          lastGenerated: new Date().toISOString()
+        };
+        
+        console.log(`✅ CSV_GENERATE: Generated ${fileName} - ${testers.length} entries`);
+        
+      } catch (error) {
+        console.error(`❌ CSV_GENERATE: Error generating ${deviceType} CSV:`, error);
+        results[`${deviceType}_testers.csv`] = {
+          content: '',
+          lineCount: 0,
+          error: error.message
+        };
+      }
+    }
+    
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      files: results
+    };
+    
+  } catch (error) {
+    console.error('❌ CSV_GENERATE: Error generating CSV files:', error);
+    throw new HttpsError("internal", "Failed to generate CSV files", error.message);
+  }
+});
 
 exports.sendLaunchNotificationConfirmation = onRequest({
   cors: true,
