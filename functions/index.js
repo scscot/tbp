@@ -30,6 +30,11 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { X509Certificate } = require('crypto');
 
+// SendGrid for launch notification emails
+const sgMail = require('@sendgrid/mail');
+const { defineSecret } = require('firebase-functions/params');
+const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
+
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
 // ============================================================================
@@ -3270,4 +3275,130 @@ async function cleanupUserReferences(userId) {
     console.error(`❌ DELETE_ACCOUNT: Error cleaning up references for ${userId}:`, error);
     // Don't throw - this is non-critical cleanup
   }
+}
+
+// ============================================================================
+// LAUNCH NOTIFICATION CONFIRMATION EMAIL
+// ============================================================================
+
+/**
+ * Send confirmation email when someone signs up for launch notifications
+ */
+exports.sendLaunchNotificationConfirmation = onRequest({
+  cors: true,
+  region: 'us-central1',
+  secrets: [sendgridApiKey]
+}, async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { firstName, lastName, email } = req.body;
+
+    if (!firstName || !lastName || !email) {
+      return res.status(400).json({ error: 'First name, last name, and email address are required' });
+    }
+
+    if (!isValidEmailLaunchNotification(email)) {
+      return res.status(400).json({ error: 'Valid email address required' });
+    }
+
+    console.log(`📧 LAUNCH_NOTIFICATION: Sending confirmation to ${firstName} ${lastName} (${email})`);
+
+    // Set the SendGrid API key
+    sgMail.setApiKey(sendgridApiKey.value());
+
+    const fullName = `${firstName} ${lastName}`;
+
+    // Create the confirmation email to the user
+    const confirmationEmail = {
+      to: `${fullName} <${email}>`,
+      from: 'Team Build Pro <support@teambuildpro.com>',
+      subject: `Thanks for signing up, ${firstName}! Team Build Pro is launching soon 🚀`,
+      html: `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://teambuildpro.com/assets/icons/app_icon.png" alt="Team Build Pro" style="width: 60px; height: 60px; border-radius: 50%;">
+            <h1 style="color: #667eea; margin: 20px 0 10px; font-size: 28px;">Team Build Pro</h1>
+            <p style="color: #64748b; font-size: 16px; margin: 0;">The Ultimate Team Building App</p>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; text-align: center; color: white; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 15px; font-size: 24px;">🚀 You're on the list, ${firstName}!</h2>
+            <p style="font-size: 18px; margin: 0; opacity: 0.9; line-height: 1.5;">Thanks for signing up for early access to Team Build Pro.</p>
+          </div>
+          
+          <div style="background: #f8fafc; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+            <h3 style="color: #1e293b; margin: 0 0 15px; font-size: 20px;">What happens next?</h3>
+            <ul style="color: #475569; line-height: 1.6; margin: 0; padding-left: 20px;">
+              <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on the App Store and Google Play</li>
+              <li style="margin-bottom: 8px;">You'll get exclusive access to our 30-day free trial</li>
+              <li style="margin-bottom: 8px;">No spam, just launch updates and valuable team building insights</li>
+            </ul>
+          </div>
+          
+          <div style="text-align: center; margin-bottom: 30px;">
+            <p style="color: #64748b; margin: 0 0 20px;">In the meantime, check out our website to learn more:</p>
+            <a href="https://teambuildpro.com" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Visit TeamBuildPro.com</a>
+          </div>
+          
+          <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
+            <p style="color: #94a3b8; font-size: 14px; margin: 0;">
+              Team Build Pro - Empower Your Team, Accelerate Growth<br>
+              <a href="https://teambuildpro.com" style="color: #667eea; text-decoration: none;">teambuildpro.com</a>
+            </p>
+          </div>
+        </div>
+      `
+    };
+
+    // Create the notification email to support team
+    const notificationEmail = {
+      to: 'support@teambuildpro.com',
+      from: 'Team Build Pro <support@teambuildpro.com>',
+      subject: `New Launch Notification Signup: ${fullName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #667eea;">New Launch Notification Signup</h2>
+          <hr>
+          <p><strong>Name:</strong> ${fullName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+          <p><strong>Source:</strong> Website Modal</p>
+          <hr>
+          <p><em>This email was automatically generated when ${firstName} signed up for launch notifications on the website.</em></p>
+        </div>
+      `
+    };
+
+    // Send both emails
+    await Promise.all([
+      sgMail.send(confirmationEmail),
+      sgMail.send(notificationEmail)
+    ]);
+    
+    console.log(`✅ LAUNCH_NOTIFICATION: Confirmation email sent to ${firstName} ${lastName} (${email}) and notification sent to support team`);
+    
+    res.json({ 
+      success: true, 
+      message: 'Launch notification emails sent successfully'
+    });
+
+  } catch (error) {
+    console.error('Error sending launch notification emails:', error);
+    if (error.code) {
+      console.error('SendGrid error code:', error.code);
+      console.error('SendGrid error message:', error.message);
+    }
+    res.status(500).json({ error: 'Failed to send confirmation email' });
+  }
+});
+
+/**
+ * Helper function to validate email format
+ */
+function isValidEmailLaunchNotification(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }

@@ -109,6 +109,16 @@ service cloud.firestore {
                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    // --- Rules for Launch Notifications ---
+    match /launch_notifications/{notificationId} {
+      // Allow unauthenticated writes for website email signup
+      allow create: if true;
+      // Only admin access for reading/updating launch notifications
+      allow read, update, delete: if request.auth != null && 
+                                  exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                                  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // Deny all other access by default
     match /{document=**} {
       allow read, write: if false;

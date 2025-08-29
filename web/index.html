@@ -459,12 +459,37 @@
     <!-- COMING SOON MODAL -->
     <div id="comingSoonModal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <h2>🚀 Coming Soon!</h2>
-            <p>
-                Our app is putting on the final touches and will be launching on Google Play and Apple Store very soon. Get ready
-                to build like a pro!
-            </p>
-            <button class="modal-close-btn" onclick="closeModal()">Got it!</button>
+            <div id="signup-form">
+                <h2>🚀 Get Early Access!</h2>
+                <p>
+                    Our app is launching soon on Google Play and Apple Store. Be the first to know when it's available!
+                </p>
+                <form id="notificationForm" onsubmit="handleNotificationSignup(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" id="notificationFirstName" placeholder="First Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="notificationLastName" placeholder="Last Name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="notificationEmail" placeholder="Enter your email address" required>
+                    </div>
+                    <button type="submit" class="signup-btn">
+                        <span id="signup-btn-text">Notify Me When It's Ready!</span>
+                    </button>
+                </form>
+                <button class="modal-close-btn" onclick="closeModal()">Maybe Later</button>
+            </div>
+            
+            <div id="success-message" style="display: none;">
+                <h2>✅ You're All Set!</h2>
+                <p>
+                    Thanks for signing up! We'll send you an email as soon as Team Build Pro launches on the app stores.
+                </p>
+                <button class="modal-close-btn" onclick="closeModal()">Awesome!</button>
+            </div>
         </div>
     </div>
 
@@ -771,7 +796,11 @@
             if (modal) modal.style.display = "flex";
         }
         function closeModal() {
-            if (modal) modal.style.display = "none";
+            if (modal) {
+                modal.style.display = "none";
+                // Reset modal state when closing
+                setTimeout(resetModal, 300); // Small delay for smooth closing
+            }
         }
         window.addEventListener("keydown", (event) => {
             if (event.key === "Escape") closeModal();
@@ -887,6 +916,114 @@
                 });
             });
         });
+
+        // ============================================================================
+        // NOTIFICATION SIGNUP FUNCTIONALITY
+        // ============================================================================
+
+        async function handleNotificationSignup(event) {
+            event.preventDefault();
+            
+            const firstNameInput = document.getElementById('notificationFirstName');
+            const lastNameInput = document.getElementById('notificationLastName');
+            const emailInput = document.getElementById('notificationEmail');
+            const submitBtn = document.querySelector('.signup-btn');
+            const btnText = document.getElementById('signup-btn-text');
+            const signupForm = document.getElementById('signup-form');
+            const successMessage = document.getElementById('success-message');
+            
+            const firstName = firstNameInput.value.trim();
+            const lastName = lastNameInput.value.trim();
+            const email = emailInput.value.trim();
+            
+            if (!firstName || !lastName) {
+                alert('Please enter your first and last name.');
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Signing you up...';
+            
+            try {
+                // Save to Firestore
+                await db.collection('launch_notifications').add({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    source: 'website_modal',
+                    userAgent: navigator.userAgent,
+                    referrer: document.referrer || 'direct'
+                });
+                
+                console.log('Email notification signup successful:', `${firstName} ${lastName} (${email})`);
+                
+                // Show success message
+                signupForm.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Send confirmation email via Cloud Function
+                try {
+                    const response = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendLaunchNotificationConfirmation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email 
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        console.log('Confirmation email sent successfully');
+                    }
+                } catch (confirmationError) {
+                    console.log('Confirmation email failed, but signup was saved:', confirmationError);
+                }
+                
+            } catch (error) {
+                console.error('Error signing up for notifications:', error);
+                alert('Sorry, there was an error. Please try again later.');
+                
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.textContent = 'Notify Me When It\'s Ready!';
+            }
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function resetModal() {
+            const signupForm = document.getElementById('signup-form');
+            const successMessage = document.getElementById('success-message');
+            const firstNameInput = document.getElementById('notificationFirstName');
+            const lastNameInput = document.getElementById('notificationLastName');
+            const emailInput = document.getElementById('notificationEmail');
+            const submitBtn = document.querySelector('.signup-btn');
+            const btnText = document.getElementById('signup-btn-text');
+            
+            // Reset form visibility
+            signupForm.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            // Reset form state
+            firstNameInput.value = '';
+            lastNameInput.value = '';
+            emailInput.value = '';
+            submitBtn.disabled = false;
+            btnText.textContent = 'Notify Me When It\'s Ready!';
+        }
 
 
     </script>
