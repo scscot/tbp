@@ -409,7 +409,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                               TextSpan(
                                 text: 'Before Day One',
                                 style: TextStyle(
-                                  color: Colors.amber.shade300,
+                                  color: Color(0xFFfbbf24),
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
@@ -474,11 +474,17 @@ class _HomepageScreenState extends State<HomepageScreen>
                                 ],
                               ),
                               children: [
-                                const TextSpan(text: 'Accelerate '),
+                                TextSpan(
+                                  text: 'Accelerate ',
+                                  style: TextStyle(
+                                    color: Color(0xFFfbbf24),
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                                 TextSpan(
                                   text: 'Growth',
                                   style: TextStyle(
-                                    color: Colors.amber.shade300,
+                                    color: Color(0xFFfbbf24),
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),

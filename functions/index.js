@@ -3284,6 +3284,33 @@ async function cleanupUserReferences(userId) {
 /**
  * Send confirmation email when someone signs up for launch notifications
  */
+/**
+ * Helper function to append tester information to CSV files
+ */
+async function appendTesterToCSV(firstName, lastName, email, deviceType) {
+  const fs = require('fs').promises;
+  const path = require('path');
+  
+  try {
+    // Determine which CSV file to append to based on device type
+    const fileName = deviceType === 'ios' ? 'ios_testers.csv' : 'android_testers.csv';
+    const filePath = path.join('/Users/sscott/tbp', fileName);
+    
+    // Format the new line to append
+    const csvLine = `${firstName},${lastName},${email}\n`;
+    
+    console.log(`📄 CSV_APPEND: Adding tester to ${fileName}: ${firstName} ${lastName} (${email})`);
+    
+    // Append the new line to the CSV file
+    await fs.appendFile(filePath, csvLine, 'utf8');
+    
+    console.log(`✅ CSV_APPEND: Successfully added ${firstName} ${lastName} to ${fileName}`);
+  } catch (error) {
+    console.error(`❌ CSV_APPEND: Error appending to CSV file:`, error);
+    // Don't throw error to avoid disrupting the email flow
+  }
+}
+
 exports.sendLaunchNotificationConfirmation = onRequest({
   cors: true,
   region: 'us-central1',
@@ -3381,6 +3408,11 @@ exports.sendLaunchNotificationConfirmation = onRequest({
     ]);
     
     console.log(`✅ LAUNCH_NOTIFICATION: Confirmation email sent to ${firstName} ${lastName} (${email}) and notification sent to support team`);
+
+    // If user requested demo access, append to appropriate CSV file
+    if (wantDemo && deviceType) {
+      await appendTesterToCSV(firstName, lastName, email, deviceType);
+    }
     
     res.json({ 
       success: true, 
