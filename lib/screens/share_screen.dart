@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
@@ -124,7 +125,22 @@ class _ShareScreenState extends State<ShareScreen>
   bool _isSharingEnabled() {
     try {
       final remoteConfig = FirebaseRemoteConfig.instance;
-      return remoteConfig.getBool('enable_sharing');
+      
+      // Check if we're in demo mode (either iOS or Android)
+      bool isDemoMode = false;
+      if (Platform.isAndroid) {
+        isDemoMode = remoteConfig.getBool('android_demo_mode');
+      } else if (Platform.isIOS) {
+        isDemoMode = remoteConfig.getBool('ios_demo_mode');
+      }
+      
+      // If in demo mode, sharing is disabled
+      if (isDemoMode) {
+        return false;
+      }
+      
+      // Production mode - sharing is always enabled
+      return true;
     } catch (e) {
       // Default to enabled if Remote Config fails
       return true;

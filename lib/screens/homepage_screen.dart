@@ -38,7 +38,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   String? _sponsorName;
   String? _sponsorPhotoUrl;
   String? _bizOpp;
-  bool _isAndroidDemoMode = false;
+  bool _isDemoMode = false;
   String? _demoEmail;
   String? _demoPassword;
   bool _isDemoLoading = false;
@@ -53,7 +53,7 @@ class _HomepageScreenState extends State<HomepageScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
-    _checkAndroidDemoMode();
+    _checkDemoMode();
     _initializeReferralData(widget.referralCode);
   }
 
@@ -88,28 +88,34 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   // -------------------------------------------------------------
-  // DEMO MODE LOGIC
+  // DEMO MODE LOGIC (iOS & Android)
   // -------------------------------------------------------------
 
-  Future<void> _checkAndroidDemoMode() async {
+  Future<void> _checkDemoMode() async {
     try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      bool isDemo = false;
+      
       if (Platform.isAndroid) {
-        final remoteConfig = FirebaseRemoteConfig.instance;
-        final isDemo = remoteConfig.getBool('android_demo_mode');
-        final demoEmail = remoteConfig.getString('demo_account_email');
-        final demoPassword = remoteConfig.getString('demo_account_password');
-
-        if (mounted) {
-          setState(() {
-            _isAndroidDemoMode = isDemo;
-            _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
-            _demoPassword = demoPassword.isNotEmpty ? demoPassword : null;
-          });
-        }
+        isDemo = remoteConfig.getBool('android_demo_mode');
         debugPrint('🤖 HOMEPAGE: Android demo mode: $isDemo');
+      } else if (Platform.isIOS) {
+        isDemo = remoteConfig.getBool('ios_demo_mode');
+        debugPrint('🍎 HOMEPAGE: iOS demo mode: $isDemo');
+      }
+      
+      final demoEmail = remoteConfig.getString('demo_account_email');
+      final demoPassword = remoteConfig.getString('demo_account_password');
+
+      if (mounted) {
+        setState(() {
+          _isDemoMode = isDemo;
+          _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+          _demoPassword = demoPassword.isNotEmpty ? demoPassword : null;
+        });
       }
     } catch (e) {
-      debugPrint('❌ HOMEPAGE: Error checking Android demo mode: $e');
+      debugPrint('❌ HOMEPAGE: Error checking demo mode: $e');
     }
   }
 
@@ -285,8 +291,8 @@ class _HomepageScreenState extends State<HomepageScreen>
                           child: _buildHeroSection(),
                         ),
                         const SizedBox(height: 40),
-                        // Hide message card for Android test users
-                        if (!(_isAndroidDemoMode && _demoEmail != null))
+                        // Hide message card for demo users
+                        if (!(_isDemoMode && _demoEmail != null))
                           SlideTransition(
                             position: _slideAnimation,
                             child: FadeTransition(
@@ -294,7 +300,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                               child: _buildMessageCard(),
                             ),
                           ),
-                        if (!(_isAndroidDemoMode && _demoEmail != null))
+                        if (!(_isDemoMode && _demoEmail != null))
                           const SizedBox(height: 48)
                         else
                           const SizedBox(height: 24),
@@ -640,8 +646,8 @@ class _HomepageScreenState extends State<HomepageScreen>
   }
 
   Widget _buildCtaButtons() {
-    // Android Demo Mode: Show demo login instead of signup/login
-    if (_isAndroidDemoMode && _demoEmail != null) {
+    // Demo Mode: Show demo login instead of signup/login (iOS & Android)
+    if (_isDemoMode && _demoEmail != null) {
       return _buildDemoModeCard();
     }
 
@@ -813,7 +819,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Test Mode Active',
+                      'Demo Mode Active',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -821,7 +827,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
                     Text(
-                      'Testing Environment',
+                      'Pre-Loaded Demo Account',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.orange.shade600,
@@ -850,7 +856,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome to the Team Build Pro',
+                  'Welcome to Team Build Pro Demo',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -859,7 +865,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'This is a fully functional test account pre-loaded with sample data. You can explore all features without affecting any real user accounts.',
+                  'This is a fully functional demo account pre-loaded with realistic team data. Explore all features and see how Team Build Pro can transform your direct sales business!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -948,7 +954,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
               label: Text(
-                _isDemoLoading ? 'Logging In...' : 'Start Testing!',
+                _isDemoLoading ? 'Logging In...' : 'Start Demo!',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

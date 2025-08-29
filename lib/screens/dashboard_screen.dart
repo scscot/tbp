@@ -45,8 +45,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   Map<String, int> _cachedNetworkCounts = {};
   bool _isLoadingCounts = false;
   
-  // Android demo mode state
-  bool _isAndroidDemoMode = false;
+  // Demo mode state (iOS & Android)
+  bool _isDemoMode = false;
   String? _demoEmail;
 
   @override
@@ -64,32 +64,38 @@ class _DashboardScreenState extends State<DashboardScreen>
       curve: Curves.easeInOut,
     ));
     _animationController.forward();
-    _checkAndroidDemoMode();
+    _checkDemoMode();
     _loadBizOppData();
     _loadNetworkCounts();
   }
 
   // -------------------------------------------------------------
-  // ANDROID DEMO MODE LOGIC
+  // DEMO MODE LOGIC (iOS & Android)
   // -------------------------------------------------------------
 
-  Future<void> _checkAndroidDemoMode() async {
+  Future<void> _checkDemoMode() async {
     try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      bool isDemo = false;
+      
       if (Platform.isAndroid) {
-        final remoteConfig = FirebaseRemoteConfig.instance;
-        final isDemo = remoteConfig.getBool('android_demo_mode');
-        final demoEmail = remoteConfig.getString('demo_account_email');
-
-        if (mounted) {
-          setState(() {
-            _isAndroidDemoMode = isDemo;
-            _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
-          });
-        }
+        isDemo = remoteConfig.getBool('android_demo_mode');
         debugPrint('🤖 DASHBOARD: Android demo mode: $isDemo');
+      } else if (Platform.isIOS) {
+        isDemo = remoteConfig.getBool('ios_demo_mode');
+        debugPrint('🍎 DASHBOARD: iOS demo mode: $isDemo');
+      }
+      
+      final demoEmail = remoteConfig.getString('demo_account_email');
+
+      if (mounted) {
+        setState(() {
+          _isDemoMode = isDemo;
+          _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+        });
       }
     } catch (e) {
-      debugPrint('❌ DASHBOARD: Error checking Android demo mode: $e');
+      debugPrint('❌ DASHBOARD: Error checking demo mode: $e');
     }
   }
 
@@ -571,7 +577,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Show subscription card at top for non-active subscribers (urgent action needed)
-        if (!(_isAndroidDemoMode && _demoEmail != null) && !isActiveSubscriber)
+        if (!(_isDemoMode && _demoEmail != null) && !isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
         _buildActionCard(
           icon: Icons.groups,
@@ -646,7 +652,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         
         // Show subscription card after profile for active subscribers (maintenance task)
-        if (!(_isAndroidDemoMode && _demoEmail != null) && isActiveSubscriber)
+        if (!(_isDemoMode && _demoEmail != null) && isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
 
         if (user.role == 'admin')
