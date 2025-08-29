@@ -990,53 +990,97 @@
             btnText.textContent = 'Signing you up...';
             
             try {
-                // Save to Firestore
-                const signupData = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    wantDemo: wantDemo,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    source: 'website_modal',
-                    userAgent: navigator.userAgent,
-                    referrer: document.referrer || 'direct'
-                };
+                // Check if email already exists
+                const existingQuery = await db.collection('launch_notifications')
+                    .where('email', '==', email)
+                    .limit(1)
+                    .get();
                 
-                // Add device type if demo was requested
-                if (wantDemo && deviceType) {
-                    signupData.deviceType = deviceType;
+                let isNewSignup = false;
+                let shouldSendEmail = false;
+                let existingDoc = null;
+                
+                if (existingQuery.empty) {
+                    // New signup - create new document
+                    const signupData = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        wantDemo: wantDemo,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        source: 'website_modal',
+                        userAgent: navigator.userAgent,
+                        referrer: document.referrer || 'direct'
+                    };
+                    
+                    if (wantDemo && deviceType) {
+                        signupData.deviceType = deviceType;
+                    }
+                    
+                    await db.collection('launch_notifications').add(signupData);
+                    console.log('New signup successful:', `${firstName} ${lastName} (${email})` + (wantDemo ? ` - Demo requested (${deviceType})` : ''));
+                    isNewSignup = true;
+                    shouldSendEmail = true;
+                    
+                } else {
+                    // Email exists - check if demo is newly requested
+                    existingDoc = existingQuery.docs[0];
+                    const existingData = existingDoc.data();
+                    const existingWantDemo = existingData.wantDemo || false;
+                    
+                    if (wantDemo && !existingWantDemo && deviceType) {
+                        // Demo newly requested - update existing document
+                        await existingDoc.ref.update({
+                            wantDemo: true,
+                            deviceType: deviceType,
+                            demoRequestDate: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        console.log('Demo access added for existing user:', `${email} (${deviceType})`);
+                        shouldSendEmail = true; // Send email with demo instructions
+                        
+                    } else {
+                        // Already registered, no new demo request
+                        console.log('User already registered:', email);
+                        showAlreadyRegisteredMessage();
+                        signupForm.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        return; // Exit early, don't send email
+                    }
                 }
                 
-                await db.collection('launch_notifications').add(signupData);
+                // Show appropriate success message
+                if (isNewSignup) {
+                    showSuccessMessage(wantDemo, deviceType);
+                } else {
+                    showDemoAddedMessage(deviceType);
+                }
                 
-                console.log('Email notification signup successful:', `${firstName} ${lastName} (${email})` + (wantDemo ? ` - Demo requested (${deviceType})` : ''));
-                
-                // Show dynamic success message
-                showSuccessMessage(wantDemo, deviceType);
                 signupForm.style.display = 'none';
                 successMessage.style.display = 'block';
                 
-                // Send confirmation email via Cloud Function
-                try {
-                    const response = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendLaunchNotificationConfirmation', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ 
-                            firstName: firstName,
-                            lastName: lastName,
-                            email: email,
-                            wantDemo: wantDemo,
-                            deviceType: deviceType || null
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        console.log('Confirmation email sent successfully');
+                // Send confirmation email via Cloud Function (only when appropriate)
+                if (shouldSendEmail) {
+                    try {
+                        const response = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendLaunchNotificationConfirmation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                wantDemo: wantDemo,
+                                deviceType: deviceType || null
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            console.log('Confirmation email sent successfully');
+                        }
+                    } catch (confirmationError) {
+                        console.log('Confirmation email failed, but signup was saved:', confirmationError);
                     }
-                } catch (confirmationError) {
-                    console.log('Confirmation email failed, but signup was saved:', confirmationError);
                 }
                 
             } catch (error) {
@@ -1072,6 +1116,27 @@
                     <p>Thanks for signing up! We'll send you an email as soon as Team Build Pro launches on the app stores.</p>
                 `;
             }
+        }
+        
+        function showDemoAddedMessage(deviceType) {
+            const successContent = document.getElementById('success-content');
+            const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
+            
+            successContent.innerHTML = `
+                <p><strong>Great news!</strong> We've added demo access to your account.</p>
+                <p style="margin: 15px 0;">You'll receive an email with step-by-step instructions on how to download and preview the ${deviceName} demo version.</p>
+                <p><strong>Thanks for your interest in testing!</strong></p>
+            `;
+        }
+        
+        function showAlreadyRegisteredMessage() {
+            const successContent = document.getElementById('success-content');
+            
+            successContent.innerHTML = `
+                <p><strong>You've already registered - we've got you covered!</strong></p>
+                <p style="margin: 15px 0;">We'll notify you as soon as Team Build Pro launches on the app stores.</p>
+                <p>Thanks for your continued interest! 🎉</p>
+            `;
         }
         
         function resetModal() {
