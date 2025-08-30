@@ -79,7 +79,7 @@ function getEmailTemplate(firstName, demoUrl) {
       
       <!-- Header -->
       <div style="background: linear-gradient(135deg, #1e293b, #334155); padding: 2rem; text-align: center; border-radius: 8px 8px 0 0;">
-        <img src="https://teambuildpro.com/assets/icons/app_icon.png" alt="Team Build Pro" style="width: 64px; height: 64px; border-radius: 50%; margin-bottom: 1rem;">
+        <img src="https://teambuildpro.com/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 64px; height: 64px; border-radius: 50%; margin-bottom: 1rem;">
         <h1 style="color: #ffffff; margin: 0; font-size: 1.75rem; font-weight: 700;">Welcome to Team Build Pro!</h1>
         <p style="color: #e2e8f0; margin: 0.5rem 0 0 0; font-size: 1.1rem;">Your Android demo access is ready</p>
       </div>

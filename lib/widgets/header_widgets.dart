@@ -118,7 +118,7 @@ class EntryAppBar extends StatelessWidget implements PreferredSizeWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
-              'assets/icons/app_icon.png',
+              'assets/icons/team-build-pro.png',
               width: 32,
               height: 32,
               fit: BoxFit.cover,

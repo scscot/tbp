@@ -3420,7 +3420,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://teambuildpro.com/assets/icons/app_icon.png" alt="Team Build Pro" style="width: 60px; height: 60px; border-radius: 50%;">
+            <img src="https://teambuildpro.com/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 60px; height: 60px; border-radius: 50%;">
             <h1 style="color: #667eea; margin: 20px 0 10px; font-size: 28px;">Team Build Pro</h1>
             <p style="color: #64748b; font-size: 16px; margin: 0;">The Ultimate Team Building App</p>
           </div>
