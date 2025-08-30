@@ -34,14 +34,21 @@ async function generateBetaTesterCSVs() {
           .orderBy('createdAt', 'asc')
           .get();
         
-        // Generate CSV content
+        // Generate CSV content (platform-specific format)
         let csvContent = '';
         const testers = [];
         
         snapshot.docs.forEach(doc => {
           const data = doc.data();
           testers.push(data);
-          csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+          
+          if (deviceType === 'android') {
+            // Google Play Console requires one email per line, no commas
+            csvContent += `${data.email}\n`;
+          } else {
+            // App Store Connect supports firstName,lastName,email format
+            csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+          }
         });
         
         // Write to local file
@@ -67,8 +74,8 @@ async function generateBetaTesterCSVs() {
     }
     
     console.log('\n🎯 Files are ready for upload to:');
-    console.log('   • ios_testers.csv → App Store Connect TestFlight External Testing');
-    console.log('   • android_testers.csv → Google Play Console Internal Testing');
+    console.log('   • ios_testers.csv → App Store Connect TestFlight External Testing (firstName,lastName,email format)');
+    console.log('   • android_testers.csv → Google Play Console Internal Testing (email-only format)');
     
   } catch (error) {
     console.error('❌ Error:', error);

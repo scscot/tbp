@@ -3411,6 +3411,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
     const confirmationEmail = {
       to: `${fullName} <${email}>`,
       from: 'Team Build Pro <support@teambuildpro.com>',
+      bcc: 'scscot@gmail.com',
       subject: `Thanks for signing up, ${firstName}! Team Build Pro is launching soon 🚀`,
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
@@ -3428,10 +3429,9 @@ exports.sendLaunchNotificationConfirmation = onRequest({
           <div style="background: #f8fafc; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
             <h3 style="color: #1e293b; margin: 0 0 15px; font-size: 20px;">What happens next?</h3>
             <ul style="color: #475569; line-height: 1.6; margin: 0; padding-left: 20px;">
-              <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on the App Store and Google Play</li>
               ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #667eea;">🎯 Demo Access:</strong> You'll receive step-by-step instructions on how to download and preview the ${deviceType === 'ios' ? 'iPhone' : 'Android'} demo version</li>` : ''}
-              <li style="margin-bottom: 8px;">You'll get exclusive access to our 30-day free trial</li>
-              <li style="margin-bottom: 8px;">No spam, just launch updates and valuable team building insights</li>
+              ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #22c55e;">🎁 Exclusive Offer:</strong> Complete your 14-day demo trial and receive the full App Store/Google Play version - free for life!</li>` : ''}
+              <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on the App Store and Google Play</li>
             </ul>
           </div>
           

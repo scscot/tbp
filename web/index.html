@@ -828,11 +828,7 @@
             ctaIds.forEach((id) => {
                 const button = document.getElementById(id);
                 if (button) {
-                    if (isMobileDevice()) {
-                        button.textContent = "Download on the App Store";
-                    } else {
-                        button.innerHTML = "Get Early Access<br>Try Demo!";
-                    }
+                    button.innerHTML = "Get Early Access<br>Try Demo!";
                     button.href = "javascript:void(0);";
                     button.target = "_self";
                     button.onclick = openModal;

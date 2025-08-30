@@ -601,6 +601,8 @@ p {
     z-index: 2000;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
@@ -610,6 +612,9 @@ p {
     max-width: 500px;
     margin: 1rem;
     text-align: center;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-close-btn {
@@ -1159,32 +1164,169 @@ p {
     margin-bottom: 1.5rem;
 }
 
-@media (max-width: 480px) {
+/* Mobile-first responsive modal design */
+@media (max-width: 768px) {
+    .modal-overlay {
+        align-items: flex-start;
+        padding: 1rem 0.5rem;
+    }
+    
     .modal-content {
-        margin: 1rem !important;
+        margin: 0 !important;
         padding: 1.5rem !important;
+        max-height: calc(100vh - 1rem);
+        min-height: auto;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 1rem 1rem 0 0;
+        position: relative;
+        top: auto;
+    }
+    
+    .modal-content h2 {
+        font-size: clamp(1.4rem, 4vw, 1.75rem);
+        margin-bottom: 0.75rem;
+    }
+    
+    .modal-content p {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        margin-bottom: 1rem;
+    }
+}
+
+/* Small mobile devices (phones in portrait) */
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .modal-content {
+        padding: 1.25rem !important;
+        max-height: calc(100vh - 0.5rem);
+        border-radius: 0.75rem 0.75rem 0 0;
     }
     
     .modal-content input[type="email"],
     .modal-content input[type="text"] {
-        font-size: 1.1rem !important;
+        font-size: clamp(1rem, 3.5vw, 1.1rem) !important;
         padding: 1.25rem 1rem !important;
-        min-height: 55px !important;
+        min-height: 50px !important;
     }
     
     .modal-content input[type="email"]::placeholder,
     .modal-content input[type="text"]::placeholder {
-        font-size: 1.1rem !important;
+        font-size: clamp(1rem, 3.5vw, 1.1rem) !important;
     }
     
     .modal-content .form-row {
         flex-direction: column !important;
-        gap: 1rem !important;
+        gap: 0.75rem !important;
     }
     
     .signup-btn {
-        font-size: 1.1rem !important;
+        font-size: clamp(1rem, 3.5vw, 1.1rem) !important;
         padding: 1.25rem 1.5rem !important;
-        min-height: 55px !important;
+        min-height: 50px !important;
+    }
+    
+    .demo-section {
+        padding: 1rem !important;
+    }
+    
+    .checkbox-text {
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
+}
+
+/* Extra small devices (older phones, very narrow screens) */
+@media (max-width: 360px) {
+    .modal-overlay {
+        padding: 0.25rem 0.125rem;
+    }
+    
+    .modal-content {
+        padding: 1rem !important;
+        max-height: calc(100vh - 0.25rem);
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-content p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .modal-content input[type="email"],
+    .modal-content input[type="text"] {
+        padding: 1rem 0.75rem !important;
+        min-height: 45px !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .signup-btn {
+        padding: 1rem 1.25rem !important;
+        min-height: 45px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+    .modal-overlay {
+        align-items: flex-start;
+        padding: 0.25rem;
+        overflow-y: auto;
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 0.5rem);
+        padding: 1rem !important;
+        border-radius: 0.5rem;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-content p {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .modal-content .form-group {
+        margin: 1rem 0;
+    }
+    
+    .demo-section {
+        padding: 0.75rem !important;
+    }
+}
+
+/* Tall mobile screens (modern smartphones) */
+@media (min-height: 800px) and (max-width: 480px) {
+    .modal-overlay {
+        align-items: center;
+        padding: 1.5rem 0.5rem;
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 3rem);
+        border-radius: 1rem;
+    }
+}
+
+/* Very tall screens (iPhone Pro Max, etc.) */
+@media (min-height: 920px) and (max-width: 480px) {
+    .modal-overlay {
+        padding: 2rem 0.5rem;
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 4rem);
     }
 }
