@@ -78,7 +78,12 @@
                         unstoppable momentum.
                     </p>
                     <div class="hero-buttons">
-                        <a href="#" id="cta-hero" class="primary-button cta-button large-button">Download on Apple Store<br>Enjoy 30-Day Free Trial!</a>
+                        <div class="download-buttons" id="download-container">
+                            <!-- Dynamically populated based on device detection -->
+                        </div>
+                        <div class="secondary-download" id="secondary-container">
+                            <!-- Secondary option with smaller styling -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -348,11 +353,14 @@
                     <p>One plan, all features. Start your free trial today, no credit card required.</p>
                 </div>
                 <div class="pricing-card">
-                    <h3>Pro Plan</h3>
+                    <h3>Subscription Plan</h3>
                     <p class="subtitle">Full access to all our premium features.</p>
                     <div class="price">
                         <span class="amount">$4.99</span>
                         <span class="period">/ month</span>
+                    </div>
+                    <div class="free-trial-badge">
+                        <span class="trial-text">30-Day Free Trial</span>
                     </div>
                     <ul class="features-list">
                         <li><span class="material-symbols-outlined">check_circle</span>Unlimited Team Members</li>
@@ -460,9 +468,9 @@
     <div id="comingSoonModal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="signup-form">
-                <h2>🚀 Get Early Access!</h2>
+                <h2>🚀 Get Android Preview!</h2>
                 <p>
-                    Our app is launching soon on Google Play and Apple Store. Be the first to know when it's available!
+                    Our app is launching soon on Google Play. Be the first to know when it's available!
                 </p>
                 <form id="notificationForm" onsubmit="handleNotificationSignup(event)">
                     <div class="form-row">
@@ -480,17 +488,10 @@
                     <!-- Demo Interest Section -->
                     <div class="form-group demo-section">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="demoInterest" onchange="toggleDemoOptions()">
+                            <input type="checkbox" id="demoInterest">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">I'd love to try the demo version!</span>
+                            <span class="checkbox-text">I'd love to try the Android demo version!</span>
                         </label>
-                        <div id="deviceSelection" class="device-dropdown" style="display: none;">
-                            <select id="deviceType" name="deviceType">
-                                <option value="">Select Your Device</option>
-                                <option value="ios">iOS</option>
-                                <option value="android">Android</option>
-                            </select>
-                        </div>
                     </div>
                     
                     <button type="submit" class="signup-btn">
@@ -565,10 +566,6 @@
                 ctaFinalHeadline: "Ready to Empower Your Team?",
                 ctaFinalSubheadline:
                     "Give your entire organization the tools they need to succeed. Start your 30-day free trial today.",
-                ctaHeader: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaHero: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaPricing: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaFinal: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
             },
             new: {
                 heroBadge: "Your Head Start to Success",
@@ -601,10 +598,6 @@
                 ctaFinalHeadline: "Ready to Build Your Foundation?",
                 ctaFinalSubheadline:
                     "Join thousands of professionals who are building their teams faster than ever before. Start building your team for free today.",
-                ctaHeader: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaHero: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaPricing: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
-                ctaFinal: "Download on Apple Store<br>Enjoy 30-Day Free Trial!",
             },
         };
 
@@ -653,11 +646,8 @@
             updateElement("cta-final-headline", content.ctaFinalHeadline);
             updateElement("cta-final-subheadline", content.ctaFinalSubheadline);
 
-            // Update all CTA buttons
-            updateElement("cta-header", content.ctaHeader, true);
-            updateElement("cta-hero", content.ctaHero, true);
-            updateElement("cta-pricing", content.ctaPricing, true);
-            updateElement("cta-final", content.ctaFinal, true);
+            // CTA buttons are now handled by smart device detection in updateCTAs()
+            // No longer using static content for CTA text
         }
 
         // ============================================================================
@@ -718,13 +708,11 @@
                 // Journey for a new prospect invited to pre-build a team
                 heroHeadline.innerHTML = `Pre-Build Your Foundation <br> <span class="accent">Before Launch!</span>`;
                 heroSubheadline.innerHTML = `${referrerFullName} is inviting you to get a head start. Use the Team Build Pro app to pre-build your ${opportunityName} team before you officially join!`;
-                ctaHero.innerHTML = `Download on Apple Store<br>Enjoy 30-Day Free Trial!`;
 
             } else { // "partner"
                 // Journey for an existing leader referred by a colleague
                 heroHeadline.innerHTML = `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`;
                 heroSubheadline.innerHTML = `Your ${opportunityName} colleague, ${referrerFullName} is inviting you to see the tool they're using to build their team, and thought it could help you build yours, too.`;
-                ctaHero.innerHTML = `Download on Apple Store<br>Enjoy 30-Day Free Trial!`;
             }
 
             // Hide the generic badge now that a personal invitation is shown
@@ -808,6 +796,94 @@
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
 
+        function getDeviceType() {
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+            const isAndroid = /Android/.test(userAgent);
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            
+            return {
+                isIOS,
+                isAndroid,
+                isMobile,
+                isDesktop: !isMobile
+            };
+        }
+
+        function buildAppStoreURL() {
+            const baseURL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check for referral parameters
+            const newParam = urlParams.get('new');
+            const refParam = urlParams.get('ref');
+            
+            if (newParam) {
+                return `${baseURL}?new=${encodeURIComponent(newParam)}`;
+            } else if (refParam) {
+                return `${baseURL}?ref=${encodeURIComponent(refParam)}`;
+            }
+            
+            return baseURL;
+        }
+
+        function createAppStoreBadge(isPrimary = true) {
+            const appStoreURL = buildAppStoreURL();
+            return `
+                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener">
+                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+                         alt="Download on the App Store" />
+                </a>
+            `;
+        }
+
+        function createAndroidPreviewButton(isPrimary = true) {
+            return `
+                <button class="android-preview-btn ${isPrimary ? 'primary' : 'secondary'}" onclick="openModal()">
+                    Get Android Preview<br>Early Access!
+                </button>
+            `;
+        }
+
+        function setupDownloadButtons() {
+            const device = getDeviceType();
+            const primaryContainer = document.getElementById('download-container');
+            const secondaryContainer = document.getElementById('secondary-container');
+            
+            if (device.isIOS) {
+                // iOS users see App Store first, Android preview second
+                primaryContainer.innerHTML = createAppStoreBadge(true);
+                secondaryContainer.innerHTML = `
+                    <div style="margin-top: 0.5rem;">
+                        <small style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; display: block;">
+                            Using Android?
+                        </small>
+                        ${createAndroidPreviewButton(false)}
+                    </div>
+                `;
+            } else if (device.isAndroid) {
+                // Android users see Android preview first, App Store second
+                primaryContainer.innerHTML = createAndroidPreviewButton(true);
+                secondaryContainer.innerHTML = `
+                    <div style="margin-top: 0.5rem;">
+                        <small style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; display: block;">
+                            Have an iPhone?
+                        </small>
+                        ${createAppStoreBadge(false)}
+                    </div>
+                `;
+            } else {
+                // Desktop/unknown - show both equally prominent
+                primaryContainer.innerHTML = `
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+                        ${createAppStoreBadge(true)}
+                        ${createAndroidPreviewButton(true)}
+                    </div>
+                `;
+                secondaryContainer.innerHTML = '';
+            }
+        }
+
         const modal = document.getElementById("comingSoonModal");
         function openModal() {
             if (modal) modal.style.display = "flex";
@@ -823,21 +899,39 @@
             if (event.key === "Escape") closeModal();
         });
 
-        function updateCTAs() {
-            const ctaIds = ["cta-header", "cta-hero", "cta-pricing", "cta-final"];
+        function setupBottomCTAs() {
+            const device = getDeviceType();
+            const ctaIds = ["cta-pricing", "cta-final"];
+            
             ctaIds.forEach((id) => {
                 const button = document.getElementById(id);
-                if (button) {
-                    button.innerHTML = "Get Early Access<br>Try Demo!";
-                    button.href = "javascript:void(0);";
-                    button.target = "_self";
-                    button.onclick = openModal;
+                if (!button) return;
+                
+                // Replace just the button, not the entire parent container
+                if (device.isIOS) {
+                    // iOS users see App Store badge
+                    button.outerHTML = createAppStoreBadge(true);
+                } else if (device.isAndroid) {
+                    // Android users see Android preview button
+                    button.outerHTML = createAndroidPreviewButton(true);
+                } else {
+                    // Desktop - show both options
+                    button.outerHTML = `
+                        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+                            ${createAppStoreBadge(true)}
+                            ${createAndroidPreviewButton(true)}
+                        </div>
+                    `;
                 }
             });
-            const secondaryHeroButton = document.querySelector(".hero-buttons .secondary-button");
-            if (secondaryHeroButton) {
-                secondaryHeroButton.style.display = "none";
-            }
+        }
+
+        function updateCTAs() {
+            // Setup the smart download buttons in hero section
+            setupDownloadButtons();
+            
+            // Setup the bottom CTAs with smart device detection
+            setupBottomCTAs();
         }
 
         async function initializePage() {
@@ -934,18 +1028,7 @@
         // NOTIFICATION SIGNUP FUNCTIONALITY
         // ============================================================================
 
-        function toggleDemoOptions() {
-            const demoCheckbox = document.getElementById('demoInterest');
-            const deviceSelection = document.getElementById('deviceSelection');
-            
-            if (demoCheckbox.checked) {
-                deviceSelection.style.display = 'block';
-            } else {
-                deviceSelection.style.display = 'none';
-                // Clear device selection when hiding
-                document.getElementById('deviceType').value = '';
-            }
-        }
+        // No longer needed - device selection is simplified for Android only
 
         async function handleNotificationSignup(event) {
             event.preventDefault();
@@ -954,7 +1037,6 @@
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
             const demoCheckbox = document.getElementById('demoInterest');
-            const deviceSelect = document.getElementById('deviceType');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             const signupForm = document.getElementById('signup-form');
@@ -964,7 +1046,7 @@
             const lastName = lastNameInput.value.trim();
             const email = emailInput.value.trim();
             const wantDemo = demoCheckbox.checked;
-            const deviceType = deviceSelect.value;
+            const deviceType = wantDemo ? 'android' : null; // Auto-set to android if demo requested
             
             if (!firstName || !lastName) {
                 alert('Please enter your first and last name.');
@@ -976,10 +1058,7 @@
                 return;
             }
             
-            if (wantDemo && !deviceType) {
-                alert('Please select your device type to access the demo.');
-                return;
-            }
+            // No validation needed - deviceType is auto-set for Android demo requests
             
             // Show loading state
             submitBtn.disabled = true;
@@ -1142,8 +1221,6 @@
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
             const demoCheckbox = document.getElementById('demoInterest');
-            const deviceSelect = document.getElementById('deviceType');
-            const deviceSelection = document.getElementById('deviceSelection');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             
@@ -1156,8 +1233,6 @@
             lastNameInput.value = '';
             emailInput.value = '';
             demoCheckbox.checked = false;
-            deviceSelect.value = '';
-            deviceSelection.style.display = 'none';
             submitBtn.disabled = false;
             btnText.textContent = 'Notify Me When It\'s Ready!';
         }
