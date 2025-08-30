@@ -6,12 +6,16 @@ const admin = require("firebase-admin");
 const { getTimezoneFromLocation, getTimezonesAtHour } = require("./timezone_mapping");
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
+const { sendDemoInvitation } = require('./sendDemoInvitation');
 
 // This makes the callable function available for your apps
 exports.submitContactForm = submitContactForm;
 
 // This makes the HTTPS function available for your contact_us.html page
 exports.submitContactFormHttp = submitContactFormHttp;
+
+// This makes the demo invitation function available for the demo script
+exports.sendDemoInvitation = sendDemoInvitation;
 
 // Initialize Firebase Admin SDK only if not already initialized
 if (!admin.apps.length) {

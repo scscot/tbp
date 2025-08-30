@@ -1085,7 +1085,9 @@
                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                         source: 'website_modal',
                         userAgent: navigator.userAgent,
-                        referrer: document.referrer || 'direct'
+                        referrer: document.referrer || 'direct',
+                        refUrl: window.location.href,
+                        emailSent: false
                     };
                     
                     if (wantDemo && deviceType) {
@@ -1108,7 +1110,9 @@
                         await existingDoc.ref.update({
                             wantDemo: true,
                             deviceType: deviceType,
-                            demoRequestDate: firebase.firestore.FieldValue.serverTimestamp()
+                            demoRequestDate: firebase.firestore.FieldValue.serverTimestamp(),
+                            refUrl: window.location.href,
+                            emailSent: false
                         });
                         console.log('Demo access added for existing user:', `${email} (${deviceType})`);
                         shouldSendEmail = true; // Send email with demo instructions
