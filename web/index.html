@@ -490,7 +490,7 @@
                         <label class="checkbox-label">
                             <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Check the box if you would like to preview the app before it's officially available in Google Play</span>
+                            <span class="checkbox-text">Check the box if you would like to preview the app before it's officially available on Google Play</span>
                         </label>
                     </div>
                     
@@ -1221,14 +1221,14 @@
                 successContent.innerHTML = `
                     <p>Thanks for signing up! You'll receive two emails:</p>
                     <ul style="text-align: left; margin: 20px 0;">
-                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on the app stores</li>
-                        <li><strong>Demo access instructions</strong> - You'll get step-by-step instructions on how to download and preview the ${deviceName} demo version</li>
+                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on Google Play.</li>
+                        <li><strong>Demo access instructions</strong> - You'll get step-by-step instructions on how to download and preview the app.</li>
                     </ul>
                     <p style="margin-top: 20px;"><strong>Thanks for being an early supporter!</strong></p>
                 `;
             } else {
                 successContent.innerHTML = `
-                    <p>Thanks for signing up! We'll send you an email as soon as Team Build Pro launches on the app stores.</p>
+                    <p>Thanks for your interest! We'll send you an email as soon as Team Build Pro is officially available on Google Play.</p>
                 `;
             }
         }
@@ -1238,9 +1238,9 @@
             const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
             
             successContent.innerHTML = `
-                <p><strong>Great news!</strong> We've added demo access to your account.</p>
-                <p style="margin: 15px 0;">You'll receive an email with step-by-step instructions on how to download and preview the ${deviceName} demo version.</p>
-                <p><strong>Thanks for your interest in testing!</strong></p>
+                <p><strong>Great news!</strong> You're all set!</p>
+                <p style="margin: 15px 0;">You'll soon receive an email with step-by-step instructions on how to download and preview the app.</p>
+                <p><strong>Thanks for your interest!</strong></p>
             `;
         }
         
@@ -1249,7 +1249,7 @@
             
             successContent.innerHTML = `
                 <p><strong>You've already registered - we've got you covered!</strong></p>
-                <p style="margin: 15px 0;">We'll notify you as soon as Team Build Pro launches on the app stores.</p>
+                <p style="margin: 15px 0;">We'll notify you as soon as Team Build Pro is officially available on Google Play.</p>
                 <p>Thanks for your continued interest! 🎉</p>
             `;
         }
@@ -1282,7 +1282,7 @@
                 demoSection.classList.remove('show');
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available in Google Play";
+                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available on Google Play";
                 }
             }
         }
@@ -1322,7 +1322,7 @@
                 // Update the demo text to be more contextual
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available in Google Play";
+                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available on Google Play";
                 }
                 
                 // Make demo checkbox focusable

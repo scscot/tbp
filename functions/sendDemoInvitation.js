@@ -35,31 +35,31 @@ exports.sendDemoInvitation = onRequest({
       return;
     }
 
-    console.log(`📧 DEMO_INVITATION: Sending demo invitation to ${firstName} ${lastName} (${email})`);
+    console.log(`📧 DEMO_INVITATION: Sending preview invitation to ${firstName} ${lastName} (${email})`);
 
     // Set the SendGrid API key
     sgMail.setApiKey(sendgridApiKey.value());
 
-    // Create the demo invitation email
+    // Create the preview invitation email
     const msg = {
       to: email,
-      from: 'demo@teambuildpro.com',
-      subject: '🚀 Welcome to Team Build Pro Android Demo!',
+      from: 'Team Build Pro <demo@teambuildpro.com>',
+      subject: 'Team Build Pro Preview',
       html: getEmailTemplate(firstName, demoUrl)
     };
 
     // Send the email
     await sgMail.send(msg);
-    console.log(`✅ DEMO_INVITATION: Successfully sent demo invitation to ${email}`);
+    console.log(`✅ DEMO_INVITATION: Successfully sent preview invitation to ${email}`);
 
     res.status(200).json({ 
       success: true, 
-      message: 'Demo invitation sent successfully.' 
+      message: 'Preview invitation sent successfully.' 
     });
 
   } catch (error) {
-    console.error('❌ DEMO_INVITATION: Error sending demo invitation:', error);
-    
+    console.error('❌ DEMO_INVITATION: Error sending preview invitation:', error);
+
     // Handle SendGrid specific errors
     if (error.response) {
       console.error('SendGrid error details:', error.response.body);
@@ -67,12 +67,12 @@ exports.sendDemoInvitation = onRequest({
     
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to send demo invitation' 
+      error: 'Failed to send preview invitation' 
     });
   }
 });
 
-// Email template for demo invitations
+// Email template for preview invitations
 function getEmailTemplate(firstName, demoUrl) {
   return `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
@@ -81,7 +81,7 @@ function getEmailTemplate(firstName, demoUrl) {
       <div style="background: linear-gradient(135deg, #1e293b, #334155); padding: 2rem; text-align: center; border-radius: 8px 8px 0 0;">
         <img src="https://teambuildpro.com/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 64px; height: 64px; border-radius: 50%; margin-bottom: 1rem;">
         <h1 style="color: #ffffff; margin: 0; font-size: 1.75rem; font-weight: 700;">Welcome to Team Build Pro!</h1>
-        <p style="color: #e2e8f0; margin: 0.5rem 0 0 0; font-size: 1.1rem;">Your Android demo access is ready</p>
+        <p style="color: #e2e8f0; margin: 0.5rem 0 0 0; font-size: 1.1rem;">Your preview access is ready!</p>
       </div>
       
       <!-- Main Content -->
@@ -91,12 +91,12 @@ function getEmailTemplate(firstName, demoUrl) {
         </p>
         
         <p style="color: #334155; line-height: 1.6; margin-bottom: 1.5rem;">
-          Thank you for your interest in Team Build Pro! We're excited to give you early access to our Android demo version.
+          Thank you for your interest in Team Build Pro! We're excited to give you an early preview of our app.
         </p>
         
         <!-- Download Instructions -->
         <div style="background-color: #f1f5f9; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">📱 How to Download the Demo:</h3>
+          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">📱 How to Download the Preview:</h3>
           
           <ol style="color: #334155; line-height: 1.8; margin-left: 1rem;">
             <li><strong>Click this link</strong> to access the demo: <br>
@@ -105,17 +105,17 @@ function getEmailTemplate(firstName, demoUrl) {
                   ${demoUrl}
                 </a>
             </li>
-            <li><strong>Install the demo app</strong> from Google Play Store</li>
-            <li><strong>Start exploring!</strong> Build your network and test all features</li>
+            <li><strong>Install the preview version of the app</strong> from Google Play</li>
+            <li><strong>Start exploring!</strong> Check out all the amazing features</li>
           </ol>
         </div>
         
         <!-- Important Notice -->
         <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0;">
-          <h4 style="color: #92400e; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">⚠️ Important Demo Details:</h4>
+          <h4 style="color: #92400e; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">⚠️ Important Preview Details:</h4>
           <p style="color: #b45309; margin: 0; line-height: 1.6; font-size: 0.95rem;">
-            The demo app will appear with a temporary name: <strong>"com.scott.ultimatefix - unreviewed"</strong>. 
-            This is just Google Play's temporary naming for internal testing - don't worry, it's the real Team Build Pro app!
+            The preview app will appear with a temporary name: <strong>"com.scott.ultimatefix - unreviewed"</strong>. 
+            This is just Google Play's temporary naming for internal previews - don't worry, it's the real Team Build Pro app!
           </p>
         </div>
         
@@ -124,8 +124,7 @@ function getEmailTemplate(firstName, demoUrl) {
           <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">🎯 What to Expect:</h3>
           <ul style="color: #334155; line-height: 1.8; margin-left: 1rem;">
             <li><strong>Full Feature Access:</strong> Experience all Team Build Pro capabilities</li>
-            <li><strong>Your Feedback Matters:</strong> Help us perfect the app before official launch</li>
-            <li><strong>Official Launch Notice:</strong> We'll email you when to delete the demo and download the official app</li>
+            <li><strong>Official Launch Notice:</strong> We'll email you when to delete the preview and download the official app</li>
           </ul>
         </div>
         
@@ -133,7 +132,7 @@ function getEmailTemplate(firstName, demoUrl) {
         <div style="text-align: center; margin: 2rem 0;">
           <a href="${demoUrl}" 
              style="display: inline-block; background: linear-gradient(135deg, #10b981, #34d399); color: #ffffff; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem;">
-            🚀 Download Demo Now
+            🚀 Download Preview Now
           </a>
         </div>
         
@@ -152,10 +151,10 @@ function getEmailTemplate(firstName, demoUrl) {
       <!-- Footer -->
       <div style="background-color: #f8fafc; padding: 1.5rem; text-align: center; border-radius: 0 0 8px 8px; border-top: 1px solid #e2e8f0;">
         <p style="color: #64748b; margin: 0; font-size: 0.9rem;">
-          © 2024 Team Build Pro. Professional team building software.
+          © 2025 Team Build Pro. Professional team building software.
         </p>
         <p style="color: #94a3b8; margin: 0.5rem 0 0 0; font-size: 0.8rem;">
-          This is a demo invitation. The official app will be available soon on Google Play Store.
+          This is a preview invitation. The official app will be available soon on Google Play.
         </p>
       </div>
     </div>

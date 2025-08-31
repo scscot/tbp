@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Team Build Pro - Android Demo Invitation Script
-# Sends welcome emails to users who requested Android demo access
+# Team Build Pro - Android Preview Invitation Script
+# Sends welcome emails to users who requested Android preview access
 
-echo "🚀 Team Build Pro - Android Demo Invitation Sender"
+echo "🚀 Team Build Pro - Android Preview Invitation Sender"
 echo "================================================="
 
 # Google Play Internal Testing URL
@@ -27,9 +27,9 @@ const CLOUD_FUNCTION_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunc
 
 async function sendDemoInvitations() {
   try {
-    console.log('🔍 Fetching users who need demo invitations...');
-    
-    // Query for users who want demo but haven't been sent email
+    console.log('🔍 Fetching users who need preview invitations...');
+
+    // Query for users who want preview but haven't been sent email
     const snapshot = await db.collection('launch_notifications')
       .where('wantDemo', '==', true)
       .where('emailSent', '==', false)
@@ -37,12 +37,12 @@ async function sendDemoInvitations() {
       .get();
     
     if (snapshot.empty) {
-      console.log('✅ No pending demo invitations to send.');
+      console.log('✅ No pending preview invitations to send.');
       return;
     }
-    
-    console.log(`📧 Found ${snapshot.docs.length} users to send demo invitations to:`);
-    
+
+    console.log(`📧 Found ${snapshot.docs.length} users to send preview invitations to:`);
+
     let successCount = 0;
     let errorCount = 0;
     
@@ -52,8 +52,8 @@ async function sendDemoInvitations() {
       
       try {
         console.log(`   📤 Sending to: ${firstName} ${lastName} (${email})`);
-        
-        // Send the demo invitation email via Cloud Function
+
+        // Send the preview invitation email via Cloud Function
         await sendDemoInvitationEmail(firstName, lastName, email);
         
         // Update the document to mark email as sent
@@ -95,7 +95,7 @@ async function sendDemoInvitationEmail(firstName, lastName, email) {
       firstName,
       lastName,
       email,
-      demoUrl: process.env.DEMO_URL || 'https://play.google.com/apps/test/com.scott.ultimatefix/28'
+      demoUrl: process.env.DEMO_URL || 'https://play.google.com/apps/internaltest/4701750664602012744'
     })
   });
 
@@ -115,7 +115,7 @@ async function sendDemoInvitationEmail(firstName, lastName, email) {
 // Run the script
 sendDemoInvitations()
   .then(() => {
-    console.log('\n✅ Demo invitation process completed!');
+    console.log('\n✅ Preview invitation process completed!');
     process.exit(0);
   })
   .catch((error) => {
@@ -124,10 +124,10 @@ sendDemoInvitations()
   });
 EOF
 
-echo "📧 Running demo invitation sender..."
+echo "📧 Running preview invitation sender..."
 node send_demo_emails.js
 
 # Cleanup temporary file
 rm -f send_demo_emails.js
 
-echo "✅ Demo invitation script completed!"
+echo "✅ Preview invitation script completed!"
