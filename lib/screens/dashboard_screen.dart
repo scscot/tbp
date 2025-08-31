@@ -682,12 +682,12 @@ class _DashboardScreenState extends State<DashboardScreen>
     } else if (subscriptionStatus == 'trial' && user.isTrialValid) {
       // User is in trial period - use built-in method with two-line format
       final daysLeft = user.trialDaysRemaining;
-      buttonText = 'Upgrade to Pro\n($daysLeft days left in trial)';
+      buttonText = 'Start Subscription\n($daysLeft days left in trial)';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.deepPurple;
     } else {
       // Trial expired or no subscription
-      buttonText = 'Subscribe to Pro - Start Now';
+      buttonText = 'Start Your Subscription';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.red;
     }

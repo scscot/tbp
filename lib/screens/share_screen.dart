@@ -156,8 +156,18 @@ class _ShareScreenState extends State<ShareScreen>
     }
     
     if (_prospectReferralLink != null) {
-      final message =
-          'Thanks for your interest in joining our $_bizOppName team! If you want to maximize your chances of immediate success, you can pre-build your $_bizOppName team *before* you even join, so you can launch with momentum. Check it out: $_prospectReferralLink';
+      final message = '''Hi there! 👋
+
+Thanks for your interest in joining our $_bizOppName team!
+
+Here's something that could give you a HUGE advantage:
+
+You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.
+
+Check it out here:
+$_prospectReferralLink
+
+This could be the difference between struggling to get started and hitting the ground running! 🚀''';
 
       Share.share(message, subject: 'A better way to start with $_bizOppName');
     }
@@ -172,8 +182,22 @@ class _ShareScreenState extends State<ShareScreen>
     }
     
     if (_partnerReferralLink != null) {
-      final message =
-          'Hey team, I highly recommend this app for our $_bizOppName recruiting. It helps our prospects pre-build their own teams for a stronger start and gives us a simple system to accelerate growth. Here\'s the link: $_partnerReferralLink';
+      final message = '''Hey team! 💪
+
+I've found an incredible tool that's transforming how we build our $_bizOppName teams.
+
+Here's what makes it special:
+✅ Prospects can pre-build their teams BEFORE joining
+✅ Creates instant momentum from day one
+✅ Simple system that promotes duplication
+✅ Accelerates growth across our entire organization
+
+This is what we've been looking for to give our team a competitive edge!
+
+Check it out:
+$_partnerReferralLink
+
+Let's help our prospects start strong! 🚀''';
 
       Share.share(message, subject: 'A tool for our $_bizOppName team');
     }
