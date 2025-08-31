@@ -3416,7 +3416,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
       to: `${fullName} <${email}>`,
       from: 'Team Build Pro <support@teambuildpro.com>',
       bcc: 'scscot@gmail.com',
-      subject: `Thanks for signing up, ${firstName}! Team Build Pro is launching soon 🚀`,
+      subject: `Thanks for your interest, ${firstName}! Team Build Pro is launching soon 🚀`,
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">

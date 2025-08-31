@@ -488,13 +488,13 @@
                     <!-- Demo Interest Section -->
                     <div class="form-group demo-section">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="demoInterest">
+                            <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">I'd love to try the Android demo version!</span>
+                            <span class="checkbox-text">Check the box if you would like to preview the app before it's officially available in Google Play</span>
                         </label>
                     </div>
                     
-                    <button type="submit" class="signup-btn">
+                    <button type="submit" class="signup-btn" tabindex="0">
                         <span id="signup-btn-text">Notify Me When It's Ready!</span>
                     </button>
                 </form>
@@ -840,7 +840,7 @@
         function createAndroidPreviewButton(isPrimary = true) {
             return `
                 <button class="android-preview-btn ${isPrimary ? 'primary' : 'secondary'}" onclick="openModal()">
-                    Get Android Preview<br>Early Access!
+                    Android Coming Soon<br>Request Early Access!
                 </button>
             `;
         }
@@ -886,7 +886,14 @@
 
         const modal = document.getElementById("comingSoonModal");
         function openModal() {
-            if (modal) modal.style.display = "flex";
+            if (modal) {
+                modal.style.display = "flex";
+                // Focus the first input when modal opens
+                setTimeout(() => {
+                    const firstInput = document.getElementById('notificationFirstName');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+            }
         }
         function closeModal() {
             if (modal) {
@@ -898,6 +905,35 @@
         window.addEventListener("keydown", (event) => {
             if (event.key === "Escape") closeModal();
         });
+        
+        // Handle tab trapping within modal
+        function trapTabInModal(event) {
+            if (!modal || modal.style.display === "none") return;
+            
+            if (event.key === "Tab") {
+                const focusableElements = modal.querySelectorAll(
+                    'input:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                
+                if (event.shiftKey) {
+                    // Shift + Tab (backwards)
+                    if (document.activeElement === firstElement) {
+                        event.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    // Tab (forwards)
+                    if (document.activeElement === lastElement) {
+                        event.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        }
+        
+        document.addEventListener("keydown", trapTabInModal);
 
         function setupBottomCTAs() {
             const device = getDeviceType();
@@ -1227,6 +1263,7 @@
             const demoCheckbox = document.getElementById('demoInterest');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
+            const demoSection = document.querySelector('.demo-section');
             
             // Reset form visibility
             signupForm.style.display = 'block';
@@ -1239,7 +1276,82 @@
             demoCheckbox.checked = false;
             submitBtn.disabled = false;
             btnText.textContent = 'Notify Me When It\'s Ready!';
+            
+            // Hide demo section and reset its text
+            if (demoSection) {
+                demoSection.classList.remove('show');
+                const demoText = demoSection.querySelector('.checkbox-text');
+                if (demoText) {
+                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available in Google Play";
+                }
+            }
         }
+
+        // ============================================================================
+        // EMAIL DETECTION & DEMO PROMPT FUNCTIONALITY
+        // ============================================================================
+        
+        function setupEmailDetection() {
+            const emailInput = document.getElementById('notificationEmail');
+            const demoSection = document.querySelector('.demo-section');
+            let emailDetectionTimeout;
+            
+            if (!emailInput || !demoSection) return;
+            
+            emailInput.addEventListener('input', function() {
+                clearTimeout(emailDetectionTimeout);
+                
+                // Debounce email detection to avoid flickering
+                emailDetectionTimeout = setTimeout(() => {
+                    const email = emailInput.value.trim().toLowerCase();
+                    
+                    if (email.endsWith('@gmail.com')) {
+                        showDemoSection();
+                    } else {
+                        hideDemoSection();
+                    }
+                }, 500); // Wait 500ms after user stops typing
+            });
+        }
+        
+        function showDemoSection() {
+            const demoSection = document.querySelector('.demo-section');
+            if (demoSection && !demoSection.classList.contains('show')) {
+                demoSection.classList.add('show');
+                
+                // Update the demo text to be more contextual
+                const demoText = demoSection.querySelector('.checkbox-text');
+                if (demoText) {
+                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available in Google Play";
+                }
+                
+                // Make demo checkbox focusable
+                const demoCheckbox = document.getElementById('demoInterest');
+                if (demoCheckbox) {
+                    demoCheckbox.tabIndex = 0;
+                }
+            }
+        }
+        
+        function hideDemoSection() {
+            const demoSection = document.querySelector('.demo-section');
+            const demoCheckbox = document.getElementById('demoInterest');
+            
+            if (demoSection && demoSection.classList.contains('show')) {
+                demoSection.classList.remove('show');
+                
+                // Reset checkbox when hiding and remove from tab order
+                if (demoCheckbox) {
+                    demoCheckbox.checked = false;
+                    demoCheckbox.tabIndex = -1;
+                }
+            }
+        }
+        
+        // Initialize email detection when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEmailDetection();
+        });
 
 
     </script>

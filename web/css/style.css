@@ -1157,12 +1157,29 @@ p {
 }
 
 /* Demo Section Styles */
-.modal-content .demo-section {
+.modal-content .form-group.demo-section {
     background: #f8fafc;
     border-radius: 0.75rem;
     padding: 1.5rem;
     border: 1px solid #e2e8f0;
     margin: 1.5rem 0;
+    display: none !important; /* Initially hidden - use !important to override form-group */
+    animation: slideDown 0.3s ease-in-out;
+}
+
+.modal-content .form-group.demo-section.show {
+    display: block !important;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .checkbox-label {
