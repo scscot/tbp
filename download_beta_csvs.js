@@ -46,8 +46,9 @@ async function generateBetaTesterCSVs() {
           if (deviceType === 'android') {
             // Google Play Console requires one email per line, no commas
             csvContent += `${data.email}\n`;
-            // Full format for personal use (sending demo instructions)
-            fullCsvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+            // Full format for personal use (sending demo instructions) - includes refUrl
+            const refUrl = data.refUrl || 'https://teambuildpro.com';
+            fullCsvContent += `${data.firstName},${data.lastName},${data.email},${refUrl}\n`;
           } else {
             // App Store Connect supports firstName,lastName,email format
             csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
@@ -64,7 +65,7 @@ async function generateBetaTesterCSVs() {
         if (deviceType === 'android' && testers.length > 0) {
           const fullFileName = `${deviceType}_testers_full.csv`;
           await fs.writeFile(fullFileName, fullCsvContent, 'utf8');
-          console.log(`✅ Generated ${fullFileName} - ${testers.length} entries (full contact info)`);
+          console.log(`✅ Generated ${fullFileName} - ${testers.length} entries (full contact info + refUrl)`);
         }
         
         // Show some sample entries
@@ -86,7 +87,7 @@ async function generateBetaTesterCSVs() {
     console.log('\n🎯 Files are ready for upload to:');
     console.log('   • ios_testers.csv → App Store Connect TestFlight External Testing (firstName,lastName,email format)');
     console.log('   • android_testers.csv → Google Play Console Internal Testing (email-only format)');
-    console.log('   • android_testers_full.csv → Personal use for sending demo instructions (firstName,lastName,email format)');
+    console.log('   • android_testers_full.csv → Personal use for sending demo instructions (firstName,lastName,email,refUrl format)');
     
   } catch (error) {
     console.error('❌ Error:', error);
