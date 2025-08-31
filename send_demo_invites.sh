@@ -95,7 +95,7 @@ async function sendDemoInvitationEmail(firstName, lastName, email) {
       firstName,
       lastName,
       email,
-      demoUrl: process.env.DEMO_URL || 'https://play.google.com/apps/internaltest/4701750664602012744'
+      demoUrl: process.env.DEMO_URL || 'https://play.google.com/apps/test/com.scott.ultimatefix/28'
     })
   });
 
