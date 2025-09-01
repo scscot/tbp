@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'dart:io';
 import 'config/app_constants.dart';
 import 'firebase_options.dart';
 import 'models/user_model.dart';
@@ -16,9 +18,12 @@ import 'screens/subscription_screen.dart';
 import 'screens/member_detail_screen.dart';
 import 'screens/business_screen.dart';
 import 'screens/message_thread_screen.dart';
+import 'screens/new_registration_screen.dart';
+import 'screens/login_screen.dart';
 import 'services/auth_service.dart';
 import 'services/fcm_service.dart' show FCMService, navigateToRoute;
 import 'services/deep_link_service.dart';
+import 'services/session_manager.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
@@ -328,6 +333,34 @@ class _AuthWrapperState extends State<AuthWrapper> {
     super.dispose();
   }
 
+  Future<Map<String, bool>> _checkAppState() async {
+    try {
+      // Check demo mode
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      bool isDemo = false;
+      
+      if (Platform.isAndroid) {
+        isDemo = remoteConfig.getBool('android_demo_mode');
+        debugPrint('🤖 AUTH_WRAPPER: Android demo mode: $isDemo');
+      } else if (Platform.isIOS) {
+        isDemo = remoteConfig.getBool('ios_demo_mode');
+        debugPrint('🍎 AUTH_WRAPPER: iOS demo mode: $isDemo');
+      }
+      
+      // Check logout state
+      final hasLoggedOut = await SessionManager.instance.hasLoggedOut();
+      debugPrint('🔐 AUTH_WRAPPER: User has logged out: $hasLoggedOut');
+      
+      return {
+        'isDemoMode': isDemo,
+        'hasLoggedOut': hasLoggedOut,
+      };
+    } catch (e) {
+      debugPrint('❌ AUTH_WRAPPER: Error checking app state: $e');
+      return {'isDemoMode': false, 'hasLoggedOut': false};
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserModel?>();
@@ -355,12 +388,37 @@ class _AuthWrapperState extends State<AuthWrapper> {
         '🔐 AUTH_WRAPPER: _buildContent called with user: ${user?.uid ?? 'null'}');
 
     if (user == null) {
-      debugPrint('🔐 AUTH_WRAPPER: No user found, showing HOMEPAGE');
-      final dls = DeepLinkService();
-      return HomepageScreen(
-        appId: appId,
-        referralCode: dls.latestReferralCode,
-        queryType: dls.latestQueryType, // <-- pass the type as well
+      return FutureBuilder<Map<String, bool>>(
+        future: _checkAppState(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen();
+          }
+          
+          final appState = snapshot.data ?? {'isDemoMode': false, 'hasLoggedOut': false};
+          final isDemoMode = appState['isDemoMode'] ?? false;
+          final hasLoggedOut = appState['hasLoggedOut'] ?? false;
+          final dls = DeepLinkService();
+          
+          if (isDemoMode) {
+            debugPrint('🔐 AUTH_WRAPPER: Demo mode detected, showing HOMEPAGE');
+            return HomepageScreen(
+              appId: appId,
+              referralCode: dls.latestReferralCode,
+              queryType: dls.latestQueryType,
+            );
+          } else if (hasLoggedOut) {
+            debugPrint('🔐 AUTH_WRAPPER: User has logged out, routing to LOGIN');
+            return LoginScreen(appId: appId);
+          } else {
+            debugPrint('🔐 AUTH_WRAPPER: New user, routing directly to REGISTRATION');
+            return NewRegistrationScreen(
+              appId: appId,
+              referralCode: dls.latestReferralCode,
+              queryType: dls.latestQueryType,
+            );
+          }
+        },
       );
     }
 

@@ -84,8 +84,14 @@ class AuthService {
 
   Future<UserCredential> signInWithEmailAndPassword(
       String email, String password) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(
+    final result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
+    
+    // Clear logout state on successful login
+    await SessionManager.instance.clearLogoutState();
+    debugPrint('🔐 AUTH_SERVICE: Logout state cleared on successful login');
+    
+    return result;
   }
 
   Future<UserCredential> signInWithCredential(AuthCredential credential) async {
@@ -99,6 +105,11 @@ class AuthService {
       final result = await _firebaseAuth.signInWithCredential(credential);
       debugPrint(
           "🔥 DEBUG: Firebase Auth successful for user: ${result.user?.uid}");
+      
+      // Clear logout state on successful login
+      await SessionManager.instance.clearLogoutState();
+      debugPrint('🔐 AUTH_SERVICE: Logout state cleared on successful credential login');
+      
       return result;
     } catch (e) {
       debugPrint("🔥 DEBUG: Firebase Auth failed: $e");
@@ -122,6 +133,9 @@ class AuthService {
     // Check if user data exists before logout
     final userBeforeLogout = await SessionManager.instance.getCurrentUser();
     debugPrint('🔐 AUTH_SERVICE: User data before logout: ${userBeforeLogout?.email}');
+    
+    // Set logout state to indicate user has logged out
+    await SessionManager.instance.setLogoutState(true);
     
     // Clear logout data but preserve user data and biometric settings for biometric login
     await SessionManager.instance.clearLogoutData();

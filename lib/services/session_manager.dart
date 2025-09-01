@@ -12,6 +12,7 @@ class SessionManager {
   static const String _biometricKey = 'biometric_enabled';
   static const String _logoutTimeKey = 'last_logout_time';
   static const String _referralDataKey = 'referral_data';
+  static const String _logoutStateKey = 'user_logged_out';
 
   // --- The 'pending_referral_code' keys and methods have been removed ---
 
@@ -56,6 +57,7 @@ class SessionManager {
     await prefs.remove(_biometricKey);
     await prefs.remove(_logoutTimeKey);
     await prefs.remove(_referralDataKey);
+    await prefs.remove(_logoutStateKey);
     if (kDebugMode) {
       debugPrint('🧹 SessionManager — All session and referral data cleared');
     }
@@ -114,6 +116,30 @@ class SessionManager {
     await prefs.remove(_referralDataKey);
     if (kDebugMode) {
       debugPrint('🧹 SessionManager — Referral data cleared');
+    }
+  }
+
+  /// Sets the logout state to indicate user has logged out (not first time user)
+  Future<void> setLogoutState(bool hasLoggedOut) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_logoutStateKey, hasLoggedOut);
+    if (kDebugMode) {
+      debugPrint('📂 SessionManager — Logout state set: $hasLoggedOut');
+    }
+  }
+
+  /// Checks if user has logged out (distinguishes from first time user)
+  Future<bool> hasLoggedOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_logoutStateKey) ?? false;
+  }
+
+  /// Clears the logout state (called when user successfully logs in)
+  Future<void> clearLogoutState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_logoutStateKey);
+    if (kDebugMode) {
+      debugPrint('🧹 SessionManager — Logout state cleared');
     }
   }
 }

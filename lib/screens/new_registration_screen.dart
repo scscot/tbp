@@ -19,11 +19,13 @@ import 'login_screen.dart';
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
   final String appId;
+  final String? queryType;
 
   const NewRegistrationScreen({
     super.key,
     this.referralCode,
     required this.appId,
+    this.queryType,
   });
 
   @override
@@ -110,7 +112,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         });
 
         // Cache this data for future use
-        await SessionManager.instance.setReferralData(code, sponsorName);
+        await SessionManager.instance.setReferralData(code, sponsorName, queryType: widget.queryType);
         debugPrint(
             '✅ NewRegistrationScreen: Referral data cached from fallback');
       } else {

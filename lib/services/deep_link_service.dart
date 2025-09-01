@@ -1,10 +1,13 @@
 // lib/services/deep_link_service.dart
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:app_links/app_links.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import '../screens/homepage_screen.dart';
+import '../screens/new_registration_screen.dart';
 import '../main.dart' show navigatorKey, appId;
 
 class DeepLinkService {
@@ -80,17 +83,54 @@ class DeepLinkService {
     _navigateToHomepage(_latestReferralCode, _latestQueryType);
   }
 
-  void _navigateToHomepage(String? referralCode, String? queryType) {
-    navigatorKey.currentState?.pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => HomepageScreen(
-          appId: appId,
-          referralCode: referralCode,
-          queryType: queryType, // <-- new
+  void _navigateToHomepage(String? referralCode, String? queryType) async {
+    final isDemoMode = await _checkDemoMode();
+    
+    if (isDemoMode) {
+      // Demo mode: show homepage with demo functionality
+      navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => HomepageScreen(
+            appId: appId,
+            referralCode: referralCode,
+            queryType: queryType,
+          ),
         ),
-      ),
-      (route) => false,
-    );
+        (route) => false,
+      );
+    } else {
+      // Normal mode: route directly to registration with referral data
+      navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => NewRegistrationScreen(
+            appId: appId,
+            referralCode: referralCode,
+            queryType: queryType,
+          ),
+        ),
+        (route) => false,
+      );
+    }
+  }
+
+  Future<bool> _checkDemoMode() async {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      bool isDemo = false;
+      
+      if (Platform.isAndroid) {
+        isDemo = remoteConfig.getBool('android_demo_mode');
+      } else if (Platform.isIOS) {
+        isDemo = remoteConfig.getBool('ios_demo_mode');
+      }
+      
+      return isDemo;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ DEEP_LINK: Error checking demo mode: $e');
+      }
+      return false;
+    }
   }
 
   /// Dispose of the stream subscription.
