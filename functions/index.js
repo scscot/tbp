@@ -3433,7 +3433,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
           <div style="background: #f8fafc; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
             <h3 style="color: #1e293b; margin: 0 0 15px; font-size: 20px;">What happens next?</h3>
             <ul style="color: #475569; line-height: 1.6; margin: 0; padding-left: 20px;">
-              ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #667eea;">🎯 App Review Access:</strong> You'll soon receive an email with step-by-step instructions on how to download and preview the Team Build Pro app.</li>` : ''}
+              ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #667eea;">🎯 App Preview Access:</strong> You'll soon receive an email with step-by-step instructions on how to download and preview the Team Build Pro app.</li>` : ''}
               <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on Google Play!</li>
             </ul>
           </div>
