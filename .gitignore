@@ -35,6 +35,9 @@ secrets/
 # VS Code
 .vscode/
 
+# eMail Lists
+emails/
+
 # === Flutter / Dart / Pub Specific Ignores ===
 lib_backup/
 build/

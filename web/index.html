@@ -36,6 +36,10 @@
     <link rel="apple-touch-icon" href="assets/icons/team-build-pro.png" />
     <link rel="stylesheet" href="css/style.css" />
 
+    <!-- reCAPTCHA Enterprise Script -->
+    <script
+        src="https://www.google.com/recaptcha/enterprise.js?render=6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"></script>
+
     <!-- All styles consolidated in external CSS file -->
 </head>
 
@@ -1094,12 +1098,31 @@
                 return;
             }
             
-            // No validation needed - deviceType is auto-set for Android demo requests
-            
             // Show loading state
             submitBtn.disabled = true;
-            btnText.textContent = 'Signing you up...';
+            btnText.textContent = 'Verifying...';
             
+            // Execute reCAPTCHA Enterprise with the same site key
+            grecaptcha.enterprise.ready(async () => {
+                try {
+                    const token = await grecaptcha.enterprise.execute('6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE', { action: 'notification_signup' });
+                    
+                    // Update loading text after reCAPTCHA
+                    btnText.textContent = 'Signing you up...';
+                    
+                    // Add reCAPTCHA token to the signup process
+                    await processNotificationSignup(firstName, lastName, email, wantDemo, deviceType, token, submitBtn, btnText, signupForm, successMessage);
+                    
+                } catch (error) {
+                    console.error('reCAPTCHA error:', error);
+                    alert('Security verification failed. Please try again.');
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Notify Me When It\'s Ready!';
+                }
+            });
+        }
+        
+        async function processNotificationSignup(firstName, lastName, email, wantDemo, deviceType, recaptchaToken, submitBtn, btnText, signupForm, successMessage) {
             try {
                 // Check if email already exists
                 const existingQuery = await db.collection('launch_notifications')
@@ -1123,7 +1146,8 @@
                         userAgent: navigator.userAgent,
                         referrer: document.referrer || 'direct',
                         refUrl: window.location.href,
-                        emailSent: false
+                        emailSent: false,
+                        recaptchaToken: recaptchaToken
                     };
                     
                     if (wantDemo && deviceType) {
@@ -1148,7 +1172,8 @@
                             deviceType: deviceType,
                             demoRequestDate: firebase.firestore.FieldValue.serverTimestamp(),
                             refUrl: window.location.href,
-                            emailSent: false
+                            emailSent: false,
+                            recaptchaToken: recaptchaToken
                         });
                         console.log('Demo access added for existing user:', `${email} (${deviceType})`);
                         shouldSendEmail = true; // Send email with demo instructions
