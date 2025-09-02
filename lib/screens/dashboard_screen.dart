@@ -655,7 +655,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (!(_isDemoMode && _demoEmail != null) && isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
 
-        if (user.role == 'admin')
+        // if (user.role == 'admin')
           _buildActionCard(
             icon: Icons.manage_accounts,
             title: 'Create New Account',

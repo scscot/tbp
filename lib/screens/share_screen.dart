@@ -31,6 +31,8 @@ class _ShareScreenState extends State<ShareScreen>
   String _bizOppName = 'your opportunity'; // Default fallback
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _showProspectMessages = false;
+  bool _showPartnerMessages = false;
 
   @override
   void initState() {
@@ -160,8 +162,48 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
-  // === MODIFIED: Implemented your new preferred message ===
-  void _shareForNewProspects() {
+  Map<String, Map<String, String>> _getProspectMessages() {
+    return {
+      'past_struggles': {
+        'title': 'Addressing Past Struggles',
+        'description': 'Perfect for prospects who have tried before and struggled',
+        'subject': 'A Different Approach This Time',
+        'message': 'I know the direct sales journey can feel overwhelming - maybe you\'ve even tried before and it didn\'t work out the way you hoped.\n\n'
+            'Here\'s what\'s different this time: you can build your $_bizOppName team BEFORE you even join, so you\'re not starting from zero like most people do.\n\n'
+            'Think about it - instead of that scary "cold start" where you\'re scrambling to find people, you could launch with a team already in place and growing.\n\n'
+            'Check it out: $_prospectReferralLink\n\n'
+            'This could be the game-changer you\'ve been looking for!\n\n'
+            'Please don\'t hesitate to reach out if you have questions or want to discuss further.\n\n'
+            'Best regards!',
+      },
+      'not_salesperson': {
+        'title': 'For Non-Sales Minded',
+        'description': 'Great for people who don\'t see themselves as "salespeople"',
+        'subject': 'No Pressure, Just Opportunity',
+        'message': 'I get it - when you hear "direct sales," you might think "I\'m not a salesperson" or worry about having to pressure friends and family.\n\n'
+            'What if I told you there\'s a way to build your $_bizOppName team that feels natural and authentic? You can actually pre-build your network BEFORE joining, focusing on relationships first.\n\n'
+            'No cold calls, no awkward pitches to relatives, no starting from scratch. Just a proven system that lets you build genuine connections and momentum.\n\n'
+            'Take a look: $_prospectReferralLink\n\n'
+            'It might just change how you think about building a business!\n\n'
+            'Feel free to reach out with any questions.\n\n'
+            'Kind regards!',
+      },
+      'hope_after_disappointment': {
+        'title': 'Hope After Disappointment',
+        'description': 'Ideal for prospects burned by previous opportunities',
+        'subject': 'You Deserve a Real Shot',
+        'message': 'If you\'ve been burned before by opportunities that promised the world but left you starting from zero... I understand.\n\n'
+            'Here\'s something different: imagine building your $_bizOppName team BEFORE you even join. No more hoping and praying for momentum - you create it first.\n\n'
+            'This isn\'t about empty promises or overnight success. It\'s about giving yourself the advantage that successful leaders have always had: starting with a foundation already in place.\n\n'
+            'See how it works: $_prospectReferralLink\n\n'
+            'You deserve a real shot at success.\n\n'
+            'I\'m here if you\'d like to discuss this further.\n\n'
+            'Take care!',
+      },
+    };
+  }
+
+  void _shareProspectMessage(String messageKey) {
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
       _showDemoModeDialog();
@@ -169,21 +211,60 @@ class _ShareScreenState extends State<ShareScreen>
     }
     
     if (_prospectReferralLink != null) {
-      final message = 'Thanks for your interest in joining our $_bizOppName team! '
-          'Here\'s something that could give you a HUGE advantage.\n\n'
-          'You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.\n\n'
-          'Check it out here: $_prospectReferralLink\n\n'
-          'This could be the difference between struggling to get started and hitting the ground running!';
-
-      _composeEmail(
-        subject: 'Pre-Build Your Team!',
-        body: message,
-      );
+      final messages = _getProspectMessages();
+      final selectedMessage = messages[messageKey];
+      
+      if (selectedMessage != null) {
+        _composeEmail(
+          subject: selectedMessage['subject']!,
+          body: selectedMessage['message']!,
+        );
+      }
     }
   }
 
-  // === MODIFIED: Implemented simplified message ===
-  void _shareForExistingMembers() {
+  Map<String, Map<String, String>> _getPartnerMessages() {
+    return {
+      'warm_market_exhausted': {
+        'title': 'Warm Market Exhausted',
+        'description': 'For partners who\'ve tapped out friends and family',
+        'subject': 'Finally, a Fresh Approach',
+        'message': 'I know you\'ve been grinding - maybe you\'ve already talked to everyone you know, spent money on leads that didn\'t pan out, or gotten tired of trying to get people to webinars they don\'t show up for.\n\n'
+            'I found something different that\'s working for me. Instead of chasing prospects, this lets them build momentum FIRST, before they even join $_bizOppName.\n\n'
+            'It\'s mobile-first (no more hotel meetings!), simple to duplicate, and prospects actually engage because they\'re building something for themselves.\n\n'
+            'Take a look: $_partnerReferralLink\n\n'
+            'This could be the breakthrough we\'ve been looking for.\n\n'
+            'Let me know what you think!\n\n'
+            'Best regards!',
+      },
+      'expensive_system_fatigue': {
+        'title': 'System Fatigue & Expense',
+        'description': 'For partners burned out on expensive recruiting methods',
+        'subject': 'Stop Spending, Start Building',
+        'message': 'How much have we all spent on leads, funnels, and recruiting systems that promise the world but leave us starting from scratch every time?\n\n'
+            'I\'ve discovered a tool that flips the script entirely. Instead of expensive lead generation, prospects actually BUILD their $_bizOppName teams before joining - creating their own motivation and momentum.\n\n'
+            'No more paying for leads that don\'t convert. No more complex funnels your team can\'t duplicate. Just a simple, mobile system that works.\n\n'
+            'Check it out: $_partnerReferralLink\n\n'
+            'Finally, a system that makes sense and doesn\'t break the bank.\n\n'
+            'Would love your thoughts on this.\n\n'
+            'Kind regards!',
+      },
+      'duplication_struggle': {
+        'title': 'Duplication Challenges',
+        'description': 'For leaders struggling to get their team to duplicate',
+        'subject': 'Simple System Your Team Can Copy',
+        'message': 'You know the frustration - you\'ve found systems that work for you, but your team can\'t seem to duplicate them. Too complex, too expensive, or they just don\'t have your experience level.\n\n'
+            'I\'ve been testing something that changes this completely. It\'s so simple that anyone on your team can use it, and prospects actually WANT to engage because they\'re building their own $_bizOppName foundation.\n\n'
+            'Mobile-first, easy to share, and it creates momentum before prospects even join. Your team will actually be able to duplicate this.\n\n'
+            'See for yourself: $_partnerReferralLink\n\n'
+            'This could be the game-changer for true duplication.\n\n'
+            'I\'d love to hear your thoughts!\n\n'
+            'Take care!',
+      },
+    };
+  }
+
+  void _sharePartnerMessage(String messageKey) {
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
       _showDemoModeDialog();
@@ -191,20 +272,15 @@ class _ShareScreenState extends State<ShareScreen>
     }
     
     if (_partnerReferralLink != null) {
-      final message = 'I\'ve found an incredible tool that\'s transforming how we build our $_bizOppName teams.\n\n'
-          'Here\'s what makes it special:\n\n'
-          '✅ Prospects can pre-build their teams BEFORE joining.\n'
-          '✅ Creates instant momentum from day one.\n'
-          '✅ Simple system that promotes duplication.\n'
-          '✅ Accelerates growth across our entire organization.\n\n'
-          'This is what we\'ve been looking for to give our team a competitive edge!\n\n'
-          'Check it out: $_partnerReferralLink\n\n'
-          'Let\'s help our recruiting prospects start strong!';
-
-      _composeEmail(
-        subject: 'A Great App for Growth!',
-        body: message,
-      );
+      final messages = _getPartnerMessages();
+      final selectedMessage = messages[messageKey];
+      
+      if (selectedMessage != null) {
+        _composeEmail(
+          subject: selectedMessage['subject']!,
+          body: selectedMessage['message']!,
+        );
+      }
     }
   }
 
@@ -319,28 +395,320 @@ class _ShareScreenState extends State<ShareScreen>
         const Text('Proven Growth Strategies',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
-        _buildStrategyCard(
-          title: 'New Recruiting Prospects',
-          subtitle: 'Invite recruiting prospects to get a head start.',
-          description:
-              'Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
-          onShare: _shareForNewProspects,
-          onCopy: () => _copyLink(_prospectReferralLink),
-          buttonColor: AppColors.growthPrimary,
-          icon: Icons.connect_without_contact,
-        ),
+        _buildProspectStrategyCard(),
         const SizedBox(height: 16),
-        _buildStrategyCard(
-          title: 'Current Business Partners',
-          subtitle: 'Great for your existing $_bizOppName team',
-          description:
-              'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
-          onShare: _shareForExistingMembers,
-          onCopy: () => _copyLink(_partnerReferralLink),
-          buttonColor: AppColors.opportunityPrimary,
-          icon: Icons.handshake,
-        ),
+        _buildPartnerStrategyCard(),
       ],
+    );
+  }
+
+  Widget _buildProspectStrategyCard() {
+    final buttonColor = AppColors.growthPrimary;
+    final icon = Icons.connect_without_contact;
+    
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.lightShadow,
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: buttonColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Icon(icon, color: buttonColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('New Recruiting Prospects',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Invite recruiting prospects to get a head start.',
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text('Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
+              style: TextStyle(
+                  fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
+          const SizedBox(height: 20),
+          
+          // Message Selection Toggle
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _showProspectMessages = !_showProspectMessages;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: buttonColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: buttonColor.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.message_rounded, color: buttonColor, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Choose Your Message (3 Options)',
+                      style: TextStyle(
+                        color: buttonColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _showProspectMessages ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: buttonColor,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Expandable Message Options
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            height: _showProspectMessages ? null : 0,
+            child: _showProspectMessages
+                ? Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    child: Column(
+                      children: [
+                        ..._getProspectMessages().entries.map((entry) {
+                          return _buildMessageOption(
+                            entry.key,
+                            entry.value['title']!,
+                            entry.value['description']!,
+                            buttonColor,
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          
+          const SizedBox(height: 12),
+          // Copy Link Button
+          OutlinedButton.icon(
+            icon: const Icon(Icons.copy_rounded, size: 18),
+            label: const Text('Copy Link'),
+            onPressed: () => _copyLink(_prospectReferralLink),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: buttonColor,
+              side: BorderSide(color: buttonColor),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageOption(String messageKey, String title, String description, Color buttonColor, {bool isPartner = false}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 36,
+                child: ElevatedButton(
+                  onPressed: () => isPartner ? _sharePartnerMessage(messageKey) : _shareProspectMessage(messageKey),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Share', style: TextStyle(fontSize: 12)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPartnerStrategyCard() {
+    final buttonColor = AppColors.opportunityPrimary;
+    final icon = Icons.handshake;
+    
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.lightShadow,
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: buttonColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Icon(icon, color: buttonColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Current Business Partners',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Great for your existing $_bizOppName team',
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text('Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
+              style: TextStyle(
+                  fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
+          const SizedBox(height: 20),
+          
+          // Message Selection Toggle
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _showPartnerMessages = !_showPartnerMessages;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: buttonColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: buttonColor.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.message_rounded, color: buttonColor, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Choose Your Message (3 Options)',
+                      style: TextStyle(
+                        color: buttonColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _showPartnerMessages ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: buttonColor,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Expandable Message Options
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            height: _showPartnerMessages ? null : 0,
+            child: _showPartnerMessages
+                ? Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    child: Column(
+                      children: [
+                        ..._getPartnerMessages().entries.map((entry) {
+                          return _buildMessageOption(
+                            entry.key,
+                            entry.value['title']!,
+                            entry.value['description']!,
+                            buttonColor,
+                            isPartner: true,
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          
+          const SizedBox(height: 12),
+          // Copy Link Button
+          OutlinedButton.icon(
+            icon: const Icon(Icons.copy_rounded, size: 18),
+            label: const Text('Copy Link'),
+            onPressed: () => _copyLink(_partnerReferralLink),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: buttonColor,
+              side: BorderSide(color: buttonColor),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
