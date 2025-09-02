@@ -893,6 +893,182 @@ p {
     background-color: #f1f5f9;
 }
 
+/* Industry Challenge Section Styles */
+.grid-2 {
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.challenge-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.stat-label {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.solution-content h3 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.solution-content h4 {
+    color: #3b82f6;
+    margin: 1.5rem 0 1rem 0;
+    font-size: 1.25rem;
+}
+
+.solution-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.solution-list li {
+    padding: 0.75rem 0;
+    border-left: 3px solid #3b82f6;
+    padding-left: 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 0 8px 8px 0;
+}
+
+.solution-list strong {
+    color: #1e293b;
+}
+
+.authority-note {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 2rem;
+    color: #065f46;
+}
+
+/* Responsive adjustments for industry challenge section */
+@media (max-width: 768px) {
+    #industry-challenge {
+        padding: 3rem 0;
+    }
+    
+    #industry-challenge .container {
+        padding: 0 1.5rem;
+    }
+    
+    #industry-challenge .section-header h2 {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+    
+    .grid-2 {
+        display: block;
+        gap: 0;
+    }
+    
+    .challenge-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-card {
+        padding: 2rem 1.5rem;
+        margin: 0;
+        width: 100%;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+    }
+    
+    .stat-number {
+        font-size: 2.8rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+    
+    .solution-content {
+        text-align: center;
+    }
+    
+    .solution-content h3 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #1e293b;
+        text-align: center;
+    }
+    
+    .solution-content h4 {
+        font-size: 1.4rem;
+        margin: 2rem 0 1.5rem 0;
+        color: #3b82f6;
+        text-align: center;
+    }
+    
+    .solution-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        color: #475569;
+        text-align: center;
+    }
+    
+    .solution-list {
+        margin: 2rem 0 0 0;
+        text-align: left;
+        max-width: 100%;
+    }
+    
+    .solution-list li {
+        margin-bottom: 1.5rem;
+        padding: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.6;
+        border-radius: 8px;
+        text-align: left;
+    }
+    
+    .solution-list strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Ensure mobile-specific centering for headings and paragraphs only */
+    .solution-content > h3,
+    .solution-content > h4,
+    .solution-content > p {
+        text-align: center !important;
+    }
+}
+
 
 /* === Screenshot rail (Option A style) === */
 .rail {
