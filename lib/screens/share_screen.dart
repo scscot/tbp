@@ -501,7 +501,7 @@ class _ShareScreenState extends State<ShareScreen>
                             entry.value['description']!,
                             buttonColor,
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   )
@@ -686,7 +686,7 @@ class _ShareScreenState extends State<ShareScreen>
                             buttonColor,
                             isPartner: true,
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   )
@@ -712,93 +712,6 @@ class _ShareScreenState extends State<ShareScreen>
     );
   }
 
-  Widget _buildStrategyCard({
-    required String title,
-    required String subtitle,
-    required String description,
-    required VoidCallback onShare,
-    required VoidCallback onCopy,
-    required Color buttonColor,
-    required IconData icon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AppColors.lightShadow,
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: buttonColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8)),
-                child: Icon(icon, color: buttonColor, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text(subtitle,
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.textSecondary)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(description,
-              style: TextStyle(
-                  fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
-          const SizedBox(height: 20),
-          // --- NEW: Button Row ---
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.share_rounded, size: 18),
-                  label: const Text('Share'),
-                  onPressed: onShare,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.copy_rounded, size: 18),
-                label: const Text('Copy Link'),
-                onPressed: onCopy,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: buttonColor,
-                  side: BorderSide(color: buttonColor),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildProTips() {
     return Container(
