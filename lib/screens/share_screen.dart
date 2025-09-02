@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
@@ -121,6 +121,19 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
+  Future<void> _composeEmail({
+    required String subject,
+    required String body,
+  }) async {
+    String enc(String s) => Uri.encodeComponent(s).replaceAll('+', '%20');
+
+    final uri = Uri.parse(
+      'mailto:?subject=${enc(subject)}&body=${enc(body)}',
+    );
+
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   // Check if sharing is enabled via Firebase Remote Config
   bool _isSharingEnabled() {
     try {
@@ -156,20 +169,16 @@ class _ShareScreenState extends State<ShareScreen>
     }
     
     if (_prospectReferralLink != null) {
-      final message = '''Hi there! 👋
+      final message = 'Thanks for your interest in joining our $_bizOppName team! '
+          'Here\'s something that could give you a HUGE advantage.\n\n'
+          'You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.\n\n'
+          'Check it out here: $_prospectReferralLink\n\n'
+          'This could be the difference between struggling to get started and hitting the ground running!';
 
-Thanks for your interest in joining our $_bizOppName team!
-
-Here's something that could give you a HUGE advantage:
-
-You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.
-
-Check it out here:
-$_prospectReferralLink
-
-This could be the difference between struggling to get started and hitting the ground running! 🚀''';
-
-      Share.share(message, subject: 'A better way to start with $_bizOppName');
+      _composeEmail(
+        subject: 'Pre-Build Your Team!',
+        body: message,
+      );
     }
   }
 
@@ -182,24 +191,20 @@ This could be the difference between struggling to get started and hitting the g
     }
     
     if (_partnerReferralLink != null) {
-      final message = '''Hey team! 💪
+      final message = 'I\'ve found an incredible tool that\'s transforming how we build our $_bizOppName teams.\n\n'
+          'Here\'s what makes it special:\n\n'
+          '✅ Prospects can pre-build their teams BEFORE joining.\n'
+          '✅ Creates instant momentum from day one.\n'
+          '✅ Simple system that promotes duplication.\n'
+          '✅ Accelerates growth across our entire organization.\n\n'
+          'This is what we\'ve been looking for to give our team a competitive edge!\n\n'
+          'Check it out: $_partnerReferralLink\n\n'
+          'Let\'s help our recruiting prospects start strong!';
 
-I've found an incredible tool that's transforming how we build our $_bizOppName teams.
-
-Here's what makes it special:
-✅ Prospects can pre-build their teams BEFORE joining
-✅ Creates instant momentum from day one
-✅ Simple system that promotes duplication
-✅ Accelerates growth across our entire organization
-
-This is what we've been looking for to give our team a competitive edge!
-
-Check it out:
-$_partnerReferralLink
-
-Let's help our prospects start strong! 🚀''';
-
-      Share.share(message, subject: 'A tool for our $_bizOppName team');
+      _composeEmail(
+        subject: 'A Great App for Growth!',
+        body: message,
+      );
     }
   }
 
