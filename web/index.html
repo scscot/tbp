@@ -516,9 +516,9 @@
     <div id="comingSoonModal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="signup-form">
-                <h2>🚀 Get Android Preview!</h2>
-                <p>
-                    Our app is launching soon on Google Play. Be the first to know when it's available!
+                <h2 id="modal-header">🚀 Team Build Pro Coming Soon!</h2>
+                <p id="modal-description">
+                    Our app is launching soon on both App Store and Google Play. Be the first to know when it's available!
                 </p>
                 <form id="notificationForm" onsubmit="handleNotificationSignup(event)">
                     <div class="form-row">
@@ -533,12 +533,23 @@
                         <input type="email" id="notificationEmail" placeholder="Enter your email address" required>
                     </div>
                     
+                    <!-- Device Selection -->
+                    <div class="form-group">
+                        <label for="deviceSelection" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Which device do you have?</label>
+                        <select id="deviceSelection" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; background: white;">
+                            <option value="">Select your device</option>
+                            <option value="ios">iPhone/iPad (iOS)</option>
+                            <option value="android">Android Phone/Tablet</option>
+                            <option value="both">Both iOS and Android</option>
+                        </select>
+                    </div>
+                    
                     <!-- Demo Interest Section -->
                     <div class="form-group demo-section">
                         <label class="checkbox-label">
                             <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Check the box if you would like to preview the app before it's officially available on Google Play</span>
+                            <span class="checkbox-text">Check the box if you would like to request preview access before it's officially available on Google Play</span>
                         </label>
                     </div>
                     
@@ -878,64 +889,85 @@
         function createAppStoreBadge(isPrimary = true) {
             const appStoreURL = buildAppStoreURL();
             return `
-                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener">
+                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: none;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
                          alt="Download on the App Store" />
                 </a>
             `;
         }
 
+        function createUnifiedComingSoonButton(isPrimary = true) {
+            const buttonStyle = `
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                color: white;
+                border: 3px solid rgba(255, 255, 255, 0.3);
+                border-radius: 12px;
+                padding: 18px 32px;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 1.4;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+                text-align: center;
+                min-width: 240px;
+                font-family: inherit;
+            `;
+            
+            const hoverStyle = `
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 107, 107, 0.6)'; this.style.borderColor='rgba(255, 255, 255, 0.5)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255, 107, 107, 0.4)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'"
+            `;
+            
+            return `
+                <button style="${buttonStyle}" ${hoverStyle} onclick="openModal()">
+                    Coming Soon!<br>Get Notified!
+                </button>
+            `;
+        }
+
+        // Legacy functions kept for restoration purposes
+        function createAppStoreComingSoonButton(isPrimary = true) {
+            return `
+                <button class="android-preview-btn ${isPrimary ? 'primary' : 'secondary'}" onclick="openModal()">
+                    Available Soon on App Store<br>Get Notified!
+                </button>
+            `;
+        }
+
         function createAndroidPreviewButton(isPrimary = true) {
             return `
                 <button class="android-preview-btn ${isPrimary ? 'primary' : 'secondary'}" onclick="openModal()">
-                    Android Coming Soon<br>Request Early Access!
+                    Available Soon on Google Play<br>Get Notified!
                 </button>
             `;
         }
 
         function setupDownloadButtons() {
-            const device = getDeviceType();
             const primaryContainer = document.getElementById('download-container');
             const secondaryContainer = document.getElementById('secondary-container');
             
-            if (device.isIOS) {
-                // iOS users see App Store first, Android preview second
-                primaryContainer.innerHTML = createAppStoreBadge(true);
-                secondaryContainer.innerHTML = `
-                    <div style="margin-top: 0.5rem;">
-                        <small style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; display: block;">
-                            Using Android?
-                        </small>
-                        ${createAndroidPreviewButton(false)}
-                    </div>
-                `;
-            } else if (device.isAndroid) {
-                // Android users see Android preview first, App Store second
-                primaryContainer.innerHTML = createAndroidPreviewButton(true);
-                secondaryContainer.innerHTML = `
-                    <div style="margin-top: 0.5rem;">
-                        <small style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; display: block;">
-                            Have an iPhone?
-                        </small>
-                        ${createAppStoreBadge(false)}
-                    </div>
-                `;
-            } else {
-                // Desktop/unknown - show both equally prominent
-                primaryContainer.innerHTML = `
-                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
-                        ${createAppStoreBadge(true)}
-                        ${createAndroidPreviewButton(true)}
-                    </div>
-                `;
-                secondaryContainer.innerHTML = '';
-            }
+            // Use unified button for all devices
+            primaryContainer.innerHTML = createUnifiedComingSoonButton(true);
+            secondaryContainer.innerHTML = '';
         }
 
         const modal = document.getElementById("comingSoonModal");
         function openModal() {
             if (modal) {
                 modal.style.display = "flex";
+                
+                // Auto-detect and set device type
+                const deviceSelection = document.getElementById('deviceSelection');
+                const device = getDeviceType();
+                if (deviceSelection && !deviceSelection.value) {
+                    if (device.isIOS) {
+                        deviceSelection.value = 'ios';
+                    } else if (device.isAndroid) {
+                        deviceSelection.value = 'android';
+                    }
+                }
+                
                 // Focus the first input when modal opens
                 setTimeout(() => {
                     const firstInput = document.getElementById('notificationFirstName');
@@ -984,29 +1016,14 @@
         document.addEventListener("keydown", trapTabInModal);
 
         function setupBottomCTAs() {
-            const device = getDeviceType();
             const ctaIds = ["cta-pricing", "cta-final"];
             
             ctaIds.forEach((id) => {
                 const button = document.getElementById(id);
                 if (!button) return;
                 
-                // Replace just the button, not the entire parent container
-                if (device.isIOS) {
-                    // iOS users see App Store badge
-                    button.outerHTML = createAppStoreBadge(true);
-                } else if (device.isAndroid) {
-                    // Android users see Android preview button
-                    button.outerHTML = createAndroidPreviewButton(true);
-                } else {
-                    // Desktop - show both options
-                    button.outerHTML = `
-                        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
-                            ${createAppStoreBadge(true)}
-                            ${createAndroidPreviewButton(true)}
-                        </div>
-                    `;
-                }
+                // Replace with unified coming soon button for all devices
+                button.outerHTML = createUnifiedComingSoonButton(true);
             });
         }
 
@@ -1120,6 +1137,7 @@
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const deviceSelection = document.getElementById('deviceSelection');
             const demoCheckbox = document.getElementById('demoInterest');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
@@ -1129,8 +1147,9 @@
             const firstName = firstNameInput.value.trim();
             const lastName = lastNameInput.value.trim();
             const email = emailInput.value.trim();
+            const selectedDevice = deviceSelection.value;
             const wantDemo = demoCheckbox.checked;
-            const deviceType = wantDemo ? 'android' : null; // Auto-set to android if demo requested
+            const deviceType = selectedDevice || (wantDemo ? 'android' : null);
             
             if (!firstName || !lastName) {
                 alert('Please enter your first and last name.');
@@ -1139,6 +1158,11 @@
             
             if (!email || !isValidEmail(email)) {
                 alert('Please enter a valid email address.');
+                return;
+            }
+            
+            if (!selectedDevice) {
+                alert('Please select your device type.');
                 return;
             }
             
@@ -1185,6 +1209,7 @@
                         lastName: lastName,
                         email: email,
                         wantDemo: wantDemo,
+                        deviceType: deviceType, // Always store device selection
                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                         source: 'website_modal',
                         userAgent: navigator.userAgent,
@@ -1193,10 +1218,6 @@
                         emailSent: false,
                         recaptchaToken: recaptchaToken
                     };
-                    
-                    if (wantDemo && deviceType) {
-                        signupData.deviceType = deviceType;
-                    }
                     
                     await db.collection('launch_notifications').add(signupData);
                     console.log('New signup successful:', `${firstName} ${lastName} (${email})` + (wantDemo ? ` - Demo requested (${deviceType})` : ''));
@@ -1290,14 +1311,14 @@
                 successContent.innerHTML = `
                     <p>Thanks for signing up! You'll receive two emails:</p>
                     <ul style="text-align: left; margin: 20px 0;">
-                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on Google Play.</li>
-                        <li><strong>Demo access instructions</strong> - You'll get step-by-step instructions on how to download and preview the app.</li>
+                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on App Store and Google Play.</li>
+                        <li><strong>Preview access instructions</strong> - You'll get step-by-step instructions on how to request early access to the Google Play version.</li>
                     </ul>
                     <p style="margin-top: 20px;"><strong>Thanks for being an early supporter!</strong></p>
                 `;
             } else {
                 successContent.innerHTML = `
-                    <p>Thanks for your interest! We'll send you an email as soon as Team Build Pro is officially available on Google Play.</p>
+                    <p>Thanks for your interest! We'll send you an email as soon as Team Build Pro is officially available on App Store and Google Play.</p>
                 `;
             }
         }
@@ -1318,7 +1339,7 @@
             
             successContent.innerHTML = `
                 <p><strong>You've already registered - we've got you covered!</strong></p>
-                <p style="margin: 15px 0;">We'll notify you as soon as Team Build Pro is officially available on Google Play.</p>
+                <p style="margin: 15px 0;">We'll notify you as soon as Team Build Pro is officially available on App Store and Google Play.</p>
                 <p>Thanks for your continued interest! 🎉</p>
             `;
         }
@@ -1329,6 +1350,7 @@
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const deviceSelection = document.getElementById('deviceSelection');
             const demoCheckbox = document.getElementById('demoInterest');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
@@ -1342,6 +1364,7 @@
             firstNameInput.value = '';
             lastNameInput.value = '';
             emailInput.value = '';
+            deviceSelection.value = '';
             demoCheckbox.checked = false;
             submitBtn.disabled = false;
             btnText.textContent = 'Notify Me When It\'s Ready!';
@@ -1351,8 +1374,18 @@
                 demoSection.classList.remove('show');
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available on Google Play";
+                    demoText.textContent = "Check the box if you would like to request preview access before it's officially available on Google Play";
                 }
+            }
+            
+            // Reset modal header and description
+            const modalHeader = document.getElementById('modal-header');
+            const modalDescription = document.getElementById('modal-description');
+            if (modalHeader) {
+                modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
+            }
+            if (modalDescription) {
+                modalDescription.textContent = 'Our app is launching soon on both App Store and Google Play. Be the first to know when it\'s available!';
             }
         }
 
@@ -1388,10 +1421,20 @@
             if (demoSection && !demoSection.classList.contains('show')) {
                 demoSection.classList.add('show');
                 
+                // Update modal header and description for Google Play focus
+                const modalHeader = document.getElementById('modal-header');
+                const modalDescription = document.getElementById('modal-description');
+                if (modalHeader) {
+                    modalHeader.textContent = '🚀 Get Google Play Preview!';
+                }
+                if (modalDescription) {
+                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                }
+                
                 // Update the demo text to be more contextual
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app before it's officially available on Google Play";
+                    demoText.textContent = "Check the box if you would like to request preview access before it's officially available on Google Play";
                 }
                 
                 // Make demo checkbox focusable
@@ -1408,6 +1451,16 @@
             
             if (demoSection && demoSection.classList.contains('show')) {
                 demoSection.classList.remove('show');
+                
+                // Restore modal header and description for both platforms
+                const modalHeader = document.getElementById('modal-header');
+                const modalDescription = document.getElementById('modal-description');
+                if (modalHeader) {
+                    modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
+                }
+                if (modalDescription) {
+                    modalDescription.textContent = 'Our app is launching soon on both App Store and Google Play. Be the first to know when it\'s available!';
+                }
                 
                 // Reset checkbox when hiding and remove from tab order
                 if (demoCheckbox) {
