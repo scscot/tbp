@@ -200,6 +200,17 @@ class _ShareScreenState extends State<ShareScreen>
             'I\'m here if you\'d like to discuss this further.\n\n'
             'Take care!',
       },
+      'general_invitation': {
+        'title': 'General Invitation',
+        'description': 'A versatile message for any prospect situation',
+        'subject': 'Pre-Build Your Team!',
+        'message': 'Thanks for your interest in joining our $_bizOppName team! Here\'s something that could give you a HUGE advantage.\n\n'
+            'You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.\n\n'
+            'Check it out here: $_prospectReferralLink\n\n'
+            'This could be the difference between struggling to get started and hitting the ground running!\n\n'
+            'Please don\'t hesitate to reach out if you have questions or want to discuss further.\n\n'
+            'Best regards!',
+      },
     };
   }
 
@@ -260,6 +271,22 @@ class _ShareScreenState extends State<ShareScreen>
             'This could be the game-changer for true duplication.\n\n'
             'I\'d love to hear your thoughts!\n\n'
             'Take care!',
+      },
+      'general_team_tool': {
+        'title': 'General Team Tool',
+        'description': 'A versatile message for any partner situation',
+        'subject': 'A Great App for Growth!',
+        'message': 'I\'ve found an incredible tool that\'s transforming how we build our $_bizOppName teams.\n\n'
+            'Here\'s what makes it special:\n\n'
+            '✅ Prospects can pre-build their teams BEFORE joining.\n'
+            '✅ Creates instant momentum from day one.\n'
+            '✅ Simple system that promotes duplication.\n'
+            '✅ Accelerates growth across our entire organization.\n\n'
+            'This is what we\'ve been looking for to give our team a competitive edge!\n\n'
+            'Check it out: $_partnerReferralLink\n\n'
+            'Let\'s help our recruiting prospects start strong!\n\n'
+            'I\'d love to hear your thoughts on this.\n\n'
+            'Best regards!',
       },
     };
   }
@@ -468,7 +495,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Choose Your Message (3 Options)',
+                      'Choose Your Message (4 Options)',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
@@ -652,7 +679,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Choose Your Message (3 Options)',
+                      'Choose Your Message (4 Options)',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
