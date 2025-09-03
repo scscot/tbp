@@ -3507,3 +3507,7 @@ function isValidEmailLaunchNotification(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+
+// Import and export the launch campaign function
+const { sendLaunchCampaign } = require('./sendLaunchCampaign');
+exports.sendLaunchCampaign = sendLaunchCampaign;
