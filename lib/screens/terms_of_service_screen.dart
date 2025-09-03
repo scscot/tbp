@@ -26,13 +26,13 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    lastUpdated = '${now.day}/${now.month}/${now.year}';
+    lastUpdated = '${now.month}/${now.day}/${now.year}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const EntryAppBar(),
+      appBar: const AppScreenBar(title: 'Terms of Service'),
       backgroundColor: AppColors.backgroundPrimary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

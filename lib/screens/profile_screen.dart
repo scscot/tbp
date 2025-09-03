@@ -11,6 +11,8 @@ import '../models/user_model.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/update_profile_screen.dart';
 import '../screens/delete_account_screen.dart';
+import '../screens/terms_of_service_screen.dart';
+import '../screens/privacy_policy_screen.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
@@ -502,6 +504,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       label: const Text('Sign Out'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Terms of Service button
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TermsOfServiceScreen(
+                              appId: widget.appId,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.description),
+                      label: const Text('Terms of Service'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade600,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Privacy Policy button
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrivacyPolicyScreen(
+                              appId: widget.appId,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.privacy_tip),
+                      label: const Text('Privacy Policy'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade600,
                         foregroundColor: Colors.white,
                       ),
                     ),

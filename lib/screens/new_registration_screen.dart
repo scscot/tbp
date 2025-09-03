@@ -3,9 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:math' as math;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
@@ -15,6 +23,7 @@ import 'terms_of_service_screen.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
 import 'login_screen.dart';
+import '../models/user_model.dart';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
@@ -44,6 +53,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   String? _initialReferralCode;
   bool _isLoading = true;
   bool _acceptedPrivacyPolicy = false;
+  bool _isAppleSignUp = false;
+  bool _isGoogleSignUp = false;
+  Map<String, String?>? _appleUserData;
 
   bool isDevMode = true;
 
@@ -137,6 +149,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Future<void> _register() async {
+    // Skip form validation if this is social sign-up (already handled)
+    if (_isAppleSignUp || _isGoogleSignUp) return;
+    
     if (!_formKey.currentState!.validate() || _isLoading) return;
 
     if (!_acceptedPrivacyPolicy) {
@@ -272,6 +287,363 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     );
   }
 
+  /// Apple Sign-In credential generation
+  Future<AuthCredential> _getAppleCredential() async {
+    final rawNonce = _generateNonce();
+    final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+    debugPrint("🍎 REGISTER: Starting Apple Sign In...");
+
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName
+      ],
+      nonce: nonce,
+    );
+
+    debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
+    debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
+    
+    // Store Apple-provided user data for creating user profile
+    _appleUserData = {
+      'email': appleCredential.email,
+      'givenName': appleCredential.givenName,
+      'familyName': appleCredential.familyName,
+    };
+    debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
+
+    return OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+      rawNonce: rawNonce,
+    );
+  }
+
+  String _generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = math.Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  /// Google Sign-In credential generation
+  Future<AuthCredential> _getGoogleCredential() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    if (googleAuth == null) throw Exception('Google sign-in aborted.');
+    return GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+  }
+
+  /// Handle Google Sign-In Registration
+  Future<void> _signUpWithGoogle() async {
+    if (_isLoading) return;
+    
+    setState(() {
+      _isLoading = true;
+      _isGoogleSignUp = true;
+    });
+
+    final authService = context.read<AuthService>();
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    try {
+      debugPrint("🔍 REGISTER: Getting Google credential...");
+      final credential = await _getGoogleCredential();
+      
+      debugPrint("🔍 REGISTER: Credential obtained, signing up with Firebase...");
+      await authService.signInWithCredential(credential);
+
+      // Get current user after authentication
+      final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('🔍 REGISTER: Current user after auth: ${currentUser?.uid}');
+      
+      if (currentUser != null) {
+        debugPrint('🔍 REGISTER: Checking if user document exists...');
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+            
+        if (userDoc.exists) {
+          debugPrint('🔍 REGISTER: User already exists, treating as login...');
+          // User already exists - this is effectively a login
+          final userModel = UserModel.fromFirestore(userDoc);
+          await SessionManager.instance.setCurrentUser(userModel);
+          
+          // Navigate to main app (user already exists)
+          if (mounted) {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const SizedBox()), // Will be handled by AuthWrapper
+              (Route<dynamic> route) => false,
+            );
+          }
+        } else {
+          debugPrint('🔍 REGISTER: Creating new user profile with Google data...');
+          await _createGoogleUserProfile(currentUser);
+          
+          // Navigate based on user role
+          final userModel = await FirestoreService().getUser(currentUser.uid);
+          if (userModel != null) {
+            await SessionManager.instance.setCurrentUser(userModel);
+            
+            if (mounted) {
+              if (userModel.role == 'admin') {
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => AdminEditProfileScreen(appId: widget.appId),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              } else {
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => EditProfileScreen(
+                      appId: widget.appId, 
+                      user: userModel, 
+                      isFirstTimeSetup: true
+                    ),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              }
+            }
+          }
+        }
+      }
+
+      debugPrint("✅ REGISTER: Google Sign-In registration successful!");
+
+    } on FirebaseAuthException catch (e) {
+      debugPrint("❌ REGISTER: Google Sign-In failed: ${e.code} - ${e.message}");
+      scaffoldMessenger.showSnackBar(SnackBar(
+          content: Text(e.message ?? 'Google Sign-In failed.'),
+          backgroundColor: Colors.red));
+    } catch (e) {
+      debugPrint("❌ REGISTER: Unexpected Google Sign-In error: $e");
+      scaffoldMessenger.showSnackBar(const SnackBar(
+          content: Text('An unexpected error occurred with Google Sign-In.'),
+          backgroundColor: Colors.red));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isGoogleSignUp = false;
+        });
+      }
+    }
+  }
+
+  /// Creates user profile for Google Sign-In using Google-provided data
+  Future<void> _createGoogleUserProfile(User firebaseUser) async {
+    try {
+      debugPrint('🔍 GOOGLE_REGISTER: Creating user profile with Google data...');
+      
+      // Use Google-provided data
+      final email = firebaseUser.email ?? '';
+      final displayName = firebaseUser.displayName ?? '';
+      final nameParts = displayName.split(' ');
+      final firstName = nameParts.isNotEmpty ? nameParts.first : 'Google';
+      final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : 'User';
+      
+      debugPrint('🔍 GOOGLE_REGISTER: Email: $email, FirstName: $firstName, LastName: $lastName');
+
+      // Create user document in Firestore
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
+      
+      final userData = {
+        'uid': firebaseUser.uid,
+        'email': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'photoUrl': firebaseUser.photoURL,
+        'role': _initialReferralCode == null ? 'admin' : 'user',
+        'isActive': true,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'authProvider': 'google',
+        'subscriptionStatus': 'trial',
+        'trialStartDate': FieldValue.serverTimestamp(),
+        'country': 'US', // Default country
+        'deviceSelection': 'both', // Default for Google users
+        'notificationsEnabled': true,
+        'soundEnabled': true,
+        'sponsorReferralCode': _initialReferralCode,
+      };
+
+      await userDoc.set(userData);
+      debugPrint('✅ GOOGLE_REGISTER: User profile created successfully in Firestore');
+
+      // Clear referral data after successful registration
+      await SessionManager.instance.clearReferralData();
+      debugPrint('🧹 GOOGLE_REGISTER: Referral data cleared after successful registration');
+
+    } catch (e) {
+      debugPrint('❌ GOOGLE_REGISTER: Error creating user profile: $e');
+      rethrow;
+    }
+  }
+
+  /// Handle Apple Sign-In Registration
+  Future<void> _signUpWithApple() async {
+    if (_isLoading) return;
+    
+    setState(() {
+      _isLoading = true;
+      _isAppleSignUp = true;
+    });
+
+    final authService = context.read<AuthService>();
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    try {
+      debugPrint("🍎 REGISTER: Getting Apple credential...");
+      final credential = await _getAppleCredential();
+      
+      debugPrint("🍎 REGISTER: Credential obtained, signing up with Firebase...");
+      await authService.signInWithCredential(credential);
+
+      // Get current user after authentication
+      final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('🍎 REGISTER: Current user after auth: ${currentUser?.uid}');
+      
+      if (currentUser != null) {
+        debugPrint('🍎 REGISTER: Checking if user document exists...');
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+            
+        if (userDoc.exists) {
+          debugPrint('🍎 REGISTER: User already exists, treating as login...');
+          // User already exists - this is effectively a login
+          final userModel = UserModel.fromFirestore(userDoc);
+          await SessionManager.instance.setCurrentUser(userModel);
+          
+          // Navigate to main app (user already exists)
+          if (mounted) {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const SizedBox()), // Will be handled by AuthWrapper
+              (Route<dynamic> route) => false,
+            );
+          }
+        } else {
+          debugPrint('🍎 REGISTER: Creating new user profile with Apple data...');
+          await _createAppleUserProfile(currentUser);
+          
+          // Navigate based on user role
+          final userModel = await FirestoreService().getUser(currentUser.uid);
+          if (userModel != null) {
+            await SessionManager.instance.setCurrentUser(userModel);
+            
+            if (mounted) {
+              if (userModel.role == 'admin') {
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => AdminEditProfileScreen(appId: widget.appId),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              } else {
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => EditProfileScreen(
+                      appId: widget.appId, 
+                      user: userModel, 
+                      isFirstTimeSetup: true
+                    ),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              }
+            }
+          }
+        }
+      }
+
+      debugPrint("✅ REGISTER: Apple Sign-In registration successful!");
+
+    } on FirebaseAuthException catch (e) {
+      debugPrint("❌ REGISTER: Apple Sign-In failed: ${e.code} - ${e.message}");
+      scaffoldMessenger.showSnackBar(SnackBar(
+          content: Text(e.message ?? 'Apple Sign-In failed.'),
+          backgroundColor: Colors.red));
+    } catch (e) {
+      debugPrint("❌ REGISTER: Unexpected Apple Sign-In error: $e");
+      scaffoldMessenger.showSnackBar(const SnackBar(
+          content: Text('An unexpected error occurred with Apple Sign-In.'),
+          backgroundColor: Colors.red));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isAppleSignUp = false;
+        });
+      }
+    }
+  }
+
+  /// Creates user profile for Apple Sign-In using Apple-provided data
+  Future<void> _createAppleUserProfile(User firebaseUser) async {
+    try {
+      if (_appleUserData == null) {
+        debugPrint('❌ APPLE_REGISTER: No Apple user data available');
+        return;
+      }
+
+      debugPrint('🍎 APPLE_REGISTER: Creating user profile with Apple data...');
+      
+      // Use Apple-provided data or fallback to Firebase Auth data
+      final email = _appleUserData!['email'] ?? firebaseUser.email ?? '';
+      final firstName = _appleUserData!['givenName'] ?? 'Apple';
+      final lastName = _appleUserData!['familyName'] ?? 'User';
+      
+      debugPrint('🍎 APPLE_REGISTER: Email: $email, FirstName: $firstName, LastName: $lastName');
+
+      // Create user document in Firestore
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
+      
+      final userData = {
+        'uid': firebaseUser.uid,
+        'email': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'photoUrl': firebaseUser.photoURL,
+        'role': _initialReferralCode == null ? 'admin' : 'user',
+        'isActive': true,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'authProvider': 'apple',
+        'subscriptionStatus': 'trial',
+        'trialStartDate': FieldValue.serverTimestamp(),
+        'country': 'US', // Default country
+        'deviceSelection': 'ios', // Default for Apple users
+        'notificationsEnabled': true,
+        'soundEnabled': true,
+        'sponsorReferralCode': _initialReferralCode,
+      };
+
+      await userDoc.set(userData);
+      debugPrint('✅ APPLE_REGISTER: User profile created successfully in Firestore');
+
+      // Clear Apple user data after successful creation
+      _appleUserData = null;
+
+      // Clear referral data after successful registration
+      await SessionManager.instance.clearReferralData();
+      debugPrint('🧹 APPLE_REGISTER: Referral data cleared after successful registration');
+
+    } catch (e) {
+      debugPrint('❌ APPLE_REGISTER: Error creating user profile: $e');
+      _appleUserData = null;
+      rethrow;
+    }
+  }
+
   PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -365,6 +737,52 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         ),
                       ),
                     const SizedBox(height: 24),
+                    
+                    // Social Sign-In Section
+                    if (!kIsWeb && Platform.isIOS) ...[
+                      ElevatedButton.icon(
+                        icon: const FaIcon(FontAwesomeIcons.apple,
+                            color: Colors.white, size: 20),
+                        label: const Text('Sign up with Apple'),
+                        onPressed: (_isLoading && !_isAppleSignUp) ? null : _signUpWithApple,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    
+                    ElevatedButton.icon(
+                      icon: const FaIcon(FontAwesomeIcons.google, size: 20),
+                      label: const Text('Sign up with Google'),
+                      onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    const Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text('or register with email', 
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                            )
+                          ),
+                        ),
+                        Expanded(child: Divider()),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    
                     TextFormField(
                         controller: _firstNameController,
                         decoration: const InputDecoration(
@@ -583,7 +1001,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                 child: CircularProgressIndicator(
                                     color: Colors.white, strokeWidth: 3),
                               )
-                            : const Text('Create Account'),
+                            : const Text('Create Account with Email'),
                       ),
                     ),
                   ],

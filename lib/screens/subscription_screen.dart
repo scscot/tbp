@@ -5,6 +5,8 @@ import '../services/iap_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
+import '../screens/terms_of_service_screen.dart';
+import '../screens/privacy_policy_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   final String? appId;
@@ -362,15 +364,93 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ),
                   ),
 
-                  // Terms and Privacy
-                  const SizedBox(height: 16),
-                  Text(
-                    'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. You can manage your subscription in your Apple ID account settings.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+                  // Legal Notice with Links
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
                     ),
-                    textAlign: TextAlign.center,
+                    child: Column(
+                      children: [
+                        Text(
+                          'By subscribing, you agree to our Terms of Service and Privacy Policy.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TermsOfServiceScreen(
+                                      appId: widget.appId ?? '',
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue.shade600,
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              ),
+                              child: const Text(
+                                'Terms of Service',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ' | ',
+                              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PrivacyPolicyScreen(
+                                      appId: widget.appId ?? '',
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue.shade600,
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              ),
+                              child: const Text(
+                                'Privacy Policy',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. You can manage your subscription in your Apple ID account settings.',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

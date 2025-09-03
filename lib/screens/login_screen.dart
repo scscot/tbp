@@ -16,6 +16,7 @@ import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
+import 'new_registration_screen.dart';
 import '../widgets/header_widgets.dart';
 import 'dart:async';
 import '../services/biometric_service.dart';
@@ -39,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _hasStoredUser = false;
   String? _storedEmail;
   StreamSubscription<User?>? _authSub;
+  Map<String, String?>? _appleUserData;
 
   @override
   void initState() {
@@ -309,6 +311,12 @@ class _LoginScreenState extends State<LoginScreen> {
           debugPrint('✅ SOCIAL_LOGIN: User data stored for biometric authentication');
         } else {
           debugPrint('❌ SOCIAL_LOGIN: User document does not exist in Firestore for UID: ${currentUser.uid}');
+          
+          // Create user profile automatically for Apple Sign-In with Apple-provided data
+          if (_appleUserData != null && credential.providerId == 'apple.com') {
+            debugPrint('🍎 SOCIAL_LOGIN: Creating user profile with Apple-provided data...');
+            await _createAppleUserProfile(currentUser);
+          }
         }
       } else {
         debugPrint('❌ SOCIAL_LOGIN: No current user found after authentication');
@@ -439,6 +447,64 @@ class _LoginScreenState extends State<LoginScreen> {
                     : () => _signInWithSocial(_getGoogleCredential),
               ),
               const SizedBox(height: 32),
+              
+              // Create Account Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account? ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      // Store context before async operations
+                      final navigator = Navigator.of(context);
+                      
+                      // Clear any existing user data/state before registration
+                      debugPrint('🔄 LOGIN: Clearing user data before registration...');
+                      
+                      // Clear session manager data
+                      await SessionManager.instance.clearAllData();
+                      debugPrint('✅ LOGIN: SessionManager data cleared');
+                      
+                      // Clear any stored Apple user data
+                      _appleUserData = null;
+                      debugPrint('✅ LOGIN: Apple user data cleared');
+                      
+                      // Clear form data
+                      _emailController.clear();
+                      _passwordController.clear();
+                      debugPrint('✅ LOGIN: Form data cleared');
+                      
+                      // Navigate to registration screen
+                      debugPrint('🔄 LOGIN: Navigating to registration screen...');
+                      if (mounted) {
+                        navigator.push(
+                          MaterialPageRoute(
+                            builder: (context) => NewRegistrationScreen(
+                              appId: widget.appId,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Create Account',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              
               // Privacy Policy Footer
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -524,6 +590,14 @@ class _LoginScreenState extends State<LoginScreen> {
         "🍎 DEBUG: Authorization code present: ${appleCredential.authorizationCode.isNotEmpty}");
     debugPrint(
         "🍎 DEBUG: Identity token length: ${appleCredential.identityToken?.length ?? 0}");
+    
+    // Store Apple-provided user data for creating user profile
+    _appleUserData = {
+      'email': appleCredential.email,
+      'givenName': appleCredential.givenName,
+      'familyName': appleCredential.familyName,
+    };
+    debugPrint("🍎 DEBUG: Apple user data stored: $_appleUserData");
 
     return OAuthProvider('apple.com').credential(
       idToken: appleCredential.identityToken,
@@ -538,5 +612,63 @@ class _LoginScreenState extends State<LoginScreen> {
     final random = math.Random.secure();
     return List.generate(length, (_) => charset[random.nextInt(charset.length)])
         .join();
+  }
+
+  /// Creates user profile for Apple Sign-In using Apple-provided data
+  Future<void> _createAppleUserProfile(User firebaseUser) async {
+    try {
+      if (_appleUserData == null) {
+        debugPrint('❌ APPLE_SIGNUP: No Apple user data available');
+        return;
+      }
+
+      debugPrint('🍎 APPLE_SIGNUP: Creating user profile with Apple data...');
+      
+      // Use Apple-provided data or fallback to Firebase Auth data
+      final email = _appleUserData!['email'] ?? firebaseUser.email ?? '';
+      final firstName = _appleUserData!['givenName'] ?? 'Apple';
+      final lastName = _appleUserData!['familyName'] ?? 'User';
+      
+      debugPrint('🍎 APPLE_SIGNUP: Email: $email, FirstName: $firstName, LastName: $lastName');
+
+      // Create user document in Firestore
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
+      
+      final userData = {
+        'uid': firebaseUser.uid,
+        'email': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'photoUrl': firebaseUser.photoURL,
+        'role': 'member',
+        'isActive': true,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'authProvider': 'apple',
+        'subscriptionStatus': 'trial',
+        'trialStartDate': FieldValue.serverTimestamp(),
+        'country': 'US', // Default country
+        'deviceSelection': 'ios', // Default for Apple users
+        'notificationsEnabled': true,
+        'soundEnabled': true,
+      };
+
+      await userDoc.set(userData);
+      debugPrint('✅ APPLE_SIGNUP: User profile created successfully in Firestore');
+
+      // Create UserModel and store in SessionManager
+      final userModel = UserModel.fromMap(userData);
+      await SessionManager.instance.setCurrentUser(userModel);
+      debugPrint('✅ APPLE_SIGNUP: User data stored in SessionManager for biometric authentication');
+
+      // Clear Apple user data after successful creation
+      _appleUserData = null;
+
+    } catch (e) {
+      debugPrint('❌ APPLE_SIGNUP: Error creating user profile: $e');
+      // Clear Apple user data even on error to prevent retry with stale data
+      _appleUserData = null;
+      rethrow;
+    }
   }
 }
