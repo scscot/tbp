@@ -1,9 +1,15 @@
 const axios = require('axios');
 const FormData = require('form-data');
+const fs = require('fs');
+const path = require('path');
 
-// Mailgun API configuration
-const MAILGUN_API_KEY = 'your-mailgun-api-key-here'; // Replace with your real API key
-const MAILGUN_DOMAIN = 'stephenscott.us';
+// Load Mailgun configuration from secrets
+const mailgunConfig = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'secrets', 'mailgun_config.json'), 'utf8')
+);
+
+const MAILGUN_API_KEY = mailgunConfig.api_key;
+const MAILGUN_DOMAIN = mailgunConfig.domain;
 const MAILGUN_BASE_URL = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
 
 // Function to send a test email using your Mailgun template

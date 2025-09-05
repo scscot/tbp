@@ -6,9 +6,9 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-const uid = "a6f3b223-993b-4efd-9f62-df1961aa8f46";
-const newEmail = "demo@teambuildpro.com";
-const newPassword = "DemoPWD999!";
+const uid = "KJ8uFnlhKhWgBa4NVcwT";
+const newEmail = "scscot@gmail.com";
+const newPassword = "11111111";
 
 admin.auth().updateUser(uid, {
     email: newEmail,
