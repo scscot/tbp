@@ -386,7 +386,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
             ),
             const SizedBox(height: 24),
 
-/*             // The Challenge
+/*             // Roadmap To Success
             _buildSectionCard(
               title: 'THE CHALLENGE',
               content:
