@@ -18,9 +18,9 @@ async function sendTestEmail() {
     const form = new FormData();
     
     // Email configuration
-    form.append('from', 'Stephen Scott <stephen@stephenscott.us>');
+    form.append('from', 'Stephen Scott <ss@stephenscott.us>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
-    form.append('subject', 'Team Build Pro - Test Email');
+    form.append('subject', 'Something I built for us!');
     form.append('template', 'team build pro'); // Replace with your actual template name
     
     // Template variables based on your CSV format (firstname lastname,email)
@@ -53,8 +53,8 @@ async function sendBulkCampaign(recipientList) {
   try {
     const form = new FormData();
     
-    form.append('from', 'Stephen Scott <stephen@stephenscott.us>');
-    form.append('subject', 'Team Build Pro - Now Available');
+    form.append('from', 'Stephen Scott <ss@stephenscott.us>');
+    form.append('subject', 'Something I built for us!');
     form.append('template', 'team build pro'); // Your template name
 
     // Add multiple recipients

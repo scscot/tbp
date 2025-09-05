@@ -405,7 +405,7 @@ class _ShareScreenState extends State<ShareScreen>
                   color: Colors.white)),
           const SizedBox(height: 8),
           Text(
-            'Share your referral links to pre-build a new team with aspiring leaders or expand your existing team.',
+            'Share your referral links to pre-build a new team with recruiting prospects or expand your existing team.',
             style: TextStyle(
                 fontSize: 16, color: Colors.white.withValues(alpha: 0.9)),
             textAlign: TextAlign.center,
