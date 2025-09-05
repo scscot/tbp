@@ -96,7 +96,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Your Path to Momentum',
+            'How It Works',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -107,9 +107,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            (role == 'user')
-                ? 'For the forward-thinking leader about to join $_bizOpp, the Team Build Pro app is your tool to build your team before day one, positioning you for immediate success.'
-                : 'For the ambitious direct sales professional, whether a beginner, rising star, or seasoned leader, the Team Build Pro app is your tool for building a powerful global organization, one meaningful connection at a time.',
+            'Transform your recruiting with a pre-qualified team pipeline.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -442,7 +440,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         ),
                         const SizedBox(width: 16),
                         Text(
-                          'THE PROCESS',
+                          'PIPELINE SYSTEM',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -454,24 +452,31 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'INVITE - Build Your Foundation',
+                      title: 'Set Your Foundation',
                       description:
-                          'Connect with like-minded professionals open to exploring $_bizOpp .',
-                      icon: Icons.connect_without_contact,
+                          'Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.',
+                      icon: Icons.foundation,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'CULTIVATE - Create Momentum',
+                      title: 'Build Smart, Not Hard',
                       description:
-                          'Foster authentic relationships as your network grows, creating a thriving network of professionals who support each other\'s success.',
-                      icon: Icons.psychology,
+                          'Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the "cold start" problem.',
+                      icon: Icons.group_add,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'PARTNER - Launch with Success',
+                      title: 'Automatic Qualification',
                       description:
-                          'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
-                      icon: Icons.handshake,
+                          'When your recruiting prospects achieve proven leadership milestones (4 direct sponsors + 20 total team members), they automatically unlock an invitation to your business opportunity.',
+                      icon: Icons.verified,
+                    ),
+                    _buildProcessStep(
+                      step: 4,
+                      title: 'Exponential Growth',
+                      description:
+                          'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.',
+                      icon: Icons.trending_up,
                     ),
                   ],
                 ),
