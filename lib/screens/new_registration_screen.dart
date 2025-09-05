@@ -24,6 +24,8 @@ import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
 import 'login_screen.dart';
 import '../models/user_model.dart';
+import '../main.dart';
+import 'dart:async';
 
 class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
@@ -56,12 +58,48 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   bool _isAppleSignUp = false;
   bool _isGoogleSignUp = false;
   Map<String, String?>? _appleUserData;
+  bool _navigated = false;
+  StreamSubscription<User?>? _authSub;
 
   bool isDevMode = true;
 
   @override
   void initState() {
     super.initState();
+    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (!mounted || user == null || _navigated) return;
+
+      debugPrint('🔐 REGISTER: Auth state -> ${user.email} (${user.uid})');
+
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          debugPrint('🧹 REGISTER: No user doc; signing out');
+          await FirebaseAuth.instance.signOut();
+          return;
+        }
+
+        // No arbitrary delays; wait exactly for a frame, then navigate
+        await Future<void>.delayed(Duration.zero);
+
+        final nav = navigatorKey.currentState;
+        if (nav != null) {
+          _navigated = true;            // guard against double navigation
+          _authSub?.cancel();           // stop listening once we commit to UI
+          nav.pushNamedAndRemoveUntil(
+            '/',                        // AuthWrapper route
+            (route) => false,
+          );
+          debugPrint('✅ REGISTER: Pushed AuthWrapper and cleared stack');
+        }
+      } catch (e) {
+        debugPrint('❌ REGISTER: Error after auth: $e');
+      }
+    });
     _initializeScreen();
   }
 
@@ -140,6 +178,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
   @override
   void dispose() {
+    _authSub?.cancel();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -374,13 +413,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           final userModel = UserModel.fromFirestore(userDoc);
           await SessionManager.instance.setCurrentUser(userModel);
           
-          // Navigate to main app (user already exists)
-          if (mounted) {
-            navigator.pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const SizedBox()), // Will be handled by AuthWrapper
-              (Route<dynamic> route) => false,
-            );
-          }
+          // Let the auth state listener handle navigation
+          debugPrint('🔄 GOOGLE_REGISTER: User already exists, auth listener will handle navigation');
         } else {
           debugPrint('🔍 REGISTER: Creating new user profile with Google data...');
           await _createGoogleUserProfile(currentUser);
@@ -524,13 +558,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           final userModel = UserModel.fromFirestore(userDoc);
           await SessionManager.instance.setCurrentUser(userModel);
           
-          // Navigate to main app (user already exists)
-          if (mounted) {
-            navigator.pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const SizedBox()), // Will be handled by AuthWrapper
-              (Route<dynamic> route) => false,
-            );
-          }
+          // Let the auth state listener handle navigation
+          debugPrint('🔄 APPLE_REGISTER: User already exists, auth listener will handle navigation');
         } else {
           debugPrint('🍎 REGISTER: Creating new user profile with Apple data...');
           await _createAppleUserProfile(currentUser);

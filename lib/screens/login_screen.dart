@@ -21,6 +21,7 @@ import '../widgets/header_widgets.dart';
 import 'dart:async';
 import '../services/biometric_service.dart';
 import '../services/session_manager.dart';
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   final String appId;
@@ -41,39 +42,43 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _storedEmail;
   StreamSubscription<User?>? _authSub;
   Map<String, String?>? _appleUserData;
+  bool _navigated = false;
 
   @override
   void initState() {
     super.initState();
     _authSub = FirebaseAuth.instance.authStateChanges().listen((user) async {
-      if (user != null && mounted) {
-        debugPrint('🔐 LOGIN: Auth state changed - user signed in: ${user.email}');
-        
-        // Check if user document exists in Firestore before navigating
-        try {
-          final userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-          
-          if (userDoc.exists) {
-            debugPrint('🔐 LOGIN: User document exists, navigating to app');
-            // Give AuthWrapper a frame to rebuild, then reveal it.
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context, rootNavigator: true)
-                  .popUntil((route) => route.isFirst);
-            });
-          } else {
-            debugPrint('🔐 LOGIN: User document missing - likely deleted account, signing out');
-            // User document doesn't exist - this is likely a deleted account
-            // Sign out to clear the Firebase Auth state
-            await FirebaseAuth.instance.signOut();
-          }
-        } catch (e) {
-          debugPrint('❌ LOGIN: Error checking user document: $e');
+      if (!mounted || user == null || _navigated) return;
+
+      debugPrint('🔐 LOGIN: Auth state -> ${user.email} (${user.uid})');
+
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          debugPrint('🧹 LOGIN: No user doc; signing out');
+          await FirebaseAuth.instance.signOut();
+          return;
         }
-      } else {
-        debugPrint('🔐 LOGIN: Auth state changed - user signed out');
+
+        // No arbitrary delays; wait exactly for a frame, then navigate
+        await Future<void>.delayed(Duration.zero);
+
+        final nav = navigatorKey.currentState;
+        if (nav != null) {
+          _navigated = true;            // guard against double navigation
+          _authSub?.cancel();           // stop listening once we commit to UI
+          nav.pushNamedAndRemoveUntil(
+            '/',                        // AuthWrapper route
+            (route) => false,
+          );
+          debugPrint('✅ LOGIN: Pushed AuthWrapper and cleared stack');
+        }
+      } catch (e) {
+        debugPrint('❌ LOGIN: Error after auth: $e');
       }
     });
     _initializeBiometric();
@@ -281,12 +286,18 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     final authService = context.read<AuthService>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     try {
       debugPrint("🔄 DEBUG: Getting credential...");
       final credential = await getCredential();
       debugPrint("🔄 DEBUG: Credential obtained, signing in with Firebase...");
       debugPrint("🔄 DEBUG: Credential provider: ${credential.providerId}");
+      
+      // CRITICAL iPad Fix: Don't rely on automatic navigation
+      // Instead, manually handle the auth flow without letting AuthWrapper interfere
+      
       await authService.signInWithCredential(credential);
+      debugPrint("✅ DEBUG: Firebase sign-in successful!");
 
       // Store user data for biometric authentication
       final currentUser = FirebaseAuth.instance.currentUser;
@@ -318,28 +329,29 @@ class _LoginScreenState extends State<LoginScreen> {
             await _createAppleUserProfile(currentUser);
           }
         }
+
+        // Let the auth state listener handle navigation immediately
+        debugPrint('🔄 NAVIGATION: Authentication successful, auth listener will handle navigation');
+        
       } else {
         debugPrint('❌ SOCIAL_LOGIN: No current user found after authentication');
+        throw Exception('Authentication succeeded but no user found');
       }
 
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true)
-            .popUntil((route) => route.isFirst);
-      }
-
-      debugPrint("✅ DEBUG: Firebase sign-in successful!");
-
-      // Don't navigate - let AuthWrapper handle routing based on auth state
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
-      scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text(e.message ?? 'Sign-in failed.'),
-          backgroundColor: Colors.red));
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(SnackBar(
+            content: Text(e.message ?? 'Sign-in failed.'),
+            backgroundColor: Colors.red));
+      }
     } catch (e) {
       debugPrint("❌ DEBUG: Unexpected error: $e");
-      scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('An unexpected social sign-in error occurred.'),
-          backgroundColor: Colors.red));
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(SnackBar(
+            content: Text('Sign-in error: $e'),
+            backgroundColor: Colors.red));
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -574,22 +586,84 @@ class _LoginScreenState extends State<LoginScreen> {
     final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
 
     debugPrint("🍎 DEBUG: Starting Apple Sign In...");
+    debugPrint("🍎 DEBUG: Device info - Platform: ${Platform.operatingSystem}, Model: ${Platform.operatingSystemVersion}");
 
-    final appleCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName
-      ],
-      nonce: nonce,
-    );
+    try {
+      // Check if Sign in with Apple is available on this device
+      final isAvailable = await SignInWithApple.isAvailable();
+      debugPrint("🍎 DEBUG: Apple Sign-In available: $isAvailable");
+      
+      if (!isAvailable) {
+        throw Exception('Apple Sign-In is not available on this device');
+      }
 
-    debugPrint(
-        "🍎 DEBUG: Apple credential received: ${appleCredential.identityToken != null}");
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
+        nonce: nonce,
+        webAuthenticationOptions: kIsWeb 
+          ? WebAuthenticationOptions(
+              clientId: 'your-apple-client-id',
+              redirectUri: Uri.parse('https://your-domain.com/auth/callback'),
+            )
+          : null,
+      );
+      
+      debugPrint("✅ APPLE_DEBUG: Apple credential successfully obtained");
+      
+      return _processAppleCredential(appleCredential, rawNonce);
+      
+    } on SignInWithAppleAuthorizationException catch (e) {
+      debugPrint("❌ APPLE_AUTHORIZATION_ERROR: Code: ${e.code}, Message: ${e.message}");
+      
+      switch (e.code) {
+        case AuthorizationErrorCode.canceled:
+          throw Exception('Apple Sign-In was canceled by user');
+        case AuthorizationErrorCode.failed:
+          throw Exception('Apple Sign-In failed. Please check your Apple ID settings and try again.');
+        case AuthorizationErrorCode.invalidResponse:
+          throw Exception('Invalid response from Apple. Please try again.');
+        case AuthorizationErrorCode.notHandled:
+          throw Exception('Apple Sign-In not properly configured. Please contact support.');
+        case AuthorizationErrorCode.notInteractive:
+          throw Exception('Apple Sign-In requires user interaction. Please try again.');
+        case AuthorizationErrorCode.unknown:
+        default:
+          throw Exception('Unknown Apple Sign-In error. Please try again or contact support.');
+      }
+    } catch (e) {
+      debugPrint("❌ APPLE_ERROR: Apple Sign-In failed: $e");
+      debugPrint("❌ APPLE_ERROR: Error type: ${e.runtimeType}");
+      
+      // Handle specific iPad/iPadOS errors
+      if (e.toString().contains('ASAuthorizationError') || 
+          e.toString().contains('canceled') ||
+          e.toString().contains('unknown')) {
+        throw Exception('Apple Sign-In was canceled or failed. Please try again.');
+      }
+      
+      rethrow;
+    }
+  }
+  
+  AuthCredential _processAppleCredential(AuthorizationCredentialAppleID appleCredential, String rawNonce) {
+    debugPrint("🍎 DEBUG: Apple credential received: ${appleCredential.identityToken != null}");
     debugPrint("🍎 DEBUG: User identifier: ${appleCredential.userIdentifier}");
-    debugPrint(
-        "🍎 DEBUG: Authorization code present: ${appleCredential.authorizationCode.isNotEmpty}");
-    debugPrint(
-        "🍎 DEBUG: Identity token length: ${appleCredential.identityToken?.length ?? 0}");
+    debugPrint("🍎 DEBUG: Authorization code present: ${appleCredential.authorizationCode.isNotEmpty}");
+    debugPrint("🍎 DEBUG: Identity token length: ${appleCredential.identityToken?.length ?? 0}");
+    
+    // Validate required fields for iPad compatibility
+    if (appleCredential.identityToken == null) {
+      debugPrint("❌ APPLE_ERROR: Missing identity token");
+      throw Exception('Apple Sign-In failed: Missing identity token');
+    }
+    
+    if (appleCredential.authorizationCode.isEmpty) {
+      debugPrint("❌ APPLE_ERROR: Missing authorization code");
+      throw Exception('Apple Sign-In failed: Missing authorization code');
+    }
     
     // Store Apple-provided user data for creating user profile
     _appleUserData = {
