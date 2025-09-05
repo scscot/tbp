@@ -62,8 +62,34 @@ p {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
+.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Tablet responsive for 2x2 grid */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid-4 {
+        max-width: 900px;
+        gap: 1.5rem;
+    }
+}
+
+/* Medium mobile - keep 2x2 on larger phones in landscape */
+@media (min-width: 640px) and (max-width: 768px) {
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+        gap: 1.5rem;
+    }
+    .feature-card {
+        padding: 1.5rem;
+    }
+}
+
 .section {
-    padding: 5rem 0;
+    padding: 4rem 0;
 }
 
 .section-white {
@@ -820,6 +846,11 @@ p {
 
     .grid-3 {
         grid-template-columns: 1fr;
+    }
+
+    .grid-4 {
+        grid-template-columns: 1fr;
+        max-width: 100%;
     }
 
     .hero-buttons {
