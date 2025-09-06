@@ -3511,3 +3511,104 @@ function isValidEmailLaunchNotification(email) {
 // Import and export the launch campaign function
 const { sendLaunchCampaign } = require('./sendLaunchCampaign');
 exports.sendLaunchCampaign = sendLaunchCampaign;
+
+// ============================================================================
+// FIRESTORE MONITORING FUNCTIONS
+// ============================================================================
+
+/**
+ * Get real-time Firestore usage metrics and cost estimates
+ * Password-protected endpoint for monitoring dashboard
+ */
+exports.getFirestoreMetrics = onRequest({
+  region: "us-central1",
+  cors: true
+}, async (req, res) => {
+  try {
+    // Simple password check (you should use a proper hash in production)
+    const { password } = req.query;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    
+    if (!password || password !== MONITORING_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get basic Firestore statistics
+    const stats = {
+      timestamp: new Date().toISOString(),
+      collections: {},
+      totalDocuments: 0,
+      estimatedCosts: {}
+    };
+
+    // Count documents in major collections
+    const collections = ['users', 'chats', 'admin_settings'];
+    
+    for (const collectionName of collections) {
+      try {
+        const snapshot = await db.collection(collectionName).get();
+        const docCount = snapshot.size;
+        
+        // Count subcollections for users
+        let subCollectionCount = 0;
+        if (collectionName === 'users') {
+          for (const doc of snapshot.docs) {
+            const notificationsSnapshot = await doc.ref.collection('notifications').get();
+            subCollectionCount += notificationsSnapshot.size;
+          }
+        }
+        
+        // Count messages for chats
+        if (collectionName === 'chats') {
+          for (const doc of snapshot.docs) {
+            const messagesSnapshot = await doc.ref.collection('messages').get();
+            subCollectionCount += messagesSnapshot.size;
+          }
+        }
+
+        stats.collections[collectionName] = {
+          documents: docCount,
+          subDocuments: subCollectionCount,
+          total: docCount + subCollectionCount
+        };
+        
+        stats.totalDocuments += docCount + subCollectionCount;
+      } catch (error) {
+        console.error(`Error counting ${collectionName}:`, error);
+        stats.collections[collectionName] = { error: error.message };
+      }
+    }
+
+    // Estimate costs based on current Firestore pricing (approximate)
+    const readCostPer100k = 0.36; // $0.36 per 100K reads
+    const writeCostPer100k = 1.08; // $1.08 per 100K writes
+    const deleteCostPer100k = 0.12; // $0.12 per 100K deletes
+    const storageCostPerGBMonth = 0.18; // $0.18 per GB/month
+
+    // Rough estimates (you'd need Cloud Monitoring API for precise data)
+    const estimatedDailyReads = stats.totalDocuments * 10; // Assume 10 reads per doc per day
+    const estimatedDailyWrites = stats.totalDocuments * 0.5; // Assume 0.5 writes per doc per day
+    
+    stats.estimatedCosts = {
+      dailyReads: estimatedDailyReads,
+      dailyWrites: estimatedDailyWrites,
+      estimatedDailyCostReads: (estimatedDailyReads / 100000) * readCostPer100k,
+      estimatedDailyCostWrites: (estimatedDailyWrites / 100000) * writeCostPer100k,
+      estimatedDailyCostTotal: ((estimatedDailyReads / 100000) * readCostPer100k) + ((estimatedDailyWrites / 100000) * writeCostPer100k)
+    };
+
+    // Add current pricing info
+    stats.pricingInfo = {
+      reads: `$${readCostPer100k} per 100K operations`,
+      writes: `$${writeCostPer100k} per 100K operations`,
+      deletes: `$${deleteCostPer100k} per 100K operations`,
+      storage: `$${storageCostPerGBMonth} per GB/month`,
+      lastUpdated: '2024-01-01' // Update this when pricing changes
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Error getting Firestore metrics:', error);
+    res.status(500).json({ error: 'Failed to get metrics' });
+  }
+});

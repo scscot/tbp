@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firestore Usage Monitor - Team Build Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .refresh-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .refresh-btn {
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .cost-highlight {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+
+        .collections-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .collections-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .collections-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .collections-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .collections-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .error {
+            color: #e74c3c;
+            background: #fdeaea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 40px;
+            color: #666;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            font-size: 0.9rem;
+            color: #999;
+            font-style: italic;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        .pricing-info {
+            background: #e8f4fd;
+            border: 2px solid #bee5eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .pricing-info h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .pricing-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bee5eb;
+        }
+
+        .pricing-item strong {
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .refresh-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Firestore Monitor</h1>
+            <p>Real-time usage and cost tracking for Team Build Pro</p>
+        </div>
+
+        <div id="loginSection" class="login-form">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #333;">Enter Monitoring Password</h3>
+            <input type="password" id="passwordInput" placeholder="Monitoring Password" />
+            <button class="login-btn" onclick="authenticate()">Access Dashboard</button>
+            <div id="loginError" class="error" style="display: none;"></div>
+        </div>
+
+        <div id="dashboard" class="dashboard">
+            <div class="refresh-controls">
+                <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+                <div class="auto-refresh">
+                    <label>
+                        <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                        Auto-refresh every 30 seconds
+                    </label>
+                </div>
+                <button class="refresh-btn" style="background: #dc3545;" onclick="logout()">🚪 Logout</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading Firestore Metrics</div>
+                <div class="loading-subtext">Analyzing document counts and calculating costs...</div>
+            </div>
+
+            <div id="content" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>📊 Total Documents</h3>
+                        <div class="stat-value" id="totalDocs">-</div>
+                        <div class="stat-label">Across all collections</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>💰 Daily Cost (Estimated)</h3>
+                        <div class="stat-value cost-highlight" id="dailyCost">-</div>
+                        <div class="stat-label">Based on estimated operations</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>📖 Daily Reads (Estimated)</h3>
+                        <div class="stat-value" id="dailyReads">-</div>
+                        <div class="stat-label">Firestore read operations</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>✍️ Daily Writes (Estimated)</h3>
+                        <div class="stat-value" id="dailyWrites">-</div>
+                        <div class="stat-label">Firestore write operations</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>👤 Average Cost Per User</h3>
+                        <div class="stat-value cost-highlight" id="costPerUser">-</div>
+                        <div class="stat-label">Daily cost divided by active users</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>📈 Monthly Cost Projection</h3>
+                        <div class="stat-value cost-highlight" id="monthlyCost">-</div>
+                        <div class="stat-label">Estimated monthly Firestore cost</div>
+                    </div>
+                </div>
+
+                <div class="collections-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Collection</th>
+                                <th>Documents</th>
+                                <th>Sub-Documents</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="collectionsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pricing-info">
+                    <h3>📋 Current Firestore Pricing</h3>
+                    <div class="pricing-grid" id="pricingGrid">
+                    </div>
+                </div>
+
+                <div class="timestamp" id="lastUpdate">
+                </div>
+            </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPassword = '';
+        let autoRefreshInterval = null;
+        const FUNCTION_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getFirestoreMetrics';
+
+        function authenticate() {
+            console.log('Authenticate button clicked');
+            const password = document.getElementById('passwordInput').value;
+            console.log('Password entered:', password ? 'Yes' : 'No');
+            
+            if (!password) {
+                showLoginError('Please enter a password');
+                return;
+            }
+
+            // Disable button and show loading state
+            const btn = document.querySelector('.login-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="button-spinner"></div> Connecting...';
+
+            currentPassword = password;
+            loadData().then(success => {
+                if (success) {
+                    console.log('Authentication successful');
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    document.getElementById('loginError').style.display = 'none';
+                } else {
+                    console.log('Authentication failed');
+                    showLoginError('Invalid password or server error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Access Dashboard';
+                }
+            }).catch(error => {
+                console.error('Authentication error:', error);
+                showLoginError('Connection error: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Access Dashboard';
+            });
+        }
+
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function logout() {
+            currentPassword = '';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+
+        async function loadData() {
+            console.log('loadData called, password set:', !!currentPassword);
+            
+            if (!currentPassword) {
+                return false;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                const url = `${FUNCTION_URL}?password=${encodeURIComponent(currentPassword)}`;
+                console.log('Fetching from:', url);
+                
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Invalid password');
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Data received:', data);
+                displayData(data);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                return true;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+                document.getElementById('error').style.display = 'block';
+                return false;
+            }
+        }
+
+        function displayData(data) {
+            // Update summary stats
+            document.getElementById('totalDocs').textContent = data.totalDocuments.toLocaleString();
+            document.getElementById('dailyCost').textContent = `$${data.estimatedCosts.estimatedDailyCostTotal.toFixed(4)}`;
+            document.getElementById('dailyReads').textContent = data.estimatedCosts.dailyReads.toLocaleString();
+            document.getElementById('dailyWrites').textContent = data.estimatedCosts.dailyWrites.toLocaleString();
+
+            // Calculate additional metrics
+            const userCount = data.collections.users?.documents || 0;
+            const dailyCostTotal = data.estimatedCosts.estimatedDailyCostTotal;
+            
+            // Cost per user (daily)
+            const costPerUser = userCount > 0 ? dailyCostTotal / userCount : 0;
+            document.getElementById('costPerUser').textContent = `$${costPerUser.toFixed(6)}`;
+            
+            // Monthly cost projection (daily * 30)
+            const monthlyCost = dailyCostTotal * 30;
+            document.getElementById('monthlyCost').textContent = `$${monthlyCost.toFixed(2)}`;
+
+            // Update collections table
+            const tableBody = document.getElementById('collectionsTableBody');
+            tableBody.innerHTML = '';
+            
+            Object.entries(data.collections).forEach(([collection, stats]) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = collection;
+                row.insertCell(1).textContent = stats.documents?.toLocaleString() || 'Error';
+                row.insertCell(2).textContent = stats.subDocuments?.toLocaleString() || 'N/A';
+                row.insertCell(3).textContent = stats.total?.toLocaleString() || 'Error';
+                
+                if (stats.error) {
+                    row.style.color = '#e74c3c';
+                    row.cells[1].textContent = `Error: ${stats.error}`;
+                }
+            });
+
+            // Update pricing info
+            const pricingGrid = document.getElementById('pricingGrid');
+            pricingGrid.innerHTML = '';
+            
+            Object.entries(data.pricingInfo).forEach(([key, value]) => {
+                if (key !== 'lastUpdated') {
+                    const div = document.createElement('div');
+                    div.className = 'pricing-item';
+                    div.innerHTML = `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong><br>${value}`;
+                    pricingGrid.appendChild(div);
+                }
+            });
+
+            // Update timestamp
+            const timestamp = new Date(data.timestamp);
+            document.getElementById('lastUpdate').textContent = `Last updated: ${timestamp.toLocaleString()}`;
+        }
+
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            if (checkbox.checked) {
+                autoRefreshInterval = setInterval(() => {
+                    loadData();
+                }, 30000); // 30 seconds
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+            }
+        }
+
+        // Allow Enter key in password field
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authenticate();
+            }
+        });
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            document.getElementById('passwordInput').focus();
+        });
+
+        // Add test function for debugging
+        function testButton() {
+            alert('Button clicked! JavaScript is working.');
+        }
+    </script>
+</body>
+</html>
