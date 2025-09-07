@@ -473,7 +473,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     ),
                     _buildProcessStep(
                       step: 4,
-                      title: 'Exponential Growth',
+                      title: 'Rapid Growth',
                       description:
                           'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.',
                       icon: Icons.trending_up,

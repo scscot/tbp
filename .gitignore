@@ -37,6 +37,7 @@ secrets/
 
 # eMail Lists
 emails/
+leads/
 
 # === Flutter / Dart / Pub Specific Ignores ===
 lib_backup/
