@@ -468,7 +468,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       step: 3,
                       title: 'Automatic Qualification',
                       description:
-                          'When your recruiting prospects achieve proven leadership milestones (4 direct sponsors + 20 total team members), they automatically unlock an invitation to your business opportunity.',
+                          'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.',
                       icon: Icons.verified,
                     ),
                     _buildProcessStep(

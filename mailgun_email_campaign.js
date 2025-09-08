@@ -26,7 +26,7 @@ async function sendTestEmail() {
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Darren Elijah <d.elijah9@gmail.com>');
     form.append('subject', 'A New Approach to Recruiting and Team Building');
-    form.append('template', 'team build pro'); // Replace with your actual template name
+    form.append('template', 'tbp'); // Replace with your actual template name
     
     // Template variables based on your CSV format (firstname lastname,email)
     form.append('h:X-Mailgun-Variables', JSON.stringify({
@@ -63,7 +63,7 @@ async function sendBulkCampaign(recipientList) {
     
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('subject', 'A New Approach to Recruiting and Team Building');
-    form.append('template', 'team build pro'); // Your template name
+    form.append('template', 'tbp'); // Your template name
 
     // Add multiple recipients
     recipientList.forEach(recipient => {
@@ -245,7 +245,7 @@ async function sendCampaignToList() {
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('to', MAILING_LIST_ADDRESS);
     form.append('subject', 'A New Approach to Recruiting and Team Building');
-    form.append('template', 'team build pro');
+    form.append('template', 'tbp');
     
     // Recipient variables will be automatically substituted by Mailgun
     // based on the vars we uploaded with each contact
@@ -440,7 +440,7 @@ async function sendBatchCampaign(options = {}) {
           form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
           form.append('subject', 'A New Approach to Recruiting and Team Building');
-          form.append('template', 'team build pro');
+          form.append('template', 'tbp');
           form.append('h:X-Mailgun-Variables', JSON.stringify({
             first_name: contact.first_name,
             last_name: contact.last_name,
