@@ -3,6 +3,9 @@
 const {
   sendTestEmail,
   readCSV,
+  readUnsentContacts,
+  sendBatchCampaign,
+  getCampaignStatus,
   uploadContactsToList,
   sendCampaignToList,
   getListStats,
@@ -28,6 +31,29 @@ async function main() {
         console.log(`Found ${contacts.length} contacts`);
         console.log('First few contacts:', contacts.slice(0, 3));
         break;
+
+      case 'test-batch':
+        console.log('🧪 Running test batch (no emails sent)...');
+        await sendBatchCampaign({ limit: 5, testMode: true });
+        break;
+
+      case 'batch':
+        const limit = parseInt(process.argv[3]) || 100;
+        const testMode = process.argv.includes('--test');
+        console.log(`📧 Sending batch campaign (${limit} emails)...`);
+        await sendBatchCampaign({ limit, testMode });
+        break;
+
+      case 'status':
+        console.log('📊 Getting campaign status...');
+        getCampaignStatus();
+        break;
+
+      case 'resume':
+        console.log('🔄 Resuming failed/pending emails...');
+        const resumeLimit = parseInt(process.argv[3]) || 50;
+        await sendBatchCampaign({ limit: resumeLimit });
+        break;
         
       case 'upload':
         console.log('📤 Uploading contacts to Mailgun...');
@@ -52,16 +78,32 @@ async function main() {
       case 'help':
       default:
         console.log('Available commands:');
-        console.log('  test-email - Send single test email to scscot@gmail.com');
-        console.log('  test-csv   - Test reading the CSV file');
-        console.log('  upload     - Upload CSV contacts to Mailgun mailing list');
-        console.log('  stats     - Show mailing list statistics');
-        console.log('  send      - Send campaign to existing mailing list');
-        console.log('  full      - Complete workflow: upload + send campaign');
-        console.log('  help      - Show this help message');
-        console.log('\nExamples:');
-        console.log('  node run-email-campaign.js test-csv');
-        console.log('  node run-email-campaign.js full');
+        console.log('');
+        console.log('📧 BATCH CAMPAIGN COMMANDS (Recommended):');
+        console.log('  test-batch       - Test batch processing without sending emails');
+        console.log('  batch [N]        - Send batch of N emails (default: 100)');
+        console.log('  batch [N] --test - Test batch of N emails without sending');
+        console.log('  status           - Show campaign progress and statistics');
+        console.log('  resume [N]       - Resume sending failed/pending emails (default: 50)');
+        console.log('');
+        console.log('🔧 UTILITY COMMANDS:');
+        console.log('  test-email       - Send single test email to scscot@gmail.com');
+        console.log('  test-csv         - Test reading the CSV file');
+        console.log('');
+        console.log('📨 MAILING LIST COMMANDS (Legacy):');
+        console.log('  upload           - Upload CSV contacts to Mailgun mailing list');
+        console.log('  stats            - Show mailing list statistics');
+        console.log('  send             - Send campaign to existing mailing list');
+        console.log('  full             - Complete workflow: upload + send campaign');
+        console.log('');
+        console.log('  help             - Show this help message');
+        console.log('');
+        console.log('📋 EXAMPLES:');
+        console.log('  node run-email-campaign.js test-batch');
+        console.log('  node run-email-campaign.js batch 50');
+        console.log('  node run-email-campaign.js status');
+        console.log('  node run-email-campaign.js batch 100 --test');
+        console.log('  node run-email-campaign.js resume 25');
         break;
     }
     
