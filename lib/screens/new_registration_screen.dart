@@ -70,6 +70,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       if (!mounted || user == null || _navigated) return;
 
       debugPrint('🔐 REGISTER: Auth state -> ${user.email} (${user.uid})');
+      
+      // CRITICAL: Don't interfere if we're actively processing Apple or Google sign-up
+      if (_isAppleSignUp || _isGoogleSignUp) {
+        debugPrint('🔐 REGISTER: Sign-up in progress, skipping auth state navigation');
+        return;
+      }
 
       try {
         final userDoc = await FirebaseFirestore.instance

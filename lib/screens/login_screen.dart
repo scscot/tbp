@@ -51,6 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted || user == null || _navigated) return;
 
       debugPrint('🔐 LOGIN: Auth state -> ${user.email} (${user.uid})');
+      
+      // CRITICAL: Don't interfere if we're actively processing a social sign-in
+      if (_isLoading) {
+        debugPrint('🔐 LOGIN: Sign-in in progress, skipping auth state navigation');
+        return;
+      }
 
       try {
         final userDoc = await FirebaseFirestore.instance
