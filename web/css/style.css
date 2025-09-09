@@ -1216,13 +1216,17 @@ p {
     display: inline-block;
     /* Allow wrapping instead of truncation */
     white-space: normal;
-    /* Slightly tighter line-height looks better on 2 lines */
-    line-height: 1.2;
+    /* Optimized line-height for multi-line mobile display */
+    line-height: 1.3;
     /* Keep the pill look even when wrapping */
     border-radius: 9999px;
-    /* Constrain width so long strings don’t span edge-to-edge */
+    /* Constrain width so long strings don't span edge-to-edge */
     max-width: min(680px, 92vw);
     width: auto;
+    /* Enhanced mobile text rendering */
+    text-align: center;
+    /* Improved transitions */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     /* Comfortable padding that scales down on tiny screens */
     padding: 0.7rem 1.25rem;
     /* Prevent odd overflow behavior on very narrow screens */
@@ -1232,15 +1236,48 @@ p {
 
 @media (max-width: 768px) {
     .platform-badge {
-        font-size: clamp(0.72rem, 2.8vw, 0.92rem);
-        padding: 0.65rem 1.1rem;
+        font-size: clamp(0.75rem, 3.2vw, 0.95rem);
+        padding: 0.8rem 1.5rem;
+        /* Optimal spacing for two-line text on mobile */
+        line-height: 1.4;
+        /* Better visual weight on mobile screens */
+        font-weight: 600;
+        /* Enhanced mobile legibility */
+        letter-spacing: 0.3px;
+        /* Subtle shadow for depth on mobile */
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        /* Ensure proper margin for mobile layout */
+        margin-bottom: 1.5rem;
+        /* Remove fixed width constraints for better flexibility */
+        width: auto;
+        max-width: min(350px, 90vw);
     }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
     .platform-badge {
-        font-size: clamp(0.66rem, 3.5vw, 0.82rem);
-        padding: 0.6rem 1rem;
+        font-size: clamp(0.7rem, 3.8vw, 0.85rem);
+        padding: 0.75rem 1.25rem;
+        /* Tighter line-height for smaller screens */
+        line-height: 1.35;
+        /* Slightly less letter spacing on very small screens */
+        letter-spacing: 0.2px;
+        /* Adjust max-width for better proportion on small screens */
+        max-width: min(320px, 92vw);
+    }
+}
+
+@media (max-width: 380px) {
+    .platform-badge {
+        font-size: clamp(0.68rem, 4.2vw, 0.8rem);
+        padding: 0.7rem 1.1rem;
+        /* Compact spacing for very small screens */
+        line-height: 1.3;
+        /* Ensure readability on smallest screens */
+        max-width: min(280px, 95vw);
+        letter-spacing: 0.1px;
     }
 }
 

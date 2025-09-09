@@ -24,7 +24,7 @@ async function sendTestEmail() {
     // Email configuration
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
-    // form.append('to', 'Darren Elijah <d.elijah9@gmail.com>');
+    // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
     form.append('subject', 'A New Approach to Recruiting and Team Building');
     form.append('template', 'tbp'); // Replace with your actual template name
     
@@ -33,9 +33,9 @@ async function sendTestEmail() {
        first_name: 'Stephen',
        last_name: 'Scott',
        email: 'scscot@gmail.com'
-      // first_name: 'Darren',
-      // last_name: 'Elijah',
-      // email: 'd.elijah9@gmail.com'
+      // first_name: 'Jeanne',
+      // last_name: 'Paquet',
+      // email: 'jpaquet2@ca.rr.com'
     }));
 
     // Send the email

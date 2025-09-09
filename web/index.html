@@ -602,9 +602,21 @@
         // ============================================================================
         // DYNAMIC CONTENT FOR DIFFERENT USER JOURNEYS
         // ============================================================================
+        // Function to determine if mobile line break should be used
+        function shouldUseMobileLineBreak() {
+            return window.innerWidth <= 768;
+        }
+
+        // Function to get responsive heroBadge text
+        function getResponsiveHeroBadgeText() {
+            return shouldUseMobileLineBreak() 
+                ? "DIRECT SALES RECRUITING<br>AND TEAM BUILDING APP"
+                : "DIRECT SALES RECRUITING AND TEAM BUILDING APP";
+        }
+
         const contentFor = {
             partner: {
-                heroBadge: "DIRECT SALES RECRUITING AND TEAM BUILDING APP",
+                heroBadge: getResponsiveHeroBadgeText(),
                 heroHeadline: `Empower Your Team <br> <span class="accent">Accelerate Growth</span>`,
                 heroSubheadline:
                     "The professional tool that solves direct sales' #1 challenge: building and retaining a qualified team.",
@@ -671,6 +683,10 @@
 
         // Function to update the DOM with dynamic content
         function updatePageContent(type = "partner") {
+            // Refresh heroBadge text for current screen size
+            if (contentFor.partner) {
+                contentFor.partner.heroBadge = getResponsiveHeroBadgeText();
+            }
             const content = contentFor[type] || contentFor.partner;
 
             // Helper to safely update element content
@@ -686,7 +702,7 @@
             };
 
             // Update Hero Section
-            updateElement("hero-badge", content.heroBadge);
+            updateElement("hero-badge", content.heroBadge, true); // Enable HTML for heroBadge
             updateElement("hero-headline", content.heroHeadline, true);
             updateElement("hero-subheadline", content.heroSubheadline);
 
@@ -1079,6 +1095,19 @@
         document.querySelectorAll(".reveal-on-scroll").forEach((el) => observer.observe(el));
 
         document.addEventListener("DOMContentLoaded", initializePage);
+
+        // Handle responsive heroBadge text on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const heroBadgeElement = document.getElementById('hero-badge');
+                if (heroBadgeElement && !document.getElementById('personal-invite-container').hasChildNodes()) {
+                    // Only update if no personal invite is showing
+                    heroBadgeElement.innerHTML = getResponsiveHeroBadgeText();
+                }
+            }, 150); // Debounce resize events
+        });
 
         // FAQ Toggle Function
         function toggleFAQ(index) {
