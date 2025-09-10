@@ -65,8 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
             .get();
 
         if (!userDoc.exists) {
-          debugPrint('🧹 LOGIN: No user doc; signing out');
+          debugPrint('🧹 LOGIN: No user doc found - showing registration prompt');
           await FirebaseAuth.instance.signOut();
+          
+          // Show modal explaining the user needs to register first
+          if (mounted) {
+            _showRegistrationRequiredModal();
+          }
           return;
         }
 
@@ -329,11 +334,12 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           debugPrint('❌ SOCIAL_LOGIN: User document does not exist in Firestore for UID: ${currentUser.uid}');
           
-          // Create user profile automatically for Apple Sign-In with Apple-provided data
-          if (_appleUserData != null && credential.providerId == 'apple.com') {
-            debugPrint('🍎 SOCIAL_LOGIN: Creating user profile with Apple-provided data...');
-            await _createAppleUserProfile(currentUser);
+          // Sign out and show registration modal for social logins without existing accounts
+          await FirebaseAuth.instance.signOut();
+          if (mounted) {
+            _showRegistrationRequiredModal();
           }
+          return;
         }
 
         // Let the auth state listener handle navigation immediately
@@ -353,6 +359,15 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       debugPrint("❌ DEBUG: Unexpected error: $e");
+      
+      // Handle user cancellation silently - don't show error message
+      if (e.toString().contains('USER_CANCELED_APPLE_SIGNIN') ||
+          e.toString().contains('canceled') ||
+          e.toString().contains('GoogleSignIn')) {
+        debugPrint('🔄 SOCIAL_LOGIN: User canceled sign-in, returning silently');
+        return; // Exit gracefully without showing error
+      }
+      
       if (mounted) {
         scaffoldMessenger.showSnackBar(SnackBar(
             content: Text('Sign-in error: $e'),
@@ -363,6 +378,86 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showRegistrationRequiredModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              const Icon(
+                Icons.info_outline,
+                color: Colors.blue,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Account Required',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'To use "Sign in with Apple", you must first create a Team Build Pro account.',
+                style: TextStyle(fontSize: 16, height: 1.4),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Please tap "Create Account" below and choose "Sign up with Apple" to register your new account.',
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close modal
+                // Navigate to registration screen
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => NewRegistrationScreen(
+                      appId: widget.appId,
+                    ),
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Create Account',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -626,7 +721,8 @@ class _LoginScreenState extends State<LoginScreen> {
       
       switch (e.code) {
         case AuthorizationErrorCode.canceled:
-          throw Exception('Apple Sign-In was canceled by user');
+          // Create a custom exception for user cancellation that we can handle differently
+          throw Exception('USER_CANCELED_APPLE_SIGNIN');
         case AuthorizationErrorCode.failed:
           throw Exception('Apple Sign-In failed. Please check your Apple ID settings and try again.');
         case AuthorizationErrorCode.invalidResponse:
@@ -694,61 +790,4 @@ class _LoginScreenState extends State<LoginScreen> {
         .join();
   }
 
-  /// Creates user profile for Apple Sign-In using Apple-provided data
-  Future<void> _createAppleUserProfile(User firebaseUser) async {
-    try {
-      if (_appleUserData == null) {
-        debugPrint('❌ APPLE_SIGNUP: No Apple user data available');
-        return;
-      }
-
-      debugPrint('🍎 APPLE_SIGNUP: Creating user profile with Apple data...');
-      
-      // Use Apple-provided data or fallback to Firebase Auth data
-      final email = _appleUserData!['email'] ?? firebaseUser.email ?? '';
-      final firstName = _appleUserData!['givenName'] ?? 'Apple';
-      final lastName = _appleUserData!['familyName'] ?? 'User';
-      
-      debugPrint('🍎 APPLE_SIGNUP: Email: $email, FirstName: $firstName, LastName: $lastName');
-
-      // Create user document in Firestore
-      final userDoc = FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
-      
-      final userData = {
-        'uid': firebaseUser.uid,
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
-        'photoUrl': firebaseUser.photoURL,
-        'role': 'member',
-        'isActive': true,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-        'authProvider': 'apple',
-        'subscriptionStatus': 'trial',
-        'trialStartDate': FieldValue.serverTimestamp(),
-        'country': 'US', // Default country
-        'deviceSelection': 'ios', // Default for Apple users
-        'notificationsEnabled': true,
-        'soundEnabled': true,
-      };
-
-      await userDoc.set(userData);
-      debugPrint('✅ APPLE_SIGNUP: User profile created successfully in Firestore');
-
-      // Create UserModel and store in SessionManager
-      final userModel = UserModel.fromMap(userData);
-      await SessionManager.instance.setCurrentUser(userModel);
-      debugPrint('✅ APPLE_SIGNUP: User data stored in SessionManager for biometric authentication');
-
-      // Clear Apple user data after successful creation
-      _appleUserData = null;
-
-    } catch (e) {
-      debugPrint('❌ APPLE_SIGNUP: Error creating user profile: $e');
-      // Clear Apple user data even on error to prevent retry with stale data
-      _appleUserData = null;
-      rethrow;
-    }
-  }
 }

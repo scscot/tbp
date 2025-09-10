@@ -339,30 +339,45 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
     debugPrint("🍎 REGISTER: Starting Apple Sign In...");
 
-    final appleCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName
-      ],
-      nonce: nonce,
-    );
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
+        nonce: nonce,
+      );
 
-    debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
-    debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
-    
-    // Store Apple-provided user data for creating user profile
-    _appleUserData = {
-      'email': appleCredential.email,
-      'givenName': appleCredential.givenName,
-      'familyName': appleCredential.familyName,
-    };
-    debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
+      debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
+      debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
+      
+      // Store Apple-provided user data for creating user profile
+      _appleUserData = {
+        'email': appleCredential.email,
+        'givenName': appleCredential.givenName,
+        'familyName': appleCredential.familyName,
+      };
+      debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
 
-    return OAuthProvider('apple.com').credential(
-      idToken: appleCredential.identityToken,
-      accessToken: appleCredential.authorizationCode,
-      rawNonce: rawNonce,
-    );
+      return OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+        rawNonce: rawNonce,
+      );
+    } on SignInWithAppleAuthorizationException catch (e) {
+      debugPrint("🍎 REGISTER: Apple Sign-In authorization error: ${e.code}");
+      switch (e.code) {
+        case AuthorizationErrorCode.canceled:
+          throw Exception('USER_CANCELED_APPLE_SIGNIN');
+        case AuthorizationErrorCode.failed:
+        case AuthorizationErrorCode.invalidResponse:
+        case AuthorizationErrorCode.notHandled:
+        case AuthorizationErrorCode.notInteractive:
+        case AuthorizationErrorCode.unknown:
+        default:
+          rethrow;
+      }
+    }
   }
 
   String _generateNonce([int length = 32]) {
@@ -609,6 +624,14 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           backgroundColor: Colors.red));
     } catch (e) {
       debugPrint("❌ REGISTER: Unexpected Apple Sign-In error: $e");
+      
+      // Handle user cancellation silently - don't show error message
+      if (e.toString().contains('USER_CANCELED_APPLE_SIGNIN') ||
+          e.toString().contains('canceled')) {
+        debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In, returning silently');
+        return; // Exit gracefully without showing error
+      }
+      
       scaffoldMessenger.showSnackBar(const SnackBar(
           content: Text('An unexpected error occurred with Apple Sign-In.'),
           backgroundColor: Colors.red));
