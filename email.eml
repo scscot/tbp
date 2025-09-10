@@ -1,0 +1,427 @@
+Delivered-To: scscot@gmail.com
+Received: by 2002:a05:6359:5f8c:b0:206:eeaa:dfa6 with SMTP id lh12csp5083538rwc;
+        Wed, 10 Sep 2025 10:03:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGs0uvWn6nFhJSDipPOenPCyCjFcHazxTjzvIRAzjq/Xfv2HGO/0FqEJZzGoeFH2W27+BJO
+X-Received: by 2002:a05:6214:2b08:b0:725:29f0:c7c8 with SMTP id 6a1803df08f44-73940312cebmr173977336d6.47.1757523823120;
+        Wed, 10 Sep 2025 10:03:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1757523823; cv=none;
+        d=google.com; s=arc-20240605;
+        b=jdPUm8LW3dlNHktgpm5AkGXcklXPIfdwrW2Zfz9hxzrQCFvFB1M3oatSi86z5cHC+f
+         OaP6no7gy9B175EtMYtybcTCNT2T+/4OB+DJFoPSL4gpgTlRijf1FN1HIMpIxCASPvnZ
+         NWNqmNhx1hAaqjcaAghwnLTap5pSijdGDipRZm5mq+TmSRK9K2j8H2fyrrd9qhrxUlBx
+         1WFrCiBbzghaYkUIBEB9UP27ylwS3SAeznHK0g5iW1oImGSMGJoE1ZI1fjd8+K2H43SH
+         QdNb+IHVkfTjUvtwHO5xQJSubBNpF5Zd9gtSLMYOVOCK6fN/VNS8smcPBqxc4Spn6ypq
+         5qQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:message-id:to:from:subject:mime-version
+         :date:reply-to:sender:list-unsubscribe:list-unsubscribe-post
+         :dkim-signature:dkim-signature;
+        bh=Irj/YR4dz6HTTeLww6Nil5JkAvH7wSipZPNSP5dLDIs=;
+        fh=OpxkRtEDSqEPxGoY6FrhzVX/MqpzDrm1asJ7C21UlK0=;
+        b=NcZ/PtWNQo/mg/X1LIq9wlSos+zqkk7UcR9xj25bBzVoXaWsGPIV7z1Sjju5y23MIr
+         1OiEHQSwk5u/3co6OMFOMh4lX4p4R2RYW+PEHYmTWwAFhLdkflBf4ai7qt3LmRzxddj2
+         Oa5cQTClc5b+2KgmWl2zpOjl4HUw7PnIAdVIWVQm8aRaaWuzH54Ap7HPcMakVVMJhEBP
+         zVBzxfMys8csxSL+p9SiJNpIzqcOltDdD3+95ZdHHzup0NKbCi9/e4wLKG6czWY5YmfM
+         QcdU/tibTGCFgbCMnx7eJ4kqDLBkD59SdKLyCwYVA6QYssT6HyBdQ1XaIWUgbPcj+qGT
+         Y3ow==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@stephenscott.us header.s=pic header.b="Sl+owIY/";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b="qY2X1c/v";
+       spf=pass (google.com: domain of bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us designates 159.135.228.4 as permitted sender) smtp.mailfrom="bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=stephenscott.us
+Return-Path: <bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us>
+Received: from m228-4.mailgun.net (m228-4.mailgun.net. [159.135.228.4])
+        by mx.google.com with UTF8SMTPS id 6a1803df08f44-720ac2672a3si86399516d6.164.2025.09.10.10.03.42
+        for <scscot@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Sep 2025 10:03:42 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us designates 159.135.228.4 as permitted sender) client-ip=159.135.228.4;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@stephenscott.us header.s=pic header.b="Sl+owIY/";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b="qY2X1c/v";
+       spf=pass (google.com: domain of bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us designates 159.135.228.4 as permitted sender) smtp.mailfrom="bounce+7f654d.02b8b6-scscot=gmail.com@stephenscott.us";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=stephenscott.us
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=stephenscott.us; q=dns/txt; s=pic; t=1757523822; x=1757531022;
+ h=Content-Transfer-Encoding: Content-Type: Message-Id: To: To: From: From: Subject: Subject: Mime-Version: Date: Reply-To: Sender: Sender: X-Feedback-Id: List-Unsubscribe: List-Unsubscribe-Post;
+ bh=Irj/YR4dz6HTTeLww6Nil5JkAvH7wSipZPNSP5dLDIs=;
+ b=Sl+owIY/uRO5Vs98JjADUXW63sljHQCKWgfR2eGjEEtAwUgLFY9f/NMe3WM+w910ioAGAL6nBmzLd020fGy+rcarCPCE4ogba03gquFDfQ9EdCxyAHydU3ZVg9JQjiq33+tEufZTUxzJOjSwADokRModbe/GCVCwa2s+p99p33c=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg; t=1757523822; x=1757531022;
+ h=Content-Transfer-Encoding: Content-Type: Message-Id: To: To: From: From: Subject: Subject: Mime-Version: Date: Reply-To: Sender: Sender: X-Feedback-Id: List-Unsubscribe: List-Unsubscribe-Post;
+ bh=Irj/YR4dz6HTTeLww6Nil5JkAvH7wSipZPNSP5dLDIs=;
+ b=qY2X1c/vj+yi9kreh7Y43eff7GJIkUzxRnXY4Tvo5baRTTCl/NuZv703ayIUvDgsD1A1noi6C0hwULmkX9MvpXB9FdXbrrbHNUckdkvk7p3765lIFxeGHsjUx/T0fbF5/Xk27rrzrNRZqjMl1N8fNP+iczyod/dfnaWqQ1uir78=
+X-Mailgun-Sid: WyI2ZmJkNyIsInNjc2NvdEBnbWFpbC5jb20iLCIwMmI4YjYiXQ==
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+List-Unsubscribe: <http://email.stephenscott.us/u/eJxszjsOwjAQBNDTZMtovbaTpdiCM3AA5M-aRMoHxYbzowiJinKmmDdZkCLHAXQN8yI11bS3zuHjjH3aVyjzUdt9C6vKrelz0g0mocxsOWT2qJyIlCJpSeiLSZa9gVkIyePFoBnRWtdzdJ4zYhy4jHaMncP6nTvF1r8qLOEHnRUc_-406egKb6FPAAAA__-DQjrZ>
+X-Feedback-Id: sscott@stephenscott.us::68b8914af9d6391b297aadde:mailgun
+Received: by a11e64639e6cad6e2b66ccc815c1daec9c09306574880111f80002f869d235fd with HTTP
+ id 68c1af66b6e7f96aa7f8b16e; Wed, 10 Sep 2025 17:03:34 GMT
+X-Mailgun-Sending-Ip: 159.135.228.4
+Sender: sscott@stephenscott.us
+Reply-To: sscott@stephenscott.com
+Date: Wed, 10 Sep 2025 17:03:34 +0000
+Mime-Version: 1.0
+Subject: A New Approach to Recruiting and Team Building
+From: Stephen Scott <sscott@stephenscott.us>
+To: Stephen Scott <scscot@gmail.com>
+X-Mailgun-Variables: {"first_name":"Stephen","last_name":"Scott","email":"scscot@gmail.com"}
+X-Mailgun-Template-Name: tbp
+Message-Id: <20250910170334.8b458d00b68f737b@stephenscott.us>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en" dir=3D"ltr" xmlns=3D"http://www.w3.org/1999/xhtml" xmlns:=
+v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-microsoft-com:of=
+fice:office">
+  <head>
+    <title></title>
+    <!--[if !mso]><!-->
+    <meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge">
+    <!--<![endif]-->
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8=
+">
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1">
+    <style type=3D"text/css">
+      #outlook a { padding:0; }
+      body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size=
+-adjust:100%; }
+      table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-r=
+space:0pt; }
+      img { border:0;height:auto;line-height:100%; outline:none;text-decora=
+tion:none;-ms-interpolation-mode:bicubic; }
+      p { display:block;margin:13px 0; }
+    </style>
+    <!--[if mso]>
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+    <!--[if lte mso 11]>
+    <style type=3D"text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
+   =20
+   =20
+    <style type=3D"text/css">
+      @media only screen and (min-width:480px) {
+        .mj-column-per-100 { width:100% !important; max-width: 100%; }
+      }
+    </style>
+    <style media=3D"screen and (min-width:480px)">
+      .moz-text-html .mj-column-per-100 { width:100% !important; max-width:=
+ 100%; }
+    </style>
+    <style type=3D"text/css">
+[owa] .mj-column-per-100 { width:100% !important; max-width: 100%; }
+</style>
+ =20
+    <style type=3D"text/css">
+   =20
+   =20
+
+    @media only screen and (max-width:479px) {
+      table.mj-full-width-mobile { width: 100% !important; }
+      td.mj-full-width-mobile { width: auto !important; }
+    }
+ =20
+    </style>
+    <style type=3D"text/css">
+   =20
+    </style>
+   =20
+  </head>
+  <body style=3D"word-spacing:normal;background-color:#F4F4F4;">
+   =20
+   =20
+      <div
+         style=3D"background-color:#F4F4F4;" role=3D"main" lang=3D"en" dir=
+=3D"ltr"
+      >
+       =20
+     =20
+      <!--[if mso | IE]><table align=3D"center" border=3D"0" cellpadding=3D=
+"0" cellspacing=3D"0" class=3D"" role=3D"presentation" style=3D"width:600px=
+;" width=3D"600" bgcolor=3D"#ffffff" ><tr><td style=3D"line-height:0px;font=
+-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+   =20
+     =20
+      <div  style=3D"background:#ffffff;background-color:#ffffff;margin:0px=
+ auto;max-width:600px;">
+       =20
+        <table
+           align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" role=3D"presentation" style=3D"background:#ffffff;background-color:#fffff=
+f;width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style=3D"direction:ltr;font-size:0px;padding:20px 0px 0px =
+0px;text-align:center;"
+              >
+                <!--[if mso | IE]><table role=3D"presentation" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0"><tr><td class=3D"" style=3D"vertical-a=
+lign:top;width:600px;" ><![endif]-->
+           =20
+      <div
+         class=3D"mj-column-per-100 mj-outlook-group-fix" style=3D"font-siz=
+e:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top=
+;width:100%;"
+      >
+       =20
+      <table
+         border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" style=3D"vertical-align:top;" width=3D"100%"
+      >
+        <tbody>
+         =20
+              <tr>
+                <td
+                   align=3D"center" style=3D"font-size:0px;padding:0px 25px=
+ 0px 25px;word-break:break-word;"
+                >
+                 =20
+      <table
+         border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" style=3D"border-collapse:collapse;border-spacing:0px;"
+      >
+        <tbody>
+          <tr>
+            <td  style=3D"width:60px;">
+             =20
+      <img
+         alt=3D"Team Build Pro" src=3D"https://ci3.googleusercontent.com/me=
+ips/ADKq_NY07338nHyNQoND2TqCKcZU1mEaA0yvaC-K3S4-a40dXQd-_RE_xUBJ9fF3NcConzd=
+HIdEwkj66ZVp2o4586x46FRyX2gW1yqAxxbTXUz-PxQMYYNCelZBRFuZW5Xve=3Ds0-d-e1-ft#=
+https://www.stephenscott.us/wp-content/uploads/2025/09/team-build-pro.png" =
+style=3D"border:none;display:block;outline:none;text-decoration:none;height=
+:60px;width:100%;font-size:13px;" title=3D"" width=3D"60" height=3D"60"
+      />
+   =20
+            </td>
+          </tr>
+        </tbody>
+      </table>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"left" style=3D"font-size:0px;padding:10px 25px;=
+padding-top:0px;padding-bottom:0px;word-break:break-word;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;letter-spacing:normal;line-height:1;text-align:left;color:#000000;"
+      ><p class=3D"text-build-content" style=3D"text-align: center; margin:=
+ 10px 0; margin-top: 10px; margin-bottom: 10px;"><span style=3D"color:#0000=
+00;font-family: Arial, sans-serif;font-size:17px;"><b>Team Build Pro</b></s=
+pan></p></div>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"left" style=3D"font-size:0px;padding:0px 25px 0=
+px 25px;padding-top:0px;padding-bottom:0px;word-break:break-word;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;letter-spacing:normal;line-height:22px;text-align:left;color:#55575=
+d;"
+      ><p class=3D"text-build-content" style=3D"line-height:19px;"><span st=
+yle=3D"color:#55575d;font-family:Arial;font-size:12px;">Hello Stephen,</spa=
+n></p><p class=3D"text-build-content" style=3D"line-height:19px;"><span sty=
+le=3D"color:#55575d;font-size:12px;">In direct sales, the hardest part isn=
+=E2=80=99t the product=E2=80=94it=E2=80=99s building and keeping a motivate=
+d team. That challenge stops more leaders than anything else.</span></p><p =
+class=3D"text-build-content" style=3D"line-height:19px;"><span style=3D"col=
+or:#55575d;font-size:12px;">That=E2=80=99s why I built </span><a class=3D"l=
+ink-build-content" style=3D"color:inherit;text-decoration:none;" target=3D"=
+_blank" href=3D"https://teambuildpro.com"><span style=3D"color:#0000ff;font=
+-size:12px;"><u>Team Build Pro</u></span></a><span style=3D"color:#55575d;f=
+ont-size:12px;">=E2=80=94a professional app created specifically to solve t=
+hat problem. Here=E2=80=99s how it works:</span></p><p class=3D"text-build-=
+content" style=3D"line-height:19px;"><span style=3D"color:#55575d;font-size=
+:12px;"><strong>Set Your Foundation</strong>: Turn the app into your person=
+al recruiting pipeline customized with your opportunity details and referra=
+l link.</span></p><p class=3D"text-build-content" style=3D"line-height:19px=
+;"><span style=3D"color:#55575d;font-size:12px;"><strong>Build Smart, Not H=
+ard</strong>: Share with prospects and existing team members, creating inst=
+ant momentum, eliminating the "cold start" problem.</span></p><p class=3D"t=
+ext-build-content" style=3D"line-height:19px;"><span style=3D"color:#55575d=
+;font-size:12px;"><strong>Automatic Qualification</strong>: Prospects unloc=
+k your opportunity by hitting performance milestones (4 direct sponsors + 2=
+0 team members).</span></p><p class=3D"text-build-content" style=3D"line-he=
+ight:19px;"><span style=3D"color:#55575d;font-size:12px;"><strong>Rapid Gro=
+wth</strong>: As your team expands, new, qualified members feed directly in=
+to your organization.</span></p><p class=3D"text-build-content" style=3D"li=
+ne-height:19px;"><span style=3D"color:#55575d;font-size:12px;">This isn=E2=
+=80=99t just a contact manager. It=E2=80=99s a recruiting engine that gets =
+prospects winning before they even join=E2=80=94ending the cold-start probl=
+em for good.</span></p></div>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"center" style=3D"font-size:0px;padding:10px 25p=
+x;word-break:break-word;"
+                >
+                 =20
+      <table
+         border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentat=
+ion" style=3D"border-collapse:collapse;border-spacing:0px;"
+      >
+        <tbody>
+          <tr>
+            <td  style=3D"width:541px;">
+             =20
+      <img
+         alt=3D"Team Build Pro" src=3D"https://ci3.googleusercontent.com/me=
+ips/ADKq_NakIVTHICI9LRHgJYY42jqpz2peC-JVGq8RoptJWGgVGY1Wkh4try-I8ZYd8V7bjhU=
+gjcoQBVyKBGxftyCyuXXQbYsil0lU5JzYfUlAlFHsLKUb_beLOtx6yXCbFgfD04s=3Ds0-d-e1-=
+ft#https://www.stephenscott.us/wp-content/uploads/2025/09/hero-composite-1.=
+png" style=3D"border:none;display:block;outline:none;text-decoration:none;h=
+eight:auto;width:100%;font-size:13px;" title=3D"" width=3D"541" height=3D"a=
+uto"
+      />
+   =20
+            </td>
+          </tr>
+        </tbody>
+      </table>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"left" style=3D"font-size:0px;padding:10px 25px;=
+padding-top:0px;padding-bottom:0px;word-break:break-word;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;letter-spacing:normal;line-height:1;text-align:left;color:#000000;"
+      ><p class=3D"text-build-content" style=3D"margin: 10px 0;; margin-top=
+: 10px"><span style=3D"color:#55575d;font-family: Arial, sans-serif;font-si=
+ze:13px;">See how it works: </span><a class=3D"link-build-content" style=3D=
+"color:inherit;text-decoration:none;" target=3D"_blank" href=3D"https://tea=
+mbuildpro.com"><span style=3D"color:#0000ff;font-family: Arial, sans-serif;=
+font-size:13px;"><u>TeamBuildPro.com</u></span></a></p><p class=3D"text-bui=
+ld-content" style=3D"margin: 10px 0;"><span style=3D"color:#55575d;font-fam=
+ily: Arial, sans-serif;font-size:13px;">Wishing you all the success in your=
+ business.</span></p><p class=3D"text-build-content" style=3D"margin: 10px =
+0;"><span style=3D"color:#55575d;font-family: Arial, sans-serif;font-size:1=
+3px;">Best,</span></p><p class=3D"text-build-content" style=3D"margin: 10px=
+ 0;; margin-bottom: 10px"><span style=3D"color:#55575d;font-family: Arial, =
+sans-serif;font-size:13px;">Stephen Scott=E2=80=A8</span><br><span style=3D=
+"color:#55575d;font-family: Arial, sans-serif;font-size:13px;">Team Build P=
+ro</span></p></div>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"left" style=3D"background:#f0f0f0;font-size:0px=
+;padding:10px 25px 0px 25px;padding-top:10px;padding-bottom:0px;word-break:=
+break-word;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;letter-spacing:normal;line-height:1;text-align:left;color:#000000;"
+      ><p class=3D"text-build-content" style=3D"line-height: 10px; text-ali=
+gn: center; margin: 10px 0; margin-top: 10px;"><span style=3D"color:#55575d=
+;font-family: Arial, sans-serif;font-size:13px;">This email was sent by:</s=
+pan></p><p class=3D"text-build-content" style=3D"line-height: 10px; text-al=
+ign: center; margin: 10px 0;"><span style=3D"color:#55575d;font-family: Ari=
+al, sans-serif;font-size:13px;">Stephen Scott, Team Build Pro</span></p><p =
+class=3D"text-build-content" style=3D"line-height: 10px; text-align: center=
+; margin: 10px 0; margin-bottom: 10px;"><span style=3D"color:#55575d;font-f=
+amily: Arial, sans-serif;font-size:13px;">Contact: sscott@stephenscott.us</=
+span></p></div>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   style=3D"font-size:0px;padding:0px;word-break:break-word=
+;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;line-height:1;color:#000000;"
+      ><center style=3D"font-family: Arial, sans-serif; font-size: 9pt; bac=
+kground-color: #f0f0f0;">
+<a href=3D"http://email.stephenscott.us/u/eJxszjsOwjAQBNDTZMtovbaTpdiCM3AA5=
+M-aRMoHxYbzowiJinKmmDdZkCLHAXQN8yI11bS3zuHjjH3aVyjzUdt9C6vKrelz0g0mocxsOWT2=
+qJyIlCJpSeiLSZa9gVkIyePFoBnRWtdzdJ4zYhy4jHaMncP6nTvF1r8qLOEHnRUc_-406egKb6F=
+PAAAA__-DQjrZ" style=3D"font-family: Arial, sans-serif; font-size: 10pt;">U=
+nsubscribe</a>
+</center></div>
+   =20
+                </td>
+              </tr>
+           =20
+              <tr>
+                <td
+                   align=3D"left" style=3D"background:#f0f0f0;font-size:0px=
+;padding:10px 25px;padding-top:0px;padding-bottom:0px;word-break:break-word=
+;"
+                >
+                 =20
+      <div
+         style=3D"font-family:Verdana, Helvetica, Arial, sans-serif;font-si=
+ze:13px;letter-spacing:normal;line-height:1;text-align:left;color:#000000;"
+      ><p class=3D"text-build-content" style=3D"text-align: center; margin:=
+ 10px 0; margin-top: 10px;"><span style=3D"color:#55575d;font-family: Arial=
+, sans-serif;font-size:13px;">=C2=A9 2025 Team Build Pro. All rights reserv=
+ed.</span></p><p class=3D"text-build-content" style=3D"text-align: center; =
+margin: 10px 0; margin-bottom: 10px;"><span style=3D"color:#55575d;font-fam=
+ily: Arial, sans-serif;font-size:11px;">This email complies with the CAN-SP=
+AM Act. Unsubscribe requests will be honored within 10 business days.</span=
+></p></div>
+   =20
+                </td>
+              </tr>
+           =20
+        </tbody>
+      </table>
+   =20
+      </div>
+   =20
+          <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+       =20
+      </div>
+   =20
+     =20
+      <!--[if mso | IE]></td></tr></table><![endif]-->
+   =20
+   =20
+      </div>
+   =20
+  </body>
+</html>
+ =20
