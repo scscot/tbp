@@ -38,7 +38,7 @@ async function main() {
         break;
 
       case 'batch':
-        const limit = parseInt(process.argv[3]) || 100;
+        const limit = parseInt(process.argv[3]) || 10;
         const testMode = process.argv.includes('--test');
         console.log(`📧 Sending batch campaign (${limit} emails)...`);
         await sendBatchCampaign({ limit, testMode });
