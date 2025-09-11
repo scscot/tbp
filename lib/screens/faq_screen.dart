@@ -440,7 +440,7 @@ final List<FAQItem> _pricingFAQs = [
 
 final List<FAQItem> _concernsFAQs = [
   FAQItem(
-    question: 'Isn\'t this just making network marketing more complicated?',
+    question: 'Isn\'t this just making direct sales more complicated?',
     answer: 'Actually, it simplifies everything! Instead of cold calling strangers or pressuring friends, you\'re building relationships with people who are actively engaged in team building. It removes the guesswork and awkwardness from traditional recruiting.',
   ),
   FAQItem(
