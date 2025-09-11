@@ -13,6 +13,7 @@ import '../services/subscription_service.dart'; // Add this line
 import 'profile_screen.dart';
 import 'subscription_screen.dart'; // Import SubscriptionScreen directly
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'faq_screen.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -636,6 +637,19 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'How It Works',
           color: AppColors.teamAccent,
           onTap: () => widget.onTabSelected?.call(5),
+        ),
+        _buildActionCard(
+          icon: Icons.quiz,
+          title: 'Frequently Asked Questions',
+          color: AppColors.info,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FAQScreen(),
+              ),
+            );
+          },
         ),
         _buildActionCard(
           icon: Icons.person,

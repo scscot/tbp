@@ -102,7 +102,7 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
       case 'expired':
         notificationContent = {
           title: "❌ Subscription Expired",
-          message: "Your subscription has expired. Renew to continue accessing premium features.",
+          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
           type: "subscription_expired",
           route: "/subscription", // Changed to match FCM handler
           route_params: JSON.stringify({ "action": "renew" })
@@ -549,7 +549,7 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
       case 'expired':
         notificationContent = {
           title: "❌ Subscription Expired",
-          message: "Your subscription has expired. Renew to continue accessing premium features.",
+          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
           type: "subscription_expired",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "renew" })
@@ -1932,8 +1932,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     const message = {
       token: fcmToken,
       notification: {
-        title: notificationData?.title || "New Notification",
-        body: notificationData?.message || "You have a new message.",
+        title: notificationData?.title || "Team Build Pro Update",
+        body: notificationData?.message || "Something new in your network",
         // Removed imageUrl to prevent iOS notification failures
       },
       data: {
@@ -1947,8 +1947,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
         payload: {
           aps: {
             alert: {
-              title: notificationData?.title || "New Notification",
-              body: notificationData?.message || "You have a new message.",
+              title: notificationData?.title || "Team Build Pro Update",
+              body: notificationData?.message || "Something new in your network",
             },
             sound: "default",
             // Badge will be set by updateUserBadge function
@@ -2190,6 +2190,97 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
     }
   } catch (error) {
     console.error(`Error in notifyOnQualification for user ${event.params.userId}:`, error);
+  }
+});
+
+/**
+ * Milestone Notification Function - Notify users when they reach individual qualification milestones
+ * Triggers on directSponsorCount or totalTeamCount updates to encourage continued progress
+ */
+exports.notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (event) => {
+  const beforeData = event.data?.before.data();
+  const afterData = event.data?.after.data();
+
+  if (!beforeData || !afterData) {
+    return;
+  }
+
+  const userId = event.params.userId;
+
+  try {
+    // Skip admins from milestone notifications
+    if (afterData.role === 'admin') {
+      return;
+    }
+
+    // Skip if user is already qualified (they get the main qualification notification instead)
+    if (afterData.qualifiedDate) {
+      return;
+    }
+
+    // Get remote config values for qualification requirements
+    const template = await remoteConfig.getTemplate();
+    const parameters = template.parameters;
+    const projectWideDirectSponsorMin = parseInt(parameters.projectWideDirectSponsorMin?.defaultValue?.value || '4', 10);
+    const projectWideTotalTeamMin = parseInt(parameters.projectWideDataTeamMin?.defaultValue?.value || '20', 10);
+
+    const beforeDirectSponsors = beforeData.directSponsorCount || 0;
+    const afterDirectSponsors = afterData.directSponsorCount || 0;
+    const beforeTotalTeam = beforeData.totalTeamCount || 0;
+    const afterTotalTeam = afterData.totalTeamCount || 0;
+
+    console.log(`🎯 MILESTONE: User ${userId} - Direct: ${beforeDirectSponsors}→${afterDirectSponsors}, Total: ${beforeTotalTeam}→${afterTotalTeam}`);
+
+    // Get business opportunity name using centralized helper
+    const bizName = await getBusinessOpportunityName(afterData.upline_admin);
+
+    let notificationContent = null;
+
+    // Check for 4 direct sponsors milestone (but still needs total team count)
+    if (beforeDirectSponsors < projectWideDirectSponsorMin && 
+        afterDirectSponsors >= projectWideDirectSponsorMin && 
+        afterTotalTeam < projectWideTotalTeamMin) {
+      
+      const remainingTeamNeeded = projectWideTotalTeamMin - afterTotalTeam;
+      console.log(`🎯 MILESTONE: User ${userId} reached 4 direct sponsors, needs ${remainingTeamNeeded} more total team members`);
+      
+      notificationContent = {
+        title: "🎉 Amazing Progress!",
+        message: `Congratulations, ${afterData.firstName}! You've reached ${projectWideDirectSponsorMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "milestone_direct_sponsors",
+        route: "/network",
+        route_params: JSON.stringify({ "filter": "all" }),
+      };
+    }
+    // Check for 20 total team milestone (but still needs direct sponsors)
+    else if (beforeTotalTeam < projectWideTotalTeamMin && 
+             afterTotalTeam >= projectWideTotalTeamMin && 
+             afterDirectSponsors < projectWideDirectSponsorMin) {
+      
+      const remainingDirectNeeded = projectWideDirectSponsorMin - afterDirectSponsors;
+      console.log(`🎯 MILESTONE: User ${userId} reached ${projectWideTotalTeamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
+      
+      notificationContent = {
+        title: "🚀 Incredible Growth!",
+        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${projectWideTotalTeamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "milestone_total_team",
+        route: "/network", 
+        route_params: JSON.stringify({ "filter": "all" }),
+      };
+    }
+
+    // Send notification if a milestone was reached
+    if (notificationContent) {
+      await db.collection("users").doc(userId).collection("notifications").add(notificationContent);
+      console.log(`✅ MILESTONE: Milestone notification sent to user ${userId} - ${notificationContent.type}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ MILESTONE: Error in notifyOnMilestoneReached for user ${userId}:`, error);
   }
 });
 
