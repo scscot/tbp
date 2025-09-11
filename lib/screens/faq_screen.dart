@@ -464,7 +464,7 @@ final List<FAQItem> _successFAQs = [
   ),
   FAQItem(
     question: 'What\'s a realistic timeline to build a qualified team?',
-    answer: 'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within 3-6 months of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.',
+    answer: 'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.',
   ),
   FAQItem(
     question: 'Do you guarantee results?',
