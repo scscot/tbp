@@ -345,7 +345,7 @@ final List<FAQItem> _howItWorksFAQs = [
     answer: 'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.',
   ),
   FAQItem(
-    question: 'What happens if someone joins my Team Build Pro network but doesn\'t want to join my business opportunity?',
+    question: 'What happens if someone joins my Team Build Pro team but doesn\'t want to join my business opportunity?',
     answer: 'That\'s perfectly fine! They can continue using Team Build Pro to build their own team for whatever opportunity they choose, or they can stay focused on team building. There\'s no pressure. The beauty is that you\'re only working with people who have demonstrated commitment and success.',
   ),
   FAQItem(
@@ -354,7 +354,7 @@ final List<FAQItem> _howItWorksFAQs = [
   ),
   FAQItem(
     question: 'How do I get my referral link?',
-    answer: 'Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person. You can also customize your profile with your business opportunity details so prospects know what they\'re potentially working toward.',
+    answer: 'Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person.',
   ),
 ];
 
@@ -365,10 +365,10 @@ final List<FAQItem> _teamBuildingFAQs = [
   ),
   FAQItem(
     question: 'Can my team members message each other?',
-    answer: 'Yes! Team Build Pro includes secure, encrypted messaging so your team can communicate, share tips, and support each other. You can message individually or create group conversations.',
+    answer: 'Yes! Team Build Pro includes secure, encrypted messaging so your team can communicate, share tips, and support each other.',
   ),
   FAQItem(
-    question: 'What if someone in my network becomes qualified before me?',
+    question: 'What if someone in my team becomes qualified before me?',
     answer: 'That\'s actually great! It shows the system is working. They can advance to your business opportunity independently, and you continue building your own qualification. Success breeds success - having qualified team members often motivates others.',
   ),
   FAQItem(
@@ -376,8 +376,8 @@ final List<FAQItem> _teamBuildingFAQs = [
     answer: 'Our dashboard shows activity levels, last login dates, team building progress, and engagement metrics for each member. You can easily identify who might need encouragement or support.',
   ),
   FAQItem(
-    question: 'Can I remove someone from my network?',
-    answer: 'Team members can choose to leave on their own, but you cannot remove them. This protects the integrity of the network and ensures everyone\'s hard work building their teams is preserved.',
+    question: 'Can I remove someone from my team?',
+    answer: 'Team members can choose to leave on their own, but you cannot remove them. This protects the integrity of the team and ensures everyone\'s hard work building their teams is preserved.',
   ),
 ];
 
@@ -396,7 +396,7 @@ final List<FAQItem> _globalFeaturesFAQs = [
   ),
   FAQItem(
     question: 'Does the app work offline?',
-    answer: 'You need an internet connection for real-time features like messaging and live updates, but you can view your network and some analytics offline. Data syncs when you reconnect.',
+    answer: 'You need an internet connection for real-time features like messaging and live updates, but you can view your team and some analytics offline. Data syncs when you reconnect.',
   ),
 ];
 
@@ -407,11 +407,11 @@ final List<FAQItem> _privacySecurityFAQs = [
   ),
   FAQItem(
     question: 'Who can see my team information?',
-    answer: 'Only you can see your complete network. Team members can see their own direct sponsors and downline, but cannot see your entire organization. This protects everyone\'s privacy while maintaining transparency in direct relationships.',
+    answer: 'Only you can see your complete team. Team members can see their own direct sponsors and downline, but cannot see your entire organization. This protects everyone\'s privacy while maintaining transparency in direct relationships.',
   ),
   FAQItem(
     question: 'What happens to my data if I cancel?',
-    answer: 'You can export your team data before canceling. After cancellation, your account is deactivated but your team relationships remain intact for others in your network. We retain minimal data for legal/billing purposes only.',
+    answer: 'You can export your team data before canceling. After cancellation, your account is deactivated but your team relationships remain intact for others in your team. We retain minimal data for legal/billing purposes only.',
   ),
   FAQItem(
     question: 'Do you sell my information to other companies?',
@@ -422,7 +422,7 @@ final List<FAQItem> _privacySecurityFAQs = [
 final List<FAQItem> _pricingFAQs = [
   FAQItem(
     question: 'Is \$4.99/month worth it compared to free alternatives?',
-    answer: 'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and network analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.',
+    answer: 'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and team analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.',
   ),
   FAQItem(
     question: 'Can I write this off as a business expense?',
@@ -449,7 +449,7 @@ final List<FAQItem> _concernsFAQs = [
   ),
   FAQItem(
     question: 'How do I explain this to prospects without confusing them?',
-    answer: 'Simple: "It\'s like LinkedIn for direct sales professionals. You build connections, track your network growth, and when you\'re ready to advance your career, opportunities become available." Focus on the professional development angle.',
+    answer: 'Simple: "It\'s like LinkedIn for direct sales professionals. You build connections, track your team growth, and when you\'re ready to advance your career, opportunities become available." Focus on the professional development angle.',
   ),
   FAQItem(
     question: 'What if my current company doesn\'t allow outside tools?',
@@ -460,7 +460,7 @@ final List<FAQItem> _concernsFAQs = [
 final List<FAQItem> _successFAQs = [
   FAQItem(
     question: 'How long does it take to see results?',
-    answer: 'Network marketing success takes time regardless of tools. However, Team Build Pro users often see network growth within weeks because they\'re focused on relationship building rather than selling. The key is consistent daily activity.',
+    answer: 'Direct sales success takes time regardless of tools. However, Team Build Pro users often see team growth within weeks because they\'re focused on relationship building rather than selling. The key is consistent daily activity.',
   ),
   FAQItem(
     question: 'What\'s a realistic timeline to build a qualified team?',
@@ -472,7 +472,7 @@ final List<FAQItem> _successFAQs = [
   ),
   FAQItem(
     question: 'Can you share success stories?',
-    answer: 'While we maintain user privacy, we can share that our most successful users consistently share their Team Build Pro link, engage with their network daily, and focus on helping others succeed rather than just recruiting.',
+    answer: 'While we maintain user privacy, we can share that our most successful users consistently share their Team Build Pro link, engage with their team daily, and focus on helping others succeed rather than just recruiting.',
   ),
 ];
 

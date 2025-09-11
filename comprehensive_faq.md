@@ -48,7 +48,7 @@
 - Daily/weekly growth reports
 
 ### **Q: How do I get my referral link?**
-**A:** Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person. You can also customize your profile with your business opportunity details so prospects know what they're potentially working toward.
+**A:** Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person.
 
 ## 👥 Team Building & Management
 
