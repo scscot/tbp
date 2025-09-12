@@ -372,17 +372,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         );
       }
 
-      debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
+      debugPrint("🍎 REGISTER: Apple credential received successfully");
       debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
-      
-      // Validate required tokens
-      if (appleCredential.identityToken == null) {
-        throw Exception('Apple Sign-In failed: missing identity token');
-      }
-      
-      if (appleCredential.authorizationCode == null) {
-        throw Exception('Apple Sign-In failed: missing authorization code');
-      }
       
       // Store Apple-provided user data for creating user profile
       _appleUserData = {
@@ -393,8 +384,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
 
       return OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken!,
-        accessToken: appleCredential.authorizationCode!,
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
         rawNonce: rawNonce,
       );
     } on SignInWithAppleAuthorizationException catch (e) {
