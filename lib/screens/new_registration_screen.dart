@@ -332,7 +332,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     );
   }
 
-  /// Apple Sign-In credential generation
+  /// Apple Sign-In credential generation with production-ready error handling
   Future<AuthCredential> _getAppleCredential() async {
     final rawNonce = _generateNonce();
     final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
@@ -340,12 +340,21 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint("🍎 REGISTER: Starting Apple Sign In...");
 
     try {
+      // Check Apple Sign-In availability first
+      if (!await SignInWithApple.isAvailable()) {
+        throw Exception('Apple Sign-In is not available on this device');
+      }
+
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName
         ],
         nonce: nonce,
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.scott.ultimatefix', // Replace with your actual bundle ID
+          redirectUri: Uri.parse('https://teambuildpro.com/apple-signin-callback'),
+        ),
       );
 
       debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
@@ -627,13 +636,30 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       
       // Handle user cancellation silently - don't show error message
       if (e.toString().contains('USER_CANCELED_APPLE_SIGNIN') ||
-          e.toString().contains('canceled')) {
+          e.toString().contains('canceled') ||
+          e.toString().contains('user_cancelled')) {
         debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In, returning silently');
         return; // Exit gracefully without showing error
       }
+
+      // Handle Apple Sign-In availability error
+      if (e.toString().contains('not available')) {
+        scaffoldMessenger.showSnackBar(const SnackBar(
+            content: Text('Apple Sign-In is not available. Please use email registration.'),
+            backgroundColor: Colors.orange));
+        return;
+      }
+
+      // Handle authentication errors
+      if (e.toString().contains('authentication') || e.toString().contains('credential')) {
+        scaffoldMessenger.showSnackBar(const SnackBar(
+            content: Text('Apple authentication failed. Please try again or use email registration.'),
+            backgroundColor: Colors.red));
+        return;
+      }
       
       scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('An unexpected error occurred with Apple Sign-In.'),
+          content: Text('Unable to sign in with Apple. Please try email registration.'),
           backgroundColor: Colors.red));
     } finally {
       if (mounted) {
