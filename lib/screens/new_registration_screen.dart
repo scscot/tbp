@@ -332,7 +332,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     );
   }
 
-  /// Apple Sign-In credential generation with production-ready error handling
+  /// Apple Sign-In credential generation - native iOS flow
   Future<AuthCredential> _getAppleCredential() async {
     final rawNonce = _generateNonce();
     final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
@@ -345,20 +345,44 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         throw Exception('Apple Sign-In is not available on this device');
       }
 
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName
-        ],
-        nonce: nonce,
-        webAuthenticationOptions: WebAuthenticationOptions(
-          clientId: 'com.scott.ultimatefix', // Replace with your actual bundle ID
-          redirectUri: Uri.parse('https://teambuildpro.com/apple-signin-callback'),
-        ),
-      );
+      late final AppleIDCredential appleCredential;
+
+      if (kIsWeb) {
+        // Web flow with proper Service ID
+        appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName
+          ],
+          nonce: nonce,
+          webAuthenticationOptions: WebAuthenticationOptions(
+            clientId: 'com.scott.ultimatefix.auth', // Proper Service ID for web
+            redirectUri: Uri.parse('https://teambuildpro.com/apple-signin-callback'),
+          ),
+        );
+      } else {
+        // Native iOS/iPadOS flow - NO webAuthenticationOptions
+        appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName
+          ],
+          nonce: nonce,
+          // IMPORTANT: No webAuthenticationOptions on iOS - uses native flow
+        );
+      }
 
       debugPrint("🍎 REGISTER: Apple credential received: ${appleCredential.identityToken != null}");
       debugPrint("🍎 REGISTER: User identifier: ${appleCredential.userIdentifier}");
+      
+      // Validate required tokens
+      if (appleCredential.identityToken == null) {
+        throw Exception('Apple Sign-In failed: missing identity token');
+      }
+      
+      if (appleCredential.authorizationCode == null) {
+        throw Exception('Apple Sign-In failed: missing authorization code');
+      }
       
       // Store Apple-provided user data for creating user profile
       _appleUserData = {
@@ -369,8 +393,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       debugPrint("🍎 REGISTER: Apple user data stored: $_appleUserData");
 
       return OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
+        idToken: appleCredential.identityToken!,
+        accessToken: appleCredential.authorizationCode!,
         rawNonce: rawNonce,
       );
     } on SignInWithAppleAuthorizationException catch (e) {
