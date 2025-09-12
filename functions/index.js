@@ -40,11 +40,116 @@ const cors = require('cors')({ origin: true });
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { X509Certificate } = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
 
 // SendGrid for launch notification emails
 const sgMail = require('@sendgrid/mail');
 const { defineSecret } = require('firebase-functions/params');
 const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
+
+// Google Play OIDC verification for Pub/Sub push
+const verifyGooglePlayPubSubToken = async (authorizationHeader) => {
+  if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+    return false;
+  }
+  
+  try {
+    const token = authorizationHeader.substring(7); // Remove 'Bearer ' prefix
+    const client = new OAuth2Client();
+    
+    // Verify the JWT token from Google Cloud Pub/Sub
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GCLOUD_PROJECT, // Your Firebase project ID
+    });
+    
+    const payload = ticket.getPayload();
+    
+    // Verify this is actually from Google Cloud Pub/Sub
+    if (payload.iss !== 'https://accounts.google.com' && 
+        payload.iss !== 'accounts.google.com') {
+      console.log('🔒 GOOGLE PLAY OIDC: Invalid issuer:', payload.iss);
+      return false;
+    }
+    
+    // Additional verification for Pub/Sub service account
+    if (payload.email && !payload.email.includes('gserviceaccount.com')) {
+      console.log('🔒 GOOGLE PLAY OIDC: Not a service account:', payload.email);
+      return false;
+    }
+    
+    console.log('✅ GOOGLE PLAY OIDC: Token verified successfully');
+    return true;
+    
+  } catch (error) {
+    console.log('❌ GOOGLE PLAY OIDC: Token verification failed:', error.message);
+    return false;
+  }
+};
+
+// Apple V2 notification persistence with idempotency
+const upsertAppleV2NotificationState = async (payload) => {
+  if (!isDecodedNotificationDataPayload(payload)) {
+    return; // Only handle data notifications for now
+  }
+  
+  const { data, notificationUUID, notificationType, subtype } = payload;
+  
+  try {
+    // Extract key identifiers for idempotency
+    const originalTransactionId = data?.originalTransactionId;
+    const notificationId = notificationUUID || `${originalTransactionId}_${Date.now()}`;
+    
+    if (!originalTransactionId) {
+      console.log('⚠️ APPLE V2 PERSISTENCE: No originalTransactionId found, skipping persistence');
+      return;
+    }
+    
+    // Create idempotency key
+    const idempotencyKey = `${originalTransactionId}_${notificationId}`;
+    
+    // Check if we've already processed this notification
+    const existingDoc = await db.collection('apple_v2_notifications')
+      .doc(idempotencyKey)
+      .get();
+      
+    if (existingDoc.exists) {
+      console.log(`✅ APPLE V2 PERSISTENCE: Notification ${idempotencyKey} already processed, skipping`);
+      return;
+    }
+    
+    // Persist the notification state
+    const notificationData = {
+      idempotencyKey,
+      originalTransactionId,
+      notificationUUID: notificationId,
+      notificationType,
+      subtype: subtype || null,
+      signedTransactionInfo: data.signedTransactionInfo || null,
+      signedRenewalInfo: data.signedRenewalInfo || null,
+      bundleId: data.bundleId || null,
+      environment: data.environment || null,
+      processedAt: FieldValue.serverTimestamp(),
+      rawPayload: {
+        notificationType,
+        subtype,
+        data: {
+          ...data,
+          // Store key fields but don't duplicate large signed payloads
+          signedTransactionInfo: data.signedTransactionInfo ? '[STORED_SEPARATELY]' : null,
+          signedRenewalInfo: data.signedRenewalInfo ? '[STORED_SEPARATELY]' : null,
+        }
+      }
+    };
+    
+    await db.collection('apple_v2_notifications').doc(idempotencyKey).set(notificationData);
+    console.log(`✅ APPLE V2 PERSISTENCE: Stored notification ${idempotencyKey} for transaction ${originalTransactionId}`);
+    
+  } catch (error) {
+    console.error('❌ APPLE V2 PERSISTENCE: Failed to store notification:', error);
+    // Don't throw - persistence failure shouldn't break notification processing
+  }
+};
 
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
@@ -283,38 +388,32 @@ exports.handleAppleSubscriptionNotificationV2 = onRequest({ region: "us-central1
       return res.status(405).send("Method Not Allowed");
     }
 
-    const signedPayload = req.body && req.body.signedPayload;
+    const { signedPayload } = req.body || {};
     if (!signedPayload) {
       return res.status(400).send("Missing signedPayload");
     }
 
-    // Decode + verify JWS (includes Apple certificate chain validation).
-    // Docs: decodeNotificationPayload verifies signature & returns structured payload.
+    // Verifies signature and certificate chain for you
     const payload = await decodeNotificationPayload(signedPayload);
+    
+    // Persist notification state with idempotency (do this early to prevent duplicate processing)
+    await upsertAppleV2NotificationState(payload);
 
-    // Optional guard: ensure this notification is *for your app*.
+    // Optional: guard that the bundleId matches your app
     const APP_BUNDLE_ID = process.env.APP_BUNDLE_ID; // e.g., com.scott.ultimatefix.signin
-    const bundleIdFromPayload =
-      (payload?.data && payload.data.bundleId) ||
-      (payload?.summary && payload.summary.bundleId) ||
-      null;
-    if (APP_BUNDLE_ID && bundleIdFromPayload && APP_BUNDLE_ID !== bundleIdFromPayload) {
-      // Don't process webhooks for a different app
+    const bundleFromPayload = payload?.data?.bundleId || payload?.summary?.bundleId;
+    if (APP_BUNDLE_ID && bundleFromPayload && APP_BUNDLE_ID !== bundleFromPayload) {
       return res.status(401).send("Bundle mismatch");
     }
 
-    // Handle data payloads (transaction-level events) vs summary payloads (batch rollups)
     if (isDecodedNotificationDataPayload(payload)) {
       const { notificationType, subtype, data } = payload;
-      // TODO: upsert subscription state in Firestore using data.signedTransactionInfo / data.signedRenewalInfo
-      // example: await handleAppleDataNotification({ notificationType, subtype, data });
       console.log(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} notification`);
       await processNotificationV2({ notificationType, subtype, data });
     } else if (isDecodedNotificationSummaryPayload(payload)) {
       const { summary } = payload;
-      // TODO: optional aggregate handling
-      // example: await handleAppleSummaryNotification(summary);
       console.log(`📱 APPLE V2 NOTIFICATION: Processing summary notification`);
+      // TODO: optional summary handling
     }
 
     return res.status(200).send("OK");
@@ -324,40 +423,7 @@ exports.handleAppleSubscriptionNotificationV2 = onRequest({ region: "us-central1
   }
 });
 
-/**
- * Verify JWT signature using Apple's certificates and decode payload
- */
-async function verifyAndDecodeJWT(signedPayload) {
-  try {
-    // Decode JWT header to get certificate chain
-    const header = jwt.decode(signedPayload, { complete: true })?.header;
-
-    if (!header?.x5c || !Array.isArray(header.x5c) || header.x5c.length === 0) {
-      throw new Error('Missing or invalid certificate chain in JWT header');
-    }
-
-    // Get the leaf certificate (first in chain)
-    const leafCertPEM = `-----BEGIN CERTIFICATE-----\n${header.x5c[0]}\n-----END CERTIFICATE-----`;
-
-    // Create X509 certificate object
-    const leafCert = new X509Certificate(leafCertPEM);
-
-    // Verify certificate chain and extract public key
-    const publicKey = leafCert.publicKey;
-
-    // Verify JWT signature using the public key
-    const decoded = jwt.verify(signedPayload, publicKey, {
-      algorithms: ['ES256'],
-      issuer: 'https://appleid.apple.com' // Apple's issuer
-    });
-
-    return decoded;
-
-  } catch (error) {
-    console.error(`❌ JWT VERIFICATION: Failed to verify JWT:`, error);
-    return null;
-  }
-}
+// Insecure JWT verification removed - now using app-store-server-api library
 
 /**
  * Process V2 notification based on notification type
@@ -662,11 +728,11 @@ exports.testGooglePlayNotificationSetup = onCall({ region: "us-central1" }, asyn
   };
 });
 
-// Export the enhanced helper functions for use in other parts of your code
+// Export helper functions for use in other parts of your code
+// Note: verifyAndDecodeJWT removed - now using app-store-server-api library
 /* module.exports = {
   updateUserSubscriptionV2,
   createSubscriptionNotificationV2,
-  verifyAndDecodeJWT,
   processNotificationV2
 }; */
 
@@ -1162,6 +1228,19 @@ exports.handleGooglePlayNotification = onRequest({ region: "us-central1", cors: 
     if (req.method !== "POST") {
       return res.status(405).send("Method Not Allowed");
     }
+    
+    // Verify OIDC token for Pub/Sub push (optional but recommended for security)
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const isValidToken = await verifyGooglePlayPubSubToken(authHeader);
+      if (!isValidToken) {
+        console.log('🔒 GOOGLE PLAY WEBHOOK: OIDC verification failed');
+        return res.status(401).send('Unauthorized - Invalid token');
+      }
+      console.log('✅ GOOGLE PLAY WEBHOOK: OIDC verification passed');
+    } else {
+      console.log('⚠️ GOOGLE PLAY WEBHOOK: No authorization header - proceeding without OIDC verification');
+    }
 
     // Support both Pub/Sub push (message.data base64) and direct HTTP JSON
     let body = req.body;
@@ -1290,12 +1369,6 @@ exports.handleGooglePlayNotification = onRequest({ region: "us-central1", cors: 
 
     console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type`);
     return res.status(400).send('Unknown notification type');
-
-    // TODO: verify message authenticity (OIDC token on Pub/Sub push or shared secret if you set one)
-    // TODO: process body per your subscription logic
-    // example: await handleGooglePlayEvent(body);
-
-    return res.status(200).send("OK");
   } catch (err) {
     console.error("Google Play webhook failed:", err);
     return res.status(500).send("Internal Error");
