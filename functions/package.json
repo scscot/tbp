@@ -15,6 +15,7 @@
   "dependencies": {
     "@googleapis/androidpublisher": "^29.3.0",
     "@sendgrid/mail": "^8.1.5",
+    "app-store-server-api": "^0.17.1",
     "cors": "^2.8.5",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.4.0",

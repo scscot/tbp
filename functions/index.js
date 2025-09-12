@@ -8,6 +8,13 @@ const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
 const { sendDemoInvitation } = require('./sendDemoInvitation');
 
+// Verifies & decodes Apple's signedPayload and validates the cert chain
+const {
+  decodeNotificationPayload,
+  isDecodedNotificationDataPayload,
+  isDecodedNotificationSummaryPayload,
+} = require("app-store-server-api");
+
 // This makes the callable function available for your apps
 exports.submitContactForm = submitContactForm;
 
@@ -270,49 +277,50 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
  * App Store Server Notifications V2 Handler
  * Handles JWT-signed notifications from Apple with proper verification
  */
-exports.handleAppleSubscriptionNotificationV2 = onRequest({
-  region: "us-central1",
-  cors: false // Disable CORS for server-to-server communication
-}, async (req, res) => {
-  console.log(`📱 APPLE V2 NOTIFICATION: Received notification`);
-
+exports.handleAppleSubscriptionNotificationV2 = onRequest({ region: "us-central1", cors: false }, async (req, res) => {
   try {
-    // Verify this is a POST request
-    if (req.method !== 'POST') {
-      console.log(`📱 APPLE V2 NOTIFICATION: Invalid method: ${req.method}`);
-      return res.status(405).send('Method Not Allowed');
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
     }
 
-    // Extract the signed payload from request body
-    const signedPayload = req.body?.signedPayload;
-
+    const signedPayload = req.body && req.body.signedPayload;
     if (!signedPayload) {
-      console.log(`📱 APPLE V2 NOTIFICATION: No signedPayload found`);
-      return res.status(400).send('Missing signedPayload');
+      return res.status(400).send("Missing signedPayload");
     }
 
-    console.log(`📱 APPLE V2 NOTIFICATION: Processing signed payload`);
+    // Decode + verify JWS (includes Apple certificate chain validation).
+    // Docs: decodeNotificationPayload verifies signature & returns structured payload.
+    const payload = await decodeNotificationPayload(signedPayload);
 
-    // Step 1: Verify and decode the JWT
-    const decodedPayload = await verifyAndDecodeJWT(signedPayload);
-
-    if (!decodedPayload) {
-      console.log(`📱 APPLE V2 NOTIFICATION: JWT verification failed`);
-      return res.status(401).send('Invalid JWT signature');
+    // Optional guard: ensure this notification is *for your app*.
+    const APP_BUNDLE_ID = process.env.APP_BUNDLE_ID; // e.g., com.scott.ultimatefix.signin
+    const bundleIdFromPayload =
+      (payload?.data && payload.data.bundleId) ||
+      (payload?.summary && payload.summary.bundleId) ||
+      null;
+    if (APP_BUNDLE_ID && bundleIdFromPayload && APP_BUNDLE_ID !== bundleIdFromPayload) {
+      // Don't process webhooks for a different app
+      return res.status(401).send("Bundle mismatch");
     }
 
-    console.log(`📱 APPLE V2 NOTIFICATION: JWT verified successfully`);
-    console.log(`📱 APPLE V2 NOTIFICATION: Notification type: ${decodedPayload.notificationType}`);
+    // Handle data payloads (transaction-level events) vs summary payloads (batch rollups)
+    if (isDecodedNotificationDataPayload(payload)) {
+      const { notificationType, subtype, data } = payload;
+      // TODO: upsert subscription state in Firestore using data.signedTransactionInfo / data.signedRenewalInfo
+      // example: await handleAppleDataNotification({ notificationType, subtype, data });
+      console.log(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} notification`);
+      await processNotificationV2({ notificationType, subtype, data });
+    } else if (isDecodedNotificationSummaryPayload(payload)) {
+      const { summary } = payload;
+      // TODO: optional aggregate handling
+      // example: await handleAppleSummaryNotification(summary);
+      console.log(`📱 APPLE V2 NOTIFICATION: Processing summary notification`);
+    }
 
-    // Step 2: Process the notification based on type
-    await processNotificationV2(decodedPayload);
-
-    console.log(`✅ APPLE V2 NOTIFICATION: Successfully processed`);
-    return res.status(200).send('OK');
-
-  } catch (error) {
-    console.error(`❌ APPLE V2 NOTIFICATION: Error processing notification:`, error);
-    return res.status(500).send('Internal Server Error');
+    return res.status(200).send("OK");
+  } catch (err) {
+    console.error("Apple V2 webhook failed:", err);
+    return res.status(500).send("Internal Error");
   }
 });
 
@@ -1149,155 +1157,149 @@ exports.validateGooglePlayPurchase = onCall({ region: "us-central1" }, async (re
  * Google Play Real-time Developer Notification Handler
  * Processes subscription lifecycle events from Google Play
  */
-exports.handleGooglePlayNotification = onRequest({ region: "us-central1" }, async (req, res) => {
-  // Enable CORS
-  cors(req, res, async () => {
-    try {
-      console.log(`🤖 GOOGLE PLAY WEBHOOK: Received notification`);
-      console.log('Headers:', JSON.stringify(req.headers, null, 2));
-      console.log('Body:', JSON.stringify(req.body, null, 2));
-
-      // Verify the notification is from Google Play (optional but recommended)
-      // You can implement signature verification here if needed
-
-      const message = req.body.message;
-      if (!message || !message.data) {
-        console.log(`🤖 GOOGLE PLAY WEBHOOK: Invalid message format`);
-        res.status(400).send('Invalid message format');
-        return;
-      }
-
-      // Decode the base64 message data
-      const notificationData = JSON.parse(Buffer.from(message.data, 'base64').toString());
-      console.log(`🤖 GOOGLE PLAY WEBHOOK: Decoded notification:`, JSON.stringify(notificationData, null, 2));
-
-      const { subscriptionNotification, testNotification } = notificationData;
-
-      // Handle test notifications
-      if (testNotification) {
-        console.log(`🤖 GOOGLE PLAY WEBHOOK: Received test notification`);
-        res.status(200).send('Test notification received');
-        return;
-      }
-
-      // Handle subscription notifications
-      if (subscriptionNotification) {
-        const {
-          version,
-          notificationType,
-          purchaseToken,
-          subscriptionId
-        } = subscriptionNotification;
-
-        console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing subscription notification type: ${notificationType}`);
-
-        // Find user by purchase token (you might need to store this mapping)
-        const usersQuery = await db.collection('users')
-          .where('googlePlayPurchaseToken', '==', purchaseToken)
-          .limit(1)
-          .get();
-
-        if (usersQuery.empty) {
-          console.log(`🤖 GOOGLE PLAY WEBHOOK: No user found for purchase token: ${purchaseToken}`);
-          res.status(200).send('User not found');
-          return;
-        }
-
-        const userDoc = usersQuery.docs[0];
-        const userId = userDoc.id;
-
-        console.log(`🤖 GOOGLE PLAY WEBHOOK: Found user ${userId} for purchase token`);
-
-        // Handle different notification types
-        let newStatus = null;
-        
-        switch (notificationType) {
-          case 1: // SUBSCRIPTION_RECOVERED
-            newStatus = 'active';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription recovered for user ${userId}`);
-            break;
-            
-          case 2: // SUBSCRIPTION_RENEWED
-            newStatus = 'active';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription renewed for user ${userId}`);
-            break;
-            
-          case 3: // SUBSCRIPTION_CANCELED
-            newStatus = 'cancelled';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription cancelled for user ${userId}`);
-            break;
-            
-          case 4: // SUBSCRIPTION_PURCHASED
-            newStatus = 'active';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: New subscription purchased for user ${userId}`);
-            break;
-            
-          case 5: // SUBSCRIPTION_ON_HOLD
-            newStatus = 'on_hold';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription on hold for user ${userId}`);
-            break;
-            
-          case 6: // SUBSCRIPTION_IN_GRACE_PERIOD
-            newStatus = 'grace_period';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription in grace period for user ${userId}`);
-            break;
-            
-          case 7: // SUBSCRIPTION_RESTARTED
-            newStatus = 'active';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription restarted for user ${userId}`);
-            break;
-            
-          case 8: // SUBSCRIPTION_PRICE_CHANGE_CONFIRMED
-            // No status change needed, just log
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Price change confirmed for user ${userId}`);
-            break;
-            
-          case 9: // SUBSCRIPTION_DEFERRED
-            newStatus = 'deferred';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription deferred for user ${userId}`);
-            break;
-            
-          case 10: // SUBSCRIPTION_PAUSED
-            newStatus = 'paused';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription paused for user ${userId}`);
-            break;
-            
-          case 11: // SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Pause schedule changed for user ${userId}`);
-            break;
-            
-          case 12: // SUBSCRIPTION_REVOKED
-            newStatus = 'revoked';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription revoked for user ${userId}`);
-            break;
-            
-          case 13: // SUBSCRIPTION_EXPIRED
-            newStatus = 'expired';
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription expired for user ${userId}`);
-            break;
-            
-          default:
-            console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type: ${notificationType}`);
-        }
-
-        // Update user subscription status if needed
-        if (newStatus) {
-          await updateUserSubscription(userId, newStatus);
-          await createSubscriptionNotification(userId, newStatus);
-        }
-
-        res.status(200).send('Notification processed');
-        return;
-      }
-
-      console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type`);
-      res.status(400).send('Unknown notification type');
-
-    } catch (error) {
-      console.error('❌ GOOGLE PLAY WEBHOOK: Error processing notification:', error);
-      res.status(500).send('Internal server error');
+exports.handleGooglePlayNotification = onRequest({ region: "us-central1", cors: false }, async (req, res) => {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
     }
-  });
+
+    // Support both Pub/Sub push (message.data base64) and direct HTTP JSON
+    let body = req.body;
+    if (body && body.message && body.message.data) {
+      const decoded = Buffer.from(body.message.data, "base64").toString("utf8");
+      body = JSON.parse(decoded);
+    }
+
+    console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing notification`);
+
+    const { subscriptionNotification, testNotification } = body;
+
+    // Handle test notifications
+    if (testNotification) {
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Received test notification`);
+      return res.status(200).send('Test notification received');
+    }
+
+    // Handle subscription notifications
+    if (subscriptionNotification) {
+      const {
+        version,
+        notificationType,
+        purchaseToken,
+        subscriptionId
+      } = subscriptionNotification;
+
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing subscription notification type: ${notificationType}`);
+
+      // Find user by purchase token (you might need to store this mapping)
+      const usersQuery = await db.collection('users')
+        .where('googlePlayPurchaseToken', '==', purchaseToken)
+        .limit(1)
+        .get();
+
+      if (usersQuery.empty) {
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: No user found for purchase token: ${purchaseToken}`);
+        return res.status(200).send('User not found');
+      }
+
+      const userDoc = usersQuery.docs[0];
+      const userId = userDoc.id;
+
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Found user ${userId} for purchase token`);
+
+      // Handle different notification types
+      let newStatus = null;
+      
+      switch (notificationType) {
+        case 1: // SUBSCRIPTION_RECOVERED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription recovered for user ${userId}`);
+          break;
+          
+        case 2: // SUBSCRIPTION_RENEWED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription renewed for user ${userId}`);
+          break;
+          
+        case 3: // SUBSCRIPTION_CANCELED
+          newStatus = 'cancelled';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription cancelled for user ${userId}`);
+          break;
+          
+        case 4: // SUBSCRIPTION_PURCHASED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: New subscription purchased for user ${userId}`);
+          break;
+          
+        case 5: // SUBSCRIPTION_ON_HOLD
+          newStatus = 'on_hold';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription on hold for user ${userId}`);
+          break;
+          
+        case 6: // SUBSCRIPTION_IN_GRACE_PERIOD
+          newStatus = 'grace_period';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription in grace period for user ${userId}`);
+          break;
+          
+        case 7: // SUBSCRIPTION_RESTARTED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription restarted for user ${userId}`);
+          break;
+          
+        case 8: // SUBSCRIPTION_PRICE_CHANGE_CONFIRMED
+          // No status change needed, just log
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Price change confirmed for user ${userId}`);
+          break;
+          
+        case 9: // SUBSCRIPTION_DEFERRED
+          newStatus = 'deferred';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription deferred for user ${userId}`);
+          break;
+          
+        case 10: // SUBSCRIPTION_PAUSED
+          newStatus = 'paused';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription paused for user ${userId}`);
+          break;
+          
+        case 11: // SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Pause schedule changed for user ${userId}`);
+          break;
+          
+        case 12: // SUBSCRIPTION_REVOKED
+          newStatus = 'revoked';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription revoked for user ${userId}`);
+          break;
+          
+        case 13: // SUBSCRIPTION_EXPIRED
+          newStatus = 'expired';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription expired for user ${userId}`);
+          break;
+          
+        default:
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type: ${notificationType}`);
+      }
+
+      // Update user subscription status if needed
+      if (newStatus) {
+        await updateUserSubscription(userId, newStatus);
+        await createSubscriptionNotification(userId, newStatus);
+      }
+
+      return res.status(200).send('Notification processed');
+    }
+
+    console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type`);
+    return res.status(400).send('Unknown notification type');
+
+    // TODO: verify message authenticity (OIDC token on Pub/Sub push or shared secret if you set one)
+    // TODO: process body per your subscription logic
+    // example: await handleGooglePlayEvent(body);
+
+    return res.status(200).send("OK");
+  } catch (err) {
+    console.error("Google Play webhook failed:", err);
+    return res.status(500).send("Internal Error");
+  }
 });
 
 // ============================================================================
@@ -3587,7 +3589,7 @@ exports.sendLaunchNotificationConfirmation = onRequest({
       console.error('SendGrid error code:', error.code);
       console.error('SendGrid error message:', error.message);
     }
-    res.status(500).json({ error: 'Failed to send confirmation email' });
+    return res.status(500).json({ error: 'Failed to send confirmation email' });
   }
 });
 
@@ -3700,6 +3702,6 @@ exports.getFirestoreMetrics = onRequest({
     res.json(stats);
   } catch (error) {
     console.error('Error getting Firestore metrics:', error);
-    res.status(500).json({ error: 'Failed to get metrics' });
+    return res.status(500).json({ error: 'Failed to get metrics' });
   }
 });
