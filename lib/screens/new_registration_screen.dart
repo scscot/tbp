@@ -842,7 +842,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       ElevatedButton.icon(
                         icon: const FaIcon(FontAwesomeIcons.apple,
                             color: Colors.white, size: 20),
-                        label: const Text('Sign up with Apple'),
+                        label: const Text('Sign in with Apple'),
                         onPressed: (_isLoading && !_isAppleSignUp) ? null : _signUpWithApple,
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -856,7 +856,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     
                     ElevatedButton.icon(
                       icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                      label: const Text('Sign up with Google'),
+                      label: const Text('Sign in with Google'),
                       onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
