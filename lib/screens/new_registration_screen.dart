@@ -345,7 +345,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         throw Exception('Apple Sign-In is not available on this device');
       }
 
-      late final AppleIDCredential appleCredential;
+      late final AuthorizationCredentialAppleID appleCredential;
 
       if (kIsWeb) {
         // Web flow with proper Service ID
