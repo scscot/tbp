@@ -954,22 +954,23 @@
             // If targeting parameter is provided and valid, use targeted content
             if (targeting && isValidTargeting(targeting) && contentFor[`t${targeting}`]) {
                 const content = contentFor[`t${targeting}`];
-                console.log(`Using targeted content for message type: ${targeting}`);
+                console.log(`Using targeted content for message type: ${targeting} with referral type: ${type}`);
                 updateContentElements(content);
                 return;
             }
             
             // Fallback handling for invalid targeting parameters
             if (targeting && !isValidTargeting(targeting)) {
-                console.warn(`Invalid targeting parameter: ${targeting}. Falling back to default content.`);
+                console.warn(`Invalid targeting parameter: ${targeting}. Falling back to ${type} content.`);
             }
             
-            // Default behavior for non-targeted content
+            // Default behavior for non-targeted content based on referral type
             // Refresh heroBadge text for current screen size
             if (contentFor.partner) {
                 contentFor.partner.heroBadge = getResponsiveHeroBadgeText();
             }
             const content = contentFor[type] || contentFor.partner;
+            console.log(`Using default ${type} content (no targeting parameter)`);
             updateContentElements(content);
         }
 
