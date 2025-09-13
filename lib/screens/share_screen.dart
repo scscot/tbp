@@ -123,17 +123,78 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
+  // Get message type index for targeting
+  String _getMessageTypeIndex(String messageKey, bool isPartner) {
+    if (isPartner) {
+      switch (messageKey) {
+        case 'warm_market_exhausted': return '5';
+        case 'expensive_system_fatigue': return '6';
+        case 'duplication_struggle': return '7';
+        case 'general_team_tool': return '8';
+        default: return '8';
+      }
+    } else {
+      switch (messageKey) {
+        case 'past_struggles': return '1';
+        case 'not_salesperson': return '2';
+        case 'hope_after_disappointment': return '3';
+        case 'general_invitation': return '4';
+        default: return '4';
+      }
+    }
+  }
+
+  // Build targeted referral link with message type
+  String _buildTargetedLink(String messageKey, bool isPartner) {
+    final baseLink = isPartner ? _partnerReferralLink : _prospectReferralLink;
+    final messageType = _getMessageTypeIndex(messageKey, isPartner);
+    return '$baseLink&t=$messageType';
+  }
+
   Future<void> _composeEmail({
     required String subject,
     required String body,
   }) async {
+    if (kDebugMode) {
+      debugPrint('📧 SHARE_SCREEN: _composeEmail called');
+      debugPrint('📧 Subject: $subject');
+      debugPrint('📧 Body length: ${body.length} characters');
+    }
+    
+    // Custom encoding that preserves spaces properly
     String enc(String s) => Uri.encodeComponent(s).replaceAll('+', '%20');
 
     final uri = Uri.parse(
       'mailto:?subject=${enc(subject)}&body=${enc(body)}',
     );
 
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (kDebugMode) {
+      debugPrint('📧 SHARE_SCREEN: Launching email client with URI: ${uri.toString()}');
+    }
+
+    // Try to launch and check the boolean result
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (launched) {
+      if (kDebugMode) debugPrint('✅ SHARE_SCREEN: Email client launched successfully');
+      return;
+    }
+
+    // If we get here, the system couldn't open mailto:
+    if (kDebugMode) {
+      debugPrint('❌ SHARE_SCREEN: Failed to open $uri (no handler / simulator / not configured)');
+    }
+
+    // Fallback: show message and/or share sheet
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('No email app available. Try sharing with Messages or copy link.'),
+      ),
+    );
   }
 
   // Check if sharing is enabled via Firebase Remote Config
@@ -149,15 +210,29 @@ class _ShareScreenState extends State<ShareScreen>
         isDemoMode = remoteConfig.getBool('ios_demo_mode');
       }
       
+      // Debug print to see what's happening
+      if (kDebugMode) {
+        debugPrint('🔧 SHARE_SCREEN: Demo mode check - Android: ${Platform.isAndroid ? isDemoMode : 'N/A'}, iOS: ${Platform.isIOS ? isDemoMode : 'N/A'}');
+      }
+      
       // If in demo mode, sharing is disabled
       if (isDemoMode) {
+        if (kDebugMode) {
+          debugPrint('🚫 SHARE_SCREEN: Sharing disabled due to demo mode');
+        }
         return false;
       }
       
       // Production mode - sharing is always enabled
+      if (kDebugMode) {
+        debugPrint('✅ SHARE_SCREEN: Sharing enabled');
+      }
       return true;
     } catch (e) {
       // Default to enabled if Remote Config fails
+      if (kDebugMode) {
+        debugPrint('⚠️ SHARE_SCREEN: Remote Config error, defaulting to enabled: $e');
+      }
       return true;
     }
   }
@@ -215,8 +290,15 @@ class _ShareScreenState extends State<ShareScreen>
   }
 
   void _shareProspectMessage(String messageKey) {
+    if (kDebugMode) {
+      debugPrint('🚀 SHARE_SCREEN: _shareProspectMessage called with key: $messageKey');
+    }
+    
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
+      if (kDebugMode) {
+        debugPrint('🚫 SHARE_SCREEN: Sharing disabled, showing demo dialog');
+      }
       _showDemoModeDialog();
       return;
     }
@@ -226,10 +308,25 @@ class _ShareScreenState extends State<ShareScreen>
       final selectedMessage = messages[messageKey];
       
       if (selectedMessage != null) {
+        final targetedLink = _buildTargetedLink(messageKey, false);
+        final messageBody = selectedMessage['message']!.replaceAll(_prospectReferralLink!, targetedLink);
+        
+        if (kDebugMode) {
+          debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+        }
+        
         _composeEmail(
           subject: selectedMessage['subject']!,
-          body: selectedMessage['message']!,
+          body: messageBody,
         );
+      } else {
+        if (kDebugMode) {
+          debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        debugPrint('❌ SHARE_SCREEN: _prospectReferralLink is null');
       }
     }
   }
@@ -292,8 +389,15 @@ class _ShareScreenState extends State<ShareScreen>
   }
 
   void _sharePartnerMessage(String messageKey) {
+    if (kDebugMode) {
+      debugPrint('🚀 SHARE_SCREEN: _sharePartnerMessage called with key: $messageKey');
+    }
+    
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
+      if (kDebugMode) {
+        debugPrint('🚫 SHARE_SCREEN: Sharing disabled, showing demo dialog');
+      }
       _showDemoModeDialog();
       return;
     }
@@ -303,10 +407,25 @@ class _ShareScreenState extends State<ShareScreen>
       final selectedMessage = messages[messageKey];
       
       if (selectedMessage != null) {
+        final targetedLink = _buildTargetedLink(messageKey, true);
+        final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+        
+        if (kDebugMode) {
+          debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+        }
+        
         _composeEmail(
           subject: selectedMessage['subject']!,
-          body: selectedMessage['message']!,
+          body: messageBody,
         );
+      } else {
+        if (kDebugMode) {
+          debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        debugPrint('❌ SHARE_SCREEN: _partnerReferralLink is null');
       }
     }
   }
