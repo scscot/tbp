@@ -1860,3 +1860,60 @@ p {
         margin: 0.5rem auto 1.5rem auto;
     }
 }
+
+/* ============================================================================
+   MOBILE UI IMPROVEMENTS
+   ============================================================================ */
+
+/* Hide reCAPTCHA badge on homepage */
+.grecaptcha-badge,
+div[style*="grecaptcha"],
+iframe[src*="recaptcha"],
+iframe[title="reCAPTCHA"],
+div[class*="grecaptcha"],
+div[id*="grecaptcha"] { 
+    display: none !important; 
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* Better mobile hero headline rendering - no wrapping */
+@media (max-width: 768px) {
+    .hero h1 {
+        white-space: nowrap !important; /* Prevent wrapping */
+        font-size: clamp(1.4rem, 6.5vw, 2.2rem) !important;
+        line-height: 1.1 !important;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Ensure platform badge can wrap on two lines */
+    .platform-badge {
+        white-space: normal !important; /* Allow wrapping for mobile */
+        line-height: 1.3 !important;
+        padding: 1rem 1.5rem !important;
+        font-size: clamp(0.8rem, 3.5vw, 1rem) !important;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: clamp(1.2rem, 7vw, 1.8rem) !important;
+        line-height: 1.05 !important;
+    }
+    
+    .platform-badge {
+        font-size: clamp(0.75rem, 4vw, 0.9rem) !important;
+        padding: 0.9rem 1.25rem !important;
+    }
+}
+
+@media (max-width: 375px) {
+    .hero h1 {
+        font-size: clamp(1.1rem, 7.5vw, 1.6rem) !important;
+    }
+}
