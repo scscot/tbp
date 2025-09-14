@@ -654,20 +654,6 @@ class _ShareScreenState extends State<ShareScreen>
                 : const SizedBox.shrink(),
           ),
           
-          const SizedBox(height: 12),
-          // Copy Link Button
-          OutlinedButton.icon(
-            icon: const Icon(Icons.copy_rounded, size: 18),
-            label: const Text('Copy Link'),
-            onPressed: () => _copyLink(_prospectReferralLink),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: buttonColor,
-              side: BorderSide(color: buttonColor),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
         ],
       ),
     );
@@ -709,20 +695,43 @@ class _ShareScreenState extends State<ShareScreen>
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 36,
-                child: ElevatedButton(
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
                   onPressed: () => isPartner ? _sharePartnerMessage(messageKey) : _shareProspectMessage(messageKey),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text('Share', style: TextStyle(fontSize: 12)),
+                  icon: const Icon(Icons.share, size: 16),
+                  label: const Text('Share', style: TextStyle(fontSize: 13)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    final targetedLink = _buildTargetedLink(messageKey, isPartner);
+                    _copyLink(targetedLink);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: buttonColor,
+                    side: BorderSide(color: buttonColor),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(Icons.copy_rounded, size: 16),
+                  label: const Text('Copy Link', style: TextStyle(fontSize: 13)),
                 ),
               ),
             ],
@@ -839,20 +848,6 @@ class _ShareScreenState extends State<ShareScreen>
                 : const SizedBox.shrink(),
           ),
           
-          const SizedBox(height: 12),
-          // Copy Link Button
-          OutlinedButton.icon(
-            icon: const Icon(Icons.copy_rounded, size: 18),
-            label: const Text('Copy Link'),
-            onPressed: () => _copyLink(_partnerReferralLink),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: buttonColor,
-              side: BorderSide(color: buttonColor),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
         ],
       ),
     );
