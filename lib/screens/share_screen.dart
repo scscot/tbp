@@ -257,7 +257,7 @@ class _ShareScreenState extends State<ShareScreen>
         'subject': 'No Pressure, Just Opportunity',
         'message': 'I get it - when you hear "direct sales," you might think "I\'m not a salesperson" or worry about having to pressure friends and family.\n\n'
             'What if I told you there\'s a way to build your $_bizOppName team that feels natural and authentic? You can actually pre-build your network BEFORE joining, focusing on relationships first.\n\n'
-            'No cold calls, no awkward pitches to relatives, no starting from scratch. Just a proven system that lets you build genuine connections and momentum.\n\n'
+            'No cold calls, no awkward pitches to relatives, no starting from scratch. Just a proven system with AI-powered coaching that guides you step-by-step, letting you build genuine connections naturally.\n\n'
             'Take a look: $_prospectReferralLink\n\n'
             'It might just change how you think about building a business!\n\n'
             'Feel free to reach out with any questions.\n\n'
@@ -377,6 +377,7 @@ class _ShareScreenState extends State<ShareScreen>
             'Here\'s what makes it special:\n\n'
             '✅ Prospects can pre-build their teams BEFORE joining.\n'
             '✅ Creates instant momentum from day one.\n'
+            '✅ AI coaching companion provides personalized guidance.\n'
             '✅ Simple system that promotes duplication.\n'
             '✅ Accelerates growth across our entire organization.\n\n'
             'This is what we\'ve been looking for to give our team a competitive edge!\n\n'
