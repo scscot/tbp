@@ -21,7 +21,8 @@
     "firebase-functions": "^6.4.0",
     "google-auth-library": "^9.15.1",
     "jsonwebtoken": "^9.0.2",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "openai": "^5.20.2"
   },
   "devDependencies": {
     "firebase-functions-test": "^3.1.0"

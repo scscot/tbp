@@ -14,6 +14,7 @@ import 'profile_screen.dart';
 import 'subscription_screen.dart'; // Import SubscriptionScreen directly
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
+import 'chatbot_screen.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -593,6 +594,19 @@ class _DashboardScreenState extends State<DashboardScreen>
           onTap: () => widget.onTabSelected?.call(2),
         ),
         _buildActionCard(
+          icon: Icons.smart_toy,
+          title: 'Your AI Coach',
+          color: AppColors.chatPrimary,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatBotScreen(onTabSelected: widget.onTabSelected),
+              ),
+            );
+          },
+        ),
+        _buildActionCard(
           icon: Icons.message,
           title: 'Message Center',
           color: AppColors.messagePrimary,
@@ -640,7 +654,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.quiz,
-          title: 'Frequently Asked Questions',
+          title: 'FAQ\'s',
           color: AppColors.info,
           onTap: () {
             Navigator.push(

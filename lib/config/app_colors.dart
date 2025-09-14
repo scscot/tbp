@@ -97,6 +97,11 @@ class AppColors {
   static const Color messageSecondary = Color(0xFFF97316); // Orange 500
   static const Color notificationPrimary = Color(0xFFDC2626); // Red 600
   static const Color notificationSecondary = Color(0xFFEF4444); // Red 500
+  
+  /// AI Chat colors
+  static const Color chatPrimary = Color(0xFF7C3AED); // Violet 600
+  static const Color chatSecondary = Color(0xFF8B5CF6); // Violet 500
+  static const Color chatAccent = Color(0xFFA855F7); // Purple 500
 
   // ============================================================================
   // GRADIENT DEFINITIONS

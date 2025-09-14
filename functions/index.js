@@ -24,6 +24,10 @@ exports.submitContactFormHttp = submitContactFormHttp;
 // This makes the demo invitation function available for the demo script
 exports.sendDemoInvitation = sendDemoInvitation;
 
+// Import and export the chatbot function
+const { chatbot } = require('./chatbot');
+exports.chatbot = chatbot;
+
 // Initialize Firebase Admin SDK only if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
