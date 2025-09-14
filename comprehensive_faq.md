@@ -161,7 +161,6 @@
 ### **Q: What kind of support do you provide?**
 **A:** We offer:
 - 24/7 customer support via in-app messaging
-- Video tutorials and onboarding guides
 - Best practices for team building
 - Regular feature updates and improvements
 

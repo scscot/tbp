@@ -479,7 +479,11 @@ final List<FAQItem> _successFAQs = [
 final List<FAQItem> _supportFAQs = [
   FAQItem(
     question: 'What kind of support do you provide?',
-    answer: 'We offer 24/7 customer support via in-app messaging, video tutorials and onboarding guides, best practices for team building, and regular feature updates and improvements.',
+    answer: 'We offer 24/7 customer support via in-app messaging, best practices for team building, and regular feature updates and improvements.',
+  ),
+  FAQItem(
+    question: 'What exactly does AI Coach do?',
+    answer: 'AI Coach helps you navigate the Team Build Pro app, answers questions about features and qualification requirements, provides team building guidance, and can suggest which app sections to visit for specific tasks.',
   ),
   FAQItem(
     question: 'Do you provide training on how to recruit or sell?',
