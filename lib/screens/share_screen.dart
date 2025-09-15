@@ -437,8 +437,8 @@ class _ShareScreenState extends State<ShareScreen>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Testing Mode'),
-          content: const Text('Sharing disabled during testing mode.'),
+          title: const Text('Demo Mode'),
+          content: const Text('Sharing disabled during demo mode.'),
           actions: [
             TextButton(
               onPressed: () {
