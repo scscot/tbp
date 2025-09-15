@@ -115,21 +115,29 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint('🔍   widget.referralCode: ${widget.referralCode}');
     debugPrint('🔍   widget.appId: ${widget.appId}');
 
-    // First, try to get cached referral data from SessionManager
-    final cachedReferralData = await SessionManager.instance.getReferralData();
+    // Prioritize fresh constructor parameters over cached data (for deep links)
+    if (widget.referralCode != null && widget.referralCode!.isNotEmpty) {
+      debugPrint('🔍 Using fresh constructor referral code: ${widget.referralCode}');
+      _initialReferralCode = widget.referralCode;
+      // Clear any stale cached data when fresh referral code is provided
+      await SessionManager.instance.clearReferralData();
+    } else {
+      // Fallback: try to get cached referral data from SessionManager
+      final cachedReferralData = await SessionManager.instance.getReferralData();
 
-    if (cachedReferralData != null) {
-      debugPrint('🔍 Using cached referral data');
-      _initialReferralCode = cachedReferralData['referralCode'];
-      _sponsorName = cachedReferralData['sponsorName'];
-      debugPrint('🔍 Cached referral code: $_initialReferralCode');
-      debugPrint('🔍 Cached sponsor name: $_sponsorName');
-      if (mounted) setState(() => _isLoading = false);
-      return;
+      if (cachedReferralData != null) {
+        debugPrint('🔍 Using cached referral data');
+        _initialReferralCode = cachedReferralData['referralCode'];
+        _sponsorName = cachedReferralData['sponsorName'];
+        debugPrint('🔍 Cached referral code: $_initialReferralCode');
+        debugPrint('🔍 Cached sponsor name: $_sponsorName');
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
+
+      // Final fallback: no referral code at all
+      _initialReferralCode = null;
     }
-
-    // Fallback: use constructor parameter (for direct access scenarios)
-    _initialReferralCode = widget.referralCode;
 
     debugPrint('🔍 After assignment:');
     debugPrint('🔍   _initialReferralCode: $_initialReferralCode');

@@ -400,9 +400,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
           final hasLoggedOut = appState['hasLoggedOut'] ?? false;
           final dls = DeepLinkService();
           
+          // Check if referral parameters are present (prioritize over logout state)
+          final hasReferralParams = dls.latestReferralCode != null || dls.latestQueryType != null;
+          
           if (isDemoMode) {
             debugPrint('🔐 AUTH_WRAPPER: Demo mode detected, showing HOMEPAGE');
             return HomepageScreen(
+              appId: appId,
+              referralCode: dls.latestReferralCode,
+              queryType: dls.latestQueryType,
+            );
+          } else if (hasReferralParams) {
+            debugPrint('🔐 AUTH_WRAPPER: Referral parameters detected, routing to REGISTRATION (code: ${dls.latestReferralCode}, type: ${dls.latestQueryType})');
+            return NewRegistrationScreen(
               appId: appId,
               referralCode: dls.latestReferralCode,
               queryType: dls.latestQueryType,
