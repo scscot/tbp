@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "env": { "node": true, "es2023": true },
+  "extends": ["eslint:recommended"],
+  "parserOptions": { "ecmaVersion": "latest", "sourceType": "script" },
+  "ignorePatterns": ["node_modules/", "lib/", ".firebase/", "coverage/", "dist/"],
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "prefer-const": "error",
+    "no-var": "error",
+    "eqeqeq": ["error", "smart"],
+    "no-console": "off"
+  }
+}

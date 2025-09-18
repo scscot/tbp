@@ -6,7 +6,11 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "engines": {
     "node": "20"
@@ -17,15 +21,18 @@
     "@sendgrid/mail": "^8.1.5",
     "app-store-server-api": "^0.17.1",
     "cors": "^2.8.5",
-    "firebase-admin": "^13.4.0",
+    "firebase-admin": "^13.5.0",
     "firebase-functions": "^6.4.0",
     "google-auth-library": "^9.15.1",
+    "googleapis": "^159.0.0",
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^2.7.0",
     "openai": "^5.20.2"
   },
   "devDependencies": {
-    "firebase-functions-test": "^3.1.0"
+    "eslint": "8.57.0",
+    "prettier": "3.3.3"
   },
-  "private": true
+  "private": true,
+  "type": "commonjs"
 }

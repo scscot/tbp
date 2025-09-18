@@ -310,7 +310,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       setState(() {
         _hasInitializedServices = true;
       });
-      FCMService().initialize(context);
+      FCMService().initialize(uid: user.uid, context: context);
       final notificationService =
           Provider.of<NotificationService>(context, listen: false);
       final pending = notificationService.pendingNotification;

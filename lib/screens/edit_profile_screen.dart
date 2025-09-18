@@ -495,6 +495,30 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  Future<void> triggerSponsorshipAfterProfileComplete() async {
+    final functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+    final callable = functions.httpsCallable('triggerSponsorship');
+    try {
+      final res = await callable.call(); // returns { ok: true, sponsorId: ..., sponsorName: ... }
+      final data = res.data;
+      if (data['ok'] == true) {
+        final sponsorId = data['sponsorId'];
+        final sponsorName = data['sponsorName'];
+        if (sponsorId != null && sponsorName != null) {
+          debugPrint('🟢 triggerSponsorship success: Notified sponsor $sponsorName (ID: $sponsorId)');
+        } else {
+          debugPrint('🟢 triggerSponsorship success: No sponsor found for this user');
+        }
+      } else {
+        debugPrint('🟡 triggerSponsorship skipped: ${data['reason'] ?? 'unknown reason'}');
+      }
+    } on FirebaseFunctionsException catch (e) {
+      debugPrint('🔴 triggerSponsorship failed: code=${e.code} message=${e.message}');
+    } catch (e) {
+      debugPrint('🔴 triggerSponsorship error: $e');
+    }
+  }
+
   Future<void> _saveProfile() async {
     // MODIFICATION: The validation logic is updated to handle both
     // the form fields and the custom image picker validation.
@@ -613,6 +637,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         }
 
         await _firestoreService.updateUser(widget.user.uid, updatedData);
+
+        // Always trigger sponsorship notification after profile update
+        // Server-side idempotency prevents duplicate notifications
+        await triggerSponsorshipAfterProfileComplete();
 
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(

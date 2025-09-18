@@ -1,3 +1,7 @@
+const admin = require('firebase-admin');
+const db = admin.firestore();
+const messaging = admin.messaging();
+
 // ============================================================================
 // CENTRALIZED BADGE UPDATE FUNCTION
 // ============================================================================
@@ -15,7 +19,7 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
   try {
     console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
 
-    const userDoc = await db.collection("users").doc(userId).get();
+    const userDoc = await db.collection('users').doc(userId).get();
     if (!userDoc.exists) {
       console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
       return;
@@ -23,7 +27,7 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
 
     const userData = userDoc.data();
     const fcmToken = userData?.fcm_token;
-    
+
     if (!fcmToken) {
       console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
       return;
@@ -32,28 +36,34 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
     // Count unread notifications
     let notificationCount = newNotificationCount;
     if (notificationCount === null) {
-      const unreadNotificationsSnapshot = await db.collection("users")
+      const unreadNotificationsSnapshot = await db
+        .collection('users')
         .doc(userId)
-        .collection("notifications")
-        .where("read", "==", false)
-        .count().get();
+        .collection('notifications')
+        .where('read', '==', false)
+        .count()
+        .get();
       notificationCount = unreadNotificationsSnapshot.data().count;
     }
 
     // Count unread chat messages (count threads with unread messages)
     let messageCount = newUnreadChatCount;
     if (messageCount === null) {
-      const chatDocs = await db.collection("chats")
-        .where("participants", "array-contains", userId)
+      const chatDocs = await db
+        .collection('chats')
+        .where('participants', 'array-contains', userId)
         .get();
-      
+
       messageCount = 0;
-      chatDocs.docs.forEach(doc => {
+      chatDocs.docs.forEach((doc) => {
         const chatData = doc.data();
         const isReadMap = chatData.isRead || {};
-        
+
         // Only count if this chat thread has unread messages for this user
-        if (isReadMap.hasOwnProperty(userId) && isReadMap[userId] === false) {
+        if (
+          isReadMap.Object.prototype.hasOwnProperty.call(isReadMap, userId) &&
+          isReadMap[userId] === false
+        ) {
           messageCount++;
         }
       });
@@ -61,7 +71,9 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
 
     const totalBadgeCount = notificationCount + messageCount;
 
-    console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
+    console.log(
+      `🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`
+    );
 
     // Send badge update message
     const message = {
@@ -81,8 +93,9 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
     };
 
     await messaging.send(message);
-    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
-
+    console.log(
+      `✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`
+    );
   } catch (error) {
     console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
   }

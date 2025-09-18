@@ -29,7 +29,7 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen>
     with RouteAware {
-  Future<List<QueryDocumentSnapshot>>? _notificationsFuture;
+  Stream<List<QueryDocumentSnapshot>>? _notificationsStream;
 
   @override
   void initState() {
@@ -63,24 +63,27 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     final authUser = FirebaseAuth.instance.currentUser;
     if (authUser != null) {
       setState(() {
-        _notificationsFuture = _fetchNotifications(authUser.uid);
+        _notificationsStream = _watchNotifications(authUser.uid);
       });
     } else {
       setState(() {
-        _notificationsFuture = Future.value([]);
+        _notificationsStream = Stream.value([]);
       });
     }
   }
 
-  Future<List<QueryDocumentSnapshot>> _fetchNotifications(String uid) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('notifications')
-          .orderBy('createdAt', descending: true)
-          .get();
-
+  Stream<List<QueryDocumentSnapshot>> _watchNotifications(String uid) {
+    debugPrint('🔔 NOTIFICATIONS: Setting up real-time stream for user $uid');
+    
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      debugPrint('🔔 NOTIFICATIONS: Received ${snapshot.docs.length} notifications from stream');
+      
       final List<QueryDocumentSnapshot> unreadNotifications = [];
       final List<QueryDocumentSnapshot> readNotifications = [];
 
@@ -99,11 +102,12 @@ class _NotificationsScreenState extends State<NotificationsScreen>
       sortedNotifications.addAll(unreadNotifications);
       sortedNotifications.addAll(readNotifications);
 
+      debugPrint('🔔 NOTIFICATIONS: Sorted notifications - ${unreadNotifications.length} unread, ${readNotifications.length} read');
       return sortedNotifications;
-    } catch (e) {
-      debugPrint('Error fetching notifications for UID $uid: $e');
-      return [];
-    }
+    }).handleError((error) {
+      debugPrint('❌ NOTIFICATIONS: Error in real-time stream: $error');
+      return <QueryDocumentSnapshot>[];
+    });
   }
 
   Future<void> _deleteNotification(String docId) async {
@@ -118,10 +122,6 @@ class _NotificationsScreenState extends State<NotificationsScreen>
           .delete();
 
       await _checkAndClearBadge();
-
-      if (mounted) {
-        _loadNotifications();
-      }
     } catch (e) {
       debugPrint("Error deleting notification: $e");
     }
@@ -187,13 +187,14 @@ class _NotificationsScreenState extends State<NotificationsScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: FutureBuilder<List<QueryDocumentSnapshot>>(
-              future: _notificationsFuture,
+            child: StreamBuilder<List<QueryDocumentSnapshot>>(
+              stream: _notificationsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
+                  debugPrint('🔔 NOTIFICATIONS: StreamBuilder error: ${snapshot.error}');
                   return const Center(
                       child: Text('Error loading notifications'));
                 }
@@ -269,7 +270,6 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                         onTap: () async {
                           await _markNotificationAsRead(doc.id);
                           await _checkAndClearBadge();
-                          _loadNotifications();
 
                           final route = data['route'] as String?;
                           if (route != null) {

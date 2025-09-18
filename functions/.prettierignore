@@ -1,0 +1,9 @@
+node_modules/
+lib/
+dist/
+coverage/
+.firebase/
+.eslintcache
+*.log
+*.lock
+.DS_Store

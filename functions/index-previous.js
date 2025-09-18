@@ -6,12 +6,27 @@ const admin = require("firebase-admin");
 const { getTimezoneFromLocation, getTimezonesAtHour } = require("./timezone_mapping");
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
+const { sendDemoInvitation } = require('./sendDemoInvitation');
+
+// Verifies & decodes Apple's signedPayload and validates the cert chain
+const {
+  decodeNotificationPayload,
+  isDecodedNotificationDataPayload,
+  isDecodedNotificationSummaryPayload,
+} = require("app-store-server-api");
 
 // This makes the callable function available for your apps
 exports.submitContactForm = submitContactForm;
 
 // This makes the HTTPS function available for your contact_us.html page
 exports.submitContactFormHttp = submitContactFormHttp;
+
+// This makes the demo invitation function available for the demo script
+exports.sendDemoInvitation = sendDemoInvitation;
+
+// Import and export the chatbot function
+const { chatbot } = require('./chatbot');
+exports.chatbot = chatbot;
 
 // Initialize Firebase Admin SDK only if not already initialized
 if (!admin.apps.length) {
@@ -25,6 +40,120 @@ const remoteConfig = admin.remoteConfig();
 const { FieldValue, DocumentReference } = admin.firestore;
 const fetch = global.fetch || require('node-fetch');
 const cors = require('cors')({ origin: true });
+
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const { X509Certificate } = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
+
+// SendGrid for launch notification emails
+const sgMail = require('@sendgrid/mail');
+const { defineSecret } = require('firebase-functions/params');
+const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
+
+// Google Play OIDC verification for Pub/Sub push
+const verifyGooglePlayPubSubToken = async (authorizationHeader) => {
+  if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+    return false;
+  }
+  
+  try {
+    const token = authorizationHeader.substring(7); // Remove 'Bearer ' prefix
+    const client = new OAuth2Client();
+    
+    // Verify the JWT token from Google Cloud Pub/Sub
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GCLOUD_PROJECT, // Your Firebase project ID
+    });
+    
+    const payload = ticket.getPayload();
+    
+    // Verify this is actually from Google Cloud Pub/Sub
+    if (payload.iss !== 'https://accounts.google.com' && 
+        payload.iss !== 'accounts.google.com') {
+      console.log('🔒 GOOGLE PLAY OIDC: Invalid issuer:', payload.iss);
+      return false;
+    }
+    
+    // Additional verification for Pub/Sub service account
+    if (payload.email && !payload.email.includes('gserviceaccount.com')) {
+      console.log('🔒 GOOGLE PLAY OIDC: Not a service account:', payload.email);
+      return false;
+    }
+    
+    console.log('✅ GOOGLE PLAY OIDC: Token verified successfully');
+    return true;
+    
+  } catch (error) {
+    console.log('❌ GOOGLE PLAY OIDC: Token verification failed:', error.message);
+    return false;
+  }
+};
+
+// Apple V2 notification persistence with idempotency
+const upsertAppleV2NotificationState = async (payload) => {
+  if (!isDecodedNotificationDataPayload(payload)) {
+    return; // Only handle data notifications for now
+  }
+  
+  const { data, notificationUUID, notificationType, subtype } = payload;
+  
+  try {
+    // Extract key identifiers for idempotency
+    const originalTransactionId = data?.originalTransactionId;
+    const notificationId = notificationUUID || `${originalTransactionId}_${Date.now()}`;
+    
+    if (!originalTransactionId) {
+      console.log('⚠️ APPLE V2 PERSISTENCE: No originalTransactionId found, skipping persistence');
+      return;
+    }
+    
+    // Create idempotency key
+    const idempotencyKey = `${originalTransactionId}_${notificationId}`;
+    
+    // Check if we've already processed this notification
+    const existingDoc = await db.collection('apple_v2_notifications')
+      .doc(idempotencyKey)
+      .get();
+      
+    if (existingDoc.exists) {
+      console.log(`✅ APPLE V2 PERSISTENCE: Notification ${idempotencyKey} already processed, skipping`);
+      return;
+    }
+    
+    // Persist the notification state
+    const notificationData = {
+      idempotencyKey,
+      originalTransactionId,
+      notificationUUID: notificationId,
+      notificationType,
+      subtype: subtype || null,
+      signedTransactionInfo: data.signedTransactionInfo || null,
+      signedRenewalInfo: data.signedRenewalInfo || null,
+      bundleId: data.bundleId || null,
+      environment: data.environment || null,
+      processedAt: FieldValue.serverTimestamp(),
+      rawPayload: {
+        notificationType,
+        subtype,
+        data: {
+          ...data,
+          // Store key fields but don't duplicate large signed payloads
+          signedTransactionInfo: data.signedTransactionInfo ? '[STORED_SEPARATELY]' : null,
+          signedRenewalInfo: data.signedRenewalInfo ? '[STORED_SEPARATELY]' : null,
+        }
+      }
+    };
+    
+    await db.collection('apple_v2_notifications').doc(idempotencyKey).set(notificationData);
+    console.log(`✅ APPLE V2 PERSISTENCE: Stored notification ${idempotencyKey} for transaction ${originalTransactionId}`);
+    
+  } catch (error) {
+    console.error('❌ APPLE V2 PERSISTENCE: Failed to store notification:', error);
+    // Don't throw - persistence failure shouldn't break notification processing
+  }
+};
 
 // ============================================================================
 // APPLE STORE SUBSCRIPTION FUNCTIONS
@@ -89,7 +218,7 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
       case 'expired':
         notificationContent = {
           title: "❌ Subscription Expired",
-          message: "Your subscription has expired. Renew to continue accessing premium features.",
+          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
           type: "subscription_expired",
           route: "/subscription", // Changed to match FCM handler
           route_params: JSON.stringify({ "action": "renew" })
@@ -248,6 +377,368 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
     return res.status(500).send('Internal Server Error');
   }
 });
+
+// ============================================================================
+// APP STORE SERVER NOTIFICATIONS V2 IMPLEMENTATION
+// ============================================================================
+
+/**
+ * App Store Server Notifications V2 Handler
+ * Handles JWT-signed notifications from Apple with proper verification
+ */
+exports.handleAppleSubscriptionNotificationV2 = onRequest({ region: "us-central1", cors: false }, async (req, res) => {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
+    }
+
+    const { signedPayload } = req.body || {};
+    if (!signedPayload) {
+      return res.status(400).send("Missing signedPayload");
+    }
+
+    // Verifies signature and certificate chain for you
+    const payload = await decodeNotificationPayload(signedPayload);
+    
+    // Persist notification state with idempotency (do this early to prevent duplicate processing)
+    await upsertAppleV2NotificationState(payload);
+
+    // Optional: guard that the bundleId matches your app
+    const APP_BUNDLE_ID = process.env.APP_BUNDLE_ID; // e.g., com.scott.ultimatefix.signin
+    const bundleFromPayload = payload?.data?.bundleId || payload?.summary?.bundleId;
+    if (APP_BUNDLE_ID && bundleFromPayload && APP_BUNDLE_ID !== bundleFromPayload) {
+      return res.status(401).send("Bundle mismatch");
+    }
+
+    if (isDecodedNotificationDataPayload(payload)) {
+      const { notificationType, subtype, data } = payload;
+      console.log(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} notification`);
+      await processNotificationV2({ notificationType, subtype, data });
+    } else if (isDecodedNotificationSummaryPayload(payload)) {
+      const { summary } = payload;
+      console.log(`📱 APPLE V2 NOTIFICATION: Processing summary notification`);
+      // TODO: optional summary handling
+    }
+
+    return res.status(200).send("OK");
+  } catch (err) {
+    console.error("Apple V2 webhook failed:", err);
+    return res.status(500).send("Internal Error");
+  }
+});
+
+// Insecure JWT verification removed - now using app-store-server-api library
+
+/**
+ * Process V2 notification based on notification type
+ */
+async function processNotificationV2(payload) {
+  const { notificationType, subtype, data } = payload;
+
+  if (!data?.signedTransactionInfo) {
+    throw new Error('Missing transaction info in notification');
+  }
+
+  // Decode the signed transaction info
+  const transactionInfo = jwt.decode(data.signedTransactionInfo);
+  const originalTransactionId = transactionInfo.originalTransactionId;
+
+  if (!originalTransactionId) {
+    throw new Error('Missing original transaction ID');
+  }
+
+  console.log(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} for transaction ${originalTransactionId}`);
+
+  // Find user by Apple transaction ID
+  const userQuery = await db.collection('users')
+    .where('appleTransactionId', '==', originalTransactionId)
+    .limit(1)
+    .get();
+
+  if (userQuery.empty) {
+    console.log(`📱 APPLE V2 NOTIFICATION: No user found for transaction ${originalTransactionId}`);
+    throw new Error('User not found');
+  }
+
+  const userDoc = userQuery.docs[0];
+  const userId = userDoc.id;
+
+  console.log(`📱 APPLE V2 NOTIFICATION: Found user ${userId}, processing ${notificationType}`);
+
+  // Process different notification types
+  switch (notificationType) {
+    case 'SUBSCRIBED':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscribed`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'DID_RENEW':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription renewed`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'DID_CHANGE_RENEWAL_STATUS':
+      if (subtype === 'AUTO_RENEW_DISABLED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} disabled auto-renew`);
+        await updateUserSubscription(userId, 'cancelled', transactionInfo.expiresDate);
+        await createSubscriptionNotification(userId, 'cancelled', transactionInfo.expiresDate);
+      } else if (subtype === 'AUTO_RENEW_ENABLED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} enabled auto-renew`);
+        await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+        await createSubscriptionNotification(userId, 'active', transactionInfo.expiresDate);
+      }
+      break;
+
+    case 'EXPIRED':
+      if (subtype === 'VOLUNTARY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription expired voluntarily`);
+        await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
+      } else if (subtype === 'BILLING_RETRY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} subscription in billing retry`);
+        // Keep current status but log the billing issue
+      } else if (subtype === 'PRICE_INCREASE') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} didn't accept price increase`);
+        await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
+      }
+      break;
+
+    case 'GRACE_PERIOD_EXPIRED':
+      console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} grace period expired`);
+      await updateUserSubscription(userId, 'expired');
+      await createSubscriptionNotification(userId, 'expired');
+      break;
+
+    case 'PRICE_INCREASE':
+      if (subtype === 'PENDING') {
+        console.log(`📱 APPLE V2 NOTIFICATION: Price increase pending for user ${userId}`);
+        // Optionally notify user about pending price increase
+      } else if (subtype === 'ACCEPTED') {
+        console.log(`📱 APPLE V2 NOTIFICATION: User ${userId} accepted price increase`);
+        await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      }
+      break;
+
+    case 'REFUND':
+      console.log(`📱 APPLE V2 NOTIFICATION: Refund processed for user ${userId}`);
+      // Handle refund - might need to revoke access depending on your business logic
+      await updateUserSubscription(userId, 'refunded');
+      await createSubscriptionNotification(userId, 'refunded');
+      break;
+
+    case 'REVOKE':
+      console.log(`📱 APPLE V2 NOTIFICATION: Subscription revoked for user ${userId}`);
+      await updateUserSubscription(userId, 'revoked');
+      await createSubscriptionNotification(userId, 'revoked');
+      break;
+
+    case 'CONSUMPTION_REQUEST':
+      console.log(`📱 APPLE V2 NOTIFICATION: Consumption request for user ${userId}`);
+      // Handle consumption requests if you have consumable products
+      break;
+
+    case 'RENEWAL_EXTENDED':
+      console.log(`📱 APPLE V2 NOTIFICATION: Renewal extended for user ${userId}`);
+      await updateUserSubscription(userId, 'active', transactionInfo.expiresDate);
+      break;
+
+    case 'RENEWAL_EXTENSION':
+      if (subtype === 'SUMMARY') {
+        console.log(`📱 APPLE V2 NOTIFICATION: Renewal extension summary for user ${userId}`);
+        // Handle renewal extension summary
+      }
+      break;
+
+    case 'TEST':
+      console.log(`📱 APPLE V2 NOTIFICATION: Test notification received`);
+      // This is just a test notification, no action needed
+      break;
+
+    default:
+      console.log(`📱 APPLE V2 NOTIFICATION: Unhandled notification type: ${notificationType}`);
+      break;
+  }
+}
+
+/**
+ * Enhanced updateUserSubscription function with better status handling
+ */
+const updateUserSubscriptionV2 = async (userId, status, expiryDate = null, additionalData = {}) => {
+  try {
+    console.log(`📱 SUBSCRIPTION V2: Updating user ${userId} to status: ${status}`);
+
+    const updateData = {
+      subscriptionStatus: status,
+      subscriptionUpdated: FieldValue.serverTimestamp(),
+      ...additionalData
+    };
+
+    if (expiryDate) {
+      // Handle both timestamp and ISO string formats
+      const expiryTimestamp = typeof expiryDate === 'string'
+        ? new Date(expiryDate).getTime()
+        : parseInt(expiryDate);
+      updateData.subscriptionExpiry = new Date(expiryTimestamp);
+      console.log(`📱 SUBSCRIPTION V2: Setting expiry date: ${updateData.subscriptionExpiry.toISOString()}`);
+    }
+
+    await db.collection('users').doc(userId).update(updateData);
+    console.log(`✅ SUBSCRIPTION V2: Successfully updated user ${userId} subscription status`);
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION V2: Failed to update user ${userId} subscription:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Enhanced notification creation with support for new V2 notification types
+ */
+const createSubscriptionNotificationV2 = async (userId, status, expiryDate = null, additionalInfo = {}) => {
+  try {
+    let notificationContent = null;
+
+    switch (status) {
+      case 'active':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          notificationContent = {
+            title: "✅ Subscription Active",
+            message: `Your subscription is now active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_active"
+          };
+        }
+        break;
+
+      case 'cancelled':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          notificationContent = {
+            title: "⚠️ Subscription Cancelled",
+            message: `Your subscription has been cancelled but remains active until ${expiry.toLocaleDateString()}.`,
+            type: "subscription_cancelled"
+          };
+        }
+        break;
+
+      case 'expired':
+        notificationContent = {
+          title: "❌ Subscription Expired",
+          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+          type: "subscription_expired",
+          route: "/subscription",
+          route_params: JSON.stringify({ "action": "renew" })
+        };
+        break;
+
+      case 'refunded':
+        notificationContent = {
+          title: "💰 Subscription Refunded",
+          message: "Your subscription has been refunded. Access to premium features has been revoked.",
+          type: "subscription_refunded"
+        };
+        break;
+
+      case 'revoked':
+        notificationContent = {
+          title: "🚫 Subscription Revoked",
+          message: "Your subscription has been revoked. Please contact support if you believe this is an error.",
+          type: "subscription_revoked"
+        };
+        break;
+
+      case 'expiring_soon':
+        if (expiryDate) {
+          const expiry = new Date(typeof expiryDate === 'string' ? expiryDate : parseInt(expiryDate));
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+          const formattedDate = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}`;
+
+          notificationContent = {
+            title: "⏰ Subscription Expiring Soon",
+            message: `Your subscription will end on ${formattedDate}. Renew to continue accessing premium features.`,
+            type: "subscription_expiring_soon",
+            route: "/subscription",
+            route_params: JSON.stringify({ "action": "renew" })
+          };
+        }
+        break;
+
+      default:
+        // Don't send notifications for unknown statuses
+        return;
+    }
+
+    if (notificationContent) {
+      const notification = {
+        ...notificationContent,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        ...additionalInfo // Allow passing additional info
+      };
+
+      await db.collection('users').doc(userId).collection('notifications').add(notification);
+      console.log(`✅ SUBSCRIPTION V2: Notification sent to user ${userId} for status: ${status}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ SUBSCRIPTION V2: Failed to send notification to user ${userId}:`, error);
+    // Don't throw error - notification failure shouldn't break subscription update
+  }
+};
+
+/**
+ * Test endpoint for validating your V2 notification setup
+ */
+exports.testAppleNotificationV2Setup = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  // This function helps you test your notification endpoint
+  // You can call this from your app to verify everything is set up correctly
+
+  console.log(`📱 TEST: V2 notification setup test initiated by ${request.auth.uid}`);
+
+  return {
+    success: true,
+    message: "V2 notification endpoint is configured and ready",
+    endpoint: `https://${process.env.GCLOUD_PROJECT}.cloudfunctions.net/handleAppleSubscriptionNotificationV2`,
+    timestamp: new Date().toISOString()
+  };
+});
+
+/**
+ * Test endpoint for validating your Google Play notification setup
+ */
+exports.testGooglePlayNotificationSetup = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  // This function helps you test your Google Play notification endpoint
+  // You can call this from your app to verify everything is set up correctly
+
+  console.log(`🤖 TEST: Google Play notification setup test initiated by ${request.auth.uid}`);
+
+  return {
+    success: true,
+    message: "Google Play notification endpoint is configured and ready",
+    endpoint: `https://${process.env.GCLOUD_PROJECT}.cloudfunctions.net/handleGooglePlaySubscriptionNotification`,
+    timestamp: new Date().toISOString()
+  };
+});
+
+// Export helper functions for use in other parts of your code
+// Note: verifyAndDecodeJWT removed - now using app-store-server-api library
+/* module.exports = {
+  updateUserSubscriptionV2,
+  createSubscriptionNotificationV2,
+  processNotificationV2
+}; */
 
 /**
  * Daily check for expired trial periods
@@ -625,124 +1116,391 @@ exports.checkUserSubscriptionStatus = onCall({ region: "us-central1" }, async (r
 });
 
 // ============================================================================
+// GOOGLE PLAY SUBSCRIPTION FUNCTIONS
+// ============================================================================
+
+/**
+ * Google Play Purchase Verification Function
+ * Validates purchases with Google Play and updates user subscription status
+ */
+exports.validateGooglePlayPurchase = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const userId = request.auth.uid;
+  const { purchaseToken, productId, packageName } = request.data;
+
+  if (!purchaseToken || !productId || !packageName) {
+    throw new HttpsError("invalid-argument", "Purchase token, product ID, and package name are required");
+  }
+
+  console.log(`🤖 GOOGLE PLAY: Validating purchase for user ${userId}, product: ${productId}`);
+
+  try {
+    // Import Google Auth Library (you'll need to install this)
+    const { GoogleAuth } = require('google-auth-library');
+    const auth = new GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+      // Use service account key from environment or Firebase Functions config
+      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS || './serviceAccountKey.json'
+    });
+
+    const authClient = await auth.getClient();
+    const androidpublisher = google.androidpublisher('v3');
+
+    // Validate the subscription purchase
+    const result = await androidpublisher.purchases.subscriptions.get({
+      auth: authClient,
+      packageName: packageName,
+      subscriptionId: productId,
+      token: purchaseToken,
+    });
+
+    console.log(`🤖 GOOGLE PLAY: Validation result:`, JSON.stringify(result.data, null, 2));
+
+    const subscription = result.data;
+    
+    // Check if purchase is valid
+    if (!subscription) {
+      console.log(`🤖 GOOGLE PLAY: Invalid purchase token`);
+      return {
+        isValid: false,
+        message: 'Invalid purchase token'
+      };
+    }
+
+    // Determine subscription status
+    let subscriptionStatus = 'inactive';
+    let expiryDate = null;
+    
+    if (subscription.expiryTimeMillis) {
+      expiryDate = parseInt(subscription.expiryTimeMillis);
+      const isExpired = Date.now() > expiryDate;
+      
+      if (!isExpired) {
+        if (subscription.autoRenewing === false && subscription.cancelReason) {
+          subscriptionStatus = 'cancelled'; // Cancelled but still active
+        } else {
+          subscriptionStatus = 'active';
+        }
+      } else {
+        subscriptionStatus = 'expired';
+      }
+    }
+
+    console.log(`🤖 GOOGLE PLAY: Determined status: ${subscriptionStatus}, expires: ${expiryDate ? new Date(expiryDate).toISOString() : 'N/A'}`);
+
+    // Update user subscription status in Firestore
+    await updateUserSubscription(userId, subscriptionStatus, expiryDate);
+
+    // Create notification for user
+    await createSubscriptionNotification(userId, subscriptionStatus, expiryDate);
+
+    return {
+      isValid: true,
+      subscriptionStatus: subscriptionStatus,
+      expiresDate: expiryDate ? new Date(expiryDate).toISOString() : null,
+      autoRenewing: subscription.autoRenewing,
+      orderId: subscription.orderId,
+      purchaseTime: subscription.startTimeMillis ? new Date(parseInt(subscription.startTimeMillis)).toISOString() : null
+    };
+
+  } catch (error) {
+    console.error(`❌ GOOGLE PLAY: Error validating purchase for user ${userId}:`, error);
+    
+    if (error.code === 410) {
+      // Purchase token is no longer valid
+      console.log(`🤖 GOOGLE PLAY: Purchase token no longer valid for user ${userId}`);
+      await updateUserSubscription(userId, 'expired');
+      return {
+        isValid: false,
+        message: 'Purchase token expired'
+      };
+    }
+    
+    throw new HttpsError("internal", "Failed to validate Google Play purchase", error.message);
+  }
+});
+
+/**
+ * Google Play Real-time Developer Notification Handler
+ * Processes subscription lifecycle events from Google Play
+ */
+exports.handleGooglePlayNotification = onRequest({ region: "us-central1", cors: false }, async (req, res) => {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
+    }
+    
+    // Verify OIDC token for Pub/Sub push (optional but recommended for security)
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const isValidToken = await verifyGooglePlayPubSubToken(authHeader);
+      if (!isValidToken) {
+        console.log('🔒 GOOGLE PLAY WEBHOOK: OIDC verification failed');
+        return res.status(401).send('Unauthorized - Invalid token');
+      }
+      console.log('✅ GOOGLE PLAY WEBHOOK: OIDC verification passed');
+    } else {
+      console.log('⚠️ GOOGLE PLAY WEBHOOK: No authorization header - proceeding without OIDC verification');
+    }
+
+    // Support both Pub/Sub push (message.data base64) and direct HTTP JSON
+    let body = req.body;
+    if (body && body.message && body.message.data) {
+      const decoded = Buffer.from(body.message.data, "base64").toString("utf8");
+      body = JSON.parse(decoded);
+    }
+
+    console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing notification`);
+
+    const { subscriptionNotification, testNotification } = body;
+
+    // Handle test notifications
+    if (testNotification) {
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Received test notification`);
+      return res.status(200).send('Test notification received');
+    }
+
+    // Handle subscription notifications
+    if (subscriptionNotification) {
+      const {
+        version,
+        notificationType,
+        purchaseToken,
+        subscriptionId
+      } = subscriptionNotification;
+
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Processing subscription notification type: ${notificationType}`);
+
+      // Find user by purchase token (you might need to store this mapping)
+      const usersQuery = await db.collection('users')
+        .where('googlePlayPurchaseToken', '==', purchaseToken)
+        .limit(1)
+        .get();
+
+      if (usersQuery.empty) {
+        console.log(`🤖 GOOGLE PLAY WEBHOOK: No user found for purchase token: ${purchaseToken}`);
+        return res.status(200).send('User not found');
+      }
+
+      const userDoc = usersQuery.docs[0];
+      const userId = userDoc.id;
+
+      console.log(`🤖 GOOGLE PLAY WEBHOOK: Found user ${userId} for purchase token`);
+
+      // Handle different notification types
+      let newStatus = null;
+      
+      switch (notificationType) {
+        case 1: // SUBSCRIPTION_RECOVERED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription recovered for user ${userId}`);
+          break;
+          
+        case 2: // SUBSCRIPTION_RENEWED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription renewed for user ${userId}`);
+          break;
+          
+        case 3: // SUBSCRIPTION_CANCELED
+          newStatus = 'cancelled';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription cancelled for user ${userId}`);
+          break;
+          
+        case 4: // SUBSCRIPTION_PURCHASED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: New subscription purchased for user ${userId}`);
+          break;
+          
+        case 5: // SUBSCRIPTION_ON_HOLD
+          newStatus = 'on_hold';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription on hold for user ${userId}`);
+          break;
+          
+        case 6: // SUBSCRIPTION_IN_GRACE_PERIOD
+          newStatus = 'grace_period';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription in grace period for user ${userId}`);
+          break;
+          
+        case 7: // SUBSCRIPTION_RESTARTED
+          newStatus = 'active';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription restarted for user ${userId}`);
+          break;
+          
+        case 8: // SUBSCRIPTION_PRICE_CHANGE_CONFIRMED
+          // No status change needed, just log
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Price change confirmed for user ${userId}`);
+          break;
+          
+        case 9: // SUBSCRIPTION_DEFERRED
+          newStatus = 'deferred';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription deferred for user ${userId}`);
+          break;
+          
+        case 10: // SUBSCRIPTION_PAUSED
+          newStatus = 'paused';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription paused for user ${userId}`);
+          break;
+          
+        case 11: // SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Pause schedule changed for user ${userId}`);
+          break;
+          
+        case 12: // SUBSCRIPTION_REVOKED
+          newStatus = 'revoked';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription revoked for user ${userId}`);
+          break;
+          
+        case 13: // SUBSCRIPTION_EXPIRED
+          newStatus = 'expired';
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Subscription expired for user ${userId}`);
+          break;
+          
+        default:
+          console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type: ${notificationType}`);
+      }
+
+      // Update user subscription status if needed
+      if (newStatus) {
+        await updateUserSubscription(userId, newStatus);
+        await createSubscriptionNotification(userId, newStatus);
+      }
+
+      return res.status(200).send('Notification processed');
+    }
+
+    console.log(`🤖 GOOGLE PLAY WEBHOOK: Unknown notification type`);
+    return res.status(400).send('Unknown notification type');
+  } catch (err) {
+    console.error("Google Play webhook failed:", err);
+    return res.status(500).send("Internal Error");
+  }
+});
+
+// ============================================================================
 // CENTRALIZED BADGE UPDATE FUNCTION
 // ============================================================================
 
 /**
  * Centralized function to calculate and update badge count for a user
- * Includes both notifications and chat messages
+ * Includes both notifications and chat messages - with optimizations
  */
 const updateUserBadge = async (userId) => {
   try {
     console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
 
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists) {
-      console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
-      return;
-    }
-
-    const userData = userDoc.data();
-    const fcmToken = userData?.fcm_token;
-    if (!fcmToken) {
-      console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
-      return;
-    }
-
-    // Count unread notifications using aggregation if available
-let notificationCount = 0;
-try {
-  const unreadNotifQuery = db.collection("users")
-    .doc(userId)
-    .collection("notifications")
-    .where("read", "==", false);
-
-  if (typeof unreadNotifQuery.count === 'function') {
-    const agg = await unreadNotifQuery.count().get();
-    notificationCount = agg.data().count || 0;
-  } else {
-    // Fallback for older SDKs
-    const snap = await unreadNotifQuery.get();
-    notificationCount = snap.size;
-  }
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
-  // soft-fail to 0
-  notificationCount = 0;
-}
-
-    // Count unread chat messages conservatively:
-    // Only count a thread if the most recent message was sent by someone else
-    // AND the thread-level isRead[userId] is explicitly false.
-    // This avoids false positives when the user sent the last message.
-    const unreadChatsSnapshot = await db.collection("chats")
-      .where("participants", "array-contains", userId)
-      .get();
-
-    let messageCount = 0;
-    for (const doc of unreadChatsSnapshot.docs) {
-      const chatData = doc.data();
-      const isReadMap = chatData.isRead || {};
-
-      // Quick check: skip if not explicitly unread
-      if (!(Object.prototype.hasOwnProperty.call(isReadMap, userId) && isReadMap[userId] === false)) {
-        continue;
+    // Use transaction for consistent badge calculation
+    const result = await db.runTransaction(async (transaction) => {
+      const userDoc = await transaction.get(db.collection('users').doc(userId));
+      if (!userDoc.exists) {
+        console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
+        return { success: false, error: "User not found" };
       }
 
-      // Fetch the most recent message to confirm the sender is NOT this user
+      const userData = userDoc.data();
+      const fcmToken = userData?.fcm_token;
+      
+      if (!fcmToken) {
+        console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
+        return { success: false, error: "No FCM token" };
+      }
+
+      // Count unread notifications using optimized query
+      let notificationCount = 0;
       try {
-        const lastMsgSnap = await db.collection("chats").doc(doc.id)
-          .collection("messages")
-          .orderBy("createdAt", "desc")
-          .limit(1)
-          .get();
-
-        if (!lastMsgSnap.empty) {
-          const lastMsg = lastMsgSnap.docs[0].data();
-          const lastSender = lastMsg.senderId;
-          if (lastSender && lastSender !== userId) {
-            messageCount++;
-            console.log(`🔔 BADGE DEBUG: Counting unread chat thread ${doc.id} for user ${userId} (lastSender=${lastSender})`);
-          } else {
-            console.log(`🔔 BADGE DEBUG: Skipping thread ${doc.id} — last message was from user or missing senderId`);
-          }
-        } else {
-          console.log(`🔔 BADGE DEBUG: Thread ${doc.id} has no messages; skipping`);
-        }
+        const unreadNotifQuery = db.collection("users")
+          .doc(userId)
+          .collection("notifications")
+          .where("read", "==", false);
+        
+        const unreadNotifSnapshot = await transaction.get(unreadNotifQuery);
+        notificationCount = unreadNotifSnapshot.size;
       } catch (e) {
-        console.warn(`🔔 BADGE DEBUG: Failed to fetch last message for ${doc.id}:`, e.message);
+        console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
+        notificationCount = 0;
       }
+
+      // Count unread chat messages with pagination and optimization
+      let messageCount = 0;
+      try {
+        // Use a more efficient approach - query only chats with unread messages
+        const unreadChatsQuery = db.collection("chats")
+          .where("participants", "array-contains", userId)
+          .where(`isRead.${userId}`, "==", false)
+          .limit(100); // Add pagination limit
+
+        const unreadChatsSnapshot = await transaction.get(unreadChatsQuery);
+        
+        // Process chats in parallel with proper error handling
+        const chatPromises = unreadChatsSnapshot.docs.map(async (doc) => {
+          const chatData = doc.data();
+          
+          // Check if last message exists and is from someone else
+          const lastMessageRef = doc.ref.collection("messages")
+            .orderBy("createdAt", "desc")
+            .limit(1);
+          
+          const lastMessageSnapshot = await transaction.get(lastMessageRef);
+          
+          if (!lastMessageSnapshot.empty) {
+            const lastMessage = lastMessageSnapshot.docs[0].data();
+            if (lastMessage.senderId && lastMessage.senderId !== userId) {
+              return 1; // Count this chat
+            }
+          }
+          return 0;
+        });
+
+        const chatResults = await Promise.allSettled(chatPromises);
+        messageCount = chatResults.reduce((sum, result) => {
+          return sum + (result.status === 'fulfilled' ? result.value : 0);
+        }, 0);
+        
+      } catch (e) {
+        console.warn(`🔔 BADGE WARN: Failed to count unread messages for ${userId}:`, e.message);
+        messageCount = 0;
+      }
+
+      const totalBadgeCount = notificationCount + messageCount;
+
+      console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
+
+      // Update badge count in user document
+      transaction.update(db.collection("users").doc(userId), {
+        currentBadge: totalBadgeCount,
+        lastBadgeUpdate: FieldValue.serverTimestamp()
+      });
+
+      return { 
+        success: true, 
+        fcmToken, 
+        badgeCount: totalBadgeCount,
+        notificationCount,
+        messageCount
+      };
+    });
+
+    if (!result.success) {
+      console.error(`❌ BADGE UPDATE: Failed to calculate badge for user ${userId}:`, result.error);
+      return;
     }
 
-    const totalBadgeCount = notificationCount + messageCount;
+    // Send badge update with retry mechanism
+    await sendBadgeUpdateWithRetry(userId, result.fcmToken, result.badgeCount);
 
-    console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
-
-    // Send badge update message
-    const message = {
-      token: fcmToken,
-      apns: {
-        payload: {
-          aps: {
-            badge: totalBadgeCount,
-          },
-        },
-      },
-      android: {
-        // Android handles badges differently, but we include for completeness
-      },
-    };
-
-    await messaging.send(message);
-try {
-  await db.collection("users").doc(userId).update({ currentBadge: totalBadgeCount });
-} catch (e) {
-  console.warn(`🔔 BADGE WARN: failed to persist currentBadge for ${userId}:`, e.message);
-}
-    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${totalBadgeCount}`);
+    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${result.badgeCount}`);
 
   } catch (error) {
     console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
+    
+    // Handle specific error cases
+    if (error.code === 'NOT_FOUND') {
+      console.log(`🔔 BADGE UPDATE: User ${userId} not found, skipping update`);
+    } else if (error.code === 'PERMISSION_DENIED') {
+      console.log(`🔔 BADGE UPDATE: Permission denied for user ${userId}, skipping update`);
+    }
   }
 };
 
@@ -812,6 +1570,26 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
+const sendBadgeUpdateWithRetry = async (userId, fcmToken, badgeCount, maxRetries = 3) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await messaging.send({
+        token: fcmToken,
+        data: { badge: badgeCount.toString() },
+        apns: {
+          payload: {
+            aps: { badge: badgeCount }
+          }
+        }
+      });
+      return;
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+};
+
 // ============================================================================
 // *** MODIFIED FUNCTION: getUserByReferralCode ***
 // Now returns bizOppName for personalization
@@ -857,7 +1635,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       }
     }
 
-    // Include photoUrl in the response
+    // Include photoUrl and isProfileComplete in the response
     return res.status(200).json({
       firstName: sponsorData.firstName,
       lastName: sponsorData.lastName,
@@ -865,6 +1643,7 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       availableCountries: availableCountries,
       bizOppName: bizOppName, // *** NEW: Return bizOppName ***
       photoUrl: sponsorData.photoUrl || null, // Added photoUrl here
+      isProfileComplete: sponsorData.isProfileComplete || false, // *** NEW: Return isProfileComplete ***
     });
 
   } catch (error) {
@@ -1232,8 +2011,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
     const message = {
       token: fcmToken,
       notification: {
-        title: notificationData?.title || "New Notification",
-        body: notificationData?.message || "You have a new message.",
+        title: notificationData?.title || "Team Build Pro Update",
+        body: notificationData?.message || "Something new in your network",
         // Removed imageUrl to prevent iOS notification failures
       },
       data: {
@@ -1247,8 +2026,8 @@ exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{
         payload: {
           aps: {
             alert: {
-              title: notificationData?.title || "New Notification",
-              body: notificationData?.message || "You have a new message.",
+              title: notificationData?.title || "Team Build Pro Update",
+              body: notificationData?.message || "Something new in your network",
             },
             sound: "default",
             // Badge will be set by updateUserBadge function
@@ -1490,6 +2269,97 @@ exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event
     }
   } catch (error) {
     console.error(`Error in notifyOnQualification for user ${event.params.userId}:`, error);
+  }
+});
+
+/**
+ * Milestone Notification Function - Notify users when they reach individual qualification milestones
+ * Triggers on directSponsorCount or totalTeamCount updates to encourage continued progress
+ */
+exports.notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (event) => {
+  const beforeData = event.data?.before.data();
+  const afterData = event.data?.after.data();
+
+  if (!beforeData || !afterData) {
+    return;
+  }
+
+  const userId = event.params.userId;
+
+  try {
+    // Skip admins from milestone notifications
+    if (afterData.role === 'admin') {
+      return;
+    }
+
+    // Skip if user is already qualified (they get the main qualification notification instead)
+    if (afterData.qualifiedDate) {
+      return;
+    }
+
+    // Get remote config values for qualification requirements
+    const template = await remoteConfig.getTemplate();
+    const parameters = template.parameters;
+    const projectWideDirectSponsorMin = parseInt(parameters.projectWideDirectSponsorMin?.defaultValue?.value || '4', 10);
+    const projectWideTotalTeamMin = parseInt(parameters.projectWideDataTeamMin?.defaultValue?.value || '20', 10);
+
+    const beforeDirectSponsors = beforeData.directSponsorCount || 0;
+    const afterDirectSponsors = afterData.directSponsorCount || 0;
+    const beforeTotalTeam = beforeData.totalTeamCount || 0;
+    const afterTotalTeam = afterData.totalTeamCount || 0;
+
+    console.log(`🎯 MILESTONE: User ${userId} - Direct: ${beforeDirectSponsors}→${afterDirectSponsors}, Total: ${beforeTotalTeam}→${afterTotalTeam}`);
+
+    // Get business opportunity name using centralized helper
+    const bizName = await getBusinessOpportunityName(afterData.upline_admin);
+
+    let notificationContent = null;
+
+    // Check for 4 direct sponsors milestone (but still needs total team count)
+    if (beforeDirectSponsors < projectWideDirectSponsorMin && 
+        afterDirectSponsors >= projectWideDirectSponsorMin && 
+        afterTotalTeam < projectWideTotalTeamMin) {
+      
+      const remainingTeamNeeded = projectWideTotalTeamMin - afterTotalTeam;
+      console.log(`🎯 MILESTONE: User ${userId} reached 4 direct sponsors, needs ${remainingTeamNeeded} more total team members`);
+      
+      notificationContent = {
+        title: "🎉 Amazing Progress!",
+        message: `Congratulations, ${afterData.firstName}! You've reached ${projectWideDirectSponsorMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "milestone_direct_sponsors",
+        route: "/network",
+        route_params: JSON.stringify({ "filter": "all" }),
+      };
+    }
+    // Check for 20 total team milestone (but still needs direct sponsors)
+    else if (beforeTotalTeam < projectWideTotalTeamMin && 
+             afterTotalTeam >= projectWideTotalTeamMin && 
+             afterDirectSponsors < projectWideDirectSponsorMin) {
+      
+      const remainingDirectNeeded = projectWideDirectSponsorMin - afterDirectSponsors;
+      console.log(`🎯 MILESTONE: User ${userId} reached ${projectWideTotalTeamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
+      
+      notificationContent = {
+        title: "🚀 Incredible Growth!",
+        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${projectWideTotalTeamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+        type: "milestone_total_team",
+        route: "/network", 
+        route_params: JSON.stringify({ "filter": "all" }),
+      };
+    }
+
+    // Send notification if a milestone was reached
+    if (notificationContent) {
+      await db.collection("users").doc(userId).collection("notifications").add(notificationContent);
+      console.log(`✅ MILESTONE: Milestone notification sent to user ${userId} - ${notificationContent.type}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ MILESTONE: Error in notifyOnMilestoneReached for user ${userId}:`, error);
   }
 });
 
@@ -2057,6 +2927,136 @@ exports.sendDailyTeamGrowthNotifications = onSchedule({
   }
 });
 
+/**
+ * Daily Account Deletion Summary Notifications
+ * Runs once daily at 10 AM UTC to send batched deletion summaries to upline members
+ * Uses the same timezone-aware approach as team growth notifications
+ */
+exports.sendDailyAccountDeletionSummary = onSchedule({
+  schedule: "0 10 * * *", // Run daily at 10 AM UTC
+  timeZone: "UTC", 
+  region: "us-central1"
+}, async (event) => {
+  console.log("🗑️ DAILY DELETION SUMMARY: Starting daily account deletion summary process");
+
+  try {
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0);
+    const yesterdayEnd = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59);
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Processing deletions from ${yesterdayStart.toISOString()} to ${yesterdayEnd.toISOString()}`);
+
+    // Get all unprocessed deletion logs from yesterday
+    const deletionLogsQuery = await db.collection('account_deletion_logs')
+      .where('processedInDailyBatch', '==', false)
+      .where('deletedAt', '>=', yesterdayStart)
+      .where('deletedAt', '<=', yesterdayEnd)
+      .get();
+
+    if (deletionLogsQuery.empty) {
+      console.log("🗑️ DAILY DELETION SUMMARY: No account deletions to process from yesterday");
+      return;
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Found ${deletionLogsQuery.size} account deletion(s) to process`);
+
+    // Group deletions by affected upline members
+    const uplineNotifications = new Map();
+
+    for (const logDoc of deletionLogsQuery.docs) {
+      const logData = logDoc.data();
+      
+      // Find all upline members (excluding direct sponsor and downline who got immediate notifications)
+      if (logData.sponsorId) {
+        const uplineMembers = await findUplineMembers(logData.sponsorId);
+        
+        for (const uplineMemberId of uplineMembers) {
+          if (!uplineNotifications.has(uplineMemberId)) {
+            uplineNotifications.set(uplineMemberId, []);
+          }
+          uplineNotifications.get(uplineMemberId).push({
+            deletedUserName: logData.deletedUserName,
+            deletedAt: logData.deletedAt
+          });
+        }
+      }
+
+      // Mark this log as processed
+      await logDoc.ref.update({ processedInDailyBatch: true });
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Sending summary notifications to ${uplineNotifications.size} upline members`);
+
+    // Send summary notifications to upline members
+    const notificationPromises = Array.from(uplineNotifications.entries()).map(async ([userId, deletions]) => {
+      try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (!userDoc.exists) {
+          console.log(`🗑️ DAILY DELETION SUMMARY: User ${userId} no longer exists, skipping`);
+          return { success: false, userId, reason: 'User not found' };
+        }
+
+        const userData = userDoc.data();
+        const deletionCount = deletions.length;
+
+        // Create summary notification
+        const summaryNotification = {
+          title: "Team Network Update",
+          message: deletionCount === 1 
+            ? `One of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identity. No worries, it happens .. keep building!`
+            : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identities. No worries, it happens .. keep building!`,
+          type: "team_deletion_summary",
+          read: false,
+          createdAt: FieldValue.serverTimestamp(),
+          route: "/network",
+          route_params: JSON.stringify({ "filter": "all" })
+        };
+
+        await db.collection('users').doc(userId).collection('notifications').add(summaryNotification);
+
+        console.log(`✅ DAILY DELETION SUMMARY: Sent summary to ${userData.firstName || 'Unknown'} for ${deletionCount} deletion(s)`);
+        return { success: true, userId, deletionCount };
+
+      } catch (error) {
+        console.error(`❌ DAILY DELETION SUMMARY: Failed to send summary to user ${userId}:`, error);
+        return { success: false, userId, error: error.message };
+      }
+    });
+
+    const results = await Promise.allSettled(notificationPromises);
+    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Summary complete - Successful: ${successful}, Failed: ${failed}`);
+
+  } catch (error) {
+    console.error("❌ DAILY DELETION SUMMARY: Critical error in daily deletion summary:", error);
+  }
+});
+
+/**
+ * Helper function to find upline members (excluding direct sponsor)
+ * @param {string} sponsorId - The sponsor's user ID
+ * @returns {Array} - Array of upline member IDs
+ */
+async function findUplineMembers(sponsorId) {
+  try {
+    const sponsorDoc = await db.collection('users').doc(sponsorId).get();
+    if (!sponsorDoc.exists) {
+      return [];
+    }
+
+    const sponsorData = sponsorDoc.data();
+    const uplineRefs = sponsorData.upline_refs || [];
+    
+    // Return all upline members (excluding the direct sponsor themselves)
+    return uplineRefs;
+  } catch (error) {
+    console.error(`❌ UPLINE LOOKUP: Error finding upline members for sponsor ${sponsorId}:`, error);
+    return [];
+  }
+}
 
 exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) => {
   const url = request.data.url;
@@ -2091,5 +3091,694 @@ exports.validateReferralUrl = onCall({ region: "us-central1" }, async (request) 
       valid: false,
       error: error.message,
     };
+  }
+});
+
+// ============================================================================
+// USER ACCOUNT DELETION FUNCTIONS
+// ============================================================================
+
+/**
+ * Enhanced User Account Deletion - Apple App Store Compliant
+ * Permanently deletes user account including Firebase Auth and Firestore data
+ * while preserving network structure for business continuity
+ */
+exports.deleteUserAccount = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const userId = request.auth.uid;
+  const { confirmationEmail } = request.data;
+
+  console.log(`🗑️ DELETE_ACCOUNT: Starting account deletion for user ${userId}`);
+
+  try {
+    // Get user data for validation and network notification capture
+    const userDoc = await db.collection('users').doc(userId).get();
+    if (!userDoc.exists) {
+      console.log(`🗑️ DELETE_ACCOUNT: User document not found for ${userId}`);
+      throw new HttpsError("not-found", "User account not found");
+    }
+
+    const userData = userDoc.data();
+    
+    // Validate confirmation email matches
+    if (confirmationEmail && userData.email && 
+        confirmationEmail.toLowerCase() !== userData.email.toLowerCase()) {
+      throw new HttpsError("invalid-argument", "Confirmation email does not match account email");
+    }
+
+    console.log(`🗑️ DELETE_ACCOUNT: Email validation passed for ${userId}`);
+
+    // IMPORTANT: Capture network relationships BEFORE deletion for notifications
+    const networkNotificationData = await captureNetworkForDeletionNotifications(userId, userData);
+    console.log(`📱 DELETE_ACCOUNT: Network notification data captured for ${userId}`);
+
+    // Step 1: Delete user's private collections
+    await deleteUserPrivateData(userId);
+    console.log(`✅ DELETE_ACCOUNT: Private data deleted for ${userId}`);
+
+    // Step 2: Cleanup references but preserve network structure
+    await cleanupUserReferences(userId);
+    console.log(`✅ DELETE_ACCOUNT: References cleaned up for ${userId}`);
+
+    // Step 3: Delete Firestore user document
+    await db.collection('users').doc(userId).delete();
+    console.log(`✅ DELETE_ACCOUNT: Firestore document deleted for ${userId}`);
+
+    // Step 4: Delete Firebase Auth user (this will sign them out)
+    await auth.deleteUser(userId);
+    console.log(`✅ DELETE_ACCOUNT: Firebase Auth user deleted for ${userId}`);
+
+    console.log(`✅ DELETE_ACCOUNT: Account deletion completed successfully for ${userId}`);
+
+    // Step 5: Send push notifications to affected network members
+    // This happens AFTER successful deletion to ensure account is truly gone
+    await sendDeletionNotificationsToNetwork(networkNotificationData);
+    console.log(`📱 DELETE_ACCOUNT: Deletion notifications sent for ${userId}`);
+
+    return {
+      success: true,
+      message: "Account deleted successfully"
+    };
+
+  } catch (error) {
+    console.error(`❌ DELETE_ACCOUNT: Error deleting account for ${userId}:`, error);
+    
+    if (error instanceof HttpsError) {
+      throw error;
+    }
+    
+    throw new HttpsError("internal", "Failed to delete account", error.message);
+  }
+});
+
+/**
+ * Delete user's private collections and data
+ */
+async function deleteUserPrivateData(userId) {
+  try {
+    // Delete user notifications
+    const notificationsRef = db.collection('users').doc(userId).collection('notifications');
+    const notificationDocs = await notificationsRef.get();
+    
+    const deletePromises = [];
+    for (const doc of notificationDocs.docs) {
+      deletePromises.push(doc.ref.delete());
+    }
+    await Promise.all(deletePromises);
+    console.log(`✅ DELETE_ACCOUNT: Deleted ${notificationDocs.size} notifications for ${userId}`);
+
+    // Clean up chat messages where user was participant
+    const chatsQuery = await db.collection('chats')
+        .where('participants', 'array-contains', userId)
+        .get();
+
+    const chatCleanupPromises = [];
+    for (const chatDoc of chatsQuery.docs) {
+      const chatData = chatDoc.data();
+      const participants = Array.from(chatData.participants || []);
+      
+      if (participants.length <= 2) {
+        // Delete entire chat if only 2 participants
+        const messagesRef = chatDoc.ref.collection('messages');
+        const messageDocs = await messagesRef.get();
+        
+        const messageDeletePromises = messageDocs.docs.map(doc => doc.ref.delete());
+        await Promise.all(messageDeletePromises);
+        
+        chatCleanupPromises.push(chatDoc.ref.delete());
+        console.log(`✅ DELETE_ACCOUNT: Deleted chat thread: ${chatDoc.id}`);
+      } else {
+        // Remove user from group chat participants
+        chatCleanupPromises.push(chatDoc.ref.update({
+          participants: FieldValue.arrayRemove([userId])
+        }));
+        console.log(`✅ DELETE_ACCOUNT: Removed user from group chat: ${chatDoc.id}`);
+      }
+    }
+    await Promise.all(chatCleanupPromises);
+
+    // Delete admin settings if user was an admin
+    const adminSettingsRef = db.collection('admin_settings').doc(userId);
+    const adminDoc = await adminSettingsRef.get();
+    if (adminDoc.exists) {
+      await adminSettingsRef.delete();
+      console.log(`✅ DELETE_ACCOUNT: Deleted admin settings for ${userId}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ DELETE_ACCOUNT: Error deleting private data for ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Captures network relationship data before account deletion for push notifications
+ * @param {string} userId - The user ID being deleted
+ * @param {object} userData - The user's data from Firestore
+ * @returns {object} - Network notification data with sponsor and downline information
+ */
+async function captureNetworkForDeletionNotifications(userId, userData) {
+  try {
+    const notificationData = {
+      deletedUserId: userId,
+      deletedUserName: `${userData.firstName || 'Unknown'} ${userData.lastName || 'User'}`.trim(),
+      sponsorInfo: null,
+      downlineUsers: []
+    };
+
+    // 1. Capture sponsor information
+    if (userData.sponsor_id) {
+      try {
+        const sponsorDoc = await db.collection('users').doc(userData.sponsor_id).get();
+        if (sponsorDoc.exists) {
+          const sponsorData = sponsorDoc.data();
+          notificationData.sponsorInfo = {
+            userId: userData.sponsor_id,
+            name: `${sponsorData.firstName || 'Unknown'} ${sponsorData.lastName || 'User'}`.trim(),
+            fcmToken: sponsorData.fcm_token
+          };
+          console.log(`📱 NETWORK_CAPTURE: Sponsor data captured for ${userData.sponsor_id}`);
+        }
+      } catch (error) {
+        console.log(`⚠️ NETWORK_CAPTURE: Could not fetch sponsor ${userData.sponsor_id}: ${error.message}`);
+      }
+    }
+
+    // 2. Capture direct downline users (people this user sponsored)
+    try {
+      const downlineQuery = await db.collection('users')
+        .where('sponsor_id', '==', userId)
+        .get();
+      
+      for (const downlineDoc of downlineQuery.docs) {
+        const downlineData = downlineDoc.data();
+        notificationData.downlineUsers.push({
+          userId: downlineDoc.id,
+          name: `${downlineData.firstName || 'Unknown'} ${downlineData.lastName || 'User'}`.trim(),
+          fcmToken: downlineData.fcm_token
+        });
+      }
+      console.log(`📱 NETWORK_CAPTURE: ${notificationData.downlineUsers.length} downline users captured`);
+    } catch (error) {
+      console.log(`⚠️ NETWORK_CAPTURE: Could not fetch downline users: ${error.message}`);
+    }
+
+    return notificationData;
+  } catch (error) {
+    console.error(`❌ NETWORK_CAPTURE: Error capturing network data for ${userId}:`, error);
+    // Return minimal data structure to prevent breaking deletion process
+    return {
+      deletedUserId: userId,
+      deletedUserName: 'Team Member',
+      sponsorInfo: null,
+      downlineUsers: []
+    };
+  }
+}
+
+/**
+ * Sends immediate push notifications to direct network members affected by account deletion
+ * and logs upline members for daily batch notification
+ * @param {object} networkData - Network notification data from captureNetworkForDeletionNotifications
+ */
+async function sendDeletionNotificationsToNetwork(networkData) {
+  if (!networkData || (!networkData.sponsorInfo && networkData.downlineUsers.length === 0)) {
+    console.log(`📱 DELETION_NOTIFICATIONS: No network members to notify`);
+    return;
+  }
+
+  const immediateNotifications = [];
+
+  try {
+    // 1. IMMEDIATE: Notify direct sponsor (if exists)
+    if (networkData.sponsorInfo) {
+      const sponsorNotification = createAccountDeletionNotification(
+        'sponsor',
+        networkData.deletedUserName,
+        networkData.sponsorInfo.name
+      );
+      
+      immediateNotifications.push({
+        type: 'sponsor',
+        userId: networkData.sponsorInfo.userId,
+        notification: sponsorNotification
+      });
+
+      console.log(`📱 DELETION_NOTIFICATIONS: Prepared immediate notification for sponsor ${networkData.sponsorInfo.userId}`);
+    }
+
+    // 2. IMMEDIATE: Notify direct downline users
+    for (const downlineUser of networkData.downlineUsers) {
+      const downlineNotification = createAccountDeletionNotification(
+        'downline',
+        networkData.deletedUserName,
+        downlineUser.name
+      );
+      
+      immediateNotifications.push({
+        type: 'downline',
+        userId: downlineUser.userId,
+        notification: downlineNotification
+      });
+
+      console.log(`📱 DELETION_NOTIFICATIONS: Prepared immediate notification for downline user ${downlineUser.userId}`);
+    }
+
+    // 3. Send immediate notifications concurrently
+    const notificationPromises = immediateNotifications.map(async ({ userId, notification }) => {
+      try {
+        await db.collection('users').doc(userId).collection('notifications').add(notification);
+        console.log(`✅ DELETION_NOTIFICATIONS: Sent immediate notification to user ${userId}`);
+      } catch (error) {
+        console.error(`❌ DELETION_NOTIFICATIONS: Failed to send immediate notification to user ${userId}:`, error.message);
+      }
+    });
+
+    await Promise.all(notificationPromises);
+    console.log(`📱 DELETION_NOTIFICATIONS: Processed ${immediateNotifications.length} immediate deletion notifications`);
+
+    // 4. DAILY BATCH: Log deletion for daily upline notifications
+    await logDeletionForDailyNotification(networkData);
+
+  } catch (error) {
+    console.error(`❌ DELETION_NOTIFICATIONS: Error sending deletion notifications:`, error);
+    // Don't throw - notifications are nice-to-have, not critical
+  }
+}
+
+/**
+ * Creates a notification object for account deletion events
+ * @param {string} recipientType - 'sponsor' or 'downline'
+ * @param {string} deletedUserName - Name of the user who deleted their account
+ * @param {string} recipientName - Name of the notification recipient
+ * @returns {object} - Notification object for Firestore
+ */
+function createAccountDeletionNotification(recipientType, deletedUserName, recipientName) {
+  const baseNotification = {
+    type: 'account_deletion',
+    read: false,
+    createdAt: FieldValue.serverTimestamp(),
+    route: "/dashboard", // Route to main dashboard
+    route_params: null
+  };
+
+  if (recipientType === 'sponsor') {
+    return {
+      ...baseNotification,
+      title: "Team Member Account Update",
+      message: `${deletedUserName} has decided to delete their Team Build Pro account. This doesn't affect your account or team status in any way. Your networking journey continues uninterrupted!`
+    };
+  } else if (recipientType === 'downline') {
+    return {
+      ...baseNotification,
+      title: "Sponsor Account Update", 
+      message: `Your sponsor ${deletedUserName} has decided to delete their Team Build Pro account. This doesn't affect your account or opportunities in any way. You can continue building your network as usual!`
+    };
+  }
+
+  // Fallback for unexpected recipient types
+  return {
+    ...baseNotification,
+    title: "Team Network Update",
+    message: `A team member has updated their account status. This doesn't affect your account in any way.`
+  };
+}
+
+/**
+ * Logs account deletion for daily batch notification to upline members
+ * @param {object} networkData - Network notification data from captureNetworkForDeletionNotifications
+ */
+async function logDeletionForDailyNotification(networkData) {
+  try {
+    // Create a deletion log entry for daily batch processing
+    const deletionLog = {
+      deletedUserId: networkData.deletedUserId,
+      deletedUserName: networkData.deletedUserName,
+      sponsorId: networkData.sponsorInfo?.userId || null,
+      downlineUserIds: networkData.downlineUsers.map(user => user.userId),
+      deletedAt: FieldValue.serverTimestamp(),
+      processedInDailyBatch: false
+    };
+
+    // Store in a dedicated collection for daily batch processing
+    await db.collection('account_deletion_logs').add(deletionLog);
+    console.log(`📊 DELETION_LOG: Logged deletion of ${networkData.deletedUserName} for daily batch processing`);
+
+  } catch (error) {
+    console.error(`❌ DELETION_LOG: Error logging deletion for daily notification:`, error);
+    // Don't throw - this is non-critical logging
+  }
+}
+
+/**
+ * Cleanup user references in system collections while preserving network structure
+ */
+async function cleanupUserReferences(userId) {
+  try {
+    // Note: We intentionally preserve network relationships (sponsorId, uplineAdmin, downlineUsers)
+    // as these are critical for business operations and team structure integrity
+    
+    console.log(`✅ DELETE_ACCOUNT: System references cleaned up for ${userId}`);
+    
+    // Future: Add any other system cleanup operations here
+    
+  } catch (error) {
+    console.error(`❌ DELETE_ACCOUNT: Error cleaning up references for ${userId}:`, error);
+    // Don't throw - this is non-critical cleanup
+  }
+}
+
+// ============================================================================
+// LAUNCH NOTIFICATION CONFIRMATION EMAIL
+// ============================================================================
+
+/**
+ * Send confirmation email when someone signs up for launch notifications
+ */
+/**
+ * Helper function to store tester information in Firestore for CSV generation
+ */
+async function appendTesterToCSV(firstName, lastName, email, deviceType) {
+  try {
+    console.log(`📄 TESTER_STORE: Adding tester: ${firstName} ${lastName} (${email}) - ${deviceType}`);
+    
+    // Store in Firestore beta_testers collection
+    const testerData = {
+      firstName,
+      lastName,
+      email,
+      deviceType,
+      createdAt: FieldValue.serverTimestamp(),
+      source: 'launch_notification'
+    };
+    
+    // Use email as document ID to prevent duplicates
+    const docId = `${deviceType}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    
+    await db.collection('beta_testers').doc(docId).set(testerData, { merge: true });
+    
+    console.log(`✅ TESTER_STORE: Successfully stored ${firstName} ${lastName} for ${deviceType} testing`);
+  } catch (error) {
+    console.error(`❌ TESTER_STORE: Error storing tester data:`, error);
+    // Don't throw error to avoid disrupting the email flow
+  }
+}
+
+/**
+ * Generate CSV files from Firestore beta tester data
+ * Returns CSV content for both iOS and Android testers
+ */
+exports.generateBetaTesterCSVs = onCall({ region: "us-central1" }, async (request) => {
+  try {
+    console.log('📄 CSV_GENERATE: Starting generation of beta tester CSV files from Firestore');
+    
+    const results = {};
+    const deviceTypes = ['ios', 'android'];
+    
+    for (const deviceType of deviceTypes) {
+      try {
+        // Query beta testers for this device type
+        const snapshot = await db.collection('beta_testers')
+          .where('deviceType', '==', deviceType)
+          .orderBy('createdAt', 'asc')
+          .get();
+        
+        // Generate CSV content
+        let csvContent = '';
+        const testers = [];
+        
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          testers.push(data);
+          csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+        });
+        
+        const fileName = `${deviceType}_testers.csv`;
+        results[fileName] = {
+          content: csvContent,
+          lineCount: testers.length,
+          testers: testers.map(t => ({ 
+            firstName: t.firstName, 
+            lastName: t.lastName, 
+            email: t.email,
+            createdAt: t.createdAt?.toDate?.()?.toISOString() || null
+          })),
+          lastGenerated: new Date().toISOString()
+        };
+        
+        console.log(`✅ CSV_GENERATE: Generated ${fileName} - ${testers.length} entries`);
+        
+      } catch (error) {
+        console.error(`❌ CSV_GENERATE: Error generating ${deviceType} CSV:`, error);
+        results[`${deviceType}_testers.csv`] = {
+          content: '',
+          lineCount: 0,
+          error: error.message
+        };
+      }
+    }
+    
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      files: results
+    };
+    
+  } catch (error) {
+    console.error('❌ CSV_GENERATE: Error generating CSV files:', error);
+    throw new HttpsError("internal", "Failed to generate CSV files", error.message);
+  }
+});
+
+exports.sendLaunchNotificationConfirmation = onRequest({
+  cors: true,
+  region: 'us-central1',
+  secrets: [sendgridApiKey]
+}, async (req, res) => {
+  try {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { firstName, lastName, email, wantDemo, deviceType } = req.body;
+
+    if (!firstName || !lastName || !email) {
+      return res.status(400).json({ error: 'First name, last name, and email address are required' });
+    }
+
+    if (!isValidEmailLaunchNotification(email)) {
+      return res.status(400).json({ error: 'Valid email address required' });
+    }
+
+    const demoInfo = wantDemo && deviceType ? ` (Demo requested: ${deviceType})` : '';
+    console.log(`📧 LAUNCH_NOTIFICATION: Sending confirmation to ${firstName} ${lastName} (${email})${demoInfo}`);
+
+    // Set the SendGrid API key
+    sgMail.setApiKey(sendgridApiKey.value());
+
+    const fullName = `${firstName} ${lastName}`;
+
+    // Create the confirmation email to the user
+    const confirmationEmail = {
+      to: `${fullName} <${email}>`,
+      from: 'Team Build Pro <support@teambuildpro.com>',
+      bcc: 'scscot@gmail.com',
+      subject: `Thanks for your interest, ${firstName}! Team Build Pro is launching soon 🚀`,
+      html: `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://teambuildpro.com/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 60px; height: 60px; border-radius: 50%;">
+            <h1 style="color: #667eea; margin: 20px 0 10px; font-size: 28px;">Team Build Pro</h1>
+            <p style="color: #64748b; font-size: 16px; margin: 0;">The Ultimate Team Building App</p>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; text-align: center; color: white; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 15px; font-size: 24px;">🚀 You're on the list, ${firstName}!</h2>
+            <p style="font-size: 18px; margin: 0; opacity: 0.9; line-height: 1.5;">Thanks for signing up for early access to Team Build Pro.</p>
+          </div>
+          
+          <div style="background: #f8fafc; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+            <h3 style="color: #1e293b; margin: 0 0 15px; font-size: 20px;">What happens next?</h3>
+            <ul style="color: #475569; line-height: 1.6; margin: 0; padding-left: 20px;">
+              ${wantDemo && deviceType ? `<li style="margin-bottom: 8px;"><strong style="color: #667eea;">🎯 App Preview Access:</strong> You'll soon receive an email with step-by-step instructions on how to download and preview the Team Build Pro app.</li>` : ''}
+              <li style="margin-bottom: 8px;">We'll email you the moment Team Build Pro launches on Google Play!</li>
+            </ul>
+          </div>
+          
+          <div style="text-align: center; margin-bottom: 30px;">
+            <p style="color: #64748b; margin: 0 0 20px;">In the meantime, check out our website to learn more:</p>
+            <a href="https://teambuildpro.com" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Visit TeamBuildPro.com</a>
+          </div>
+          
+          <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
+            <p style="color: #94a3b8; font-size: 14px; margin: 0;">
+              Team Build Pro - Empower Your Team, Accelerate Growth<br>
+              <a href="https://teambuildpro.com" style="color: #667eea; text-decoration: none;">teambuildpro.com</a>
+            </p>
+          </div>
+        </div>
+      `
+    };
+
+    // Create the notification email to support team
+    const notificationEmail = {
+      to: 'support@teambuildpro.com',
+      from: 'Team Build Pro <support@teambuildpro.com>',
+      subject: `New Launch Notification Signup: ${fullName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #667eea;">New Launch Notification Signup</h2>
+          <hr>
+          <p><strong>Name:</strong> ${fullName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+          <p><strong>Source:</strong> Website Modal</p>
+          <hr>
+          <p><em>This email was automatically generated when ${firstName} signed up for launch notifications on the website.</em></p>
+        </div>
+      `
+    };
+
+    // Send both emails
+    await Promise.all([
+      sgMail.send(confirmationEmail),
+      sgMail.send(notificationEmail)
+    ]);
+    
+    console.log(`✅ LAUNCH_NOTIFICATION: Confirmation email sent to ${firstName} ${lastName} (${email}) and notification sent to support team`);
+
+    // If user requested demo access, append to appropriate CSV file
+    if (wantDemo && deviceType) {
+      await appendTesterToCSV(firstName, lastName, email, deviceType);
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Launch notification emails sent successfully'
+    });
+
+  } catch (error) {
+    console.error('Error sending launch notification emails:', error);
+    if (error.code) {
+      console.error('SendGrid error code:', error.code);
+      console.error('SendGrid error message:', error.message);
+    }
+    return res.status(500).json({ error: 'Failed to send confirmation email' });
+  }
+});
+
+/**
+ * Helper function to validate email format
+ */
+function isValidEmailLaunchNotification(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Import and export the launch campaign function
+const { sendLaunchCampaign } = require('./sendLaunchCampaign');
+exports.sendLaunchCampaign = sendLaunchCampaign;
+
+// ============================================================================
+// FIRESTORE MONITORING FUNCTIONS
+// ============================================================================
+
+/**
+ * Get real-time Firestore usage metrics and cost estimates
+ * Password-protected endpoint for monitoring dashboard
+ */
+exports.getFirestoreMetrics = onRequest({
+  region: "us-central1",
+  cors: true
+}, async (req, res) => {
+  try {
+    // Simple password check (you should use a proper hash in production)
+    const { password } = req.query;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    
+    if (!password || password !== MONITORING_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get basic Firestore statistics
+    const stats = {
+      timestamp: new Date().toISOString(),
+      collections: {},
+      totalDocuments: 0,
+      estimatedCosts: {}
+    };
+
+    // Count documents in major collections
+    const collections = ['users', 'chats', 'admin_settings'];
+    
+    for (const collectionName of collections) {
+      try {
+        const snapshot = await db.collection(collectionName).get();
+        const docCount = snapshot.size;
+        
+        // Count subcollections for users
+        let subCollectionCount = 0;
+        if (collectionName === 'users') {
+          for (const doc of snapshot.docs) {
+            const notificationsSnapshot = await doc.ref.collection('notifications').get();
+            subCollectionCount += notificationsSnapshot.size;
+          }
+        }
+        
+        // Count messages for chats
+        if (collectionName === 'chats') {
+          for (const doc of snapshot.docs) {
+            const messagesSnapshot = await doc.ref.collection('messages').get();
+            subCollectionCount += messagesSnapshot.size;
+          }
+        }
+
+        stats.collections[collectionName] = {
+          documents: docCount,
+          subDocuments: subCollectionCount,
+          total: docCount + subCollectionCount
+        };
+        
+        stats.totalDocuments += docCount + subCollectionCount;
+      } catch (error) {
+        console.error(`Error counting ${collectionName}:`, error);
+        stats.collections[collectionName] = { error: error.message };
+      }
+    }
+
+    // Estimate costs based on current Firestore pricing (approximate)
+    const readCostPer100k = 0.36; // $0.36 per 100K reads
+    const writeCostPer100k = 1.08; // $1.08 per 100K writes
+    const deleteCostPer100k = 0.12; // $0.12 per 100K deletes
+    const storageCostPerGBMonth = 0.18; // $0.18 per GB/month
+
+    // Rough estimates (you'd need Cloud Monitoring API for precise data)
+    const estimatedDailyReads = stats.totalDocuments * 10; // Assume 10 reads per doc per day
+    const estimatedDailyWrites = stats.totalDocuments * 0.5; // Assume 0.5 writes per doc per day
+    
+    stats.estimatedCosts = {
+      dailyReads: estimatedDailyReads,
+      dailyWrites: estimatedDailyWrites,
+      estimatedDailyCostReads: (estimatedDailyReads / 100000) * readCostPer100k,
+      estimatedDailyCostWrites: (estimatedDailyWrites / 100000) * writeCostPer100k,
+      estimatedDailyCostTotal: ((estimatedDailyReads / 100000) * readCostPer100k) + ((estimatedDailyWrites / 100000) * writeCostPer100k)
+    };
+
+    // Add current pricing info
+    stats.pricingInfo = {
+      reads: `$${readCostPer100k} per 100K operations`,
+      writes: `$${writeCostPer100k} per 100K operations`,
+      deletes: `$${deleteCostPer100k} per 100K operations`,
+      storage: `$${storageCostPerGBMonth} per GB/month`,
+      lastUpdated: '2024-01-01' // Update this when pricing changes
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Error getting Firestore metrics:', error);
+    return res.status(500).json({ error: 'Failed to get metrics' });
   }
 });

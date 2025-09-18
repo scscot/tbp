@@ -13,45 +13,46 @@ class SimpleRAG {
 
   async loadFAQ() {
     if (this.faqData) return this.faqData;
-    
+
     // Load from Firestore collection
     const snapshot = await admin.firestore().collection('faq').get();
-    this.faqData = snapshot.docs.map(doc => ({
+    this.faqData = snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
-    
+
     return this.faqData;
   }
 
   async getRagSnippets(query, k = 3) {
     const faqs = await this.loadFAQ();
     const queryLower = query.toLowerCase();
-    
+
     // Simple keyword matching with scoring
-    const scored = faqs.map(faq => {
+    const scored = faqs.map((faq) => {
       let score = 0;
-      const searchText = `${faq.question} ${faq.answer} ${faq.keywords?.join(' ') || ''}`.toLowerCase();
-      
+      const searchText =
+        `${faq.question} ${faq.answer} ${faq.keywords?.join(' ') || ''}`.toLowerCase();
+
       // Keyword matching score
       const queryWords = queryLower.split(/\s+/);
-      queryWords.forEach(word => {
+      queryWords.forEach((word) => {
         if (word.length > 2 && searchText.includes(word)) {
           score += searchText.split(word).length - 1;
         }
       });
-      
+
       return { ...faq, score };
     });
-    
+
     // Return top-k, sanitized to plain text
     return scored
       .sort((a, b) => b.score - a.score)
       .slice(0, k)
-      .filter(item => item.score > 0)
-      .map(item => ({
+      .filter((item) => item.score > 0)
+      .map((item) => ({
         id: item.id,
-        text: `Q: ${item.question}\nA: ${item.answer.replace(/[[\]()]/g, '')}` // Strip markdown links
+        text: `Q: ${item.question}\nA: ${item.answer.replace(/[[\]()]/g, '')}`, // Strip markdown links
       }));
   }
 }
@@ -64,62 +65,72 @@ async function checkUsageLimits(userId) {
   const today = now.toISOString().split('T')[0];
   const currentHour = now.getHours();
   const hourKey = `${today}_${currentHour}`;
-  
+
   // Check daily limits
-  const dailyDoc = await admin.firestore()
+  const dailyDoc = await admin
+    .firestore()
     .collection('chat_usage')
     .doc(`${userId}_daily_${today}`)
     .get();
-    
+
   const dailyData = dailyDoc.exists ? dailyDoc.data() : { messagesCount: 0, tokensUsed: 0 };
-  
+
   // Check hourly limits
-  const hourlyDoc = await admin.firestore()
+  const hourlyDoc = await admin
+    .firestore()
     .collection('chat_usage')
     .doc(`${userId}_hourly_${hourKey}`)
     .get();
-    
+
   const hourlyData = hourlyDoc.exists ? hourlyDoc.data() : { messagesCount: 0, tokensUsed: 0 };
-  
+
   // Usage limits
   const DAILY_MESSAGE_LIMIT = 50; // 50 messages per day
   const HOURLY_MESSAGE_LIMIT = 10; // 10 messages per hour
   const DAILY_TOKEN_LIMIT = 25000; // 25k tokens per day
-  
+
   if (dailyData.messagesCount >= DAILY_MESSAGE_LIMIT) {
     throw new Error('Daily message limit reached. Try again tomorrow.');
   }
-  
+
   if (hourlyData.messagesCount >= HOURLY_MESSAGE_LIMIT) {
     throw new Error('Hourly message limit reached. Please wait and try again.');
   }
-  
+
   if (dailyData.tokensUsed >= DAILY_TOKEN_LIMIT) {
     throw new Error('Daily usage limit reached. Try again tomorrow.');
   }
-  
+
   return { dailyData, hourlyData, today, hourKey };
 }
 
 async function updateUsage(userId, tokensUsed, today, hourKey) {
   const batch = admin.firestore().batch();
-  
+
   // Update daily usage
   const dailyRef = admin.firestore().collection('chat_usage').doc(`${userId}_daily_${today}`);
-  batch.set(dailyRef, {
-    messagesCount: admin.firestore.FieldValue.increment(1),
-    tokensUsed: admin.firestore.FieldValue.increment(tokensUsed),
-    lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
-  
+  batch.set(
+    dailyRef,
+    {
+      messagesCount: admin.firestore.FieldValue.increment(1),
+      tokensUsed: admin.firestore.FieldValue.increment(tokensUsed),
+      lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    { merge: true }
+  );
+
   // Update hourly usage
   const hourlyRef = admin.firestore().collection('chat_usage').doc(`${userId}_hourly_${hourKey}`);
-  batch.set(hourlyRef, {
-    messagesCount: admin.firestore.FieldValue.increment(1),
-    tokensUsed: admin.firestore.FieldValue.increment(tokensUsed),
-    lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
-  
+  batch.set(
+    hourlyRef,
+    {
+      messagesCount: admin.firestore.FieldValue.increment(1),
+      tokensUsed: admin.firestore.FieldValue.increment(tokensUsed),
+      lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    { merge: true }
+  );
+
   await batch.commit();
 }
 
@@ -128,10 +139,11 @@ function buildUserContext(userData) {
     directSponsors: userData.directSponsorCount || 0,
     totalTeam: userData.totalTeamCount || 0,
     isQualified: !!userData.qualifiedDate,
-    accountAgeDays: userData.createdDate ? 
-      Math.floor((Date.now() - userData.createdDate.toMillis()) / 86400000) : null,
+    accountAgeDays: userData.createdDate
+      ? Math.floor((Date.now() - userData.createdDate.toMillis()) / 86400000)
+      : null,
     subscriptionStatus: userData.subscriptionStatus || 'free',
-    lastActiveDate: userData.lastActiveDate?.toDate?.()?.toISOString?.()?.split('T')[0] || null
+    lastActiveDate: userData.lastActiveDate?.toDate?.()?.toISOString?.()?.split('T')[0] || null,
   };
 }
 
@@ -187,127 +199,140 @@ EXAMPLE WRONG FORMAT:
 CONTEXT: Team Build Pro is a SaaS tool ($4.99/month) that helps professionals build teams BEFORE joining business opportunities. It's NOT an MLM - users pay us, we don't pay them.`;
 }
 
-exports.chatbot = onRequest({
-  region: 'us-central1',
-  minInstances: 1,
-  secrets: [OPENAI_API_KEY],
-  timeoutSeconds: 60,
-  memory: '512MiB'
-}, async (req, res) => {
-  // CORS headers
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).send('');
-  }
-  
-  if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
-  }
+exports.chatbot = onRequest(
+  {
+    region: 'us-central1',
+    minInstances: 1,
+    secrets: [OPENAI_API_KEY],
+    timeoutSeconds: 60,
+    memory: '512MiB',
+  },
+  async (req, res) => {
+    // CORS headers
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  try {
-    const { message, userId, threadId } = req.body || {};
-    
-    if (!userId || !message) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (req.method === 'OPTIONS') {
+      return res.status(200).send('');
     }
 
-    // Check usage limits
-    const { dailyData, hourlyData, today, hourKey } = await checkUsageLimits(userId);
-
-    // Get user context
-    const userDoc = await admin.firestore().collection('users').doc(userId).get();
-    const userData = userDoc.exists ? userDoc.data() : {};
-    const userContext = buildUserContext(userData);
-
-    // Retrieve FAQ snippets
-    const snippets = await ragEngine.getRagSnippets(message, 3);
-
-    // Build conversation context
-    const systemPrompt = buildSystemPrompt();
-    const userPrompt = [
-      `User message: ${message}`,
-      `User context: ${JSON.stringify(userContext)}`,
-      `Relevant FAQ snippets:`,
-      ...snippets.map((s, i) => `[${i + 1}] ${s.text}`),
-      ``,
-      `Provide a helpful response. If suggesting an app action, include JSON route.`
-    ].join('\n');
-
-    // Initialize OpenAI
-    const openai = new OpenAI({
-      apiKey: OPENAI_API_KEY.value()
-    });
-
-    // Setup streaming
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
-    let totalTokens = 0;
-    let responseText = '';
+    if (req.method !== 'POST') {
+      return res.status(405).send('Method Not Allowed');
+    }
 
     try {
-      const stream = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        stream: true,
-        max_tokens: 500,
-        temperature: 0.7
-      });
+      const { message, userId, threadId } = req.body || {};
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || '';
-        if (content) {
-          responseText += content;
-          res.write(`data: ${JSON.stringify({ type: 'content', data: content })}\n\n`);
-        }
+      if (!userId || !message) {
+        return res.status(400).json({ error: 'Missing required fields' });
       }
 
-      // Estimate token usage (rough approximation)
-      totalTokens = Math.ceil((systemPrompt.length + userPrompt.length + responseText.length) / 4);
+      // Check usage limits
+      const {
+        dailyData: _dailyData,
+        hourlyData: _hourlyData,
+        today,
+        hourKey,
+      } = await checkUsageLimits(userId);
 
-      // Send completion signal
-      res.write(`data: ${JSON.stringify({ type: 'done', tokens: totalTokens })}\n\n`);
+      // Get user context
+      const userDoc = await admin.firestore().collection('users').doc(userId).get();
+      const userData = userDoc.exists ? userDoc.data() : {};
+      const userContext = buildUserContext(userData);
 
-      // Update usage tracking
-      await updateUsage(userId, totalTokens, today, hourKey);
+      // Retrieve FAQ snippets
+      const snippets = await ragEngine.getRagSnippets(message, 3);
 
-      // Log interaction
-      await admin.firestore().collection('chat_logs').add({
-        userId,
-        threadId: threadId || 'default',
-        message: message.substring(0, 200), // Truncate for privacy
-        responseLength: responseText.length,
-        tokensUsed: totalTokens,
-        snippetIds: snippets.map(s => s.id),
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        userContext: {
-          directSponsors: userContext.directSponsors,
-          totalTeam: userContext.totalTeam,
-          isQualified: userContext.isQualified
-        }
+      // Build conversation context
+      const systemPrompt = buildSystemPrompt();
+      const userPrompt = [
+        `User message: ${message}`,
+        `User context: ${JSON.stringify(userContext)}`,
+        `Relevant FAQ snippets:`,
+        ...snippets.map((s, i) => `[${i + 1}] ${s.text}`),
+        ``,
+        `Provide a helpful response. If suggesting an app action, include JSON route.`,
+      ].join('\n');
+
+      // Initialize OpenAI
+      const openai = new OpenAI({
+        apiKey: OPENAI_API_KEY.value(),
       });
 
-    } catch (openaiError) {
-      console.error('OpenAI Error:', openaiError);
-      res.write(`data: ${JSON.stringify({ type: 'error', message: 'Sorry, I encountered an error. Please try again.' })}\n\n`);
-    }
+      // Setup streaming
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
 
-    res.end();
+      let totalTokens = 0;
+      let responseText = '';
 
-  } catch (error) {
-    console.error('Chatbot Error:', error);
-    
-    if (error.message.includes('limit')) {
-      return res.status(429).json({ error: error.message });
+      try {
+        const stream = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          stream: true,
+          max_tokens: 500,
+          temperature: 0.7,
+        });
+
+        for await (const chunk of stream) {
+          const content = chunk.choices[0]?.delta?.content || '';
+          if (content) {
+            responseText += content;
+            res.write(`data: ${JSON.stringify({ type: 'content', data: content })}\n\n`);
+          }
+        }
+
+        // Estimate token usage (rough approximation)
+        totalTokens = Math.ceil(
+          (systemPrompt.length + userPrompt.length + responseText.length) / 4
+        );
+
+        // Send completion signal
+        res.write(`data: ${JSON.stringify({ type: 'done', tokens: totalTokens })}\n\n`);
+
+        // Update usage tracking
+        await updateUsage(userId, totalTokens, today, hourKey);
+
+        // Log interaction
+        await admin
+          .firestore()
+          .collection('chat_logs')
+          .add({
+            userId,
+            threadId: threadId || 'default',
+            message: message.substring(0, 200), // Truncate for privacy
+            responseLength: responseText.length,
+            tokensUsed: totalTokens,
+            snippetIds: snippets.map((s) => s.id),
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            userContext: {
+              directSponsors: userContext.directSponsors,
+              totalTeam: userContext.totalTeam,
+              isQualified: userContext.isQualified,
+            },
+          });
+      } catch (openaiError) {
+        console.error('OpenAI Error:', openaiError);
+        res.write(
+          `data: ${JSON.stringify({ type: 'error', message: 'Sorry, I encountered an error. Please try again.' })}\n\n`
+        );
+      }
+
+      res.end();
+    } catch (error) {
+      console.error('Chatbot Error:', error);
+
+      if (error.message.includes('limit')) {
+        return res.status(429).json({ error: error.message });
+      }
+
+      return res.status(500).json({ error: 'Internal server error' });
     }
-    
-    return res.status(500).json({ error: 'Internal server error' });
   }
-});
+);

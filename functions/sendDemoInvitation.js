@@ -1,4 +1,4 @@
-const { onRequest } = require("firebase-functions/v2/https");
+const { onRequest } = require('firebase-functions/v2/https');
 const admin = require('firebase-admin');
 const { defineSecret } = require('firebase-functions/params');
 const sgMail = require('@sendgrid/mail');
@@ -10,67 +10,71 @@ if (!admin.apps.length) {
 // Define your secrets - reusing existing SendGrid configuration
 const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
 
-exports.sendDemoInvitation = onRequest({ 
-  cors: true, 
-  secrets: [sendgridApiKey] 
-}, async (req, res) => {
-  if (req.method === 'OPTIONS') {
-    res.status(204).send('');
-    return;
-  }
-  if (req.method !== 'POST') {
-    res.status(405).json({ success: false, error: 'Method not allowed' });
-    return;
-  }
-
-  try {
-    const { firstName, lastName, email, demoUrl } = req.body;
-
-    // Validate required fields
-    if (!firstName || !lastName || !email || !demoUrl) {
-      res.status(400).json({ 
-        success: false, 
-        error: 'Missing required fields: firstName, lastName, email, demoUrl' 
-      });
+exports.sendDemoInvitation = onRequest(
+  {
+    cors: true,
+    secrets: [sendgridApiKey],
+  },
+  async (req, res) => {
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
+      return;
+    }
+    if (req.method !== 'POST') {
+      res.status(405).json({ success: false, error: 'Method not allowed' });
       return;
     }
 
-    console.log(`📧 DEMO_INVITATION: Sending preview invitation to ${firstName} ${lastName} (${email})`);
+    try {
+      const { firstName, lastName, email, demoUrl } = req.body;
 
-    // Set the SendGrid API key
-    sgMail.setApiKey(sendgridApiKey.value());
+      // Validate required fields
+      if (!firstName || !lastName || !email || !demoUrl) {
+        res.status(400).json({
+          success: false,
+          error: 'Missing required fields: firstName, lastName, email, demoUrl',
+        });
+        return;
+      }
 
-    // Create the preview invitation email
-    const msg = {
-      to: email,
-      from: 'Team Build Pro <demo@teambuildpro.com>',
-      subject: 'Team Build Pro Preview',
-      html: getEmailTemplate(firstName, demoUrl)
-    };
+      console.log(
+        `📧 DEMO_INVITATION: Sending preview invitation to ${firstName} ${lastName} (${email})`
+      );
 
-    // Send the email
-    await sgMail.send(msg);
-    console.log(`✅ DEMO_INVITATION: Successfully sent preview invitation to ${email}`);
+      // Set the SendGrid API key
+      sgMail.setApiKey(sendgridApiKey.value());
 
-    res.status(200).json({ 
-      success: true, 
-      message: 'Preview invitation sent successfully.' 
-    });
+      // Create the preview invitation email
+      const msg = {
+        to: email,
+        from: 'Team Build Pro <demo@teambuildpro.com>',
+        subject: 'Team Build Pro Preview',
+        html: getEmailTemplate(firstName, demoUrl),
+      };
 
-  } catch (error) {
-    console.error('❌ DEMO_INVITATION: Error sending preview invitation:', error);
+      // Send the email
+      await sgMail.send(msg);
+      console.log(`✅ DEMO_INVITATION: Successfully sent preview invitation to ${email}`);
 
-    // Handle SendGrid specific errors
-    if (error.response) {
-      console.error('SendGrid error details:', error.response.body);
+      res.status(200).json({
+        success: true,
+        message: 'Preview invitation sent successfully.',
+      });
+    } catch (error) {
+      console.error('❌ DEMO_INVITATION: Error sending preview invitation:', error);
+
+      // Handle SendGrid specific errors
+      if (error.response) {
+        console.error('SendGrid error details:', error.response.body);
+      }
+
+      res.status(500).json({
+        success: false,
+        error: 'Failed to send preview invitation',
+      });
     }
-    
-    res.status(500).json({ 
-      success: false, 
-      error: 'Failed to send preview invitation' 
-    });
   }
-});
+);
 
 // Email template for preview invitations
 function getEmailTemplate(firstName, demoUrl) {

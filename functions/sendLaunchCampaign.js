@@ -1,4 +1,4 @@
-const { onRequest } = require("firebase-functions/v2/https");
+const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const admin = require('firebase-admin');
 const sgMail = require('@sendgrid/mail');
@@ -20,121 +20,127 @@ try {
   emailTemplate = null;
 }
 
-exports.sendLaunchCampaign = onRequest({
-  cors: true,
-  region: 'us-central1',
-  secrets: [sendgridApiKey],
-  timeoutSeconds: 540, // 9 minutes for large campaigns
-  memory: '1GiB'
-}, async (req, res) => {
-  try {
-    console.log('🚀 LAUNCH_CAMPAIGN: Starting campaign send');
-    
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
+exports.sendLaunchCampaign = onRequest(
+  {
+    cors: true,
+    region: 'us-central1',
+    secrets: [sendgridApiKey],
+    timeoutSeconds: 540, // 9 minutes for large campaigns
+    memory: '1GiB',
+  },
+  async (req, res) => {
+    try {
+      console.log('🚀 LAUNCH_CAMPAIGN: Starting campaign send');
 
-    // Validate template is loaded
-    if (!emailTemplate) {
-      console.error('❌ LAUNCH_CAMPAIGN: Email template not available');
-      return res.status(500).json({ error: 'Email template not available' });
-    }
-
-    // Set the SendGrid API key
-    sgMail.setApiKey(sendgridApiKey.value());
-
-    // Get request parameters
-    const { 
-      dryRun = false, 
-      batchSize = 50, 
-      testEmail = null,
-      deviceFilter = null // 'ios', 'android', 'both', or null for all
-    } = req.body;
-
-    console.log(`🔧 LAUNCH_CAMPAIGN: Configuration - dryRun: ${dryRun}, batchSize: ${batchSize}, deviceFilter: ${deviceFilter}`);
-
-    // If test email provided, send only to that email
-    if (testEmail) {
-      console.log(`🧪 LAUNCH_CAMPAIGN: Test mode - sending to ${testEmail}`);
-      const testResult = await sendTestEmail(testEmail, emailTemplate);
-      return res.json({
-        success: true,
-        message: 'Test email sent successfully',
-        testEmail: testEmail,
-        result: testResult
-      });
-    }
-
-    // Query launch_notifications collection
-    const db = admin.firestore();
-    let query = db.collection('launch_notifications');
-    
-    // Apply device filter if specified
-    if (deviceFilter) {
-      if (deviceFilter === 'both') {
-        query = query.where('deviceSelection', '==', 'both');
-      } else {
-        query = query.where('deviceSelection', '==', deviceFilter);
+      if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
       }
-      console.log(`🔍 LAUNCH_CAMPAIGN: Filtering for device type: ${deviceFilter}`);
-    }
 
-    const snapshot = await query.get();
-    const subscribers = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+      // Validate template is loaded
+      if (!emailTemplate) {
+        console.error('❌ LAUNCH_CAMPAIGN: Email template not available');
+        return res.status(500).json({ error: 'Email template not available' });
+      }
 
-    console.log(`📊 LAUNCH_CAMPAIGN: Found ${subscribers.length} subscribers`);
+      // Set the SendGrid API key
+      sgMail.setApiKey(sendgridApiKey.value());
 
-    if (subscribers.length === 0) {
-      return res.json({
+      // Get request parameters
+      const {
+        dryRun = false,
+        batchSize = 50,
+        testEmail = null,
+        deviceFilter = null, // 'ios', 'android', 'both', or null for all
+      } = req.body;
+
+      console.log(
+        `🔧 LAUNCH_CAMPAIGN: Configuration - dryRun: ${dryRun}, batchSize: ${batchSize}, deviceFilter: ${deviceFilter}`
+      );
+
+      // If test email provided, send only to that email
+      if (testEmail) {
+        console.log(`🧪 LAUNCH_CAMPAIGN: Test mode - sending to ${testEmail}`);
+        const testResult = await sendTestEmail(testEmail, emailTemplate);
+        return res.json({
+          success: true,
+          message: 'Test email sent successfully',
+          testEmail: testEmail,
+          result: testResult,
+        });
+      }
+
+      // Query launch_notifications collection
+      const db = admin.firestore();
+      let query = db.collection('launch_notifications');
+
+      // Apply device filter if specified
+      if (deviceFilter) {
+        if (deviceFilter === 'both') {
+          query = query.where('deviceSelection', '==', 'both');
+        } else {
+          query = query.where('deviceSelection', '==', deviceFilter);
+        }
+        console.log(`🔍 LAUNCH_CAMPAIGN: Filtering for device type: ${deviceFilter}`);
+      }
+
+      const snapshot = await query.get();
+      const subscribers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      console.log(`📊 LAUNCH_CAMPAIGN: Found ${subscribers.length} subscribers`);
+
+      if (subscribers.length === 0) {
+        return res.json({
+          success: true,
+          message: 'No subscribers found',
+          sent: 0,
+          failed: 0,
+        });
+      }
+
+      // If dry run, return subscriber count without sending
+      if (dryRun) {
+        const deviceBreakdown = getDeviceBreakdown(subscribers);
+        return res.json({
+          success: true,
+          message: 'Dry run completed',
+          totalSubscribers: subscribers.length,
+          deviceBreakdown: deviceBreakdown,
+          wouldSend: subscribers.length,
+          dryRun: true,
+        });
+      }
+
+      // Send campaign in batches
+      const results = await sendCampaignInBatches(subscribers, emailTemplate, batchSize);
+
+      // Log campaign completion
+      await logCampaignCompletion(results, deviceFilter);
+
+      console.log(
+        `✅ LAUNCH_CAMPAIGN: Campaign completed - Sent: ${results.sent}, Failed: ${results.failed}`
+      );
+
+      res.json({
         success: true,
-        message: 'No subscribers found',
-        sent: 0,
-        failed: 0
-      });
-    }
-
-    // If dry run, return subscriber count without sending
-    if (dryRun) {
-      const deviceBreakdown = getDeviceBreakdown(subscribers);
-      return res.json({
-        success: true,
-        message: 'Dry run completed',
+        message: 'Launch campaign completed',
+        sent: results.sent,
+        failed: results.failed,
         totalSubscribers: subscribers.length,
-        deviceBreakdown: deviceBreakdown,
-        wouldSend: subscribers.length,
-        dryRun: true
+        deviceFilter: deviceFilter || 'all',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('❌ LAUNCH_CAMPAIGN: Error sending campaign:', error);
+      res.status(500).json({
+        error: 'Failed to send launch campaign',
+        details: error.message,
       });
     }
-
-    // Send campaign in batches
-    const results = await sendCampaignInBatches(subscribers, emailTemplate, batchSize);
-    
-    // Log campaign completion
-    await logCampaignCompletion(results, deviceFilter);
-
-    console.log(`✅ LAUNCH_CAMPAIGN: Campaign completed - Sent: ${results.sent}, Failed: ${results.failed}`);
-
-    res.json({
-      success: true,
-      message: 'Launch campaign completed',
-      sent: results.sent,
-      failed: results.failed,
-      totalSubscribers: subscribers.length,
-      deviceFilter: deviceFilter || 'all',
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    console.error('❌ LAUNCH_CAMPAIGN: Error sending campaign:', error);
-    res.status(500).json({ 
-      error: 'Failed to send launch campaign',
-      details: error.message 
-    });
   }
-});
+);
 
 /**
  * Send test email to specified address
@@ -142,14 +148,14 @@ exports.sendLaunchCampaign = onRequest({
 async function sendTestEmail(testEmail, template) {
   const personalizedTemplate = personalizeTemplate(template, {
     firstName: 'Test User',
-    deviceSelection: 'both'
+    deviceSelection: 'both',
   });
 
   const emailData = {
     to: testEmail,
     from: 'Team Build Pro <support@teambuildpro.com>',
     subject: '🚀 Team Build Pro is Now Available! [TEST]',
-    html: personalizedTemplate
+    html: personalizedTemplate,
   };
 
   try {
@@ -175,11 +181,13 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
   for (let i = 0; i < subscribers.length; i += batchSize) {
     const batch = subscribers.slice(i, i + batchSize);
     const batchNumber = Math.floor(i / batchSize) + 1;
-    
-    console.log(`🔄 LAUNCH_CAMPAIGN: Processing batch ${batchNumber}/${totalBatches} (${batch.length} emails)`);
+
+    console.log(
+      `🔄 LAUNCH_CAMPAIGN: Processing batch ${batchNumber}/${totalBatches} (${batch.length} emails)`
+    );
 
     const batchResults = await Promise.allSettled(
-      batch.map(subscriber => sendPersonalizedEmail(subscriber, template))
+      batch.map((subscriber) => sendPersonalizedEmail(subscriber, template))
     );
 
     // Count results
@@ -188,13 +196,16 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
         sent++;
       } else {
         failed++;
-        console.error(`❌ LAUNCH_CAMPAIGN: Failed to send to ${batch[index].email}:`, result.reason);
+        console.error(
+          `❌ LAUNCH_CAMPAIGN: Failed to send to ${batch[index].email}:`,
+          result.reason
+        );
       }
     });
 
     // Small delay between batches to be respectful to SendGrid
     if (i + batchSize < subscribers.length) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 
@@ -206,10 +217,10 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
  */
 async function sendPersonalizedEmail(subscriber, template) {
   const { firstName, lastName, email, deviceSelection } = subscriber;
-  
+
   // Personalize the template
   const personalizedTemplate = personalizeTemplate(template, subscriber);
-  
+
   const emailData = {
     to: `${firstName} ${lastName} <${email}>`,
     from: 'Team Build Pro <support@teambuildpro.com>',
@@ -220,13 +231,13 @@ async function sendPersonalizedEmail(subscriber, template) {
     customArgs: {
       campaign: 'launch_2025',
       device_preference: deviceSelection || 'unknown',
-      subscriber_id: subscriber.id
-    }
+      subscriber_id: subscriber.id,
+    },
   };
 
   await sgMail.send(emailData);
   console.log(`✅ LAUNCH_CAMPAIGN: Email sent to ${firstName} ${lastName} (${email})`);
-  
+
   return { success: true, email: email };
 }
 
@@ -235,15 +246,17 @@ async function sendPersonalizedEmail(subscriber, template) {
  */
 function personalizeTemplate(template, subscriber) {
   const { firstName = 'Team Builder', deviceSelection } = subscriber;
-  
+
   // Determine which download buttons to show
-  const showAppleButton = !deviceSelection || deviceSelection === 'ios' || deviceSelection === 'both';
-  const showGoogleButton = !deviceSelection || deviceSelection === 'android' || deviceSelection === 'both';
-  
+  const showAppleButton =
+    !deviceSelection || deviceSelection === 'ios' || deviceSelection === 'both';
+  const showGoogleButton =
+    !deviceSelection || deviceSelection === 'android' || deviceSelection === 'both';
+
   // App Store URLs (you may want to add referral tracking here)
   const appStoreUrl = 'https://apps.apple.com/app/team-build-pro/id6751211622';
   const googlePlayUrl = 'https://play.google.com/store/apps/details?id=com.scott.ultimatefix';
-  
+
   // Screenshot composite URL - Correct location
   const screenshotCompositeUrl = 'http://teambuildpro.com/assets/images/hero-composite.png';
 
@@ -259,7 +272,10 @@ function personalizeTemplate(template, subscriber) {
     personalizedTemplate = personalizedTemplate.replace(/\{\{\/if\}\}/g, '');
   } else {
     // Remove the Apple button section
-    personalizedTemplate = personalizedTemplate.replace(/\{\{#if showAppleButton\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    personalizedTemplate = personalizedTemplate.replace(
+      /\{\{#if showAppleButton\}\}[\s\S]*?\{\{\/if\}\}/g,
+      ''
+    );
   }
 
   if (showGoogleButton) {
@@ -267,7 +283,10 @@ function personalizeTemplate(template, subscriber) {
     personalizedTemplate = personalizedTemplate.replace(/\{\{\/if\}\}/g, '');
   } else {
     // Remove the Google button section
-    personalizedTemplate = personalizedTemplate.replace(/\{\{#if showGoogleButton\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    personalizedTemplate = personalizedTemplate.replace(
+      /\{\{#if showGoogleButton\}\}[\s\S]*?\{\{\/if\}\}/g,
+      ''
+    );
   }
 
   return personalizedTemplate;
@@ -281,10 +300,10 @@ function getDeviceBreakdown(subscribers) {
     ios: 0,
     android: 0,
     both: 0,
-    unspecified: 0
+    unspecified: 0,
   };
 
-  subscribers.forEach(subscriber => {
+  subscribers.forEach((subscriber) => {
     const device = subscriber.deviceSelection;
     if (device === 'ios') {
       breakdown.ios++;
@@ -313,7 +332,7 @@ async function logCampaignCompletion(results, deviceFilter) {
       failed: results.failed,
       total: results.sent + results.failed,
       deviceFilter: deviceFilter || 'all',
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
     });
     console.log('📝 LAUNCH_CAMPAIGN: Campaign completion logged');
   } catch (error) {

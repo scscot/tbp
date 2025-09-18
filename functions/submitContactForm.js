@@ -1,4 +1,4 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const admin = require('firebase-admin');
 
 // Initialize admin if not already initialized
@@ -26,7 +26,10 @@ exports.submitContactForm = onCall(async (request) => {
 
     if (!verificationResult.success || verificationResult.score < 0.5) {
       console.error('reCAPTCHA verification failed. Score:', verificationResult.score);
-      throw new HttpsError('permission-denied', 'reCAPTCHA verification failed. Suspicious activity detected.');
+      throw new HttpsError(
+        'permission-denied',
+        'reCAPTCHA verification failed. Suspicious activity detected.'
+      );
     }
 
     const contactData = {
@@ -36,7 +39,7 @@ exports.submitContactForm = onCall(async (request) => {
       subject: data.subject,
       message: data.message,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      recaptchaScore: verificationResult.score
+      recaptchaScore: verificationResult.score,
     };
 
     await admin.firestore().collection('contactSubmissions').add(contactData);
@@ -45,9 +48,8 @@ exports.submitContactForm = onCall(async (request) => {
 
     return {
       success: true,
-      message: 'Contact form submitted successfully.'
+      message: 'Contact form submitted successfully.',
     };
-
   } catch (error) {
     console.error('Error processing callable contact form:', error);
     if (error instanceof HttpsError) {

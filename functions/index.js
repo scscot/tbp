@@ -1,8 +1,77 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { onRequest } = require("firebase-functions/v2/https");
-const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
-const { onSchedule } = require("firebase-functions/v2/scheduler");
-const admin = require("firebase-admin");
+// ==============================
+// BEGIN PATCH: early-env-loader
+// Ensures local/CLI analysis sees .env before exports are evaluated.
+// No effect in Cloud Run if the file isn't present.
+// ==============================
+(() => {
+  try {
+    if (!process.env.K_SERVICE) { // skip on Cloud Run
+      const fs = require('fs');
+      const path = require('path');
+      const dotenvPath = path.join(__dirname, '.env');
+      if (fs.existsSync(dotenvPath)) {
+        const lines = fs.readFileSync(dotenvPath, 'utf8').split(/\r?\n/);
+        for (const line of lines) {
+          if (!line || line.trim().startsWith('#')) continue;
+          const idx = line.indexOf('=');
+          if (idx === -1) continue;
+          const k = line.slice(0, idx).trim();
+          const v = line.slice(idx + 1).trim();
+          if (k && !(k in process.env)) process.env[k] = v;
+        }
+      }
+    }
+  } catch { }
+})();
+// ==============================
+// END PATCH: early-env-loader
+// ==============================
+
+
+// ==============================
+// BEGIN PATCH: imports-v2-and-aliases
+// ==============================
+
+// v2 HTTPS APIs
+const { onCall, HttpsError, onRequest } = require('firebase-functions/v2/https');
+
+// v2 Firestore trigger APIs
+const {
+  onDocumentCreated,
+  onDocumentUpdated,
+  onDocumentWritten,
+  onDocumentDeleted,
+} = require('firebase-functions/v2/firestore');
+
+// v2 Scheduler API
+const { onSchedule } = require('firebase-functions/v2/scheduler');
+
+// (Optional) v2 logger
+const logger = require('firebase-functions/logger');
+
+// Keep classic import ONLY for runtime config (do not use functions.firestore.* anywhere)
+const functions = require('firebase-functions');
+
+// Admin SDK
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+// Canonical Firestore aliases — keep ONE copy only in the file
+const db         = admin.firestore();
+const FieldValue = admin.firestore.FieldValue;
+const FieldPath  = admin.firestore.FieldPath;
+
+// Config-derived flags (v2 environment variables)
+const NOTIF_TRIGGER_ENABLED = String(process.env.NOTIFICATIONS_ENABLE_TRIGGER || 'false').trim().toLowerCase() === 'true';
+const DELIVERY_MODE = String(process.env.NOTIFICATIONS_DELIVERY_MODE || 'helper').trim().toLowerCase();
+const isHelperMode  = DELIVERY_MODE === 'helper';
+const isTriggerMode = DELIVERY_MODE === 'trigger';
+
+// ==============================
+// END PATCH: imports-v2-and-aliases
+// ==============================
+
+const { setGlobalOptions } = require("firebase-functions/v2");
 const { getTimezoneFromLocation, getTimezonesAtHour } = require("./timezone_mapping");
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
@@ -15,36 +84,335 @@ const {
   isDecodedNotificationSummaryPayload,
 } = require("app-store-server-api");
 
-// This makes the callable function available for your apps
-exports.submitContactForm = submitContactForm;
-
-// This makes the HTTPS function available for your contact_us.html page
-exports.submitContactFormHttp = submitContactFormHttp;
-
-// This makes the demo invitation function available for the demo script
-exports.sendDemoInvitation = sendDemoInvitation;
-
-// Import and export the chatbot function
+// Import the chatbot function
 const { chatbot } = require('./chatbot');
-exports.chatbot = chatbot;
 
-// Initialize Firebase Admin SDK only if not already initialized
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
+// Initialize Firebase settings
+setGlobalOptions({ region: "us-central1", timeoutSeconds: 60, memory: "512MiB" });
 
-const db = admin.firestore();
 const auth = admin.auth();
 const messaging = admin.messaging();
 const remoteConfig = admin.remoteConfig();
-const { FieldValue, DocumentReference } = admin.firestore;
+const { DocumentReference } = require('firebase-admin/firestore');
 const fetch = global.fetch || require('node-fetch');
 const cors = require('cors')({ origin: true });
 
 const crypto = require('crypto');
+
+// ==============================
+// BEGIN PATCH: export-bisect-guard-toggle
+// ==============================
+const ENABLE_EXTRA_EXPORTS = String(process.env.DEBUG_ENABLE_EXTRA_EXPORTS || 'false')
+  .trim().toLowerCase() === 'true';
+console.log('[EXPORT GUARD]', {
+  ENABLE_EXTRA_EXPORTS,
+  DELIVERY_MODE,
+  NOTIF_TRIGGER_ENABLED,
+  node: process.version,
+});
+// ==============================
+// END PATCH: export-bisect-guard-toggle
+// ==============================
+
+// -- Resolve the best FCM token: field -> array[0] -> subcollection (freshest), all trimmed
+async function resolveBestFcmTokenForUser(userRef, userDataMaybe) {
+  let userData = userDataMaybe;
+  if (!userData) {
+    const snap = await userRef.get();
+    userData = snap.exists ? snap.data() : {};
+  }
+  const trimStr = (s) => (typeof s === 'string' ? s.trim() : '');
+
+  // 1) single field
+  if (trimStr(userData.fcm_token)) {
+    return { token: trimStr(userData.fcm_token), source: 'fcm_token' };
+  }
+
+  // 2) array field (first non-empty)
+  if (Array.isArray(userData.fcmTokens) && userData.fcmTokens.length) {
+    const first = userData.fcmTokens.find((t) => trimStr(t));
+    if (first) return { token: trimStr(first), source: 'fcmTokens[0]' };
+  }
+
+  // 3) subcollection (prefer newest by updatedAt, fallback to docId if needed)
+  try {
+    const snap = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+    if (!snap.empty) return { token: trimStr(snap.docs[0].id), source: 'fcmTokens(subcollection)' };
+  } catch (_) {
+    const snap = await userRef.collection('fcmTokens').orderBy(FieldPath.documentId()).limit(1).get();
+    if (!snap.empty) return { token: trimStr(snap.docs[0].id), source: 'fcmTokens(subcollection)' };
+  }
+  return { token: null, source: 'none' };
+}
+
+// -- Remove a dead token from every storage location (field, array, subcollection)
+async function cleanupDeadToken(userRef, token, userDataMaybe) {
+  if (!token) return;
+  let userData = userDataMaybe;
+  if (!userData) {
+    const s = await userRef.get();
+    userData = s.exists ? s.data() : {};
+  }
+
+  const updates = {};
+  if (userData.fcm_token && String(userData.fcm_token).trim() === token) {
+    updates.fcm_token = FieldValue.delete();
+  }
+  if (Array.isArray(userData.fcmTokens) && userData.fcmTokens.includes(token)) {
+    updates.fcmTokens = FieldValue.arrayRemove(token);
+  }
+  if (Object.keys(updates).length) {
+    await userRef.set(updates, { merge: true });
+  }
+  try { await userRef.collection('fcmTokens').doc(token).delete(); } catch (_) {}
+}
+
+// -- FCM data must be strings
+function toStringMap(obj) {
+  const out = {};
+  for (const [k, v] of Object.entries(obj || {})) out[k] = v == null ? '' : String(v);
+  return out;
+}
+
+// -- Send one push for a notification
+async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
+  const userRef = admin.firestore().collection('users').doc(userId);
+  const { token, source } = await resolveBestFcmTokenForUser(userRef, userDataMaybe);
+  if (!token) {
+    console.log('PUSH: no token', { userId, notificationId });
+    return { sent: false, reason: 'no_token', tokenSource: 'none' };
+  }
+
+  const title = payload.title || 'Team Build Pro';
+  const body  = payload.message || '';
+  const route = payload.route || '/';
+  const route_params = payload.route_params || {};
+  const imageUrl = payload.imageUrl || '';
+
+  const msg = {
+    token,
+    notification: { title, body },
+    data: toStringMap({
+      notification_id: notificationId,
+      type: payload.type || 'generic',
+      title,
+      body,
+      route,
+      route_params: JSON.stringify(route_params),
+      imageUrl
+    }),
+    apns: { payload: { aps: { alert: { title, body } } } }
+  };
+
+  try {
+    const response = await admin.messaging().send(msg);
+    console.log('PUSH: sent', { userId, notificationId, response, tokenSource: source });
+    return { sent: true, reason: 'sent', tokenSource: source };
+  } catch (err) {
+    const code = (err && err.code) || '';
+    console.log('PUSH: error', { userId, notificationId, code, msg: err.message });
+    if (code === 'messaging/registration-token-not-registered') {
+      await cleanupDeadToken(userRef, token);
+      return { sent: false, reason: 'token_not_registered', tokenSource: source };
+    }
+    return { sent: false, reason: code || 'unknown', tokenSource: source };
+  }
+}
+
+// -- Recompute unread badge and send silent badge push (same 3-tier resolver, with cleanup)
+const updateUserBadge = async (userId) => {
+  try {
+    console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
+
+    // Recompute badge count transactionally
+    const { badgeCount } = await db.runTransaction(async (tx) => {
+      const userRef = db.collection('users').doc(userId);
+      const userSnap = await tx.get(userRef);
+      if (!userSnap.exists) return { badgeCount: 0 };
+
+      // Unread notifications
+      const unreadNotifs = await tx.get(
+        userRef.collection('notifications').where('read', '==', false).limit(1000)
+      );
+      const notifCount = unreadNotifs.size;
+
+      // If you track unread chat separately, add it here
+      const chatCount = 0;
+
+      const total = notifCount + chatCount;
+      tx.set(userRef, { badgeCount: total }, { merge: true });
+      return { badgeCount: total };
+    });
+
+    // Resolve token using same 3-tier logic
+    const userRef = db.collection('users').doc(userId);
+    let token = null, source = 'none';
+
+    // Tier 1
+    const userSnap = await userRef.get();
+    const data = userSnap.exists ? (userSnap.data() || {}) : {};
+    if (typeof data.fcm_token === 'string' && data.fcm_token.trim()) {
+      token = data.fcm_token.trim(); source = 'fcm_token';
+    }
+    // Tier 2
+    if (!token && Array.isArray(data.fcmTokens) && data.fcmTokens.length) {
+      const first = (data.fcmTokens.find(t => typeof t === 'string' && t.trim()) || '').trim();
+      if (first) { token = first; source = 'fcmTokens[0]'; }
+    }
+    // Tier 3 + fallback
+    if (!token) {
+      try {
+        const sub = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+        if (!sub.empty) { token = (sub.docs[0].data().token || sub.docs[0].id).trim(); source = 'fcmTokens(subcollection)'; }
+      } catch (e) {
+        const sub = await userRef.collection('fcmTokens').orderBy(admin.firestore.FieldPath.documentId()).limit(1).get();
+        if (!sub.empty) { token = sub.docs[0].id.trim(); source = 'fcmTokens(subcollection)'; }
+      }
+    }
+
+    if (!token) {
+      console.log('BADGE: no token', { userId });
+      return;
+    }
+
+    try {
+      await messaging.send({
+        token,
+        apns: { payload: { aps: { badge: badgeCount } } },
+        data: { type: 'badge_update', badgeCount: String(badgeCount) }
+      });
+      console.log('BADGE: sent', { userId, badgeCount, tokenSource: source });
+    } catch (e) {
+      const code = e?.errorInfo?.code || e?.code || '';
+      console.log('BADGE: error', { userId, badgeCount, code, msg: e?.message });
+      if (code === 'messaging/registration-token-not-registered') {
+        try { await cleanupDeadToken(userRef, token); } catch (_) {}
+      }
+    }
+  } catch (error) {
+    console.error(`❌ BADGE UPDATE: Failed for ${userId}:`, error.message);
+  }
+}
+
+// -- One entry point used by call sites (idempotent doc create + push + badge)
+async function createNotificationWithPush(options) {
+  const {
+    userId, notifId, type, title, message,
+    route = '/', route_params = {}, imageUrl = ''
+  } = options;
+
+  const userRef = admin.firestore().collection('users').doc(userId);
+  const notifRef = notifId
+    ? userRef.collection('notifications').doc(notifId)
+    : userRef.collection('notifications').doc();
+
+  try {
+    await notifRef.create({
+      type, title, message, imageUrl,
+      route,
+      route_params: JSON.stringify(route_params),
+      read: false,
+      createdAt: FieldValue.serverTimestamp()
+    });
+  } catch (err) {
+    // If it already exists, continue (safe duplicate)
+    if (!String(err.message).includes('already exists')) throw err;
+  }
+
+  const notificationId = notifRef.id;
+
+  // ==============================
+  // BEGIN PATCH: helper-mode-guard
+  // ==============================
+  // If we're not in helper mode, stop after doc creation.
+  // This prevents duplicate sends when someone flips the trigger on.
+  if (!isHelperMode) {
+    return {
+      ok: true,
+      notificationId,
+      push: { sent: false, reason: 'helper_disabled', tokenSource: 'n/a' }
+    };
+  }
+  // ==============================
+  // END PATCH: helper-mode-guard
+  // ==============================
+
+  const push = await sendPushToUser(userId, notificationId, { type, title, message, route, route_params, imageUrl });
+
+  try {
+    await updateUserBadge(userId);
+  } catch (err) {
+    console.log('BADGE: non-fatal error during update', { userId, notificationId, msg: err.message });
+  }
+
+  return { ok: !!push.sent, notificationId, push };
+}
+
+// cleanupDeadToken(userRef, token)
+// Removes the token from: users/{uid}.fcm_token, users/{uid}.fcmTokens[], users/{uid}/fcmTokens/{token}
+async function cleanupDeadToken(userRef, token) {
+  if (!token) return;
+
+  const snap = await userRef.get();
+  const data = snap.exists ? (snap.data() || {}) : {};
+
+  const updates = {};
+  if (typeof data.fcm_token === 'string' && data.fcm_token.trim() === token) {
+    updates.fcm_token = admin.firestore.FieldValue.delete();
+  }
+  if (Array.isArray(data.fcmTokens) && data.fcmTokens.includes(token)) {
+    updates.fcmTokens = admin.firestore.FieldValue.arrayRemove(token);
+  }
+  if (Object.keys(updates).length) {
+    await userRef.set(updates, { merge: true });
+  }
+
+  // Best effort: remove subcollection doc with id === token
+  try { await userRef.collection('fcmTokens').doc(token).delete(); } catch (_) {}
+}
+// ==============================
+// END PATCH: notification-core-helpers
+// ==============================
+
+// ==============================
+// BEGIN PATCH: validator-admin-guards
+// ==============================
+// Enable/disable validators at runtime
+//   debug.validate_enabled: 'true' | 'false'
+//   debug.admin_allowlist:  'uid1,uid2,...'
+function validatorsEnabled() {
+  return String(process.env.DEBUG_VALIDATE_ENABLED || 'false').toLowerCase() === 'true';
+}
+
+function callerIsAllowedAdmin(context) {
+  if (!context?.auth?.uid) return false;
+  const isAdminClaim = !!context.auth.token?.admin;
+  const allowlist = String(process.env.DEBUG_ADMIN_ALLOWLIST || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+  return isAdminClaim || allowlist.includes(context.auth.uid);
+}
+
+function assertAdminAndEnabled(context, featureName) {
+  if (!validatorsEnabled()) {
+    throw new functions.https.HttpsError('failed-precondition', `Validation disabled (${featureName}).`);
+  }
+  if (!context?.auth?.uid) {
+    throw new functions.https.HttpsError('unauthenticated', 'Sign in required.');
+  }
+  if (!callerIsAllowedAdmin(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin only.');
+  }
+}
+// ==============================
+// END PATCH: validator-admin-guards
+// ==============================
+
 const jwt = require('jsonwebtoken');
 const { X509Certificate } = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
+const { google } = require('googleapis');
 
 // SendGrid for launch notification emails
 const sgMail = require('@sendgrid/mail');
@@ -248,14 +616,16 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
     }
 
     if (notificationContent) {
-      const notification = {
-        ...notificationContent,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false
-      };
 
-      await db.collection('users').doc(userId).collection('notifications').add(notification);
-      console.log(`✅ SUBSCRIPTION: Notification sent to user ${userId} for status: ${status}`);
+      const result = await createNotificationWithPush({
+        userId,
+        type: 'subscription_update',
+        title: 'Subscription updated',
+        body: `Your subscription is now ${status}.`,
+        docFields: { status },
+        data: { route: 'subscription', status },
+      });
+      console.log(`✅ SUBSCRIPTION: Notification sent to user ${userId} for status: ${status} - Push sent: ${result.push.sent}`);
     }
 
   } catch (error) {
@@ -263,6 +633,17 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
     // Don't throw error - notification failure shouldn't break subscription update
   }
 };
+
+// ==============================
+// BEGIN PATCH: export-bisect-wrap
+// ==============================
+if (ENABLE_EXTRA_EXPORTS) {
+
+// Module exports that were moved into guard
+exports.submitContactForm = submitContactForm;
+exports.submitContactFormHttp = submitContactFormHttp;
+exports.sendDemoInvitation = sendDemoInvitation;
+exports.chatbot = chatbot;
 
 /**
  * Apple Server-to-Server Notification Handler
@@ -353,7 +734,7 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
         // Handle renewal preference change if needed
         break;
 
-      case 'DID_CHANGE_RENEWAL_STATUS':
+      case 'DID_CHANGE_RENEWAL_STATUS': {
         console.log(`📱 APPLE NOTIFICATION: User ${userId} changed renewal status`);
         // Check if auto-renew is enabled/disabled
         const autoRenewStatus = latestReceiptInfo.auto_renew_status;
@@ -362,6 +743,7 @@ exports.handleAppleSubscriptionNotification = onRequest({ region: "us-central1" 
           await updateUserSubscription(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
           await createSubscriptionNotification(userId, 'cancelled', latestReceiptInfo.expires_date_ms);
         }
+      }
         break;
 
       default:
@@ -673,15 +1055,16 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
     }
 
     if (notificationContent) {
-      const notification = {
-        ...notificationContent,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        ...additionalInfo // Allow passing additional info
-      };
 
-      await db.collection('users').doc(userId).collection('notifications').add(notification);
-      console.log(`✅ SUBSCRIPTION V2: Notification sent to user ${userId} for status: ${status}`);
+      const result = await createNotificationWithPush({
+        userId,
+        type: 'subscription_update',
+        title: 'Subscription updated',
+        body: `Your subscription is now ${status}.`,
+        docFields: { status },
+        data: { route: 'subscription', status },
+      });
+      console.log(`✅ SUBSCRIPTION V2: Notification sent to user ${userId} for status: ${status} - Push sent: ${result.push.sent}`);
     }
 
   } catch (error) {
@@ -826,18 +1209,22 @@ exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
       const userId = doc.id;
 
       try {
-        const warningNotification = {
-          title: "⏰ Trial Expiring Soon",
-          message: "Your 30-day trial expires in 3 days. Subscribe now to maintain your team's momentum and continue growing your network.",
-          type: "trial_warning",
-          route: "/subscription",
-          route_params: JSON.stringify({ "action": "upgrade" }),
-          createdAt: FieldValue.serverTimestamp(),
-          read: false
-        };
 
-        await db.collection('users').doc(userId).collection('notifications').add(warningNotification);
-        console.log(`✅ TRIAL WARNING: Sent warning to user ${userId}`);
+        const result = await createNotificationWithPush({
+          userId,
+          type: 'trial_warning',
+          title: "⏰ Trial Expiring Soon",
+          body: "Your 30-day trial expires in 3 days. Subscribe now to maintain your team's momentum and continue growing your network.",
+          docFields: { 
+            route: "/subscription",
+            route_params: JSON.stringify({ "action": "upgrade" }),
+          },
+          data: { 
+            route: 'subscription', 
+            action: 'upgrade'
+          },
+        });
+        console.log(`✅ TRIAL WARNING: Sent warning to user ${userId} - Push sent: ${result.push.sent}`);
 
       } catch (error) {
         console.error(`❌ TRIAL WARNING: Failed to send warning to user ${userId}:`, error);
@@ -1383,126 +1770,6 @@ exports.handleGooglePlayNotification = onRequest({ region: "us-central1", cors: 
 // CENTRALIZED BADGE UPDATE FUNCTION
 // ============================================================================
 
-/**
- * Centralized function to calculate and update badge count for a user
- * Includes both notifications and chat messages - with optimizations
- */
-const updateUserBadge = async (userId) => {
-  try {
-    console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
-
-    // Use transaction for consistent badge calculation
-    const result = await db.runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(db.collection('users').doc(userId));
-      if (!userDoc.exists) {
-        console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
-        return { success: false, error: "User not found" };
-      }
-
-      const userData = userDoc.data();
-      const fcmToken = userData?.fcm_token;
-      
-      if (!fcmToken) {
-        console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
-        return { success: false, error: "No FCM token" };
-      }
-
-      // Count unread notifications using optimized query
-      let notificationCount = 0;
-      try {
-        const unreadNotifQuery = db.collection("users")
-          .doc(userId)
-          .collection("notifications")
-          .where("read", "==", false);
-        
-        const unreadNotifSnapshot = await transaction.get(unreadNotifQuery);
-        notificationCount = unreadNotifSnapshot.size;
-      } catch (e) {
-        console.warn(`🔔 BADGE WARN: unread notifications count failed for ${userId}:`, e.message);
-        notificationCount = 0;
-      }
-
-      // Count unread chat messages with pagination and optimization
-      let messageCount = 0;
-      try {
-        // Use a more efficient approach - query only chats with unread messages
-        const unreadChatsQuery = db.collection("chats")
-          .where("participants", "array-contains", userId)
-          .where(`isRead.${userId}`, "==", false)
-          .limit(100); // Add pagination limit
-
-        const unreadChatsSnapshot = await transaction.get(unreadChatsQuery);
-        
-        // Process chats in parallel with proper error handling
-        const chatPromises = unreadChatsSnapshot.docs.map(async (doc) => {
-          const chatData = doc.data();
-          
-          // Check if last message exists and is from someone else
-          const lastMessageRef = doc.ref.collection("messages")
-            .orderBy("createdAt", "desc")
-            .limit(1);
-          
-          const lastMessageSnapshot = await transaction.get(lastMessageRef);
-          
-          if (!lastMessageSnapshot.empty) {
-            const lastMessage = lastMessageSnapshot.docs[0].data();
-            if (lastMessage.senderId && lastMessage.senderId !== userId) {
-              return 1; // Count this chat
-            }
-          }
-          return 0;
-        });
-
-        const chatResults = await Promise.allSettled(chatPromises);
-        messageCount = chatResults.reduce((sum, result) => {
-          return sum + (result.status === 'fulfilled' ? result.value : 0);
-        }, 0);
-        
-      } catch (e) {
-        console.warn(`🔔 BADGE WARN: Failed to count unread messages for ${userId}:`, e.message);
-        messageCount = 0;
-      }
-
-      const totalBadgeCount = notificationCount + messageCount;
-
-      console.log(`🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`);
-
-      // Update badge count in user document
-      transaction.update(db.collection("users").doc(userId), {
-        currentBadge: totalBadgeCount,
-        lastBadgeUpdate: FieldValue.serverTimestamp()
-      });
-
-      return { 
-        success: true, 
-        fcmToken, 
-        badgeCount: totalBadgeCount,
-        notificationCount,
-        messageCount
-      };
-    });
-
-    if (!result.success) {
-      console.error(`❌ BADGE UPDATE: Failed to calculate badge for user ${userId}:`, result.error);
-      return;
-    }
-
-    // Send badge update with retry mechanism
-    await sendBadgeUpdateWithRetry(userId, result.fcmToken, result.badgeCount);
-
-    console.log(`✅ BADGE UPDATE: Badge updated successfully for user ${userId} to ${result.badgeCount}`);
-
-  } catch (error) {
-    console.error(`❌ BADGE UPDATE: Failed to update badge for user ${userId}:`, error);
-    
-    // Handle specific error cases
-    if (error.code === 'NOT_FOUND') {
-      console.log(`🔔 BADGE UPDATE: User ${userId} not found, skipping update`);
-    } else if (error.code === 'PERMISSION_DENIED') {
-      console.log(`🔔 BADGE UPDATE: Permission denied for user ${userId}, skipping update`);
-    }
-  }
-};
 
 const serializeData = (data) => {
   if (data === null || data === undefined || typeof data !== 'object') {
@@ -1545,6 +1812,94 @@ const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your bus
   }
 };
 
+/**
+ * Enterprise-grade notification creation with transaction safety and comprehensive error handling
+ * Ensures atomic operations and proper error recovery for mission-critical notifications
+ */
+const createNotificationWithTransaction = async (userId, notificationContent, notificationType) => {
+  const maxRetries = 3;
+  const baseDelayMs = 1000;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🔔 ENTERPRISE: Creating ${notificationType} notification for user ${userId} (attempt ${attempt}/${maxRetries})`);
+      
+      // IDEMPOTENCY CHECK: Prevent duplicate notifications (MUST be outside transaction)
+      const userRef = db.collection('users').doc(userId);
+      const existingNotificationsQuery = await userRef.collection('notifications')
+        .where('notificationType', '==', notificationType)
+        .where('type', '==', notificationContent.type)
+        .limit(1)
+        .get();
+      
+      if (!existingNotificationsQuery.empty) {
+        console.log(`🔔 ENTERPRISE: Duplicate ${notificationType} notification of type ${notificationContent.type} already exists for user ${userId}. Skipping.`);
+        return;
+      }
+      
+      // Use Firestore transaction for atomic operation
+      await db.runTransaction(async (transaction) => {
+        // Verify user still exists before creating notification
+        const userDoc = await transaction.get(userRef);
+        
+        if (!userDoc.exists) {
+          throw new Error(`User ${userId} does not exist - aborting notification creation`);
+        }
+
+        const userData = userDoc.data();
+        
+        // Additional safety checks based on notification type
+        if (notificationType === 'qualification' && userData.qualifiedDate) {
+          console.log(`🔔 ENTERPRISE: User ${userId} already qualified, skipping duplicate notification`);
+          return;
+        }
+        
+        if (notificationType === 'milestone' && userData.qualifiedDate) {
+          console.log(`🔔 ENTERPRISE: User ${userId} already qualified, skipping milestone notification`);
+          return;
+        }
+
+        // Create notification with enterprise-grade metadata
+        const enhancedNotificationContent = {
+          ...notificationContent,
+          createdAt: FieldValue.serverTimestamp(),
+          read: false,
+          notificationType,
+          version: '2.0', // Version tracking for future migrations
+          source: 'cloud_function_enterprise',
+          retryAttempt: attempt
+        };
+
+        // Atomic notification creation
+        const notificationRef = userRef.collection('notifications').doc();
+        transaction.set(notificationRef, enhancedNotificationContent);
+        
+        console.log(`✅ ENTERPRISE: ${notificationType} notification created successfully for user ${userId} with ID: ${notificationRef.id}`);
+      });
+
+      // Success - exit retry loop
+      return;
+
+    } catch (error) {
+      console.error(`❌ ENTERPRISE: Attempt ${attempt}/${maxRetries} failed for ${notificationType} notification to user ${userId}:`, error.message);
+      
+      if (attempt === maxRetries) {
+        // Final attempt failed - log critical error but don't throw to prevent function failure
+        console.error(`🚨 ENTERPRISE CRITICAL: All ${maxRetries} attempts failed for ${notificationType} notification to user ${userId}. Manual intervention may be required.`);
+        console.error(`🚨 ENTERPRISE CRITICAL: Final error:`, error);
+        
+        // Could implement alerting here (e.g., send to monitoring service)
+        return;
+      }
+
+      // Wait before retry with exponential backoff
+      const delayMs = baseDelayMs * Math.pow(2, attempt - 1);
+      console.log(`🔄 ENTERPRISE: Retrying in ${delayMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+};
+
 exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -1570,25 +1925,6 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
   }
 });
 
-const sendBadgeUpdateWithRetry = async (userId, fcmToken, badgeCount, maxRetries = 3) => {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      await messaging.send({
-        token: fcmToken,
-        data: { badge: badgeCount.toString() },
-        apns: {
-          payload: {
-            aps: { badge: badgeCount }
-          }
-        }
-      });
-      return;
-    } catch (error) {
-      if (attempt === maxRetries) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-    }
-  }
-};
 
 // ============================================================================
 // *** MODIFIED FUNCTION: getUserByReferralCode ***
@@ -1905,10 +2241,12 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
     // Apply main filters
     const now = new Date();
     switch (filter) {
-      case 'last24':
+      case 'last24': {
         const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         baseQuery = baseQuery.where("createdAt", ">=", twentyFourHoursAgo);
         break;
+      }
+
       case 'newQualified':
         baseQuery = baseQuery.where("qualifiedDate", "!=", null);
         break;
@@ -1970,95 +2308,6 @@ exports.getFilteredNetwork = onCall({ region: "us-central1" }, async (request) =
   }
 });
 
-
-exports.sendPushNotification = onDocumentCreated("users/{userId}/notifications/{notificationId}", async (event) => {
-  const snap = event.data;
-  if (!snap) {
-    console.log("🔔 PUSH DEBUG: No data associated with the event");
-    return;
-  }
-  const userId = event.params.userId;
-  const notificationId = event.params.notificationId;
-  const notificationData = snap.data();
-
-  console.log(`🔔 PUSH DEBUG: Starting push notification process`);
-  console.log(`🔔 PUSH DEBUG: User ID: ${userId}`);
-  console.log(`🔔 PUSH DEBUG: Notification ID: ${notificationId}`);
-  console.log(`🔔 PUSH DEBUG: Notification data:`, JSON.stringify(notificationData, null, 2));
-
-  try {
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists) {
-      console.error(`🔔 PUSH DEBUG: User document for ${userId} does not exist.`);
-      return;
-    }
-
-    const userData = userDoc.data();
-    const fcmToken = userData?.fcm_token;
-
-    console.log(`🔔 PUSH DEBUG: User found - Name: ${userData?.firstName} ${userData?.lastName}`);
-
-    if (!fcmToken) {
-      console.log(`🔔 PUSH DEBUG: Missing FCM token for user ${userId}. Skipping push notification.`);
-      return;
-    }
-
-    console.log(`🔔 PUSH DEBUG: FCM token found: ${fcmToken.substring(0, 20)}...`);
-
-    const imageUrl = notificationData?.imageUrl;
-
-    // Send the push notification without badge (badge will be updated by centralized function)
-    const message = {
-      token: fcmToken,
-      notification: {
-        title: notificationData?.title || "Team Build Pro Update",
-        body: notificationData?.message || "Something new in your network",
-        // Removed imageUrl to prevent iOS notification failures
-      },
-      data: {
-        notification_id: notificationId,
-        type: notificationData?.type || "generic",
-        route: notificationData?.route || "/",
-        route_params: notificationData?.route_params || "{}",
-        imageUrl: imageUrl || "", // Keep in data for app handling
-      },
-      apns: {
-        payload: {
-          aps: {
-            alert: {
-              title: notificationData?.title || "Team Build Pro Update",
-              body: notificationData?.message || "Something new in your network",
-            },
-            sound: "default",
-            // Badge will be set by updateUserBadge function
-          },
-        },
-      },
-      android: {
-        notification: {
-          sound: "default",
-        },
-      },
-    };
-
-    console.log(`🔔 PUSH DEBUG: Message payload:`, JSON.stringify(message, null, 2));
-
-    const response = await messaging.send(message);
-    console.log(`✅ PUSH DEBUG: FCM push sent successfully to user ${userId}`);
-    console.log(`✅ PUSH DEBUG: FCM Response:`, response);
-
-    // Update badge using centralized function after notification is created
-    console.log(`🔔 PUSH DEBUG: Updating badge using centralized function`);
-    await updateUserBadge(userId);
-
-  } catch (error) {
-    console.error(`❌ PUSH DEBUG: Failed to send FCM push to user ${userId}:`, error);
-    console.error(`❌ PUSH DEBUG: Error code:`, error.code);
-    console.error(`❌ PUSH DEBUG: Error message:`, error.message);
-    console.error(`❌ PUSH DEBUG: Full error:`, error);
-  }
-});
-
 exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{messageId}", async (event) => {
   const snap = event.data;
   if (!snap) {
@@ -2104,19 +2353,28 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
     const senderPhotoUrl = senderData.photoUrl;
     const messageText = message.text || "You received a new message.";
 
-    const notificationContent = {
-      title: `New Message from ${senderName}`,
-      message: `${messageText}`,
-      imageUrl: senderPhotoUrl || null,
-      createdAt: FieldValue.serverTimestamp(),
-      read: false,
-      type: "new_message",
-      route: "/message_thread",
-      route_params: JSON.stringify({ "threadId": threadId }),
-    };
-
     const notificationPromises = recipients.map(recipientId => {
-      return db.collection("users").doc(recipientId).collection("notifications").add(notificationContent);
+      return createNotificationWithPush({
+        userId: recipientId,
+        type: 'chat_message',
+        title: `New Message from ${senderName}`,
+        body: messageText,
+        docFields: { 
+          chatId: threadId, 
+          messageId: snap.id, 
+          fromUid: senderId, 
+          fromName: senderName,
+          imageUrl: senderPhotoUrl || null,
+          route: "/message_thread",
+          route_params: JSON.stringify({ "threadId": threadId }),
+        },
+        data: { 
+          route: 'message_thread', 
+          threadId,
+          messageId: snap.id,
+          fromUid: senderId
+        },
+      });
     });
 
     await Promise.all(notificationPromises);
@@ -2129,237 +2387,6 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
 
   } catch (error) {
     console.error(`Error in onNewChatMessage for thread ${threadId}:`, error);
-  }
-});
-
-exports.notifyOnNewSponsorship = onDocumentUpdated("users/{userId}", async (event) => {
-  const beforeData = event.data?.before.data();
-  const afterData = event.data?.after.data();
-
-  if (!beforeData || !afterData) {
-    console.log("🔔 SPONSORSHIP DEBUG: Missing before or after data");
-    return;
-  }
-
-  const newUserId = event.params.userId;
-
-  // Check if profile was completed for the first time using explicit flag
-  const beforeIsProfileComplete = beforeData.isProfileComplete;
-  const afterIsProfileComplete = afterData.isProfileComplete;
-
-  if (beforeIsProfileComplete === true || afterIsProfileComplete !== true) {
-    console.log(`🔔 SPONSORSHIP DEBUG: Profile not completed for the first time for user ${newUserId}. Before: ${beforeIsProfileComplete}, After: ${afterIsProfileComplete}. Skipping notification.`);
-    return;
-  }
-
-  console.log(`🔔 SPONSORSHIP DEBUG: Profile completed for the first time for user ${newUserId}`);
-
-  if (!afterData.referredBy) {
-    console.log(`🔔 SPONSORSHIP DEBUG: New user ${newUserId} has no referredBy field. Skipping sponsorship notification.`);
-    return;
-  }
-
-  try {
-    console.log(`🔔 SPONSORSHIP DEBUG: Looking for sponsor with referral code: ${afterData.referredBy}`);
-
-    const sponsorQuery = await db.collection("users").where("referralCode", "==", afterData.referredBy).limit(1).get();
-    if (sponsorQuery.empty) {
-      console.log(`🔔 SPONSORSHIP DEBUG: Sponsor with referral code ${afterData.referredBy} not found.`);
-      return;
-    }
-
-    const sponsorDoc = sponsorQuery.docs[0];
-    const sponsor = sponsorDoc.data();
-    const sponsorId = sponsorDoc.id;
-
-    console.log(`🔔 SPONSORSHIP DEBUG: Found sponsor - ID: ${sponsorId}, Name: ${sponsor.firstName} ${sponsor.lastName}`);
-    console.log(`🔔 SPONSORSHIP DEBUG: Sponsor role: ${sponsor.role}`);
-    console.log(`🔔 SPONSORSHIP DEBUG: New user adminReferral: ${afterData.adminReferral}`);
-
-    const newUserLocation = `${afterData.city || ""}, ${afterData.state || ""}${afterData.country ? ` - ${afterData.country}` : ""}`;
-
-    // Get business opportunity name using centralized helper
-    const bizOppName = await getBusinessOpportunityName(sponsor.upline_admin);
-
-    let notificationContent;
-
-    // Determine notification type based on referral method
-    if (afterData.adminReferral && sponsor.role === 'admin') {
-      // Scenario 2: Admin sharing with existing business opportunity downline member (new= parameter)
-      console.log(`🔔 SPONSORSHIP DEBUG: Admin-to-existing-downline scenario detected`);
-
-      notificationContent = {
-        title: "🎉 You have a new team member!",
-        message: `Congratulations, ${sponsor.firstName}! Your existing ${bizOppName} partner, ${afterData.firstName} ${afterData.lastName}, has joined you on the Team Build Pro app. You're now on the same system to accelerate growth and duplication! Click Here to view their profile.`,
-        imageUrl: afterData.photoUrl || null,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        type: "new_member",
-        route: "/member_detail",
-        route_params: JSON.stringify({ "userId": newUserId }),
-      };
-    } else {
-      // Scenario 1: Regular sponsorship (ref= parameter) - user-to-user or admin-to-new-prospect
-      console.log(`🔔 SPONSORSHIP DEBUG: Regular sponsorship scenario detected`);
-
-      notificationContent = {
-        title: "🎉 You have a new team member!",
-        message: `Congratulations, ${sponsor.firstName}! ${afterData.firstName} ${afterData.lastName} from ${newUserLocation} has just joined your team on the Team Build Pro app. This is the first step in creating powerful momentum together! Click Here to view their profile.`,
-        imageUrl: afterData.photoUrl || null,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        type: "new_member",
-        route: "/member_detail",
-        route_params: JSON.stringify({ "userId": newUserId }),
-      };
-    }
-
-    console.log(`🔔 SPONSORSHIP DEBUG: Creating notification for sponsor ${sponsorId}`);
-    console.log(`🔔 SPONSORSHIP DEBUG: Notification content:`, JSON.stringify(notificationContent, null, 2));
-
-    await db.collection("users").doc(sponsorId).collection("notifications").add(notificationContent);
-    console.log(`✅ SPONSORSHIP DEBUG: Sponsorship notification successfully sent to ${sponsorId}.`);
-
-  } catch (error) {
-    console.error(`❌ SPONSORSHIP DEBUG: Error creating sponsorship notification:`, error);
-    console.error(`❌ SPONSORSHIP DEBUG: Error details:`, error.message, error.stack);
-  }
-});
-
-exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event) => {
-  const beforeData = event.data?.before.data();
-  const afterData = event.data?.after.data();
-
-  if (!beforeData || !afterData || beforeData.qualifiedDate) {
-    return;
-  }
-
-  try {
-    const template = await remoteConfig.getTemplate();
-    const parameters = template.parameters;
-    const projectWideDirectSponsorMin = parseInt(parameters.projectWideDirectSponsorMin?.defaultValue?.value || '4', 10);
-    const projectWideTotalTeamMin = parseInt(parameters.projectWideDataTeamMin?.defaultValue?.value || '20', 10);
-
-    const wasQualifiedBefore = (beforeData.directSponsorCount >= projectWideDirectSponsorMin) && (beforeData.totalTeamCount >= projectWideTotalTeamMin);
-    const isQualifiedNow = (afterData.directSponsorCount >= projectWideDirectSponsorMin) && (afterData.totalTeamCount >= projectWideTotalTeamMin);
-    const isJoined = beforeData.bizJoinDate;
-
-    if (!wasQualifiedBefore && isQualifiedNow && !isJoined) {
-      if (afterData.role === 'admin') {
-        console.log(`User ${event.params.userId} is an admin. Skipping qualification notification.`);
-        await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
-        return;
-      }
-
-      await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
-
-      // Get business opportunity name using centralized helper
-      const bizName = await getBusinessOpportunityName(afterData.upline_admin);
-
-      const notificationContent = {
-        title: "You're Qualified!",
-        message: `Your hard work paid off, ${afterData.firstName}! You've built a qualified team and are now eligible to join the ${bizName} organization. Click Here to take the next step!`,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        type: "new_qualification",
-        route: "/business",
-        route_params: JSON.stringify({}),
-      };
-      await db.collection("users").doc(event.params.userId).collection("notifications").add(notificationContent);
-    }
-  } catch (error) {
-    console.error(`Error in notifyOnQualification for user ${event.params.userId}:`, error);
-  }
-});
-
-/**
- * Milestone Notification Function - Notify users when they reach individual qualification milestones
- * Triggers on directSponsorCount or totalTeamCount updates to encourage continued progress
- */
-exports.notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (event) => {
-  const beforeData = event.data?.before.data();
-  const afterData = event.data?.after.data();
-
-  if (!beforeData || !afterData) {
-    return;
-  }
-
-  const userId = event.params.userId;
-
-  try {
-    // Skip admins from milestone notifications
-    if (afterData.role === 'admin') {
-      return;
-    }
-
-    // Skip if user is already qualified (they get the main qualification notification instead)
-    if (afterData.qualifiedDate) {
-      return;
-    }
-
-    // Get remote config values for qualification requirements
-    const template = await remoteConfig.getTemplate();
-    const parameters = template.parameters;
-    const projectWideDirectSponsorMin = parseInt(parameters.projectWideDirectSponsorMin?.defaultValue?.value || '4', 10);
-    const projectWideTotalTeamMin = parseInt(parameters.projectWideDataTeamMin?.defaultValue?.value || '20', 10);
-
-    const beforeDirectSponsors = beforeData.directSponsorCount || 0;
-    const afterDirectSponsors = afterData.directSponsorCount || 0;
-    const beforeTotalTeam = beforeData.totalTeamCount || 0;
-    const afterTotalTeam = afterData.totalTeamCount || 0;
-
-    console.log(`🎯 MILESTONE: User ${userId} - Direct: ${beforeDirectSponsors}→${afterDirectSponsors}, Total: ${beforeTotalTeam}→${afterTotalTeam}`);
-
-    // Get business opportunity name using centralized helper
-    const bizName = await getBusinessOpportunityName(afterData.upline_admin);
-
-    let notificationContent = null;
-
-    // Check for 4 direct sponsors milestone (but still needs total team count)
-    if (beforeDirectSponsors < projectWideDirectSponsorMin && 
-        afterDirectSponsors >= projectWideDirectSponsorMin && 
-        afterTotalTeam < projectWideTotalTeamMin) {
-      
-      const remainingTeamNeeded = projectWideTotalTeamMin - afterTotalTeam;
-      console.log(`🎯 MILESTONE: User ${userId} reached 4 direct sponsors, needs ${remainingTeamNeeded} more total team members`);
-      
-      notificationContent = {
-        title: "🎉 Amazing Progress!",
-        message: `Congratulations, ${afterData.firstName}! You've reached ${projectWideDirectSponsorMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        type: "milestone_direct_sponsors",
-        route: "/network",
-        route_params: JSON.stringify({ "filter": "all" }),
-      };
-    }
-    // Check for 20 total team milestone (but still needs direct sponsors)
-    else if (beforeTotalTeam < projectWideTotalTeamMin && 
-             afterTotalTeam >= projectWideTotalTeamMin && 
-             afterDirectSponsors < projectWideDirectSponsorMin) {
-      
-      const remainingDirectNeeded = projectWideDirectSponsorMin - afterDirectSponsors;
-      console.log(`🎯 MILESTONE: User ${userId} reached ${projectWideTotalTeamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
-      
-      notificationContent = {
-        title: "🚀 Incredible Growth!",
-        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${projectWideTotalTeamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-        type: "milestone_total_team",
-        route: "/network", 
-        route_params: JSON.stringify({ "filter": "all" }),
-      };
-    }
-
-    // Send notification if a milestone was reached
-    if (notificationContent) {
-      await db.collection("users").doc(userId).collection("notifications").add(notificationContent);
-      console.log(`✅ MILESTONE: Milestone notification sent to user ${userId} - ${notificationContent.type}`);
-    }
-
-  } catch (error) {
-    console.error(`❌ MILESTONE: Error in notifyOnMilestoneReached for user ${userId}:`, error);
   }
 });
 
@@ -2448,6 +2475,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
       throw new HttpsError("not-found", "User document not found.");
     }
     const userData = userDoc.data();
+    
 
     if (userData.biz_visit_date) {
       console.log(`User ${visitingUserId} has already visited the opportunity. Skipping notification.`);
@@ -2476,20 +2504,27 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     // Get business opportunity name using centralized helper
     const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
-    const notificationContent = {
+
+    const result = await createNotificationWithPush({
+      userId: sponsorId,
+      type: 'biz_opp_visit',
       title: `Interest in your ${bizOpp} opportunity! 🎉`,
-      message: `${visitingUserName} has just used your referral link to to learn more about the ${bizOpp} opportunity! Click Here to view their profile.`,
-      imageUrl: userData.photoUrl || null,
-      createdAt: FieldValue.serverTimestamp(),
-      read: false,
-      type: "biz_opp_visit",
-      route: "/member_detail",
-      route_params: JSON.stringify({ "userId": visitingUserId }),
-    };
+      body: `${visitingUserName} has just used your referral link to to learn more about the ${bizOpp} opportunity! Click Here to view their profile.`,
+      docFields: { 
+        visitingUserName, 
+        visitingUserId, 
+        route: "/member_detail",
+        route_params: JSON.stringify({ "userId": visitingUserId }),
+        imageUrl: userData.photoUrl || null,
+      },
+      data: { 
+        route: 'member_detail', 
+        userId: visitingUserId,
+        visitingUserId
+      },
+    });
 
-    await db.collection("users").doc(sponsorId).collection("notifications").add(notificationContent);
-
-    console.log(`Biz opp visit notification sent to sponsor ${sponsorId} for user ${visitingUserId}.`);
+    console.log(`Biz opp visit notification sent to sponsor ${sponsorId} for user ${visitingUserId} - Push sent: ${result.push.sent}`);
     return { success: true };
 
   } catch (error) {
@@ -3000,22 +3035,27 @@ exports.sendDailyAccountDeletionSummary = onSchedule({
         const userData = userDoc.data();
         const deletionCount = deletions.length;
 
-        // Create summary notification
-        const summaryNotification = {
+
+        const result = await createNotificationWithPush({
+          userId,
+          type: 'team_deletion_summary',
           title: "Team Network Update",
-          message: deletionCount === 1 
+          body: deletionCount === 1 
             ? `One of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identity. No worries, it happens .. keep building!`
             : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identities. No worries, it happens .. keep building!`,
-          type: "team_deletion_summary",
-          read: false,
-          createdAt: FieldValue.serverTimestamp(),
-          route: "/network",
-          route_params: JSON.stringify({ "filter": "all" })
-        };
+          docFields: { 
+            count: deletionCount, 
+            route: "/network",
+            route_params: JSON.stringify({ "filter": "all" })
+          },
+          data: { 
+            route: 'network', 
+            filter: 'all',
+            count: String(deletionCount)
+          },
+        });
 
-        await db.collection('users').doc(userId).collection('notifications').add(summaryNotification);
-
-        console.log(`✅ DAILY DELETION SUMMARY: Sent summary to ${userData.firstName || 'Unknown'} for ${deletionCount} deletion(s)`);
+        console.log(`✅ DAILY DELETION SUMMARY: Sent summary to ${userData.firstName || 'Unknown'} for ${deletionCount} deletion(s) - Push sent: ${result.push.sent}`);
         return { success: true, userId, deletionCount };
 
       } catch (error) {
@@ -3350,8 +3390,22 @@ async function sendDeletionNotificationsToNetwork(networkData) {
     // 3. Send immediate notifications concurrently
     const notificationPromises = immediateNotifications.map(async ({ userId, notification }) => {
       try {
-        await db.collection('users').doc(userId).collection('notifications').add(notification);
-        console.log(`✅ DELETION_NOTIFICATIONS: Sent immediate notification to user ${userId}`);
+        const result = await createNotificationWithPush({
+          userId,
+          type: notification.type,
+          title: notification.title,
+          body: notification.message,
+          docFields: { 
+            deletedUserName: notification.deletedUserName,
+            route: notification.route,
+            route_params: notification.route_params
+          },
+          data: { 
+            route: notification.route.replace('/', ''), 
+            deletedUserName: notification.deletedUserName 
+          },
+        });
+        console.log(`✅ DELETION_NOTIFICATIONS: Sent immediate notification to user ${userId} - Push sent: ${result.push.sent}`);
       } catch (error) {
         console.error(`❌ DELETION_NOTIFICATIONS: Failed to send immediate notification to user ${userId}:`, error.message);
       }
@@ -3782,3 +3836,868 @@ exports.getFirestoreMetrics = onRequest({
     return res.status(500).json({ error: 'Failed to get metrics' });
   }
 });
+
+// ============================================================================
+// JOE'S ORCHESTRATOR SOLUTION - ELIMINATES RACE CONDITIONS & DUPLICATES
+// ============================================================================
+
+/**
+ * Single orchestrator function that handles profile completion events
+ * Only fires once when isProfileComplete flips from false to true
+ * 
+ * TEMPORARILY DISABLED: Due to Firebase SDK wrapper crashes (TypeError: Cannot read properties of undefined reading 'value')
+ * Using callable triggerSponsorship as reliable backstop until SDK issue is resolved
+ */
+// ==============================
+// BEGIN PATCH: user-doc-updated-v2
+// ==============================
+  exports.onUserProfileCompleted = onDocumentUpdated('users/{uid}', async (event) => {
+    // Gate: only run when trigger delivery is explicitly enabled
+    const triggerEnabled =
+      process.env.NOTIFICATIONS_DELIVERY_MODE === 'trigger' &&
+      String(process.env.NOTIFICATIONS_ENABLE_TRIGGER || 'false').toLowerCase() === 'true';
+
+    if (!triggerEnabled) {
+      console.info('onUserProfileCompleted: trigger disabled; skipping');
+      return;
+    }
+
+    const { uid } = event.params;
+    const before = event.data?.before?.data() || {};
+    const after = event.data?.after?.data() || {};
+
+    const was = !!before.isProfileComplete;
+    const now = !!after.isProfileComplete;
+    if (was || !now) return;
+
+    const traceId = `profileCompleted_${uid}_${Date.now()}`;
+    console.log('ORCH: start', { traceId, uid, was, now });
+
+    try {
+      await handleSponsorship(uid, after, traceId);
+      console.log('ORCH: done', { traceId, uid });
+    } catch (err) {
+      console.error('ORCH: failed', { traceId, uid, err });
+      throw err;
+    }
+  });
+
+// ==============================
+// END PATCH: user-doc-updated-v2
+// ==============================
+
+/**
+ * Deterministic sponsorship notification creation
+ * Uses .create() with stable document IDs to prevent duplicates
+ */
+async function handleSponsorship(newUserId, userDoc, traceId) {
+  console.log('SPONSOR: A lookup', { traceId, newUserId });
+
+  let sponsorId = null;
+
+  // 1) FIRST: Look for direct sponsor from referral code (this is the actual sponsor who should get notified)
+  const referralCodeRaw = (
+    userDoc.referredBy ||
+    userDoc.sponsorReferralCode ||
+    userDoc.sponsorReferral ||
+    ''
+  ).toString().trim();
+
+  if (referralCodeRaw) {
+    console.log('SPONSOR: B searching for referral code', { traceId, referralCodeRaw });
+    
+    // Try case-insensitive match first if you store normalized codes
+    const referralCodeLower = referralCodeRaw.toLowerCase();
+    let sponsorQuery = await db.collection('users')
+      .where('referralCodeLower', '==', referralCodeLower)
+      .limit(1)
+      .get();
+
+    if (sponsorQuery.empty) {
+      // Fallback to the exact field if you don't have the normalized copy
+      sponsorQuery = await db.collection('users')
+        .where('referralCode', '==', referralCodeRaw)
+        .limit(1)
+        .get();
+    }
+
+    if (!sponsorQuery.empty) {
+      sponsorId = sponsorQuery.docs[0].id;
+      console.log('SPONSOR: B1 found sponsor via referral code', { traceId, sponsorId, referralCodeRaw });
+    } else {
+      console.log('SPONSOR: B2 no sponsor found for referral code', { traceId, referralCodeRaw });
+    }
+  }
+
+  // 2) FALLBACK: Only use upline_admin if no direct sponsor found from referral code
+  if (!sponsorId) {
+    sponsorId = (userDoc.upline_admin || '').trim() || null;
+    if (sponsorId) {
+      console.log('SPONSOR: B3 using upline_admin fallback', { traceId, sponsorId });
+    }
+  }
+
+  if (!sponsorId) {
+    console.log('SPONSOR: skip (no sponsor found)', { traceId, newUserId });
+    return { sponsorId: null, sponsorName: null };
+  }
+
+  const sponsorSnap = await db.collection('users').doc(sponsorId).get();
+  if (!sponsorSnap.exists) {
+    console.log('SPONSOR: skip (sponsor doc missing)', { traceId, sponsorId });
+    return { sponsorId: null, sponsorName: null };
+  }
+  const sponsorData = sponsorSnap.data();
+  const sponsorName = `${sponsorData.firstName} ${sponsorData.lastName}`;
+  
+  console.log('SPONSOR: C found sponsor', { traceId, sponsorId, sponsorName });
+
+  // Write back upline_admin when derived from referral code (optimization for future lookups)
+  if (!userDoc.upline_admin && sponsorId) {
+    try {
+      await db.collection('users').doc(newUserId).set({ upline_admin: sponsorId }, { merge: true });
+      console.log('SPONSOR: wrote upline_admin', { traceId, newUserId, sponsorId });
+    } catch (e) {
+      console.warn('SPONSOR: failed to write upline_admin (non-fatal)', { traceId, msg: e?.message });
+    }
+  }
+
+  // Create deterministic notification ID
+  const notifId = `sponsorship_${newUserId}`;
+
+  const newUserLocation = `${userDoc.city || ""}, ${userDoc.state || ""}${userDoc.country ? ` - ${userDoc.country}` : ""}`;
+  const bizOppName = await getBusinessOpportunityName(sponsorData.upline_admin);
+
+  let title, message;
+  if (userDoc.adminReferral && sponsorData.role === 'admin') {
+    title = "🎉 You have a new team member!";
+    message = `Congratulations, ${sponsorData.firstName}! Your existing ${bizOppName} partner, ${userDoc.firstName} ${userDoc.lastName}, has joined you on the Team Build Pro app. You're now on the same system to accelerate growth and duplication! Click Here to view their profile.`;
+  } else {
+    title = "🎉 You have a new team member!";
+    message = `Congratulations, ${sponsorData.firstName}! ${userDoc.firstName} ${userDoc.lastName} from ${newUserLocation} has just joined your team on the Team Build Pro app. This is the first step in creating powerful momentum together! Click Here to view their profile.`;
+  }
+
+  console.log('SPONSOR: D creating notification', { traceId, sponsorId, notifId });
+  
+  const result = await createNotificationWithPush({
+    userId: sponsorId,
+    type: 'new_member',
+    title,
+    body: message,
+    notifId,
+    docFields: {
+      imageUrl: userDoc.photoUrl || null,
+      route: '/member_detail',
+      route_params: JSON.stringify({ userId: newUserId }),
+    },
+    data: {
+      route: '/member_detail',
+      userId: newUserId,
+      newUserId,
+    },
+  });
+  
+  if (result.ok) {
+    console.log('SPONSOR: E created successfully', { 
+      traceId, 
+      sponsorId, 
+      notifId: result.notificationId,
+      pushSent: result.push.sent,
+      tokenSource: result.push.tokenSource,
+      reason: result.push.reason
+    });
+  } else {
+    console.warn('SPONSOR: creation failed', { traceId, sponsorId, notifId, reason: result.push.reason });
+  }
+  
+  return { sponsorId, sponsorName };
+}
+
+// ========== UNIVERSAL NOTIFICATION + PUSH HELPER ==========
+/**
+ * Creates a notification doc under users/{userId}/notifications/{notifId?}
+ * AND sends an FCM push to that user (3-tier token resolution).
+ *
+ * Idempotency:
+ *  - If `notifId` is provided we use .create() for deterministic "at-most-once" doc creation.
+ *  - If it already exists, we still attempt the push (so retries still deliver).
+ *
+ * @param {Object} opts
+ * @param {string} opts.userId            - REQUIRED. Recipient UID (owner of notifications/{...}).
+ * @param {string} opts.type              - REQUIRED. Business type, e.g. 'sponsorship', 'chat', 'trial_warning'.
+ * @param {string} opts.title             - REQUIRED. Push title.
+ * @param {string} opts.body              - REQUIRED. Push body.
+ * @param {Object} [opts.data]            - Optional data payload (string values only; will be stringified safely).
+ * @param {string} [opts.notifId]         - Optional deterministic notification id. If omitted, a random ID (.add) is used.
+ * @param {Object} [opts.docFields]       - Extra fields to store on the notification document (merged).
+ * @param {boolean}[opts.markUnread=true] - Whether to store read:false on the doc.
+ * @param {boolean}[opts.updateBadge=true]- Whether to increment badge on success.
+ * @param {Object} [opts.apns]            - Optional APNS overrides (merged).
+ * @param {Object} [opts.android]         - Optional Android overrides (merged).
+ *
+ * @returns {Promise<{ ok: boolean, notificationId: string, push: { sent: boolean, reason?: string, tokenSource?: string } }>}
+ */
+async function createNotificationWithPush(opts) {
+  const {
+    userId,
+    type,
+    title,
+    body,
+    data = {},
+    notifId,
+    docFields = {},
+    markUnread = true,
+    updateBadge = true,
+    apns = {},
+    android = {},
+  } = opts || {};
+
+  const traceId = `notify_${userId}_${type}_${Date.now()}`;
+
+  if (!userId || !type || !title || !body) {
+    console.error('UNIV NOTIF: invalid args', { traceId, userId, type, hasTitle: !!title, hasBody: !!body });
+    return { ok: false, notificationId: '', push: { sent: false, reason: 'invalid_args' } };
+  }
+
+  const userRef = db.collection('users').doc(userId);
+
+  // 1) Create (or ensure) the notification document
+  let notificationId = notifId || null;
+  const baseDoc = {
+    type,
+    title,
+    body,
+    createdAt: FieldValue.serverTimestamp(),
+    ...(markUnread ? { read: false } : {}),
+    ...docFields,
+  };
+
+  try {
+    if (notificationId) {
+      // Deterministic: at-most-once create
+      await userRef.collection('notifications').doc(notificationId).create(baseDoc);
+      console.log('UNIV NOTIF: created', { traceId, userId, notificationId, type });
+    } else {
+      const addRes = await userRef.collection('notifications').add(baseDoc);
+      notificationId = addRes.id;
+      console.log('UNIV NOTIF: added', { traceId, userId, notificationId, type });
+    }
+  } catch (e) {
+    // Already exists? Continue to push (idempotent)
+    const alreadyExists = e?.code === 6 || e?.code === 'already-exists';
+    if (!alreadyExists) {
+      console.warn('UNIV NOTIF: doc create failed', { traceId, userId, notifId, type, msg: e?.message });
+      return { ok: false, notificationId: notifId || '', push: { sent: false, reason: 'doc_create_failed' } };
+    }
+    console.log('UNIV NOTIF: doc already exists, continue to push', { traceId, userId, notificationId: notifId, type });
+    notificationId = notifId || notificationId; // keep deterministic id
+  }
+
+  // 2) Resolve FCM token with 3-tier fallback
+  let tokenSource = 'none';
+  let fcmToken = null;
+
+  try {
+    const userSnap = await userRef.get();
+    const userData = userSnap.exists ? (userSnap.data() || {}) : {};
+
+    // Tier 1: single field
+    if (typeof userData.fcm_token === 'string' && userData.fcm_token.trim()) {
+      fcmToken = userData.fcm_token.trim();
+      tokenSource = 'fcm_token';
+    }
+
+    // Tier 2: array
+    if (!fcmToken && Array.isArray(userData.fcmTokens) && userData.fcmTokens.length > 0) {
+      const first = (userData.fcmTokens.find(t => typeof t === 'string' && t.trim()) || '').trim();
+      if (first) {
+        fcmToken = first;
+        tokenSource = 'fcmTokens[0]';
+      }
+    }
+
+    // Tier 3: subcollection
+    if (!fcmToken) {
+      const sub = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+      if (!sub.empty) {
+        const doc = sub.docs[0].data() || {};
+        if (typeof doc.token === 'string' && doc.token.trim()) {
+          fcmToken = doc.token.trim();
+          tokenSource = 'fcmTokens(subcollection)';
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('UNIV NOTIF: token lookup failed', { traceId, userId, msg: e?.message });
+  }
+
+  // 3) Build and send push (non-blocking of the created doc)
+  if (!fcmToken) {
+    console.log('UNIV NOTIF: no token found (tried all methods)', { traceId, userId, type, notificationId });
+    return { ok: true, notificationId, push: { sent: false, reason: 'no_token', tokenSource } };
+  }
+
+  // Ensure all data values are strings
+  const strData = {};
+  Object.entries(data || {}).forEach(([k, v]) => {
+    if (v === undefined || v === null) return;
+    strData[k] = typeof v === 'string' ? v : JSON.stringify(v);
+  });
+  strData.type = type;
+  strData.notificationId = notificationId;
+  strData.userId = userId;
+
+  const message = {
+    token: fcmToken,
+    notification: { title, body },
+    data: strData,
+    apns: {
+      payload: {
+        aps: {
+          alert: { title, body },
+          sound: 'default',
+          'mutable-content': 1,
+        },
+      },
+      ...apns,
+    },
+    android: {
+      priority: 'high',
+      notification: {
+        channelId: android?.notification?.channelId || 'default',
+      },
+      ...android,
+    },
+  };
+
+  try {
+    const res = await messaging.send(message);
+    console.log('UNIV NOTIF: push sent', { traceId, userId, tokenSource, notificationId, type, msgId: res });
+
+    if (updateBadge) {
+      try {
+        await userRef.update({ badgeCount: FieldValue.increment(1) });
+      } catch (e) {
+        console.warn('UNIV NOTIF: badge update failed (non-fatal)', { traceId, userId, msg: e?.message });
+      }
+    }
+
+    return { ok: true, notificationId, push: { sent: true, tokenSource } };
+  } catch (e) {
+    // Handle invalid tokens gracefully; you can optionally clean up here
+    const code = e?.errorInfo?.code || e?.code || '';
+    const tokenInvalid =
+      code === 'messaging/registration-token-not-registered' ||
+      code === 'messaging/invalid-registration-token';
+
+    if (tokenInvalid) {
+      console.warn('UNIV NOTIF: invalid token', { traceId, userId, tokenSource, notificationId, type, code });
+      await cleanupDeadToken(userRef, fcmToken);
+    } else {
+      console.warn('UNIV NOTIF: push send failed', { traceId, userId, tokenSource, notificationId, type, code, msg: e?.message });
+    }
+    return { ok: true, notificationId, push: { sent: false, reason: code || 'push_failed', tokenSource } };
+  }
+}
+// ========== /UNIVERSAL NOTIFICATION + PUSH HELPER ==========
+
+
+/**
+ * Manual trigger for sponsorship notifications - callable backstop
+ * Safe to call multiple times due to deterministic .create() in handleSponsorship
+ */
+exports.triggerSponsorship = onCall(
+  { region: 'us-central1', timeoutSeconds: 60, memory: '512MiB' },
+  async (req) => {
+    const uid = req.auth?.uid;
+    if (!uid) throw new HttpsError('unauthenticated', 'Must be signed in');
+
+    const traceId = `manual_orch_${uid}_${Date.now()}`;
+    console.log('ORCH: manual start', { traceId, uid });
+
+    const userRef = db.collection('users').doc(uid);
+    const snap = await userRef.get();
+    if (!snap.exists) throw new HttpsError('not-found', 'User not found');
+
+    const data = snap.data() || {};
+    // Only run when profile is complete to mirror the orchestrator gate.
+    if (!data.isProfileComplete) {
+      console.log('ORCH: manual skip (profile incomplete)', { traceId, uid });
+      return { ok: false, reason: 'profile_incomplete' };
+    }
+
+    const result = await handleSponsorship(uid, data, traceId);
+    console.log('ORCH: manual done', { traceId, uid, result });
+    return { 
+      ok: true, 
+      sponsorId: result?.sponsorId || null, 
+      sponsorName: result?.sponsorName || null 
+    };
+  }
+);
+
+// --- Firestore v1 push sender: users/{userId}/notifications/{notificationId} ---
+// DISABLED: Replaced with universal createNotificationWithPush helper
+// All notifications now use direct FCM push to avoid SDK crashes
+// exports.onNotificationCreated = functionsV1
+//   .region('us-central1')
+//   .runWith({ timeoutSeconds: 60, memory: '512MB' }) // v1 uses MB
+//   .firestore
+//   .document('users/{userId}/notifications/{notificationId}')
+//   .onCreate(async (snap, context) => {
+//     const userId = context.params.userId;
+//     const notificationId = context.params.notificationId;
+//     const notificationData = snap.data() || {};
+// 
+//     const traceId = `push_${userId}_${notificationId}_${Date.now()}`;
+//     console.log('PUSH: start', { traceId, userId, notificationId });
+// 
+//     try {
+//       const userRef = db.collection('users').doc(userId);
+//       const userDoc = await userRef.get();
+//       if (!userDoc.exists) {
+//         console.error('PUSH: user not found', { traceId, userId });
+//         return;
+//       }
+//       const userData = userDoc.data() || {};
+// 
+//       // --- 3-tier FCM token resolution ---
+//       let fcmTokenResolved = userData.fcm_token;
+//       if (fcmTokenResolved) {
+//         console.log('PUSH: token resolved via fcm_token field', { traceId, userId });
+//       } else if (Array.isArray(userData.fcmTokens) && userData.fcmTokens.length > 0) {
+//         fcmTokenResolved = userData.fcmTokens[0];
+//         console.log('PUSH: token resolved via fcmTokens array', { traceId, userId });
+//       } else {
+//         const tokensSnap = await userRef.collection('fcmTokens').limit(1).get();
+//         if (!tokensSnap.empty) {
+//           fcmTokenResolved = tokensSnap.docs[0].id;
+//           console.log('PUSH: token resolved via fcmTokens subcollection', { traceId, userId });
+//         }
+//       }
+// 
+//       if (!fcmTokenResolved) {
+//         console.log('PUSH: no token found (tried all methods)', { traceId, userId });
+//         return;
+//       }
+// 
+//       const message = {
+//         token: fcmTokenResolved,
+//         notification: {
+//           title: notificationData?.title || 'Team Build Pro Update',
+//           body: notificationData?.message || 'Something new in your network',
+//         },
+//         data: {
+//           notification_id: notificationId,
+//           type: notificationData?.type || 'generic',
+//           route: notificationData?.route || '/',
+//           route_params: notificationData?.route_params || '{}',
+//           imageUrl: notificationData?.imageUrl || '',
+//         },
+//         apns: {
+//           payload: {
+//             aps: {
+//               alert: {
+//                 title: notificationData?.title || 'Team Build Pro Update',
+//                 body: notificationData?.message || 'Something new in your network',
+//               },
+//               sound: 'default',
+//               'mutable-content': 1,
+//             },
+//           },
+//         },
+//         android: {
+//           notification: {
+//             title: notificationData?.title || 'Team Build Pro Update',
+//             body: notificationData?.message || 'Something new in your network',
+//             sound: 'default',
+//             clickAction: 'FLUTTER_NOTIFICATION_CLICK',
+//           },
+//         },
+//       };
+// 
+//       const response = await messaging.send(message);
+//       console.log('PUSH: sent successfully', { traceId, userId, response });
+// 
+//       // Keep your existing badge updater
+//       if (typeof updateUserBadge === 'function') {
+//         await updateUserBadge(userId);
+//       }
+//     } catch (error) {
+//       console.error('PUSH: failed', { traceId, userId, error: error?.message });
+//       if (error?.code === 'messaging/registration-token-not-registered') {
+//         console.log('PUSH: token invalid, should clean up', { traceId, userId });
+//       }
+//     }
+//   });
+
+/**
+ * DISABLED: Enhanced push notification sender with 3-tier FCM token fallback
+ * Replaced with universal createNotificationWithPush helper to avoid SDK crashes
+ */
+// exports.onNotificationCreated = onDocumentCreated(
+//   { region: "us-central1", timeoutSeconds: 60, memory: "512MiB" },
+//   'users/{userId}/notifications/{notificationId}',
+//   async (event) => {
+//     const snap = event.data;
+//     if (!snap) {
+//       console.log('🔔 PUSH DEBUG: No data associated with the event');
+//       return;
+//     }
+//     
+//     const userId = event.params.userId;
+//     const notificationId = event.params.notificationId;
+//     const notificationData = snap.data();
+// 
+//     const traceId = `push_${userId}_${notificationId}_${Date.now()}`;
+//     console.log('PUSH: start', { traceId, userId, notificationId });
+// 
+//     try {
+//       const userRef = db.collection('users').doc(userId);
+//       const userDoc = await userRef.get();
+//       
+//       if (!userDoc.exists) {
+//         console.error('PUSH: user not found', { traceId, userId });
+//         return;
+//       }
+// 
+//       const userData = userDoc.data();
+// 
+//       // 3-TIER TOKEN RESOLUTION - Joe's enhanced fallback logic
+//       let fcmTokenResolved = userData.fcm_token;
+//       if (fcmTokenResolved) {
+//         console.log('PUSH: token resolved via fcm_token field', { traceId, userId });
+//       } else if (Array.isArray(userData.fcmTokens)) {
+//         fcmTokenResolved = userData.fcmTokens[0];
+//         console.log('PUSH: token resolved via fcmTokens array', { traceId, userId });
+//       }
+//       if (!fcmTokenResolved) {
+//         const tokensSnap = await userRef.collection("fcmTokens").limit(1).get();
+//         if (!tokensSnap.empty) {
+//           fcmTokenResolved = tokensSnap.docs[0].id;
+//           console.log('PUSH: token resolved via fcmTokens subcollection', { traceId, userId });
+//         }
+//       }
+// 
+//       if (!fcmTokenResolved) {
+//         console.log('PUSH: no token found (tried all methods)', { traceId, userId });
+//         return;
+//       }
+// 
+//       const message = {
+//         token: fcmTokenResolved,
+//         notification: {
+//           title: notificationData?.title || 'Team Build Pro Update',
+//           body: notificationData?.message || 'Something new in your network',
+//         },
+//         data: {
+//           notification_id: notificationId,
+//           type: notificationData?.type || 'generic',
+//           route: notificationData?.route || '/',
+//           route_params: notificationData?.route_params || '{}',
+//           imageUrl: notificationData?.imageUrl || '',
+//         },
+//         apns: {
+//           payload: {
+//             aps: {
+//               alert: {
+//                 title: notificationData?.title || 'Team Build Pro Update',
+//                 body: notificationData?.message || 'Something new in your network',
+//               },
+//               sound: 'default',
+//               'mutable-content': 1,
+//             },
+//           },
+//         },
+//         android: {
+//           notification: {
+//             title: notificationData?.title || 'Team Build Pro Update',
+//             body: notificationData?.message || 'Something new in your network',
+//             sound: 'default',
+//             clickAction: 'FLUTTER_NOTIFICATION_CLICK',
+//           },
+//         },
+//       };
+// 
+//       const response = await messaging.send(message);
+//       console.log('PUSH: sent successfully', { traceId, userId, response });
+// 
+//       // Update badge count after sending notification
+//       await updateUserBadge(userId);
+// 
+//     } catch (error) {
+//       console.error('PUSH: failed', { traceId, userId, error: error.message });
+//       
+//       if (error.code === 'messaging/registration-token-not-registered') {
+//         console.log('PUSH: token invalid, should clean up', { traceId, userId });
+//       }
+//     }
+//   }
+// );
+
+} // END ENABLE_EXTRA_EXPORTS guard
+// ==============================
+// END PATCH: export-bisect-wrap
+// ==============================
+
+// ==============================
+// BEGIN PATCH: notification-created-v2
+// ==============================
+exports.onNotificationCreated = onDocumentCreated('users/{userId}/notifications/{notificationId}', async (event) => {
+  const { userId, notificationId } = event.params;
+
+  // Config + delivery-mode guards (prevents duplicates)
+  if (!NOTIF_TRIGGER_ENABLED) {
+    console.log('TRIGGER: disabled by config; skipping push', { userId, notificationId });
+    return;
+  }
+  if (!isTriggerMode) {
+    console.log('TRIGGER: disabled by delivery_mode; skipping push', { userId, notificationId, DELIVERY_MODE });
+    return;
+  }
+
+  const d = event.data?.data() || {};
+  const payload = {
+    type: d.type || 'generic',
+    title: d.title || 'Team Build Pro',
+    message: d.message || d.body || '',
+    route: d.route || '/',
+    route_params: (() => { try { return JSON.parse(d.route_params || '{}'); } catch { return {}; } })(),
+    imageUrl: d.imageUrl || ''
+  };
+
+  // Reuse your push path
+  const push = await sendPushToUser(userId, notificationId, payload);
+
+  // Badge is non-fatal; wrap separately
+  try {
+    await updateUserBadge(userId);
+  } catch (err) {
+    console.log('BADGE: non-fatal error', { userId, notificationId, msg: err?.message });
+  }
+
+  console.log('TRIGGER: done', { userId, notificationId, push });
+});
+// ==============================
+// END PATCH: notification-created-v2
+// ==============================
+
+// ==============================
+// BEGIN PATCH: export-bisect-wrap-remaining
+// ==============================
+if (ENABLE_EXTRA_EXPORTS) {
+
+// ==============================
+// BEGIN PATCH: chat-message-created-v2
+// ==============================
+exports.onChatMessageCreated = onDocumentCreated('chats/{chatId}/messages/{messageId}', async (event) => {
+  const { chatId, messageId } = event.params;
+  const msg = event.data?.data() || {};
+
+  const fromUid = msg.fromUid || msg.senderId || msg.from || null;
+  let toUids = [];
+
+  if (msg.toUid) {
+    toUids = [msg.toUid];
+  } else {
+    const chatSnap = await db.collection('chats').doc(chatId).get();
+    const chat = chatSnap.exists ? (chatSnap.data() || {}) : {};
+    const participants = Array.isArray(chat.participants) ? chat.participants : [];
+    toUids = participants.filter((u) => u && u !== fromUid);
+  }
+
+  if (!fromUid || !toUids.length) {
+    console.log('CHAT: missing fromUid or recipients', { chatId, messageId, fromUid, toUids });
+    return;
+  }
+
+  const fromSnap = await db.collection('users').doc(fromUid).get();
+  const from = fromSnap.exists ? (fromSnap.data() || {}) : {};
+  const senderName = [from.firstName || '', from.lastName || ''].join(' ').trim() || 'New message';
+  const senderPhoto = from.photoUrl || '';
+
+  const rawText = String(msg.text || msg.message || '');
+  const preview = rawText.length > 120 ? rawText.slice(0, 117) + '…' : (rawText || 'Sent you a message');
+
+  await Promise.all(toUids.map((uid) => {
+    const notifId = `chat_${chatId}_${messageId}_${uid}`;
+    return createNotificationWithPush({
+      userId: uid,
+      notifId,
+      type: 'chat_message',
+      title: senderName,
+      message: preview,
+      route: 'chat',
+      route_params: { chatId },
+      imageUrl: senderPhoto
+    });
+  }));
+});
+// ==============================
+// END PATCH: chat-message-created-v2
+// ==============================
+
+// ==============================
+// VALIDATION FUNCTIONS (Joe's methodology)
+// ==============================
+
+/**
+ * Dead-token cleanup validation
+ * Set a user's fcm_token to a known bad string, send a test push, 
+ * confirm logs show token_not_registered and cleanup occurs
+ */
+exports.validateDeadTokenCleanup = onCall({ region: "us-central1" }, async (request) => {
+  assertAdminAndEnabled(request, 'validateDeadTokenCleanup');
+
+  const { userId, badToken } = request.data;
+  if (!userId || !badToken) {
+    throw new HttpsError("invalid-argument", "userId and badToken are required");
+  }
+
+  console.log('VALIDATION: Starting dead token cleanup test', { userId, badToken });
+
+  try {
+    // 1. Set a known bad token
+    const userRef = db.collection('users').doc(userId);
+    await userRef.set({ fcm_token: badToken }, { merge: true });
+    console.log('VALIDATION: Set bad token', { userId, badToken });
+
+    // 2. Try to send a test push (should fail and trigger cleanup)
+    const result = await createNotificationWithPush({
+      userId,
+      type: 'validation_test',
+      title: 'Dead Token Test',
+      body: 'This should fail and trigger cleanup',
+      notifId: `validation_dead_token_${Date.now()}`,
+    });
+
+    console.log('VALIDATION: Push result', { userId, result });
+
+    // 3. Verify the token was cleaned up
+    const updatedSnap = await userRef.get();
+    const updatedData = updatedSnap.data() || {};
+    const hasCleanedToken = !updatedData.fcm_token || updatedData.fcm_token !== badToken;
+
+    return {
+      success: true,
+      pushResult: result,
+      tokenCleaned: hasCleanedToken,
+      message: hasCleanedToken ? 'Dead token cleanup successful' : 'Token cleanup may not have occurred'
+    };
+
+  } catch (error) {
+    console.error('VALIDATION: Dead token test failed', { userId, error: error.message });
+    throw new HttpsError("internal", "Validation test failed", error.message);
+  }
+});
+
+/**
+ * Badge path parity validation
+ * Test badge update with a user who only has token in subcollection
+ */
+exports.validateBadgePathParity = onCall({ region: "us-central1" }, async (request) => {
+  assertAdminAndEnabled(request, 'validateBadgePathParity');
+
+  const { userId, testToken } = request.data;
+  if (!userId || !testToken) {
+    throw new HttpsError("invalid-argument", "userId and testToken are required");
+  }
+
+  console.log('VALIDATION: Starting badge path parity test', { userId, testToken });
+
+  try {
+    const userRef = db.collection('users').doc(userId);
+
+    // 1. Clear field and array tokens, set only subcollection token
+    await userRef.set({ 
+      fcm_token: admin.firestore.FieldValue.delete(),
+      fcmTokens: admin.firestore.FieldValue.delete() 
+    }, { merge: true });
+
+    // 2. Set token only in subcollection
+    await userRef.collection('fcmTokens').doc(testToken).set({
+      token: testToken,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('VALIDATION: Set subcollection-only token', { userId, testToken });
+
+    // 3. Create an unread notification
+    await userRef.collection('notifications').add({
+      title: 'Badge Test Notification',
+      body: 'This creates an unread notification for badge testing',
+      type: 'validation_test',
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // 4. Call badge update (should use subcollection token)
+    await updateUserBadge(userId);
+
+    return {
+      success: true,
+      message: 'Badge path parity test completed - check logs for tokenSource: fcmTokens(subcollection)'
+    };
+
+  } catch (error) {
+    console.error('VALIDATION: Badge parity test failed', { userId, error: error.message });
+    throw new HttpsError("internal", "Badge validation test failed", error.message);
+  }
+});
+
+/**
+ * Trigger gating validation
+ * Test that trigger can be enabled/disabled via config
+ */
+exports.validateTriggerGating = onCall({ region: "us-central1" }, async (request) => {
+  assertAdminAndEnabled(request, 'validateTriggerGating');
+
+  const { userId } = request.data;
+  if (!userId) {
+    throw new HttpsError("invalid-argument", "userId is required");
+  }
+
+  console.log('VALIDATION: Starting trigger gating test', { userId, triggerEnabled: NOTIF_TRIGGER_ENABLED });
+
+  try {
+    // Create a notification using helper (should always work)
+    const helperResult = await createNotificationWithPush({
+      userId,
+      type: 'validation_test',
+      title: 'Trigger Gating Test',
+      body: 'Testing if helper works regardless of trigger setting',
+      notifId: `validation_trigger_${Date.now()}`,
+    });
+
+    // Create a notification document directly (should only trigger push if config enabled)
+    const userRef = db.collection('users').doc(userId);
+    const directNotifRef = await userRef.collection('notifications').add({
+      title: 'Direct Notification Test',
+      body: 'Testing direct notification creation',
+      type: 'validation_direct',
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return {
+      success: true,
+      triggerEnabled: NOTIF_TRIGGER_ENABLED,
+      helperResult,
+      directNotificationId: directNotifRef.id,
+      message: `Trigger gating test completed. Check logs for trigger behavior (enabled: ${NOTIF_TRIGGER_ENABLED})`
+    };
+
+  } catch (error) {
+    console.error('VALIDATION: Trigger gating test failed', { userId, error: error.message });
+    throw new HttpsError("internal", "Trigger gating validation failed", error.message);
+  }
+});
+
+// ==============================
+// END VALIDATION FUNCTIONS
+// ==============================
+
+} // END ENABLE_EXTRA_EXPORTS guard for remaining exports
+// ==============================
+// END PATCH: export-bisect-wrap-remaining
+// ==============================

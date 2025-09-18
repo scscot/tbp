@@ -122,8 +122,10 @@ class AuthService {
     try {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
-        await FCMService().clearFCMToken(user.uid);
+        await FCMService().clearFCMToken(uid: user.uid);
       }
+      // Also unbind FCM service for clean state
+      await FCMService().unbind();
     } catch (e) {
       if (kDebugMode) {
         debugPrint('AuthService: Error clearing FCM token: $e');
@@ -157,8 +159,10 @@ class AuthService {
     try {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
-        await FCMService().clearFCMToken(user.uid);
+        await FCMService().clearFCMToken(uid: user.uid);
       }
+      // Also unbind FCM service for clean state
+      await FCMService().unbind();
     } catch (e) {
       if (kDebugMode) {
         debugPrint('AuthService: Error clearing FCM token: $e');

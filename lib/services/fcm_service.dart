@@ -1,6 +1,6 @@
 // lib/services/fcm_service.dart
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,8 +11,39 @@ import '../main.dart';
 import 'notification_service.dart';
 
 class FCMService {
+  // Singleton pattern
+  static final FCMService _instance = FCMService._internal();
+  factory FCMService() => _instance;
+  FCMService._internal();
+
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  /// Track which user we're currently bound to
+  String? _boundUid;
+
+  /// Token refresh subscription so we can cancel on logout or user switch
+  StreamSubscription<String>? _tokenRefreshSub;
+
+  /// Message handling subscriptions to prevent duplicates
+  StreamSubscription<RemoteMessage>? _onMessageSub;
+  StreamSubscription<RemoteMessage>? _onMessageOpenedAppSub;
+
+  /// Client-side de-dup cache for notification IDs
+  final Map<String, DateTime> _recentNotifications = <String, DateTime>{};
+
+  /// Check if notification was seen recently (client-side de-dup)
+  bool _seenRecently(String? id) {
+    if (id == null) return false;
+    final now = DateTime.now();
+    // Clean up old entries (older than 5 minutes)
+    _recentNotifications.removeWhere((_, timestamp) =>
+        now.difference(timestamp) > const Duration(minutes: 5));
+
+    final seen = _recentNotifications.containsKey(id);
+    _recentNotifications[id] = now;
+    return seen;
+  }
 
   Future<void> _markNotificationAsRead(String? notificationId) async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -39,48 +70,102 @@ class FCMService {
     }
   }
 
-  Future<void> initialize(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.uid.isEmpty) return;
-
-    if (kDebugMode) {
-      debugPrint("--- FCMService: Current user UID: ${user.uid} ---");
+  /// Initialize FCM for a specific user.
+  /// Safe to call repeatedly; it will re-bind when uid changes.
+  Future<void> initialize({required String uid, BuildContext? context}) async {
+    // If we're already bound to this uid and all listeners are active, nothing to do.
+    if (_boundUid == uid && _onMessageSub != null && _onMessageOpenedAppSub != null && _tokenRefreshSub != null) {
+      if (kDebugMode) {
+        debugPrint('FCMService: already initialized for $uid');
+      }
+      return;
     }
 
-    final notificationService =
-        Provider.of<NotificationService>(context, listen: false);
+    // If bound to a different user, unbind first.
+    if (_boundUid != null && _boundUid != uid) {
+      await _unbindInternal();
+    }
 
-    final settings = await _messaging.requestPermission(
-      alert: true,
+    // Zero listeners before (re)subscribing to ensure clean state
+    await _onMessageSub?.cancel();
+    _onMessageSub = null;
+    await _onMessageOpenedAppSub?.cancel();
+    _onMessageOpenedAppSub = null;
+    await _tokenRefreshSub?.cancel();
+    _tokenRefreshSub = null;
+
+    if (kDebugMode) {
+      debugPrint("--- FCMService: Initializing for user UID: $uid ---");
+    }
+
+    // Request permissions on iOS/macOS; no-op on Android if already granted.
+    await _ensurePermissions();
+
+    // Set iOS foreground presentation options to prevent system banner while app is active
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: false, // prevents iOS system banner in foreground
       badge: true,
       sound: true,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // Only wait for APNS token on iOS
-      if (Platform.isIOS) {
-        await _waitForAPNSToken();
-      }
-      await _saveToken();
+    // Some iOS builds need the APNS token to be available first.
+    // This is harmless on Android.
+    try {
+      await _messaging.getAPNSToken();
+    } catch (_) {}
 
-      _messaging.onTokenRefresh.listen((token) async {
-        if (kDebugMode) {
-          debugPrint("--- FCMService: FCM token refreshed: $token");
-        }
-        await _saveToken();
-      });
+    // Get an initial token and save it.
+    String? token = await _messaging.getToken();
+    if (token != null && token.trim().isNotEmpty) {
+      await _saveToken(uid: uid, token: token);
+    }
+
+    // Listen for future token changes and persist them for this uid.
+    _tokenRefreshSub = _messaging.onTokenRefresh.listen((t) async {
+      if (_boundUid != uid) return; // guard: ignore if user switched mid-stream
+      if (t.trim().isEmpty) return;
+      await _saveToken(uid: uid, token: t);
+    });
+
+    _boundUid = uid;
+
+    // Set up message handling if context is provided
+    if (context != null && context.mounted) {
+      final notificationService =
+          Provider.of<NotificationService>(context, listen: false);
 
       _messaging.getInitialMessage().then((message) {
         if (message != null) {
+          // Cold-start de-dup protection
+          final id = message.data['notification_id'] ?? message.messageId;
+          if (_seenRecently(id)) {
+            if (kDebugMode) {
+              debugPrint("🚫 FCM: Ignoring duplicate cold-start message: $id");
+            }
+            return;
+          }
           _handleMessage(notificationService, message, isTerminated: true);
         }
       });
 
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      _onMessageOpenedAppSub = FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        // Client-side de-dup check
+        final id = message.data['notification_id'] ?? message.messageId;
+        if (_seenRecently(id)) return;
+
         _handleMessage(notificationService, message, shouldNavigate: true);
       });
 
-      FirebaseMessaging.onMessage.listen((message) {
+      _onMessageSub = FirebaseMessaging.onMessage.listen((message) {
+        // Client-side de-dup check
+        final id = message.data['notification_id'] ?? message.messageId;
+        if (_seenRecently(id)) {
+          if (kDebugMode) {
+            debugPrint("🚫 FCM: Ignoring duplicate message: $id");
+          }
+          return;
+        }
+
         if (kDebugMode) {
           debugPrint(
               "📱 Received foreground FCM message: ${message.messageId}");
@@ -94,37 +179,46 @@ class FCMService {
         _handleMessage(notificationService, message);
       });
     }
+
+    if (kDebugMode) {
+      debugPrint('✅ FCMService: bound to $uid with token ${token?.substring(0, 10)}...');
+    }
   }
 
-  Future<void> _waitForAPNSToken() async {
-    // This method is iOS-specific for APNS token handling
-    if (!Platform.isIOS) return;
-    
-    if (kDebugMode) {
-      debugPrint("--- WAITING FOR APNS TOKEN (iOS) ---");
-    }
-
-    for (int i = 0; i < 10; i++) {
-      try {
-        final apnsToken = await _messaging.getAPNSToken();
-        if (apnsToken != null) {
-          if (kDebugMode) {
-            debugPrint(
-                "✅ APNS token available: ${apnsToken.substring(0, 10)}...");
-          }
-          return;
-        }
-      } catch (e) {
-        if (kDebugMode) {
-          debugPrint("⚠️ APNS token not ready, attempt ${i + 1}/10: $e");
-        }
-      }
-
-      await Future.delayed(Duration(milliseconds: 500));
-    }
+  Future<void> _ensurePermissions() async {
+    final settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      announcement: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+    );
 
     if (kDebugMode) {
-      debugPrint("⚠️ APNS token still not available after 10 attempts");
+      debugPrint("--- FCMService: Permission status: ${settings.authorizationStatus}");
+    }
+  }
+
+  /// Internal: cancel listeners and forget current uid (no Firestore I/O).
+  Future<void> _unbindInternal() async {
+    await _tokenRefreshSub?.cancel();
+    _tokenRefreshSub = null;
+
+    await _onMessageSub?.cancel();
+    _onMessageSub = null;
+
+    await _onMessageOpenedAppSub?.cancel();
+    _onMessageOpenedAppSub = null;
+
+    // Clear de-dup cache to avoid cross-user notification ID collisions
+    _recentNotifications.clear();
+
+    _boundUid = null;
+
+    if (kDebugMode) {
+      debugPrint("--- FCMService: Unbound from previous user and canceled all listeners");
     }
   }
 
@@ -197,75 +291,23 @@ class FCMService {
     }
   }
 
-  Future<void> _saveToken() async {
+  Future<void> _saveToken({required String uid, required String token}) async {
     if (kDebugMode) {
-      debugPrint("--- SAVE TOKEN START ---");
-    }
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null || user.uid.isEmpty) {
-      if (kDebugMode) {
-        debugPrint(
-            "--- SAVE TOKEN FAILED: Aborting, user is null or has no UID.");
-      }
-      return;
-    }
-    if (kDebugMode) {
-      debugPrint("--- SAVE TOKEN: User found with UID: ${user.uid} ---");
+      debugPrint("--- SAVE TOKEN START for UID: $uid ---");
+      debugPrint("--- SAVE TOKEN: Got FCM token starting with: ${token.substring(0, 15)}...");
     }
 
     try {
-      // Only check APNS token on iOS
-      if (Platform.isIOS) {
-        final apnsToken = await _messaging.getAPNSToken();
-        if (apnsToken == null) {
-          if (kDebugMode) {
-            debugPrint(
-                "--- SAVE TOKEN FAILED: APNS token not available, will retry later");
-          }
-          Future.delayed(Duration(seconds: 10), () => _saveToken()); // Retry less frequently
-          return;
-        }
-      }
-
-      final token = await _messaging.getToken();
-
-      if (token == null) {
-        if (kDebugMode) {
-          debugPrint(
-              "--- SAVE TOKEN FAILED: Aborting, token received from FCM was null.");
-        }
-        return;
-      }
-      if (kDebugMode) {
-        debugPrint(
-            "--- SAVE TOKEN: Got FCM token starting with: ${token.substring(0, 15)}...");
-        debugPrint(
-            "--- SAVE TOKEN: Preparing to write to Firestore document... ---");
-      }
-
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set({'fcm_token': token}, SetOptions(merge: true));
+      // Minimal write: single `fcm_token` field (server already resolves across 3 tiers)
+      final doc = _firestore.collection('users').doc(uid);
+      await doc.update({'fcm_token': token.trim()});
 
       if (kDebugMode) {
-        debugPrint(
-            "✅✅✅ SAVE TOKEN SUCCESS: Firestore write completed without error.");
+        debugPrint("✅✅✅ SAVE TOKEN SUCCESS: Firestore write completed without error.");
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint(
-            "❌❌❌ SAVE TOKEN FAILED: Error during token generation or Firestore write: $error");
-      }
-
-      // Only retry for APNS token issues on iOS
-      if (Platform.isIOS && error.toString().contains('apns-token-not-set')) {
-        if (kDebugMode) {
-          debugPrint(
-              "--- SAVE TOKEN: Will retry in 3 seconds due to APNS token issue");
-        }
-        Future.delayed(Duration(seconds: 3), () => _saveToken());
+        debugPrint("❌❌❌ SAVE TOKEN FAILED: Error during Firestore write: $error");
       }
     }
 
@@ -274,12 +316,12 @@ class FCMService {
     }
   }
 
-  Future<void> clearFCMToken(String uid) async {
+  /// Clear token in Firestore for this user and unbind locally.
+  Future<void> clearFCMToken({required String uid}) async {
+    // Delete from Firestore
     try {
-      await _firestore
-          .collection('users')
-          .doc(uid)
-          .update({'fcm_token': FieldValue.delete()});
+      final doc = _firestore.collection('users').doc(uid);
+      await doc.update({'fcm_token': FieldValue.delete()});
       if (kDebugMode) {
         debugPrint('🧹 Cleared FCM token for user: $uid');
       }
@@ -288,14 +330,29 @@ class FCMService {
         debugPrint('⚠️ Error clearing FCM token: $e');
       }
     }
+
+    // Unbind locally so the next login reinitializes
+    await _unbindInternal();
+  }
+
+  /// Public method to unbind FCM service (for logout)
+  /// Ensures clean state for next login
+  Future<void> unbind() async {
+    await _unbindInternal();
+    if (kDebugMode) {
+      debugPrint('🧹 FCMService: Public unbind completed');
+    }
   }
 
   void _showForegroundNotification(RemoteMessage message) {
-    if (message.notification != null && navigatorKey.currentState != null) {
+    // Only show local notification if no system notification block exists (data-only pushes)
+    // This prevents system notification + local notification duplicates on iOS
+    if (message.notification == null && navigatorKey.currentState != null) {
       final context = navigatorKey.currentState!.context;
 
-      final title = message.notification!.title ?? 'New Notification';
-      final body = message.notification!.body ?? '';
+      // For data-only messages, extract title/body from data payload
+      final title = message.data['title'] ?? 'New Notification';
+      final body = message.data['body'] ?? '';
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -317,7 +374,7 @@ class FCMService {
                 ),
             ],
           ),
-          backgroundColor: Colors.blue[700],
+          backgroundColor: Colors.green[700],
           duration: const Duration(seconds: 4),
         ),
       );
