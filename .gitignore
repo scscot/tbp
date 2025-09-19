@@ -39,6 +39,8 @@ secrets/
 emails/
 leads/
 functions-old/
+colabs/
+Build_*
 
 # === Flutter / Dart / Pub Specific Ignores ===
 lib_backup/

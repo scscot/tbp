@@ -77,13 +77,6 @@ const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
 const { sendDemoInvitation } = require('./sendDemoInvitation');
 
-// Cold-start sentinel for debugging - Joe's step A
-console.log('NOTIFY_MILESTONE BOOT', {
-  project: process.env.GCLOUD_PROJECT,
-  region: 'us-central1',
-  buildTag: 'ms-v7'
-});
-
 // Verifies & decodes Apple's signedPayload and validates the cert chain
 const {
   decodeNotificationPayload,
@@ -195,14 +188,6 @@ async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
   const route = payload.route || '/';
   const route_params = payload.route_params || {};
   const imageUrl = payload.imageUrl || '';
-  const apnsTopic = process.env.IOS_BUNDLE_ID || '';
-
-  // Ensure iOS sees this as an alert push (banner/list/lockscreen)
-  const apnsHeaders = {
-    'apns-push-type': 'alert',
-    'apns-priority': '10',
-    ...(apnsTopic ? { 'apns-topic': apnsTopic } : {}),
-  };
 
   const msg = {
     token,
@@ -216,34 +201,12 @@ async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
       route_params: JSON.stringify(route_params),
       imageUrl
     }),
-    apns: {
-      headers: apnsHeaders,
-      payload: {
-        aps: {
-          alert: { title, body },
-          sound: 'default',
-          'mutable-content': 1,
-        },
-      },
-    },
-    android: {
-      notification: {
-        sound: "default",
-      },
-    },
+    apns: { payload: { aps: { alert: { title, body } } } }
   };
 
   try {
-    // Log APNs headers for verification (for all notification types)
-    console.log(`PUSH APNs Headers:`, JSON.stringify(apnsHeaders));
-
     const response = await admin.messaging().send(msg);
     console.log('PUSH: sent', { userId, notificationId, response, tokenSource: source });
-
-    // Enhanced push logging for all types
-    const tokenPreview = token ? String(token).slice(0, 8) : '<no-token>';
-    console.log(`PUSH DETAILED: type=${payload?.type} subtype=${payload?.subtype || 'none'} to=${tokenPreview}* msgId=${response} notifId=${notificationId}`);
-
     return { sent: true, reason: 'sent', tokenSource: source };
   } catch (err) {
     const code = (err && err.code) || '';
@@ -332,7 +295,58 @@ const updateUserBadge = async (userId) => {
 }
 
 // -- One entry point used by call sites (idempotent doc create + push + badge)
-// REMOVED: Duplicate createNotification function - using the comprehensive version below
+async function createNotificationWithPush(options) {
+  const {
+    userId, notifId, type, title, message,
+    route = '/', route_params = {}, imageUrl = ''
+  } = options;
+
+  const userRef = admin.firestore().collection('users').doc(userId);
+  const notifRef = notifId
+    ? userRef.collection('notifications').doc(notifId)
+    : userRef.collection('notifications').doc();
+
+  try {
+    await notifRef.create({
+      type, title, message, imageUrl,
+      route,
+      route_params: JSON.stringify(route_params),
+      read: false,
+      createdAt: FieldValue.serverTimestamp()
+    });
+  } catch (err) {
+    // If it already exists, continue (safe duplicate)
+    if (!String(err.message).includes('already exists')) throw err;
+  }
+
+  const notificationId = notifRef.id;
+
+  // ==============================
+  // BEGIN PATCH: helper-mode-guard
+  // ==============================
+  // If we're not in helper mode, stop after doc creation.
+  // This prevents duplicate sends when someone flips the trigger on.
+  if (!isHelperMode) {
+    return {
+      ok: true,
+      notificationId,
+      push: { sent: false, reason: 'helper_disabled', tokenSource: 'n/a' }
+    };
+  }
+  // ==============================
+  // END PATCH: helper-mode-guard
+  // ==============================
+
+  const push = await sendPushToUser(userId, notificationId, { type, title, message, route, route_params, imageUrl });
+
+  try {
+    await updateUserBadge(userId);
+  } catch (err) {
+    console.log('BADGE: non-fatal error during update', { userId, notificationId, msg: err.message });
+  }
+
+  return { ok: !!push.sent, notificationId, push };
+}
 
 // cleanupDeadToken(userRef, token)
 // Removes the token from: users/{uid}.fcm_token, users/{uid}.fcmTokens[], users/{uid}/fcmTokens/{token}
@@ -603,14 +617,15 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
 
     if (notificationContent) {
 
-      const result = await createNotification({
+      const result = await createNotificationWithPush({
         userId,
         type: 'subscription_update',
         title: 'Subscription updated',
         body: `Your subscription is now ${status}.`,
         docFields: { status },
+        data: { route: 'subscription', status },
       });
-      console.log(`✅ SUBSCRIPTION: Notification created for user ${userId} for status: ${status}`);
+      console.log(`✅ SUBSCRIPTION: Notification sent to user ${userId} for status: ${status} - Push sent: ${result.push.sent}`);
     }
 
   } catch (error) {
@@ -1041,7 +1056,7 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
 
     if (notificationContent) {
 
-      const result = await createNotification({
+      const result = await createNotificationWithPush({
         userId,
         type: 'subscription_update',
         title: 'Subscription updated',
@@ -1195,7 +1210,7 @@ exports.checkTrialsExpiringSoon = onSchedule("0 9 * * *", async (event) => {
 
       try {
 
-        const result = await createNotification({
+        const result = await createNotificationWithPush({
           userId,
           type: 'trial_warning',
           title: "⏰ Trial Expiring Soon",
@@ -1797,27 +1812,6 @@ const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your bus
   }
 };
 
-// --- Milestone RC cache (60s) ---
-let __milestoneRC = { directMin: 4, teamMin: 20, ts: 0 };
-async function getMilestoneThresholds() {
-  const now = Date.now();
-  if (now - __milestoneRC.ts < 60000) return __milestoneRC;
-  let directMin = 4, teamMin = 20;
-  try {
-    const template = await remoteConfig.getTemplate();
-    const params   = template.parameters || {};
-    const d = params.projectWideDirectSponsorMin?.defaultValue?.value;
-    const t = params.projectWideTotalTeamMin?.defaultValue?.value;
-    if (d) directMin = parseInt(d, 10) || directMin;
-    if (t) teamMin   = parseInt(t, 10) || teamMin;
-  } catch (e) {
-    // Keep defaults; log once each refresh window
-    console.log('MILESTONE: RC fetch failed; using defaults {4,20}');
-  }
-  __milestoneRC = { directMin, teamMin, ts: now };
-  return __milestoneRC;
-}
-
 /**
  * Enterprise-grade notification creation with transaction safety and comprehensive error handling
  * Ensures atomic operations and proper error recovery for mission-critical notifications
@@ -1996,7 +1990,6 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
 
 
 exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
-  console.log(`REGISTER ENTER projectId=${process.env.GCLOUD_PROJECT} region=us-central1`);
   console.log("🔍 REGISTER FUNCTION: Starting registerUser function");
   console.log("🔍 REGISTER FUNCTION: Request data:", JSON.stringify(request.data, null, 2));
 
@@ -2019,65 +2012,11 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
   try {
     console.log("🔍 REGISTER FUNCTION: Processing sponsor referral code:", sponsorReferralCode);
 
-    // Resolve sponsor to a Firebase UID (not a UUID/profile id)
-    async function resolveSponsorUid({ rawSponsorId, sponsorReferralCode }) {
-      const usersCol = db.collection('users');
-
-      // Case 1: Caller passed a Firebase UID directly and it exists
-      if (rawSponsorId) {
-        const directRef = usersCol.doc(rawSponsorId);
-        const directSnap = await directRef.get();
-        if (directSnap.exists) {
-          console.log(`REGISTER RESOLVE: using provided sponsorId as UID=${rawSponsorId}`);
-          return rawSponsorId;
-        }
-        console.log(`REGISTER RESOLVE: provided sponsorId not a user UID (id=${rawSponsorId})`);
-      }
-
-      // Case 2: Referral code mapping
-      if (sponsorReferralCode) {
-        const codeRef = db.collection('referralCodes').doc(String(sponsorReferralCode));
-        const codeSnap = await codeRef.get();
-        if (codeSnap.exists) {
-          const mappedUid = codeSnap.data()?.sponsorUid;
-          if (mappedUid) {
-            const mappedRef = usersCol.doc(mappedUid);
-            const mappedSnap = await mappedRef.get();
-            if (mappedSnap.exists) {
-              console.log(`REGISTER RESOLVE: referralCodes map -> UID=${mappedUid}`);
-              return mappedUid;
-            }
-          }
-        }
-        console.log(`REGISTER RESOLVE: referralCodes doc missing/invalid for code=${sponsorReferralCode}`);
-      }
-
-      // Case 3: Query users by their stored referralCode field
-      if (sponsorReferralCode) {
-        const q = await usersCol.where('referralCode', '==', String(sponsorReferralCode)).limit(1).get();
-        if (!q.empty) {
-          const doc = q.docs[0];
-          console.log(`REGISTER RESOLVE: users.referralCode -> UID=${doc.id}`);
-          return doc.id;
-        }
-        console.log(`REGISTER RESOLVE: no user with referralCode=${sponsorReferralCode}`);
-      }
-
-      return null;
-    }
-
-    const sponsorUid = await resolveSponsorUid({ rawSponsorId: sponsorId, sponsorReferralCode });
-    if (sponsorReferralCode && !sponsorUid) {
-      console.error(`REGISTER ERROR: Unable to resolve sponsor UID (rawSponsorId=${sponsorId}, referralCode=${sponsorReferralCode})`);
-      throw new HttpsError('failed-precondition',
-        'Unable to resolve sponsor user. Provide a valid Firebase UID or referral code mapped to a user.');
-    }
-
-    if (sponsorUid) {
-      // Get sponsor data using the resolved UID
-      const sponsorDoc = await db.collection("users").doc(sponsorUid).get();
-      if (sponsorDoc.exists) {
-        sponsorId = sponsorUid; // Update sponsorId to use the resolved UID
+    if (sponsorReferralCode) {
+      const sponsorQuery = await db.collection("users").where("referralCode", "==", sponsorReferralCode).limit(1).get();
+      if (!sponsorQuery.empty) {
+        const sponsorDoc = sponsorQuery.docs[0];
+        sponsorId = sponsorDoc.id;
         const sponsorData = sponsorDoc.data();
         console.log("🔍 REGISTER FUNCTION: Found sponsor:", sponsorId, sponsorData.firstName, sponsorData.lastName);
 
@@ -2089,8 +2028,8 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
         sponsorUplineRefs = sponsorData.upline_refs || [];
         level = sponsorData.level ? sponsorData.level + 1 : 2;
       } else {
-        console.error("❌ REGISTER FUNCTION: Resolved sponsor UID has no document:", sponsorUid);
-        throw new HttpsError("not-found", `Sponsor user document not found for UID: ${sponsorUid}`);
+        console.error("❌ REGISTER FUNCTION: Sponsor not found:", sponsorReferralCode);
+        throw new HttpsError("not-found", `Sponsor with referral code '${sponsorReferralCode}' not found.`);
       }
     }
 
@@ -2157,41 +2096,20 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
     console.log("✅ REGISTER FUNCTION: Firestore user document created");
 
     if (sponsorId) {
-      console.log("🔍 REGISTER FUNCTION: Updating sponsor/upline counts (transaction)...");
-
-      // Guard: ensure sponsor doc exists (UID)
+      console.log("🔍 REGISTER FUNCTION: Updating sponsor counts...");
+      const batch = db.batch();
       const sponsorRef = db.collection("users").doc(sponsorId);
-      const sponsorSnap = await sponsorRef.get();
-      if (!sponsorSnap.exists) {
-        console.error(`REGISTER ERROR: Sponsor user doc not found. sponsorUid=${sponsorId}`);
-        throw new HttpsError('failed-precondition',
-          `Invalid sponsor. No user doc for uid=${sponsorId}.`);
-      }
-
-      await db.runTransaction(async (t) => {
-        const txSponsorSnap = await t.get(sponsorRef); // re-read in txn
-        if (!txSponsorSnap.exists) {
-          console.log(`⚠️ REGISTER FUNCTION: Sponsor ${sponsorId} not found in transaction; skipping count updates`);
-          return;
-        }
-        // Atomic increments for sponsor
-        const updateObj = {
-          directSponsorCount: FieldValue.increment(1),
-          totalTeamCount: FieldValue.increment(1),
-        };
-        t.update(sponsorRef, updateObj);
-        console.log('COUNTS UPDATE', { sponsorId, path: sponsorRef.path, fields: Object.keys(updateObj) });
-        // Atomic increments for each upline member
-        for (const uplineMemberId of sponsorUplineRefs) {
-          const uplineRef = db.collection("users").doc(uplineMemberId);
-          t.update(uplineRef, { totalTeamCount: FieldValue.increment(1) });
-        }
+      batch.update(sponsorRef, {
+        directSponsorCount: FieldValue.increment(1),
+        totalTeamCount: FieldValue.increment(1)
       });
-      console.log("✅ REGISTER FUNCTION: Sponsor/upline counts updated (transaction)");
 
-      // NOTE: Milestone check is intentionally NOT triggered here
-      // It will be triggered later in triggerSponsorship after profile completion
-      // This ensures milestone notifications are sent at the correct time (after isProfileComplete=true)
+      sponsorUplineRefs.forEach(uplineMemberId => {
+        const uplineMemberRef = db.collection("users").doc(uplineMemberId);
+        batch.update(uplineMemberRef, { totalTeamCount: FieldValue.increment(1) });
+      });
+      await batch.commit();
+      console.log("✅ REGISTER FUNCTION: Sponsor counts updated");
     }
 
     console.log("✅ REGISTER FUNCTION: Registration completed successfully");
@@ -2436,7 +2354,7 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
     const messageText = message.text || "You received a new message.";
 
     const notificationPromises = recipients.map(recipientId => {
-      return createNotification({
+      return createNotificationWithPush({
         userId: recipientId,
         type: 'chat_message',
         title: `New Message from ${senderName}`,
@@ -2588,7 +2506,7 @@ exports.notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (re
     const bizOpp = await getBusinessOpportunityName(sponsorData.upline_admin);
 
 
-    const result = await createNotification({
+    const result = await createNotificationWithPush({
       userId: sponsorId,
       type: 'biz_opp_visit',
       title: `Interest in your ${bizOpp} opportunity! 🎉`,
@@ -2836,409 +2754,18 @@ exports.syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
 });
 
 // ============================================================================
-// MILESTONE NOTIFICATIONS
+// DAILY TEAM GROWTH NOTIFICATIONS
 // ============================================================================
 
 /**
- * Milestone notifications on user count updates
- * - Fires when a user crosses ONE of two thresholds (direct sponsors OR total team),
- *   while the other requirement is still below its threshold — nudging them forward.
- * - Uses your existing createNotification() path (no direct writes).
- * - Idempotent via stable notifId keys to prevent duplicates across retries.
+ * Scheduled function that runs every hour to send daily team growth notifications
+ * at 10am local time to users who had new team members join the previous day.
  *
- * Requirements (already present in your codebase):
- *   - onDocumentUpdated, remoteConfig, getBusinessOpportunityName, createNotification
+ * This function uses an efficient approach:
+ * 1. Query all users who joined yesterday with photoUrl != null
+ * 2. Use their upline_refs arrays to identify which users should receive notifications
+ * 3. Count new members per user and send notifications
  */
-/**
- * Helper: does the updateMask contain any of these fields (support nested)?
- */
-function maskHasAny(mask = [], names = []) {
-  const m = new Set(mask);
-  return names.some(n =>
-    m.has(n) ||                 // exact match
-    [...m].some(p => p.endsWith(`.${n}`)) // nested: stats.directSponsorCount
-  );
-}
-
-// Joe's step B: Minimal ping trigger to test users collection binding
-exports.pingUsersTrigger = onDocumentWritten('users/{userId}', (event) => {
-  const mask = event.data?.updateMask?.fieldPaths || [];
-  console.log('PING TRIGGER', {
-    userId: event.params.userId,
-    path: event.document,
-    mask
-  });
-});
-
-/**
- * DISABLED: Qualification Notification Function - Notify users when they reach full qualification
- * Triggers when user reaches both directSponsorCount >= 4 AND totalTeamCount >= 20
- *
- * DISABLED: This was causing duplicate push notifications because the manual milestone
- * system in onUserProfileCompleted now handles both milestone and qualification notifications.
- * The manual system prevents duplicates and works correctly with profile completion flow.
- */
-// exports.notifyOnQualification = onDocumentUpdated("users/{userId}", async (event) => {
-//   const beforeData = event.data?.before?.data();
-//   const afterData = event.data?.after?.data();
-//
-//   if (!beforeData || !afterData || beforeData.qualifiedDate) {
-//     return;
-//   }
-//
-//   try {
-//     // Hardcoded thresholds (matching our milestone approach)
-//     const directMin = 4;
-//     const teamMin = 20;
-//
-//     const wasQualifiedBefore = (beforeData.directSponsorCount >= directMin) && (beforeData.totalTeamCount >= teamMin);
-//     const isQualifiedNow = (afterData.directSponsorCount >= directMin) && (afterData.totalTeamCount >= teamMin);
-//     const isJoined = beforeData.bizJoinDate;
-//
-//     console.log('QUALIFICATION CHECK', {
-//       userId: event.params.userId,
-//       directCount: afterData.directSponsorCount,
-//       teamCount: afterData.totalTeamCount,
-//       wasQualified: wasQualifiedBefore,
-//       isQualified: isQualifiedNow,
-//       hasJoined: !!isJoined
-//     });
-//
-//     if (!wasQualifiedBefore && isQualifiedNow && !isJoined) {
-//       if (afterData.role === 'admin') {
-//         console.log(`QUALIFICATION: User ${event.params.userId} is admin, setting qualifiedDate only`);
-//         await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
-//         return;
-//       }
-//
-//       console.log(`QUALIFICATION: User ${event.params.userId} reached qualification!`);
-//
-//       // Set qualified date first
-//       await event.data.after.ref.update({ qualifiedDate: FieldValue.serverTimestamp() });
-//
-//       // Get business opportunity name
-//       const bizName = await getBusinessOpportunityName(afterData.upline_admin, 'your business');
-//
-//       // Create qualification notification with deterministic ID
-//       const notifId = `qualification_${event.params.userId}`;
-//       const notificationContent = {
-//         title: "You're Qualified!",
-//         message: `Your hard work paid off, ${afterData.firstName}! You've built a qualified team and are now eligible to join the ${bizName} organization. Click Here to take the next step!`,
-//         createdAt: FieldValue.serverTimestamp(),
-//         read: false,
-//         type: "new_qualification",
-//         route: "/business",
-//         route_params: {},
-//       };
-//
-//       console.log('QUALIFICATION NOTIF CREATE about-to', {
-//         path: `users/${event.params.userId}/notifications/${notifId}`,
-//         notifId,
-//         type: notificationContent.type
-//       });
-//
-//       try {
-//         await db.collection("users").doc(event.params.userId).collection("notifications").doc(notifId).create(notificationContent);
-//         console.log('QUALIFICATION NOTIF CREATE wrote', { notifId });
-//
-//         // Send push notification
-//         const result = await createNotification({
-//           userId: event.params.userId,
-//           notifId,
-//           type: notificationContent.type,
-//           title: notificationContent.title,
-//           message: notificationContent.message,
-//           route: notificationContent.route,
-//           route_params: notificationContent.route_params,
-//         });
-//
-//         if (result.success) {
-//           console.log('QUALIFICATION PUSH DETAILED', {
-//             type: notificationContent.type,
-//             to: event.params.userId,
-//             msgId: result.messageId || 'unknown',
-//             notifId
-//           });
-//         } else {
-//           console.error(`QUALIFICATION PUSH: Failed for ${event.params.userId}:`, result.error);
-//         }
-//
-//       } catch (error) {
-//         if (error.code === 6) { // ALREADY_EXISTS
-//           console.log(`QUALIFICATION: Notification ${notifId} already exists, skipping`);
-//         } else {
-//           throw error;
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     console.error(`QUALIFICATION: Error for user ${event.params.userId}:`, error);
-//   }
-// });
-
-// DISABLED: Using manual milestone checks in onUserProfileCompleted instead
-/*
-exports.notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (event) => {
-  const beforeData = event.data?.before?.data();
-  const afterData  = event.data?.after?.data();
-  const userId = event.params.userId;
-
-  // Log updateMask for debugging but don't filter on it
-  try {
-    const mask = event.data?.updateMask?.fieldPaths || [];
-    console.log(`MILESTONE EVT user=${userId} mask=${JSON.stringify(mask)}`);
-  } catch (_) {
-    console.log(`MILESTONE EVT user=${userId} mask=<unavailable>`);
-  }
-
-  if (!beforeData || !afterData) return;
-
-  console.log(`🎯 MILESTONE: Function triggered for user ${userId}`);
-
-  try {
-    // SIMPLIFIED APPROACH: Use index-2.js working logic + upline_refs processing
-    // Skip admins from milestone notifications
-    if (afterData.role === 'admin') {
-      console.log(`MILESTONE: skip admin role for ${userId}`);
-      return;
-    }
-
-    // Skip if user is already qualified (they get the main qualification notification instead)
-    if (afterData.qualifiedDate) {
-      console.log(`MILESTONE: skip qualified user ${userId}`);
-      return;
-    }
-
-    // Check if this is a new user completing registration (has upline_refs but no prior counts)
-    const isNewUser = (beforeData.directSponsorCount || 0) === 0 &&
-                      (beforeData.totalTeamCount || 0) === 0 &&
-                      afterData.upline_refs &&
-                      afterData.upline_refs.length > 0;
-
-    if (isNewUser) {
-      console.log(`🔔 MILESTONE: New user ${userId} registered, checking upline milestones...`);
-
-      // Check milestones for all upline users (they might have reached team count milestones)
-      const uplineRefs = afterData.upline_refs || [];
-      for (const uplineUserId of uplineRefs) {
-        if (uplineUserId !== userId) {
-          console.log(`MILESTONE: Checking upline user ${uplineUserId} for team milestone...`);
-          // Trigger milestone check for this upline user by calling this function recursively
-          // But we need to get their current data first
-          try {
-            const uplineDoc = await db.collection('users').doc(uplineUserId).get();
-            if (uplineDoc.exists) {
-              const uplineData = uplineDoc.data();
-              // Create a mock event for the upline user to check their milestones
-              await checkUplineMilestone(uplineUserId, uplineData);
-            }
-          } catch (error) {
-            console.log(`MILESTONE: Error checking upline ${uplineUserId}: ${error.message}`);
-          }
-        }
-      }
-    }
-
-    // Get before/after counts (user's own counts, not sponsor's)
-    const beforeDirectSponsors = beforeData.directSponsorCount || 0;
-    const afterDirectSponsors = afterData.directSponsorCount || 0;
-    const beforeTotalTeam = beforeData.totalTeamCount || 0;
-    const afterTotalTeam = afterData.totalTeamCount || 0;
-
-    console.log(`🎯 MILESTONE: User ${userId} - Direct: ${beforeDirectSponsors}→${afterDirectSponsors}, Total: ${beforeTotalTeam}→${afterTotalTeam}`);
-
-    // Only proceed if counts actually increased
-    if (afterDirectSponsors <= beforeDirectSponsors && afterTotalTeam <= beforeTotalTeam) {
-      console.log(`MILESTONE: no count increase for ${userId}`);
-      return;
-    }
-
-    // Use hardcoded thresholds (eliminates remote config timeout issues)
-    const directMin = 4;
-    const teamMin = 20;
-    console.log(`MILESTONE: Using hardcoded thresholds - directMin=${directMin}, teamMin=${teamMin}`);
-
-    // Get business opportunity name
-    const bizName = await getBusinessOpportunityName(afterData.upline_admin, 'your business');
-
-    let notificationContent = null;
-
-    // Check for direct sponsors milestone (reached directMin but still needs total team)
-    if (beforeDirectSponsors < directMin &&
-        afterDirectSponsors >= directMin &&
-        afterTotalTeam < teamMin) {
-
-      const remainingTeamNeeded = teamMin - afterTotalTeam;
-      console.log(`🎯 MILESTONE: User ${userId} reached ${directMin} direct sponsors, needs ${remainingTeamNeeded} more total team members`);
-
-      notificationContent = {
-        title: "🎉 Amazing Progress!",
-        message: `Congratulations, ${afterData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
-        type: "milestone",
-        subtype: "direct",
-        route: "/network",
-        route_params: {},
-      };
-    }
-    // Check for total team milestone (reached teamMin but still needs direct sponsors)
-    else if (beforeTotalTeam < teamMin &&
-             afterTotalTeam >= teamMin &&
-             afterDirectSponsors < directMin) {
-
-      const remainingDirectNeeded = directMin - afterDirectSponsors;
-      console.log(`🎯 MILESTONE: User ${userId} reached ${teamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
-
-      notificationContent = {
-        title: "🚀 Incredible Growth!",
-        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
-        type: "milestone",
-        subtype: "team",
-        route: "/network",
-        route_params: {},
-      };
-    }
-
-    // Send notification if a milestone was reached
-    if (notificationContent) {
-      console.log(`MILESTONE: Creating notification for ${userId} - ${notificationContent.subtype}`);
-
-      // Simple duplicate protection - check if milestone notification already exists
-      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
-        .where('type', '==', 'milestone')
-        .where('subtype', '==', notificationContent.subtype)
-        .limit(1)
-        .get();
-
-      if (!existingQuery.empty) {
-        console.log(`MILESTONE: ${notificationContent.subtype} milestone notification already exists for ${userId}, skipping`);
-        return;
-      }
-
-      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
-
-      const result = await createNotification({
-        userId,
-        notifId,
-        type: notificationContent.type,
-        title: notificationContent.title,
-        body: notificationContent.message,
-        docFields: {
-          subtype: notificationContent.subtype,
-          route: notificationContent.route,
-          route_params: JSON.stringify(notificationContent.route_params),
-        },
-      });
-
-      if (result.ok) {
-        console.log(`✅ MILESTONE: Milestone notification created for user ${userId} - ${notificationContent.subtype}`);
-      } else {
-        console.log(`❌ MILESTONE: Failed to create notification for ${userId}`);
-      }
-    }
-
-  } catch (error) {
-    console.error(`❌ MILESTONE: Error in notifyOnMilestoneReached for user ${userId}:`, error);
-    throw error;
-  }
-});
-
-// Helper function to check milestones for upline users
-async function checkUplineMilestone(userId, userData) {
-  try {
-    console.log(`MILESTONE UPLINE: Checking milestones for upline user ${userId}`);
-
-    // Skip admins and qualified users
-    if (userData.role === 'admin' || userData.qualifiedDate) {
-      console.log(`MILESTONE UPLINE: Skipping ${userId} - admin or qualified`);
-      return;
-    }
-
-    const directSponsors = userData.directSponsorCount || 0;
-    const totalTeam = userData.totalTeamCount || 0;
-    const directMin = 4;
-    const teamMin = 20;
-
-    console.log(`MILESTONE UPLINE: User ${userId} - Direct: ${directSponsors}, Total: ${totalTeam}`);
-
-    let notificationContent = null;
-
-    // Check for direct sponsors milestone (reached directMin but still needs total team)
-    if (directSponsors >= directMin && totalTeam < teamMin) {
-      // Check if this milestone notification already exists
-      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
-        .where('type', '==', 'milestone')
-        .where('subtype', '==', 'direct')
-        .limit(1)
-        .get();
-
-      if (existingQuery.empty) {
-        const remainingTeamNeeded = teamMin - totalTeam;
-        const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
-
-        notificationContent = {
-          title: "🎉 Amazing Progress!",
-          message: `Congratulations, ${userData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
-          type: "milestone",
-          subtype: "direct",
-          route: "/network",
-          route_params: {},
-        };
-      }
-    }
-    // Check for total team milestone (reached teamMin but still needs direct sponsors)
-    else if (totalTeam >= teamMin && directSponsors < directMin) {
-      // Check if this milestone notification already exists
-      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
-        .where('type', '==', 'milestone')
-        .where('subtype', '==', 'team')
-        .limit(1)
-        .get();
-
-      if (existingQuery.empty) {
-        const remainingDirectNeeded = directMin - directSponsors;
-        const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
-
-        notificationContent = {
-          title: "🚀 Incredible Growth!",
-          message: `Amazing progress, ${userData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
-          type: "milestone",
-          subtype: "team",
-          route: "/network",
-          route_params: {},
-        };
-      }
-    }
-
-    // Send notification if a milestone was reached
-    if (notificationContent) {
-      console.log(`MILESTONE UPLINE: Creating notification for ${userId} - ${notificationContent.subtype}`);
-      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
-
-      const result = await createNotification({
-        userId,
-        notifId,
-        type: notificationContent.type,
-        title: notificationContent.title,
-        body: notificationContent.message,
-        docFields: {
-          subtype: notificationContent.subtype,
-          route: notificationContent.route,
-          route_params: JSON.stringify(notificationContent.route_params),
-        },
-      });
-
-      if (result.ok) {
-        console.log(`✅ MILESTONE UPLINE: Milestone notification created for user ${userId} - ${notificationContent.subtype}`);
-      } else {
-        console.log(`❌ MILESTONE UPLINE: Failed to create notification for ${userId}`);
-      }
-    }
-
-  } catch (error) {
-    console.error(`❌ MILESTONE UPLINE: Error checking milestones for ${userId}:`, error);
-  }
-}
-*/
 
 exports.sendDailyTeamGrowthNotifications = onSchedule({
   schedule: "0 * * * *", // Run every hour
@@ -3510,7 +3037,7 @@ exports.sendDailyAccountDeletionSummary = onSchedule({
         const deletionCount = deletions.length;
 
 
-        const result = await createNotification({
+        const result = await createNotificationWithPush({
           userId,
           type: 'team_deletion_summary',
           title: "Team Network Update",
@@ -3864,7 +3391,7 @@ async function sendDeletionNotificationsToNetwork(networkData) {
     // 3. Send immediate notifications concurrently
     const notificationPromises = immediateNotifications.map(async ({ userId, notification }) => {
       try {
-        const result = await createNotification({
+        const result = await createNotificationWithPush({
           userId,
           type: notification.type,
           title: notification.title,
@@ -4347,294 +3874,14 @@ exports.getFirestoreMetrics = onRequest({
     const traceId = `profileCompleted_${uid}_${Date.now()}`;
     console.log('ORCH: start', { traceId, uid, was, now });
 
-    // ===== EXECUTION FUSE: Prevent multiple simultaneous executions =====
-    const fuseId = `profile_completion_${uid}`;
-    const fuseRef = db.collection('execution_fuses').doc(fuseId);
-
-    try {
-      // Attempt to create the execution fuse document atomically
-      await fuseRef.create({
-        uid,
-        traceId,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        type: 'profile_completion'
-      });
-      console.log('ORCH: execution fuse acquired', { traceId, uid, fuseId });
-    } catch (fuseError) {
-      // If document already exists, another execution is already running
-      if (fuseError?.code === 6 || fuseError?.code === 'already-exists') {
-        console.log('ORCH: execution fuse exists - another instance already running', { traceId, uid, fuseId });
-        return; // Exit silently to prevent duplicate execution
-      }
-      // For other errors, log and continue (don't let fuse creation failure break the function)
-      console.warn('ORCH: execution fuse creation failed, continuing anyway', { traceId, uid, fuseId, error: fuseError?.message });
-    }
-
     try {
       await handleSponsorship(uid, after, traceId);
-
-      // OPTION C: Manual milestone checks for sponsor + upline after profile completion
-      console.log('MST TRIGGER: Profile completed, checking milestones for sponsor/upline', { traceId, uid });
-
-      // Get sponsor and upline from the new user's data
-      const sponsorId = after.upline_admin || after.referredBy || after.sponsorReferralCode || after.sponsorReferral;
-      const uplineRefs = after.upline_refs || [];
-
-      console.log('MST INPUT', {
-        newUserId: uid,
-        sponsorId,
-        uplineCount: uplineRefs.length,
-        traceId
-      });
-
-      // Check milestones for direct sponsor first
-      if (sponsorId && sponsorId !== uid) {
-        try {
-          console.log(`MST SPONSOR: Checking milestones for sponsor ${sponsorId}`);
-          await checkMilestoneForUserManual(sponsorId, traceId);
-        } catch (error) {
-          console.error(`MST SPONSOR: Error checking sponsor ${sponsorId}:`, error);
-        }
-      }
-
-      // Check milestones for all upline members
-      for (const uplineId of uplineRefs) {
-        if (uplineId !== uid && uplineId !== sponsorId) {
-          try {
-            console.log(`MST UPLINE: Checking milestones for upline ${uplineId}`);
-            await checkMilestoneForUserManual(uplineId, traceId);
-          } catch (error) {
-            console.error(`MST UPLINE: Error checking upline ${uplineId}:`, error);
-          }
-        }
-      }
-
       console.log('ORCH: done', { traceId, uid });
     } catch (err) {
       console.error('ORCH: failed', { traceId, uid, err });
       throw err;
-    } finally {
-      // Clean up the execution fuse when done (non-blocking)
-      try {
-        await fuseRef.delete();
-        console.log('ORCH: execution fuse cleaned up', { traceId, uid, fuseId });
-      } catch (cleanupError) {
-        console.warn('ORCH: execution fuse cleanup failed (non-fatal)', { traceId, uid, fuseId, error: cleanupError?.message });
-      }
     }
   });
-
-/**
- * Check if milestone push should be sent by looking for recent "new_member" notifications
- * Returns false if a recent new member notification exists (within 1 minute) to avoid duplicate pushes
- */
-async function shouldSendMilestonePush(userId, traceId) {
-  try {
-    console.log('MST PUSH CHECK: Checking for recent new member notifications', { userId, traceId });
-
-    // Look for recent "new_member" notifications (within 1 minute)
-    const oneMinuteAgo = new Date(Date.now() - 60000);
-
-    const recentNotifications = await db.collection('users').doc(userId).collection('notifications')
-      .where('type', '==', 'new_member')
-      .where('createdAt', '>=', oneMinuteAgo)
-      .limit(5)
-      .get();
-
-    if (!recentNotifications.empty) {
-      console.log('MST PUSH CHECK: Found recent new member notifications, skipping milestone push', {
-        userId,
-        count: recentNotifications.size,
-        traceId
-      });
-      return false;
-    }
-
-    console.log('MST PUSH CHECK: No recent new member notifications found, proceeding with milestone push', { userId, traceId });
-    return true;
-
-  } catch (error) {
-    console.error('MST PUSH CHECK: Error checking recent notifications, proceeding with milestone push', { userId, traceId, error });
-    // If there's an error, err on the side of sending the notification
-    return true;
-  }
-}
-
-/**
- * Manual milestone checker for sponsor/upline users after profile completion
- * Implements your comprehensive logging and hardening requirements
- */
-async function checkMilestoneForUserManual(userId, traceId) {
-  try {
-    console.log(`MST CHECK: Starting milestone check for ${userId}`, { traceId });
-
-    // Get current user data
-    const userDoc = await db.collection('users').doc(userId).get();
-    if (!userDoc.exists) {
-      console.log(`MST CHECK: User ${userId} does not exist, skipping`);
-      return;
-    }
-
-    const userData = userDoc.data();
-
-    // Skip admins and qualified users
-    if (userData.role === 'admin') {
-      console.log(`MST CHECK: User ${userId} is admin, skipping`);
-      return;
-    }
-
-    if (userData.qualifiedDate) {
-      console.log(`MST CHECK: User ${userId} already qualified, skipping`);
-      return;
-    }
-
-    // Get current counts
-    const bDir = 0; // We don't have before data in manual mode
-    const aDir = userData.directSponsorCount || 0;
-    const bTeam = 0; // We don't have before data in manual mode
-    const aTeam = userData.totalTeamCount || 0;
-
-    // Your specified logging pattern
-    console.log('MST INPUT', {
-      userId,
-      bDir,
-      aDir,
-      bTeam,
-      aTeam,
-      traceId
-    });
-
-    // Hardcoded thresholds
-    const directMin = 4;
-    const teamMin = 20;
-
-    // Check milestone conditions
-    const crossedDirect = aDir >= directMin && aTeam < teamMin;
-    const crossedTeam = aTeam >= teamMin && aDir < directMin;
-    const qualified = aDir >= directMin && aTeam >= teamMin;
-
-    console.log('MST DECISION', {
-      userId,
-      crossedDirect,
-      crossedTeam,
-      qualified,
-      traceId
-    });
-
-    // Skip if already qualified or no milestone reached
-    if (qualified || (!crossedDirect && !crossedTeam)) {
-      console.log(`MST CHECK: No milestone for ${userId} - qualified:${qualified}, crossedDirect:${crossedDirect}, crossedTeam:${crossedTeam}`);
-      return;
-    }
-
-    // Determine milestone type and content
-    let notificationContent = null;
-    let subtype = null;
-
-    if (crossedDirect) {
-      const remainingTeamNeeded = teamMin - aTeam;
-      const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
-
-      subtype = 'direct';
-      notificationContent = {
-        title: "🎉 Amazing Progress!",
-        message: `Congratulations, ${userData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
-        type: "milestone",
-        subtype: "direct",
-        route: "/network",
-        route_params: {},
-      };
-    } else if (crossedTeam) {
-      const remainingDirectNeeded = directMin - aDir;
-      const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
-
-      subtype = 'team';
-      notificationContent = {
-        title: "🚀 Incredible Growth!",
-        message: `Amazing progress, ${userData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
-        type: "milestone",
-        subtype: "team",
-        route: "/network",
-        route_params: {},
-      };
-    }
-
-    if (!notificationContent) {
-      console.log(`MST CHECK: No notification content generated for ${userId}`);
-      return;
-    }
-
-    // Deterministic notification ID (fixes race condition)
-    const notifId = `milestone_${subtype}_${directMin}_${userId}`;
-
-    console.log('NOTIF CREATE about-to', {
-      path: `users/${userId}/notifications/${notifId}`,
-      notifId,
-      type: notificationContent.type,
-      subtype,
-      traceId
-    });
-
-    // Create notification with deterministic ID (idempotent)
-    const notifRef = db.collection('users').doc(userId).collection('notifications').doc(notifId);
-
-    try {
-      await notifRef.create({
-        ...notificationContent,
-        createdAt: FieldValue.serverTimestamp(),
-        read: false,
-      });
-
-      console.log('NOTIF CREATE wrote', { notifId, traceId });
-
-      // Check for recent "new_member" notifications to avoid duplicate pushes
-      const shouldSendPush = await shouldSendMilestonePush(userId, traceId);
-
-      if (!shouldSendPush) {
-        console.log('MST PUSH SKIP: Recent "new_member" notification found, skipping milestone push to avoid duplicates', { userId, notifId, traceId });
-        return;
-      }
-
-      // Send push notification
-      const result = await createNotification({
-        userId,
-        notifId,
-        type: notificationContent.type,
-        title: notificationContent.title,
-        body: notificationContent.message,
-        docFields: {
-          subtype: notificationContent.subtype,
-          route: notificationContent.route,
-          route_params: JSON.stringify(notificationContent.route_params),
-        },
-      });
-
-      if (result.ok) {
-        console.log('PUSH DETAILED', {
-          type: notificationContent.type,
-          subtype,
-          to: userId,
-          msgId: result.notificationId || 'unknown',
-          notifId,
-          traceId
-        });
-      } else {
-        console.error(`MST PUSH: Failed to send push for ${userId}:`, result.push?.reason || 'unknown_error');
-      }
-
-    } catch (error) {
-      if (error.code === 6) { // ALREADY_EXISTS
-        console.log(`MST CHECK: Milestone notification ${notifId} already exists for ${userId}, skipping`);
-      } else {
-        throw error;
-      }
-    }
-
-  } catch (error) {
-    console.error(`MST CHECK: Error checking milestones for ${userId}:`, error);
-    throw error;
-  }
-}
 
 // ==============================
 // END PATCH: user-doc-updated-v2
@@ -4733,7 +3980,7 @@ async function handleSponsorship(newUserId, userDoc, traceId) {
 
   console.log('SPONSOR: D creating notification', { traceId, sponsorId, notifId });
   
-  const result = await createNotification({
+  const result = await createNotificationWithPush({
     userId: sponsorId,
     type: 'new_member',
     title,
@@ -4744,65 +3991,78 @@ async function handleSponsorship(newUserId, userDoc, traceId) {
       route: '/member_detail',
       route_params: JSON.stringify({ userId: newUserId }),
     },
+    data: {
+      route: '/member_detail',
+      userId: newUserId,
+      newUserId,
+    },
   });
   
   if (result.ok) {
-    console.log('SPONSOR: E notification created successfully', {
-      traceId,
-      sponsorId,
-      notifId: result.notificationId
+    console.log('SPONSOR: E created successfully', { 
+      traceId, 
+      sponsorId, 
+      notifId: result.notificationId,
+      pushSent: result.push.sent,
+      tokenSource: result.push.tokenSource,
+      reason: result.push.reason
     });
   } else {
-    console.warn('SPONSOR: notification creation failed', { traceId, sponsorId, notifId });
+    console.warn('SPONSOR: creation failed', { traceId, sponsorId, notifId, reason: result.push.reason });
   }
   
   return { sponsorId, sponsorName };
 }
 
-// ========== UNIVERSAL NOTIFICATION CREATOR ==========
+// ========== UNIVERSAL NOTIFICATION + PUSH HELPER ==========
 /**
- * Creates a notification document under users/{userId}/notifications/{notifId?}
- * Push notifications are handled automatically by onNotificationCreated trigger.
- *
- * This approach eliminates duplicate push notifications by centralizing all push logic
- * in the onNotificationCreated trigger, ensuring exactly one push per notification.
+ * Creates a notification doc under users/{userId}/notifications/{notifId?}
+ * AND sends an FCM push to that user (3-tier token resolution).
  *
  * Idempotency:
  *  - If `notifId` is provided we use .create() for deterministic "at-most-once" doc creation.
- *  - If it already exists, we return success (idempotent behavior).
+ *  - If it already exists, we still attempt the push (so retries still deliver).
  *
  * @param {Object} opts
  * @param {string} opts.userId            - REQUIRED. Recipient UID (owner of notifications/{...}).
  * @param {string} opts.type              - REQUIRED. Business type, e.g. 'sponsorship', 'chat', 'trial_warning'.
- * @param {string} opts.title             - REQUIRED. Notification title.
- * @param {string} opts.body              - REQUIRED. Notification body.
+ * @param {string} opts.title             - REQUIRED. Push title.
+ * @param {string} opts.body              - REQUIRED. Push body.
+ * @param {Object} [opts.data]            - Optional data payload (string values only; will be stringified safely).
  * @param {string} [opts.notifId]         - Optional deterministic notification id. If omitted, a random ID (.add) is used.
  * @param {Object} [opts.docFields]       - Extra fields to store on the notification document (merged).
  * @param {boolean}[opts.markUnread=true] - Whether to store read:false on the doc.
+ * @param {boolean}[opts.updateBadge=true]- Whether to increment badge on success.
+ * @param {Object} [opts.apns]            - Optional APNS overrides (merged).
+ * @param {Object} [opts.android]         - Optional Android overrides (merged).
  *
- * @returns {Promise<{ ok: boolean, notificationId: string }>}
+ * @returns {Promise<{ ok: boolean, notificationId: string, push: { sent: boolean, reason?: string, tokenSource?: string } }>}
  */
-async function createNotification(opts) {
+async function createNotificationWithPush(opts) {
   const {
     userId,
     type,
     title,
     body,
+    data = {},
     notifId,
     docFields = {},
     markUnread = true,
+    updateBadge = true,
+    apns = {},
+    android = {},
   } = opts || {};
 
   const traceId = `notify_${userId}_${type}_${Date.now()}`;
 
   if (!userId || !type || !title || !body) {
-    console.error('CREATE NOTIF: invalid args', { traceId, userId, type, hasTitle: !!title, hasBody: !!body });
-    return { ok: false, notificationId: '' };
+    console.error('UNIV NOTIF: invalid args', { traceId, userId, type, hasTitle: !!title, hasBody: !!body });
+    return { ok: false, notificationId: '', push: { sent: false, reason: 'invalid_args' } };
   }
 
   const userRef = db.collection('users').doc(userId);
 
-  // Create the notification document - onNotificationCreated trigger will handle push
+  // 1) Create (or ensure) the notification document
   let notificationId = notifId || null;
   const baseDoc = {
     type,
@@ -4817,27 +4077,133 @@ async function createNotification(opts) {
     if (notificationId) {
       // Deterministic: at-most-once create
       await userRef.collection('notifications').doc(notificationId).create(baseDoc);
-      console.log('CREATE NOTIF: created with deterministic ID', { traceId, userId, notificationId, type });
+      console.log('UNIV NOTIF: created', { traceId, userId, notificationId, type });
     } else {
       const addRes = await userRef.collection('notifications').add(baseDoc);
       notificationId = addRes.id;
-      console.log('CREATE NOTIF: created with generated ID', { traceId, userId, notificationId, type });
+      console.log('UNIV NOTIF: added', { traceId, userId, notificationId, type });
     }
-
-    return { ok: true, notificationId };
   } catch (e) {
-    // Already exists? That's fine for deterministic IDs
+    // Already exists? Continue to push (idempotent)
     const alreadyExists = e?.code === 6 || e?.code === 'already-exists';
-    if (alreadyExists) {
-      console.log('CREATE NOTIF: notification already exists', { traceId, userId, notificationId: notifId, type });
-      return { ok: true, notificationId: notifId };
+    if (!alreadyExists) {
+      console.warn('UNIV NOTIF: doc create failed', { traceId, userId, notifId, type, msg: e?.message });
+      return { ok: false, notificationId: notifId || '', push: { sent: false, reason: 'doc_create_failed' } };
+    }
+    console.log('UNIV NOTIF: doc already exists, continue to push', { traceId, userId, notificationId: notifId, type });
+    notificationId = notifId || notificationId; // keep deterministic id
+  }
+
+  // 2) Resolve FCM token with 3-tier fallback
+  let tokenSource = 'none';
+  let fcmToken = null;
+
+  try {
+    const userSnap = await userRef.get();
+    const userData = userSnap.exists ? (userSnap.data() || {}) : {};
+
+    // Tier 1: single field
+    if (typeof userData.fcm_token === 'string' && userData.fcm_token.trim()) {
+      fcmToken = userData.fcm_token.trim();
+      tokenSource = 'fcm_token';
     }
 
-    console.error('CREATE NOTIF: failed to create notification', { traceId, userId, notifId, type, error: e?.message });
-    return { ok: false, notificationId: notifId || '' };
+    // Tier 2: array
+    if (!fcmToken && Array.isArray(userData.fcmTokens) && userData.fcmTokens.length > 0) {
+      const first = (userData.fcmTokens.find(t => typeof t === 'string' && t.trim()) || '').trim();
+      if (first) {
+        fcmToken = first;
+        tokenSource = 'fcmTokens[0]';
+      }
+    }
+
+    // Tier 3: subcollection
+    if (!fcmToken) {
+      const sub = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+      if (!sub.empty) {
+        const doc = sub.docs[0].data() || {};
+        if (typeof doc.token === 'string' && doc.token.trim()) {
+          fcmToken = doc.token.trim();
+          tokenSource = 'fcmTokens(subcollection)';
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('UNIV NOTIF: token lookup failed', { traceId, userId, msg: e?.message });
+  }
+
+  // 3) Build and send push (non-blocking of the created doc)
+  if (!fcmToken) {
+    console.log('UNIV NOTIF: no token found (tried all methods)', { traceId, userId, type, notificationId });
+    return { ok: true, notificationId, push: { sent: false, reason: 'no_token', tokenSource } };
+  }
+
+  // Ensure all data values are strings
+  const strData = {};
+  Object.entries(data || {}).forEach(([k, v]) => {
+    if (v === undefined || v === null) return;
+    strData[k] = typeof v === 'string' ? v : JSON.stringify(v);
+  });
+  strData.type = type;
+  strData.notification_id = notificationId;  // new snake_case format
+  strData.notificationId = notificationId;   // legacy camelCase compatibility
+  strData.title = title;
+  strData.body = body;
+  strData.userId = userId;
+
+  const message = {
+    token: fcmToken,
+    notification: { title, body },
+    data: strData,
+    apns: {
+      payload: {
+        aps: {
+          alert: { title, body },
+          sound: 'default',
+          'mutable-content': 1,
+        },
+      },
+      ...apns,
+    },
+    android: {
+      priority: 'high',
+      notification: {
+        channelId: android?.notification?.channelId || 'default',
+      },
+      ...android,
+    },
+  };
+
+  try {
+    const res = await messaging.send(message);
+    console.log('UNIV NOTIF: push sent', { traceId, userId, tokenSource, notificationId, type, msgId: res });
+
+    if (updateBadge) {
+      try {
+        await userRef.update({ badgeCount: FieldValue.increment(1) });
+      } catch (e) {
+        console.warn('UNIV NOTIF: badge update failed (non-fatal)', { traceId, userId, msg: e?.message });
+      }
+    }
+
+    return { ok: true, notificationId, push: { sent: true, tokenSource } };
+  } catch (e) {
+    // Handle invalid tokens gracefully; you can optionally clean up here
+    const code = e?.errorInfo?.code || e?.code || '';
+    const tokenInvalid =
+      code === 'messaging/registration-token-not-registered' ||
+      code === 'messaging/invalid-registration-token';
+
+    if (tokenInvalid) {
+      console.warn('UNIV NOTIF: invalid token', { traceId, userId, tokenSource, notificationId, type, code });
+      await cleanupDeadToken(userRef, fcmToken);
+    } else {
+      console.warn('UNIV NOTIF: push send failed', { traceId, userId, tokenSource, notificationId, type, code, msg: e?.message });
+    }
+    return { ok: true, notificationId, push: { sent: false, reason: code || 'push_failed', tokenSource } };
   }
 }
-// ========== /UNIVERSAL NOTIFICATION CREATOR ==========
+// ========== /UNIVERSAL NOTIFICATION + PUSH HELPER ==========
 
 
 /**
@@ -4866,52 +4232,16 @@ exports.triggerSponsorship = onCall(
 
     const result = await handleSponsorship(uid, data, traceId);
     console.log('ORCH: manual done', { traceId, uid, result });
-
-    // Manually trigger milestone check for the sponsor ONLY if the new user has completed their profile
-    if (result?.sponsorId) {
-      console.log('🎯 MANUAL MILESTONE: Checking if new user has completed profile before triggering milestone', { sponsorId: result.sponsorId, traceId, newUserId: uid });
-
-      try {
-        // Check if the new user has completed their profile
-        console.log('🎯 MANUAL MILESTONE: About to check new user profile completion', { newUserId: uid, sponsorId: result.sponsorId, traceId });
-        const newUserDoc = await db.collection('users').doc(uid).get();
-        console.log('🎯 MANUAL MILESTONE: Got new user document', { exists: newUserDoc.exists, newUserId: uid });
-
-        const newUserData = newUserDoc.data();
-        const isProfileComplete = newUserData?.isProfileComplete === true;
-
-        console.log('🎯 MANUAL MILESTONE: New user profile status', {
-          newUserId: uid,
-          isProfileComplete,
-          hasPhoto: !!newUserData?.photoUrl,
-          hasLocation: !!(newUserData?.country && newUserData?.state),
-          sponsorId: result.sponsorId,
-          traceId
-        });
-
-        if (isProfileComplete) {
-          console.log('🎯 MANUAL MILESTONE: New user profile is complete, triggering milestone check for sponsor', { sponsorId: result.sponsorId, traceId });
-          await checkMilestoneForUserManual(result.sponsorId, traceId);
-          console.log('✅ MANUAL MILESTONE: Milestone check completed for sponsor', { sponsorId: result.sponsorId, traceId });
-        } else {
-          console.log('🔄 MANUAL MILESTONE: New user profile incomplete, skipping milestone check for sponsor', { sponsorId: result.sponsorId, traceId });
-        }
-      } catch (milestoneError) {
-        console.error('❌ MANUAL MILESTONE: Error checking milestone for sponsor', { sponsorId: result.sponsorId, traceId, error: milestoneError });
-        // Don't fail the triggerSponsorship if milestone check fails
-      }
-    }
-
-    return {
-      ok: true,
-      sponsorId: result?.sponsorId || null,
-      sponsorName: result?.sponsorName || null
+    return { 
+      ok: true, 
+      sponsorId: result?.sponsorId || null, 
+      sponsorName: result?.sponsorName || null 
     };
   }
 );
 
 // --- Firestore v1 push sender: users/{userId}/notifications/{notificationId} ---
-// DISABLED: Replaced with universal createNotification helper
+// DISABLED: Replaced with universal createNotificationWithPush helper
 // All notifications now use direct FCM push to avoid SDK crashes
 // exports.onNotificationCreated = functionsV1
 //   .region('us-central1')
@@ -5007,7 +4337,7 @@ exports.triggerSponsorship = onCall(
 
 /**
  * DISABLED: Enhanced push notification sender with 3-tier FCM token fallback
- * Replaced with universal createNotification helper to avoid SDK crashes
+ * Replaced with universal createNotificationWithPush helper to avoid SDK crashes
  */
 // exports.onNotificationCreated = onDocumentCreated(
 //   { region: "us-central1", timeoutSeconds: 60, memory: "512MiB" },
@@ -5199,7 +4529,7 @@ exports.onChatMessageCreated = onDocumentCreated('chats/{chatId}/messages/{messa
 
   await Promise.all(toUids.map((uid) => {
     const notifId = `chat_${chatId}_${messageId}_${uid}`;
-    return createNotification({
+    return createNotificationWithPush({
       userId: uid,
       notifId,
       type: 'chat_message',
@@ -5241,7 +4571,7 @@ exports.validateDeadTokenCleanup = onCall({ region: "us-central1" }, async (requ
     console.log('VALIDATION: Set bad token', { userId, badToken });
 
     // 2. Try to send a test push (should fail and trigger cleanup)
-    const result = await createNotification({
+    const result = await createNotificationWithPush({
       userId,
       type: 'validation_test',
       title: 'Dead Token Test',
@@ -5339,7 +4669,7 @@ exports.validateTriggerGating = onCall({ region: "us-central1" }, async (request
 
   try {
     // Create a notification using helper (should always work)
-    const helperResult = await createNotification({
+    const helperResult = await createNotificationWithPush({
       userId,
       type: 'validation_test',
       title: 'Trigger Gating Test',
@@ -5372,289 +4702,10 @@ exports.validateTriggerGating = onCall({ region: "us-central1" }, async (request
 });
 
 // ==============================
-// MILESTONE RESET AND DEBUG FUNCTIONS (FOR TESTING)
-// ==============================
-
-exports.resetMilestoneFuse = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  const { userId, milestoneType } = request.data;
-
-  if (!userId || !milestoneType) {
-    throw new HttpsError("invalid-argument", "userId and milestoneType are required");
-  }
-
-  try {
-    console.log(`🔧 RESET MILESTONE: Resetting ${milestoneType} milestone for user ${userId}`);
-
-    const userRef = db.collection('users').doc(userId);
-    const milestoneRef = userRef.collection('milestones').doc('directSponsorCount');
-
-    // Reset the specific milestone flag
-    const updateData = {};
-    if (milestoneType === 'direct') {
-      updateData.directAt = admin.firestore.FieldValue.delete();
-    } else if (milestoneType === 'team') {
-      updateData.teamAt = admin.firestore.FieldValue.delete();
-    } else if (milestoneType === 'qualified') {
-      updateData.qualifiedAt = admin.firestore.FieldValue.delete();
-    } else {
-      throw new HttpsError("invalid-argument", "milestoneType must be 'direct', 'team', or 'qualified'");
-    }
-
-    await milestoneRef.update(updateData);
-
-    console.log(`✅ RESET MILESTONE: Successfully reset ${milestoneType} milestone for user ${userId}`);
-
-    return {
-      success: true,
-      message: `Reset ${milestoneType} milestone for user ${userId}`
-    };
-
-  } catch (error) {
-    console.error(`❌ RESET MILESTONE: Error resetting ${milestoneType} milestone for user ${userId}:`, error);
-    throw new HttpsError("internal", "Failed to reset milestone", error.message);
-  }
-});
-
-exports.debugSendMilestone = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  const { userId } = request.data;
-
-  if (!userId) {
-    throw new HttpsError("invalid-argument", "userId is required");
-  }
-
-  try {
-    console.log(`🧪 DEBUG MILESTONE: Testing milestone notification for user ${userId}`);
-
-    const title = "🧪 Test Milestone";
-    const message = "This is a test milestone notification to verify the end-to-end delivery path.";
-    const notifId = `debug_milestone_${Date.now()}_${userId}`;
-
-    const res = await createNotification({
-      userId,
-      notifId,
-      type: 'milestone',
-      subtype: 'debug',
-      title,
-      message,
-      route: '/network',
-      route_params: {},
-    });
-
-    console.log(`✅ DEBUG MILESTONE: Successfully sent test milestone for user ${userId}`, { notifId, res });
-
-    return {
-      success: true,
-      notifId,
-      message: `Test milestone sent to user ${userId}`,
-      result: res
-    };
-
-  } catch (error) {
-    console.error(`❌ DEBUG MILESTONE: Error sending test milestone for user ${userId}:`, error);
-    throw new HttpsError("internal", "Failed to send test milestone", error.message);
-  }
-});
-
-exports.getMilestoneFuseStatus = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  const { userId } = request.data;
-  if (!userId) {
-    throw new HttpsError("invalid-argument", "userId is required");
-  }
-
-  try {
-    const userRef = db.collection('users').doc(userId);
-    const userSnap = await userRef.get();
-
-    if (!userSnap.exists) {
-      throw new HttpsError("not-found", "User not found");
-    }
-
-    const userData = userSnap.data();
-    const milestones = userData.milestones || {};
-
-    return {
-      userId,
-      milestones: {
-        directAt: milestones.directAt ? milestones.directAt.toDate?.() || milestones.directAt : null,
-        teamAt: milestones.teamAt ? milestones.teamAt.toDate?.() || milestones.teamAt : null,
-        qualifiedAt: milestones.qualifiedAt ? milestones.qualifiedAt.toDate?.() || milestones.qualifiedAt : null,
-      },
-      currentCounts: {
-        directSponsorCount: userData.directSponsorCount || 0,
-        totalTeamCount: userData.totalTeamCount || 0,
-      }
-    };
-  } catch (error) {
-    console.error("Error getting milestone fuse status:", error);
-    throw new HttpsError("internal", "Failed to get milestone status");
-  }
-});
-
-exports.resetMilestoneFuses = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  const { userId, fuses } = request.data;
-  if (!userId) {
-    throw new HttpsError("invalid-argument", "userId is required");
-  }
-
-  try {
-    const userRef = db.collection('users').doc(userId);
-    const updateData = {};
-
-    if (fuses?.direct) updateData['milestones.directAt'] = admin.firestore.FieldValue.delete();
-    if (fuses?.team) updateData['milestones.teamAt'] = admin.firestore.FieldValue.delete();
-    if (fuses?.qualified) updateData['milestones.qualifiedAt'] = admin.firestore.FieldValue.delete();
-
-    if (Object.keys(updateData).length === 0) {
-      throw new HttpsError("invalid-argument", "No fuses specified to reset");
-    }
-
-    await userRef.update(updateData);
-
-    console.log(`MILESTONE FUSES RESET for ${userId}:`, updateData);
-    return { success: true, reset: updateData };
-  } catch (error) {
-    console.error("Error resetting milestone fuses:", error);
-    throw new HttpsError("internal", "Failed to reset milestone fuses");
-  }
-});
-
-exports.clearPreProfileMilestoneFuses = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication required");
-  }
-
-  try {
-    console.log('🧹 CLEANUP: Starting to clear milestone fuses set before profile completion');
-
-    const usersRef = db.collection('users');
-    const snapshot = await usersRef.get();
-
-    const updates = [];
-    let cleared = 0;
-
-    for (const doc of snapshot.docs) {
-      const userData = doc.data();
-      const milestones = userData.milestones;
-
-      // Only clear fuses for users who have them set
-      if (milestones && (milestones.directAt || milestones.teamAt || milestones.qualifiedAt)) {
-        console.log(`🧹 CLEANUP: Clearing milestone fuses for user ${doc.id}`, {
-          hasDirectAt: !!milestones.directAt,
-          hasTeamAt: !!milestones.teamAt,
-          hasQualifiedAt: !!milestones.qualifiedAt,
-          isProfileComplete: userData.isProfileComplete,
-          directSponsorCount: userData.directSponsorCount || 0,
-          totalTeamCount: userData.totalTeamCount || 0
-        });
-
-        updates.push(
-          doc.ref.update({
-            'milestones.directAt': admin.firestore.FieldValue.delete(),
-            'milestones.teamAt': admin.firestore.FieldValue.delete(),
-            'milestones.qualifiedAt': admin.firestore.FieldValue.delete()
-          })
-        );
-        cleared++;
-      }
-    }
-
-    if (updates.length > 0) {
-      await Promise.all(updates);
-      console.log(`✅ CLEANUP: Cleared milestone fuses for ${cleared} users`);
-    } else {
-      console.log('ℹ️ CLEANUP: No milestone fuses found to clear');
-    }
-
-    return {
-      success: true,
-      message: `Cleared milestone fuses for ${cleared} users`,
-      clearedCount: cleared
-    };
-  } catch (error) {
-    console.error("Error clearing pre-profile milestone fuses:", error);
-    throw new HttpsError("internal", "Failed to clear milestone fuses");
-  }
-});
-
-// ==============================
 // END VALIDATION FUNCTIONS
 // ==============================
 
 } // END ENABLE_EXTRA_EXPORTS guard for remaining exports
-
-// ==============================
-// EXECUTION FUSE CLEANUP
-// ==============================
-/**
- * Scheduled function to clean up orphaned execution fuses older than 5 minutes
- * Runs every hour to prevent accumulation of stale fuse documents
- */
-exports.cleanupExecutionFuses = onSchedule({
-  schedule: 'every 1 hours',
-  timeZone: 'UTC',
-  region: 'us-central1',
-  timeoutSeconds: 300,
-  memory: '256MiB'
-}, async () => {
-  console.log('FUSE CLEANUP: Starting execution fuse cleanup');
-
-  try {
-    const cutoffTime = new Date(Date.now() - 5 * 60 * 1000); // 5 minutes ago
-    const fusesRef = db.collection('execution_fuses');
-
-    // Query for fuses older than 5 minutes
-    const oldFusesQuery = fusesRef.where('timestamp', '<', cutoffTime);
-    const oldFusesSnap = await oldFusesQuery.get();
-
-    if (oldFusesSnap.empty) {
-      console.log('FUSE CLEANUP: No orphaned fuses found');
-      return;
-    }
-
-    console.log(`FUSE CLEANUP: Found ${oldFusesSnap.size} orphaned fuses to clean up`);
-
-    // Delete orphaned fuses in batches
-    const batch = db.batch();
-    let deleteCount = 0;
-
-    oldFusesSnap.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-      deleteCount++;
-
-      console.log('FUSE CLEANUP: Queuing for deletion', {
-        fuseId: doc.id,
-        data: doc.data(),
-        age: Math.round((Date.now() - doc.data().timestamp?.toDate?.()?.getTime()) / 1000 / 60) + ' minutes'
-      });
-    });
-
-    if (deleteCount > 0) {
-      await batch.commit();
-      console.log(`FUSE CLEANUP: Successfully deleted ${deleteCount} orphaned execution fuses`);
-    }
-
-  } catch (error) {
-    console.error('FUSE CLEANUP: Error during cleanup', error);
-    // Don't throw - let cleanup failures be non-fatal
-  }
-});
-
 // ==============================
 // END PATCH: export-bisect-wrap-remaining
 // ==============================

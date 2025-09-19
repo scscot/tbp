@@ -638,9 +638,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
         await _firestoreService.updateUser(widget.user.uid, updatedData);
 
-        // Always trigger sponsorship notification after profile update
-        // Server-side idempotency prevents duplicate notifications
-        await triggerSponsorshipAfterProfileComplete();
+        // DISABLED: Manual sponsorship trigger to prevent duplicate push notifications
+        // The automatic onUserProfileCompleted trigger handles sponsorship notifications
+        // await triggerSponsorshipAfterProfileComplete();
 
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(

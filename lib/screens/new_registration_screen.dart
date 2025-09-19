@@ -682,7 +682,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       }
       
       scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('Unable to sign in with Apple. Please try email registration.'),
+          content: Text('Unable to Sign up with Apple. Please try email registration.'),
           backgroundColor: Colors.red));
     } finally {
       if (mounted) {
@@ -850,7 +850,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       ElevatedButton.icon(
                         icon: const FaIcon(FontAwesomeIcons.apple,
                             color: Colors.white, size: 20),
-                        label: const Text('Sign in with Apple'),
+                        label: const Text('Sign up with Apple'),
                         onPressed: (_isLoading && !_isAppleSignUp) ? null : _signUpWithApple,
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -864,7 +864,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     
                     ElevatedButton.icon(
                       icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                      label: const Text('Sign in with Google'),
+                      label: const Text('Sign up with Google'),
                       onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -878,7 +878,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         Expanded(child: Divider()),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('or register with email', 
+                          child: Text('or sign up with email', 
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
