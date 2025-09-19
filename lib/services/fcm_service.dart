@@ -397,10 +397,22 @@ void navigateToRoute(PendingNotification notification) {
   }
 
   if (navigatorKey.currentState != null) {
-    navigatorKey.currentState!.pushNamed(
-      notification.route,
-      arguments: notification.arguments,
-    );
+    try {
+      navigatorKey.currentState!.pushNamed(
+        notification.route,
+        arguments: notification.arguments,
+      );
+      if (kDebugMode) {
+        debugPrint("✅ NAVIGATION: Successfully navigated to ${notification.route}");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("❌ NAVIGATION: Error during navigation: $e");
+        debugPrint("❌ NAVIGATION: Route: ${notification.route}");
+        debugPrint("❌ NAVIGATION: Arguments: ${notification.arguments}");
+      }
+      rethrow; // Re-throw so calling code can handle it
+    }
   } else {
     if (kDebugMode) {
       debugPrint("❌ NAVIGATION: Cannot navigate. Navigator state is null.");

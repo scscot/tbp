@@ -263,19 +263,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        barrierDismissible: true,
+        builder: (BuildContext dialogContext) => AlertDialog(
           title: const Text('Upgrade Required'),
           content: const Text(
               'Upgrade your Admin subscription to save these changes.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                try {
+                  Navigator.of(dialogContext).pop();
+                } catch (e) {
+                  debugPrint('❌ SETTINGS: Error closing upgrade dialog: $e');
+                  Navigator.of(context).pop();
+                }
+              },
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/subscription');
+                try {
+                  Navigator.of(dialogContext).pop();
+                  Navigator.pushNamed(context, '/subscription');
+                } catch (e) {
+                  debugPrint('❌ SETTINGS: Error in upgrade navigation: $e');
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, '/subscription');
+                }
               },
               child: const Text('Upgrade Now'),
             ),
@@ -401,7 +415,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   : () {
                       showDialog(
                         context: context,
-                        builder: (_) => AlertDialog(
+                        barrierDismissible: true,
+                        builder: (BuildContext dialogContext) => AlertDialog(
                           title: const Text(
                             'Very Important!',
                             style: TextStyle(
@@ -413,7 +428,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               'are automatically placed in your opportunity team.'),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () {
+                                try {
+                                  Navigator.of(dialogContext).pop();
+                                } catch (e) {
+                                  debugPrint('❌ SETTINGS: Error closing info dialog: $e');
+                                  Navigator.of(context).pop();
+                                }
+                              },
                               child: const Text('I Understand'),
                             ),
                           ],

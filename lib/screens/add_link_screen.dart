@@ -275,8 +275,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
   void _showReferralUrlInUseDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -372,7 +372,12 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  try {
+                    Navigator.of(dialogContext).pop();
+                  } catch (e) {
+                    debugPrint('❌ ADD_LINK: Error closing referral URL dialog: $e');
+                    Navigator.of(context).pop();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -401,8 +406,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
   void _showUrlValidationFailedDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -499,7 +504,12 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  try {
+                    Navigator.of(dialogContext).pop();
+                  } catch (e) {
+                    debugPrint('❌ ADD_LINK: Error closing validation dialog: $e');
+                    Navigator.of(context).pop();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -899,7 +909,8 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 });
                 showDialog(
                   context: context,
-                  builder: (_) => AlertDialog(
+                  barrierDismissible: true,
+                  builder: (BuildContext dialogContext) => AlertDialog(
                     title: const Text(
                       'Very Important!',
                       style: TextStyle(
@@ -936,7 +947,14 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          try {
+                            Navigator.of(dialogContext).pop();
+                          } catch (e) {
+                            debugPrint('❌ ADD_LINK: Error closing info dialog: $e');
+                            Navigator.of(context).pop();
+                          }
+                        },
                         child: const Text('I Understand'),
                       ),
                     ],

@@ -166,12 +166,22 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   void _showSimpleNotificationDialog(Map<String, dynamic> data) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) => AlertDialog(
         title: Text(data['title'] ?? 'Notification'),
         content: Text(data['body'] ?? data['message'] ?? 'No message content.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              debugPrint('🔔 DIALOG: Closing notification dialog');
+              try {
+                Navigator.of(dialogContext).pop();
+              } catch (e) {
+                debugPrint('❌ DIALOG: Error closing dialog: $e');
+                // Fallback: try using the main navigator
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('OK'),
           ),
         ],
@@ -276,16 +286,27 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                             try {
                               final paramsString =
                                   data['route_params'] as String? ?? '{}';
+                              debugPrint("🔍 NOTIFICATION: Parsing route_params: $paramsString");
                               final arguments = jsonDecode(paramsString)
                                   as Map<String, dynamic>;
+                              debugPrint("🔍 NOTIFICATION: Parsed arguments: $arguments");
                               final pendingNotification = PendingNotification(
                                 route: route,
                                 arguments: arguments,
                               );
-                              navigateToRoute(pendingNotification);
+
+                              try {
+                                navigateToRoute(pendingNotification);
+                                debugPrint("✅ NOTIFICATION: Navigation completed successfully");
+                              } catch (navigateError) {
+                                debugPrint("❌ NOTIFICATION: Navigation failed: $navigateError");
+                                rethrow; // Re-throw to trigger fallback dialog
+                              }
                             } catch (e) {
                               debugPrint(
-                                  "Error handling notification tap navigation: $e");
+                                  "❌ NOTIFICATION: Error handling notification tap navigation: $e");
+                              debugPrint("❌ NOTIFICATION: Route: $route");
+                              debugPrint("❌ NOTIFICATION: Raw data: $data");
                               _showSimpleNotificationDialog(data);
                             }
                           } else {

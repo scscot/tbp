@@ -337,8 +337,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   void _showIncompleteDeleteionDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -381,7 +381,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           actions: [
             ElevatedButton(
               onPressed: () async {
-                Navigator.of(context).pop();
+                try {
+                  Navigator.of(dialogContext).pop();
+                } catch (e) {
+                  debugPrint('❌ EDIT_PROFILE: Error closing deletion dialog: $e');
+                  Navigator.of(context).pop();
+                }
                 await _completeAccountDeletion();
               },
               style: ElevatedButton.styleFrom(
@@ -400,8 +405,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   void _showUrlValidationFailedDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -481,7 +486,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                try {
+                  Navigator.of(dialogContext).pop();
+                } catch (e) {
+                  debugPrint('❌ EDIT_PROFILE: Error closing URL validation dialog: $e');
+                  Navigator.of(context).pop();
+                }
+              },
               child: const Text(
                 'Try Again',
                 style: TextStyle(
@@ -1022,7 +1034,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           });
                           showDialog(
                             context: context,
-                            builder: (_) => AlertDialog(
+                            barrierDismissible: true,
+                            builder: (BuildContext dialogContext) => AlertDialog(
                               title: const Text(
                                 'Very Important!',
                                 style: TextStyle(
@@ -1064,7 +1077,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               ),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
+                                  onPressed: () {
+                                    try {
+                                      Navigator.of(dialogContext).pop();
+                                    } catch (e) {
+                                      debugPrint('❌ EDIT_PROFILE: Error closing info dialog: $e');
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
                                   child: const Text('I Understand'),
                                 ),
                               ],

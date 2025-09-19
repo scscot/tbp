@@ -387,7 +387,14 @@ class _BusinessScreenState extends State<BusinessScreen>
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pop(dialogContext),
+                      onPressed: () {
+                        try {
+                          Navigator.of(dialogContext).pop();
+                        } catch (e) {
+                          debugPrint('❌ BUSINESS: Error closing qualification dialog: $e');
+                          Navigator.of(context).pop();
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.textInverse,

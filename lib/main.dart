@@ -222,9 +222,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else if (settings.name == '/member_detail') {
               final args = settings.arguments as Map<String, dynamic>?;
+              String userId = '';
+
+              // Handle different possible types for userId parameter
+              final userIdValue = args?['userId'];
+              if (userIdValue is String) {
+                userId = userIdValue;
+              } else if (userIdValue is Map<String, dynamic>) {
+                // Handle case where userId might be nested
+                userId = userIdValue['userId'] as String? ?? '';
+              } else {
+                debugPrint('❌ ROUTING: Unexpected userId type: ${userIdValue.runtimeType}');
+              }
+
               return MaterialPageRoute(
                 builder: (context) => MemberDetailScreen(
-                  userId: args?['userId'] as String? ?? '',
+                  userId: userId,
                   appId: appId,
                 ),
                 settings: settings,

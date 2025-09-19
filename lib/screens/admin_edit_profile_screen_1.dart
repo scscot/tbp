@@ -242,7 +242,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (_) => AlertDialog(
+                          barrierDismissible: true,
+                          builder: (BuildContext dialogContext) => AlertDialog(
                             title: const Text(
                               'Very Important!',
                               style: TextStyle(
@@ -255,7 +256,14 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                                 'are automatically placed in your business opportunity team.'),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
+                                onPressed: () {
+                                  try {
+                                    Navigator.of(dialogContext).pop();
+                                  } catch (e) {
+                                    debugPrint('❌ ADMIN_PROFILE: Error closing info dialog: $e');
+                                    Navigator.of(context).pop();
+                                  }
+                                },
                                 child: const Text('I Understand'),
                               ),
                             ],
