@@ -15,6 +15,7 @@ import '../services/auth_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import '../widgets/navigation_shell.dart';
+import '../widgets/account_setup_modal.dart';
 import '../main.dart';
 import 'homepage_screen.dart';
 import 'package:provider/provider.dart';
@@ -568,6 +569,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     if (isFormValid && isImageValid) {
       setState(() => _isLoading = true);
 
+      // Show account setup modal for first-time setup
+      if (widget.isFirstTimeSetup && mounted) {
+        showAccountSetupModal(
+          context: context,
+          title: '🚀 Setting up your account...',
+          description: 'Please wait while we get everything ready for you',
+        );
+      }
+
       // Capture context-dependent objects before async operations
       if (!mounted) return;
       final navigator = Navigator.of(context);
@@ -643,6 +653,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         // await triggerSponsorshipAfterProfileComplete();
 
         if (!mounted) return;
+
+        // Hide modal if it was shown
+        if (widget.isFirstTimeSetup) {
+          hideAccountSetupModal(context);
+        }
+
         scaffoldMessenger.showSnackBar(
           const SnackBar(
               content: Text('Profile updated successfully!'),
@@ -659,6 +675,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         }
       } catch (e) {
         if (!mounted) return;
+
+        // Hide modal if it was shown and there was an error
+        if (widget.isFirstTimeSetup) {
+          hideAccountSetupModal(context);
+        }
+
         scaffoldMessenger.showSnackBar(
           SnackBar(
               content: Text('Error updating profile: $e'),

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../data/states_by_country.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/account_setup_modal.dart';
 import 'admin_edit_profile_screen_1.dart';
 
 class AdminEditProfileScreen extends StatefulWidget {
@@ -165,6 +166,15 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
       _isLoading = true;
     });
 
+    // Show account setup modal
+    if (mounted) {
+      showAccountSetupModal(
+        context: context,
+        title: '🛠️ Setting up your business profile...',
+        description: 'Getting your business information ready',
+      );
+    }
+
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception('User not authenticated');
@@ -209,6 +219,9 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
       }
 
       if (mounted) {
+        // Hide modal
+        hideAccountSetupModal(context);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text('Profile information saved successfully!')),
@@ -223,6 +236,9 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
       }
     } catch (e) {
       if (mounted) {
+        // Hide modal on error
+        hideAccountSetupModal(context);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
