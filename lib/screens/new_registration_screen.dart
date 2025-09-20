@@ -400,12 +400,13 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       debugPrint("🍎 REGISTER: Apple Sign-In authorization error: ${e.code}");
       switch (e.code) {
         case AuthorizationErrorCode.canceled:
+        case AuthorizationErrorCode.unknown:  // Error 1000 - also user cancellation
+          debugPrint("🔄 APPLE_REGISTER: User canceled Apple Sign-In (${e.code}), treating as cancellation");
           throw Exception('USER_CANCELED_APPLE_SIGNIN');
         case AuthorizationErrorCode.failed:
         case AuthorizationErrorCode.invalidResponse:
         case AuthorizationErrorCode.notHandled:
         case AuthorizationErrorCode.notInteractive:
-        case AuthorizationErrorCode.unknown:
         default:
           rethrow;
       }
@@ -511,6 +512,13 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           backgroundColor: Colors.red));
     } catch (e) {
       debugPrint("❌ REGISTER: Unexpected Google Sign-In error: $e");
+
+      // Check if this is a user cancellation
+      if (_isUserCancellation(null, e.toString())) {
+        debugPrint('🔄 GOOGLE_REGISTER: User canceled Google Sign-In, returning silently');
+        return; // Exit gracefully without showing error
+      }
+
       scaffoldMessenger.showSnackBar(const SnackBar(
           content: Text('An unexpected error occurred with Google Sign-In.'),
           backgroundColor: Colors.red));
@@ -651,16 +659,21 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ REGISTER: Apple Sign-In failed: ${e.code} - ${e.message}");
+
+      // Check if this is a user cancellation disguised as a Firebase error
+      if (_isUserCancellation(e.code, e.message)) {
+        debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In (Firebase error), returning silently');
+        return; // Exit gracefully without showing error
+      }
+
       scaffoldMessenger.showSnackBar(SnackBar(
           content: Text(e.message ?? 'Apple Sign-In failed.'),
           backgroundColor: Colors.red));
     } catch (e) {
       debugPrint("❌ REGISTER: Unexpected Apple Sign-In error: $e");
-      
-      // Handle user cancellation silently - don't show error message
-      if (e.toString().contains('USER_CANCELED_APPLE_SIGNIN') ||
-          e.toString().contains('canceled') ||
-          e.toString().contains('user_cancelled')) {
+
+      // Enhanced user cancellation detection
+      if (_isUserCancellation(null, e.toString())) {
         debugPrint('🔄 APPLE_REGISTER: User canceled Apple Sign-In, returning silently');
         return; // Exit gracefully without showing error
       }
@@ -680,7 +693,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
             backgroundColor: Colors.red));
         return;
       }
-      
+
       scaffoldMessenger.showSnackBar(const SnackBar(
           content: Text('Unable to Sign up with Apple. Please try email registration.'),
           backgroundColor: Colors.red));
@@ -749,6 +762,90 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       _appleUserData = null;
       rethrow;
     }
+  }
+
+  /// Helper method to detect user cancellation vs actual errors
+  bool _isUserCancellation(String? errorCode, String? errorMessage) {
+    final code = errorCode?.toLowerCase() ?? '';
+    final message = (errorMessage ?? '').toLowerCase();
+
+    // Check for our specific Apple cancellation marker first
+    if (message.contains('user_canceled_apple_signin')) {
+      return true;
+    }
+
+    // Apple Sign-In and Google Sign-In cancellation keywords
+    final cancellationKeywords = [
+      'user_cancelled',
+      'user_canceled',
+      'cancelled',
+      'canceled',
+      'user cancelled',
+      'user canceled',
+      'user_cancelled_authorize',
+      'user_cancelled_login',
+      'authorization_cancelled',
+      'authorization_canceled',
+      'user interaction was cancelled',
+      'user interaction was canceled',
+      'the user canceled',
+      'the user cancelled',
+      'operation_cancelled',
+      'operation_canceled',
+      'request was cancelled',
+      'request was canceled',
+      'user closed',
+      'user dismissed',
+      'user pressed cancel',
+      'authentication cancelled',
+      'authentication canceled',
+      'sign_in_cancelled',
+      'sign_in_canceled',
+      'apple_id_auth_cancelled',
+      'apple_id_auth_canceled',
+      'cancelled by user',
+      'canceled by user',
+      'user aborted',
+      'user declined',
+      'user rejected',
+      'authorization denied by user',
+      'access_denied',
+      'user_denied',
+      'authentication_cancelled',
+      'authentication_canceled',
+      'login_cancelled',
+      'login_canceled',
+      'abort',
+      'aborted',  // Added for Google Sign-In
+      'dismiss',
+      'close',
+      'user backed out',
+      'user exited',
+      'flow cancelled',
+      'flow canceled',
+      'signin_cancelled',
+      'signin_canceled',
+      'google sign-in aborted',  // Specific Google cancellation
+      'sign-in aborted'  // Generic sign-in aborted
+    ];
+
+    // Check error code first
+    if (code.isNotEmpty) {
+      for (final keyword in cancellationKeywords) {
+        if (code.contains(keyword)) {
+          return true;
+        }
+      }
+    }
+
+    // Check error message
+    for (final keyword in cancellationKeywords) {
+      if (message.contains(keyword)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   PreferredSizeWidget _buildCustomAppBar(BuildContext context) {

@@ -352,6 +352,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     } on FirebaseAuthException catch (e) {
       debugPrint("❌ DEBUG: FirebaseAuthException: ${e.code} - ${e.message}");
+
+      // Check if this is a user cancellation disguised as a Firebase error
+      if (_isUserCancellation(e.code, e.message)) {
+        debugPrint('🔄 SOCIAL_LOGIN: User canceled sign-in (Firebase error), returning silently');
+        return; // Exit gracefully without showing error
+      }
+
       if (mounted) {
         scaffoldMessenger.showSnackBar(SnackBar(
             content: Text(e.message ?? 'Sign-in failed.'),
@@ -359,15 +366,13 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       debugPrint("❌ DEBUG: Unexpected error: $e");
-      
-      // Handle user cancellation silently - don't show error message
-      if (e.toString().contains('USER_CANCELED_APPLE_SIGNIN') ||
-          e.toString().contains('canceled') ||
-          e.toString().contains('GoogleSignIn')) {
+
+      // Enhanced user cancellation detection
+      if (_isUserCancellation(null, e.toString())) {
         debugPrint('🔄 SOCIAL_LOGIN: User canceled sign-in, returning silently');
         return; // Exit gracefully without showing error
       }
-      
+
       if (mounted) {
         scaffoldMessenger.showSnackBar(SnackBar(
             content: Text('Sign-in error: $e'),
@@ -721,7 +726,9 @@ class _LoginScreenState extends State<LoginScreen> {
       
       switch (e.code) {
         case AuthorizationErrorCode.canceled:
+        case AuthorizationErrorCode.unknown:  // Error 1000 - also user cancellation
           // Create a custom exception for user cancellation that we can handle differently
+          debugPrint("🔄 APPLE_LOGIN: User canceled Apple Sign-In (${e.code}), treating as cancellation");
           throw Exception('USER_CANCELED_APPLE_SIGNIN');
         case AuthorizationErrorCode.failed:
           throw Exception('Apple Sign-In failed. Please check your Apple ID settings and try again.');
@@ -731,7 +738,6 @@ class _LoginScreenState extends State<LoginScreen> {
           throw Exception('Apple Sign-In not properly configured. Please contact support.');
         case AuthorizationErrorCode.notInteractive:
           throw Exception('Apple Sign-In requires user interaction. Please try again.');
-        case AuthorizationErrorCode.unknown:
         default:
           throw Exception('Unknown Apple Sign-In error. Please try again or contact support.');
       }
@@ -788,6 +794,69 @@ class _LoginScreenState extends State<LoginScreen> {
     final random = math.Random.secure();
     return List.generate(length, (_) => charset[random.nextInt(charset.length)])
         .join();
+  }
+
+  /// Enhanced detection for user cancellation across all authentication methods
+  bool _isUserCancellation(String? errorCode, String? errorMessage) {
+    final code = errorCode?.toLowerCase() ?? '';
+    final message = (errorMessage ?? '').toLowerCase();
+
+    // Check for explicit cancellation indicators
+    final cancellationKeywords = [
+      'user_canceled_apple_signin',
+      'canceled',
+      'cancelled',
+      'user_cancelled',
+      'user_canceled',
+      'abort',
+      'aborted',
+      'dismiss',
+      'dismissed',
+      'close',
+      'closed',
+      'cancel',
+      'network_canceled',
+      'user-cancelled',
+      'user-canceled',
+      'googlesignin',
+      'sign_in_canceled',
+      'sign_in_cancelled',
+      'authorization_canceled',
+      'authorization_cancelled',
+      'web_cancel_on_load',
+      'web_closed_by_user',
+      'popup_closed_by_user',
+      'credential_canceled',
+      'google sign-in aborted',  // Specific Google cancellation
+      'sign-in aborted',  // Generic sign-in aborted
+      'credential_cancelled',
+    ];
+
+    // Check for Firebase-specific cancellation error codes
+    final firebaseCancellationCodes = [
+      'cancelled',
+      'canceled',
+      'user-cancelled',
+      'user-canceled',
+      'web-storage-unsupported',
+      'operation-not-allowed',
+      'popup-closed-by-user',
+      'cancelled-popup-request',
+    ];
+
+    // Check if error code indicates cancellation
+    if (firebaseCancellationCodes.contains(code)) {
+      return true;
+    }
+
+    // Check if message contains cancellation keywords
+    for (final keyword in cancellationKeywords) {
+      if (message.contains(keyword)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }
