@@ -82,6 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
         if (nav != null) {
           _navigated = true;            // guard against double navigation
           _authSub?.cancel();           // stop listening once we commit to UI
+
+          // Clear recent sign-out timestamp since user successfully logged in
+          await SessionManager.instance.clearRecentSignOut();
+
           nav.pushNamedAndRemoveUntil(
             '/',                        // AuthWrapper route
             (route) => false,
@@ -126,13 +130,18 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
       
-      // Auto-prompt biometric if device supports it, biometric is enabled, and we have stored credentials
-      final shouldAutoPrompt = available && enabled && hasStoredCredentials;
-      debugPrint('🔐 LOGIN: Should auto-prompt biometric: $shouldAutoPrompt');
-      
+      // Check if user recently signed out to prevent immediate biometric auto-login
+      final wasRecentSignOut = await SessionManager.instance.wasRecentSignOut();
+
+      // Auto-prompt biometric if device supports it, biometric is enabled, we have stored credentials, and user didn't recently sign out
+      final shouldAutoPrompt = available && enabled && hasStoredCredentials && !wasRecentSignOut;
+      debugPrint('🔐 LOGIN: Should auto-prompt biometric: $shouldAutoPrompt (recent sign-out: $wasRecentSignOut)');
+
       if (shouldAutoPrompt) {
         debugPrint('🔐 LOGIN: Auto-prompting biometric login...');
         _showBiometricLogin();
+      } else if (wasRecentSignOut) {
+        debugPrint('🔐 LOGIN: Skipping biometric auto-prompt due to recent sign-out');
       }
     } catch (e) {
       debugPrint('❌ LOGIN: Error initializing biometric: $e');

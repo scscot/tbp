@@ -138,7 +138,10 @@ class AuthService {
     
     // Set logout state to indicate user has logged out
     await SessionManager.instance.setLogoutState(true);
-    
+
+    // Set recent sign-out timestamp to prevent immediate biometric auto-login
+    await SessionManager.instance.setRecentSignOut();
+
     // Clear logout data but preserve user data and biometric settings for biometric login
     await SessionManager.instance.clearLogoutData();
     

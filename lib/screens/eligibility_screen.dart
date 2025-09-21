@@ -165,78 +165,6 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     );
   }
 
-  Widget _buildProgressCard({
-    required IconData icon,
-    required String label,
-    required int current,
-    required int target,
-  }) {
-    final progress = current / target;
-    final isComplete = current >= target;
-
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: isComplete
-              ? LinearGradient(
-                  colors: [
-                    AppColors.teamAccent,
-                    AppColors.darker(AppColors.teamAccent)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : LinearGradient(
-                  colors: [
-                    AppColors.growthPrimary,
-                    AppColors.darker(AppColors.growthPrimary)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: AppColors.mediumShadow,
-        ),
-        child: Column(
-          children: [
-            Icon(
-              isComplete ? Icons.check_circle : icon,
-              size: 32,
-              color: AppColors.textInverse,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '$current / $target',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textInverse,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.withOpacity(AppColors.textInverse, 0.9),
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            LinearProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              backgroundColor:
-                  AppColors.withOpacity(AppColors.textInverse, 0.3),
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.textInverse),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildProcessStep({
     required int step,
     required String title,
@@ -364,7 +292,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'TEAM GROWTH\nQUALIFICATION THRESHOLDS',
+                      'QUALIFICATION THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -394,7 +322,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 ),
               ),
             ),
-            // Progress Cards
+            // Current Team Counts
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -408,25 +336,23 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.growthPrimary,
+                        color: AppColors.warning,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        _buildProgressCard(
+                        _buildMetricCard(
                           icon: Icons.connect_without_contact,
+                          value: _currentDirectCount.toString(),
                           label: 'Direct Sponsors',
-                          current: _currentDirectCount,
-                          target: AppConstants.projectWideDirectSponsorMin,
                         ),
                         const SizedBox(width: 16),
-                        _buildProgressCard(
+                        _buildMetricCard(
                           icon: Icons.hub,
+                          value: _currentTotalCount.toString(),
                           label: 'Total Team Members',
-                          current: _currentTotalCount,
-                          target: AppConstants.projectWideTotalTeamMin,
                         ),
                       ],
                     ),

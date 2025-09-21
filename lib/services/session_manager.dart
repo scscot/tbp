@@ -13,6 +13,7 @@ class SessionManager {
   static const String _logoutTimeKey = 'last_logout_time';
   static const String _referralDataKey = 'referral_data';
   static const String _logoutStateKey = 'user_logged_out';
+  static const String _recentSignOutKey = 'recent_sign_out_timestamp';
 
   // --- The 'pending_referral_code' keys and methods have been removed ---
 
@@ -58,6 +59,7 @@ class SessionManager {
     await prefs.remove(_logoutTimeKey);
     await prefs.remove(_referralDataKey);
     await prefs.remove(_logoutStateKey);
+    await prefs.remove(_recentSignOutKey);
     if (kDebugMode) {
       debugPrint('🧹 SessionManager — All session and referral data cleared');
     }
@@ -140,6 +142,42 @@ class SessionManager {
     await prefs.remove(_logoutStateKey);
     if (kDebugMode) {
       debugPrint('🧹 SessionManager — Logout state cleared');
+    }
+  }
+
+  /// Sets timestamp when user manually signs out to prevent immediate biometric auto-login
+  Future<void> setRecentSignOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    await prefs.setInt(_recentSignOutKey, timestamp);
+    if (kDebugMode) {
+      debugPrint('📂 SessionManager — Recent sign-out timestamp set: $timestamp');
+    }
+  }
+
+  /// Checks if user recently signed out (within the last 10 seconds) to prevent immediate biometric auto-login
+  Future<bool> wasRecentSignOut({int delaySeconds = 10}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final timestamp = prefs.getInt(_recentSignOutKey);
+    if (timestamp == null) return false;
+
+    final signOutTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    final timeDifference = DateTime.now().difference(signOutTime);
+    final isRecent = timeDifference.inSeconds < delaySeconds;
+
+    if (kDebugMode) {
+      debugPrint('🔍 SessionManager — Sign-out was ${timeDifference.inSeconds} seconds ago, recent: $isRecent');
+    }
+
+    return isRecent;
+  }
+
+  /// Clears the recent sign-out timestamp
+  Future<void> clearRecentSignOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_recentSignOutKey);
+    if (kDebugMode) {
+      debugPrint('🧹 SessionManager — Recent sign-out timestamp cleared');
     }
   }
 }
