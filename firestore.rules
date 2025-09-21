@@ -35,12 +35,8 @@ service cloud.firestore {
         // Authenticated users can list with proper constraints
         request.auth != null && (
           request.query.limit <= 50 && // Prevent large data dumps
-          (
-            // Allow listing for network/team functionality
-            exists(/databases/$(database)/documents/users/$(request.auth.uid)) ||
-            // Or if they're querying by referralCode (for referral lookups)
-            'referralCode' in request.query.filters
-          )
+          // Allow authenticated users to query for referral uniqueness and network functionality
+          exists(/databases/$(database)/documents/users/$(request.auth.uid))
         )
       ) || (
         // Unauthenticated users can access for referral functionality

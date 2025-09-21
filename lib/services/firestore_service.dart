@@ -115,6 +115,7 @@ class FirestoreService {
       final querySnapshot = await _db
           .collection('users')
           .where('biz_opp_ref_url', isEqualTo: referralUrl)
+          .limit(10) // Add limit for Firestore security rules compliance
           .get();
 
       // If no documents found, the URL is unique
