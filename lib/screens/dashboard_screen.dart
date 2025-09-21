@@ -627,7 +627,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.rocket_launch,
             title: 'Company Details',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(8),
+            onTap: () => widget.onTabSelected?.call(6),
           ),
         ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
           _buildActionCard(
@@ -636,7 +636,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ? 'Company Details'
                 : 'Get Started Today',
             color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(8),
+            onTap: () => widget.onTabSelected?.call(
+              user.bizOppRefUrl != null ? 6 : 7,
+            ),
           ),
         ] else ...[
           _buildActionCard(

@@ -323,12 +323,12 @@ final List<FAQItem> _gettingStartedFAQs = [
 final List<FAQItem> _businessModelFAQs = [
   FAQItem(
     question: 'Is Team Build Pro an MLM or business opportunity?',
-    answer: 'No. Team Build Pro is not a business opportunity, MLM, or income platform of any kind. We are a software tool designed exclusively to help professionals build and track their teams. We do not provide any form of user compensation. You pay us a monthly software fee - we don\'t pay you anything.',
+    answer: 'No. Team Build Pro is not a business opportunity, MLM, or income platform of any kind. We are a software tool designed exclusively to help professionals build and track their teams. We do not provide any form of user compensation.',
   ),
-  FAQItem(
+  /* FAQItem(
     question: 'How do you make money if you\'re not an MLM?',
     answer: 'We operate on a simple Software-as-a-Service (SaaS) model. Users pay \$4.99/month for access to our professional team building platform. That\'s it. No complicated compensation plans, no recruitment requirements, no income claims.',
-  ),
+  ), */
   FAQItem(
     question: 'Can I use this with any direct sales company?',
     answer: 'Yes! Team Build Pro is company-agnostic. Whether you\'re in health and wellness, financial services, beauty, technology, or any other direct sales industry, our tools work with your business. You simply customize your profile with your opportunity details.',
