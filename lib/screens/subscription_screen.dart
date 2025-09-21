@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 import '../services/iap_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
@@ -51,7 +52,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  // --- 3. New function to load biz_opp data, similar to dashboard_screen.dart ---
+  // --- 3. Load biz_opp data for both admin and regular users ---
   Future<void> _loadBizOppData() async {
     // This check ensures context is available before using Provider
     if (!mounted) return;
@@ -59,12 +60,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final user = Provider.of<UserModel?>(context, listen: false);
     if (user == null) return;
 
-    final adminUid = user.uplineAdmin;
-    if (adminUid == null || adminUid.isEmpty) {
-      return;
-    }
-
     try {
+      String? adminUid;
+
+      // For admin users, use their own UID; for regular users, use upline_admin
+      if (user.role == 'admin') {
+        adminUid = user.uid;
+      } else {
+        adminUid = user.uplineAdmin;
+      }
+
+      if (adminUid == null || adminUid.isEmpty) {
+        return;
+      }
+
       final adminSettingsDoc = await FirebaseFirestore.instance
           .collection('admin_settings')
           .doc(adminUid)
@@ -79,6 +88,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         });
       }
     } catch (e) {
+      debugPrint("Error loading biz_opp data: $e");
       // Errors are handled silently to avoid disrupting the UI
     }
   }
@@ -144,15 +154,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           builder: (dialogContext) => AlertDialog(
             title: const Text('Subscription Not Available'),
             content: Text(
-                'TestFlight Debug Info:\n'
+                '${Platform.isIOS ? 'TestFlight' : 'Debug'} Info:\n'
                 'IAP Available: ${_iapService.available}\n'
                 'Products Loaded: ${_iapService.products.length}\n'
                 'Product IDs: ${_iapService.products.map((p) => p.id).join(", ")}\n\n'
                 'This may be due to:\n'
-                '• TestFlight sandbox limitations\n'
-                '• App Store Connect configuration\n'
+                '${Platform.isIOS ? '• TestFlight sandbox limitations\n• App Store Connect configuration' : '• Google Play Console configuration\n• Google Play billing limitations'}\n'
                 '• Network connectivity\n\n'
-                'Should work in production App Store.'),
+                'Should work in production $_platformStoreText.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
@@ -290,6 +299,37 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return !isActive || status == 'trial' || status == 'expired';
   }
 
+  // Platform-specific helper methods
+  String get _platformSubscriptionManagementText {
+    if (Platform.isIOS) {
+      return 'You can manage your subscription in your Apple ID account settings.';
+    } else if (Platform.isAndroid) {
+      return 'You can manage your subscription in the Google Play Store.';
+    } else {
+      return 'You can manage your subscription in your device\'s app store.';
+    }
+  }
+
+  String get _platformStoreText {
+    if (Platform.isIOS) {
+      return 'App Store';
+    } else if (Platform.isAndroid) {
+      return 'Google Play Store';
+    } else {
+      return 'app store';
+    }
+  }
+
+  String get _platformSubscriptionText {
+    if (Platform.isIOS) {
+      return 'Subscribe - \$4.99/month';
+    } else if (Platform.isAndroid) {
+      return 'Subscribe - \$4.99/month';
+    } else {
+      return 'Subscribe - \$4.99/month';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -300,7 +340,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
+          : SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,14 +356,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   ),
                   const SizedBox(height: 12),
                   _buildFeatureItem(
-                      'Submit your unique $_bizOpp referral link'),
+                      'Submit your unique ${_bizOpp ?? 'business opportunity'} referral link'),
+                  _buildFeatureItem('Custom AI Coaching for recruiting and team building'),
                   _buildFeatureItem('Unlock messaging to users on your team'),
                   _buildFeatureItem(
-                      'Ensure team members join under YOU in $_bizOpp'),
-                  _buildFeatureItem('Priority customer support'),
+                      'Ensure team members join under YOU in ${_bizOpp ?? 'your business opportunity'}'),
                   _buildFeatureItem('Advanced analytics and insights'),
 
-                  const Spacer(),
+                  const SizedBox(height: 32),
 
                   // Action Buttons
                   if (_shouldShowUpgradeButton()) ...[
@@ -342,8 +382,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] ==
                                         'trial'
-                                    ? 'Upgrade Now - \$4.99/month'
-                                    : 'Subscribe - \$4.99/month',
+                                    ? 'Subscribe Now - \$4.99/month'
+                                    : _platformSubscriptionText,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color:
@@ -355,12 +395,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     const SizedBox(height: 12),
                   ],
 
-                  // Restore Purchases Button
+                  // Restore Subscription Button
                   SizedBox(
                     width: double.infinity,
                     child: TextButton(
                       onPressed: isPurchasing ? null : _handleRestorePurchases,
-                      child: const Text('Restore Previous Purchases'),
+                      child: const Text('Restore Previous Subscription'),
                     ),
                   ),
 
@@ -442,7 +482,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. You can manage your subscription in your Apple ID account settings.',
+                          'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. $_platformSubscriptionManagementText',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade600,
