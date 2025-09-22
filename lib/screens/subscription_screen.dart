@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import '../services/iap_service.dart';
+import '../services/admin_settings_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -24,6 +24,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Map<String, dynamic>? subscriptionStatus;
   String? _bizOpp; // --- 1. State variable for biz_opp added ---
   final IAPService _iapService = IAPService();
+  final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   @override
   void initState() {
@@ -52,39 +53,30 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  // --- 3. Load biz_opp data for both admin and regular users ---
+  // --- 3. Load biz_opp data using shared service ---
   Future<void> _loadBizOppData() async {
-    // This check ensures context is available before using Provider
     if (!mounted) return;
 
     final user = Provider.of<UserModel?>(context, listen: false);
     if (user == null) return;
 
     try {
-      String? adminUid;
-
-      // For admin users, use their own UID; for regular users, use upline_admin
-      if (user.role == 'admin') {
-        adminUid = user.uid;
-      } else {
-        adminUid = user.uplineAdmin;
-      }
+      // Determine admin UID based on user role
+      final adminUid = user.role == 'admin' ? user.uid : user.uplineAdmin;
 
       if (adminUid == null || adminUid.isEmpty) {
         return;
       }
 
-      final adminSettingsDoc = await FirebaseFirestore.instance
-          .collection('admin_settings')
-          .doc(adminUid)
-          .get();
+      // Use shared service for streamlined admin settings access
+      final bizOpp = await _adminSettingsService.getBizOppName(
+        adminUid,
+        fallback: 'your opportunity'
+      );
 
-      if (adminSettingsDoc.exists && mounted) {
-        final adminData = adminSettingsDoc.data();
-        final retrievedBizOpp = adminData?['biz_opp'] as String?;
-
+      if (mounted) {
         setState(() {
-          _bizOpp = retrievedBizOpp;
+          _bizOpp = bizOpp;
         });
       }
     } catch (e) {

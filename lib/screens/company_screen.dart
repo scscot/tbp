@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/header_widgets.dart';
+import '../services/admin_settings_service.dart';
 
 class CompanyScreen extends StatefulWidget {
   final String appId;
@@ -24,6 +25,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
   String? bizOppRefUrl;
   Timestamp? bizJoinDate;
   bool loading = true;
+  final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   @override
   void initState() {
@@ -57,9 +59,15 @@ class _CompanyScreenState extends State<CompanyScreen> {
         return;
       }
 
-      // For admin users, get data from admin_settings collection
+      // For admin users, get data using AdminSettingsService
       if (role == 'admin') {
         try {
+          final bizOppName = await _adminSettingsService.getBizOppName(
+            uid,
+            fallback: '' // Use empty string instead of null
+          );
+
+          // Get admin settings document for biz_opp_ref_url (not yet in service)
           final adminDoc = await FirebaseFirestore.instance
               .collection('admin_settings')
               .doc(uid)
@@ -68,7 +76,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
           if (adminDoc.exists) {
             final adminData = adminDoc.data();
             setState(() {
-              bizOpp = adminData?['biz_opp'] as String?;
+              bizOpp = bizOppName.isNotEmpty ? bizOppName : null;
               bizOppRefUrl = adminData?['biz_opp_ref_url'] as String?;
               bizJoinDate = null; // Admin doesn't have join date
               loading = false;

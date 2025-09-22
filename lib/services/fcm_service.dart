@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
+import '../widgets/navigation_shell.dart' show navigateWithinTabs;
 import 'notification_service.dart';
 
 class FCMService {
@@ -396,6 +397,26 @@ void navigateToRoute(PendingNotification notification) {
         "🚀 NAVIGATION: Navigator state available: ${navigatorKey.currentState != null}");
   }
 
+  // Check if we can use the tab-based navigation (preserves bottom menu)
+  if (_canUseTabNavigation(notification.route)) {
+    try {
+      navigateWithinTabs(
+        route: notification.route,
+        arguments: notification.arguments,
+      );
+      if (kDebugMode) {
+        debugPrint("✅ NAVIGATION: Successfully navigated within tab to ${notification.route}");
+      }
+      return;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("⚠️ NAVIGATION: Tab navigation failed, falling back to root navigation: $e");
+      }
+      // Fall back to root navigation if tab navigation fails
+    }
+  }
+
+  // Fallback to root navigation (old behavior)
   if (navigatorKey.currentState != null) {
     try {
       navigatorKey.currentState!.pushNamed(
@@ -403,7 +424,7 @@ void navigateToRoute(PendingNotification notification) {
         arguments: notification.arguments,
       );
       if (kDebugMode) {
-        debugPrint("✅ NAVIGATION: Successfully navigated to ${notification.route}");
+        debugPrint("✅ NAVIGATION: Successfully navigated to ${notification.route} via root navigator");
       }
     } catch (e) {
       if (kDebugMode) {
@@ -422,4 +443,15 @@ void navigateToRoute(PendingNotification notification) {
       navigateToRoute(notification);
     });
   }
+}
+
+// Helper function to determine if a route can use tab navigation
+bool _canUseTabNavigation(String route) {
+  const tabNavigableRoutes = [
+    '/network',
+    '/member_detail',
+    '/business',
+    '/subscription',
+  ];
+  return tabNavigableRoutes.contains(route);
 }

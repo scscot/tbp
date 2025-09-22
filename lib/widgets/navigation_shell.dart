@@ -10,6 +10,8 @@ import '../screens/network_screen.dart';
 import '../screens/eligibility_screen.dart';
 import '../screens/business_screen.dart';
 import '../screens/company_screen.dart';
+import '../screens/member_detail_screen.dart';
+import '../screens/subscription_screen.dart';
 
 class NavigationShell extends StatefulWidget {
   final String appId;
@@ -25,7 +27,74 @@ class NavigationShell extends StatefulWidget {
   State<NavigationShell> createState() => NavigationShellState();
 }
 
+// Global reference to access NavigationShell from anywhere
+NavigationShellState? _globalNavigationShellState;
+
+// Global function to navigate within tabs while preserving bottom menu
+void navigateWithinTabs({
+  required String route,
+  Map<String, dynamic>? arguments,
+  int? preferredTabIndex,
+}) {
+  if (_globalNavigationShellState != null) {
+    _globalNavigationShellState!.navigateWithinTab(
+      route: route,
+      arguments: arguments,
+      preferredTabIndex: preferredTabIndex,
+    );
+  }
+}
+
 class NavigationShellState extends State<NavigationShell> {
+  @override
+  void initState() {
+    super.initState();
+    _globalNavigationShellState = this;
+  }
+
+  @override
+  void dispose() {
+    _globalNavigationShellState = null;
+    super.dispose();
+  }
+
+  // Method to navigate within the appropriate tab's navigator
+  void navigateWithinTab({
+    required String route,
+    Map<String, dynamic>? arguments,
+    int? preferredTabIndex,
+  }) {
+    // Determine which tab to use for navigation
+    int tabIndex = preferredTabIndex ?? _getAppropriateTabForRoute(route);
+
+    // Switch to the appropriate tab if not already there
+    if (_currentIndex != tabIndex) {
+      setState(() => _currentIndex = tabIndex);
+    }
+
+    // Navigate within the tab's navigator
+    final navigator = _navigatorKeys[tabIndex].currentState;
+    if (navigator != null) {
+      navigator.pushNamed(route, arguments: arguments);
+    }
+  }
+
+  // Determine which tab is most appropriate for a given route
+  int _getAppropriateTabForRoute(String route) {
+    switch (route) {
+      case '/network':
+        return 1; // Network tab
+      case '/member_detail':
+        return 1; // Show member details in Network tab
+      case '/business':
+        return 0; // Business screen in Dashboard tab
+      case '/subscription':
+        return 0; // Subscription in Dashboard tab
+      default:
+        return 0; // Default to Dashboard tab
+    }
+  }
+
   // Interpret command codes from child screens: 0..4 = tab switch; 5+ = push inside current tab
   void handleCommand(int code) {
     if (code >= 0 && code <= 4) {
@@ -98,7 +167,52 @@ class NavigationShellState extends State<NavigationShell> {
       offstage: _currentIndex != index,
       child: Navigator(
         key: _navigatorKeys[index],
-        onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => child),
+        onGenerateRoute: (settings) {
+          // Handle special routes within tabs
+          if (settings.name == '/member_detail') {
+            final args = settings.arguments as Map<String, dynamic>?;
+            String userId = '';
+
+            final userIdValue = args?['userId'];
+            if (userIdValue is String) {
+              userId = userIdValue;
+            } else if (userIdValue is Map<String, dynamic>) {
+              userId = userIdValue['userId'] as String? ?? '';
+            }
+
+            return MaterialPageRoute(
+              builder: (context) => MemberDetailScreen(
+                userId: userId,
+                appId: widget.appId,
+              ),
+              settings: settings,
+            );
+          } else if (settings.name == '/network') {
+            final args = settings.arguments as Map<String, dynamic>?;
+            return MaterialPageRoute(
+              builder: (context) => NetworkScreen(
+                appId: widget.appId,
+                initialFilter: args != null && args.containsKey('filter')
+                    ? args['filter'] as String
+                    : null,
+              ),
+              settings: settings,
+            );
+          } else if (settings.name == '/business') {
+            return MaterialPageRoute(
+              builder: (context) => BusinessScreen(appId: widget.appId),
+              settings: settings,
+            );
+          } else if (settings.name == '/subscription') {
+            return MaterialPageRoute(
+              builder: (context) => SubscriptionScreen(appId: widget.appId),
+              settings: settings,
+            );
+          }
+
+          // Default route - return the tab's main screen
+          return MaterialPageRoute(builder: (_) => child);
+        },
       ),
     );
   }

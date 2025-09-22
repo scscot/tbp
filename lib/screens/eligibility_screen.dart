@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
+import '../services/admin_settings_service.dart';
 import 'share_screen.dart';
 
 class EligibilityScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
   int _currentDirectCount = 0;
   int _currentTotalCount = 0;
   bool _isQualified = false;
+  final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   @override
   void initState() {
@@ -52,33 +54,24 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
               _currentDirectCount >= AppConstants.projectWideDirectSponsorMin &&
                   _currentTotalCount >= AppConstants.projectWideTotalTeamMin;
 
-          // Get biz_opp from admin settings
+          // Get biz_opp from admin settings using shared service
           final userRole = userData?['role'] as String?;
 
-          // Determine which admin settings to fetch
-          String? adminUid;
-          if (userRole == 'admin') {
-            // If user is admin, use their own UID
-            adminUid = user.uid;
-          } else {
-            // If user is not admin, use their upline_admin
-            adminUid = userData?['upline_admin'] as String?;
-          }
+          // Determine admin UID based on user role
+          final adminUid = userRole == 'admin'
+              ? user.uid
+              : userData?['upline_admin'] as String?;
 
           if (adminUid != null && adminUid.isNotEmpty) {
-            final adminSettingsDoc = await FirebaseFirestore.instance
-                .collection('admin_settings')
-                .doc(adminUid)
-                .get();
+            final bizOpp = await _adminSettingsService.getBizOppName(
+              adminUid,
+              fallback: 'your opportunity'
+            );
 
-            if (adminSettingsDoc.exists) {
-              final adminData = adminSettingsDoc.data();
-              final bizOppValue = adminData?['biz_opp'] as String?;
-              if (bizOppValue != null && bizOppValue.isNotEmpty) {
-                setState(() {
-                  _bizOpp = bizOppValue;
-                });
-              }
+            if (mounted) {
+              setState(() {
+                _bizOpp = bizOpp;
+              });
             }
           }
         }

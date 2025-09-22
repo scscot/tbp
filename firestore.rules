@@ -29,8 +29,7 @@ service cloud.firestore {
         request.auth == null
       );
       
-      // REFERRAL LIST ACCESS: Allow unauthenticated list access for referral queries
-      // This maintains your existing website functionality
+      // REFERRAL LIST ACCESS: Enhanced controls for list queries
       allow list: if (
         // Authenticated users can list with proper constraints
         request.auth != null && (
@@ -39,9 +38,11 @@ service cloud.firestore {
           exists(/databases/$(database)/documents/users/$(request.auth.uid))
         )
       ) || (
-        // Unauthenticated users can access for referral functionality
-        // Allow all unauthenticated list queries to ensure website works
-        request.auth == null
+        // Unauthenticated users: Allow limited queries for referral functionality only
+        request.auth == null &&
+        request.query.limit <= 5 && // Strict limit for unauthenticated queries
+        // Must be a specific referral code query (not general browsing)
+        request.query.where.size() >= 1
       );
 
       // A user can update their own document.
@@ -84,19 +85,20 @@ service cloud.firestore {
 
     // --- Rules for Admin Settings ---
     match /admin_settings/{adminId} {
-      // SECURE ADMIN ACCESS: Allow limited unauthenticated read access for referral display
-      // Only expose business opportunity names, not sensitive admin data
+      // SECURE ADMIN ACCESS: Enhanced field-level restrictions for unauthenticated users
       allow read: if (
-        // Unauthenticated users can only access specific business info fields
-        request.auth == null && 
-        resource.data.keys().hasAny(['biz_opp', 'countries']) // Only business name and countries
-      ) || (
         // Authenticated users get full access if they're the admin or in their network
         request.auth != null && (
           request.auth.uid == adminId ||
           (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.upline_admin == adminId)
         )
+      ) || (
+        // Unauthenticated users can only access specific non-sensitive fields
+        request.auth == null &&
+        resource.data.keys().hasAny(['biz_opp', 'countries']) &&
+        // Explicitly exclude sensitive fields for unauthenticated access
+        !resource.data.keys().hasAny(['superAdmin', 'apiKeys', 'settings', 'privateData'])
       );
 
       // WRITE rule remains strict - only the admin can modify their settings

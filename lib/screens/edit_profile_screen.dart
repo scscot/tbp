@@ -12,6 +12,7 @@ import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
 import '../services/link_validator_service.dart';
 import '../services/auth_service.dart';
+import '../services/admin_settings_service.dart';
 import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import '../widgets/navigation_shell.dart';
@@ -40,6 +41,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _firestoreService = FirestoreService();
   final _storageService = StorageService();
+  final _adminSettingsService = AdminSettingsService();
 
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
@@ -168,23 +170,26 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       final uplineAdmin = widget.user.uplineAdmin;
 
       if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
-        // Get admin settings for the upline admin
-        final adminSettingsDoc = await FirebaseFirestore.instance
-            .collection('admin_settings')
-            .doc(uplineAdmin)
-            .get();
+        // Get admin settings using AdminSettingsService for consistent caching
+        final bizOpp = await _adminSettingsService.getBizOppName(
+          uplineAdmin,
+          fallback: 'business opportunity'
+        );
 
-        if (adminSettingsDoc.exists) {
-          final data = adminSettingsDoc.data();
-          if (data != null) {
-            final bizOpp = data['biz_opp'] as String?;
-            final bizOppRefUrl = data['biz_opp_ref_url'] as String?;
+        if (bizOpp.isNotEmpty) {
+          setState(() {
+            _bizOppName = bizOpp;
+          });
 
-            if (bizOpp != null && bizOpp.isNotEmpty) {
-              setState(() {
-                _bizOppName = bizOpp;
-              });
-            }
+          // Still need to get biz_opp_ref_url for base URL validation
+          final adminSettingsDoc = await FirebaseFirestore.instance
+              .collection('admin_settings')
+              .doc(uplineAdmin)
+              .get();
+
+          if (adminSettingsDoc.exists) {
+            final data = adminSettingsDoc.data();
+            final bizOppRefUrl = data?['biz_opp_ref_url'] as String?;
 
             // Extract base link for validation (same logic as AddLinkScreen)
             if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {

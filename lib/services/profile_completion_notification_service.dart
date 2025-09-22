@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
+import 'admin_settings_service.dart';
 
 class ProfileCompletionNotificationService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   static Future<void> handleProfileCompletion(UserModel user) async {
     debugPrint('🔔 PROFILE_NOTIFICATION: Handling profile completion for user ${user.uid}');
@@ -46,8 +48,11 @@ class ProfileCompletionNotificationService {
       
       debugPrint('🔔 SPONSORSHIP: Found sponsor - ID: $sponsorId, Name: ${sponsorData['firstName']} ${sponsorData['lastName']}');
 
-      // Get business opportunity name
-      final bizOppName = await _getBusinessOpportunityName(sponsorData['upline_admin']);
+      // Get business opportunity name using AdminSettingsService
+      final bizOppName = await _adminSettingsService.getBizOppName(
+        sponsorData['upline_admin'] as String?,
+        fallback: 'your business opportunity'
+      );
       
       // Create user location string
       final userLocation = [
@@ -132,8 +137,11 @@ class ProfileCompletionNotificationService {
         debugPrint('🔔 QUALIFICATION: User ${user.uid} meets qualification criteria ($directCount/$actualDirectMin direct, $totalCount/$actualTotalMin total)');
         
         await _updateQualifiedDate(user.uid);
-        
-        final bizName = await _getBusinessOpportunityName(user.uplineAdmin);
+
+        final bizName = await _adminSettingsService.getBizOppName(
+          user.uplineAdmin,
+          fallback: 'your business opportunity'
+        );
         
         final notificationContent = {
           'title': "You're Qualified!",
@@ -177,7 +185,10 @@ class ProfileCompletionNotificationService {
       final directCount = user.directSponsorCount;
       final totalCount = user.totalTeamCount;
 
-      final bizName = await _getBusinessOpportunityName(user.uplineAdmin);
+      final bizName = await _adminSettingsService.getBizOppName(
+        user.uplineAdmin,
+        fallback: 'your business opportunity'
+      );
       Map<String, dynamic>? notificationContent;
 
       if (directCount >= actualDirectMin && totalCount < actualTotalMin) {
@@ -229,23 +240,4 @@ class ProfileCompletionNotificationService {
     await _db.collection('users').doc(userId).collection('notifications').add(content);
   }
 
-  static Future<String> _getBusinessOpportunityName(String? uplineAdminId) async {
-    const defaultName = 'your business opportunity';
-    
-    if (uplineAdminId == null || uplineAdminId.trim().isEmpty) {
-      return defaultName;
-    }
-    
-    try {
-      final adminSettingsDoc = await _db.collection('admin_settings').doc(uplineAdminId).get();
-      if (adminSettingsDoc.exists) {
-        final bizOpp = adminSettingsDoc.data()?['biz_opp'] as String?;
-        return (bizOpp != null && bizOpp.trim().isNotEmpty) ? bizOpp : defaultName;
-      }
-      return defaultName;
-    } catch (error) {
-      debugPrint('Error fetching business opportunity name for admin $uplineAdminId: $error');
-      return defaultName;
-    }
-  }
 }

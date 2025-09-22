@@ -1936,19 +1936,69 @@ exports.getNetwork = onCall({ region: "us-central1" }, async (request) => {
 // *** MODIFIED FUNCTION: getUserByReferralCode ***
 // Now returns bizOppName for personalization
 // ============================================================================
-exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true }, async (req, res) => {
+// Rate limiting cache (simple in-memory for now)
+const rateLimitCache = new Map();
+
+exports.getUserByReferralCode = onRequest({
+  region: "us-central1",
+  cors: true,
+  timeoutSeconds: 10,
+  memory: '256MiB'
+}, async (req, res) => {
+  // Security: Method validation
   if (req.method !== 'GET') {
+    console.log(`🚫 REFERRAL_LOOKUP: Invalid method ${req.method} from ${req.ip}`);
     return res.status(405).send('Method Not Allowed');
   }
 
+  // Security: Rate limiting (100 requests per IP per hour)
+  const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+  const rateLimitKey = `referral_${clientIP}`;
+  const now = Date.now();
+  const hourAgo = now - (60 * 60 * 1000);
+
+  // Clean old entries and check rate limit
+  const requestTimes = rateLimitCache.get(rateLimitKey) || [];
+  const recentRequests = requestTimes.filter(time => time > hourAgo);
+
+  if (recentRequests.length >= 100) {
+    console.log(`🚫 REFERRAL_LOOKUP: Rate limit exceeded for IP ${clientIP}`);
+    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+  }
+
+  // Update rate limit cache
+  recentRequests.push(now);
+  rateLimitCache.set(rateLimitKey, recentRequests);
+
+  // Security: Input validation and sanitization
   const code = req.query.code;
-  if (!code) {
-    return res.status(400).json({ error: 'Referral code is required.' });
+  if (!code || typeof code !== 'string') {
+    console.log(`🚫 REFERRAL_LOOKUP: Missing or invalid referral code from ${clientIP}`);
+    return res.status(400).json({ error: 'Valid referral code is required.' });
+  }
+
+  // Sanitize referral code (alphanumeric only, max 20 chars)
+  const sanitizedCode = code.trim().replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+  if (sanitizedCode.length === 0 || sanitizedCode !== code.trim()) {
+    console.log(`🚫 REFERRAL_LOOKUP: Invalid referral code format: ${code} from ${clientIP}`);
+    return res.status(400).json({ error: 'Invalid referral code format.' });
   }
 
   try {
+    console.log(`🔍 REFERRAL_LOOKUP: Processing referral code ${sanitizedCode} from ${clientIP}`);
+
+    // Add basic caching to prevent repeated database queries
+    const cacheKey = `referral_data_${sanitizedCode}`;
+    const cachedResult = rateLimitCache.get(cacheKey);
+    const fiveMinutesAgo = now - (5 * 60 * 1000);
+
+    if (cachedResult && cachedResult.timestamp > fiveMinutesAgo) {
+      console.log(`📋 REFERRAL_LOOKUP: Returning cached result for ${sanitizedCode}`);
+      return res.status(200).json(cachedResult.data);
+    }
+
     const usersRef = db.collection("users");
-    const snapshot = await usersRef.where("referralCode", "==", code).limit(1).get();
+    const snapshot = await usersRef.where("referralCode", "==", sanitizedCode).limit(1).get();
 
     if (snapshot.empty) {
       return res.status(404).json({ error: 'Sponsor not found.' });
@@ -1977,8 +2027,8 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       }
     }
 
-    // Include photoUrl and isProfileComplete in the response
-    return res.status(200).json({
+    // Prepare response data
+    const responseData = {
       firstName: sponsorData.firstName,
       lastName: sponsorData.lastName,
       uid: sponsorDoc.id,
@@ -1986,11 +2036,24 @@ exports.getUserByReferralCode = onRequest({ region: "us-central1", cors: true },
       bizOppName: bizOppName, // *** NEW: Return bizOppName ***
       photoUrl: sponsorData.photoUrl || null, // Added photoUrl here
       isProfileComplete: sponsorData.isProfileComplete || false, // *** NEW: Return isProfileComplete ***
+    };
+
+    // Cache successful results for 5 minutes
+    rateLimitCache.set(cacheKey, {
+      data: responseData,
+      timestamp: now
     });
 
+    console.log(`✅ REFERRAL_LOOKUP: Successfully processed referral code ${sanitizedCode}`);
+    return res.status(200).json(responseData);
+
   } catch (error) {
-    console.error("Critical Error in getUserByReferralCode:", error);
-    return res.status(500).json({ error: 'Internal server error.' });
+    console.error(`❌ REFERRAL_LOOKUP: Critical error for code ${sanitizedCode} from ${clientIP}:`, error);
+
+    // Don't expose internal error details to clients
+    return res.status(500).json({
+      error: 'Internal server error. Please try again later.'
+    });
   }
 });
 
@@ -2220,11 +2283,39 @@ exports.registerUser = onCall({ region: "us-central1" }, async (request) => {
 
 // lib/functions/index.js
 
-exports.getNetworkCounts = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+exports.getNetworkCounts = onCall({
+  region: "us-central1",
+  timeoutSeconds: 60,
+  memory: '512MiB'
+}, async (request) => {
+  // Enhanced authentication validation
+  if (!request.auth || !request.auth.uid) {
+    console.log(`🚫 NETWORK_COUNTS: Unauthenticated access attempt`);
+    throw new HttpsError("unauthenticated", "Authentication required.");
   }
+
   const currentUserId = request.auth.uid;
+
+  // Validate user exists and is active
+  try {
+    const userDoc = await db.collection('users').doc(currentUserId).get();
+    if (!userDoc.exists) {
+      console.log(`🚫 NETWORK_COUNTS: User document not found for ${currentUserId}`);
+      throw new HttpsError("not-found", "User profile not found.");
+    }
+
+    const userData = userDoc.data();
+    if (!userData.isActive) {
+      console.log(`🚫 NETWORK_COUNTS: Inactive user attempted access: ${currentUserId}`);
+      throw new HttpsError("permission-denied", "Account is inactive.");
+    }
+
+    console.log(`✅ NETWORK_COUNTS: Authorized access for user ${currentUserId}`);
+  } catch (error) {
+    if (error instanceof HttpsError) throw error;
+    console.error(`❌ NETWORK_COUNTS: Error validating user ${currentUserId}:`, error);
+    throw new HttpsError("internal", "User validation failed.");
+  }
 
   try {
     const now = new Date();
@@ -2473,16 +2564,52 @@ exports.onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{message
   }
 });
 
-exports.recalculateTeamCounts = onCall({ region: "us-central1" }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("permission-denied", "You must be an administrator to perform this operation.");
+exports.recalculateTeamCounts = onCall({
+  region: "us-central1",
+  timeoutSeconds: 540, // 9 minutes for heavy operation
+  memory: '1GiB'
+}, async (request) => {
+  // Enhanced admin authentication
+  if (!request.auth || !request.auth.uid) {
+    console.log(`🚫 RECALCULATE: Unauthenticated access attempt`);
+    throw new HttpsError("unauthenticated", "Authentication required.");
   }
-  const callerId = request.auth.uid;
-  const userDoc = await db.collection("users").doc(callerId).get();
-  const adminSettingsDoc = await db.collection("admin_settings").doc(callerId).get();
 
-  if (!userDoc.exists || userDoc.data().role !== 'admin' || !adminSettingsDoc.exists || adminSettingsDoc.data().superAdmin !== true) {
-    throw new HttpsError("permission-denied", "You must be a super administrator to perform this operation.");
+  const callerId = request.auth.uid;
+  console.log(`🔍 RECALCULATE: Validating admin access for user ${callerId}`);
+
+  try {
+    // Validate user document exists and has admin role
+    const userDoc = await db.collection("users").doc(callerId).get();
+    if (!userDoc.exists) {
+      console.log(`🚫 RECALCULATE: User document not found for ${callerId}`);
+      throw new HttpsError("not-found", "User profile not found.");
+    }
+
+    const userData = userDoc.data();
+    if (userData.role !== 'admin') {
+      console.log(`🚫 RECALCULATE: Non-admin user attempted access: ${callerId} (role: ${userData.role})`);
+      throw new HttpsError("permission-denied", "Administrator privileges required.");
+    }
+
+    // Validate admin settings and super admin status
+    const adminSettingsDoc = await db.collection("admin_settings").doc(callerId).get();
+    if (!adminSettingsDoc.exists) {
+      console.log(`🚫 RECALCULATE: Admin settings not found for ${callerId}`);
+      throw new HttpsError("permission-denied", "Administrator configuration not found.");
+    }
+
+    const adminSettings = adminSettingsDoc.data();
+    if (adminSettings.superAdmin !== true) {
+      console.log(`🚫 RECALCULATE: Non-super-admin attempted operation: ${callerId}`);
+      throw new HttpsError("permission-denied", "Super administrator privileges required.");
+    }
+
+    console.log(`✅ RECALCULATE: Super admin access validated for ${callerId}`);
+  } catch (error) {
+    if (error instanceof HttpsError) throw error;
+    console.error(`❌ RECALCULATE: Error validating admin ${callerId}:`, error);
+    throw new HttpsError("internal", "Admin validation failed.");
   }
 
   const usersSnapshot = await db.collection("users").get();

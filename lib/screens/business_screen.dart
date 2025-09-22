@@ -8,6 +8,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
+import '../services/admin_settings_service.dart';
 import 'add_link_screen.dart';
 import 'member_detail_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -36,6 +37,7 @@ class _BusinessScreenState extends State<BusinessScreen>
   bool hasSeenConfirmation = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   @override
   void initState() {
@@ -75,17 +77,11 @@ class _BusinessScreenState extends State<BusinessScreen>
     }
 
     try {
-      // Fetch biz_opp from admin_settings (following member_detail_screen pattern)
-      final adminSettingsDoc = await FirebaseFirestore.instance
-          .collection('admin_settings')
-          .doc(adminUid)
-          .get();
-
-      String? retrievedBizOpp;
-      if (adminSettingsDoc.exists) {
-        final adminData = adminSettingsDoc.data() as Map<String, dynamic>?;
-        retrievedBizOpp = adminData?['biz_opp'] as String?;
-      }
+      // Fetch biz_opp using AdminSettingsService for consistent caching
+      final retrievedBizOpp = await _adminSettingsService.getBizOppName(
+        adminUid,
+        fallback: '' // Use empty string instead of null
+      );
 
       // Fetch bizOppRefUrl and sponsor info by traversing upline_refs
       String? retrievedBizOppRefUrl;
@@ -103,7 +99,7 @@ class _BusinessScreenState extends State<BusinessScreen>
       if (!mounted) return;
 
       setState(() {
-        bizOpp = retrievedBizOpp;
+        bizOpp = retrievedBizOpp.isNotEmpty ? retrievedBizOpp : null;
         bizOppRefUrl = retrievedBizOppRefUrl;
         sponsorName = retrievedSponsorName;
         sponsorUid = retrievedSponsorUid;
