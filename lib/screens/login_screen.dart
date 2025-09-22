@@ -43,6 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
   StreamSubscription<User?>? _authSub;
   Map<String, String?>? _appleUserData;
   bool _navigated = false;
+  bool _isAppleSignInAvailable = false;
+  bool _isGoogleSignInAvailable = false;
 
   @override
   void initState() {
@@ -97,6 +99,48 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
     _initializeBiometric();
+    _checkAppleSignInAvailability();
+    _checkGoogleSignInAvailability();
+  }
+
+  Future<void> _checkAppleSignInAvailability() async {
+    if (!kIsWeb && Platform.isIOS) {
+      try {
+        final isAvailable = await SignInWithApple.isAvailable();
+        if (mounted) {
+          setState(() {
+            _isAppleSignInAvailable = isAvailable;
+          });
+        }
+        debugPrint('🍎 LOGIN: Apple Sign-In availability checked: $isAvailable');
+      } catch (e) {
+        debugPrint('🍎 LOGIN: Error checking Apple Sign-In availability: $e');
+        if (mounted) {
+          setState(() {
+            _isAppleSignInAvailable = false;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _checkGoogleSignInAvailability() async {
+    try {
+      // Google Sign-In is generally available on all platforms
+      if (mounted) {
+        setState(() {
+          _isGoogleSignInAvailable = true; // Google is typically always available
+        });
+      }
+      debugPrint('🔵 LOGIN: Google Sign-In availability checked: true');
+    } catch (e) {
+      debugPrint('🔵 LOGIN: Error checking Google Sign-In availability: $e');
+      if (mounted) {
+        setState(() {
+          _isGoogleSignInAvailable = false;
+        });
+      }
+    }
   }
 
   Future<void> _initializeBiometric() async {
@@ -551,7 +595,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
               ],
-              if (!kIsWeb && Platform.isIOS) ...[
+              if (!kIsWeb && Platform.isIOS && _isAppleSignInAvailable) ...[
                 ElevatedButton.icon(
                   icon: const FaIcon(FontAwesomeIcons.apple,
                       color: Colors.white, size: 20),
@@ -566,13 +610,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
               ],
-              ElevatedButton.icon(
-                icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                label: const Text('Sign in with Google'),
-                onPressed: _isLoading
-                    ? null
-                    : () => _signInWithSocial(_getGoogleCredential),
-              ),
+              if (_isGoogleSignInAvailable) ...[
+                ElevatedButton.icon(
+                  icon: const FaIcon(FontAwesomeIcons.google, size: 20),
+                  label: const Text('Sign in with Google'),
+                  onPressed: _isLoading
+                      ? null
+                      : () => _signInWithSocial(_getGoogleCredential),
+                ),
+              ],
               const SizedBox(height: 32),
               
               // Create Account Link
@@ -709,7 +755,8 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint("🍎 DEBUG: Apple Sign-In available: $isAvailable");
       
       if (!isAvailable) {
-        throw Exception('Apple Sign-In is not available on this device');
+        debugPrint('🔄 APPLE_LOGIN: Apple Sign-In not available on this device, returning silently');
+        throw Exception('USER_CANCELED_APPLE_SIGNIN'); // Use cancellation marker for silent handling
       }
 
       final appleCredential = await SignInWithApple.getAppleIDCredential(

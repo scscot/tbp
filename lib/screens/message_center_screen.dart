@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../widgets/header_widgets.dart';
 import '../services/firestore_service.dart';
-import '../services/admin_settings_service.dart';
 import 'message_thread_screen.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
@@ -23,13 +22,11 @@ class MessageCenterScreen extends StatefulWidget {
 
 class _MessageCenterScreenState extends State<MessageCenterScreen> {
   final FirestoreService _firestoreService = FirestoreService();
-  final AdminSettingsService _adminSettingsService = AdminSettingsService();
   String? _currentUserId;
   Stream<QuerySnapshot>? _threadsStream;
   UserModel? _currentUser;
   UserModel? _sponsor;
   UserModel? _teamLeader;
-  String? _bizOppName;
   bool _isLoadingContacts = true;
 
   @override
@@ -83,16 +80,6 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
 
   Future<void> _loadSponsorAndTeamLeader(UserModel user) async {
     try {
-      // Load business opportunity name
-      if (user.uplineAdmin != null) {
-        final bizOpp = await _adminSettingsService.getBizOppName(
-          user.uplineAdmin!,
-          fallback: 'your team'
-        );
-        setState(() {
-          _bizOppName = bizOpp;
-        });
-      }
 
       // Load sponsor (direct sponsor)
       UserModel? sponsor;

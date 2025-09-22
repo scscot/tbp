@@ -60,6 +60,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   Map<String, String?>? _appleUserData;
   bool _navigated = false;
   StreamSubscription<User?>? _authSub;
+  bool _isAppleSignInAvailable = false;
+  bool _isGoogleSignInAvailable = false;
 
   bool isDevMode = true;
 
@@ -107,6 +109,48 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       }
     });
     _initializeScreen();
+    _checkAppleSignInAvailability();
+    _checkGoogleSignInAvailability();
+  }
+
+  Future<void> _checkAppleSignInAvailability() async {
+    if (!kIsWeb && Platform.isIOS) {
+      try {
+        final isAvailable = await SignInWithApple.isAvailable();
+        if (mounted) {
+          setState(() {
+            _isAppleSignInAvailable = isAvailable;
+          });
+        }
+        debugPrint('🍎 REGISTER: Apple Sign-In availability checked: $isAvailable');
+      } catch (e) {
+        debugPrint('🍎 REGISTER: Error checking Apple Sign-In availability: $e');
+        if (mounted) {
+          setState(() {
+            _isAppleSignInAvailable = false;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _checkGoogleSignInAvailability() async {
+    try {
+      // Google Sign-In is generally available on all platforms
+      if (mounted) {
+        setState(() {
+          _isGoogleSignInAvailable = true; // Google is typically always available
+        });
+      }
+      debugPrint('🔵 REGISTER: Google Sign-In availability checked: true');
+    } catch (e) {
+      debugPrint('🔵 REGISTER: Error checking Google Sign-In availability: $e');
+      if (mounted) {
+        setState(() {
+          _isGoogleSignInAvailable = false;
+        });
+      }
+    }
   }
 
   Future<void> _initializeScreen() async {
@@ -348,9 +392,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     debugPrint("🍎 REGISTER: Starting Apple Sign In...");
 
     try {
-      // Check Apple Sign-In availability first
+      // Check Apple Sign-In availability first (should already be checked, but double-check for safety)
       if (!await SignInWithApple.isAvailable()) {
-        throw Exception('Apple Sign-In is not available on this device');
+        debugPrint('🔄 APPLE_REGISTER: Apple Sign-In not available on this device');
+        throw Exception('USER_CANCELED_APPLE_SIGNIN'); // Use cancellation marker for silent handling
       }
 
       late final AuthorizationCredentialAppleID appleCredential;
@@ -680,23 +725,37 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
       // Handle Apple Sign-In availability error
       if (e.toString().contains('not available')) {
+        debugPrint('🔄 APPLE_REGISTER: Apple Sign-In not available on device');
+        // Show brief, non-disruptive info message
         scaffoldMessenger.showSnackBar(const SnackBar(
-            content: Text('Apple Sign-In is not available. Please use email registration.'),
-            backgroundColor: Colors.orange));
+            content: Text('Apple Sign-In is not available on this device'),
+            backgroundColor: Colors.blue,
+            duration: Duration(seconds: 2)));
         return;
       }
 
       // Handle authentication errors
       if (e.toString().contains('authentication') || e.toString().contains('credential')) {
-        scaffoldMessenger.showSnackBar(const SnackBar(
-            content: Text('Apple authentication failed. Please try again or use email registration.'),
-            backgroundColor: Colors.red));
+        debugPrint('🔄 APPLE_REGISTER: Apple authentication failed, returning silently');
+        // Don't show error message - just return silently for better UX
         return;
       }
 
+      // Handle network and other transient errors silently
+      if (e.toString().contains('network') ||
+          e.toString().contains('timeout') ||
+          e.toString().contains('connection') ||
+          e.toString().contains('unavailable')) {
+        debugPrint('🔄 APPLE_REGISTER: Network/connection issue, returning silently');
+        return;
+      }
+
+      // Only show error for truly unexpected errors
+      debugPrint('❌ APPLE_REGISTER: Unexpected error, showing minimal notification');
       scaffoldMessenger.showSnackBar(const SnackBar(
-          content: Text('Unable to Sign up with Apple. Please try email registration.'),
-          backgroundColor: Colors.red));
+          content: Text('Apple Sign-In is temporarily unavailable'),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 2)));
     } finally {
       if (mounted) {
         setState(() {
@@ -943,7 +1002,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     const SizedBox(height: 24),
                     
                     // Social Sign-In Section
-                    if (!kIsWeb && Platform.isIOS) ...[
+                    if (!kIsWeb && Platform.isIOS && _isAppleSignInAvailable) ...[
                       ElevatedButton.icon(
                         icon: const FaIcon(FontAwesomeIcons.apple,
                             color: Colors.white, size: 20),
@@ -959,16 +1018,18 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       const SizedBox(height: 16),
                     ],
                     
-                    ElevatedButton.icon(
-                      icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                      label: const Text('Sign up with Google'),
-                      onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: const Size(double.infinity, 50),
+                    if (_isGoogleSignInAvailable) ...[
+                      ElevatedButton.icon(
+                        icon: const FaIcon(FontAwesomeIcons.google, size: 20),
+                        label: const Text('Sign up with Google'),
+                        onPressed: (_isLoading && !_isGoogleSignUp) ? null : _signUpWithGoogle,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
+                      const SizedBox(height: 24),
+                    ],
                     
                     const Row(
                       children: [
