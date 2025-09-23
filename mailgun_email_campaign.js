@@ -16,6 +16,19 @@ const MAILGUN_BASE_URL = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
 const MAILING_LIST_ADDRESS = `teambuildpro@${MAILGUN_DOMAIN}`;
 const CSV_FILE_PATH = path.join(__dirname, 'emails', 'master_email_list.csv');
 
+// Template versions for A/B testing
+const TEMPLATE_VERSIONS = ['v1', 'v3'];
+
+// Function to randomly select a template version
+function getRandomTemplateVersion(verbose = false) {
+  const randomIndex = Math.floor(Math.random() * TEMPLATE_VERSIONS.length);
+  const selectedVersion = TEMPLATE_VERSIONS[randomIndex];
+  if (verbose) {
+    console.log(`🎲 Random template selection: ${selectedVersion} (index: ${randomIndex} of ${TEMPLATE_VERSIONS.length})`);
+  }
+  return selectedVersion;
+}
+
 // Function to send a test email using your Mailgun template
 async function sendTestEmail() {
   try {
@@ -26,7 +39,9 @@ async function sendTestEmail() {
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
     form.append('subject', 'AI recruiting for direct sales teams');
-    form.append('template', 'tbp'); // Replace with your actual template name
+    const templateVersion = getRandomTemplateVersion(false);
+    form.append('template', 'tbp'); // Template name
+    form.append('t:version', templateVersion); // Random template version
     
     // Template variables based on your CSV format (firstname lastname,email)
     form.append('h:X-Mailgun-Variables', JSON.stringify({
@@ -63,7 +78,9 @@ async function sendBulkCampaign(recipientList) {
     
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('subject', 'AI recruiting for direct sales teams');
-    form.append('template', 'tbp'); // Your template name
+    const templateVersion = getRandomTemplateVersion(false);
+    form.append('template', 'tbp'); // Template name
+    form.append('t:version', templateVersion); // Random template version
 
     // Add multiple recipients
     recipientList.forEach(recipient => {
@@ -245,7 +262,9 @@ async function sendCampaignToList() {
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('to', MAILING_LIST_ADDRESS);
     form.append('subject', 'AI recruiting for direct sales teams');
-    form.append('template', 'tbp');
+    const templateVersion = getRandomTemplateVersion(false);
+    form.append('template', 'tbp'); // Template name
+    form.append('t:version', templateVersion); // Random template version
     
     // Recipient variables will be automatically substituted by Mailgun
     // based on the vars we uploaded with each contact
@@ -407,7 +426,9 @@ async function sendBatchCampaign(options = {}) {
     limit = 100,
     batchId = `batch_${Date.now()}`,
     delayBetweenEmails = 1000, // 1 second between emails
-    testMode = false
+    testMode = false,
+    verbose = false, // Disable detailed logging for large campaigns
+    progressInterval = 100 // Show progress every N emails
   } = options;
   
   try {
@@ -431,7 +452,11 @@ async function sendBatchCampaign(options = {}) {
     
     for (let i = 0; i < contacts.length; i++) {
       const contact = contacts[i];
-      console.log(`📤 Sending ${i + 1}/${contacts.length}: ${contact.email}`);
+
+      // Show progress every N emails or if verbose mode
+      if (verbose || (i + 1) % progressInterval === 0 || i === 0 || i === contacts.length - 1) {
+        console.log(`📤 Sending ${i + 1}/${contacts.length}: ${contact.email}`);
+      }
       
       try {
         if (!testMode) {
@@ -440,7 +465,9 @@ async function sendBatchCampaign(options = {}) {
           form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
           form.append('subject', 'AI recruiting for direct sales teams');
-          form.append('template', 'tbp');
+          const templateVersion = getRandomTemplateVersion(verbose);
+          form.append('template', 'tbp'); // Template name
+          form.append('t:version', templateVersion); // Random template version
           form.append('h:X-Mailgun-Variables', JSON.stringify({
             first_name: contact.first_name,
             last_name: contact.last_name,
@@ -454,9 +481,13 @@ async function sendBatchCampaign(options = {}) {
             }
           });
           
-          console.log(`✅ Sent to ${contact.email}: ${response.data.id}`);
+          if (verbose) {
+            console.log(`✅ Sent to ${contact.email}: ${response.data.id}`);
+          }
         } else {
-          console.log(`🧪 TEST MODE: Would send to ${contact.email}`);
+          if (verbose) {
+            console.log(`🧪 TEST MODE: Would send to ${contact.email}`);
+          }
         }
         
         results.push({
@@ -469,6 +500,7 @@ async function sendBatchCampaign(options = {}) {
         sent++;
         
       } catch (error) {
+        // Always log errors, even in non-verbose mode
         console.error(`❌ Failed to send to ${contact.email}: ${error.message}`);
         
         results.push({
