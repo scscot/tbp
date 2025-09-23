@@ -6,51 +6,113 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../models/message_model.dart';
+import 'cache_service.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseFunctions _functions =
       FirebaseFunctions.instanceFor(region: 'us-central1');
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CacheService _cacheService = CacheService();
 
 // In lib/services/firestore_service.dart
 
   Future<UserModel?> getUser(String uid) async {
-    // --- START OF FINAL DEBUGGING CODE ---
-    debugPrint("--- [SERVICE] Attempting to get user: $uid ---");
+    debugPrint("🔍 FIRESTORE_SERVICE: Attempting to get user: $uid");
+
     try {
+      // Initialize cache service
+      await _cacheService.init();
+
+      // Try cache first
+      final cachedUserData = await _cacheService.getUserProfile(uid);
+      if (cachedUserData != null) {
+        try {
+          final user = UserModel.fromMap(cachedUserData);
+          debugPrint("🎯 FIRESTORE_SERVICE: Returning cached user: ${user.firstName}");
+          return user;
+        } catch (e) {
+          debugPrint("⚠️ FIRESTORE_SERVICE: Error parsing cached user data, fetching fresh: $e");
+          // Clear corrupted cache and continue to Firestore fetch
+          await _cacheService.clearUserProfile(uid);
+        }
+      }
+
+      // Fetch from Firestore
       final doc = await _db.collection('users').doc(uid).get();
-      debugPrint("--- [SERVICE] Firestore document get completed ---");
+      debugPrint("✅ FIRESTORE_SERVICE: Firestore document get completed");
 
       if (doc.exists) {
-        debugPrint(
-            "--- [SERVICE] Document for $uid exists. Attempting to parse... ---");
+        debugPrint("✅ FIRESTORE_SERVICE: Document for $uid exists. Attempting to parse...");
         final user = UserModel.fromFirestore(doc);
-        debugPrint(
-            "--- [SERVICE] Successfully parsed user: ${user.firstName} ---");
+
+        // Cache the user data for future access
+        try {
+          // Convert to cacheable format (handle Timestamps)
+          final cacheableData = _convertToCacheableMap(user.toMap());
+          await _cacheService.setUserProfile(uid, cacheableData);
+          debugPrint("💾 FIRESTORE_SERVICE: User data cached successfully");
+        } catch (e) {
+          debugPrint("⚠️ FIRESTORE_SERVICE: Failed to cache user data: $e");
+          // Don't fail the request if caching fails
+        }
+
+        debugPrint("✅ FIRESTORE_SERVICE: Successfully parsed user: ${user.firstName}");
         return user;
       } else {
-        debugPrint("--- [SERVICE] Document for $uid does NOT exist. ---");
+        debugPrint("❌ FIRESTORE_SERVICE: Document for $uid does NOT exist");
         return null;
       }
     } catch (e, s) {
-      debugPrint("--- [SERVICE] !!! CATCH BLOCK EXECUTED IN GETUSER !!! ---");
-      debugPrint("--- [SERVICE] Raw Error: $e");
-      debugPrint("--- [SERVICE] Stack Trace: $s");
-      rethrow; // Re-throw the error so the UI knows about it.
+      debugPrint("❌ FIRESTORE_SERVICE: Error getting user $uid: $e");
+      debugPrint("❌ FIRESTORE_SERVICE: Stack Trace: $s");
+
+      // Try offline cache as fallback
+      try {
+        final offlineUserData = await _cacheService.getOfflineUserProfile(uid);
+        if (offlineUserData != null) {
+          final user = UserModel.fromMap(offlineUserData);
+          debugPrint("🔄 FIRESTORE_SERVICE: Returning offline cached user: ${user.firstName}");
+          return user;
+        }
+      } catch (offlineError) {
+        debugPrint("❌ FIRESTORE_SERVICE: Offline cache also failed: $offlineError");
+      }
+
+      rethrow; // Re-throw the error so the UI knows about it
     }
-    // --- END OF FINAL DEBUGGING CODE ---
   }
 
-  // MODIFIED: This is the definitive, robust implementation.
+  // Enhanced updateUser with cache invalidation and synchronization
   Future<void> updateUser(String uid, Map<String, dynamic> data) async {
     try {
-      debugPrint("FirestoreService: Updating user $uid with data: $data");
+      debugPrint("🔄 FIRESTORE_SERVICE: Updating user $uid with data: $data");
+
+      // Update Firestore first
       await _db.collection('users').doc(uid).set(data, SetOptions(merge: true));
-      debugPrint("FirestoreService: Update for $uid successful.");
+      debugPrint("✅ FIRESTORE_SERVICE: Firestore update for $uid successful");
+
+      // Clear cache to ensure fresh data on next fetch
+      try {
+        await _cacheService.init();
+        await _cacheService.clearUserProfile(uid);
+        debugPrint("🧹 FIRESTORE_SERVICE: Cache cleared for updated user $uid");
+
+        // Optionally, fetch and cache the updated user data immediately
+        final updatedDoc = await _db.collection('users').doc(uid).get();
+        if (updatedDoc.exists) {
+          final user = UserModel.fromFirestore(updatedDoc);
+          final cacheableData = _convertToCacheableMap(user.toMap());
+          await _cacheService.setUserProfile(uid, cacheableData);
+          debugPrint("💾 FIRESTORE_SERVICE: Updated user data cached successfully");
+        }
+      } catch (e) {
+        debugPrint("⚠️ FIRESTORE_SERVICE: Cache operations failed but update succeeded: $e");
+        // Don't fail the update if cache operations fail
+      }
+
     } catch (e) {
-      debugPrint("FirestoreService: Error updating user $uid: $e");
-      // Re-throw the exception so the UI can catch it.
+      debugPrint("❌ FIRESTORE_SERVICE: Error updating user $uid: $e");
       rethrow;
     }
   }
@@ -158,18 +220,27 @@ class FirestoreService {
       }
 
       final userData = userDoc.data() as Map<String, dynamic>;
-      final hasDownline = userData['downlineUsers'] != null && 
+      final hasDownline = userData['downlineUsers'] != null &&
                          (userData['downlineUsers'] as List).isNotEmpty;
-      
+
       debugPrint('🔍 FIRESTORE_SERVICE: User has downline: $hasDownline');
 
-      // Step 2: Delete user's private collections first
+      // Step 2: Clear all cached data for this user
+      try {
+        await _cacheService.init();
+        await _cacheService.clearAllUserData(uid);
+        debugPrint('🧹 FIRESTORE_SERVICE: All cached data cleared for user');
+      } catch (e) {
+        debugPrint('⚠️ FIRESTORE_SERVICE: Cache clearing failed but continuing: $e');
+      }
+
+      // Step 3: Delete user's private collections first
       await _deleteUserPrivateData(uid);
 
-      // Step 3: Update analytics and cleanup references
+      // Step 4: Update analytics and cleanup references
       await _cleanupUserReferences(uid);
 
-      // Step 4: Completely remove the user document (true deletion)
+      // Step 5: Completely remove the user document (true deletion)
       await _db.collection('users').doc(uid).delete();
       debugPrint('✅ FIRESTORE_SERVICE: User document completely deleted');
 
@@ -267,5 +338,38 @@ class FirestoreService {
       debugPrint('❌ FIRESTORE_SERVICE: Error cleaning up references: $e');
       // Don't rethrow - this is non-critical cleanup
     }
+  }
+
+  /// Convert Firestore data to cacheable format by handling Timestamps
+  Map<String, dynamic> _convertToCacheableMap(Map<String, dynamic> data) {
+    final Map<String, dynamic> cacheable = {};
+
+    for (final entry in data.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      if (value is Timestamp) {
+        // Convert Timestamp to milliseconds since epoch
+        cacheable[key] = value.millisecondsSinceEpoch;
+      } else if (value is Map<String, dynamic>) {
+        // Recursively handle nested maps
+        cacheable[key] = _convertToCacheableMap(value);
+      } else if (value is List) {
+        // Handle lists that might contain Timestamps
+        cacheable[key] = value.map((item) {
+          if (item is Timestamp) {
+            return item.millisecondsSinceEpoch;
+          } else if (item is Map<String, dynamic>) {
+            return _convertToCacheableMap(item);
+          }
+          return item;
+        }).toList();
+      } else {
+        // Keep primitive types as-is
+        cacheable[key] = value;
+      }
+    }
+
+    return cacheable;
   }
 }

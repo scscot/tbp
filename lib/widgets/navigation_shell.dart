@@ -11,7 +11,7 @@ import '../screens/eligibility_screen.dart';
 import '../screens/business_screen.dart';
 import '../screens/company_screen.dart';
 import '../screens/member_detail_screen.dart';
-import '../screens/subscription_screen.dart';
+import '../screens/subscription_screen_enhanced.dart';
 
 class NavigationShell extends StatefulWidget {
   final String appId;
@@ -205,7 +205,7 @@ class NavigationShellState extends State<NavigationShell> {
             );
           } else if (settings.name == '/subscription') {
             return MaterialPageRoute(
-              builder: (context) => SubscriptionScreen(appId: widget.appId),
+              builder: (context) => SubscriptionScreenEnhanced(appId: widget.appId),
               settings: settings,
             );
           }

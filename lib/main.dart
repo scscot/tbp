@@ -14,16 +14,19 @@ import 'models/admin_settings_model.dart';
 import 'screens/admin_edit_profile_screen.dart';
 import 'screens/admin_edit_profile_screen_1.dart';
 import 'screens/edit_profile_screen.dart';
-import 'screens/subscription_screen.dart';
+import 'screens/subscription_screen_enhanced.dart';
 import 'screens/member_detail_screen.dart';
 import 'screens/business_screen.dart';
 import 'screens/message_thread_screen.dart';
 import 'screens/new_registration_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/login_screen_enhanced.dart';
 import 'services/auth_service.dart';
+import 'providers/auth_provider.dart' as auth;
+import 'providers/subscription_provider.dart';
 import 'services/fcm_service.dart' show FCMService, navigateToRoute;
 import 'services/deep_link_service.dart';
 import 'services/session_manager.dart';
+import 'services/cache_service.dart';
 import 'widgets/restart_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notification_service.dart';
@@ -47,6 +50,9 @@ void main() async {
     debugPrint('🚀 MAIN: AppConstants initialized');
     await initializeDateFormatting('en_US', null);
     debugPrint('🚀 MAIN: Date formatting initialized');
+    // Initialize cache service for offline support and performance
+    await CacheService().init();
+    debugPrint('🚀 MAIN: Cache service initialized');
     // The DeepLinkService is now the single source of truth for initial navigation.
     await DeepLinkService().initialize();
     debugPrint('🚀 MAIN: Deep link service initialized');
@@ -144,7 +150,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         debugPrint(
             '🔔 APP LIFECYCLE: User needs subscription on resume, navigating to subscription screen');
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+          MaterialPageRoute(builder: (_) => const SubscriptionScreenEnhanced()),
           (route) => false,
         );
       }
@@ -166,30 +172,41 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthService>(
-      create: (_) => AuthService(),
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NotificationService>(
-            create: (_) => NotificationService(),
-          ),
-          StreamProvider<UserModel?>(
-            create: (context) => context.read<AuthService>().user,
-            initialData: null,
-            catchError: (_, error) {
-              debugPrint("❌ Auth stream error: $error");
-              return null;
-            },
-          ),
-          StreamProvider<AdminSettingsModel?>(
-            create: (context) => context.read<AuthService>().adminSettings,
-            initialData: null,
-            catchError: (_, error) {
-              debugPrint("❌ Admin settings stream error: $error");
-              return null;
-            },
-          ),
-        ],
+    return MultiProvider(
+      providers: [
+        // Legacy AuthService for backward compatibility
+        Provider<AuthService>(
+          create: (_) => AuthService(),
+        ),
+        // New AuthStateProvider with ChangeNotifier for enhanced state management
+        ChangeNotifierProvider<auth.AuthStateProvider>(
+          create: (_) => auth.AuthStateProvider(),
+        ),
+        // SubscriptionProvider for centralized subscription state management
+        ChangeNotifierProvider<SubscriptionProvider>(
+          create: (_) => SubscriptionProvider(),
+        ),
+        ChangeNotifierProvider<NotificationService>(
+          create: (_) => NotificationService(),
+        ),
+        // Legacy StreamProviders for backward compatibility
+        StreamProvider<UserModel?>(
+          create: (context) => context.read<AuthService>().user,
+          initialData: null,
+          catchError: (_, error) {
+            debugPrint("❌ Auth stream error: $error");
+            return null;
+          },
+        ),
+        StreamProvider<AdminSettingsModel?>(
+          create: (context) => context.read<AuthService>().adminSettings,
+          initialData: null,
+          catchError: (_, error) {
+            debugPrint("❌ Admin settings stream error: $error");
+            return null;
+          },
+        ),
+      ],
         child: MaterialApp(
           navigatorKey: navigatorKey,
           title: 'Team Build Pro',
@@ -216,7 +233,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               return MaterialPageRoute(
                 builder: (context) {
                   debugPrint('🔄 MAIN: Building SubscriptionScreen');
-                  return SubscriptionScreen(appId: appId);
+                  return SubscriptionScreenEnhanced(appId: appId);
                 },
                 settings: settings,
               );
@@ -266,7 +283,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
           home: const AuthWrapper(),
         ),
-      ),
     );
   }
 }
@@ -432,7 +448,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
             );
           } else if (hasLoggedOut) {
             debugPrint('🔐 AUTH_WRAPPER: User has logged out, routing to LOGIN');
-            return LoginScreen(appId: appId);
+            return LoginScreenEnhanced(appId: appId);
           } else {
             debugPrint('🔐 AUTH_WRAPPER: New user, routing directly to REGISTRATION');
             return NewRegistrationScreen(

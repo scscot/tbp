@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart';
 import '../services/network_service.dart';
 import '../services/subscription_service.dart'; // Add this line
 import 'profile_screen.dart';
-import 'subscription_screen.dart'; // Import SubscriptionScreen directly
+import 'subscription_screen_enhanced.dart'; // Import SubscriptionScreenEnhanced directly
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
@@ -737,7 +737,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 MaterialPageRoute(
                   builder: (context) {
                     debugPrint('🔄 DASHBOARD: Building SubscriptionScreen directly');
-                    return SubscriptionScreen(appId: widget.appId);
+                    return SubscriptionScreenEnhanced(appId: widget.appId);
                   },
                 ),
               ).then((result) {

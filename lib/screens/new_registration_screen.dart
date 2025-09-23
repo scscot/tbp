@@ -22,7 +22,7 @@ import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
-import 'login_screen.dart';
+import 'login_screen_enhanced.dart';
 import '../models/user_model.dart';
 import '../main.dart';
 import 'dart:async';
@@ -379,7 +379,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginScreen(appId: widget.appId),
+        builder: (context) => LoginScreenEnhanced(appId: widget.appId),
       ),
     );
   }

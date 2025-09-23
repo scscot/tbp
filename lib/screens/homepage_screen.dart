@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/session_manager.dart';
 import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
-import 'login_screen.dart';
+import 'login_screen_enhanced.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
@@ -740,7 +740,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               // Don't clear user data here - only clear referral data to avoid conflicts
               await SessionManager.instance.clearReferralData();
               navigator.push(MaterialPageRoute(
-                builder: (_) => LoginScreen(appId: widget.appId),
+                builder: (_) => LoginScreenEnhanced(appId: widget.appId),
               ));
             },
             icon: Container(
