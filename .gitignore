@@ -41,7 +41,7 @@ leads/
 functions-old/
 colabs/
 Build_*
-documents/results.md
+xcode-logs.md
 
 # === Flutter / Dart / Pub Specific Ignores ===
 lib_backup/
