@@ -267,8 +267,13 @@ class AuthStateProvider extends ChangeNotifier {
     }
   }
 
-  /// Sign in with Google
+  /// Sign in with Google - TEMPORARILY DISABLED FOR APP STORE APPROVAL
   Future<UserCredential?> signInWithGoogle() async {
+    debugPrint('🔐 AUTH_PROVIDER: Google Sign-In is temporarily disabled');
+    _setState(AuthState.error, errorMessage: 'Google Sign-In is temporarily unavailable. Please use email sign-in.');
+    return null;
+
+    /* COMMENTED OUT FOR APP STORE APPROVAL - UNCOMMENT WHEN READY TO RE-ENABLE
     try {
       _setLoading(true);
       _setState(AuthState.loading);
@@ -296,15 +301,29 @@ class AuthStateProvider extends ChangeNotifier {
     } finally {
       _setLoading(false);
     }
+    */
   }
 
-  /// Sign in with Apple
+  /// Sign in with Apple - TEMPORARILY DISABLED FOR APP STORE APPROVAL
   Future<UserCredential?> signInWithApple() async {
+    debugPrint('🔐 AUTH_PROVIDER: Apple Sign-In is temporarily disabled');
+    _setState(AuthState.error, errorMessage: 'Apple Sign-In is temporarily unavailable. Please use email sign-in.');
+    return null;
+
+    /* COMMENTED OUT FOR APP STORE APPROVAL - UNCOMMENT WHEN READY TO RE-ENABLE
     try {
       _setLoading(true);
       _setState(AuthState.loading);
 
       debugPrint('🔐 AUTH_PROVIDER: Starting Apple Sign-In');
+
+      // Check availability before attempting sign-in
+      final isAvailable = await SignInWithApple.isAvailable();
+      if (!isAvailable) {
+        debugPrint('🍎 AUTH_PROVIDER: Apple Sign-In not available on this device');
+        _setState(AuthState.error, errorMessage: 'Apple Sign-In is not available on this device. Please use email or Google sign-in instead.');
+        return null;
+      }
 
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -319,13 +338,43 @@ class AuthStateProvider extends ChangeNotifier {
       );
 
       return await signInWithCredential(oauthCredential);
+    } on SignInWithAppleAuthorizationException catch (e) {
+      debugPrint('🍎 AUTH_PROVIDER: Apple authorization exception: ${e.code} - ${e.message}');
+
+      String errorMessage;
+      switch (e.code) {
+        case AuthorizationErrorCode.canceled:
+          debugPrint('🍎 AUTH_PROVIDER: User cancelled Apple Sign-In');
+          _setState(AuthState.unauthenticated);
+          return null;
+        case AuthorizationErrorCode.failed:
+          errorMessage = 'Apple Sign-In failed. Please try again or use an alternative sign-in method.';
+          break;
+        case AuthorizationErrorCode.invalidResponse:
+          errorMessage = 'Invalid response from Apple. Please try again.';
+          break;
+        case AuthorizationErrorCode.notHandled:
+          errorMessage = 'Apple Sign-In could not be completed. Please try email or Google sign-in.';
+          break;
+        case AuthorizationErrorCode.unknown:
+        default:
+          errorMessage = 'Apple Sign-In is temporarily unavailable. Please try email or Google sign-in instead.';
+          break;
+      }
+
+      _setState(AuthState.error, errorMessage: errorMessage);
+      return null;
     } catch (e) {
       debugPrint('❌ AUTH_PROVIDER: Apple Sign-In failed: $e');
-      _setState(AuthState.error, errorMessage: _getErrorMessage(e));
+
+      // Handle "temporarily disabled" or service unavailable errors
+      String errorMessage = _getAppleSignInErrorMessage(e);
+      _setState(AuthState.error, errorMessage: errorMessage);
       return null;
     } finally {
       _setLoading(false);
     }
+    */
   }
 
   /// Sign in with biometric
@@ -490,6 +539,35 @@ class AuthStateProvider extends ChangeNotifier {
       }
     }
     return error.toString();
+  }
+
+  String _getAppleSignInErrorMessage(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+
+    // Check for specific "temporarily disabled" message
+    if (errorString.contains('temporarily disabled') ||
+        errorString.contains('temporarily unavailable') ||
+        errorString.contains('service unavailable') ||
+        errorString.contains('apple id sign in is disabled')) {
+      return 'Apple Sign-In is temporarily disabled. Please try signing in with email or Google instead.';
+    }
+
+    // Check for network-related issues
+    if (errorString.contains('network') ||
+        errorString.contains('connection') ||
+        errorString.contains('timeout')) {
+      return 'Network error during Apple Sign-In. Please check your connection and try again, or use email sign-in.';
+    }
+
+    // Check for certificate or SSL issues
+    if (errorString.contains('certificate') ||
+        errorString.contains('ssl') ||
+        errorString.contains('tls')) {
+      return 'Apple Sign-In security verification failed. Please try email or Google sign-in instead.';
+    }
+
+    // Generic Apple Sign-In error
+    return 'Apple Sign-In encountered an issue. Please try signing in with email or Google instead.';
   }
 
   // ==============================

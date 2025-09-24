@@ -114,42 +114,22 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   Future<void> _checkAppleSignInAvailability() async {
-    if (!kIsWeb && Platform.isIOS) {
-      try {
-        final isAvailable = await SignInWithApple.isAvailable();
-        if (mounted) {
-          setState(() {
-            _isAppleSignInAvailable = isAvailable;
-          });
-        }
-        debugPrint('🍎 REGISTER: Apple Sign-In availability checked: $isAvailable');
-      } catch (e) {
-        debugPrint('🍎 REGISTER: Error checking Apple Sign-In availability: $e');
-        if (mounted) {
-          setState(() {
-            _isAppleSignInAvailable = false;
-          });
-        }
-      }
+    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
+    debugPrint('🍎 REGISTER: Apple Sign-In temporarily disabled for App Store approval');
+    if (mounted) {
+      setState(() {
+        _isAppleSignInAvailable = false;
+      });
     }
   }
 
   Future<void> _checkGoogleSignInAvailability() async {
-    try {
-      // Google Sign-In is generally available on all platforms
-      if (mounted) {
-        setState(() {
-          _isGoogleSignInAvailable = true; // Google is typically always available
-        });
-      }
-      debugPrint('🔵 REGISTER: Google Sign-In availability checked: true');
-    } catch (e) {
-      debugPrint('🔵 REGISTER: Error checking Google Sign-In availability: $e');
-      if (mounted) {
-        setState(() {
-          _isGoogleSignInAvailable = false;
-        });
-      }
+    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
+    debugPrint('🔵 REGISTER: Google Sign-In temporarily disabled for App Store approval');
+    if (mounted) {
+      setState(() {
+        _isGoogleSignInAvailable = false;
+      });
     }
   }
 

@@ -113,41 +113,22 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
   }
 
   Future<void> _checkAppleSignInAvailability() async {
-    if (!kIsWeb && Platform.isIOS) {
-      try {
-        final isAvailable = await SignInWithApple.isAvailable();
-        if (mounted) {
-          setState(() {
-            _isAppleSignInAvailable = isAvailable;
-          });
-        }
-        debugPrint('🍎 LOGIN_ENHANCED: Apple Sign-In availability: $isAvailable');
-      } catch (e) {
-        debugPrint('🍎 LOGIN_ENHANCED: Error checking Apple Sign-In: $e');
-        if (mounted) {
-          setState(() {
-            _isAppleSignInAvailable = false;
-          });
-        }
-      }
+    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
+    debugPrint('🍎 LOGIN_ENHANCED: Apple Sign-In temporarily disabled for App Store approval');
+    if (mounted) {
+      setState(() {
+        _isAppleSignInAvailable = false;
+      });
     }
   }
 
   Future<void> _checkGoogleSignInAvailability() async {
-    try {
-      if (mounted) {
-        setState(() {
-          _isGoogleSignInAvailable = true;
-        });
-      }
-      debugPrint('🔵 LOGIN_ENHANCED: Google Sign-In availability: true');
-    } catch (e) {
-      debugPrint('🔵 LOGIN_ENHANCED: Error checking Google Sign-In: $e');
-      if (mounted) {
-        setState(() {
-          _isGoogleSignInAvailable = false;
-        });
-      }
+    // TEMPORARILY DISABLED FOR APP STORE APPROVAL
+    debugPrint('🔵 LOGIN_ENHANCED: Google Sign-In temporarily disabled for App Store approval');
+    if (mounted) {
+      setState(() {
+        _isGoogleSignInAvailable = false;
+      });
     }
   }
 
@@ -248,9 +229,10 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppScreenBar(title: 'Sign In', appId: widget.appId),
+      resizeToAvoidBottomInset: true,
       body: Consumer<auth.AuthStateProvider>(
         builder: (context, authProvider, child) {
-          return Padding(
+          return SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -338,7 +320,7 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
                     onTap: _showBiometricLogin,
                   ),
 
-                const Spacer(),
+                const SizedBox(height: 40),
 
                 // Registration Link
                 Row(
