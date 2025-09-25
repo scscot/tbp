@@ -290,28 +290,33 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
                 _EmailPasswordForm(),
                 const SizedBox(height: 24),
 
-                // Divider
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'or continue with',
-                        style: TextStyle(color: AppColors.textSecondary),
+                // Divider - only show if there are alternative login methods
+                if (_isAppleSignInAvailable || _isGoogleSignInAvailable || (_biometricAvailable && _biometricEnabled && _hasStoredUser)) ...[
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'or continue with',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                ],
 
                 // Social Login Buttons
                 _SocialLoginButtons(
                   isAppleSignInAvailable: _isAppleSignInAvailable,
                   isGoogleSignInAvailable: _isGoogleSignInAvailable,
                 ),
-                const SizedBox(height: 24),
+
+                // Add spacing only if social buttons are shown
+                if (_isAppleSignInAvailable || _isGoogleSignInAvailable)
+                  const SizedBox(height: 24),
 
                 // Biometric Login
                 if (_biometricAvailable && _biometricEnabled && _hasStoredUser)
