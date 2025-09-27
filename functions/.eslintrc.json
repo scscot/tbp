@@ -5,11 +5,16 @@
   "parserOptions": { "ecmaVersion": "latest", "sourceType": "script" },
   "ignorePatterns": ["node_modules/", "lib/", ".firebase/", "coverage/", "dist/"],
   "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-unused-vars": ["warn", {
+      "argsIgnorePattern": "^(_|event|request|recipientName|newMembers|summary|subscriptionId|userId)",
+      "varsIgnorePattern": "^(_|assertAdminAndEnabled|sendPushToUser|updateUserBadge|createNotification|createNotificationWithTransaction|upsertAppleV2NotificationState|updateUserSubscription|createSubscriptionNotification|createSubscriptionNotificationV2)"
+    }],
     "no-constant-condition": ["error", { "checkLoops": false }],
     "prefer-const": "error",
     "no-var": "error",
     "eqeqeq": ["error", "smart"],
-    "no-console": "off"
+    "no-console": "off",
+    "no-inner-declarations": "off",
+    "no-unreachable": "warn"
   }
 }

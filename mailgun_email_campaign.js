@@ -38,7 +38,7 @@ async function sendTestEmail() {
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
-    form.append('subject', 'AI recruiting for direct sales teams');
+    form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
     const templateVersion = getRandomTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
     form.append('t:version', templateVersion); // Random template version
@@ -77,7 +77,7 @@ async function sendBulkCampaign(recipientList) {
     const form = new FormData();
     
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
-    form.append('subject', 'AI recruiting for direct sales teams');
+    form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
     const templateVersion = getRandomTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
     form.append('t:version', templateVersion); // Random template version
@@ -259,9 +259,9 @@ async function sendCampaignToList() {
     console.log('📧 Sending campaign to mailing list...');
 
     const form = new FormData();
-    form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
+    form.append('from', 'Stephen Scott | Team Build Pro <sscott@stephenscott.us>');
     form.append('to', MAILING_LIST_ADDRESS);
-    form.append('subject', 'AI recruiting for direct sales teams');
+    form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
     const templateVersion = getRandomTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
     form.append('t:version', templateVersion); // Random template version
@@ -462,9 +462,9 @@ async function sendBatchCampaign(options = {}) {
         if (!testMode) {
           // Send individual email
           const form = new FormData();
-          form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
+          form.append('from', 'Stephen Scott | Team Build Pro <sscott@stephenscott.us>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
-          form.append('subject', 'AI recruiting for direct sales teams');
+          form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
           const templateVersion = getRandomTemplateVersion(verbose);
           form.append('template', 'tbp'); // Template name
           form.append('t:version', templateVersion); // Random template version

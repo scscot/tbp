@@ -18,6 +18,7 @@
   "main": "index.js",
   "dependencies": {
     "@googleapis/androidpublisher": "^29.3.0",
+    "@googleapis/admin": "^27.0.0",
     "@sendgrid/mail": "^8.1.5",
     "app-store-server-api": "^0.17.1",
     "cors": "^2.8.5",

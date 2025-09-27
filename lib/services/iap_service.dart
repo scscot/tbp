@@ -250,7 +250,7 @@ class IAPService {
         applicationUserName: user.uid,
       );
 
-      // IMPORTANT: subscriptions are non-consumable in this plugin
+      // IMPORTANT: use buyNonConsumable for subscriptions in this version of the plugin
       final initiated = await _iap.buyNonConsumable(purchaseParam: purchaseParam);
       if (!initiated) {
         debugPrint('❌ SUBSCRIPTION: Purchase initiation failed');

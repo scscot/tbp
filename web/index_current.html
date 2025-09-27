@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI-Driven Recruiting & Team Building for Direct Sales | Team Build Pro</title>
-    <meta name="description" content="AI-Driven Recruiting & Team Building for Direct Sales. 30-day free trial.">
+    <meta name="description" content="Team Build Pro with AI Coach: personalized outreach, next-best actions, and smart follow-ups for direct sales. 30-day free trial.">
     <meta name="keywords" content="AI coach, direct sales recruiting, team building app, AI-powered sales tools, network marketing software, team management, business growth, AI recruiting assistant">
     <meta name="author" content="Team Build Pro">
     <meta name="robots" content="index, follow">
@@ -41,6 +41,7 @@
         src="https://www.google.com/recaptcha/enterprise.js?render=6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"></script>
 
     <!-- All styles consolidated in external CSS file -->
+
 </head>
 
 <body>
@@ -588,7 +589,7 @@
             <div id="signup-form">
                 <h2 id="modal-header">🚀 Team Build Pro Coming Soon!</h2>
                 <p id="modal-description">
-                    Our app is launching soon on Google Play. Be the first to know when it's available!
+                    Our app is launching soon on both App Store and Google Play. Be the first to know when it's available!
                 </p>
                 <form id="notificationForm" onsubmit="handleNotificationSignup(event)">
                     <div class="form-row">
@@ -602,12 +603,24 @@
                     <div class="form-group">
                         <input type="email" id="notificationEmail" placeholder="Enter your email address" required>
                     </div>
+                    
+                    <!-- Device Selection -->
+                    <div class="form-group">
+                        <label for="deviceSelection" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Which device do you have?</label>
+                        <select id="deviceSelection" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; background: white;">
+                            <option value="">Select your device</option>
+                            <option value="ios">iPhone/iPad (iOS)</option>
+                            <option value="android">Android Phone/Tablet</option>
+                            <option value="both">Both iOS and Android</option>
+                        </select>
+                    </div>
+                    
                     <!-- Demo Interest Section -->
                     <div class="form-group demo-section">
                         <label class="checkbox-label">
                             <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Check the box if you would like to preview the app on your Android device before it's officially available on Google Play</span>
+                            <span class="checkbox-text">Check the box if you would like to request preview access before it's officially available on Google Play</span>
                         </label>
                     </div>
                     
@@ -649,11 +662,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-
         // ============================================================================
         // FIREBASE AUTH ACTION HANDLER FOR CUSTOM DOMAIN
         // ============================================================================
-
         // Check if this is a Firebase Auth action URL
         function handleFirebaseAuthActions() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -671,30 +682,24 @@
                 const comingSoonModal = document.getElementById('comingSoonModal');
                 const bodyChildren = document.body.children;
 
-                // Hide all main body content
+                // Hide all body elements
                 for (let i = 0; i < bodyChildren.length; i++) {
-                    const child = bodyChildren[i];
-                    if (child.tagName !== 'SCRIPT' && child.id !== 'auth-action-container') {
-                        child.style.display = 'none';
+                    const element = bodyChildren[i];
+                    if (element.tagName !== 'SCRIPT') {
+                        element.style.display = 'none';
                     }
                 }
 
-                // Specifically hide key elements if they exist
-                if (mainElement) mainElement.style.display = 'none';
-                if (headerElement) headerElement.style.display = 'none';
-                if (footerElement) footerElement.style.display = 'none';
-                if (comingSoonModal) comingSoonModal.style.display = 'none';
-
-                // Create auth action container
+                // Create clean auth action UI
                 const authContainer = document.createElement('div');
-                authContainer.id = 'auth-action-container';
                 authContainer.style.cssText = `
                     min-height: 100vh;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     padding: 20px;
+                    font-family: 'Inter', sans-serif;
                 `;
 
                 const authCard = document.createElement('div');
@@ -702,14 +707,13 @@
                     background: white;
                     border-radius: 12px;
                     padding: 40px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                     max-width: 500px;
                     width: 100%;
                     text-align: center;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
                 `;
 
                 authCard.innerHTML = `
-                    <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 64px; height: 64px; border-radius: 50%; margin-bottom: 20px;">
                     <h2 style="color: #333; margin-bottom: 20px;">Team Build Pro</h2>
                     <div id="auth-message">Processing your request...</div>
                 `;
@@ -750,27 +754,16 @@
                         <p style="color: #666; margin-bottom: 20px;">Enter a new password for ${email}</p>
                         <form id="password-reset-form">
                             <input type="password" id="new-password" placeholder="New Password" required
-                                   style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-                            <input type="password" id="confirm-password" placeholder="Confirm Password" required
-                                   style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-                            <button type="submit" style="width: 100%; padding: 12px; margin: 20px 0 10px 0; background: #4F46E5; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                                style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px;">
+                            <button type="submit" style="width: 100%; padding: 12px; background: #4F46E5; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer;">
                                 Update Password
                             </button>
                         </form>
-                        <p style="color: #666; font-size: 14px;">After updating your password, you can sign in to the Team Build Pro app.</p>
                     `;
 
-                    // Handle form submission
                     document.getElementById('password-reset-form').addEventListener('submit', (e) => {
                         e.preventDefault();
-
                         const newPassword = document.getElementById('new-password').value;
-                        const confirmPassword = document.getElementById('confirm-password').value;
-
-                        if (newPassword !== confirmPassword) {
-                            alert('Passwords do not match. Please try again.');
-                            return;
-                        }
 
                         if (newPassword.length < 6) {
                             alert('Password must be at least 6 characters long.');
@@ -811,7 +804,6 @@
             auth.checkActionCode(actionCode)
                 .then((info) => {
                     const restoredEmail = info.data.email;
-
                     return auth.applyActionCode(actionCode).then(() => {
                         showAuthSuccess(`Email address ${restoredEmail} has been restored to your account.`);
                     });
@@ -829,11 +821,8 @@
                 <div style="color: #10B981; font-size: 48px; margin-bottom: 20px;">✅</div>
                 <h3 style="color: #333; margin-bottom: 20px;">Success!</h3>
                 <p style="color: #666; margin-bottom: 30px;">${message}</p>
-                <button onclick="window.close()" style="padding: 12px 24px; background: #4F46E5; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-right: 10px;">
-                    Close
-                </button>
-                <a href="https://teambuildpro.com" style="padding: 12px 24px; background: #F3F4F6; color: #4F46E5; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-block;">
-                    Visit Website
+                <a href="https://teambuildpro.com" style="padding: 12px 24px; background: #4F46E5; color: white; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-block;">
+                    Back to Website
                 </a>
             `;
         }
@@ -1460,9 +1449,9 @@
         function createAppStoreBadge(isPrimary = true) {
             const appStoreURL = buildAppStoreURL();
             return `
-                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: inline-block;">
-                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                         alt="Download on the App Store" style="height: 60px;" />
+                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: none;">
+                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+                         alt="Download on the App Store" />
                 </a>
             `;
         }
@@ -1507,34 +1496,9 @@
         }
 
         function createAndroidPreviewButton(isPrimary = true) {
-            const buttonStyle = `
-                display: inline-block;
-                height: 60px;
-                min-width: 180px;
-                background: linear-gradient(135deg, #4F46E5 0%, #2563EB 100%);
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-                padding: 8px 16px;
-                font-size: 14px;
-                font-weight: 600;
-                line-height: 1.6;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-                text-align: center;
-                vertical-align: top;
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            `;
-
-            const hoverStyle = `
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(79, 70, 229, 0.4)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(79, 70, 229, 0.3)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'"
-            `;
-
             return `
-                <button style="${buttonStyle}" ${hoverStyle} onclick="openModal()">
-                    Available Soon on Google Play<br>Get Notified When Available
+                <button class="android-preview-btn ${isPrimary ? 'primary' : 'secondary'}" onclick="openModal()">
+                    Available Soon on Google Play<br>Get Notified!
                 </button>
             `;
         }
@@ -1542,28 +1506,10 @@
         function setupDownloadButtons() {
             const primaryContainer = document.getElementById('download-container');
             const secondaryContainer = document.getElementById('secondary-container');
-            const device = getDeviceType();
-
-            // Clear secondary container since we'll put both buttons in primary container
+            
+            // Use unified button for all devices
+            primaryContainer.innerHTML = createUnifiedComingSoonButton(true);
             secondaryContainer.innerHTML = '';
-
-            // Set primary container to display buttons horizontally inline
-            primaryContainer.style.display = 'flex';
-            primaryContainer.style.flexWrap = 'wrap';
-            primaryContainer.style.justifyContent = 'center';
-            primaryContainer.style.alignItems = 'center';
-            primaryContainer.style.gap = '12px';
-
-            if (device.isIOS) {
-                // iOS users get App Store download button first
-                primaryContainer.innerHTML = createAppStoreBadge(true) + createAndroidPreviewButton(false);
-            } else if (device.isAndroid) {
-                // Android users get preview button first
-                primaryContainer.innerHTML = createAndroidPreviewButton(true) + createAppStoreBadge(false);
-            } else {
-                // Desktop users get both options (iOS first, Android second)
-                primaryContainer.innerHTML = createAppStoreBadge(true) + createAndroidPreviewButton(false);
-            }
         }
 
         const modal = document.getElementById("comingSoonModal");
@@ -1571,7 +1517,16 @@
             if (modal) {
                 modal.style.display = "flex";
                 
-                // No device selection needed - they clicked Google Play button
+                // Auto-detect and set device type
+                const deviceSelection = document.getElementById('deviceSelection');
+                const device = getDeviceType();
+                if (deviceSelection && !deviceSelection.value) {
+                    if (device.isIOS) {
+                        deviceSelection.value = 'ios';
+                    } else if (device.isAndroid) {
+                        deviceSelection.value = 'android';
+                    }
+                }
                 
                 // Focus the first input when modal opens
                 setTimeout(() => {
@@ -1622,18 +1577,13 @@
 
         function setupBottomCTAs() {
             const ctaIds = ["cta-pricing", "cta-final"];
-            const device = getDeviceType();
-
+            
             ctaIds.forEach((id) => {
                 const button = document.getElementById(id);
                 if (!button) return;
-
-                // Use device-specific buttons for consistency
-                if (device.isIOS) {
-                    button.outerHTML = createAppStoreBadge(true);
-                } else {
-                    button.outerHTML = createAndroidPreviewButton(true);
-                }
+                
+                // Replace with unified coming soon button for all devices
+                button.outerHTML = createUnifiedComingSoonButton(true);
             });
         }
 
@@ -1679,6 +1629,7 @@
         );
 
         document.querySelectorAll(".reveal-on-scroll").forEach((el) => observer.observe(el));
+
 
         // Handle responsive heroBadge text on window resize
         let resizeTimeout;
@@ -1763,25 +1714,32 @@
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const deviceSelection = document.getElementById('deviceSelection');
             const demoCheckbox = document.getElementById('demoInterest');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             const signupForm = document.getElementById('signup-form');
             const successMessage = document.getElementById('success-message');
-
+            
             const firstName = firstNameInput.value.trim();
             const lastName = lastNameInput.value.trim();
             const email = emailInput.value.trim();
+            const selectedDevice = deviceSelection.value;
             const wantDemo = demoCheckbox.checked;
-            const deviceType = 'android'; // Always Android since they clicked Google Play button
-
+            const deviceType = selectedDevice || (wantDemo ? 'android' : null);
+            
             if (!firstName || !lastName) {
                 alert('Please enter your first and last name.');
                 return;
             }
-
+            
             if (!email || !isValidEmail(email)) {
                 alert('Please enter a valid email address.');
+                return;
+            }
+            
+            if (!selectedDevice) {
+                alert('Please select your device type.');
                 return;
             }
             
@@ -1838,40 +1796,10 @@
                         recaptchaToken: recaptchaToken
                     };
                     
-                    const docRef = await db.collection('launch_notifications').add(signupData);
+                    await db.collection('launch_notifications').add(signupData);
                     console.log('New signup successful:', `${firstName} ${lastName} (${email})` + (wantDemo ? ` - Demo requested (${deviceType})` : ''));
                     isNewSignup = true;
                     shouldSendEmail = true;
-
-                    // Append email to demo_leads.csv
-                    if (wantDemo) {
-                        try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    email: email
-                                })
-                            });
-
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Email added to demo_leads.csv:', email);
-                                await docRef.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached');
-                            } else {
-                                console.warn('Failed to add to CSV:', csvResult.error);
-                            }
-                        } catch (csvError) {
-                            console.error('Error adding to CSV:', csvError);
-                        }
-                    }
                     
                 } else {
                     // Email exists - check if demo is newly requested
@@ -1891,34 +1819,6 @@
                         });
                         console.log('Demo access added for existing user:', `${email} (${deviceType})`);
                         shouldSendEmail = true; // Send email with demo instructions
-
-                        // Append existing user email to demo_leads.csv
-                        try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    email: email
-                                })
-                            });
-
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Existing user email added to demo_leads.csv:', email);
-                                await existingDoc.ref.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached for existing user');
-                            } else {
-                                console.warn('Failed to add existing user to CSV:', csvResult.error);
-                            }
-                        } catch (csvError) {
-                            console.error('Error adding existing user to CSV:', csvError);
-                        }
                         
                     } else {
                         // Already registered, no new demo request
@@ -1986,14 +1886,16 @@
             if (wantDemo && deviceType) {
                 const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
                 successContent.innerHTML = `
-                    <p><strong>Perfect! You're all set!</strong></p>
-                    <p>📧 <strong>Demo access email sent!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
-                    <p style="margin: 15px 0;">We'll also notify you when Team Build Pro officially launches on Google Play.</p>
-                    <p><strong>Thanks for being an early supporter!</strong></p>
+                    <p>Thanks for signing up! You'll receive two emails:</p>
+                    <ul style="text-align: left; margin: 20px 0;">
+                        <li><strong>Launch notification</strong> - We'll notify you as soon as Team Build Pro is available on App Store and Google Play.</li>
+                        <li><strong>Preview access instructions</strong> - You'll get step-by-step instructions on how to request early access to the Google Play version.</li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>Thanks for being an early supporter!</strong></p>
                 `;
             } else {
                 successContent.innerHTML = `
-                    <p>Thanks for your interest! We'll send you an email as soon as Team Build Pro is officially available on Google Play.</p>
+                    <p>Thanks for your interest! We'll send you an email as soon as Team Build Pro is officially available on App Store and Google Play.</p>
                 `;
             }
         }
@@ -2004,7 +1906,7 @@
             
             successContent.innerHTML = `
                 <p><strong>Great news!</strong> You're all set!</p>
-                <p style="margin: 15px 0;">📧 <strong>Demo access email sent!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
+                <p style="margin: 15px 0;">You'll soon receive an email with step-by-step instructions on how to download and preview the app.</p>
                 <p><strong>Thanks for your interest!</strong></p>
             `;
         }
@@ -2025,19 +1927,21 @@
             const firstNameInput = document.getElementById('notificationFirstName');
             const lastNameInput = document.getElementById('notificationLastName');
             const emailInput = document.getElementById('notificationEmail');
+            const deviceSelection = document.getElementById('deviceSelection');
             const demoCheckbox = document.getElementById('demoInterest');
             const submitBtn = document.querySelector('.signup-btn');
             const btnText = document.getElementById('signup-btn-text');
             const demoSection = document.querySelector('.demo-section');
-
+            
             // Reset form visibility
             signupForm.style.display = 'block';
             successMessage.style.display = 'none';
-
+            
             // Reset form state
             firstNameInput.value = '';
             lastNameInput.value = '';
             emailInput.value = '';
+            deviceSelection.value = '';
             demoCheckbox.checked = false;
             submitBtn.disabled = false;
             btnText.textContent = 'Notify Me When It\'s Ready!';
@@ -2047,7 +1951,7 @@
                 demoSection.classList.remove('show');
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app on your Android device before it's officially available on Google Play";
+                    demoText.textContent = "Check the box if you would like to request preview access before it's officially available on Google Play";
                 }
             }
             
@@ -2058,7 +1962,7 @@
                 modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
             }
             if (modalDescription) {
-                modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                modalDescription.textContent = 'Our app is launching soon on both App Store and Google Play. Be the first to know when it\'s available!';
             }
         }
 
@@ -2089,6 +1993,34 @@
             });
         }
         
+        function showDemoSection() {
+            const demoSection = document.querySelector('.demo-section');
+            if (demoSection && !demoSection.classList.contains('show')) {
+                demoSection.classList.add('show');
+                
+                // Update modal header and description for Google Play focus
+                const modalHeader = document.getElementById('modal-header');
+                const modalDescription = document.getElementById('modal-description');
+                if (modalHeader) {
+                    modalHeader.textContent = '🚀 Get Google Play Preview!';
+                }
+                if (modalDescription) {
+                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                }
+                
+                // Update the demo text to be more contextual
+                const demoText = demoSection.querySelector('.checkbox-text');
+                if (demoText) {
+                    demoText.textContent = "Check the box if you would like to request preview access before it's officially available on Google Play";
+                }
+                
+                // Make demo checkbox focusable
+                const demoCheckbox = document.getElementById('demoInterest');
+                if (demoCheckbox) {
+                    demoCheckbox.tabIndex = 0;
+                }
+            }
+        }
         
         function hideDemoSection() {
             const demoSection = document.querySelector('.demo-section');
@@ -2104,7 +2036,7 @@
                     modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
                 }
                 if (modalDescription) {
-                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                    modalDescription.textContent = 'Our app is launching soon on both App Store and Google Play. Be the first to know when it\'s available!';
                 }
                 
                 // Reset checkbox when hiding and remove from tab order
@@ -2115,84 +2047,9 @@
             }
         }
         
-        // ============================================================================
-        // DEMO LIMIT CHECKING FUNCTIONALITY
-        // ============================================================================
-
-        let demoLimitReached = false; // Global variable to track demo limit
-
-        async function checkDemoLimit() {
-            try {
-                // Temporarily check limit manually via Firestore query
-                const db = firebase.firestore();
-                const demoQuery = await db.collection('launch_notifications')
-                    .where('wantDemo', '==', true)
-                    .get();
-
-                const currentCount = demoQuery.size;
-                demoLimitReached = currentCount >= 100;
-
-                console.log(`📊 DEMO_LIMIT: ${currentCount}/100 demo requests, Limit reached: ${demoLimitReached}`);
-
-                // If limit is reached, hide demo section completely
-                if (demoLimitReached) {
-                    const demoSection = document.querySelector('.demo-section');
-                    if (demoSection) {
-                        demoSection.style.display = 'none';
-                    }
-
-                    // Update modal to reflect limit reached
-                    const modalDescription = document.getElementById('modal-description');
-                    if (modalDescription) {
-                        modalDescription.textContent = 'Our demo is full (100 testers), but we\'ll notify you when the app launches on Google Play!';
-                    }
-                }
-            } catch (error) {
-                console.error('Error checking demo limit:', error);
-                // Don't block the form if there's an error
-                demoLimitReached = false;
-            }
-        }
-
-        function showDemoSection() {
-            // Don't show demo section if limit is reached
-            if (demoLimitReached) {
-                console.log('📊 DEMO_LIMIT: Not showing demo section - limit reached');
-                return;
-            }
-
-            const demoSection = document.querySelector('.demo-section');
-            if (demoSection && !demoSection.classList.contains('show')) {
-                demoSection.classList.add('show');
-
-                // Update modal header and description for Google Play focus
-                const modalHeader = document.getElementById('modal-header');
-                const modalDescription = document.getElementById('modal-description');
-                if (modalHeader) {
-                    modalHeader.textContent = '🚀 Get Google Play Preview!';
-                }
-                if (modalDescription) {
-                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
-                }
-
-                // Update the demo text to be more contextual
-                const demoText = demoSection.querySelector('.checkbox-text');
-                if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app on your Android device before it's officially available on Google Play";
-                }
-
-                // Make demo checkbox focusable
-                const demoCheckbox = document.getElementById('demoInterest');
-                if (demoCheckbox) {
-                    demoCheckbox.tabIndex = 0;
-                }
-            }
-        }
-
-        // Initialize email detection and demo limit check when DOM is ready
-        document.addEventListener('DOMContentLoaded', async () => {
-            await checkDemoLimit(); // Check demo limit first
-            setupEmailDetection(); // Then set up email detection
+        // Initialize email detection when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEmailDetection();
         });
 
 

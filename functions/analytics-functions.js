@@ -8,32 +8,14 @@ const {
   onCall,
   HttpsError,
   onRequest,
-  onDocumentCreated,
-  onDocumentUpdated,
-  onDocumentDeleted,
-  onSchedule,
   logger,
-  functions,
-  admin,
   db,
   FieldValue,
-  FieldPath,
-  auth,
-  NOTIF_TRIGGER_ENABLED,
-  DELIVERY_MODE,
-  isHelperMode,
-  isTriggerMode,
   validateAuthentication,
-  validateAdminRole,
-  validateUserRole,
-  getUserDocument,
   retryWithBackoff,
-  validateInput,
-  sanitizeInput,
-  getTimestamp,
-  createError,
-  checkRateLimit,
 } = require('./shared/utilities');
+
+const { getTimezoneFromLocation } = require('./timezone_mapping');
 
 // ==============================
 // Helper Functions
@@ -798,6 +780,50 @@ const getUserByReferralCode = onRequest({
 });
 
 // ==============================
+// User Profile Management Functions
+// ==============================
+
+const updateUserTimezone = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const { userId, country, state } = request.data;
+
+  if (!userId || !country) {
+    throw new HttpsError("invalid-argument", "User ID and country are required.");
+  }
+
+  try {
+    console.log(`🌍 TIMEZONE UPDATE: Updating timezone for user ${userId} - Country: ${country}, State: ${state || 'N/A'}`);
+
+    // Calculate timezone using the same logic as registration
+    const userTimezone = getTimezoneFromLocation(country, state);
+    console.log(`🌍 TIMEZONE UPDATE: Calculated timezone: ${userTimezone}`);
+
+    // Update user document with new timezone
+    await db.collection("users").doc(userId).update({
+      timezone: userTimezone
+    });
+
+    console.log(`✅ TIMEZONE UPDATE: Successfully updated timezone for user ${userId} to ${userTimezone}`);
+
+    return {
+      success: true,
+      timezone: userTimezone,
+      message: `Timezone updated to ${userTimezone} based on ${country}${state ? `, ${state}` : ''}`
+    };
+
+  } catch (error) {
+    console.error(`❌ TIMEZONE UPDATE: Error updating timezone for user ${userId}:`, error);
+    if (error instanceof HttpsError) {
+      throw error;
+    }
+    throw new HttpsError("internal", "An unexpected error occurred while updating timezone.", error.message);
+  }
+});
+
+// ==============================
 // Exports
 // ==============================
 
@@ -818,6 +844,9 @@ module.exports = {
 
   // Team management analytics
   recalculateTeamCounts,
+
+  // User profile management
+  updateUserTimezone,
 
   // Referral analytics
   getUserByReferralCode,

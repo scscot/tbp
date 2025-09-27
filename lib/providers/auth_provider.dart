@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../models/user_model.dart';
 import '../models/admin_settings_model.dart';
 import '../services/session_manager.dart';
@@ -431,6 +430,27 @@ class AuthStateProvider extends ChangeNotifier {
     }
   }
 
+  /// Send password reset email
+  Future<bool> sendPasswordResetEmail(String email) async {
+    try {
+      _setLoading(true);
+      clearError();
+
+      debugPrint('🔐 AUTH_PROVIDER: Sending password reset email to: $email');
+
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+
+      debugPrint('✅ AUTH_PROVIDER: Password reset email sent successfully');
+      return true;
+    } catch (e) {
+      debugPrint('❌ AUTH_PROVIDER: Password reset failed: $e');
+      _setState(_state, errorMessage: _getPasswordResetErrorMessage(e));
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   /// Sign out
   Future<void> signOut() async {
     try {
@@ -541,33 +561,23 @@ class AuthStateProvider extends ChangeNotifier {
     return error.toString();
   }
 
-  String _getAppleSignInErrorMessage(dynamic error) {
-    final errorString = error.toString().toLowerCase();
 
-    // Check for specific "temporarily disabled" message
-    if (errorString.contains('temporarily disabled') ||
-        errorString.contains('temporarily unavailable') ||
-        errorString.contains('service unavailable') ||
-        errorString.contains('apple id sign in is disabled')) {
-      return 'Apple Sign-In is temporarily disabled. Please try signing in with email or Google instead.';
+  String _getPasswordResetErrorMessage(dynamic error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'user-not-found':
+          return 'No account found with this email address.';
+        case 'invalid-email':
+          return 'Please enter a valid email address.';
+        case 'too-many-requests':
+          return 'Too many password reset requests. Please wait before trying again.';
+        case 'user-disabled':
+          return 'This account has been disabled. Please contact support.';
+        default:
+          return error.message ?? 'Failed to send password reset email.';
+      }
     }
-
-    // Check for network-related issues
-    if (errorString.contains('network') ||
-        errorString.contains('connection') ||
-        errorString.contains('timeout')) {
-      return 'Network error during Apple Sign-In. Please check your connection and try again, or use email sign-in.';
-    }
-
-    // Check for certificate or SSL issues
-    if (errorString.contains('certificate') ||
-        errorString.contains('ssl') ||
-        errorString.contains('tls')) {
-      return 'Apple Sign-In security verification failed. Please try email or Google sign-in instead.';
-    }
-
-    // Generic Apple Sign-In error
-    return 'Apple Sign-In encountered an issue. Please try signing in with email or Google instead.';
+    return 'Failed to send password reset email. Please try again.';
   }
 
   // ==============================

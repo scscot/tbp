@@ -24,6 +24,10 @@ const {
   createNotification,
   createNotificationWithTransaction,
 
+  // User-facing badge management
+  clearAppBadge,
+  syncAppBadge,
+
   // Subscription notifications
   upsertAppleV2NotificationState,
   updateUserSubscription,
@@ -46,6 +50,8 @@ const {
 
   // Milestone functions
   notifyOnMilestoneReached,
+  onUserProfileCompleted,
+  triggerSponsorship,
 
   // Scheduled functions
   sendDailyTeamGrowthNotifications,
@@ -74,6 +80,9 @@ const {
 
   // Team management
   recalculateTeamCounts,
+
+  // User profile management
+  updateUserTimezone,
 
   // Referral analytics (moved to analytics from auth)
   // getUserByReferralCode is in auth-functions
@@ -105,6 +114,16 @@ const {
   checkTrialsExpiringSoon,
   checkSubscriptionsExpiringSoon,
   sendDailyAccountDeletionSummary,
+  cleanupExecutionFuses,
+
+  // Beta testing management
+  generateBetaTesterCSVs,
+
+  // Debug and testing functions
+  resetMilestoneFuse,
+  resetMilestoneFuses,
+  clearPreProfileMilestoneFuses,
+  pingUsersTrigger,
 } = require('./admin-functions');
 
 // ==============================
@@ -120,6 +139,11 @@ const { setup_faq } = require('./setup_faq');
 // ==============================
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
+// const { addToInternalTesting } = require('./addToInternalTesting'); // Disabled - using CSV approach instead
+const { addToDemoLeads } = require('./addToDemoLeads');
+const { getDemoCount } = require('./getDemoCount');
+const { appendDemoEmail } = require('./appendDemoEmail');
+const { addToDemoQueue } = require('./addToDemoQueue');
 
 // ==============================
 // Export All Functions
@@ -142,7 +166,13 @@ module.exports = {
   updateCanReadProfileOnChatCreate,
   onChatUpdate,
   notifyOnMilestoneReached,
+  onUserProfileCompleted,
+  triggerSponsorship,
   notifySponsorOfBizOppVisit,
+
+  // User-facing badge management
+  clearAppBadge,
+  syncAppBadge,
 
   // Scheduled notifications
   sendDailyTeamGrowthNotifications,
@@ -158,6 +188,7 @@ module.exports = {
   getMilestoneFuseStatus,
   getFirestoreMetrics,
   recalculateTeamCounts,
+  updateUserTimezone,
 
   // ========== ADMIN FUNCTIONS ==========
   // Apple subscription management
@@ -176,6 +207,16 @@ module.exports = {
   checkTrialsExpiringSoon,
   checkSubscriptionsExpiringSoon,
   sendDailyAccountDeletionSummary,
+  cleanupExecutionFuses,
+
+  // Beta testing management
+  generateBetaTesterCSVs,
+
+  // Debug and testing functions
+  resetMilestoneFuse,
+  resetMilestoneFuses,
+  clearPreProfileMilestoneFuses,
+  pingUsersTrigger,
 
   // ========== CAMPAIGN FUNCTIONS ==========
   sendDemoInvitation,
@@ -186,6 +227,13 @@ module.exports = {
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,
   submitContactFormHttp,
+
+  // ========== INTERNAL TESTING FUNCTIONS ==========
+  // addToInternalTesting, // Disabled - using CSV approach instead
+  addToDemoLeads,
+  getDemoCount,
+  appendDemoEmail,
+  addToDemoQueue,
 };
 
 // ==============================

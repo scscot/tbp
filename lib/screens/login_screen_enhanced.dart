@@ -7,10 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../providers/auth_provider.dart' as auth;
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
@@ -457,6 +454,22 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                         ),
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Forgot Password Link
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: authProvider.isLoading ? null : () => _showForgotPasswordDialog(context),
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -477,6 +490,18 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     if (success != null && mounted) {
       debugPrint('✅ LOGIN_ENHANCED: Sign-in successful');
     }
+  }
+
+  void _showForgotPasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return _ForgotPasswordDialog(
+          initialEmail: _emailController.text.trim(),
+        );
+      },
+    );
   }
 }
 
@@ -591,5 +616,167 @@ class _BiometricLoginButton extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _ForgotPasswordDialog extends StatefulWidget {
+  final String? initialEmail;
+
+  const _ForgotPasswordDialog({
+    this.initialEmail,
+  });
+
+  @override
+  State<_ForgotPasswordDialog> createState() => _ForgotPasswordDialogState();
+}
+
+class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  bool _emailSent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialEmail?.isNotEmpty == true) {
+      _emailController.text = widget.initialEmail!;
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<auth.AuthStateProvider>(
+      builder: (context, authProvider, child) {
+        return AlertDialog(
+          title: Text(
+            _emailSent ? 'Check Your Email' : 'Reset Password',
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: _emailSent
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.email_outlined,
+                      size: 48,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'We\'ve sent a password reset link to:',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _emailController.text.trim(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Please check your inbox and follow the instructions to reset your password.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                )
+              : Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Enter your email address and we\'ll send you a link to reset your password.',
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        enabled: !authProvider.isLoading,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          hintText: 'Enter your email address',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+          actions: [
+            TextButton(
+              onPressed: authProvider.isLoading
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                    },
+              child: Text(_emailSent ? 'Done' : 'Cancel'),
+            ),
+            if (!_emailSent)
+              ElevatedButton(
+                onPressed: authProvider.isLoading ? null : _sendResetEmail,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: authProvider.isLoading
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text('Send Reset Link'),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _sendResetEmail() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authProvider = context.read<auth.AuthStateProvider>();
+    final email = _emailController.text.trim();
+
+    final success = await authProvider.sendPasswordResetEmail(email);
+
+    if (success && mounted) {
+      setState(() {
+        _emailSent = true;
+      });
+      debugPrint('✅ FORGOT_PASSWORD: Reset email sent to $email');
+    }
   }
 }

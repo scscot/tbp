@@ -26,7 +26,9 @@
         }
       }
     }
-  } catch { }
+  } catch (error) {
+    // Silently ignore errors when loading environment configuration
+  }
 })();
 
 // v2 HTTPS APIs
@@ -200,7 +202,7 @@ function sanitizeInput(input) {
 
   return input
     .trim()
-    .replace(/[<>\"'&]/g, '') // Remove potentially dangerous characters
+    .replace(/[<>"'&]/g, '') // Remove potentially dangerous characters
     .substring(0, 1000); // Limit length
 }
 

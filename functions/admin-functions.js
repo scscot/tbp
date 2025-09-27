@@ -8,31 +8,15 @@ const {
   onCall,
   HttpsError,
   onRequest,
-  onDocumentCreated,
-  onDocumentUpdated,
-  onDocumentDeleted,
+  onDocumentWritten,
   onSchedule,
   logger,
-  functions,
-  admin,
   db,
   FieldValue,
-  FieldPath,
   auth,
-  NOTIF_TRIGGER_ENABLED,
-  DELIVERY_MODE,
-  isHelperMode,
-  isTriggerMode,
   validateAuthentication,
   validateAdminRole,
-  validateUserRole,
   getUserDocument,
-  retryWithBackoff,
-  validateInput,
-  sanitizeInput,
-  getTimestamp,
-  createError,
-  checkRateLimit,
 } = require('./shared/utilities');
 
 // Import functions from other modules
@@ -289,7 +273,7 @@ const handleAppleSubscriptionNotificationV2 = onRequest({ region: "us-central1",
       logger.info(`📱 APPLE V2 NOTIFICATION: Processing ${notificationType} notification`);
       await processNotificationV2({ notificationType, subtype, data });
     } else if (isDecodedNotificationSummaryPayload(payload)) {
-      const { summary } = payload;
+      const { summary: _summary } = payload;
       logger.info(`📱 APPLE V2 NOTIFICATION: Processing summary notification`);
       // Handle summary notifications if needed
     }
@@ -335,7 +319,7 @@ const handleGooglePlayNotification = onRequest({ region: "us-central1", cors: fa
       return res.status(400).send('No subscription notification');
     }
 
-    const { subscriptionId, purchaseToken, notificationType } = subscriptionNotification;
+    const { subscriptionId: _subscriptionId, purchaseToken, notificationType } = subscriptionNotification;
 
     // Find user by Google Play purchase token or subscription ID
     const userQuery = await db.collection('users')
@@ -928,47 +912,457 @@ const checkSubscriptionsExpiringSoon = onSchedule("0 9 * * *", async (event) => 
 /**
  * Send daily account deletion summary to admins
  */
-const sendDailyAccountDeletionSummary = onSchedule({
-  schedule: "0 10 * * *",
-  timeZone: "America/New_York",
-  region: "us-central1"
-}, async (event) => {
-  logger.info("Starting daily account deletion summary");
-
+/**
+ * Helper function to find upline members (excluding direct sponsor)
+ * @param {string} sponsorId - The sponsor's user ID
+ * @returns {Array} - Array of upline member IDs
+ */
+async function findUplineMembers(sponsorId) {
   try {
-    // Get deletion events from the last 24 hours
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    // In a real implementation, you'd track deletions in a separate collection
-    // For now, we'll send a basic summary to admins
-
-    const adminSnapshot = await db.collection('users')
-      .where('role', '==', 'admin')
-      .get();
-
-    const notificationPromises = [];
-
-    for (const adminDoc of adminSnapshot.docs) {
-      notificationPromises.push(
-        createNotification({
-          userId: adminDoc.id,
-          type: 'daily_admin_summary',
-          title: '📊 Daily Summary',
-          body: 'Your daily account summary is ready.',
-          docFields: {
-            route: '/admin/reports',
-            route_params: JSON.stringify({ report: 'daily_summary' })
-          }
-        })
-      );
+    const sponsorDoc = await db.collection('users').doc(sponsorId).get();
+    if (!sponsorDoc.exists) {
+      return [];
     }
 
-    await Promise.allSettled(notificationPromises);
-    logger.info(`Sent daily summaries to ${adminSnapshot.size} admins`);
+    const sponsorData = sponsorDoc.data();
+    const uplineRefs = sponsorData.upline_refs || [];
+
+    // Return all upline members (excluding the direct sponsor themselves)
+    return uplineRefs;
+  } catch (error) {
+    console.error(`❌ UPLINE LOOKUP: Error finding upline members for sponsor ${sponsorId}:`, error);
+    return [];
+  }
+}
+
+const sendDailyAccountDeletionSummary = onSchedule({
+  schedule: "0 10 * * *", // Run daily at 10 AM UTC
+  timeZone: "UTC",
+  region: "us-central1"
+}, async (event) => {
+  console.log("🗑️ DAILY DELETION SUMMARY: Starting daily account deletion summary process");
+
+  try {
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0);
+    const yesterdayEnd = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59);
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Processing deletions from ${yesterdayStart.toISOString()} to ${yesterdayEnd.toISOString()}`);
+
+    // Get all unprocessed deletion logs from yesterday
+    const deletionLogsQuery = await db.collection('account_deletion_logs')
+      .where('processedInDailyBatch', '==', false)
+      .where('deletedAt', '>=', yesterdayStart)
+      .where('deletedAt', '<=', yesterdayEnd)
+      .get();
+
+    if (deletionLogsQuery.empty) {
+      console.log("🗑️ DAILY DELETION SUMMARY: No account deletions to process from yesterday");
+      return;
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Found ${deletionLogsQuery.size} account deletion(s) to process`);
+
+    // Group deletions by affected upline members
+    const uplineNotifications = new Map();
+
+    for (const logDoc of deletionLogsQuery.docs) {
+      const logData = logDoc.data();
+
+      // Find all upline members (excluding direct sponsor and downline who got immediate notifications)
+      if (logData.sponsorId) {
+        const uplineMembers = await findUplineMembers(logData.sponsorId);
+
+        for (const uplineMemberId of uplineMembers) {
+          if (!uplineNotifications.has(uplineMemberId)) {
+            uplineNotifications.set(uplineMemberId, []);
+          }
+          uplineNotifications.get(uplineMemberId).push({
+            deletedUserName: logData.deletedUserName,
+            deletedAt: logData.deletedAt
+          });
+        }
+      }
+
+      // Mark this log as processed
+      await logDoc.ref.update({ processedInDailyBatch: true });
+    }
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Sending summary notifications to ${uplineNotifications.size} upline members`);
+
+    // Send summary notifications to upline members
+    const notificationPromises = Array.from(uplineNotifications.entries()).map(async ([userId, deletions]) => {
+      try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (!userDoc.exists) {
+          console.log(`🗑️ DAILY DELETION SUMMARY: User ${userId} no longer exists, skipping`);
+          return { success: false, userId, reason: 'User not found' };
+        }
+
+        const userData = userDoc.data();
+        const deletionCount = deletions.length;
+
+
+        const result = await createNotification({
+          userId,
+          type: 'team_deletion_summary',
+          title: "Team Network Update",
+          body: deletionCount === 1
+            ? `One of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identity. No worries, it happens .. keep building!`
+            : `${deletionCount} of your downline team members deleted their Team Build Pro account yesterday. For privacy protection, we cannot share their identities. No worries, it happens .. keep building!`,
+          docFields: {
+            count: deletionCount,
+            route: "/network",
+            route_params: JSON.stringify({ "filter": "all" })
+          },
+          data: {
+            route: 'network',
+            filter: 'all',
+            count: String(deletionCount)
+          },
+        });
+
+        console.log(`✅ DAILY DELETION SUMMARY: Sent summary to ${userData.firstName || 'Unknown'} for ${deletionCount} deletion(s) - Push sent: ${result.push.sent}`);
+        return { success: true, userId, deletionCount };
+
+      } catch (error) {
+        console.error(`❌ DAILY DELETION SUMMARY: Failed to send summary to user ${userId}:`, error);
+        return { success: false, userId, error: error.message };
+      }
+    });
+
+    const results = await Promise.allSettled(notificationPromises);
+    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
+
+    console.log(`🗑️ DAILY DELETION SUMMARY: Summary complete - Successful: ${successful}, Failed: ${failed}`);
 
   } catch (error) {
-    logger.error("Error sending daily account deletion summary:", error);
+    console.error("❌ DAILY DELETION SUMMARY: Critical error in daily deletion summary:", error);
   }
+});
+
+// ==============================
+// System Maintenance Functions
+// ==============================
+
+const cleanupExecutionFuses = onSchedule({
+  schedule: 'every 1 hours',
+  timeZone: 'UTC',
+  region: 'us-central1',
+  timeoutSeconds: 300,
+  memory: '256MiB'
+}, async () => {
+  console.log('FUSE CLEANUP: Starting execution fuse cleanup');
+
+  try {
+    const cutoffTime = new Date(Date.now() - 5 * 60 * 1000); // 5 minutes ago
+    const fusesRef = db.collection('execution_fuses');
+
+    // Query for fuses older than 5 minutes
+    const oldFusesQuery = fusesRef.where('timestamp', '<', cutoffTime);
+    const oldFusesSnap = await oldFusesQuery.get();
+
+    if (oldFusesSnap.empty) {
+      console.log('FUSE CLEANUP: No orphaned fuses found');
+      return;
+    }
+
+    console.log(`FUSE CLEANUP: Found ${oldFusesSnap.size} orphaned fuses to clean up`);
+
+    // Delete orphaned fuses in batches
+    const batch = db.batch();
+    let deleteCount = 0;
+
+    oldFusesSnap.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+      deleteCount++;
+
+      console.log('FUSE CLEANUP: Queuing for deletion', {
+        fuseId: doc.id,
+        data: doc.data(),
+        age: Math.round((Date.now() - doc.data().timestamp?.toDate?.()?.getTime()) / 1000 / 60) + ' minutes'
+      });
+    });
+
+    if (deleteCount > 0) {
+      await batch.commit();
+      console.log(`FUSE CLEANUP: Successfully deleted ${deleteCount} orphaned execution fuses`);
+    }
+
+  } catch (error) {
+    console.error('FUSE CLEANUP: Error during cleanup', error);
+    // Don't throw - let cleanup failures be non-fatal
+  }
+});
+
+// ==============================
+// Beta Testing Management
+// ==============================
+
+/**
+ * Generate CSV files from Firestore beta tester data
+ * Returns CSV content for both iOS and Android testers
+ */
+const generateBetaTesterCSVs = onCall({ region: "us-central1" }, async (request) => {
+  try {
+    console.log('📄 CSV_GENERATE: Starting generation of beta tester CSV files from Firestore');
+
+    const results = {};
+    const deviceTypes = ['ios', 'android'];
+
+    for (const deviceType of deviceTypes) {
+      try {
+        // Query beta testers for this device type
+        const snapshot = await db.collection('beta_testers')
+          .where('deviceType', '==', deviceType)
+          .orderBy('createdAt', 'asc')
+          .get();
+
+        // Generate CSV content
+        let csvContent = '';
+        const testers = [];
+
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          testers.push(data);
+          csvContent += `${data.firstName},${data.lastName},${data.email}\n`;
+        });
+
+        const fileName = `${deviceType}_testers.csv`;
+        results[fileName] = {
+          content: csvContent,
+          lineCount: testers.length,
+          testers: testers.map(t => ({
+            firstName: t.firstName,
+            lastName: t.lastName,
+            email: t.email,
+            createdAt: t.createdAt?.toDate?.()?.toISOString() || null
+          })),
+          lastGenerated: new Date().toISOString()
+        };
+
+        console.log(`✅ CSV_GENERATE: Generated ${fileName} - ${testers.length} entries`);
+
+      } catch (error) {
+        console.error(`❌ CSV_GENERATE: Error generating ${deviceType} CSV:`, error);
+        results[`${deviceType}_testers.csv`] = {
+          content: '',
+          lineCount: 0,
+          error: error.message
+        };
+      }
+    }
+
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      files: results
+    };
+
+  } catch (error) {
+    console.error('❌ CSV_GENERATE: Error generating CSV files:', error);
+    throw new HttpsError("internal", "Failed to generate CSV files", error.message);
+  }
+});
+
+// ==============================
+// Admin Validation Helper Functions
+// ==============================
+
+/**
+ * Check if validators are enabled via environment variable
+ */
+function validatorsEnabled() {
+  return String(process.env.DEBUG_VALIDATE_ENABLED || 'false').toLowerCase() === 'true';
+}
+
+/**
+ * Check if caller has admin privileges
+ */
+function callerIsAllowedAdmin(context) {
+  if (!context?.auth?.uid) return false;
+  const isAdminClaim = !!context.auth.token?.admin;
+  const allowlist = String(process.env.DEBUG_ADMIN_ALLOWLIST || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+  return isAdminClaim || allowlist.includes(context.auth.uid);
+}
+
+/**
+ * Assert that caller is admin and validators are enabled
+ */
+function assertAdminAndEnabled(context, featureName) {
+  if (!validatorsEnabled()) {
+    throw new HttpsError('failed-precondition', `Validation disabled (${featureName}).`);
+  }
+  if (!context?.auth?.uid) {
+    throw new HttpsError('unauthenticated', 'Sign in required.');
+  }
+  if (!callerIsAllowedAdmin(context)) {
+    throw new HttpsError('permission-denied', 'Admin only.');
+  }
+}
+
+// ==============================
+// Debug and Testing Functions
+// ==============================
+
+/**
+ * Reset a specific milestone flag for a user (for testing)
+ */
+const resetMilestoneFuse = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const { userId, milestoneType } = request.data;
+
+  if (!userId || !milestoneType) {
+    throw new HttpsError("invalid-argument", "userId and milestoneType are required");
+  }
+
+  try {
+    console.log(`🔧 RESET MILESTONE: Resetting ${milestoneType} milestone for user ${userId}`);
+
+    const userRef = db.collection('users').doc(userId);
+    const milestoneRef = userRef.collection('milestones').doc('directSponsorCount');
+
+    // Reset the specific milestone flag
+    const updateData = {};
+    if (milestoneType === 'direct') {
+      updateData.directAt = FieldValue.delete();
+    } else if (milestoneType === 'team') {
+      updateData.teamAt = FieldValue.delete();
+    } else if (milestoneType === 'qualified') {
+      updateData.qualifiedAt = FieldValue.delete();
+    } else {
+      throw new HttpsError("invalid-argument", "milestoneType must be 'direct', 'team', or 'qualified'");
+    }
+
+    await milestoneRef.update(updateData);
+
+    console.log(`✅ RESET MILESTONE: Successfully reset ${milestoneType} milestone for user ${userId}`);
+
+    return {
+      success: true,
+      message: `Reset ${milestoneType} milestone for user ${userId}`
+    };
+
+  } catch (error) {
+    console.error(`❌ RESET MILESTONE: Error resetting ${milestoneType} milestone for user ${userId}:`, error);
+    throw new HttpsError("internal", "Failed to reset milestone", error.message);
+  }
+});
+
+/**
+ * Reset multiple milestone fuses for a user (for testing)
+ */
+const resetMilestoneFuses = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const { userId, fuses } = request.data;
+  if (!userId) {
+    throw new HttpsError("invalid-argument", "userId is required");
+  }
+
+  try {
+    const userRef = db.collection('users').doc(userId);
+    const updateData = {};
+
+    if (fuses?.direct) updateData['milestones.directAt'] = FieldValue.delete();
+    if (fuses?.team) updateData['milestones.teamAt'] = FieldValue.delete();
+    if (fuses?.qualified) updateData['milestones.qualifiedAt'] = FieldValue.delete();
+
+    if (Object.keys(updateData).length === 0) {
+      throw new HttpsError("invalid-argument", "No fuses specified to reset");
+    }
+
+    await userRef.update(updateData);
+
+    console.log(`MILESTONE FUSES RESET for ${userId}:`, updateData);
+    return { success: true, reset: updateData };
+  } catch (error) {
+    console.error("Error resetting milestone fuses:", error);
+    throw new HttpsError("internal", "Failed to reset milestone fuses");
+  }
+});
+
+/**
+ * Clear all milestone fuses set before profile completion (maintenance function)
+ */
+const clearPreProfileMilestoneFuses = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  try {
+    console.log('🧹 CLEANUP: Starting to clear milestone fuses set before profile completion');
+
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.get();
+
+    const updates = [];
+    let cleared = 0;
+
+    for (const doc of snapshot.docs) {
+      const userData = doc.data();
+      const milestones = userData.milestones;
+
+      // Only clear fuses for users who have them set
+      if (milestones && (milestones.directAt || milestones.teamAt || milestones.qualifiedAt)) {
+        console.log(`🧹 CLEANUP: Clearing milestone fuses for user ${doc.id}`, {
+          hasDirectAt: !!milestones.directAt,
+          hasTeamAt: !!milestones.teamAt,
+          hasQualifiedAt: !!milestones.qualifiedAt,
+          isProfileComplete: userData.isProfileComplete,
+          directSponsorCount: userData.directSponsorCount || 0,
+          totalTeamCount: userData.totalTeamCount || 0
+        });
+
+        updates.push(
+          doc.ref.update({
+            'milestones.directAt': FieldValue.delete(),
+            'milestones.teamAt': FieldValue.delete(),
+            'milestones.qualifiedAt': FieldValue.delete()
+          })
+        );
+        cleared++;
+      }
+    }
+
+    if (updates.length > 0) {
+      await Promise.all(updates);
+      console.log(`✅ CLEANUP: Cleared milestone fuses for ${cleared} users`);
+    } else {
+      console.log('ℹ️ CLEANUP: No milestone fuses found to clear');
+    }
+
+    return {
+      success: true,
+      message: `Cleared milestone fuses for ${cleared} users`,
+      clearedCount: cleared
+    };
+  } catch (error) {
+    console.error("Error clearing pre-profile milestone fuses:", error);
+    throw new HttpsError("internal", "Failed to clear milestone fuses");
+  }
+});
+
+/**
+ * Minimal ping trigger to test users collection binding (debug function)
+ */
+const pingUsersTrigger = onDocumentWritten('users/{userId}', (event) => {
+  const mask = event.data?.updateMask?.fieldPaths || [];
+  console.log('PING TRIGGER', {
+    userId: event.params.userId,
+    path: event.document,
+    mask
+  });
 });
 
 // ==============================
@@ -979,7 +1373,7 @@ const sendDailyAccountDeletionSummary = onSchedule({
  * Validate referral URL
  */
 const validateReferralUrl = onCall({ region: "us-central1" }, async (request) => {
-  const userId = validateAuthentication(request);
+  const _userId = validateAuthentication(request);
   const { url } = request.data;
 
   if (!url) {
@@ -1032,6 +1426,16 @@ module.exports = {
   checkTrialsExpiringSoon,
   checkSubscriptionsExpiringSoon,
   sendDailyAccountDeletionSummary,
+  cleanupExecutionFuses,
+
+  // Beta testing management
+  generateBetaTesterCSVs,
+
+  // Debug and testing functions
+  resetMilestoneFuse,
+  resetMilestoneFuses,
+  clearPreProfileMilestoneFuses,
+  pingUsersTrigger,
 
   // Campaign management
   sendDemoInvitation,

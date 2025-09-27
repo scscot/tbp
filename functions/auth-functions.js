@@ -12,16 +12,14 @@ const {
   FieldValue,
   auth,
   validateAuthentication,
-  validateUserRole,
-  getUserDocument,
-  retryWithBackoff,
   validateInput,
-  sanitizeInput,
-  checkRateLimit,
   createError,
 } = require('./shared/utilities');
 
 const { getTimezoneFromLocation } = require("./timezone_mapping");
+
+// Import createNotification from notification-functions to avoid dependency cycle
+const { createNotification } = require('./notification-functions');
 
 // Rate limiting cache for getUserByReferralCode
 const rateLimitCache = new Map();
@@ -651,7 +649,7 @@ async function sendDeletionNotificationsToNetwork(networkData) {
     // Send immediate notifications concurrently
     const notificationPromises = immediateNotifications.map(async ({ userId, notification }) => {
       try {
-        const result = await createNotification({
+        await createNotification({
           userId,
           type: notification.type,
           title: notification.title,
@@ -750,60 +748,6 @@ async function cleanupUserReferences(userId) {
   }
 }
 
-/**
- * Create notification document
- */
-async function createNotification(opts) {
-  const {
-    userId,
-    type,
-    title,
-    body,
-    notifId,
-    docFields = {},
-    markUnread = true,
-  } = opts || {};
-
-  const traceId = `notify_${userId}_${type}_${Date.now()}`;
-
-  if (!userId || !type || !title || !body) {
-    logger.error('Invalid notification arguments', { traceId, userId, type, hasTitle: !!title, hasBody: !!body });
-    return { ok: false, notificationId: '' };
-  }
-
-  const userRef = db.collection('users').doc(userId);
-  let notificationId = notifId || null;
-  const baseDoc = {
-    type,
-    title,
-    body,
-    createdAt: FieldValue.serverTimestamp(),
-    ...(markUnread ? { read: false } : {}),
-    ...docFields,
-  };
-
-  try {
-    if (notificationId) {
-      await userRef.collection('notifications').doc(notificationId).create(baseDoc);
-      logger.info('Created notification with deterministic ID', { traceId, userId, notificationId, type });
-    } else {
-      const addRes = await userRef.collection('notifications').add(baseDoc);
-      notificationId = addRes.id;
-      logger.info('Created notification with generated ID', { traceId, userId, notificationId, type });
-    }
-
-    return { ok: true, notificationId };
-  } catch (e) {
-    const alreadyExists = e?.code === 6 || e?.code === 'already-exists';
-    if (alreadyExists) {
-      logger.info('Notification already exists', { traceId, userId, notificationId: notifId, type });
-      return { ok: true, notificationId: notifId };
-    }
-
-    logger.error('Failed to create notification', { traceId, userId, notifId, type, error: e?.message });
-    return { ok: false, notificationId: notifId || '' };
-  }
-}
 
 // ==============================
 // EXPORTS

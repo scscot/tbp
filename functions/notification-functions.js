@@ -13,26 +13,13 @@ const {
   onDocumentDeleted,
   onSchedule,
   logger,
-  functions,
   admin,
   db,
   FieldValue,
   FieldPath,
-  auth,
   NOTIF_TRIGGER_ENABLED,
   DELIVERY_MODE,
-  isHelperMode,
   isTriggerMode,
-  validateAuthentication,
-  validateAdminRole,
-  validateUserRole,
-  getUserDocument,
-  retryWithBackoff,
-  validateInput,
-  sanitizeInput,
-  getTimestamp,
-  createError,
-  checkRateLimit,
 } = require('./shared/utilities');
 
 // Additional Firebase setup
@@ -41,6 +28,126 @@ const messaging = admin.messaging();
 // ==============================
 // Core Notification Helper Functions
 // ==============================
+
+/**
+ * Helper function to get business opportunity name from admin settings
+ */
+const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your business opportunity') => {
+  if (!uplineAdminId || uplineAdminId.trim() === '') {
+    return defaultName;
+  }
+
+  try {
+    const adminSettingsDoc = await db.collection('admin_settings').doc(uplineAdminId).get();
+    if (adminSettingsDoc.exists) {
+      const bizOpp = adminSettingsDoc.data()?.biz_opp;
+      return (bizOpp && bizOpp.trim() !== '') ? bizOpp : defaultName;
+    }
+    return defaultName;
+  } catch (error) {
+    console.log(`Error fetching business opportunity name for admin ${uplineAdminId}:`, error.message);
+    return defaultName;
+  }
+};
+
+/**
+ * Helper function to check milestones for upline users
+ */
+async function checkUplineMilestone(userId, userData) {
+  try {
+    console.log(`MILESTONE UPLINE: Checking milestones for upline user ${userId}`);
+
+    // Skip admins and qualified users
+    if (userData.role === 'admin' || userData.qualifiedDate) {
+      console.log(`MILESTONE UPLINE: Skipping ${userId} - admin or qualified`);
+      return;
+    }
+
+    const directSponsors = userData.directSponsorCount || 0;
+    const totalTeam = userData.totalTeamCount || 0;
+    const directMin = 4;
+    const teamMin = 20;
+
+    console.log(`MILESTONE UPLINE: User ${userId} - Direct: ${directSponsors}, Total: ${totalTeam}`);
+
+    let notificationContent = null;
+
+    // Check for direct sponsors milestone (reached directMin but still needs total team)
+    if (directSponsors >= directMin && totalTeam < teamMin) {
+      // Check if this milestone notification already exists
+      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
+        .where('type', '==', 'milestone')
+        .where('subtype', '==', 'direct')
+        .limit(1)
+        .get();
+
+      if (existingQuery.empty) {
+        const remainingTeamNeeded = teamMin - totalTeam;
+        const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+
+        notificationContent = {
+          title: "🎉 Amazing Progress!",
+          message: `Congratulations, ${userData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+          type: "milestone",
+          subtype: "direct",
+          route: "/network",
+          route_params: {},
+        };
+      }
+    }
+    // Check for total team milestone (reached teamMin but still needs direct sponsors)
+    else if (totalTeam >= teamMin && directSponsors < directMin) {
+      // Check if this milestone notification already exists
+      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
+        .where('type', '==', 'milestone')
+        .where('subtype', '==', 'team')
+        .limit(1)
+        .get();
+
+      if (existingQuery.empty) {
+        const remainingDirectNeeded = directMin - directSponsors;
+        const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+
+        notificationContent = {
+          title: "🚀 Incredible Growth!",
+          message: `Amazing progress, ${userData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+          type: "milestone",
+          subtype: "team",
+          route: "/network",
+          route_params: {},
+        };
+      }
+    }
+
+    // Send notification if a milestone was reached
+    if (notificationContent) {
+      console.log(`MILESTONE UPLINE: Creating notification for ${userId} - ${notificationContent.subtype}`);
+      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
+
+      const result = await createNotification({
+        userId,
+        notifId,
+        type: notificationContent.type,
+        title: notificationContent.title,
+        body: notificationContent.message,
+        docFields: {
+          subtype: notificationContent.subtype,
+          route: notificationContent.route,
+          route_params: JSON.stringify(notificationContent.route_params),
+        },
+      });
+
+      if (result.ok) {
+        console.log(`✅ MILESTONE UPLINE: Milestone notification created for user ${userId} - ${notificationContent.subtype}`);
+      } else {
+        console.log(`❌ MILESTONE UPLINE: Failed to create notification for ${userId}`);
+      }
+    }
+
+  } catch (error) {
+    console.error(`❌ MILESTONE UPLINE: Error checking milestones for ${userId}:`, error);
+  }
+}
 
 /**
  * Helper function to convert object to string map for FCM data payload
@@ -242,13 +349,52 @@ const updateUserBadge = async (userId) => {
       const code = e?.errorInfo?.code || e?.code || '';
       logger.error('BADGE: error', { userId, badgeCount, code, msg: e?.message });
       if (code === 'messaging/registration-token-not-registered') {
-        try { await cleanupDeadToken(userRef, token); } catch (_) {}
+        try { await cleanupDeadToken(userRef, token); } catch (_) {
+          // Token cleanup failure is logged internally, ignore
+        }
       }
     }
   } catch (error) {
     logger.error(`❌ BADGE UPDATE: Failed for ${userId}:`, error.message);
   }
 };
+
+// ==============================
+// User-Facing Badge Management Functions
+// ==============================
+
+const clearAppBadge = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  const userId = request.auth.uid;
+
+  try {
+    console.log(`🔔 CLEAR BADGE: Badge clear requested for user ${userId} - using centralized update`);
+
+    // Use centralized badge update function which will calculate and set correct badge
+    await updateUserBadge(userId);
+
+    return { success: true, message: "Badge updated successfully" };
+
+  } catch (error) {
+    console.error(`❌ CLEAR BADGE: Failed to update badge for user ${userId}:`, error);
+    return { success: false, message: error.message };
+  }
+});
+
+const syncAppBadge = onCall({ region: "us-central1" }, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  const userId = request.auth.uid;
+  console.log(`🔔 SYNC: Manual badge sync requested for user ${userId}`);
+
+  await updateUserBadge(userId);
+  return { success: true, message: "Badge synced successfully" };
+});
 
 /**
  * Universal notification creator that creates document and handles push via trigger
@@ -851,42 +997,170 @@ const onChatUpdate = onDocumentUpdated("chats/{chatId}", async (event) => {
 // ==============================
 
 /**
+ * RESTORED ORIGINAL LOGIC: Comprehensive milestone system with business opportunity integration
  * Trigger when user document is updated to check for milestones
  */
 const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (event) => {
-  const after = event.data?.after?.data();
-  const before = event.data?.before?.data();
+  const beforeData = event.data?.before?.data();
+  const afterData  = event.data?.after?.data();
+  const userId = event.params.userId;
 
-  if (!after || !before) return;
+  // Log updateMask for debugging but don't filter on it
+  try {
+    const mask = event.data?.updateMask?.fieldPaths || [];
+    console.log(`MILESTONE EVT user=${userId} mask=${JSON.stringify(mask)}`);
+  } catch (_) {
+    console.log(`MILESTONE EVT user=${userId} mask=<unavailable>`);
+  }
 
-  const { userId } = event.params;
+  if (!beforeData || !afterData) return;
 
-  // Check if team count increased
-  const beforeTeamCount = before.totalTeamCount || 0;
-  const afterTeamCount = after.totalTeamCount || 0;
+  console.log(`🎯 MILESTONE: Function triggered for user ${userId}`);
 
-  if (afterTeamCount > beforeTeamCount) {
-    // Check for milestone achievements
-    const milestones = [5, 10, 25, 50, 100, 250, 500, 1000];
+  try {
+    // SIMPLIFIED APPROACH: Use index-2.js working logic + upline_refs processing
+    // Skip admins from milestone notifications
+    if (afterData.role === 'admin') {
+      console.log(`MILESTONE: skip admin role for ${userId}`);
+      return;
+    }
 
-    for (const milestone of milestones) {
-      if (beforeTeamCount < milestone && afterTeamCount >= milestone) {
-        await createNotification({
-          userId,
-          type: 'milestone_reached',
-          title: '🎉 Milestone Reached!',
-          body: `Congratulations! Your team has grown to ${milestone} members!`,
-          docFields: {
-            milestone,
-            teamCount: afterTeamCount,
-            route: "/team",
-            route_params: JSON.stringify({ "action": "view_stats" })
+    // Skip if user is already qualified (they get the main qualification notification instead)
+    if (afterData.qualifiedDate) {
+      console.log(`MILESTONE: skip qualified user ${userId}`);
+      return;
+    }
+
+    // Check if this is a new user completing registration (has upline_refs but no prior counts)
+    const isNewUser = (beforeData.directSponsorCount || 0) === 0 &&
+                      (beforeData.totalTeamCount || 0) === 0 &&
+                      afterData.upline_refs &&
+                      afterData.upline_refs.length > 0;
+
+    if (isNewUser) {
+      console.log(`🔔 MILESTONE: New user ${userId} registered, checking upline milestones...`);
+
+      // Check milestones for all upline users (they might have reached team count milestones)
+      const uplineRefs = afterData.upline_refs || [];
+      for (const uplineUserId of uplineRefs) {
+        if (uplineUserId !== userId) {
+          console.log(`MILESTONE: Checking upline user ${uplineUserId} for team milestone...`);
+          // Trigger milestone check for this upline user by calling this function recursively
+          // But we need to get their current data first
+          try {
+            const uplineDoc = await db.collection('users').doc(uplineUserId).get();
+            if (uplineDoc.exists) {
+              const uplineData = uplineDoc.data();
+              // Create a mock event for the upline user to check their milestones
+              await checkUplineMilestone(uplineUserId, uplineData);
+            }
+          } catch (error) {
+            console.log(`MILESTONE: Error checking upline ${uplineUserId}: ${error.message}`);
           }
-        });
-
-        logger.info(`Milestone notification sent for user ${userId}: ${milestone} team members`);
+        }
       }
     }
+
+    // Get before/after counts (user's own counts, not sponsor's)
+    const beforeDirectSponsors = beforeData.directSponsorCount || 0;
+    const afterDirectSponsors = afterData.directSponsorCount || 0;
+    const beforeTotalTeam = beforeData.totalTeamCount || 0;
+    const afterTotalTeam = afterData.totalTeamCount || 0;
+
+    console.log(`🎯 MILESTONE: User ${userId} - Direct: ${beforeDirectSponsors}→${afterDirectSponsors}, Total: ${beforeTotalTeam}→${afterTotalTeam}`);
+
+    // Only proceed if counts actually increased
+    if (afterDirectSponsors <= beforeDirectSponsors && afterTotalTeam <= beforeTotalTeam) {
+      console.log(`MILESTONE: no count increase for ${userId}`);
+      return;
+    }
+
+    // Use hardcoded thresholds (eliminates remote config timeout issues)
+    const directMin = 4;
+    const teamMin = 20;
+    console.log(`MILESTONE: Using hardcoded thresholds - directMin=${directMin}, teamMin=${teamMin}`);
+
+    // Get business opportunity name
+    const bizName = await getBusinessOpportunityName(afterData.upline_admin, 'your business');
+
+    let notificationContent = null;
+
+    // Check for direct sponsors milestone (reached directMin but still needs total team)
+    if (beforeDirectSponsors < directMin &&
+        afterDirectSponsors >= directMin &&
+        afterTotalTeam < teamMin) {
+
+      const remainingTeamNeeded = teamMin - afterTotalTeam;
+      console.log(`🎯 MILESTONE: User ${userId} reached ${directMin} direct sponsors, needs ${remainingTeamNeeded} more total team members`);
+
+      notificationContent = {
+        title: "🎉 Amazing Progress!",
+        message: `Congratulations, ${afterData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+        type: "milestone",
+        subtype: "direct",
+        route: "/network",
+        route_params: {},
+      };
+    }
+    // Check for total team milestone (reached teamMin but still needs direct sponsors)
+    else if (beforeTotalTeam < teamMin &&
+             afterTotalTeam >= teamMin &&
+             afterDirectSponsors < directMin) {
+
+      const remainingDirectNeeded = directMin - afterDirectSponsors;
+      console.log(`🎯 MILESTONE: User ${userId} reached ${teamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
+
+      notificationContent = {
+        title: "🚀 Incredible Growth!",
+        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+        type: "milestone",
+        subtype: "team",
+        route: "/network",
+        route_params: {},
+      };
+    }
+
+    // Send notification if a milestone was reached
+    if (notificationContent) {
+      console.log(`MILESTONE: Creating notification for ${userId} - ${notificationContent.subtype}`);
+
+      // Simple duplicate protection - check if milestone notification already exists
+      const existingQuery = await db.collection('users').doc(userId).collection('notifications')
+        .where('type', '==', 'milestone')
+        .where('subtype', '==', notificationContent.subtype)
+        .limit(1)
+        .get();
+
+      if (!existingQuery.empty) {
+        console.log(`MILESTONE: ${notificationContent.subtype} milestone notification already exists for ${userId}, skipping`);
+        return;
+      }
+
+      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
+
+      const result = await createNotification({
+        userId,
+        notifId,
+        type: notificationContent.type,
+        title: notificationContent.title,
+        body: notificationContent.message,
+        docFields: {
+          subtype: notificationContent.subtype,
+          route: notificationContent.route,
+          route_params: JSON.stringify(notificationContent.route_params),
+        },
+      });
+
+      if (result.ok) {
+        console.log(`✅ MILESTONE: Milestone notification created for user ${userId} - ${notificationContent.subtype}`);
+      } else {
+        console.log(`❌ MILESTONE: Failed to create notification for ${userId}`);
+      }
+    }
+
+  } catch (error) {
+    console.error(`❌ MILESTONE: Error in notifyOnMilestoneReached for user ${userId}:`, error);
+    throw error;
   }
 });
 
@@ -895,51 +1169,202 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
 // ==============================
 
 /**
- * Send daily team growth notifications
+ * Send daily team growth notifications - RESTORED ORIGINAL LOGIC
+ * Only sends notifications to users who had actual team growth yesterday
  */
 const sendDailyTeamGrowthNotifications = onSchedule({
-  schedule: "0 9 * * *", // 9 AM daily
-  timeZone: "America/New_York",
+  schedule: "0 * * * *", // Run every hour
+  timeZone: "UTC",
   region: "us-central1"
 }, async (event) => {
-  logger.info("Starting daily team growth notifications");
+  console.log("🔔 DAILY NOTIFICATIONS: Starting daily team growth notification process");
 
   try {
-    // Get all users with teams
-    const usersSnapshot = await db.collection('users')
-      .where('totalTeamCount', '>', 0)
+    const now = new Date(event.scheduleTime);
+    const currentHour = now.getUTCHours();
+
+    console.log(`🔔 DAILY NOTIFICATIONS: Current UTC time: ${now.toISOString()}, Hour: ${currentHour}`);
+
+    // Calculate yesterday's date range in UTC
+    const yesterdayStart = new Date(now);
+    yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1);
+    yesterdayStart.setUTCHours(0, 0, 0, 0);
+
+    const yesterdayEnd = new Date(now);
+    yesterdayEnd.setUTCDate(yesterdayEnd.getUTCDate() - 1);
+    yesterdayEnd.setUTCHours(23, 59, 59, 999);
+
+    console.log(`🔔 DAILY NOTIFICATIONS: Yesterday range: ${yesterdayStart.toISOString()} to ${yesterdayEnd.toISOString()}`);
+
+    // Step 1: Get all users who joined yesterday with photoUrl != null (completed profiles)
+    console.log("🔔 DAILY NOTIFICATIONS: Querying new members from yesterday...");
+    const newMembersSnapshot = await db.collection("users")
+      .where("createdAt", ">=", yesterdayStart)
+      .where("createdAt", "<=", yesterdayEnd)
+      .where("photoUrl", "!=", null)
       .get();
 
-    const notificationPromises = [];
+    if (newMembersSnapshot.empty) {
+      console.log("🔔 DAILY NOTIFICATIONS: No new members with completed profiles found for yesterday");
+      return;
+    }
 
-    for (const userDoc of usersSnapshot.docs) {
+    console.log(`🔔 DAILY NOTIFICATIONS: Found ${newMembersSnapshot.size} new members with completed profiles`);
+
+    // Step 2: Use the efficient approach - extract upline_refs to identify notification recipients
+    const notificationCounts = new Map(); // userId -> count of new members
+    const newMembersByUpline = new Map(); // userId -> array of new member data
+
+    newMembersSnapshot.docs.forEach(doc => {
+      const newMember = doc.data();
+      const uplineRefs = newMember.upline_refs || [];
+
+      // CRITICAL: Skip admin users - they should not trigger daily team growth notifications
+      if (newMember.role === 'admin') {
+        console.log(`🔔 DAILY NOTIFICATIONS: Skipping admin user ${newMember.firstName} ${newMember.lastName} (${doc.id}) - admins don't trigger team notifications`);
+        return;
+      }
+
+      console.log(`🔔 DAILY NOTIFICATIONS: Processing regular user ${newMember.firstName} ${newMember.lastName} (${doc.id}) with ${uplineRefs.length} upline members`);
+
+      // For each person in this new member's upline, increment their notification count
+      uplineRefs.forEach(uplineUserId => {
+        if (!notificationCounts.has(uplineUserId)) {
+          notificationCounts.set(uplineUserId, 0);
+          newMembersByUpline.set(uplineUserId, []);
+        }
+        notificationCounts.set(uplineUserId, notificationCounts.get(uplineUserId) + 1);
+        newMembersByUpline.get(uplineUserId).push({
+          uid: doc.id,
+          firstName: newMember.firstName,
+          lastName: newMember.lastName,
+          photoUrl: newMember.photoUrl,
+          city: newMember.city,
+          state: newMember.state,
+          country: newMember.country,
+          role: newMember.role // Include role for debugging
+        });
+      });
+    });
+
+    console.log(`🔔 DAILY NOTIFICATIONS: ${notificationCounts.size} users have new team members to be notified about`);
+
+    if (notificationCounts.size === 0) {
+      console.log("🔔 DAILY NOTIFICATIONS: No users to notify");
+      return;
+    }
+
+    // Step 3: Get user details for those who should receive notifications
+    const userIds = Array.from(notificationCounts.keys());
+    const userPromises = userIds.map(userId => db.collection("users").doc(userId).get());
+    const userDocs = await Promise.allSettled(userPromises);
+
+    // Step 4: Filter users by timezone and check for duplicate notifications
+    const usersToNotify = [];
+    const todayDateString = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    for (let i = 0; i < userDocs.length; i++) {
+      const result = userDocs[i];
+      if (result.status !== 'fulfilled' || !result.value.exists) {
+        continue;
+      }
+
+      const userDoc = result.value;
       const userData = userDoc.data();
       const userId = userDoc.id;
-      const teamCount = userData.totalTeamCount || 0;
+      const userTimezone = userData.timezone || 'UTC';
 
-      // Only send to users with significant teams (5+ members)
-      if (teamCount >= 5) {
-        notificationPromises.push(
-          createNotification({
-            userId,
-            type: 'daily_team_update',
-            title: '👥 Your Team Update',
-            body: `Your team has ${teamCount} members. Keep growing!`,
-            docFields: {
-              teamCount,
-              route: "/team",
-              route_params: JSON.stringify({ "action": "view_team" })
-            }
-          })
-        );
+      try {
+        // Calculate what time it is in the user's timezone
+        const userLocalTime = new Date(now.toLocaleString("en-US", { timeZone: userTimezone }));
+        const userLocalHour = userLocalTime.getHours();
+
+        console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
+
+        // Check if it's 9 AM in their timezone (was 10 AM, but comment in original said 9AM)
+        if (userLocalHour === 9) {
+          // CRITICAL: Check if user already received notification today to prevent duplicates
+          const lastNotificationDate = userData.lastDailyNotificationDate;
+
+          if (lastNotificationDate === todayDateString) {
+            console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} already received notification today (${todayDateString}). Skipping.`);
+            continue;
+          }
+
+          console.log(`🔔 DAILY NOTIFICATIONS: User ${userId} eligible for notification. Last notification: ${lastNotificationDate || 'never'}, Today: ${todayDateString}`);
+
+          usersToNotify.push({
+            userId: userId,
+            userData: userData,
+            newMemberCount: notificationCounts.get(userId),
+            newMembers: newMembersByUpline.get(userId)
+          });
+        }
+      } catch (timezoneError) {
+        console.error(`🔔 DAILY NOTIFICATIONS: Error processing timezone for user ${userId}:`, timezoneError);
+        // Skip this user if timezone processing fails
       }
     }
 
-    await Promise.allSettled(notificationPromises);
-    logger.info(`Sent daily team growth notifications to ${notificationPromises.length} users`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 9am timezone and will receive notifications`);
+
+    if (usersToNotify.length === 0) {
+      console.log("🔔 DAILY NOTIFICATIONS: No users in 9am timezone to notify at this time");
+      return;
+    }
+
+    // Step 5: Send notifications to eligible users and record the date to prevent duplicates
+    const notificationPromises = usersToNotify.map(async ({ userId, userData, newMemberCount, newMembers }) => {
+      try {
+        console.log(`🔔 DAILY NOTIFICATIONS: Creating notification for ${userData.firstName} ${userData.lastName} (${userId}) - ${newMemberCount} new members`);
+
+        const notificationContent = {
+          title: "Your Team Is Growing!",
+          message: `Your team's momentum is growing, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your network yesterday. Click Here to see your team's progress`,
+          createdAt: FieldValue.serverTimestamp(),
+          read: false,
+          type: "new_network_members",
+          route: "/network",
+          // The route_params are now updated to be more specific to the new report
+          route_params: JSON.stringify({ "filter": "newMembersYesterday" }),
+        };
+
+        // Use a batch to atomically create notification and update the tracking date
+        const batch = db.batch();
+
+        // Add the notification
+        const notificationRef = db.collection("users").doc(userId).collection("notifications").doc();
+        batch.set(notificationRef, notificationContent);
+
+        // Update user document with today's date to prevent duplicate notifications
+        const userRef = db.collection("users").doc(userId);
+        batch.update(userRef, {
+          lastDailyNotificationDate: todayDateString
+        });
+
+        await batch.commit();
+
+        console.log(`✅ DAILY NOTIFICATIONS: Successfully sent notification to ${userData.firstName} ${userData.lastName} and recorded date ${todayDateString}`);
+        return { success: true, userId, count: newMemberCount };
+
+      } catch (error) {
+        console.error(`❌ DAILY NOTIFICATIONS: Failed to send notification to user ${userId}:`, error);
+        return { success: false, userId, error: error.message };
+      }
+    });
+
+    // Wait for all notifications to be sent
+    const results = await Promise.allSettled(notificationPromises);
+
+    // Log summary
+    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failed = results.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)).length;
+
+    console.log(`🔔 DAILY NOTIFICATIONS: Notification summary - Successful: ${successful}, Failed: ${failed}`);
+    console.log(`✅ DAILY NOTIFICATIONS: Daily team growth notification process completed`);
 
   } catch (error) {
-    logger.error("Error sending daily team growth notifications:", error);
+    console.error("❌ DAILY NOTIFICATIONS: Critical error in daily team growth notifications:", error);
   }
 });
 
@@ -1003,6 +1428,512 @@ const onChatMessageCreated = onDocumentCreated('chats/{chatId}/messages/{message
 });
 
 // ==============================
+// Profile Completion and Milestone Functions
+// ==============================
+
+/**
+ * Helper function to check for recent new member notifications to avoid duplicate pushes
+ */
+async function shouldSendMilestonePush(userId, traceId) {
+  try {
+    console.log('MST PUSH CHECK: Checking for recent new member notifications', { userId, traceId });
+
+    // Look for recent "new_member" notifications (within 1 minute)
+    const oneMinuteAgo = new Date(Date.now() - 60000);
+
+    const recentNotifications = await db.collection('users').doc(userId).collection('notifications')
+      .where('type', '==', 'new_member')
+      .where('createdAt', '>=', oneMinuteAgo)
+      .limit(5)
+      .get();
+
+    if (!recentNotifications.empty) {
+      console.log('MST PUSH CHECK: Found recent new member notifications, skipping milestone push', {
+        userId,
+        count: recentNotifications.size,
+        traceId
+      });
+      return false;
+    }
+
+    console.log('MST PUSH CHECK: No recent new member notifications found, proceeding with milestone push', { userId, traceId });
+    return true;
+
+  } catch (error) {
+    console.error('MST PUSH CHECK: Error checking recent notifications, proceeding with milestone push', { userId, traceId, error });
+    // If there's an error, err on the side of sending the notification
+    return true;
+  }
+}
+
+/**
+ * Manual milestone checker for sponsor/upline users after profile completion
+ */
+async function checkMilestoneForUserManual(userId, traceId) {
+  try {
+    console.log(`MST CHECK: Starting milestone check for ${userId}`, { traceId });
+
+    // Get current user data
+    const userDoc = await db.collection('users').doc(userId).get();
+    if (!userDoc.exists) {
+      console.log(`MST CHECK: User ${userId} does not exist, skipping`);
+      return;
+    }
+
+    const userData = userDoc.data();
+
+    // Skip admins and qualified users
+    if (userData.role === 'admin') {
+      console.log(`MST CHECK: User ${userId} is admin, skipping`);
+      return;
+    }
+
+    if (userData.qualifiedDate) {
+      console.log(`MST CHECK: User ${userId} already qualified, skipping`);
+      return;
+    }
+
+    // Get current counts
+    const bDir = 0; // We don't have before data in manual mode
+    const aDir = userData.directSponsorCount || 0;
+    const bTeam = 0; // We don't have before data in manual mode
+    const aTeam = userData.totalTeamCount || 0;
+
+    // Your specified logging pattern
+    console.log('MST INPUT', {
+      userId,
+      bDir,
+      aDir,
+      bTeam,
+      aTeam,
+      traceId
+    });
+
+    // Hardcoded thresholds
+    const directMin = 4;
+    const teamMin = 20;
+
+    // Check milestone conditions
+    const crossedDirect = aDir >= directMin && aTeam < teamMin;
+    const crossedTeam = aTeam >= teamMin && aDir < directMin;
+    const qualified = aDir >= directMin && aTeam >= teamMin;
+
+    console.log('MST DECISION', {
+      userId,
+      crossedDirect,
+      crossedTeam,
+      qualified,
+      traceId
+    });
+
+    // Skip if already qualified or no milestone reached
+    if (qualified || (!crossedDirect && !crossedTeam)) {
+      console.log(`MST CHECK: No milestone for ${userId} - qualified:${qualified}, crossedDirect:${crossedDirect}, crossedTeam:${crossedTeam}`);
+      return;
+    }
+
+    // Determine milestone type and content
+    let notificationContent = null;
+    let subtype = null;
+
+    if (crossedDirect) {
+      const remainingTeamNeeded = teamMin - aTeam;
+      const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+
+      subtype = 'direct';
+      notificationContent = {
+        title: "🎉 Amazing Progress!",
+        message: `Congratulations, ${userData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+        type: "milestone",
+        subtype: "direct",
+        route: "/network",
+        route_params: {},
+      };
+    } else if (crossedTeam) {
+      const remainingDirectNeeded = directMin - aDir;
+      const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+
+      subtype = 'team';
+      notificationContent = {
+        title: "🚀 Incredible Growth!",
+        message: `Amazing progress, ${userData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+        type: "milestone",
+        subtype: "team",
+        route: "/network",
+        route_params: {},
+      };
+    }
+
+    if (!notificationContent) {
+      console.log(`MST CHECK: No notification content generated for ${userId}`);
+      return;
+    }
+
+    // Deterministic notification ID (fixes race condition)
+    const notifId = `milestone_${subtype}_${directMin}_${userId}`;
+
+    console.log('NOTIF CREATE about-to', {
+      path: `users/${userId}/notifications/${notifId}`,
+      notifId,
+      type: notificationContent.type,
+      subtype,
+      traceId
+    });
+
+    // Create notification with deterministic ID (idempotent)
+    const notifRef = db.collection('users').doc(userId).collection('notifications').doc(notifId);
+
+    try {
+      await notifRef.create({
+        ...notificationContent,
+        createdAt: FieldValue.serverTimestamp(),
+        read: false,
+      });
+
+      console.log('NOTIF CREATE wrote', { notifId, traceId });
+
+      // Check for recent "new_member" notifications to avoid duplicate pushes
+      const shouldSendPush = await shouldSendMilestonePush(userId, traceId);
+
+      if (!shouldSendPush) {
+        console.log('MST PUSH SKIP: Recent "new_member" notification found, skipping milestone push to avoid duplicates', { userId, notifId, traceId });
+        return;
+      }
+
+      // Send push notification
+      const result = await createNotification({
+        userId,
+        notifId,
+        type: notificationContent.type,
+        title: notificationContent.title,
+        body: notificationContent.message,
+        docFields: {
+          subtype: notificationContent.subtype,
+          route: notificationContent.route,
+          route_params: JSON.stringify(notificationContent.route_params),
+        },
+      });
+
+      if (result.ok) {
+        console.log('PUSH DETAILED', {
+          type: notificationContent.type,
+          subtype,
+          to: userId,
+          msgId: result.notificationId || 'unknown',
+          notifId,
+          traceId
+        });
+      } else {
+        console.error(`MST PUSH: Failed to send push for ${userId}:`, result.push?.reason || 'unknown_error');
+      }
+
+    } catch (error) {
+      if (error.code === 6) { // ALREADY_EXISTS
+        console.log(`MST CHECK: Milestone notification ${notifId} already exists for ${userId}, skipping`);
+      } else {
+        throw error;
+      }
+    }
+
+  } catch (error) {
+    console.error(`MST CHECK: Error checking milestones for ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Deterministic sponsorship notification creation
+ * Uses .create() with stable document IDs to prevent duplicates
+ */
+async function handleSponsorship(newUserId, userDoc, traceId) {
+  console.log('SPONSOR: A lookup', { traceId, newUserId });
+
+  let sponsorId = null;
+
+  // 1) FIRST: Look for direct sponsor from referral code (this is the actual sponsor who should get notified)
+  const referralCodeRaw = (
+    userDoc.referredBy ||
+    userDoc.sponsorReferralCode ||
+    userDoc.sponsorReferral ||
+    ''
+  ).toString().trim();
+
+  if (referralCodeRaw) {
+    console.log('SPONSOR: B searching for referral code', { traceId, referralCodeRaw });
+
+    // Try case-insensitive match first if you store normalized codes
+    const referralCodeLower = referralCodeRaw.toLowerCase();
+    let sponsorQuery = await db.collection('users')
+      .where('referralCodeLower', '==', referralCodeLower)
+      .limit(1)
+      .get();
+
+    if (sponsorQuery.empty) {
+      // Fallback to the exact field if you don't have the normalized copy
+      sponsorQuery = await db.collection('users')
+        .where('referralCode', '==', referralCodeRaw)
+        .limit(1)
+        .get();
+    }
+
+    if (!sponsorQuery.empty) {
+      sponsorId = sponsorQuery.docs[0].id;
+      console.log('SPONSOR: B1 found sponsor via referral code', { traceId, sponsorId, referralCodeRaw });
+    } else {
+      console.log('SPONSOR: B2 no sponsor found for referral code', { traceId, referralCodeRaw });
+    }
+  }
+
+  // 2) FALLBACK: Only use upline_admin if no direct sponsor found from referral code
+  if (!sponsorId) {
+    sponsorId = (userDoc.upline_admin || '').trim() || null;
+    if (sponsorId) {
+      console.log('SPONSOR: B3 using upline_admin fallback', { traceId, sponsorId });
+    }
+  }
+
+  if (!sponsorId) {
+    console.log('SPONSOR: skip (no sponsor found)', { traceId, newUserId });
+    return { sponsorId: null, sponsorName: null };
+  }
+
+  const sponsorSnap = await db.collection('users').doc(sponsorId).get();
+  if (!sponsorSnap.exists) {
+    console.log('SPONSOR: skip (sponsor doc missing)', { traceId, sponsorId });
+    return { sponsorId: null, sponsorName: null };
+  }
+  const sponsorData = sponsorSnap.data();
+  const sponsorName = `${sponsorData.firstName} ${sponsorData.lastName}`;
+
+  console.log('SPONSOR: C found sponsor', { traceId, sponsorId, sponsorName });
+
+  // Write back upline_admin when derived from referral code (optimization for future lookups)
+  if (!userDoc.upline_admin && sponsorId) {
+    try {
+      await db.collection('users').doc(newUserId).set({ upline_admin: sponsorId }, { merge: true });
+      console.log('SPONSOR: wrote upline_admin', { traceId, newUserId, sponsorId });
+    } catch (e) {
+      console.warn('SPONSOR: failed to write upline_admin (non-fatal)', { traceId, msg: e?.message });
+    }
+  }
+
+  // Create deterministic notification ID
+  const notifId = `sponsorship_${newUserId}`;
+
+  const newUserLocation = `${userDoc.city || ""}, ${userDoc.state || ""}${userDoc.country ? ` - ${userDoc.country}` : ""}`;
+  const bizOppName = await getBusinessOpportunityName(sponsorData.upline_admin);
+
+  let title, message;
+  if (userDoc.adminReferral && sponsorData.role === 'admin') {
+    title = "🎉 You have a new team member!";
+    message = `Congratulations, ${sponsorData.firstName}! Your existing ${bizOppName} partner, ${userDoc.firstName} ${userDoc.lastName}, has joined you on the Team Build Pro app. You're now on the same system to accelerate growth and duplication! Click Here to view their profile.`;
+  } else {
+    title = "🎉 You have a new team member!";
+    message = `Congratulations, ${sponsorData.firstName}! ${userDoc.firstName} ${userDoc.lastName} from ${newUserLocation} has just joined your team on the Team Build Pro app. This is the first step in creating powerful momentum together! Click Here to view their profile.`;
+  }
+
+  console.log('SPONSOR: D creating notification', { traceId, sponsorId, notifId });
+
+  const result = await createNotification({
+    userId: sponsorId,
+    type: 'new_member',
+    title,
+    body: message,
+    notifId,
+    docFields: {
+      imageUrl: userDoc.photoUrl || null,
+      route: '/member_detail',
+      route_params: JSON.stringify({ userId: newUserId }),
+    },
+  });
+
+  if (result.ok) {
+    console.log('SPONSOR: E notification created successfully', {
+      traceId,
+      sponsorId,
+      notifId: result.notificationId
+    });
+  } else {
+    console.warn('SPONSOR: notification creation failed', { traceId, sponsorId, notifId });
+  }
+
+  return { sponsorId, sponsorName };
+}
+
+/**
+ * RESTORED ORIGINAL: Profile completion orchestration with execution fuses
+ * Handles sponsorship and milestone checking when user completes profile
+ */
+const onUserProfileCompleted = onDocumentUpdated('users/{uid}', async (event) => {
+  // Gate: only run when trigger delivery is explicitly enabled
+  const triggerEnabled =
+    process.env.NOTIFICATIONS_DELIVERY_MODE === 'trigger' &&
+    String(process.env.NOTIFICATIONS_ENABLE_TRIGGER || 'false').toLowerCase() === 'true';
+
+  if (!triggerEnabled) {
+    console.info('onUserProfileCompleted: trigger disabled; skipping');
+    return;
+  }
+
+  const { uid } = event.params;
+  const before = event.data?.before?.data() || {};
+  const after = event.data?.after?.data() || {};
+
+  const was = !!before.isProfileComplete;
+  const now = !!after.isProfileComplete;
+  if (was || !now) return;
+
+  const traceId = `profileCompleted_${uid}_${Date.now()}`;
+  console.log('ORCH: start', { traceId, uid, was, now });
+
+  // ===== EXECUTION FUSE: Prevent multiple simultaneous executions =====
+  const fuseId = `profile_completion_${uid}`;
+  const fuseRef = db.collection('execution_fuses').doc(fuseId);
+
+  try {
+    // Attempt to create the execution fuse document atomically
+    await fuseRef.create({
+      uid,
+      traceId,
+      timestamp: FieldValue.serverTimestamp(),
+      type: 'profile_completion'
+    });
+    console.log('ORCH: execution fuse acquired', { traceId, uid, fuseId });
+  } catch (fuseError) {
+    // If document already exists, another execution is already running
+    if (fuseError?.code === 6 || fuseError?.code === 'already-exists') {
+      console.log('ORCH: execution fuse exists - another instance already running', { traceId, uid, fuseId });
+      return; // Exit silently to prevent duplicate execution
+    }
+    // For other errors, log and continue (don't let fuse creation failure break the function)
+    console.warn('ORCH: execution fuse creation failed, continuing anyway', { traceId, uid, fuseId, error: fuseError?.message });
+  }
+
+  try {
+    await handleSponsorship(uid, after, traceId);
+
+    // OPTION C: Manual milestone checks for sponsor + upline after profile completion
+    console.log('MST TRIGGER: Profile completed, checking milestones for sponsor/upline', { traceId, uid });
+
+    // Get sponsor and upline from the new user's data
+    const sponsorId = after.upline_admin || after.referredBy || after.sponsorReferralCode || after.sponsorReferral;
+    const uplineRefs = after.upline_refs || [];
+
+    console.log('MST INPUT', {
+      newUserId: uid,
+      sponsorId,
+      uplineCount: uplineRefs.length,
+      traceId
+    });
+
+    // Check milestones for direct sponsor first
+    if (sponsorId && sponsorId !== uid) {
+      try {
+        console.log(`MST SPONSOR: Checking milestones for sponsor ${sponsorId}`);
+        await checkMilestoneForUserManual(sponsorId, traceId);
+      } catch (error) {
+        console.error(`MST SPONSOR: Error checking sponsor ${sponsorId}:`, error);
+      }
+    }
+
+    // Check milestones for all upline members
+    for (const uplineId of uplineRefs) {
+      if (uplineId !== uid && uplineId !== sponsorId) {
+        try {
+          console.log(`MST UPLINE: Checking milestones for upline ${uplineId}`);
+          await checkMilestoneForUserManual(uplineId, traceId);
+        } catch (error) {
+          console.error(`MST UPLINE: Error checking upline ${uplineId}:`, error);
+        }
+      }
+    }
+
+    console.log('ORCH: done', { traceId, uid });
+  } catch (err) {
+    console.error('ORCH: failed', { traceId, uid, err });
+    throw err;
+  } finally {
+    // Clean up the execution fuse when done (non-blocking)
+    try {
+      await fuseRef.delete();
+      console.log('ORCH: execution fuse cleaned up', { traceId, uid, fuseId });
+    } catch (cleanupError) {
+      console.warn('ORCH: execution fuse cleanup failed (non-fatal)', { traceId, uid, fuseId, error: cleanupError?.message });
+    }
+  }
+});
+
+// ==============================
+// Manual Sponsorship Trigger (Reliability Backstop)
+// ==============================
+
+const triggerSponsorship = onCall(
+  { region: 'us-central1', timeoutSeconds: 60, memory: '512MiB' },
+  async (req) => {
+    const uid = req.auth?.uid;
+    if (!uid) throw new HttpsError('unauthenticated', 'Must be signed in');
+
+    const traceId = `manual_orch_${uid}_${Date.now()}`;
+    console.log('ORCH: manual start', { traceId, uid });
+
+    const userRef = db.collection('users').doc(uid);
+    const snap = await userRef.get();
+    if (!snap.exists) throw new HttpsError('not-found', 'User not found');
+
+    const data = snap.data() || {};
+    // Only run when profile is complete to mirror the orchestrator gate.
+    if (!data.isProfileComplete) {
+      console.log('ORCH: manual skip (profile incomplete)', { traceId, uid });
+      return { ok: false, reason: 'profile_incomplete' };
+    }
+
+    const result = await handleSponsorship(uid, data, traceId);
+    console.log('ORCH: manual done', { traceId, uid, result });
+
+    // Manually trigger milestone check for the sponsor ONLY if the new user has completed their profile
+    if (result?.sponsorId) {
+      console.log('🎯 MANUAL MILESTONE: Checking if new user has completed profile before triggering milestone', { sponsorId: result.sponsorId, traceId, newUserId: uid });
+
+      try {
+        // Check if the new user has completed their profile
+        console.log('🎯 MANUAL MILESTONE: About to check new user profile completion', { newUserId: uid, sponsorId: result.sponsorId, traceId });
+        const newUserDoc = await db.collection('users').doc(uid).get();
+        console.log('🎯 MANUAL MILESTONE: Got new user document', { exists: newUserDoc.exists, newUserId: uid });
+
+        const newUserData = newUserDoc.data();
+        const isProfileComplete = newUserData?.isProfileComplete === true;
+
+        console.log('🎯 MANUAL MILESTONE: New user profile status', {
+          newUserId: uid,
+          isProfileComplete,
+          hasPhoto: !!newUserData?.photoUrl,
+          hasLocation: !!(newUserData?.country && newUserData?.state),
+          sponsorId: result.sponsorId,
+          traceId
+        });
+
+        if (isProfileComplete) {
+          console.log('🎯 MANUAL MILESTONE: New user profile is complete, triggering milestone check for sponsor', { sponsorId: result.sponsorId, traceId });
+          await checkMilestoneForUserManual(result.sponsorId, traceId);
+          console.log('✅ MANUAL MILESTONE: Milestone check completed for sponsor', { sponsorId: result.sponsorId, traceId });
+        } else {
+          console.log('🔄 MANUAL MILESTONE: New user profile incomplete, skipping milestone check for sponsor', { sponsorId: result.sponsorId, traceId });
+        }
+      } catch (milestoneError) {
+        console.error('❌ MANUAL MILESTONE: Error checking milestone for sponsor', { sponsorId: result.sponsorId, traceId, error: milestoneError });
+        // Don't fail the triggerSponsorship if milestone check fails
+      }
+    }
+
+    return {
+      ok: true,
+      sponsorId: result?.sponsorId || null,
+      sponsorName: result?.sponsorName || null
+    };
+  }
+);
+
+// ==============================
 // Exports
 // ==============================
 
@@ -1012,6 +1943,10 @@ module.exports = {
   updateUserBadge,
   createNotification,
   createNotificationWithTransaction,
+
+  // User-facing badge management
+  clearAppBadge,
+  syncAppBadge,
 
   // Subscription functions
   upsertAppleV2NotificationState,
@@ -1035,6 +1970,8 @@ module.exports = {
 
   // Milestone and achievement functions
   notifyOnMilestoneReached,
+  onUserProfileCompleted,
+  triggerSponsorship,
 
   // Scheduled functions
   sendDailyTeamGrowthNotifications,

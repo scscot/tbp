@@ -4,3 +4,7 @@ dist/
 coverage/
 .firebase/
 .eslintcache
+index_original_full_backup.js
+index_previous.js
+index-previous.js
+*.bak
