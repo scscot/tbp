@@ -1271,8 +1271,8 @@ const sendDailyTeamGrowthNotifications = onSchedule({
 
         console.log(`🔔 DAILY NOTIFICATIONS: User ${userData.firstName} ${userData.lastName} (${userId}) - Timezone: ${userTimezone}, Local hour: ${userLocalHour}`);
 
-        // Check if it's 9 AM in their timezone (was 10 AM, but comment in original said 9AM)
-        if (userLocalHour === 9) {
+        // Check if it's 10 AM in their timezone (was 10 AM, but comment in original said 10AM)
+        if (userLocalHour === 10) {
           // CRITICAL: Check if user already received notification today to prevent duplicates
           const lastNotificationDate = userData.lastDailyNotificationDate;
 
@@ -1296,10 +1296,10 @@ const sendDailyTeamGrowthNotifications = onSchedule({
       }
     }
 
-    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 9am timezone and will receive notifications`);
+    console.log(`🔔 DAILY NOTIFICATIONS: ${usersToNotify.length} users are in 10am timezone and will receive notifications`);
 
     if (usersToNotify.length === 0) {
-      console.log("🔔 DAILY NOTIFICATIONS: No users in 9am timezone to notify at this time");
+      console.log("🔔 DAILY NOTIFICATIONS: No users in 10am timezone to notify at this time");
       return;
     }
 
@@ -1310,7 +1310,7 @@ const sendDailyTeamGrowthNotifications = onSchedule({
 
         const notificationContent = {
           title: "Your Team Is Growing!",
-          message: `Your team's momentum is growing, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your network yesterday. Click Here to see your team's progress`,
+          message: `Your team's momentum is growing, ${userData.firstName}! ${newMemberCount} new member${newMemberCount > 1 ? 's' : ''} joined your downline team yesterday. Click Here to see your team's progress`,
           createdAt: FieldValue.serverTimestamp(),
           read: false,
           type: "new_network_members",
