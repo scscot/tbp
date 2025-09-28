@@ -69,6 +69,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     _checkDemoMode();
     _loadBizOppData();
     _loadNetworkCounts();
+
+    // Start real-time listener for count updates
+    _networkService.startUserDocumentListener(
+      onCountsChanged: _onRealtimeCountsChanged,
+    );
   }
 
   // -------------------------------------------------------------
@@ -184,6 +189,32 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
+  /// Called when real-time count changes are detected
+  void _onRealtimeCountsChanged() async {
+    if (kDebugMode) {
+      debugPrint('🔄 DASHBOARD: Real-time counts changed, refreshing stats...');
+    }
+
+    try {
+      // Get fresh counts (cache was invalidated by NetworkService)
+      final counts = await _networkService.getNetworkCounts();
+      if (!mounted) return;
+
+      // Update cached counts
+      setState(() {
+        _cachedNetworkCounts = counts;
+      });
+
+      if (kDebugMode) {
+        debugPrint('✅ DASHBOARD: Stats refreshed with real-time data: $counts');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ DASHBOARD: Error refreshing stats: $e');
+      }
+    }
+  }
+
   // --- 2. New helper method to check subscription before navigating ---
 
   Future<void> _loadBizOppData() async {
@@ -273,6 +304,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   void dispose() {
     _unreadMessagesSubscription?.cancel();
     _unreadNotificationsSubscription?.cancel();
+    _networkService.stopUserDocumentListener();
     _animationController.dispose();
     super.dispose();
   }

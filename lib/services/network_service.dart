@@ -3,6 +3,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 import '../models/user_model.dart';
 
 /// Cached result wrapper with timestamp for expiration checking
@@ -417,5 +419,108 @@ class NetworkService {
       limit: limit,
       offset: offset,
     );
+  }
+
+  // Real-time user document listener for cache invalidation
+  StreamSubscription<DocumentSnapshot>? _userDocListener;
+  Map<String, dynamic>? _previousUserData;
+
+  /// Start listening to current user's document for real-time count updates
+  void startUserDocumentListener({
+    required Function() onCountsChanged,
+  }) {
+    final userId = _currentUserId;
+    if (userId == null) {
+      if (kDebugMode) {
+        debugPrint('⚠️ REALTIME: Cannot start listener - no authenticated user');
+      }
+      return;
+    }
+
+    // Stop existing listener if any
+    stopUserDocumentListener();
+
+    if (kDebugMode) {
+      debugPrint('🔄 REALTIME: Starting user document listener for $userId');
+    }
+
+    _userDocListener = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      if (!snapshot.exists) return;
+
+      final currentData = snapshot.data() as Map<String, dynamic>?;
+      if (currentData == null) return;
+
+      // Check if relevant count fields have changed
+      if (_previousUserData != null) {
+        final previousDirectCount = _previousUserData!['directSponsorCount'] as int? ?? 0;
+        final currentDirectCount = currentData['directSponsorCount'] as int? ?? 0;
+        final previousTotalCount = _previousUserData!['totalTeamCount'] as int? ?? 0;
+        final currentTotalCount = currentData['totalTeamCount'] as int? ?? 0;
+
+        if (previousDirectCount != currentDirectCount ||
+            previousTotalCount != currentTotalCount) {
+          if (kDebugMode) {
+            debugPrint('🔄 REALTIME: Count changes detected!');
+            debugPrint('  - Direct sponsors: $previousDirectCount → $currentDirectCount');
+            debugPrint('  - Total team: $previousTotalCount → $currentTotalCount');
+          }
+
+          // CRITICAL FIX: Only trigger UI updates for legitimate count increases
+          // that come from completed profiles, not partial registrations
+          final isLegitimateIncrease = (currentDirectCount > previousDirectCount) ||
+                                     (currentTotalCount > previousTotalCount);
+
+          if (isLegitimateIncrease) {
+            if (kDebugMode) {
+              debugPrint('✅ REALTIME: Legitimate count increase - updating UI');
+            }
+
+            // Invalidate network counts cache to force refresh
+            _invalidateNetworkCountsCache();
+
+            // Notify UI to refresh
+            onCountsChanged();
+          } else {
+            if (kDebugMode) {
+              debugPrint('⚠️ REALTIME: Count change detected but not triggering UI (might be correction/decrease)');
+            }
+          }
+        }
+      }
+
+      _previousUserData = Map<String, dynamic>.from(currentData);
+    }, onError: (error) {
+      if (kDebugMode) {
+        debugPrint('❌ REALTIME: Error in user document listener: $error');
+      }
+    });
+  }
+
+  /// Stop listening to user document changes
+  void stopUserDocumentListener() {
+    _userDocListener?.cancel();
+    _userDocListener = null;
+    _previousUserData = null;
+    if (kDebugMode) {
+      debugPrint('🛑 REALTIME: Stopped user document listener');
+    }
+  }
+
+  /// Invalidate network counts cache to force refresh on next request
+  void _invalidateNetworkCountsCache() {
+    final cacheKey = _generateCacheKey('networkCounts');
+    _cache.remove(cacheKey);
+    if (kDebugMode) {
+      debugPrint('🗑️ REALTIME: Invalidated network counts cache');
+    }
+  }
+
+  /// Dispose method to clean up resources
+  void dispose() {
+    stopUserDocumentListener();
   }
 }

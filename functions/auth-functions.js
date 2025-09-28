@@ -312,9 +312,9 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
     logger.info("Firestore user document created");
 
     if (sponsorId) {
-      logger.info("Updating sponsor/upline counts (transaction)...");
+      logger.info("Deferring sponsor/upline count updates until profile completion...");
 
-      // Guard: ensure sponsor doc exists (UID)
+      // Guard: ensure sponsor doc exists (UID) - validation only, no count updates
       const sponsorRef = db.collection("users").doc(sponsorId);
       const sponsorSnap = await sponsorRef.get();
       if (!sponsorSnap.exists) {
@@ -323,27 +323,10 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
           `Invalid sponsor. No user doc for uid=${sponsorId}.`);
       }
 
-      await db.runTransaction(async (t) => {
-        const txSponsorSnap = await t.get(sponsorRef);
-        if (!txSponsorSnap.exists) {
-          logger.warn(`Sponsor ${sponsorId} not found in transaction; skipping count updates`);
-          return;
-        }
-        // Atomic increments for sponsor
-        const updateObj = {
-          directSponsorCount: FieldValue.increment(1),
-          totalTeamCount: FieldValue.increment(1),
-        };
-        t.update(sponsorRef, updateObj);
-        logger.info('Counts updated', { sponsorId, path: sponsorRef.path, fields: Object.keys(updateObj) });
+      logger.info(`REGISTER DEFERRED: User ${uid} registered with sponsor ${sponsorId}, count updates deferred until profile completion`);
 
-        // Atomic increments for each upline member
-        for (const uplineMemberId of sponsorUplineRefs) {
-          const uplineRef = db.collection("users").doc(uplineMemberId);
-          t.update(uplineRef, { totalTeamCount: FieldValue.increment(1) });
-        }
-      });
-      logger.info("Sponsor/upline counts updated (transaction)");
+      // NOTE: Count increments moved to onUserProfileCompleted trigger to prevent premature milestone notifications
+      // This ensures milestone notifications only fire after users complete their profiles with photo and location data
     }
 
     logger.info("Registration completed successfully");

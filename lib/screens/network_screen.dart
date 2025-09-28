@@ -108,12 +108,18 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     _initializeData();
     _searchController.addListener(_onSearchChanged);
+
+    // Start real-time listener for count updates
+    _networkService.startUserDocumentListener(
+      onCountsChanged: _onRealtimeCountsChanged,
+    );
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
+    _networkService.stopUserDocumentListener();
     super.dispose();
   }
 
@@ -132,6 +138,33 @@ class _NetworkScreenState extends State<NetworkScreen>
 
       _applyFiltersAndSort();
     });
+  }
+
+  /// Called when real-time count changes are detected
+  void _onRealtimeCountsChanged() async {
+    if (kDebugMode) {
+      debugPrint('🔄 NETWORK_SCREEN: Real-time counts changed, refreshing analytics...');
+    }
+
+    try {
+      // Get fresh counts (cache was invalidated by NetworkService)
+      final counts = await _networkService.getNetworkCounts();
+      if (!mounted) return;
+
+      // Update analytics with fresh data
+      _calculateAnalytics(counts);
+
+      // Trigger UI refresh
+      setState(() {});
+
+      if (kDebugMode) {
+        debugPrint('✅ NETWORK_SCREEN: Analytics refreshed with real-time data');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ NETWORK_SCREEN: Error refreshing analytics: $e');
+      }
+    }
   }
 
   Future<void> _initializeData() async {

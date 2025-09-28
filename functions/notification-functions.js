@@ -1032,10 +1032,12 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
     }
 
     // Check if this is a new user completing registration (has upline_refs but no prior counts)
+    // CRITICAL: Only trigger for users with completed profiles to prevent premature milestone notifications
     const isNewUser = (beforeData.directSponsorCount || 0) === 0 &&
                       (beforeData.totalTeamCount || 0) === 0 &&
                       afterData.upline_refs &&
-                      afterData.upline_refs.length > 0;
+                      afterData.upline_refs.length > 0 &&
+                      afterData.isProfileComplete === true;
 
     if (isNewUser) {
       console.log(`🔔 MILESTONE: New user ${userId} registered, checking upline milestones...`);
@@ -1044,19 +1046,7 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
       const uplineRefs = afterData.upline_refs || [];
       for (const uplineUserId of uplineRefs) {
         if (uplineUserId !== userId) {
-          console.log(`MILESTONE: Checking upline user ${uplineUserId} for team milestone...`);
-          // Trigger milestone check for this upline user by calling this function recursively
-          // But we need to get their current data first
-          try {
-            const uplineDoc = await db.collection('users').doc(uplineUserId).get();
-            if (uplineDoc.exists) {
-              const uplineData = uplineDoc.data();
-              // Create a mock event for the upline user to check their milestones
-              await checkUplineMilestone(uplineUserId, uplineData);
-            }
-          } catch (error) {
-            console.log(`MILESTONE: Error checking upline ${uplineUserId}: ${error.message}`);
-          }
+          console.log(`MILESTONE: Upline user ${uplineUserId} will be checked automatically when their counts update`);
         }
       }
     }
@@ -1812,12 +1802,74 @@ const onUserProfileCompleted = onDocumentUpdated('users/{uid}', async (event) =>
   try {
     await handleSponsorship(uid, after, traceId);
 
+    // CRITICAL: Now handle the count increments that were deferred from registerUser
+    console.log('COUNT INCREMENT: Profile completed, updating sponsor/upline counts now', { traceId, uid });
+
+    // Get sponsor and upline info for count updates
+    const sponsorId = after.sponsor_id || after.upline_admin || after.referredBy || after.sponsorReferralCode || after.sponsorReferral;
+    const uplineRefs = after.upline_refs || [];
+
+    if (sponsorId && sponsorId !== uid) {
+      console.log(`COUNT INCREMENT: Updating counts for sponsor ${sponsorId} and ${uplineRefs.length} upline members`);
+
+      // DEDUPLICATION SAFEGUARD: Check if this user has already been counted to prevent double-counting
+      const deduplicationKey = `profile_counted_${uid}`;
+      const dedupeRef = db.collection('count_tracking').doc(deduplicationKey);
+
+      try {
+        // Attempt to create the deduplication tracking document atomically
+        await dedupeRef.create({
+          userId: uid,
+          sponsorId,
+          countedAt: FieldValue.serverTimestamp(),
+          traceId,
+          type: 'profile_completion_count'
+        });
+        console.log('COUNT INCREMENT: Deduplication key acquired', { deduplicationKey, traceId });
+      } catch (dedupeError) {
+        // If document already exists, this user has already been counted
+        if (dedupeError?.code === 6 || dedupeError?.code === 'already-exists') {
+          console.log('COUNT INCREMENT: User already counted, skipping to prevent double-counting', { uid, sponsorId, traceId });
+          return; // Exit early to prevent duplicate counting
+        }
+        // For other errors, log warning and continue (don't let deduplication failure break the function)
+        console.warn('COUNT INCREMENT: Deduplication check failed, continuing anyway', { uid, sponsorId, traceId, error: dedupeError?.message });
+      }
+
+      // Use transaction to atomically update sponsor and upline counts (originally from registerUser)
+      await db.runTransaction(async (t) => {
+        const sponsorRef = db.collection("users").doc(sponsorId);
+        const txSponsorSnap = await t.get(sponsorRef);
+        if (!txSponsorSnap.exists) {
+          console.warn(`COUNT INCREMENT: Sponsor ${sponsorId} not found in transaction; skipping count updates`);
+          return;
+        }
+
+        // Atomic increments for sponsor (moved from registerUser)
+        const updateObj = {
+          directSponsorCount: FieldValue.increment(1),
+          totalTeamCount: FieldValue.increment(1),
+        };
+        t.update(sponsorRef, updateObj);
+        console.log('COUNT INCREMENT: Sponsor counts updated', { sponsorId, fields: Object.keys(updateObj), traceId });
+
+        // Atomic increments for each upline member (moved from registerUser)
+        for (const uplineMemberId of uplineRefs) {
+          if (uplineMemberId !== uid && uplineMemberId !== sponsorId) {
+            const uplineRef = db.collection("users").doc(uplineMemberId);
+            t.update(uplineRef, { totalTeamCount: FieldValue.increment(1) });
+            console.log('COUNT INCREMENT: Upline count updated', { uplineMemberId, traceId });
+          }
+        }
+      });
+
+      console.log(`COUNT INCREMENT: Successfully updated counts for sponsor ${sponsorId} and upline members`);
+    } else {
+      console.log('COUNT INCREMENT: No sponsor found, skipping count updates', { traceId, uid });
+    }
+
     // OPTION C: Manual milestone checks for sponsor + upline after profile completion
     console.log('MST TRIGGER: Profile completed, checking milestones for sponsor/upline', { traceId, uid });
-
-    // Get sponsor and upline from the new user's data
-    const sponsorId = after.upline_admin || after.referredBy || after.sponsorReferralCode || after.sponsorReferral;
-    const uplineRefs = after.upline_refs || [];
 
     console.log('MST INPUT', {
       newUserId: uid,
