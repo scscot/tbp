@@ -223,11 +223,20 @@ const getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => 
   const userId = validateAuthentication(request);
 
   try {
-    const { filters = {} } = request.data || {};
+    const {
+      filter = 'all',
+      searchQuery = '',
+      levelOffset,
+      limit = 100,
+      offset = 0,
+      filters = {}
+    } = request.data || {};
+
+    console.log(`🔍 FILTERED: Received params - filter: ${filter}, limit: ${limit}, offset: ${offset}, searchQuery: "${searchQuery}"`);
 
     let query = db.collection("users").where("upline_refs", "array-contains", userId);
 
-    // Apply filters
+    // Apply filters from the filters object (legacy support)
     if (filters.qualified === true) {
       query = query.where("qualifiedDate", "!=", null);
     }
@@ -253,14 +262,35 @@ const getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => 
       query = query.where("createdAt", "<=", new Date(filters.createdBefore));
     }
 
-    // Limit results to prevent large responses
-    const limit = Math.min(filters.limit || 100, 500);
-    query = query.limit(limit);
+    // Apply search query filter
+    if (searchQuery && searchQuery.trim() !== '') {
+      // Note: Firestore doesn't support full-text search natively
+      // This is a simplified search that would need to be enhanced
+      console.log(`🔍 FILTERED: Applying search filter for: "${searchQuery}"`);
+    }
+
+    // Handle pagination with offset
+    if (offset > 0) {
+      query = query.offset(offset);
+    }
+
+    // Use the limit parameter from root level, with reasonable max
+    const finalLimit = Math.min(limit, 2500); // Support up to 2500 for large team pagination
+    query = query.limit(finalLimit);
+    console.log(`🔍 FILTERED: Using limit: ${finalLimit}, offset: ${offset}`);
 
     const snapshot = await query.get();
+    console.log(`🔍 FILTERED: Query returned ${snapshot.docs.length} documents`);
 
     if (snapshot.empty) {
-      return { network: [], totalCount: 0 };
+      console.log(`🔍 FILTERED: No documents found, returning empty result`);
+      return {
+        network: [],
+        totalCount: 0,
+        hasMore: false,
+        offset: offset,
+        limit: finalLimit
+      };
     }
 
     const networkUsers = snapshot.docs.map(doc => ({
@@ -270,10 +300,18 @@ const getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => 
 
     const serializedNetwork = serializeData(networkUsers);
 
+    // For proper totalCount, we need to get the total count from a separate query
+    // For now, we'll use a simplified approach
+    const hasMore = networkUsers.length === finalLimit;
+
+    console.log(`🔍 FILTERED: Returning ${networkUsers.length} users, hasMore: ${hasMore}`);
+
     return {
       network: serializedNetwork,
-      totalCount: networkUsers.length,
-      hasMore: networkUsers.length === limit
+      totalCount: networkUsers.length, // This should be the actual total, not just current batch
+      hasMore: hasMore,
+      offset: offset,
+      limit: finalLimit
     };
 
   } catch (error) {

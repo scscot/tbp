@@ -356,6 +356,9 @@ class _NetworkScreenState extends State<NetworkScreen>
     try {
       debugPrint('🔄 REFRESH: Force refreshing network data...');
 
+      // Clear all filtered network cache entries to force fresh data
+      _networkService.clearFilteredNetworkCache();
+
       // Force refresh counts and network data
       final counts = await _networkService.refreshNetworkCounts();
       if (!mounted) return;

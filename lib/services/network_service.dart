@@ -157,6 +157,17 @@ class NetworkService {
     }
   }
 
+  /// Force clear filtered network cache for testing
+  void clearFilteredNetworkCache() {
+    final keysToRemove = _cache.keys.where((key) => key.contains('filteredNetwork')).toList();
+    for (final key in keysToRemove) {
+      _cache.remove(key);
+    }
+    if (kDebugMode) {
+      debugPrint('🧹 CACHE: Cleared ${keysToRemove.length} filtered network cache entries');
+    }
+  }
+
   /// Get cache statistics for debugging
   Map<String, dynamic> getCacheStats() {
     final now = DateTime.now();
@@ -301,12 +312,16 @@ class NetworkService {
     final cached = _getCachedResult<Map<String, dynamic>>(
         cacheKey, _filteredNetworkCacheDuration);
     if (cached != null) {
+      if (kDebugMode) {
+        debugPrint('✅ FILTERED CACHE HIT: filter=$filter, limit=$limit, offset=$offset, returning ${(cached['network'] as List).length} cached members');
+      }
       return cached;
     }
 
     if (kDebugMode) {
       debugPrint(
-          '🔍 FILTERED: Cache miss, fetching from server (filter: $filter, search: "$searchQuery")...');
+          '🔍 FILTERED: Cache miss, fetching from server (filter: $filter, search: "$searchQuery", limit: $limit, offset: $offset)...');
+      debugPrint('🔍 FILTERED: Sending params to Cloud Function: $params');
     }
 
     try {
@@ -364,6 +379,8 @@ class NetworkService {
       if (kDebugMode) {
         debugPrint(
             '✅ FILTERED: Fetched ${networkUsers.length} users from server (total: ${data['totalCount']})');
+        debugPrint('🔍 FILTERED: Response data keys: ${data.keys.toList()}');
+        debugPrint('🔍 FILTERED: Response hasMore: ${data['hasMore']}, offset: ${data['offset']}, limit: ${data['limit']}');
       }
 
       return processedData;
