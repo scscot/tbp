@@ -11,6 +11,7 @@ import '../models/user_model.dart';
 import '../models/admin_settings_model.dart'; // Import the new model
 import 'fcm_service.dart';
 import 'session_manager.dart';
+import 'deep_link_service.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -138,6 +139,11 @@ class AuthService {
     
     // Set logout state to indicate user has logged out
     await SessionManager.instance.setLogoutState(true);
+
+    // Clear referral data to prevent routing to registration after logout
+    await SessionManager.instance.clearReferralData();
+    DeepLinkService().clearReferralData();
+    debugPrint('✅ AUTH_SERVICE: Referral data cleared to prevent registration routing');
 
     // Set recent sign-out timestamp to prevent immediate biometric auto-login
     await SessionManager.instance.setRecentSignOut();

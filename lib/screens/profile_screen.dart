@@ -196,7 +196,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .authStateChanges()
           .firstWhere((u) => u == null);
       debugPrint('✅ PROFILE: Auth state confirmed null user');
-      
+
+      // Add small delay to ensure logout state persistence completes
+      debugPrint('🔄 PROFILE: Adding delay to ensure logout state persistence...');
+      await Future.delayed(const Duration(milliseconds: 100));
+      debugPrint('✅ PROFILE: Logout state persistence delay completed');
+
       if (!mounted) return;
 
       // Close any lingering dialogs/sheets from the root just in case

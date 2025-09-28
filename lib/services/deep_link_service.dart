@@ -133,6 +133,15 @@ class DeepLinkService {
     }
   }
 
+  /// Clear referral data (used during logout)
+  void clearReferralData() {
+    _latestReferralCode = null;
+    _latestQueryType = null;
+    if (kDebugMode) {
+      debugPrint('🧹 DEEP_LINK: Referral data cleared');
+    }
+  }
+
   /// Dispose of the stream subscription.
   void dispose() {
     _linkSubscription?.cancel();
