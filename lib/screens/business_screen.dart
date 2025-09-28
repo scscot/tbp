@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../services/admin_settings_service.dart';
+import '../services/business_opportunity_service.dart';
 import 'add_link_screen.dart';
 import 'member_detail_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -90,10 +90,10 @@ class _BusinessScreenState extends State<BusinessScreen>
 
       if (user.uplineRefs.isNotEmpty) {
         final result =
-            await _findBizOppRefUrlAndSponsorInUpline(user.uplineRefs);
-        retrievedBizOppRefUrl = result['bizOppRefUrl'];
-        retrievedSponsorName = result['sponsorName'];
-        retrievedSponsorUid = result['sponsorUid'];
+            await BusinessOpportunityService.findUplineReferralInfo(user.uplineRefs);
+        retrievedBizOppRefUrl = result.bizOppRefUrl;
+        retrievedSponsorName = result.sponsorName;
+        retrievedSponsorUid = result.sponsorUid;
       }
 
       if (!mounted) return;
@@ -115,70 +115,6 @@ class _BusinessScreenState extends State<BusinessScreen>
     }
   }
 
-  Future<Map<String, String?>> _findBizOppRefUrlAndSponsorInUpline(
-      List<String> uplineRefs) async {
-    try {
-      // Traverse upline_refs in REVERSE order (UP the upline: closest to furthest)
-      // uplineRefs structure: [furthest_upline, ..., direct_sponsor]
-      // So we traverse from last index (direct_sponsor) to index 0 (furthest_upline)
-      for (int i = uplineRefs.length - 1; i >= 0; i--) {
-        final uplineUid = uplineRefs[i];
-        debugPrint('🔍 Checking upline user at index $i: $uplineUid');
-
-        final uplineUserDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uplineUid)
-            .get();
-
-        if (uplineUserDoc.exists) {
-          final uplineUserData = uplineUserDoc.data() as Map<String, dynamic>?;
-          final bizOppRefUrl = uplineUserData?['biz_opp_ref_url'] as String?;
-          final subscriptionStatus =
-              uplineUserData?['subscriptionStatus'] as String?;
-
-          final validStatuses = ['active', 'trial'];
-
-          if (bizOppRefUrl != null &&
-              bizOppRefUrl.isNotEmpty &&
-              validStatuses.contains(subscriptionStatus)) {
-            debugPrint(
-                '✅ Found biz_opp_ref_url in upline user at index $i: $uplineUid');
-
-            // Get sponsor name from the same user
-            final firstName = uplineUserData?['firstName'] as String? ?? '';
-            final lastName = uplineUserData?['lastName'] as String? ?? '';
-            final sponsorName = '$firstName $lastName'.trim();
-
-            return {
-              'bizOppRefUrl': bizOppRefUrl,
-              'sponsorName': sponsorName.isNotEmpty ? sponsorName : null,
-              'sponsorUid': uplineUid,
-            };
-          } else {
-            debugPrint(
-                '❌ No biz_opp_ref_url found for upline user at index $i: $uplineUid');
-          }
-        } else {
-          debugPrint(
-              '❌ Upline user document does not exist at index $i: $uplineUid');
-        }
-      }
-
-      debugPrint('🚫 No biz_opp_ref_url found in entire upline chain');
-      return {
-        'bizOppRefUrl': null,
-        'sponsorName': null,
-        'sponsorUid': null,
-      };
-    } catch (e) {
-      debugPrint('💥 Error traversing upline refs: $e');
-      return {
-        'bizOppRefUrl': null,
-        'sponsorName': null,
-        'sponsorUid': null,
-      };
-    }
-  }
 
   Future<void> _confirmAndCopyUrl() async {
     if (bizOppRefUrl == null) return;
