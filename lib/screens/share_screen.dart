@@ -615,7 +615,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Choose Your Message (4 Options)',
+                      'Select Message To Send',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
@@ -808,7 +808,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Choose Your Message (4 Options)',
+                      'Select Message To Send',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
