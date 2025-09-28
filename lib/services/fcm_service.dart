@@ -112,13 +112,28 @@ class FCMService {
     // Some iOS builds need the APNS token to be available first.
     // This is harmless on Android.
     try {
-      await _messaging.getAPNSToken();
-    } catch (_) {}
+      final apnsToken = await _messaging.getAPNSToken();
+      if (kDebugMode) {
+        debugPrint("--- FCMService: APNS token available: ${apnsToken != null}");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("--- FCMService: APNS token not available: $e");
+      }
+    }
 
     // Get an initial token and save it.
-    String? token = await _messaging.getToken();
-    if (token != null && token.trim().isNotEmpty) {
-      await _saveToken(uid: uid, token: token);
+    String? token;
+    try {
+      token = await _messaging.getToken();
+      if (token != null && token.trim().isNotEmpty) {
+        await _saveToken(uid: uid, token: token);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint("--- FCMService: Could not get FCM token, continuing without it: $e");
+      }
+      // Continue without token - push notifications will not work but app won't hang
     }
 
     // Listen for future token changes and persist them for this uid.
