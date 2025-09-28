@@ -666,7 +666,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.rocket_launch,
             title: user.bizOppRefUrl != null
                 ? 'Company Details'
-                : 'Get Started Today',
+                : 'Join Opportunity!',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(
               user.bizOppRefUrl != null ? 6 : 7,
