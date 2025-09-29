@@ -586,9 +586,9 @@ class _BusinessScreenState extends State<BusinessScreen>
                       color: AppColors.textPrimary,
                     ),
                   ),
-                const TextSpan(
+                TextSpan(
                   text:
-                      '. This person is a member of your team who has already joined this opportunity.',
+                      '. This person is a member of your upline team who has already joined $bizOpp.',
                 ),
               ],
             ),
