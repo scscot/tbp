@@ -613,17 +613,43 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Show subscription card at top for non-active subscribers (urgent action needed)
         if (!(_isDemoMode && _demoEmail != null) && !isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
-        _buildActionCard(
-          icon: Icons.groups,
-          title: 'View Your Team',
-          color: AppColors.teamPrimary,
-          onTap: () => widget.onTabSelected?.call(1),
-        ),
+        if (user.role == 'admin') ...[
+          _buildActionCard(
+            icon: Icons.rocket_launch,
+            title: 'Opportunity Details',
+            color: AppColors.opportunityPrimary,
+            onTap: () => widget.onTabSelected?.call(6),
+          ),
+        ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
+          _buildActionCard(
+            icon: Icons.rocket_launch,
+            title: user.bizOppRefUrl != null
+                ? 'Opportunity Details'
+                : 'Join Opportunity!',
+            color: AppColors.opportunityPrimary,
+            onTap: () => widget.onTabSelected?.call(
+              user.bizOppRefUrl != null ? 6 : 7,
+            ),
+          ),
+        ] else ...[
+          _buildActionCard(
+            icon: Icons.assessment,
+            title: 'Your Eligibility Status',
+            color: AppColors.opportunityPrimary,
+            onTap: () => widget.onTabSelected?.call(8),
+          ),
+        ],
         _buildActionCard(
           icon: Icons.trending_up,
           title: 'Grow Your Team',
           color: AppColors.growthPrimary,
           onTap: () => widget.onTabSelected?.call(2),
+        ),
+        _buildActionCard(
+          icon: Icons.groups,
+          title: 'View Your Team',
+          color: AppColors.teamPrimary,
+          onTap: () => widget.onTabSelected?.call(1),
         ),
         _buildActionCard(
           icon: Icons.smart_toy,
@@ -654,32 +680,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           badgeCount: _unreadNotificationCount,
           onTap: () => widget.onTabSelected?.call(4),
         ),
-        if (user.role == 'admin') ...[
-          _buildActionCard(
-            icon: Icons.rocket_launch,
-            title: 'Company Details',
-            color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(6),
-          ),
-        ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
-          _buildActionCard(
-            icon: Icons.rocket_launch,
-            title: user.bizOppRefUrl != null
-                ? 'Company Details'
-                : 'Join Opportunity!',
-            color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(
-              user.bizOppRefUrl != null ? 6 : 7,
-            ),
-          ),
-        ] else ...[
-          _buildActionCard(
-            icon: Icons.assessment,
-            title: 'Your Eligibility Status',
-            color: AppColors.opportunityPrimary,
-            onTap: () => widget.onTabSelected?.call(8),
-          ),
-        ],
         _buildActionCard(
           icon: Icons.help_outline,
           title: 'How It Works',
@@ -716,8 +716,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Show subscription card after profile for active subscribers (maintenance task)
         if (!(_isDemoMode && _demoEmail != null) && isActiveSubscriber)
           _buildDynamicSubscriptionCard(user),
-
-        // if (user.role == 'admin')
+          
           _buildActionCard(
             icon: Icons.manage_accounts,
             title: 'Create New Account',
@@ -736,12 +735,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     IconData buttonIcon;
     Color buttonColor;
     
-    if (subscriptionStatus == 'active') {
-      // User has active subscription
-      buttonText = 'Manage Subscription';
-      buttonIcon = Icons.diamond;
-      buttonColor = Colors.green;
-    } else if (subscriptionStatus == 'trial' && user.isTrialValid) {
+    if (subscriptionStatus == 'trial' && user.isTrialValid) {
       // User is in trial period - use built-in method with two-line format
       final daysLeft = user.trialDaysRemaining;
       buttonText = 'Start Subscription\n($daysLeft days left in trial)';
@@ -749,7 +743,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       buttonColor = Colors.deepPurple;
     } else {
       // Trial expired or no subscription
-      buttonText = 'Start Your Subscription';
+      buttonText = 'Start Your Subscription\n30-day Free trial expired.';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.red;
     }

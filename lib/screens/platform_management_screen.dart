@@ -209,11 +209,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
       appBar: const AppScreenBar(title: 'Create Account'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : currentUser == null || currentUser.role != 'admin'
-              ? const Center(
-                  child: Text('You do not have permission to view this page.'),
-                )
-              : SingleChildScrollView(
+          : SingleChildScrollView(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -246,8 +242,8 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                               const SizedBox(height: 16),
                               Center(
                                 child: ElevatedButton.icon(
-                                  onPressed: () =>
-                                      _createNewAdminAccount(currentUser),
+                                  onPressed: currentUser != null ? () =>
+                                      _createNewAdminAccount(currentUser) : null,
                                   icon: const Icon(Icons.person_add),
                                   label: const Text('Create New Account'),
                                   style: ElevatedButton.styleFrom(
