@@ -605,13 +605,14 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildQuickActions(UserModel user) {
-    final isActiveSubscriber = user.subscriptionStatus == 'active';
-    
+    final subscriptionStatus = user.subscriptionStatus;
+    final shouldShowSubscriptionCard = subscriptionStatus == 'trial' || subscriptionStatus == 'expired' || subscriptionStatus == 'cancelled';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Show subscription card at top for non-active subscribers (urgent action needed)
-        if (!(_isDemoMode && _demoEmail != null) && !isActiveSubscriber)
+        // Show subscription card at top for trial/expired users (urgent action needed)
+        if (!(_isDemoMode && _demoEmail != null) && shouldShowSubscriptionCard)
           _buildDynamicSubscriptionCard(user),
         if (user.role == 'admin') ...[
           _buildActionCard(
@@ -713,9 +714,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           },
         ),
         
-        // Show subscription card after profile for active subscribers (maintenance task)
-        if (!(_isDemoMode && _demoEmail != null) && isActiveSubscriber)
-          _buildDynamicSubscriptionCard(user),
+        // Subscription card is only shown at top for trial/expired users
           
           _buildActionCard(
             icon: Icons.manage_accounts,
@@ -735,17 +734,27 @@ class _DashboardScreenState extends State<DashboardScreen>
     IconData buttonIcon;
     Color buttonColor;
     
-    if (subscriptionStatus == 'trial' && user.isTrialValid) {
-      // User is in trial period - use built-in method with two-line format
+    if (subscriptionStatus == 'trial') {
+      // User is in trial period
       final daysLeft = user.trialDaysRemaining;
       buttonText = 'Start Subscription\n($daysLeft days left in trial)';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.deepPurple;
-    } else {
-      // Trial expired or no subscription
-      buttonText = 'Start Your Subscription\n30-day Free trial expired.';
+    } else if (subscriptionStatus == 'expired') {
+      // Trial expired
+      buttonText = 'Renew Your Subscription\n30-day Free trial expired.';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.red;
+    } else if (subscriptionStatus == 'cancelled') {
+      // User cancelled subscription
+      buttonText = 'You Cancelled Your Subscription\nReactivate Your Subscription Now';
+      buttonIcon = Icons.restart_alt;
+      buttonColor = Colors.orange;
+    } else {
+      // Fallback (shouldn't reach here based on shouldShowSubscriptionCard logic)
+      buttonText = 'Manage Subscription';
+      buttonIcon = Icons.diamond;
+      buttonColor = Colors.grey;
     }
     
     // Use custom card for subscription to handle multi-line text
