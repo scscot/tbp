@@ -554,11 +554,40 @@ class AuthStateProvider extends ChangeNotifier {
           return 'Password is too weak.';
         case 'email-already-in-use':
           return 'An account already exists with this email.';
+        case 'invalid-credential':
+          return 'Please check your email and password and try again.';
+        case 'credential-already-in-use':
+          return 'This account is already linked to another user.';
+        case 'requires-recent-login':
+          return 'Please sign out and sign back in to continue.';
+        case 'expired-action-code':
+        case 'invalid-action-code':
+          return 'Your session has expired. Please try signing in again.';
+        case 'network-request-failed':
+          return 'Network error. Please check your connection and try again.';
         default:
-          return error.message ?? 'An authentication error occurred.';
+          String message = error.message ?? 'An authentication error occurred.';
+          if (message.toLowerCase().contains('malformed') ||
+              message.toLowerCase().contains('expired')) {
+            return 'Your session has expired. Please try signing in again.';
+          }
+          if (message.toLowerCase().contains('credential')) {
+            return 'Please check your email and password and try again.';
+          }
+          return 'Something went wrong. Please try again.';
       }
     }
-    return error.toString();
+
+    String errorString = error.toString();
+    if (errorString.toLowerCase().contains('malformed') ||
+        errorString.toLowerCase().contains('expired')) {
+      return 'Your session has expired. Please try signing in again.';
+    }
+    if (errorString.toLowerCase().contains('credential')) {
+      return 'Please check your email and password and try again.';
+    }
+
+    return 'Something went wrong. Please try again.';
   }
 
 

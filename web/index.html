@@ -586,9 +586,9 @@
     <div id="comingSoonModal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="signup-form">
-                <h2 id="modal-header">🚀 Team Build Pro Coming Soon!</h2>
+                <h2 id="modal-header">🚀 Available Soon!</h2>
                 <p id="modal-description">
-                    Our app is launching soon on Google Play. Be the first to know when it's available!
+                    Launching soon on Google Play<br>Get notified when it's available!
                 </p>
                 <form id="notificationForm" onsubmit="handleNotificationSignup(event)">
                     <div class="form-row">
@@ -607,7 +607,7 @@
                         <label class="checkbox-label">
                             <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Check the box if you would like to preview the app on your Android device before it's officially available on Google Play</span>
+                            <span class="checkbox-text">Check the box to preview the app on your Android device before it's officially available on Google Play</span>
                         </label>
                     </div>
                     
@@ -1460,7 +1460,7 @@
         function createAppStoreBadge(isPrimary = true) {
             const appStoreURL = buildAppStoreURL();
             return `
-                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: inline-block;">
+                <a href="${appStoreURL}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: inline-block; vertical-align: top;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
@@ -1492,7 +1492,7 @@
             
             return `
                 <button style="${buttonStyle}" ${hoverStyle} onclick="openModal()">
-                    Coming Soon!<br>Get Notified!
+                    Available Soon!<br>Get Notified!
                 </button>
             `;
         }
@@ -1507,35 +1507,25 @@
         }
 
         function createAndroidPreviewButton(isPrimary = true) {
-            const buttonStyle = `
+            const imageStyle = `
                 display: inline-block;
                 height: 60px;
-                min-width: 180px;
-                background: linear-gradient(135deg, #4F46E5 0%, #2563EB 100%);
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-                padding: 8px 16px;
-                font-size: 14px;
-                font-weight: 600;
-                line-height: 1.6;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-                text-align: center;
                 vertical-align: top;
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             `;
 
             const hoverStyle = `
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(79, 70, 229, 0.4)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(79, 70, 229, 0.3)'; this.style.borderColor='rgba(255, 255, 255, 0.2)'"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.filter='brightness(1.1)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.filter='brightness(1)'"
             `;
 
             return `
-                <button style="${buttonStyle}" ${hoverStyle} onclick="openModal()">
-                    Available Soon on Google Play<br>Get Notified When Available
-                </button>
+                <img src="assets/images/Google-Play.png"
+                     alt="Get it on Google Play"
+                     style="${imageStyle}"
+                     ${hoverStyle}
+                     onclick="openModal()" />
             `;
         }
 
@@ -2047,7 +2037,7 @@
                 demoSection.classList.remove('show');
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app on your Android device before it's officially available on Google Play";
+                    demoText.textContent = "Check the box to preview the app on your Android device before it's officially available on Google Play";
                 }
             }
             
@@ -2055,10 +2045,10 @@
             const modalHeader = document.getElementById('modal-header');
             const modalDescription = document.getElementById('modal-description');
             if (modalHeader) {
-                modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
+                modalHeader.textContent = '🚀 Available Soon!';
             }
             if (modalDescription) {
-                modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                modalDescription.innerHTML = 'Launching soon on Google Play<br>Get notified when it\'s available!';
             }
         }
 
@@ -2101,10 +2091,10 @@
                 const modalHeader = document.getElementById('modal-header');
                 const modalDescription = document.getElementById('modal-description');
                 if (modalHeader) {
-                    modalHeader.textContent = '🚀 Team Build Pro Coming Soon!';
+                    modalHeader.textContent = '🚀 Available Soon!';
                 }
                 if (modalDescription) {
-                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                    modalDescription.innerHTML = 'Launching soon on Google Play<br>Get notified when it\'s available!';
                 }
                 
                 // Reset checkbox when hiding and remove from tab order
@@ -2172,13 +2162,13 @@
                     modalHeader.textContent = '🚀 Get Google Play Preview!';
                 }
                 if (modalDescription) {
-                    modalDescription.textContent = 'Our app is launching soon on Google Play. Be the first to know when it\'s available!';
+                    modalDescription.innerHTML = 'Launching soon on Google Play<br>Get notified when it\'s available!';
                 }
 
                 // Update the demo text to be more contextual
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box if you would like to preview the app on your Android device before it's officially available on Google Play";
+                    demoText.textContent = "Check the box to preview the app on your Android device before it's officially available on Google Play";
                 }
 
                 // Make demo checkbox focusable
