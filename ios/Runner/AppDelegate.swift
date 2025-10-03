@@ -27,6 +27,21 @@ import FirebaseMessaging
     Messaging.messaging().delegate = self
 
     GeneratedPluginRegistrant.register(with: self)
+
+    // Clipboard preflight channel (safe, non-pasting)
+    if let controller = window?.rootViewController as? FlutterViewController {
+      let channel = FlutterMethodChannel(name: "clipboard_utils",
+                                         binaryMessenger: controller.binaryMessenger)
+      channel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "hasStrings":
+          result(UIPasteboard.general.hasStrings)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 

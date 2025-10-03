@@ -86,34 +86,14 @@ class DeepLinkService {
               "🔗 Deep Link: No initial URI found. Checking for cached referral or navigating to generic homepage.");
         }
 
-        // Check pasteboard for token handoff attribution first
-        final pasteboardService = PasteboardAttributionService();
-        final pasteboardResult = await pasteboardService.checkAndRedeemPasteboardToken();
-
-        if (pasteboardResult != null) {
-          _latestReferralCode = pasteboardResult['sponsorCode'];
-          _latestQueryType = 'ref'; // Default to 'ref' for token handoff
-
+        // Clipboard checks are now user-initiated in UI (see ClipboardHelper)
+        // Check if we have cached referral data before showing generic page
+        final cachedData = await SessionManager.instance.getReferralData();
+        if (cachedData != null) {
+          _latestReferralCode = cachedData['referralCode'];
+          _latestQueryType = cachedData['queryType'];
           if (kDebugMode) {
-            debugPrint("📋 Deep Link: Found pasteboard token attribution: $_latestReferralCode");
-          }
-
-          // Store in SessionManager for registration screen
-          await SessionManager.instance.setReferralData(
-            _latestReferralCode!,
-            '', // sponsor name will be resolved later
-            queryType: _latestQueryType,
-            source: 'pasteboard-${pasteboardResult['status']}'
-          );
-        } else {
-          // Check if we have cached referral data before showing generic page
-          final cachedData = await SessionManager.instance.getReferralData();
-          if (cachedData != null) {
-            _latestReferralCode = cachedData['referralCode'];
-            _latestQueryType = cachedData['queryType'];
-            if (kDebugMode) {
-              debugPrint("🔗 Deep Link: Found cached referral data: $_latestReferralCode");
-            }
+            debugPrint("🔗 Deep Link: Found cached referral data: $_latestReferralCode");
           }
         }
 

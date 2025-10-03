@@ -17,6 +17,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
+import '../services/clipboard_helper.dart';
 import '../config/app_colors.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
@@ -117,6 +118,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     _checkAppleSignInAvailability();
     _checkGoogleSignInAvailability();
     _setupFormListeners();
+
+    // After first frame, politely offer to paste a referral (iOS only, physical device)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ClipboardHelper.maybeOfferPasteReferral(context);
+    });
   }
 
   Future<void> _checkAppleSignInAvailability() async {
