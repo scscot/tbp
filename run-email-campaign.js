@@ -10,7 +10,7 @@ const {
   sendCampaignToList,
   getListStats,
   runFullCampaign
-} = require('./mailgun_email_campaign');
+} = require('./mailgun_email_campaign_TBP');
 
 // Command line interface for email campaigns
 const command = process.argv[2];
