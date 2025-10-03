@@ -5,16 +5,27 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { getFirestore } = require('firebase-admin/firestore');
 const crypto = require('crypto');
+const cors = require('cors');
 
-const corsHandler = require('./shared/utilities').corsHandler;
+// CORS configuration
+const corsHandler = cors({
+  origin: [
+    'https://teambuildpro.com',
+    'https://www.teambuildpro.com',
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/
+  ],
+  credentials: true
+});
 
 // Initialize Firestore
 const db = getFirestore();
 
 // Event logger for web analytics
 const tbpEventLog = onRequest(async (req, res) => {
-  return corsHandler(req, res, async () => {
-    try {
+  await new Promise(r => corsHandler(req, res, r));
+
+  try {
       // Parse request body
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
@@ -62,7 +73,6 @@ const tbpEventLog = onRequest(async (req, res) => {
       // Always return 204 to avoid blocking web flow
       return res.status(204).end();
     }
-  });
 });
 
 module.exports = {
