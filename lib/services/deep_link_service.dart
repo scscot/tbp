@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:app_links/app_links.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import '../screens/homepage_screen.dart';
 import '../screens/new_registration_screen.dart';
+import '../services/session_manager.dart';
+import '../services/pasteboard_attribution_service.dart';
+import '../services/deep_link_claim_parser.dart';
 import '../main.dart' show navigatorKey, appId;
 
 class DeepLinkService {
@@ -23,11 +27,51 @@ class DeepLinkService {
 
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
+  StreamSubscription<Map>? _branchSubscription;
 
   /// Initialize deep link handling and manage initial navigation.
   Future<void> initialize() async {
     try {
-      // Handle app launch from a deep link
+      // Initialize Branch SDK first for deferred deep linking
+      await FlutterBranchSdk.init();
+      if (kDebugMode) {
+        debugPrint("🌿 Branch: SDK initialized");
+      }
+
+      // Listen for Branch data (handles deferred deep links from App Store installs)
+      _branchSubscription = FlutterBranchSdk.listSession().listen((data) async {
+        if (kDebugMode) {
+          debugPrint("🌿 Branch: Session data received: $data");
+        }
+
+        if (data.containsKey('+clicked_branch_link') &&
+            data['+clicked_branch_link'] == true) {
+
+          final referralCode = data['ref'] ?? data['new'];
+          final queryType = data.containsKey('new') ? 'new' :
+                           data.containsKey('ref') ? 'ref' : null;
+
+          if (referralCode != null && referralCode.toString().isNotEmpty) {
+            _latestReferralCode = referralCode.toString();
+            _latestQueryType = queryType;
+
+            if (kDebugMode) {
+              debugPrint("🌿 Branch: Deferred deep link captured: $_latestReferralCode (type: $_latestQueryType)");
+            }
+
+            // Store in SessionManager for registration screen to pick up
+            await SessionManager.instance.setReferralData(
+              _latestReferralCode!,
+              '', // sponsor name will be resolved later by registration screen
+              queryType: _latestQueryType
+            );
+
+            _navigateToHomepage(_latestReferralCode, _latestQueryType);
+          }
+        }
+      });
+
+      // Handle app launch from a direct deep link (Universal Links or URI schemes)
       final initialUri = await _appLinks.getInitialLink();
       if (initialUri != null) {
         if (kDebugMode) {
@@ -35,13 +79,45 @@ class DeepLinkService {
         }
         _handleDeepLink(initialUri);
       } else {
-        // --- THIS IS THE CRITICAL FIX ---
-        // Handle a normal app launch (no deep link)
+        // Handle a normal app launch (no direct deep link)
+        // Note: Branch deferred data might still arrive via the listener above
         if (kDebugMode) {
           debugPrint(
-              "🔗 Deep Link: No initial URI found. Navigating to generic homepage.");
+              "🔗 Deep Link: No initial URI found. Checking for cached referral or navigating to generic homepage.");
         }
-        _navigateToHomepage(null, null); // Pass null to show the generic page
+
+        // Check pasteboard for token handoff attribution first
+        final pasteboardService = PasteboardAttributionService();
+        final pasteboardResult = await pasteboardService.checkAndRedeemPasteboardToken();
+
+        if (pasteboardResult != null) {
+          _latestReferralCode = pasteboardResult['sponsorCode'];
+          _latestQueryType = 'ref'; // Default to 'ref' for token handoff
+
+          if (kDebugMode) {
+            debugPrint("📋 Deep Link: Found pasteboard token attribution: $_latestReferralCode");
+          }
+
+          // Store in SessionManager for registration screen
+          await SessionManager.instance.setReferralData(
+            _latestReferralCode!,
+            '', // sponsor name will be resolved later
+            queryType: _latestQueryType,
+            source: 'pasteboard-${pasteboardResult['status']}'
+          );
+        } else {
+          // Check if we have cached referral data before showing generic page
+          final cachedData = await SessionManager.instance.getReferralData();
+          if (cachedData != null) {
+            _latestReferralCode = cachedData['referralCode'];
+            _latestQueryType = cachedData['queryType'];
+            if (kDebugMode) {
+              debugPrint("🔗 Deep Link: Found cached referral data: $_latestReferralCode");
+            }
+          }
+        }
+
+        _navigateToHomepage(_latestReferralCode, _latestQueryType);
       }
 
       // Listen for deep links while the app is running
@@ -65,11 +141,52 @@ class DeepLinkService {
     }
   }
 
-  void _handleDeepLink(Uri uri) {
+  void _handleDeepLink(Uri uri) async {
     if (kDebugMode) {
       debugPrint('🔗 Deep Link: Processing URI: $uri');
     }
 
+    // Use Joe's new ClaimParams parser - supports both token and tkn parameters
+    final claimParams = parseClaimParams(uri);
+
+    if (claimParams.hasToken) {
+      if (kDebugMode) {
+        debugPrint('🎫 Deep Link: Token claim detected - token=${claimParams.token}, sponsor=${claimParams.sponsorCode}, type=${claimParams.campaignType}');
+      }
+
+      // Compose pasteboard payload to keep one code path in the app
+      final payload = 'TBP_REF:${claimParams.sponsorCode ?? ''};TKN:${claimParams.token};T:${claimParams.campaignType ?? ''}';
+
+      // Redeem via direct method (skips clipboard)
+      final pasteboardService = PasteboardAttributionService();
+      final result = await pasteboardService.redeemPayloadDirect(payload);
+
+      if (result.applied) {
+        _latestReferralCode = result.sponsorCode;
+        _latestQueryType = 'claim'; // distinct from 'pasteboard'
+
+        if (kDebugMode) {
+          debugPrint('✅ Token directly redeemed: ${result.sponsorCode} (${result.status})');
+        }
+
+        // Store in SessionManager for registration screen
+        await SessionManager.instance.setReferralData(
+          result.sponsorCode,
+          '', // sponsor name will be resolved later
+          queryType: _latestQueryType,
+          source: 'claim-direct'
+        );
+
+        _navigateToHomepage(_latestReferralCode, _latestQueryType);
+        return;
+      } else {
+        if (kDebugMode) {
+          debugPrint('🚨 Direct token redemption failed: ${claimParams.token}');
+        }
+      }
+    }
+
+    // Handle traditional referral URL parameters
     final qp = uri.queryParameters;
     final referralCode = (qp['ref'] ?? qp['new'])?.trim();
     final queryType =
@@ -145,5 +262,6 @@ class DeepLinkService {
   /// Dispose of the stream subscription.
   void dispose() {
     _linkSubscription?.cancel();
+    _branchSubscription?.cancel();
   }
 }

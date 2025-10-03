@@ -79,17 +79,20 @@ class SessionManager {
 
   /// Caches data for a successfully validated referral code.
   Future<void> setReferralData(String referralCode, String sponsorName,
-      {String? queryType}) async {
+      {String? queryType, String? source, String? campaignType, DateTime? capturedAt}) async {
     final prefs = await SharedPreferences.getInstance();
     final referralData = {
       'referralCode': referralCode,
       'sponsorName': sponsorName,
       'queryType': queryType,
+      'source': source,
+      'campaignType': campaignType,
+      'capturedAt': capturedAt?.toIso8601String(),
     };
     await prefs.setString(_referralDataKey, jsonEncode(referralData));
     if (kDebugMode) {
       debugPrint(
-          '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName (type: $queryType)');
+          '📂 SessionManager — Referral data cached: $referralCode -> $sponsorName (type: $queryType, source: $source, campaign: $campaignType)');
     }
   }
 
@@ -106,6 +109,8 @@ class SessionManager {
         'referralCode': data['referralCode'] as String,
         'sponsorName': data['sponsorName'] as String,
         'queryType': data['queryType'] as String?,
+        'campaignType': data['campaignType'] as String?,
+        'capturedAt': data['capturedAt'] as String?,
       };
     } catch (e) {
       return null;

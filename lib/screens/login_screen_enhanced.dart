@@ -216,6 +216,7 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
         MaterialPageRoute(
           builder: (context) => NewRegistrationScreen(
             appId: widget.appId,
+            showBackButton: true, // Explicitly show back button since user came from login
           ),
         ),
       );

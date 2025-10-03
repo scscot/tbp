@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Team Build Pro — Claim Invite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;display:grid;place-items:center;height:100vh}
+  .card{max-width:520px;padding:24px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}.btn{background:#0a66ff;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+  .muted{color:#555}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none}
+  #tbp-claim-debug {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10001;
+    background: #1a3cff; color: #fff; padding: 8px 12px;
+    font: 14px/1.35 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    display: none; box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+  #tbp-claim-debug code { background: rgba(255,255,255,.12); padding: 2px 6px; border-radius: 6px }
+  #tbp-claim-debug a { color: #fff; text-decoration: underline }</style>
+</head>
+<body>
+  <div id="tbp-claim-debug">
+    <strong>Internal Test Mode — Claim Path</strong>
+    <span id="tbp-claim-values" style="margin-left:10px"></span>
+    <span style="float:right"><a href="#" id="tbp-claim-exit">Exit</a></span>
+  </div>
+
+  <div class="card">
+    <h2>Preparing your invite…</h2>
+    <p class="muted">We'll copy your invite, then open the App Store.</p>
+    <p id="status" class="muted">Working…</p>
+    <button id="go" class="btn" style="display:none">Try Again</button>
+  </div>
+  <div id="toast" class="toast">Invite copied. Opening App Store…</div>
+
+<script>
+  const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+  const TBP_FN_BASE = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
+  const QP = new URLSearchParams(location.search);
+  const qp = k => QP.get(k) || '';
+  const statusEl = document.getElementById('status');
+  const toast = msg => { const el = document.getElementById('toast'); el.textContent = msg; el.style.display='block'; setTimeout(()=>el.style.display='none',2000); };
+
+  // --- Debug banner for claim page ---
+  (function(){
+    const isDebug = (new URLSearchParams(location.search).get('debug') === '1');
+    if (!isDebug) return;
+
+    const token = QP.get('token') || QP.get('tkn') || '';
+    const sponsor = QP.get('ref') || QP.get('new') || '';
+    const t = QP.get('t') || '';
+
+    const short = (s) => s ? (s.length > 10 ? s.slice(0,6) + '…' + s.slice(-4) : s) : '—';
+    const el = document.getElementById('tbp-claim-debug');
+    const vals = document.getElementById('tbp-claim-values');
+
+    vals.innerHTML = `
+      token: <code>${short(token)}</code>
+      &nbsp;|&nbsp; sponsor: <code>${sponsor || '—'}</code>
+      &nbsp;|&nbsp; t: <code>${t || '—'}</code>
+    `;
+    el.style.display = 'block';
+
+    document.getElementById('tbp-claim-exit').onclick = (e)=>{
+      e.preventDefault();
+      const q = new URLSearchParams(location.search);
+      q.delete('debug');
+      const next = location.origin + location.pathname + (q.size ? '?' + q.toString() : '');
+      history.replaceState(null, '', next);
+      location.reload();
+    };
+  })();
+
+  // Analytics function with sendBeacon (non-blocking UI)
+  function tbpLog(event, payload = {}) {
+    try {
+      const url = `${TBP_FN_BASE}/tbpEventLog`;
+      const body = JSON.stringify({
+        e: event,
+        ts: Date.now(),
+        path: location.pathname,
+        ref: (qp('ref') || qp('new') || ''),
+        ...payload
+      });
+      navigator.sendBeacon(url, body);
+    } catch(_) {}
+  }
+
+  async function run() {
+    const token = qp('token') || qp('tkn'); // Support both token and tkn parameters
+    const sponsor = qp('ref') || qp('new') || '';
+    const t = qp('t') || '1';
+    if (!token) { statusEl.textContent = 'Missing token.'; return; }
+    const payload = `TBP_REF:${sponsor};TKN:${token};T:${t}`;
+    try {
+      await navigator.clipboard.writeText(payload);
+      tbpLog('web_claim_autocopy'); // Analytics: successful auto-copy
+      toast('Invite copied. Opening App Store…');
+      setTimeout(()=> window.location.href = APP_STORE_URL, 600);
+    } catch {
+      statusEl.textContent = 'Clipboard blocked. Tap to copy and continue.';
+      const go = document.getElementById('go');
+      go.style.display = 'inline-block';
+      go.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(payload);
+          tbpLog('web_claim_manual_copy'); // Analytics: manual copy success
+          window.location.href = APP_STORE_URL;
+        }
+        catch { /* user can retry */ }
+      };
+    }
+  }
+  run();
+</script>
+</body>
+</html>

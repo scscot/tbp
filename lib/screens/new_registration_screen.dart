@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:math' as math;
@@ -31,12 +31,14 @@ class NewRegistrationScreen extends StatefulWidget {
   final String? referralCode;
   final String appId;
   final String? queryType;
+  final bool? showBackButton;
 
   const NewRegistrationScreen({
     super.key,
     this.referralCode,
     required this.appId,
     this.queryType,
+    this.showBackButton,
   });
 
   @override
@@ -53,6 +55,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
   String? _sponsorName;
   String? _initialReferralCode;
+  String? _referralSource; // Track source: 'constructor', 'branch', 'cache'
+  bool _userHasStartedForm = false; // Track if user has started entering data
+  bool _userHasStartedRegistration = false; // Track if registration process has begun
   bool _isLoading = true;
   bool _acceptedPrivacyPolicy = false;
   bool _isAppleSignUp = false;
@@ -111,6 +116,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     _initializeScreen();
     _checkAppleSignInAvailability();
     _checkGoogleSignInAvailability();
+    _setupFormListeners();
   }
 
   Future<void> _checkAppleSignInAvailability() async {
@@ -133,6 +139,88 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     }
   }
 
+  void _setupFormListeners() {
+    // Set up listeners to track when user starts entering form data
+    _firstNameController.addListener(_onFormInput);
+    _lastNameController.addListener(_onFormInput);
+    _emailController.addListener(_onFormInput);
+    _passwordController.addListener(_onFormInput);
+    _confirmPasswordController.addListener(_onFormInput);
+  }
+
+  void _onFormInput() {
+    if (!_userHasStartedForm &&
+        (_firstNameController.text.isNotEmpty ||
+         _lastNameController.text.isNotEmpty ||
+         _emailController.text.isNotEmpty ||
+         _passwordController.text.isNotEmpty ||
+         _confirmPasswordController.text.isNotEmpty)) {
+
+      setState(() {
+        _userHasStartedForm = true;
+      });
+
+      if (kDebugMode) {
+        debugPrint('🔍 REGISTER: User has started entering form data');
+      }
+    }
+  }
+
+  /// Shows dialog when new referral code conflicts with user-entered data
+  Future<bool> _showReferralOverwriteDialog(String newReferralCode, String newSource) async {
+    debugPrint('🔍 OVERWRITE DIALOG: Showing referral code overwrite dialog');
+    debugPrint('🔍 OVERWRITE DIALOG: Current code: $_initialReferralCode (source: $_referralSource)');
+    debugPrint('🔍 OVERWRITE DIALOG: New code: $newReferralCode (source: $newSource)');
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('New Referral Code Detected'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('A new referral code has been detected:'),
+              const SizedBox(height: 8),
+              Text('New code: $newReferralCode'),
+              Text('Source: $newSource'),
+              const SizedBox(height: 8),
+              if (_initialReferralCode != null) ...[
+                Text('Current code: $_initialReferralCode'),
+                Text('Current source: $_referralSource'),
+                const SizedBox(height: 8),
+              ],
+              const Text('Would you like to update your referral code?'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Keep Current'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Use New Code'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    // Audit logging for overwrite decision
+    if (result) {
+      debugPrint('🔍 OVERWRITE AUDIT: User ACCEPTED referral code overwrite');
+      debugPrint('🔍 OVERWRITE AUDIT: Changed from $_initialReferralCode ($_referralSource) to $newReferralCode ($newSource)');
+    } else {
+      debugPrint('🔍 OVERWRITE AUDIT: User REJECTED referral code overwrite');
+      debugPrint('🔍 OVERWRITE AUDIT: Kept $_initialReferralCode ($_referralSource), rejected $newReferralCode ($newSource)');
+    }
+
+    return result;
+  }
+
   Future<void> _initializeScreen() async {
     debugPrint('🔍 NewRegistrationScreen._initializeScreen() called');
     debugPrint('🔍 Constructor parameters received:');
@@ -143,6 +231,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     if (widget.referralCode != null && widget.referralCode!.isNotEmpty) {
       debugPrint('🔍 Using fresh constructor referral code: ${widget.referralCode}');
       _initialReferralCode = widget.referralCode;
+      _referralSource = 'constructor';
       // Clear any stale cached data when fresh referral code is provided
       await SessionManager.instance.clearReferralData();
     } else {
@@ -151,9 +240,41 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
       if (cachedReferralData != null) {
         debugPrint('🔍 Using cached referral data');
-        _initialReferralCode = cachedReferralData['referralCode'];
-        _sponsorName = cachedReferralData['sponsorName'];
-        debugPrint('🔍 Cached referral code: $_initialReferralCode');
+        final newReferralCode = cachedReferralData['referralCode'];
+        final newSponsorName = cachedReferralData['sponsorName'];
+
+        // Check if user has started entering form data and we have a different referral code
+        if (_userHasStartedForm && _initialReferralCode != null &&
+            _initialReferralCode != newReferralCode) {
+          debugPrint('🔍 REGISTER: Potential referral code conflict detected');
+          debugPrint('🔍 Current: $_initialReferralCode, New: $newReferralCode');
+
+          // Prevent overwrite if registration has already started
+          if (_userHasStartedRegistration) {
+            debugPrint('🔍 REGISTER: Registration already started - preventing referral code overwrite');
+            if (mounted) setState(() => _isLoading = false);
+            return;
+          }
+
+          // Show overwrite dialog
+          final shouldOverwrite = await _showReferralOverwriteDialog(newReferralCode!, 'branch');
+          if (shouldOverwrite) {
+            _initialReferralCode = newReferralCode;
+            _sponsorName = newSponsorName;
+            _referralSource = 'branch';
+            debugPrint('🔍 User confirmed referral code overwrite');
+          } else {
+            debugPrint('🔍 User declined referral code overwrite');
+            if (mounted) setState(() => _isLoading = false);
+            return;
+          }
+        } else {
+          _initialReferralCode = newReferralCode;
+          _sponsorName = newSponsorName;
+          _referralSource = 'cache'; // Could be from Branch or previous session
+        }
+
+        debugPrint('🔍 Cached referral code: $_initialReferralCode (source: $_referralSource)');
         debugPrint('🔍 Cached sponsor name: $_sponsorName');
         if (mounted) setState(() => _isLoading = false);
         return;
@@ -228,7 +349,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   Future<void> _register() async {
     // Skip form validation if this is social sign-up (already handled)
     if (_isAppleSignUp || _isGoogleSignUp) return;
-    
+
     if (!_formKey.currentState!.validate() || _isLoading) return;
 
     if (!_acceptedPrivacyPolicy) {
@@ -242,7 +363,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _userHasStartedRegistration = true; // Mark registration as started
+    });
 
     final authService = context.read<AuthService>();
     final firestoreService = FirestoreService();
@@ -263,6 +387,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
         'sponsorReferralCode': _initialReferralCode,
+        'referralSource': _referralSource, // Track attribution source
         'role': _initialReferralCode == null ? 'admin' : 'user',
       };
 
@@ -592,6 +717,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'notificationsEnabled': true,
         'soundEnabled': true,
         'sponsorReferralCode': _initialReferralCode,
+        'referralSource': _referralSource, // Track attribution source
       };
 
       await userDoc.set(userData);
@@ -784,6 +910,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'notificationsEnabled': true,
         'soundEnabled': true,
         'sponsorReferralCode': _initialReferralCode,
+        'referralSource': _referralSource, // Track attribution source
       };
 
       await userDoc.set(userData);
@@ -888,6 +1015,9 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   }
 
   PreferredSizeWidget _buildCustomAppBar(BuildContext context) {
+    // Smart back button logic: show only when there's a valid previous screen
+    final shouldShowBackButton = widget.showBackButton ?? Navigator.canPop(context);
+
     return AppBar(
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
@@ -904,13 +1034,13 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           ),
         ),
       ),
-      leading: IconButton(
+      leading: shouldShowBackButton ? IconButton(
         icon: const Icon(
           Icons.arrow_back,
           color: Colors.white,
         ),
         onPressed: () => Navigator.of(context).pop(),
-      ),
+      ) : null,
       title: const Text(
         'TEAM BUILD PRO',
         style: TextStyle(
@@ -971,12 +1101,40 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     if (_sponsorName != null && _sponsorName!.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0, bottom: 16.0),
-                        child: Text(
-                          'Your sponsor is $_sponsorName',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
+                      Container(
+                        margin: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.person_add, color: Colors.blue.shade600, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Invited by: $_sponsorName',
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Colors.blue.shade800,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_initialReferralCode != null && kDebugMode) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'Code: $_initialReferralCode (source: $_referralSource)',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.blue.shade600,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     const SizedBox(height: 24),
@@ -1011,22 +1169,25 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       const SizedBox(height: 24),
                     ],
                     
-                    const Row(
-                      children: [
-                        Expanded(child: Divider()),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('or sign up with email', 
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                            )
+                    // Only show divider if at least one social sign-in option is available
+                    if (_isAppleSignInAvailable || _isGoogleSignInAvailable) ...[
+                      const Row(
+                        children: [
+                          Expanded(child: Divider()),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Text('or sign up with email',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              )
+                            ),
                           ),
-                        ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
+                          Expanded(child: Divider()),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                     
                     TextFormField(
                         controller: _firstNameController,
@@ -1246,7 +1407,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                 child: CircularProgressIndicator(
                                     color: Colors.white, strokeWidth: 3),
                               )
-                            : const Text('Create Account with Email'),
+                            : const Text('Create Account'),
                       ),
                     ),
                   ],

@@ -19,12 +19,16 @@ const CSV_FILE_PATH = path.join(__dirname, 'emails', 'master_email_list.csv');
 // Template versions for A/B testing
 const TEMPLATE_VERSIONS = ['v1', 'v3'];
 
-// Function to randomly select a template version
-function getRandomTemplateVersion(verbose = false) {
-  const randomIndex = Math.floor(Math.random() * TEMPLATE_VERSIONS.length);
-  const selectedVersion = TEMPLATE_VERSIONS[randomIndex];
+// Counter for alternating template selection
+let templateCounter = 0;
+
+// Function to alternate between template versions for 50/50 split
+function getAlternatingTemplateVersion(verbose = false) {
+  const selectedVersion = TEMPLATE_VERSIONS[templateCounter % TEMPLATE_VERSIONS.length];
+  templateCounter++;
+
   if (verbose) {
-    console.log(`🎲 Random template selection: ${selectedVersion} (index: ${randomIndex} of ${TEMPLATE_VERSIONS.length})`);
+    console.log(`🔄 Alternating template selection: ${selectedVersion} (count: ${templateCounter}, alternating between v1/v3)`);
   }
   return selectedVersion;
 }
@@ -39,9 +43,9 @@ async function sendTestEmail() {
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
     form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
-    const templateVersion = getRandomTemplateVersion(false);
+    const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
-    form.append('t:version', templateVersion); // Random template version
+    form.append('t:version', templateVersion); // Alternating template version
     
     // Template variables based on your CSV format (firstname lastname,email)
     form.append('h:X-Mailgun-Variables', JSON.stringify({
@@ -78,9 +82,9 @@ async function sendBulkCampaign(recipientList) {
     
     form.append('from', 'Stephen Scott <sscott@stephenscott.us>');
     form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
-    const templateVersion = getRandomTemplateVersion(false);
+    const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
-    form.append('t:version', templateVersion); // Random template version
+    form.append('t:version', templateVersion); // Alternating template version
 
     // Add multiple recipients
     recipientList.forEach(recipient => {
@@ -262,9 +266,9 @@ async function sendCampaignToList() {
     form.append('from', 'Stephen Scott | Team Build Pro <sscott@stephenscott.us>');
     form.append('to', MAILING_LIST_ADDRESS);
     form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
-    const templateVersion = getRandomTemplateVersion(false);
+    const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'tbp'); // Template name
-    form.append('t:version', templateVersion); // Random template version
+    form.append('t:version', templateVersion); // Alternating template version
     
     // Recipient variables will be automatically substituted by Mailgun
     // based on the vars we uploaded with each contact
@@ -465,9 +469,9 @@ async function sendBatchCampaign(options = {}) {
           form.append('from', 'Stephen Scott | Team Build Pro <sscott@stephenscott.us>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
           form.append('subject', 'Recruiting Solved: The AI Solution for Direct Sales');
-          const templateVersion = getRandomTemplateVersion(verbose);
+          const templateVersion = getAlternatingTemplateVersion(verbose);
           form.append('template', 'tbp'); // Template name
-          form.append('t:version', templateVersion); // Random template version
+          form.append('t:version', templateVersion); // Alternating template version
           form.append('h:X-Mailgun-Variables', JSON.stringify({
             first_name: contact.first_name,
             last_name: contact.last_name,

@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "YXV25WMDS8.com.scott.ultimatefix",
+          "YXV25WMDS8.com.scott.teambuildpro-iphone"
+        ],
+        "components": [
+          { "/": "/*" }
+        ]
+      }
+    ]
+  }
+}
