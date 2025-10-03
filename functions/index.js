@@ -15,6 +15,26 @@ const {
 } = require('./auth-functions');
 
 // ==============================
+// Import Referral Attribution Functions
+// ==============================
+const {
+  issueReferral,
+  redeemReferral,
+  cleanupReferrals,
+} = require('./referral-attribution-functions');
+
+// ==============================
+// Import New TypeScript Referral Functions (V2)
+// ==============================
+const {
+  issueReferral: issueReferralV2,
+  redeemReferral: redeemReferralV2,
+  clipHandoffCreate: clipHandoffCreateV2,
+  clipHandoffClaim: clipHandoffClaimV2,
+  resolveSponsor: resolveSponsorV2,
+} = require('./lib/referrals');
+
+// ==============================
 // Import Notification Functions
 // ==============================
 const {
@@ -146,6 +166,11 @@ const { appendDemoEmail } = require('./appendDemoEmail');
 const { addToDemoQueue } = require('./addToDemoQueue');
 
 // ==============================
+// Import Analytics Events Functions
+// ==============================
+const { tbpEventLog } = require('./analytics-events');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -155,6 +180,18 @@ module.exports = {
   registerUser,
   validateReferralUrl,
   deleteUserAccount,
+
+  // ========== REFERRAL ATTRIBUTION FUNCTIONS ==========
+  issueReferral,
+  redeemReferral,
+  cleanupReferrals,
+
+  // ========== REFERRAL ATTRIBUTION FUNCTIONS V2 (TypeScript) ==========
+  issueReferralV2,
+  redeemReferralV2,
+  clipHandoffCreateV2,
+  clipHandoffClaimV2,
+  resolveSponsorV2,
 
   // ========== NOTIFICATION FUNCTIONS ==========
   // Core notification system
@@ -234,6 +271,9 @@ module.exports = {
   getDemoCount,
   appendDemoEmail,
   addToDemoQueue,
+
+  // ========== ANALYTICS FUNCTIONS ==========
+  tbpEventLog,
 };
 
 // ==============================
