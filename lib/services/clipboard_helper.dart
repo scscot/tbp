@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import '../services/pasteboard_attribution_service.dart';
 import '../services/session_manager.dart';
 
 /// Clipboard helper that prevents iOS paste-permission modal from appearing
@@ -18,7 +17,7 @@ class ClipboardHelper {
   static Future<bool> isPhysicalIOSDevice() async {
     if (!Platform.isIOS) return false;
     final info = await DeviceInfoPlugin().iosInfo;
-    return info.isPhysicalDevice ?? false;
+    return info.isPhysicalDevice;
   }
 
   /// iOS-only, safe preflight check that **does not** trigger the paste modal.
@@ -143,9 +142,6 @@ class ClipboardHelper {
       }
       return;
     }
-
-    // Process through PasteboardAttributionService for validation and handling
-    final pasteboardService = PasteboardAttributionService();
 
     // Parse and validate the payload
     final parsedPayload = _parsePayload(text!);
