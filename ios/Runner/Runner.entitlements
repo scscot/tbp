@@ -8,6 +8,12 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:teambuildpro.com</string>
+		<string>applinks:teambuildpro.app.link</string>
+		<string>applinks:go.teambuildpro.com</string>
+	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.scott.ultimatefix</string>
