@@ -69,6 +69,11 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   bool _isAppleSignInAvailable = false;
   bool _isGoogleSignInAvailable = false;
 
+  // Clipboard paste affordance - hidden by default, revealed on demand
+  bool _canOfferPaste = false;
+  bool _checkedPasteOffer = false;
+  bool _showPasteUI = false;
+
   bool isDevMode = true;
 
   @override
@@ -119,10 +124,18 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     _checkGoogleSignInAvailability();
     _setupFormListeners();
 
-    // After first frame, politely offer to paste a referral (iOS only, physical device)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      ClipboardHelper.maybeOfferPasteReferral(context);
+    // After first frame, check if clipboard has content (for "I have an invite link" fallback)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted || _checkedPasteOffer) return;
+      _checkedPasteOffer = true;
+
+      // Check if clipboard has content, but don't show paste UI automatically
+      if (_initialReferralCode == null || _initialReferralCode!.isEmpty) {
+        final offer = await ClipboardHelper.shouldOfferPaste();
+        if (mounted) {
+          setState(() => _canOfferPaste = offer);
+        }
+      }
     });
   }
 
@@ -171,6 +184,38 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         debugPrint('🔍 REGISTER: User has started entering form data');
       }
     }
+  }
+
+  /// Handle inline paste button tap
+  Future<void> _handlePasteReferral() async {
+    final referralCode = await ClipboardHelper.pasteAndValidateReferral();
+
+    if (referralCode == null) {
+      if (kDebugMode) {
+        debugPrint('📋 REGISTER: Paste failed - invalid or empty clipboard');
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('That doesn\'t look like an invite link. Please paste the full link you received.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (kDebugMode) {
+      debugPrint('📋 REGISTER: Pasted invite link with referral code: $referralCode');
+    }
+
+    setState(() {
+      _canOfferPaste = false;
+      _showPasteUI = false;
+    });
+
+    await _initializeScreen();
   }
 
   /// Shows dialog when new referral code conflicts with user-entered data
@@ -1107,6 +1152,54 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
+
+                    // "I have an invite link" reveal button (only when clipboard has content and no referral yet)
+                    if (_canOfferPaste && (_sponsorName == null || _sponsorName!.isEmpty) && !_showPasteUI)
+                      Container(
+                        margin: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showPasteUI = true;
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.blue.shade700,
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          ),
+                          child: const Text(
+                            'I have an invite link',
+                            style: TextStyle(fontSize: 14, decoration: TextDecoration.underline),
+                          ),
+                        ),
+                      ),
+
+                    // Actual paste UI (shown after tapping "I have an invite link")
+                    if (_showPasteUI && (_sponsorName == null || _sponsorName!.isEmpty))
+                      Container(
+                        margin: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'If someone sent you an invite link, you can paste it here.',
+                              style: TextStyle(fontSize: 14, color: Colors.black87),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            TextButton.icon(
+                              onPressed: _handlePasteReferral,
+                              icon: const Icon(Icons.content_paste, size: 18),
+                              label: const Text('Paste invite link'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue.shade700,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // Sponsor banner (shown when referral code is detected)
                     if (_sponsorName != null && _sponsorName!.isNotEmpty)
                       Container(
                         margin: const EdgeInsets.only(top: 8.0, bottom: 16.0),

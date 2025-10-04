@@ -93,6 +93,7 @@ tbp_files.zip
 DartFiles.zip
 *.cer
 ios_backup*/
+ios/Podfile.lock
 
 # === Firebase Functions ===
 # Ignore most of the functions directory
@@ -127,6 +128,7 @@ rebuild_*
 *.tmp
 *.temp
 *.txt
+results.md
 GIT_COMMIT_MESSAGE.md
 GIT_COMMIT_MESSAGE.md
 .firebase/hosting.d2Vi.cache

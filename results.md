@@ -1,243 +1,187 @@
-Yes—this plan is solid and will remove the intrusive paste sheet while keeping the referral-paste convenience. I’d ship it with just a few small tweaks and guardrails:
-
-### 👍 What’s great
-
-* **No read on launch** (Phase 2) — fixes the UX/privacy issue.
-* **iOS preflight via `hasStrings`** + **user-initiated paste** (Phases 1 & 3) — exactly the right pattern.
-* **Skip in Simulator** — avoids the “CoreSimulator-Bridge” dialog during dev.
-* Clear file list + version bump — good hygiene.
-
-### Small refinements I recommend
-
-1. **Limit when you offer to paste**
-
-   * Only prompt on screens where a referral can be entered **and** when the field is empty.
-   * Gate with a lightweight cooldown (e.g., once per app session or once per 24h via `SharedPreferences`) so users aren’t nagged.
-
-2. **Feature-flag it**
-
-   * Wrap `maybeOfferPasteReferral` behind a Remote Config flag (`referral_clipboard_offer_enabled`). Lets you turn it off remotely if needed.
-
-3. **Validate after paste**
-
-   * After user consents and you read the text, quickly validate with a regex (e.g., matches `teambuildpro://` or your token pattern) before auto-filling.
-
-4. **Android parity**
-
-   * Android doesn’t show the iOS modal, but still follow the same **user-initiated** flow for consistency.
-
-5. **Where to call it**
-
-   * Your plan says `new_registration_screen.dart`. That’s fine; also consider invoking on any first-run “Enter referral” step (or add a small “Paste referral” button next to the field).
-
-### Code notes (to align with your plan)
-
-* **MethodChannel** name: `clipboard_utils` (as you wrote).
-* **Only implement `hasStrings`** in Swift; it’s a preflight, not a paste.
-* In Dart, call `Clipboard.getData('text/plain')` **only after** the user taps *Paste*.
-
-### Test checklist (post-merge)
-
-* Launch on **Simulator** → **no** system paste sheet.
-* Launch on **physical device** with clipboard populated by another app → **no** sheet until user accepts your in-app dialog; after tapping *Paste*, Apple’s sheet may appear (expected, contextual).
-* Clipboard empty → no dialog shown.
-* Referral already filled → no dialog.
-* Remote Config OFF → no dialog anywhere.
-
-### Unrelated log items you can ignore/fix separately
-
-* **Branch SDK**: `Invalid or missing app id/key` — configure Branch keys (test vs live) or guard init to stop the thrown `PlatformException(400)`.
-* **FCM in Simulator**: `no APNS Token specified` — expected; verify on device.
-* **Functions unauthenticated**: guard `syncAppBadge` until user is signed in.
-
-Here are precise patches to consider for :
-
-* `pubspec.yaml`
-* `lib/services/clipboard_helper.dart`
-* `ios/Runner/AppDelegate.swift`
-* `lib/services/deep_link_service.dart` (remove the auto-check block)
-* `lib/screens/new_registration_screen.dart` (post-frame call)
-
-Awesome—here are precise, ready-to-apply patches.
+Here’s a single, copy-paste prompt you can give to Claude. It merges everything we decided plus the exact HTML/JS you need, and clearly explains what to change and why.
 
 ---
 
-### 1) `pubspec.yaml`
+**Prompt for Claude — Finalize Web-First Invite Flow (Open → App Store fallback) + App Fallback UX**
 
-```diff
-diff --git a/pubspec.yaml b/pubspec.yaml
-@@
- dependencies:
-   flutter:
-     sdk: flutter
-+  device_info_plus: ^10.1.2
+**From Stephen (product) and Joe (UX/eng). Please read carefully and implement exactly as specified.**
+
+## 0) Context: What you’ve already planned/implemented
+
+Your current “Web-First Invite Link Implementation Plan” is aligned with our direction:
+
+* **Web:** Add **Open Team Build Pro** primary CTA on landing; keep **Continue to App Store**; Universal Link → 1200ms → App Store fallback.
+* **App:** Hide paste UI by default; keep subtle **“I have an invite link”** fallback; parse **URLs** (not TBP_REF payloads).
+* **Parser:** New `InviteLinkParser` that extracts `ref`/`new` from links and normalizes messy cases.
+* **Analytics:** Add paste flow events.
+* **Branch:** Verify initialization; ensure deferred deep linking.
+
+## 1) Observations from a real referral link
+
+Using a live example (`https://teambuildpro.com/?new=88888888&t=2`), the landing page already shows **“Invited by …”** and a **Continue to App Store** button. Users typically **tap invite links** (not codes), so the most natural primary action is **Open Team Build Pro** (open app if installed, otherwise fall back to App Store automatically). No “paste” concepts are needed on web.
+
+## 2) Two small but important tweaks to your plan
+
+1. **Universal Link base path**: Our AASA is configured for **root** (`https://teambuildpro.com/?ref=*` and `/?new=*`).
+   ➜ Build the Universal Link as `https://teambuildpro.com/` + the original query string. **Do not** use `/app`.
+2. **Fallback navigation**: On fallback, use `window.location.replace(APP_STORE_URL)` to avoid back-button bounce.
+
+## 3) Web — Drop-in “Open → Store fallback” snippet (use *exactly* this)
+
+Insert this block into the landing hero/panel where the invite handoff lives (keep the existing “Invited by …” context). This preserves the original query params, attempts the Universal Link to the **root**, and falls back to the App Store if the app isn’t installed.
+
+```html
+<!-- Referral handoff panel -->
+<section class="invite-handoff">
+  <div class="invite-meta">
+    <!-- If you can render sponsor name server-side, insert it here -->
+    <div class="invited-by">
+      Invited by <strong id="sponsorName">Your Sponsor</strong>
+    </div>
+    <p class="invite-helper">
+      We’ll open the app with your invite. If you don’t have it yet, we’ll take you to the App Store.
+    </p>
+  </div>
+
+  <div class="cta-stack">
+    <button id="openApp" class="btn btn-primary">Open Team Build Pro</button>
+    <a id="appStore" class="btn-link" href="https://apps.apple.com/app/id6751211622">Continue to App Store</a>
+    <noscript>
+      <p><a href="https://apps.apple.com/app/id6751211622">Continue to App Store</a></p>
+    </noscript>
+  </div>
+</section>
+
+<script>
+  (function () {
+    // AASA is configured for root (?ref=* / ?new=*), so keep base at "/"
+    const UNIVERSAL_LINK_BASE = 'https://teambuildpro.com/';
+    const APP_STORE_URL = 'https://apps.apple.com/app/id6751211622';
+
+    // Preserve original query params (ref/new/t/utm/etc.)
+    const params = window.location.search || '';
+    const universalLink = UNIVERSAL_LINK_BASE + (params.startsWith('?') ? params : ('?' + params));
+
+    const openBtn = document.getElementById('openApp');
+
+    openBtn.addEventListener('click', function () {
+      // disable to avoid double taps
+      openBtn.disabled = true;
+
+      // Attempt to open the app via Universal Link
+      const start = Date.now();
+      window.location.href = universalLink;
+
+      // Fallback to App Store if the app isn't installed
+      setTimeout(function () {
+        const elapsed = Date.now() - start;
+        if (elapsed < 1600) {
+          window.location.replace(APP_STORE_URL);
+        }
+      }, 1200);
+    });
+
+    // OPTIONAL: populate sponsor name client-side if available
+    // const s = new URLSearchParams(window.location.search).get('sponsor') || '';
+    // if (s) document.getElementById('sponsorName').textContent = s;
+  })();
+</script>
+
+<style>
+  .invite-handoff { text-align: center; padding: 16px 12px; }
+  .invited-by { font-size: 16px; margin-bottom: 6px; }
+  .invite-helper { font-size: 14px; opacity: 0.85; margin: 0 0 16px; }
+  .cta-stack .btn { display: inline-block; padding: 12px 18px; border-radius: 12px; border: 0; }
+  .btn-primary { background: #111; color: #fff; }
+  .btn-primary[disabled] { opacity: .6; }
+  .btn-link { display: block; margin-top: 10px; text-decoration: underline; }
+</style>
 ```
 
----
+### Important: do not let global click handlers hijack the new “Open” button
 
-### 2) `lib/services/clipboard_helper.dart` (NEW)
+If you have a capture-phase document click listener that reroutes CTAs to a “copy-and-go” handler (token → App Store), add a guard so it **ignores** `#openApp` and lets its own logic run:
 
-```diff
-diff --git a/lib/services/clipboard_helper.dart b/lib/services/clipboard_helper.dart
-new file mode 100644
---- /dev/null
-+++ b/lib/services/clipboard_helper.dart
-@@
-+import 'dart:io';
-+import 'package:flutter/material.dart';
-+import 'package:flutter/services.dart';
-+import 'package:device_info_plus/device_info_plus.dart';
-+
-+/// Clipboard helper that prevents iOS paste-permission modal from appearing
-+/// at app launch. It only reads the clipboard after explicit user consent.
-+class ClipboardHelper {
-+  static const MethodChannel _channel = MethodChannel('clipboard_utils');
-+
-+  /// Returns true when running on a physical iOS device.
-+  static Future<bool> isPhysicalIOSDevice() async {
-+    if (!Platform.isIOS) return false;
-+    final info = await DeviceInfoPlugin().iosInfo;
-+    return info.isPhysicalDevice ?? false;
-+  }
-+
-+  /// iOS-only, safe preflight check that **does not** trigger the paste modal.
-+  /// Returns true if UIPasteboard has any string content.
-+  static Future<bool> iosHasStrings() async {
-+    if (!Platform.isIOS) return false;
-+    final has = await _channel.invokeMethod<bool>('hasStrings');
-+    return has ?? false;
-+  }
-+
-+  /// Offers to paste a referral code (or any text) *after* screen render.
-+  /// Only performs an actual paste if the user agrees.
-+  static Future<void> maybeOfferPasteReferral(BuildContext context) async {
-+    // Skip entirely on non-iOS or Simulator to avoid “CoreSimulator-Bridge” prompts.
-+    if (!Platform.isIOS) return;
-+    if (!await isPhysicalIOSDevice()) return;
-+
-+    final has = await iosHasStrings();
-+    if (!has || !context.mounted) return;
-+
-+    final consent = await showDialog<bool>(
-+      context: context,
-+      builder: (ctx) => AlertDialog(
-+        title: const Text('Paste referral from clipboard?'),
-+        content: const Text(
-+          'We detected text on your clipboard. Would you like to paste it to auto-fill your referral code?',
-+        ),
-+        actions: [
-+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No thanks')),
-+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Paste')),
-+        ],
-+      ),
-+    );
-+    if (consent != true) return;
-+
-+    // This call may present Apple’s system paste sheet — now with user context.
-+    final data = await Clipboard.getData('text/plain');
-+    final text = data?.text?.trim();
-+    if (text?.isEmpty ?? true) return;
-+
-+    // TODO: integrate with your referral handling (parse token / URI, then apply).
-+    // Example:
-+    // context.read<ReferralProvider>().applyReferral(text!);
-+  }
-+}
+```js
+document.addEventListener('click', (e) => {
+  // Let the dedicated Open button run its own Universal Link logic
+  if (e.target.closest('#openApp')) return;
+
+  // ... your existing CTA interception for app store badges, etc.
+  // copyAndGo();
+}, { capture: true });
 ```
 
----
+> Branch Web SDK (optional): When you add Branch on web, you can replace the `openBtn` handler with `branch.deepview()` or `branch.openURL(universalLink)`; Branch will decide app vs. store and improve deferred deep linking analytics. The structure stays the same.
 
-### 3) `ios/Runner/AppDelegate.swift`
+## 4) App — Keep paste flow as a hidden fallback only
 
-```diff
-diff --git a/ios/Runner/AppDelegate.swift b/ios/Runner/AppDelegate.swift
---- a/ios/Runner/AppDelegate.swift
-+++ b/ios/Runner/AppDelegate.swift
-@@
- import UIKit
- import Flutter
-@@
- @UIApplicationMain
- class AppDelegate: FlutterAppDelegate {
-   override func application(
-     _ application: UIApplication,
-     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-   ) -> Bool {
--    GeneratedPluginRegistrant.register(with: self)
--    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-+    GeneratedPluginRegistrant.register(with: self)
-+
-+    // Clipboard preflight channel (safe, non-pasting).
-+    if let controller = window?.rootViewController as? FlutterViewController {
-+      let channel = FlutterMethodChannel(name: "clipboard_utils",
-+                                         binaryMessenger: controller.binaryMessenger)
-+      channel.setMethodCallHandler { call, result in
-+        switch call.method {
-+        case "hasStrings":
-+          result(UIPasteboard.general.hasStrings)
-+        default:
-+          result(FlutterMethodNotImplemented)
-+        }
-+      }
-+    }
-+
-+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-   }
- }
-```
+* **Default** registration screen: **no** paste UI visible.
+* Add small text: **“I have an invite link”** to reveal paste UI for rare cases when a user copied a link.
+* When shown, the button label must be **“Paste invite link”** (not “code”).
+* On tap: `ClipboardHelper.pastePlainText()` → `InviteLinkParser` (parse URL, extract `ref`/`new`) → store/apply → show sponsor banner.
+* Copy on failure (inline, unobtrusive):
+  *“That doesn’t look like an invite link. Please paste the full link you received.”*
+* Continue honoring RC flag `referral_clipboard_offer_enabled`. With this direction, keep it **off** by default unless testing.
 
----
+## 5) Parser utility (new file)
 
-### 4) `lib/services/deep_link_service.dart` (remove auto clipboard read)
+Create `lib/services/invite_link_parser.dart` (as you outlined):
 
-```diff
-diff --git a/lib/services/deep_link_service.dart b/lib/services/deep_link_service.dart
---- a/lib/services/deep_link_service.dart
-+++ b/lib/services/deep_link_service.dart
-@@
-   Future<void> initialize() async {
-     // Existing Branch / cached session init…
-@@
--    // ▼▼ REMOVE: intrusive clipboard read at app launch ▼▼
--    try {
--      await PasteboardAttributionService.checkAndRedeemPasteboardToken();
--    } catch (e, st) {
--      log('Pasteboard redeem failed: $e', stackTrace: st);
--    }
--    // ▲▲ REMOVE block ▲▲
-+    // Clipboard checks are now user-initiated in UI (see ClipboardHelper).
-   }
-```
+* Accept `teambuildpro://?...` and `https://teambuildpro.com/...` (add first-party host variants if needed).
+* Extract the **first non-empty** of `ref` then `new`.
+* Normalize: trim whitespace, strip trailing `)]}.,`, percent-decode, add `https://` if missing scheme but host matches.
+* Return a result with `success | reason` for analytics (e.g., `no_query_param`, `unrecognized_host`, `malformed_uri`).
 
-> If your file used a different helper name or lines (e.g., `Clipboard.getData` directly), remove that block similarly. No automatic clipboard reads should occur in `initialize()`.
+## 6) ClipboardHelper updates
 
----
+* Replace `_parsePayload()` with the new `InviteLinkParser`.
+* Update `pasteAndValidateReferral()` to treat input as a **link**, not a TBP_REF payload.
+* Set source `invite_link_paste_inline` and log:
 
-### 5) `lib/screens/new_registration_screen.dart` (post-frame offer)
+  * `invite_link_paste_clicked`
+  * `invite_link_parse_success` (token length only)
+  * `invite_link_parse_failure` (reason class)
 
-```diff
-diff --git a/lib/screens/new_registration_screen.dart b/lib/screens/new_registration_screen.dart
---- a/lib/screens/new_registration_screen.dart
-+++ b/lib/screens/new_registration_screen.dart
-@@
- import 'package:flutter/material.dart';
-+import 'package:ultimatefix/services/clipboard_helper.dart';
-@@
- class NewRegistrationScreenState extends State<NewRegistrationScreen> {
-   @override
-   void initState() {
-     super.initState();
-+    // After first frame, politely offer to paste a referral (iOS only, physical device).
-+    WidgetsBinding.instance.addPostFrameCallback((_) {
-+      if (!mounted) return;
-+      ClipboardHelper.maybeOfferPasteReferral(context);
-+    });
-   }
-@@
-   @override
-   Widget build(BuildContext context) {
-     // … existing UI …
-   }
- }
-```
+## 7) Analytics
 
+Add methods in `lib/services/analytics_service.dart`:
+
+* `logInviteLinkPasteClicked()`
+* `logInviteLinkParseSuccess({required int tokenLength})`
+* `logInviteLinkParseFailure({required String reason})`
+
+## 8) Branch initialization
+
+Verify `FlutterBranchSdk.init()` is configured correctly and logs **no errors**, so:
+
+* Direct deep linking (app installed) and
+* **Deferred** deep linking (after App Store install)
+  both reliably apply the referral.
+
+## 9) QA & acceptance criteria
+
+**Web (Mobile Safari/Chrome):**
+
+* App installed → **Open Team Build Pro** opens the app with referral.
+* App not installed → **Open Team Build Pro** falls back to **App Store** after ~1.2s, then referral is applied after install (deferred).
+* **Continue to App Store** always goes straight to App Store.
+
+**App:**
+
+* Default registration shows **no** paste UI.
+* Tap **“I have an invite link”** → paste UI appears.
+* Paste valid invite link → sponsor banner shows.
+* Paste invalid text → unobtrusive inline hint (no modal).
+* No paste dialogs at launch; no “we detected…” wording anywhere.
+
+**Copy to use (final):**
+
+* Title/line near CTA: **Invited by {Sponsor Name}**
+* Helper: *We’ll open the app with your invite. If you don’t have it yet, we’ll take you to the App Store.*
+* Primary (web): **Open Team Build Pro**
+* Secondary (web): **Continue to App Store**
+* App fallback CTA (only if exposed): **Paste invite link**
+* App fallback error: *“That doesn’t look like an invite link. Please paste the full link you received.”*
+
+**Please implement the above exactly, using the provided web snippet, the two tweaks (UL root + replace() fallback), and the app-side changes. Share diffs and a short test video covering installed vs. not-installed cases.**

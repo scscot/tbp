@@ -19,7 +19,7 @@
     <meta name="twitter:title" content="AI-Driven Recruiting & Team Building for Direct Sales">
     <meta name="twitter:description" content="AI Coach for direct sales: faster recruiting, better duplication. 30-day free trial.">
     <meta name="twitter:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
-    <meta name="twitter:site" content="@teambuildpro"
+    <meta name="twitter:site" content="@teambuildpro">
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1329,13 +1329,29 @@
             const referrerFullName = `${firstName} ${lastName}`;
             const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
 
-            // 1. Create the integrated invitation bar (this part is the same)
+            // 1. Create the integrated invitation bar with Open/App Store handoff
             inviteContainer.innerHTML = `
         <div class="invite-bar">
             <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
             <span class="invite-text">You've been personally invited by <strong>${referrerFullName}</strong></span>
         </div>
+        <div class="invite-handoff" style="text-align: center; padding: 16px 12px; margin-top: 16px;">
+            <p class="invite-helper" style="font-size: 14px; opacity: 0.85; margin: 0 0 16px;">
+                We'll open the app with your invite. If you don't have it yet, we'll take you to the App Store.
+            </p>
+            <div class="cta-stack">
+                <button id="openApp" class="btn btn-primary" style="display: inline-block; padding: 12px 18px; border-radius: 12px; border: 0; background: #111; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; max-width: 300px;">
+                    Open Team Build Pro
+                </button>
+                <a id="appStore" class="btn-link" href="https://apps.apple.com/app/id6751211622" style="display: block; margin-top: 10px; text-decoration: underline; color: #1A237E; font-size: 14px;">
+                    Continue to App Store
+                </a>
+            </div>
+        </div>
     `;
+
+            // Setup Universal Link → App Store fallback handler
+            setupInviteHandoff();
 
             // 2. Personalize the hero content based on the referral type
             if (referralType === "new") {
@@ -1388,6 +1404,33 @@
             } catch (error) {
                 console.error("Error fetching user data by referral code:", error);
             }
+        }
+
+        // Setup Universal Link → App Store fallback for invite handoff
+        function setupInviteHandoff() {
+            const UNIVERSAL_LINK_BASE = 'https://teambuildpro.com/';
+            const APP_STORE_URL = 'https://apps.apple.com/app/id6751211622';
+
+            const params = window.location.search || '';
+            const universalLink = UNIVERSAL_LINK_BASE + (params.startsWith('?') ? params : ('?' + params));
+
+            const openBtn = document.getElementById('openApp');
+            if (!openBtn) return;
+
+            openBtn.addEventListener('click', function () {
+                openBtn.disabled = true;
+                openBtn.style.opacity = '0.6';
+
+                const start = Date.now();
+                window.location.href = universalLink;
+
+                setTimeout(function () {
+                    const elapsed = Date.now() - start;
+                    if (elapsed < 1600) {
+                        window.location.replace(APP_STORE_URL);
+                    }
+                }, 1200);
+            });
         }
 
         // ============================================================================
@@ -2593,6 +2636,9 @@
 
       // Global capture-phase handler - intercepts ALL CTA clicks before any other handlers
       document.addEventListener('click', (e) => {
+        // Let the dedicated Open button run its own Universal Link logic
+        if (e.target.closest('#openApp')) return;
+
         const target = e.target.closest('.js-appstore-btn, [data-appstore], #cta-hero, #cta-pricing, #cta-final, #cta-footer, .app-store-badge');
         if (!target) return;
 
