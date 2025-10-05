@@ -1,0 +1,9 @@
+# Force apple-app-site-association to be served as JSON with production cache settings
+# 24-hour cache (86400s) provides stability while allowing daily updates if needed
+<Files "apple-app-site-association">
+    ForceType application/json
+    Header set Content-Type "application/json"
+    Header set Cache-Control "max-age=86400, must-revalidate"
+    Header unset Expires
+    Header set X-Content-Type-Options "nosniff"
+</Files>

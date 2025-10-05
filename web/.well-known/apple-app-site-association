@@ -1,0 +1,50 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "YXV25WMDS8.com.scott.ultimatefix",
+          "YXV25WMDS8.com.scott.teambuildpro-iphone"
+        ],
+        "components": [
+          {
+            "/": "/",
+            "query": {
+              "ref": "*"
+            }
+          },
+          {
+            "/": "/",
+            "query": {
+              "new": "*"
+            }
+          },
+          {
+            "/": "/claim",
+            "query": {
+              "ref": "*"
+            }
+          },
+          {
+            "/": "/claim",
+            "query": {
+              "token": "*"
+            }
+          },
+          {
+            "/": "/claim.html",
+            "query": {
+              "ref": "*"
+            }
+          },
+          {
+            "/": "/claim.html",
+            "query": {
+              "token": "*"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

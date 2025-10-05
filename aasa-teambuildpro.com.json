@@ -9,7 +9,10 @@
         "components": [
           { "/": "/", "query": { "ref": "*" } },
           { "/": "/", "query": { "new": "*" } },
-          { "/": "/claim", "query": { "token": "*" } }
+          { "/": "/claim", "query": { "ref": "*" } },
+          { "/": "/claim", "query": { "token": "*" } },
+          { "/": "/claim.html", "query": { "ref": "*" } },
+          { "/": "/claim.html", "query": { "token": "*" } }
         ]
       }
     ]

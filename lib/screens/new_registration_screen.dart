@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:math' as math;
@@ -290,8 +291,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       // Fallback: try to get cached referral data from SessionManager
       final cachedReferralData = await SessionManager.instance.getReferralData();
 
+      print('[TBP-REG-INIT] SessionManager => ${cachedReferralData?.toString() ?? 'null'}');
+
       if (cachedReferralData != null) {
-        debugPrint('🔍 Using cached referral data');
+        print('[TBP-REG-INIT] Using cached referral data');
         final newReferralCode = cachedReferralData['referralCode'];
         final newSponsorName = cachedReferralData['sponsorName'];
 
@@ -332,8 +335,44 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         return;
       }
 
-      // Final fallback: no referral code at all
-      _initialReferralCode = null;
+      // Clipboard fallback: check for TBP_REF payload (from claim.html flow)
+      try {
+        final clipboardData = await Clipboard.getData('text/plain');
+        final text = clipboardData?.text ?? '';
+
+        // Parse TBP_REF payload: TBP_REF:{sponsor};TKN:{token};T:{t};V:{version}
+        // V: is optional for backward compatibility with older payloads
+        final regex = RegExp(r'TBP_REF:([^;]*);TKN:([^;]*);T:([0-9]+)(?:;V:([0-9]+))?');
+        final match = regex.firstMatch(text);
+
+        if (match != null) {
+          final clipboardSponsor = match.group(1) ?? '';
+          final clipboardToken = match.group(2) ?? '';
+
+          if (clipboardSponsor.isNotEmpty) {
+            debugPrint('🔍 REGISTER: Found TBP_REF payload in clipboard - sponsor=$clipboardSponsor, token=${clipboardToken.substring(0, 8)}...');
+
+            _initialReferralCode = clipboardSponsor;
+            _referralSource = 'clipboard_fallback';
+
+            // Store in SessionManager for future use
+            await SessionManager.instance.setReferralData(
+              clipboardSponsor,
+              '', // sponsor name will be resolved later
+              queryType: widget.queryType,
+              source: 'clipboard_fallback'
+            );
+
+            // Clear clipboard to prevent reprocessing
+            await Clipboard.setData(const ClipboardData(text: ''));
+            debugPrint('✅ REGISTER: Clipboard referral applied and cleared');
+
+            // Continue to resolve sponsor name below
+          }
+        }
+      } catch (e) {
+        debugPrint('🔍 REGISTER: Clipboard fallback check failed (expected on web): $e');
+      }
     }
 
     debugPrint('🔍 After assignment:');
@@ -398,6 +437,87 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     super.dispose();
   }
 
+  /// Consumes clipboard if TBP_REF payload is present (gesture-based for iOS permissions)
+  Future<void> _consumeClipboardIfPresent() async {
+    try {
+      final clipboardData = await Clipboard.getData('text/plain');
+      final text = clipboardData?.text ?? '';
+
+      print('[TBP-CLIPBOARD] Checking clipboard: ${text.isNotEmpty ? "has content" : "empty"}');
+
+      // Parse TBP_REF payload: TBP_REF:{sponsor};TKN:{token};T:{t};V:{version}
+      // V: is optional for backward compatibility
+      final regex = RegExp(r'TBP_REF:([^;]*);TKN:([^;]*);T:([0-9]+)(?:;V:([0-9]+))?');
+      final match = regex.firstMatch(text);
+
+      if (match != null) {
+        final clipboardSponsor = match.group(1) ?? '';
+        final clipboardToken = match.group(2) ?? '';
+        final clipboardT = match.group(3) ?? '1';
+
+        if (clipboardSponsor.isNotEmpty) {
+          print('[TBP-CLIPBOARD] Found payload - sponsor=$clipboardSponsor token=${clipboardToken.substring(0, 8)}... t=$clipboardT');
+
+          // Apply to current registration if not already set
+          if (_initialReferralCode == null || _initialReferralCode!.isEmpty) {
+            _initialReferralCode = clipboardSponsor;
+            _referralSource = 'clipboard_gesture';
+
+            // Store in SessionManager
+            await SessionManager.instance.setReferralData(
+              clipboardSponsor,
+              '', // sponsor name will be fetched below
+              queryType: widget.queryType,
+              source: 'clipboard_gesture',
+              campaignType: clipboardT
+            );
+
+            print('[TBP-CLIPBOARD] Applied and stored - ref=$_initialReferralCode source=$_referralSource');
+
+            // Fetch sponsor name from backend
+            try {
+              final uri = Uri.parse(
+                'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=$clipboardSponsor');
+              final response = await http.get(uri);
+
+              if (response.statusCode == 200) {
+                final data = jsonDecode(response.body);
+                final sponsorName = '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
+
+                _sponsorName = sponsorName;
+
+                // Update SessionManager with sponsor name
+                await SessionManager.instance.setReferralData(
+                  clipboardSponsor,
+                  sponsorName,
+                  queryType: widget.queryType,
+                  source: 'clipboard_gesture',
+                  campaignType: clipboardT
+                );
+
+                print('[TBP-CLIPBOARD] Sponsor name resolved: $sponsorName');
+              } else {
+                print('[TBP-CLIPBOARD] Failed to fetch sponsor name: ${response.statusCode}');
+              }
+            } catch (e) {
+              print('[TBP-CLIPBOARD] Error fetching sponsor name: $e');
+            }
+          } else {
+            print('[TBP-CLIPBOARD] Payload found but already have ref=$_initialReferralCode');
+          }
+
+          // Clear clipboard to prevent reprocessing
+          await Clipboard.setData(const ClipboardData(text: ''));
+          print('[TBP-CLIPBOARD] Cleared clipboard');
+        }
+      } else {
+        print('[TBP-CLIPBOARD] No TBP_REF payload found');
+      }
+    } catch (e) {
+      print('[TBP-CLIPBOARD] Check failed: $e');
+    }
+  }
+
   Future<void> _register() async {
     // Skip form validation if this is social sign-up (already handled)
     if (_isAppleSignUp || _isGoogleSignUp) return;
@@ -424,6 +544,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
     final firestoreService = FirestoreService();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+
+    // Check clipboard for TBP_REF payload (iOS requires user gesture)
+    // Done after capturing context values to avoid async gap warnings
+    await _consumeClipboardIfPresent();
 
     try {
       debugPrint('🔍 REGISTER: Starting registration process...');
@@ -1147,6 +1271,35 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Prominent "Confirm sponsor" button (only if no ref yet)
+                    if (_initialReferralCode == null || _initialReferralCode!.isEmpty)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 16.0),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.card_giftcard),
+                          label: const Text('Tap to confirm your sponsor'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0A66FF),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          onPressed: () async {
+                            final messenger = ScaffoldMessenger.of(context);
+                            await _consumeClipboardIfPresent();
+                            if (_initialReferralCode != null && mounted) {
+                              setState(() {});
+                            } else if (mounted) {
+                              messenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Sorry, no sponsor found'),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+
                     Text(
                       'Account Registration',
                       textAlign: TextAlign.center,

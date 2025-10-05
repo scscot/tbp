@@ -1,48 +1,39 @@
 📱 Complete User Registration Flow
 
-Scenario 1: App Already Installed
+Scenario 1: App Already Installed (Universal Link Works)
 
 Step 1: User Receives Invite
 Sponsor Sarah sends invite to new user John
 - Sarah opens Team Build Pro app → taps "Invite" → shares link via text/email
-- John receives: `https://teambuildpro.com/?ref=88888888&t=2`
+- John receives: https://teambuildpro.com/?ref=88888888&t=3
 
 Step 2: John Taps the Link (Mobile Safari/Chrome)
 - Link opens in browser
-- Web page loads showing:
-  - Invite bar: "You've been personally invited by Sarah Johnson" (with her photo)
-  - Personalized headline based on referral type:
-    - If `?new=` → "Pre-Build Your Foundation Before Launch!"
-    - If `?ref=` → "Most Direct Sales Professionals Quit Within 90 Days..."
-  - Helper text: "We'll open the app with your invite. If you don't have it yet, we'll take you to the App Store."
-  - Primary button: 🔵 "Open Team Build Pro" (big, blue)
-  - Secondary link: "Continue to App Store" (smaller, underlined)
+- Page redirects to: https://teambuildpro.com/claim.html?ref=88888888&t=3&_ul=1
+- claim.html loads and immediately attempts clipboard write
+- Universal Link triggers before page fully renders
 
-Step 3: John Taps "Open Team Build Pro"
-```
-[Button disabled, opacity fades to 60%]
-↓
-Universal Link attempt: https://teambuildpro.com/?ref=88888888&t=2
-↓ (50-200ms if app installed)
-✅ iOS recognizes Universal Link
-↓
-App opens immediately
-```
+Step 3: Universal Link Triggers (Best Case)
+
+✅ iOS recognizes Universal Link: teambuildpro.com/claim.html?ref=88888888&t=3&_ul=1
+App opens immediately (page never visible to user)
+
 
 Step 4: App Opens with Referral Data
-- Deep link service catches the Universal Link
-- Extracts `ref=88888888` from URL
+- deep_link_service.dart catches Universal Link via app_links package
+- _handleClaimUri() extracts ref=88888888, t=3
 - Stores in SessionManager:
-  - referralCode: `88888888`
-  - queryType: `ref`
-  - source: `constructor` (from deep link)
+  - referralCode: 88888888
+  - queryType: claim
+  - source: claim_uri_initial (cold start) or claim_uri_stream (warm start)
+  - campaignType: 3
 - Navigates to NewRegistrationScreen
 
 Step 5: Registration Screen Displays
 John sees:
 - ✅ Blue banner: "Invited by: Sarah Johnson" (sponsor name resolved via Cloud Function)
 - Form fields: First Name, Last Name, Email, Password
-- No paste UI visible (completely hidden)
+- No "Tap to confirm your sponsor" button (hidden - already has referral)
 - Privacy policy checkbox
 - "Create Account" button
 
@@ -52,8 +43,8 @@ Step 6: John Fills Out Form
 - Taps "Create Account"
 
 Step 7: Account Created
-- `registerUser` Cloud Function called with:
-  ```json
+- registerUser Cloud Function called with:
+  json
   {
     "email": "john@example.com",
     "firstName": "John",
@@ -62,90 +53,100 @@ Step 7: Account Created
     "referralSource": "constructor",
     "role": "user"
   }
-  ```
+  
 - User account created in Firestore
-- John's `sponsor_id` = Sarah's Firebase UID
-- John added to Sarah's `upline_refs` array
+- John's sponsor_id = Sarah's Firebase UID
+- John added to Sarah's upline_refs array
 - John redirected to EditProfileScreen (first-time setup)
 
 ---
 
-Scenario 2: App NOT Installed (Deferred Deep Link)
+Scenario 2: App NOT Installed OR Universal Link Doesn't Trigger (Clipboard Fallback)
 
-Step 1-3: Same as Above
-John receives link, taps it, sees web page, taps "Open Team Build Pro"
+Step 1: User Receives Invite
+Sponsor Sarah sends invite to new user John
+- Sarah opens Team Build Pro app → taps "Invite" → shares link via text/email
+- John receives: https://teambuildpro.com/?ref=88888888&t=3
 
-Step 4: Universal Link Fails (App Not Installed)
-```
-Universal Link attempt: https://teambuildpro.com/?ref=88888888&t=2
-↓ (1200ms timeout - nothing happens)
-Timer expires, elapsed < 1600ms
-↓
-window.location.replace('https://apps.apple.com/app/id6751211622')
-↓
-✅ App Store opens
-```
+Step 2: John Taps the Link (Mobile Safari/Chrome)
+- Link opens in browser
+- Page redirects to: https://teambuildpro.com/claim.html?ref=88888888&t=3&_ul=1
+- claim.html loads
 
-Step 5: App Store Opens
-- John sees Team Build Pro app page
-- Taps "GET" → Download/Install
-- Behind the scenes: Branch SDK captures referral data:
-  - Link clicked: `https://teambuildpro.com/?ref=88888888&t=2`
-  - User fingerprint: device ID, IP, user agent
-  - Attribution window starts
+Step 3: Universal Link Doesn't Trigger
+- Possible reasons:
+  - App not installed
+  - AASA cache issue
+  - User came via TestFlight "View in TestFlight" button
+  - iOS didn't recognize the Universal Link
 
-Step 6: App Installs & Opens for First Time
-- John taps "Open" after install
-- App launches
-- `DeepLinkService.initialize()` runs:
-  ```dart
-  await FlutterBranchSdk.init();
-  _branchSubscription = FlutterBranchSdk.listSession().listen((data) {
-    // Deferred deep link data arrives!
-  });
-  ```
+Step 4: claim.html Executes Fallback Flow
+```javascript
+// claim.html runs automatically:
+1. Mints token via issueReferralV2 Cloud Function
+   Response: { token: "be8dd61f97e56d070f26cb469c8a323e" }
 
-Step 7: Branch Delivers Deferred Deep Link
-Branch SDK returns:
-```json
-{
-  "+clicked_branch_link": true,
-  "ref": "88888888",
-  "~referring_link": "https://teambuildpro.com/?ref=88888888&t=2",
-  "~channel": "web",
-  "+match_guaranteed": true
-}
+2. Creates TBP payload:
+   TBP_REF:88888888;TKN:be8dd61f...;T:3;V:2
+
+3. Attempts clipboard write (no user gesture)
+   - navigator.clipboard.writeText() → FAILS (iOS restriction)
+   - legacyCopy() fallback → FAILS
+
+4. Shows huge "Continue" button (auto-focused, scrolled into view)
+   - Button text: "Continue"
+   - Instructions: "Tap below to continue"
 ```
 
-Step 8: App Processes Deferred Data
-```dart
-// deep_link_service.dart:42-72
-if (data['+clicked_branch_link'] == true) {
-  final referralCode = data['ref'] ?? data['new'];
-  _latestReferralCode = "88888888";
-  _latestQueryType = "ref";
+Step 5: John Taps "Continue" Button
+- User gesture triggers clipboard write
+- TBP_REF:88888888;TKN:be8dd61f...;T:3;V:2 → clipboard ✅
+- Page redirects to App Store
 
-  await SessionManager.instance.setReferralData(
-    "88888888",
-    '',
-    queryType: "ref"
-  );
+Step 6: App Store / TestFlight Opens
+- If not installed: Download from App Store
+- If TestFlight user: "View in TestFlight" → "Open"
+- App opens normally (NOT via Universal Link)
 
-  _navigateToHomepage("88888888", "ref");
-}
-```
+Step 7: App Opens Without Deep Link Data
+- No Universal Link triggered
+- No Branch deferred data
+- App starts with empty referral state
+- Navigates to NewRegistrationScreen
 
-Step 9: Navigation to Registration
-- Checks Remote Config for demo mode (likely OFF)
-- Navigates to NewRegistrationScreen with:
-  - referralCode: `88888888`
-  - queryType: `ref`
-
-Step 10: Registration Screen Displays
+Step 8: Registration Screen - Clipboard Fallback Activates
 John sees:
+- No blue banner (no referral yet)
+- Form fields: First Name, Last Name, Email, Password
+- 🔵 Blue button: "Tap to confirm your sponsor" (prominent)
+- Privacy policy checkbox
+- "Create Account" button
+
+Step 9: John Taps "Tap to confirm your sponsor"
+- iOS shows: "Allow paste from [source]?" permission dialog
+- John taps "Allow"
+- _consumeClipboardIfPresent() reads clipboard
+- Parses TBP_REF payload:
+  ```dart
+  TBP_REF:88888888;TKN:be8dd61f...;T:3;V:2
+  → ref=88888888, token=be8dd61f..., t=3
+  ```
+- Fetches sponsor name via getUserByReferralCode Cloud Function
+  ```
+  GET /getUserByReferralCode?code=88888888
+  Response: {firstName: "Sarah", lastName: "Johnson"}
+  ```
+- Stores in SessionManager:
+  - referralCode: 88888888
+  - sponsorName: Sarah Johnson
+  - source: clipboard_gesture
+  - campaignType: 3
+- setState() triggers UI update
+
+Step 10: Banner Appears!
 - ✅ Blue banner: "Invited by: Sarah Johnson"
-- Same form as Scenario 1
-- No paste UI (completely hidden)
+- Button disappears (already has referral)
+- Clipboard cleared (prevents re-use)
 
 Step 11-12: Same as Scenario 1
 - John fills form, creates account
@@ -154,118 +155,72 @@ Step 11-12: Same as Scenario 1
 
 ---
 
-Edge Case: User Copied Link Instead of Tapping
+Scenario 3: User Manually Copies TBP Payload
 
-If John Copies the Link Text
-Maybe John long-pressed the link and selected "Copy" instead of tapping it.
+If John Somehow Has the Raw TBP Payload
+Maybe someone sent John the raw payload via text message: `TBP_REF:88888888;TKN:abc123;T:3;V:2`
 
-Step 1: John Opens App Store Directly
-- Searches "Team Build Pro" manually
-- Downloads and opens app
-- No deep link or Branch data (organic install)
+Step 1: John Opens App Directly
+- Downloads from App Store
+- Opens app
+- No deep link data
 
-Step 2: App Opens to Registration
-- No referral code in constructor
-- No Branch deferred data
-- Shows generic registration screen
+Step 2: John Copies the Payload
+- From text message or email
+- Clipboard now contains: `TBP_REF:88888888;TKN:abc123;T:3;V:2`
 
-Step 3: John Has the Link in Clipboard
-His clipboard contains: `https://teambuildpro.com/?ref=88888888&t=2`
+Step 3: Registration Screen Shows Button
+- 🔵 Blue button: "Tap to confirm your sponsor" (visible when no referral)
 
-Step 4: "I have an invite link" Appears
-After ~1 second:
-- `ClipboardHelper.shouldOfferPaste()` checks:
-  - ✅ iOS physical device
-  - ✅ Remote Config enabled (`referral_clipboard_offer_enabled`)
-  - ✅ `UIPasteboard.general.hasStrings` = true (safe, no modal)
-- Small text button appears: "I have an invite link" (blue, underlined)
-
-Step 5: John Taps "I have an invite link"
-Paste UI reveals:
-- Helper text: "If someone sent you an invite link, you can paste it here."
-- 🔵 Button: "Paste invite link"
-
-Step 6: John Taps "Paste invite link"
-- First clipboard read (may show iOS paste permission sheet on iOS 16+)
-- `ClipboardHelper.pastePlainText()` retrieves: `https://teambuildpro.com/?ref=88888888&t=2`
-- Analytics: `invite_link_paste_clicked`
-
-Step 7: Link Parsed
-```dart
-InviteLinkParser.parse("https://teambuildpro.com/?ref=88888888&t=2")
-↓ Normalize (trim, strip punctuation, decode)
-↓ Parse URI
-↓ Extract query params
-✅ Result: referralCode="88888888", queryType="ref"
-```
-- Analytics: `invite_link_parse_success` (token_length: 8)
-
-Step 8: Referral Applied
-```dart
-SessionManager.instance.setReferralData(
-  "88888888",
-  "",
-  queryType: "ref",
-  source: "invite_link_paste_inline"
-);
-```
-- Clipboard cleared (prevents re-processing)
-- Screen reloads via `_initializeScreen()`
-
-Step 9: Banner Appears
-- HTTP request to `getUserByReferralCode?code=88888888`
-- Response: `{firstName: "Sarah", lastName: "Johnson", ...}`
-- ✅ Blue banner: "Invited by: Sarah Johnson"
-- Paste UI hidden
-- John continues with registration
-
-Step 10: Account Created with Attribution
-- Referral properly attributed to Sarah
-- Source tracked as: `invite_link_paste_inline`
+Step 4: John Taps the Button
+- Same flow as Scenario 2, Step 9
+- Clipboard parsed successfully
+- Banner appears: "Invited by: Sarah Johnson"
+- Account created with attribution
 
 ---
 
 Flow Diagram Summary
 
-```
+
 User taps invite link
-         ↓
+         
     Web landing page
     "Invited by Sarah"
-         ↓
+         
   Tap "Open Team Build Pro"
-         ↓
+         
     ┌─────────────┐
     │ App Status? │
     └─────────────┘
-         ↓
+         
     ┌────┴────┐
     │         │
 INSTALLED  NOT INSTALLED
     │         │
-    ↓         ↓
+             
 Opens    App Store
-instantly    ↓
+instantly    
     │    Download
-    │         ↓
+    │         
     │    Install & Open
-    │         ↓
+    │         
     │    Branch deferred
     │    deep link
     │         │
     └────┬────┘
-         ↓
+         
 Registration Screen
 "Invited by Sarah"
-         ↓
+         
    Fill form
-         ↓
+         
   Create Account
-         ↓
+         
     SUCCESS! 🎉
 Sarah gets notification:
 "John joined your team!"
-```
+
 
 ---
 
@@ -273,10 +228,10 @@ What Happens to Sarah (Sponsor)
 
 Real-time Notification
 When John completes registration:
-1. Cloud Function `registerUser` completes
-2. Sarah's `directSponsorCount` increments
+1. Cloud Function registerUser completes
+2. Sarah's directSponsorCount increments
 3. If Sarah reaches milestone (e.g., 4 direct sponsors):
-   - `notifyOnMilestoneReached` trigger fires
+   - notifyOnMilestoneReached trigger fires
    - FCM notification sent to Sarah:
      - Title: "🎉 Milestone Reached!"
      - Body: "You now have 4 team members!"
@@ -307,24 +262,24 @@ This is the world-class, enterprise-grade invite flow! 🚀
 Technical Implementation Details
 
 Files Modified
-- `web/index.html` - "Open Team Build Pro" button with Universal Link fallback
-- `lib/services/invite_link_parser.dart` - NEW - Parses invite URLs
-- `lib/services/clipboard_helper.dart` - Uses InviteLinkParser for URL parsing
-- `lib/screens/new_registration_screen.dart` - "I have an invite link" fallback UI
-- `lib/services/analytics_service.dart` - Invite link paste analytics
-- `lib/services/deep_link_service.dart` - Branch deferred deep linking
+- web/index.html - "Open Team Build Pro" button with Universal Link fallback
+- lib/services/invite_link_parser.dart - NEW - Parses invite URLs
+- lib/services/clipboard_helper.dart - Uses InviteLinkParser for URL parsing
+- lib/screens/new_registration_screen.dart - "I have an invite link" fallback UI
+- lib/services/analytics_service.dart - Invite link paste analytics
+- lib/services/deep_link_service.dart - Branch deferred deep linking
 
 Key Configuration
-- Universal Link base: `https://teambuildpro.com/`
-- AASA configured for: `/?ref=` and `/?new=`
-- App Store ID: `6751211622`
-- Branch SDK: `flutter_branch_sdk ^8.0.0`
-- Remote Config flag: `referral_clipboard_offer_enabled`
+- Universal Link base: https://teambuildpro.com/
+- AASA configured for: /?ref= and /?new=
+- App Store ID: 6751211622
+- Branch SDK: flutter_branch_sdk ^8.0.0
+- Remote Config flag: referral_clipboard_offer_enabled
 
 Analytics Events
-- `invite_link_paste_clicked` - User tapped paste button
-- `invite_link_parse_success` - Link parsed successfully (includes token_length)
-- `invite_link_parse_failure` - Parse failed (includes reason: `no_query_param`, `unrecognized_host`, `malformed_uri`, etc.)
+- invite_link_paste_clicked - User tapped paste button
+- invite_link_parse_success - Link parsed successfully (includes token_length)
+- invite_link_parse_failure - Parse failed (includes reason: no_query_param, unrecognized_host, malformed_uri, etc.)
 
 ---
 

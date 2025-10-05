@@ -77,7 +77,13 @@ class DeepLinkService {
         if (kDebugMode) {
           debugPrint("🔗 Deep Link: App launched with URI: $initialUri");
         }
-        _handleDeepLink(initialUri);
+
+        // Try unified claim handler first (cold start)
+        final handled = await _handleClaimUri(initialUri, source: 'initial');
+        if (!handled) {
+          // Fall back to existing complex logic for non-claim URIs
+          _handleDeepLink(initialUri);
+        }
       } else {
         // Handle a normal app launch (no direct deep link)
         // Note: Branch deferred data might still arrive via the listener above
@@ -102,11 +108,17 @@ class DeepLinkService {
 
       // Listen for deep links while the app is running
       _linkSubscription = _appLinks.uriLinkStream.listen(
-        (uri) {
+        (uri) async {
           if (kDebugMode) {
             debugPrint("🔗 Deep Link: Received URI while running: $uri");
           }
-          _handleDeepLink(uri);
+
+          // Try unified claim handler first (warm start)
+          final handled = await _handleClaimUri(uri, source: 'stream');
+          if (!handled) {
+            // Fall back to existing complex logic for non-claim URIs
+            _handleDeepLink(uri);
+          }
         },
         onError: (err) {
           if (kDebugMode) {
@@ -118,6 +130,49 @@ class DeepLinkService {
       if (kDebugMode) {
         debugPrint("🔗 Deep Link Initialization Error: $e");
       }
+    }
+  }
+
+  /// Unified claim URI handler for both cold and warm starts.
+  /// Returns true if the URI was a claim path and was handled.
+  Future<bool> _handleClaimUri(Uri uri, {required String source}) async {
+    final raw = uri.toString();
+    print('[TBP-DEEPLINK-$source] $raw');
+
+    final path = uri.path.toLowerCase();
+    if (!path.contains('claim')) {
+      print('[TBP-DEEPLINK-$source] Not a claim path, skipping');
+      return false; // Not a claim path, let other handlers process it
+    }
+
+    // Parse query params safely
+    final ref = uri.queryParameters['ref']?.trim();
+    final tkn = uri.queryParameters['tkn']?.trim();
+    final t = uri.queryParameters['t']?.trim();
+
+    print('[TBP-CLAIM-PARSED] ref:$ref tkn:${tkn != null ? 'present' : 'none'} t:$t');
+
+    if (ref != null && ref.isNotEmpty) {
+      // Store in SessionManager with all available data
+      await SessionManager.instance.setReferralData(
+        ref,
+        '', // sponsor name will be resolved by registration screen
+        queryType: 'claim',
+        source: 'claim_uri_$source',
+        campaignType: t
+      );
+
+      _latestReferralCode = ref;
+      _latestQueryType = 'claim';
+
+      print('[TBP-SESSIONMGR] Stored ref=$ref source=claim_uri_$source tkn=${tkn != null ? 'present' : 'none'}');
+
+      // Navigate to registration with claim data
+      _navigateToHomepage(ref, 'claim');
+      return true;
+    } else {
+      print('[TBP-CLAIM-PARSED] No ref parameter found');
+      return false;
     }
   }
 

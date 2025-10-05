@@ -1325,33 +1325,18 @@
                 }
             }
 
+            
             const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
             const referrerFullName = `${firstName} ${lastName}`;
             const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
 
-            // 1. Create the integrated invitation bar with Open/App Store handoff
+            // 1. Create informational invite pill (no buttons - hero CTAs handle actions)
             inviteContainer.innerHTML = `
         <div class="invite-bar">
             <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
             <span class="invite-text">You've been personally invited by <strong>${referrerFullName}</strong></span>
         </div>
-        <div class="invite-handoff" style="text-align: center; padding: 16px 12px; margin-top: 16px;">
-            <p class="invite-helper" style="font-size: 14px; opacity: 0.85; margin: 0 0 16px;">
-                We'll open the app with your invite. If you don't have it yet, we'll take you to the App Store.
-            </p>
-            <div class="cta-stack">
-                <button id="openApp" class="btn btn-primary" style="display: inline-block; padding: 12px 18px; border-radius: 12px; border: 0; background: #111; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; max-width: 300px;">
-                    Open Team Build Pro
-                </button>
-                <a id="appStore" class="btn-link" href="https://apps.apple.com/app/id6751211622" style="display: block; margin-top: 10px; text-decoration: underline; color: #1A237E; font-size: 14px;">
-                    Continue to App Store
-                </a>
-            </div>
-        </div>
     `;
-
-            // Setup Universal Link → App Store fallback handler
-            setupInviteHandoff();
 
             // 2. Personalize the hero content based on the referral type
             if (referralType === "new") {
@@ -1409,7 +1394,7 @@
         // Setup Universal Link → App Store fallback for invite handoff
         function setupInviteHandoff() {
             const UNIVERSAL_LINK_BASE = 'https://teambuildpro.com/';
-            const APP_STORE_URL = 'https://apps.apple.com/app/id6751211622';
+            const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
             const params = window.location.search || '';
             const universalLink = UNIVERSAL_LINK_BASE + (params.startsWith('?') ? params : ('?' + params));
@@ -1432,6 +1417,37 @@
                 }, 1200);
             });
         }
+
+        // --- OPEN APP OR FALL BACK TO APP STORE (iOS) ---
+        // Universal Link attempt - fallback logic now on /claim page
+        (function () {
+            if (typeof window.openAppOrStore === 'function') return;
+
+            window.openAppOrStore = function openAppOrStore() {
+                const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+
+                // Check if on iOS (including iPad desktop mode)
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+                if (!isIOS) {
+                    // Desktop or Android - go straight to store
+                    window.location.href = APP_STORE_URL;
+                    return;
+                }
+
+                // Strip existing _ul parameter (prevent double-tap issues)
+                const url = new URL(location.href);
+                url.searchParams.delete('_ul');
+                const params = url.search || '';
+                const sep = params ? '&' : '?';
+                const UNIVERSAL_LINK = 'https://teambuildpro.com/claim.html' + params + sep + '_ul=1';
+
+                // Navigate to /claim.html - if app installed, handoff happens before page loads
+                // If app not installed, /claim.html loads and runs fallback to App Store
+                console.log('🔗 Navigating to UL:', UNIVERSAL_LINK);
+                window.location.href = UNIVERSAL_LINK;
+            };
+        })();
 
         // ============================================================================
         // INITIALIZATION & UTILITIES
@@ -1515,12 +1531,12 @@
         }
 
         function generateQRCodeURL(token) {
-            const appURL = `https://teambuildpro.com/claim?token=${encodeURIComponent(token)}`;
+            const appURL = `https://teambuildpro.com/claim.html?token=${encodeURIComponent(token)}`;
             return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(appURL)}`;
         }
 
         function generateSMSHelper(token) {
-            const appURL = `https://teambuildpro.com/claim?token=${encodeURIComponent(token)}`;
+            const appURL = `https://teambuildpro.com/claim.html?token=${encodeURIComponent(token)}`;
             const message = encodeURIComponent(`Download Team Build Pro and use this link to get your referral: ${appURL}`);
             return `sms:?body=${message}`;
         }
@@ -1565,9 +1581,10 @@
         }
 
         async function createAppStoreBadge(isPrimary = true) {
-            // No longer builds URL - capture-phase handler intercepts all clicks and calls copyAndGo()
+            // All badges now try Universal Link → App Store fallback via openAppOrStore()
+            // Capture-phase handler still runs for analytics/token copy
             return `
-                <a href="#" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" target="_blank" rel="noopener" style="display: inline-block; vertical-align: top;">
+                <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
@@ -2379,7 +2396,7 @@
         const token   = (payload.match(/TKN:([A-Fa-f0-9]{32})/)||[])[1] || '';
         const t       = (payload.match(/T:([^;]*)$/)||[])[1] || '';
         const sponsor = qp('ref') || qp('new') || '';
-        const claimUrl = `${location.origin}/claim?token=${encodeURIComponent(token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
+        const claimUrl = `${location.origin}/claim.html?token=${encodeURIComponent(token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
         qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(claimUrl)}`;
 
         document.getElementById('tbp-copy').onclick = async ()=> {
@@ -2402,7 +2419,7 @@
           await navigator.clipboard.writeText(payload);
           const debug = (new URLSearchParams(location.search).get('debug') === '1');
           if (debug) {
-            const claimUrl = `${location.origin}/claim?tkn=${encodeURIComponent(token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
+            const claimUrl = `${location.origin}/claim.html?tkn=${encodeURIComponent(token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
             toast('Invite copied. Opening claim page…');
             setTimeout(() => window.location.href = claimUrl, 600);
           } else {
@@ -2449,6 +2466,14 @@
         const debug = (new URLSearchParams(location.search).get('debug') === '1');
 
         console.log('🚀 copyAndGo() called', { sponsor, t, debug });
+
+        // Organic install: no referral → skip UL/claim, go direct to App Store
+        if (!sponsor && !debug) {
+          console.log('🍎 PROD MODE: Organic install → App Store');
+          toast('Opening App Store…');
+          setTimeout(() => { window.location.href = APP_STORE_URL; }, 600);
+          return;
+        }
 
         // Analytics: distinguish organic vs referral installs
         const sourceType = sponsor ? 'web_button' : 'web_button_no_sponsor';
@@ -2521,7 +2546,7 @@
           }
 
           // Now we have the real token - try to upgrade clipboard (best-effort)
-          const finalPayload = `TBP_REF:${sponsor};TKN:${j.token};T:${t}`;
+          const finalPayload = `TBP_REF:${sponsor};TKN:${j.token};T:${t};V:2`;
           console.log('📋 Final payload constructed:', finalPayload.substring(0, 50) + '...');
 
           // Best-effort token upgrade: try both methods once (Joe's recommendation)
@@ -2561,15 +2586,39 @@
 
           // Navigate to destination
           if (debug) {
-            const claimUrl = `${location.origin}/claim?tkn=${encodeURIComponent(j.token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
+            const claimUrl = `${location.origin}/claim.html?tkn=${encodeURIComponent(j.token)}&ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
             tbpLog('web_claim_redirect', { sponsor, t });
             console.log('🔍 DEBUG MODE: Redirecting to claim page');
             toast('Invite copied. Opening claim page…');
             setTimeout(() => window.location.href = claimUrl, 600);
           } else {
-            console.log('🍎 PROD MODE: Redirecting to App Store');
-            toast('Invite copied. Opening App Store…');
-            setTimeout(() => window.location.href = APP_STORE_URL, 600);
+            if (sponsor) {
+              console.log('🍎 PROD MODE: Referral install → UL → /claim.html fallback');
+              toast('Invite copied. Opening app…');
+              setTimeout(() => {
+                try {
+                  openAppOrStore();
+                } catch (err) {
+                  // Inline safety: same behavior even if helper unavailable
+                  console.error('openAppOrStore failed, using fallback navigation:', err);
+                  const params = window.location.search || '';
+                  const UNIVERSAL_LINK = 'https://teambuildpro.com/' + (params.startsWith('?') ? params : ('?' + params));
+                  const t0 = Date.now();
+                  window.location.href = UNIVERSAL_LINK;
+                  setTimeout(() => {
+                    const elapsed = Date.now() - t0;
+                    if (elapsed < 2000) {
+                      window.location.replace(APP_STORE_URL);
+                    }
+                  }, 1500);
+                }
+              }, 600);
+            } else {
+              // (Belt & suspenders; organic should already have returned above)
+              console.log('🍎 PROD MODE: Organic install → App Store');
+              toast('Opening App Store…');
+              setTimeout(() => { window.location.href = APP_STORE_URL; }, 600);
+            }
           }
 
         } catch (err) {
@@ -2586,7 +2635,7 @@
 
       // Helper: construct fallback payload when issueReferralV2 fails
       function constructPayload(sponsor, token, t) {
-        return `TBP_REF:${sponsor};TKN:${token};T:${t}`;
+        return `TBP_REF:${sponsor};TKN:${token};T:${t};V:2`;
       }
 
       // Helper: legacy clipboard fallback using hidden textarea (for iOS 16/17)
@@ -2636,6 +2685,7 @@
 
       // Global capture-phase handler - intercepts ALL CTA clicks before any other handlers
       document.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // let modified/right-clicks behave normally
         // Let the dedicated Open button run its own Universal Link logic
         if (e.target.closest('#openApp')) return;
 
@@ -2670,22 +2720,46 @@
       });
 
       // Smart App Banner: inject dynamically with real app-argument
+      // Non-blocking pattern: set immediately with ref, optionally upgrade with token in background
       document.addEventListener('DOMContentLoaded', () => {
         const Q = new URLSearchParams(location.search);
         const sponsor = Q.get('ref') || Q.get('new') || '';
         const t = Q.get('t') || '1';
 
-        // For installed users, Smart App Banner opens app via /claim route
-        const argUrl = `https://teambuildpro.com/claim?ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}`;
-
-        let tag = document.querySelector('meta[name="apple-itunes-app"]');
-        if (!tag) {
-          tag = document.createElement('meta');
-          tag.setAttribute('name', 'apple-itunes-app');
-          document.head.appendChild(tag);
+        // Helper to set/update banner meta tag
+        function setBanner(url) {
+          let tag = document.querySelector('meta[name="apple-itunes-app"]');
+          if (!tag) {
+            tag = document.createElement('meta');
+            tag.setAttribute('name', 'apple-itunes-app');
+            document.head.appendChild(tag);
+          }
+          tag.setAttribute('content', `app-id=6751211622, app-argument=${url}`);
+          console.log('✅ Smart App Banner configured:', url);
         }
-        tag.setAttribute('content', `app-id=6751211622, app-argument=${argUrl}`);
-        console.log('✅ Smart App Banner configured:', argUrl);
+
+        // Immediately set banner with ref-only (fast path - don't block on token)
+        const argUrlRefOnly = `https://teambuildpro.com/claim.html?ref=${encodeURIComponent(sponsor)}&t=${encodeURIComponent(t)}&_ul=1`;
+        setBanner(argUrlRefOnly);
+
+        // Optional: best-effort upgrade with token in background (don't await)
+        if (sponsor) {
+          fetch(`${TBP_FN_BASE}/issueReferralV2`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ sponsorCode: sponsor, t, source: 'smart_app_banner' })
+          })
+          .then(r => r.json())
+          .then(j => {
+            if (j && j.token) {
+              const argUrlWithToken = `${argUrlRefOnly}&tkn=${encodeURIComponent(j.token)}`;
+              setBanner(argUrlWithToken);
+            }
+          })
+          .catch(() => {
+            // Silently fail - ref-only banner already set
+          });
+        }
       });
     </script>
 
@@ -2701,7 +2775,7 @@
       #tbp-debug-banner a { color:#fff; text-decoration: underline; }
     </style>
     <div id="tbp-debug-banner">
-      <strong>Internal Test Mode</strong> — CTAs will open <code>/claim</code> (not the App Store) to exercise referral handling.
+      <strong>Internal Test Mode</strong> — CTAs will open <code>/claim.html</code> (not the App Store) to exercise referral handling.
       <span style="margin-left:10px">Remove <code>?debug=1</code> to return to normal.</span>
       <span style="float:right"><a href="#" id="tbp-exit-debug">Exit</a></span>
     </div>

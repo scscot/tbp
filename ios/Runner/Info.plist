@@ -63,6 +63,8 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>To provide a secure and convenient way to log in to your account.</string>
+	<key>NSPasteboardUsageDescription</key>
+	<string>Team Build Pro confirms your referral invite to ensure you're connected with the correct sponsor.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -1,13 +1,24 @@
 RewriteEngine On
 
-# Handle referral codes in URL path
-# Redirect /referralcode to /?ref=referralcode
+# --- Claim routing (protect first) ---
+# Allow /claim.html to pass through untouched
+RewriteRule ^claim\.html$ - [L]
+
+# Redirect /claim to the explicit file (avoid hitting the referral shortener)
+RewriteRule ^claim$ /claim.html [R=302,L]
+
+# --- Referral shortener: /{code} -> /?ref={code} ---
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/\.well-known/
 RewriteCond %{REQUEST_URI} !^/(privacy_policy\.html|terms_of_service\.html|contact_us\.html|index\.html|favicon\.ico|robots\.txt|sitemap\.xml|assets/)
+RewriteCond %{REQUEST_URI} !^/apple-app-site-association$
+RewriteCond %{REQUEST_URI} !^/claim\.html$
 RewriteRule ^([a-zA-Z0-9_-]+)/?$ /?ref=$1 [R=302,L]
 
-# Fallback: serve index.html for any other non-existent files
+# --- SPA fallback to index.html for everything else ---
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteCond %{REQUEST_URI} !^/apple-app-site-association$
 RewriteRule . /index.html [L]

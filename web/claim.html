@@ -17,6 +17,32 @@
   #tbp-claim-debug a { color: #fff; text-decoration: underline }</style>
 </head>
 <body>
+  <script>
+  // --- UNIVERSAL LINK FALLBACK ---
+  // If app is installed, this page never loads (handoff happens before navigation).
+  // If we're here, the Universal Link did NOT hand off (app likely not installed).
+  (function () {
+    var qs = location.search;
+    var isDebug = /(?:[?&])debug=1(?:[&#]|$)/.test(qs);
+    var fromUL = /(?:[?&])_ul=1(?:[&#]|$)/.test(qs);
+    var APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+
+    // Track if page became hidden (app opened)
+    var wentHidden = false;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) wentHidden = true;
+    }, { once: true });
+
+    if (fromUL && !isDebug) {
+      // App didn't open, redirect to App Store after brief delay
+      setTimeout(function () {
+        if (!wentHidden) {
+          window.location.replace(APP_STORE_URL);
+        }
+      }, 1200);
+    }
+  })();
+  </script>
   <div id="tbp-claim-debug">
     <strong>Internal Test Mode — Claim Path</strong>
     <span id="tbp-claim-values" style="margin-left:10px"></span>
@@ -84,29 +110,142 @@
     } catch(_) {}
   }
 
+  
+  // Legacy clipboard copy using execCommand (fallback for iOS)
+  function legacyCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }
+
   async function run() {
-    const token = qp('token') || qp('tkn'); // Support both token and tkn parameters
-    const sponsor = qp('ref') || qp('new') || '';
-    const t = qp('t') || '1';
-    if (!token) { statusEl.textContent = 'Missing token.'; return; }
-    const payload = `TBP_REF:${sponsor};TKN:${token};T:${t}`;
+    console.log('[claim] start', location.search);
+
+    const sponsor = (qp('ref') || qp('new') || '').trim();
+    const t = (qp('t') || '1').trim();
+    let token = (qp('tkn') || qp('token') || '').trim();
+
+    console.log('[claim] parsed params => ref:', sponsor, 'tkn:', token ? token.substring(0,8)+'...' : 'null', 't:', t);
+
+    // Organic: no ref → go straight to store
+    if (!sponsor && !token) {
+      console.log('[claim] organic flow (no ref/token) => redirecting to App Store');
+      statusEl.textContent = 'Opening App Store…';
+      setTimeout(()=> location.replace(APP_STORE_URL), 600);
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(payload);
-      tbpLog('web_claim_autocopy'); // Analytics: successful auto-copy
-      toast('Invite copied. Opening App Store…');
-      setTimeout(()=> window.location.href = APP_STORE_URL, 600);
-    } catch {
-      statusEl.textContent = 'Clipboard blocked. Tap to copy and continue.';
-      const go = document.getElementById('go');
-      go.style.display = 'inline-block';
-      go.onclick = async () => {
+      // If token missing but we have sponsor → mint one server-side
+      if (!token && sponsor) {
+        console.log('[claim] minting token for sponsor:', sponsor);
+        const r = await fetch(`${TBP_FN_BASE}/issueReferralV2`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ sponsorCode: sponsor, t, source: 'claim_page' })
+        });
+        const j = await r.json();
+        token = j && j.token ? j.token : '';
+        console.log('[claim] token minted:', token ? token.substring(0,8)+'...' : 'failed');
+      }
+
+      // If we now have a token, copy TBP payload (clipboard backup)
+      if (token) {
+        const payload = `TBP_REF:${sponsor};TKN:${token};T:${t};V:2`;
+        console.log('[claim] attempting clipboard copy:', payload);
+
+        // Try to copy - with fallback handling for iOS gesture restrictions
+        let copied = false;
         try {
           await navigator.clipboard.writeText(payload);
-          tbpLog('web_claim_manual_copy'); // Analytics: manual copy success
-          window.location.href = APP_STORE_URL;
+          copied = true;
+          console.log('[claim] clipboard.writeText() succeeded');
+          tbpLog('web_claim_autocopy');
+        } catch (err) {
+          console.log('[claim] clipboard.writeText() failed:', err);
+          // Try legacy fallback
+          try {
+            copied = legacyCopy(payload);
+            console.log('[claim] legacyCopy() result:', copied);
+          } catch (err2) {
+            console.log('[claim] legacyCopy() failed:', err2);
+          }
         }
-        catch { /* user can retry */ }
-      };
+
+        // If both methods failed, show button and wait for user gesture
+        if (!copied) {
+          console.log('[claim] both clipboard methods failed => showing manual button');
+
+          // Make button huge, primary, and unmissable
+          const btn = document.getElementById('go');
+          btn.textContent = 'Continue';
+          btn.style.display = 'inline-block';
+          btn.style.fontSize = '20px';
+          btn.style.padding = '16px 32px';
+          btn.style.marginTop = '20px';
+          btn.style.backgroundColor = '#0a66ff';
+          btn.style.color = '#fff';
+          btn.style.border = 'none';
+          btn.style.borderRadius = '8px';
+          btn.style.cursor = 'pointer';
+          btn.style.fontWeight = 'bold';
+
+          statusEl.textContent = 'Tap below to continue';
+          statusEl.style.fontSize = '18px';
+          statusEl.style.fontWeight = 'bold';
+
+          document.title = 'Continue to Team Build Pro';
+
+          // Auto-focus and scroll into view
+          setTimeout(() => {
+            btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            btn.focus();
+          }, 100);
+
+          btn.onclick = async () => {
+            console.log('[claim] manual button clicked');
+            try {
+              await navigator.clipboard.writeText(payload);
+              tbpLog('web_claim_manual_copy');
+            } catch (_) {
+              legacyCopy(payload);
+            }
+            location.replace(APP_STORE_URL);
+          };
+
+          // Delayed retry: some iOS versions allow clipboard writes after page settles
+          setTimeout(async () => {
+            if (!copied) {
+              try {
+                await navigator.clipboard.writeText(payload);
+                copied = true;
+                console.log('[claim] delayed retry succeeded - auto-proceeding');
+                location.replace(APP_STORE_URL);
+              } catch (_) {
+                console.log('[claim] delayed retry also failed');
+              }
+            }
+          }, 1500);
+
+          return; // Wait for user to tap button (or delayed retry to succeed)
+        }
+      }
+
+      // Successfully copied (or no token) - proceed to the App Store
+      console.log('[claim] success => redirecting to App Store');
+      statusEl.textContent = 'Opening App Store…';
+      setTimeout(()=> location.replace(APP_STORE_URL), 600);
+    } catch (e) {
+      console.error('[claim] error:', e);
+      // Fail-safe: still send them to the store
+      statusEl.textContent = 'Opening App Store…';
+      setTimeout(()=> location.replace(APP_STORE_URL), 600);
     }
   }
   run();
