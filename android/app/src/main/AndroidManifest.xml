@@ -61,13 +61,22 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Deep Link Intent Filter -->
+            <!-- Android App Links with specific paths -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" 
-                      android:host="teambuildpro.com" />
+                <!-- Root with ref/new parameters -->
+                <data android:scheme="https"
+                      android:host="teambuildpro.com"
+                      android:path="/" />
+                <!-- Claim paths -->
+                <data android:scheme="https"
+                      android:host="teambuildpro.com"
+                      android:pathPrefix="/claim" />
+                <data android:scheme="https"
+                      android:host="teambuildpro.com"
+                      android:pathPrefix="/claim-google" />
             </intent-filter>
             <!-- Custom scheme for testing -->
             <intent-filter>

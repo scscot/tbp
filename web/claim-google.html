@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Team Build Pro — Claim Invite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;display:grid;place-items:center;height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+  .card{max-width:520px;padding:32px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);background:#fff;text-align:center}
+  .card h2{margin:0 0 12px;color:#1a1a1a;font-size:24px}
+  .card p{margin:8px 0;color:#555;line-height:1.6}
+  .btn{background:#0a66ff;color:#fff;border:none;padding:16px 32px;border-radius:12px;cursor:pointer;font-size:18px;font-weight:600;margin-top:16px;width:100%;transition:all .2s}
+  .btn:hover{background:#0952cc;transform:scale(1.02)}
+  .btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
+  #status{min-height:24px;font-weight:500}
+  .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s linear infinite;margin-right:8px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Preparing your invite…</h2>
+    <p>We're setting up your referral link for Google Play.</p>
+    <p id="status">Working…</p>
+    <button id="go" class="btn" style="display:none">Continue to Google Play</button>
+  </div>
+
+<script>
+  const PLAY_STORE_BASE = 'https://play.google.com/store/apps/details';
+  const PACKAGE_NAME = 'com.scott.ultimatefix';
+  const TBP_FN_BASE = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
+  const QP = new URLSearchParams(location.search);
+  const qp = k => QP.get(k) || '';
+  const statusEl = document.getElementById('status');
+  const goBtn = document.getElementById('go');
+
+  // Parse query parameters
+  const ref = qp('ref') || qp('new') || '';
+  const t = qp('t') || '1';
+
+  console.log('[claim-google] start', `?ref=${ref}&t=${t}`);
+
+  async function main() {
+    if (!ref) {
+      statusEl.textContent = 'No referral code found.';
+      goBtn.textContent = 'Go to Google Play';
+      goBtn.style.display = 'block';
+      goBtn.onclick = () => {
+        window.location.href = `${PLAY_STORE_BASE}?id=${PACKAGE_NAME}`;
+      };
+      return;
+    }
+
+    console.log('[claim-google] parsed params => ref:', ref, 't:', t);
+    statusEl.innerHTML = '<span class="spinner"></span>Minting secure token…';
+
+    // Mint token via issueReferralV2
+    let token = null;
+    try {
+      console.log('[claim-google] minting token for sponsor:', ref);
+      const mintUrl = `${TBP_FN_BASE}/issueReferralV2?sponsor=${encodeURIComponent(ref)}`;
+      const res = await fetch(mintUrl);
+      const data = await res.json();
+      token = data.token;
+      console.log('[claim-google] token minted:', token.substring(0, 8) + '...');
+    } catch (err) {
+      console.error('[claim-google] mint error:', err);
+      statusEl.textContent = 'Could not generate referral token.';
+      goBtn.textContent = 'Continue Anyway';
+      goBtn.style.display = 'block';
+      goBtn.onclick = () => {
+        window.location.href = `${PLAY_STORE_BASE}?id=${PACKAGE_NAME}`;
+      };
+      return;
+    }
+
+    // Build TBP_REF payload
+    const payload = `TBP_REF:${ref};TKN:${token};T:${t};V:2`;
+    console.log('[claim-google] payload:', payload);
+
+    // URL-encode payload for referrer parameter
+    const encodedPayload = encodeURIComponent(payload);
+    const playUrl = `${PLAY_STORE_BASE}?id=${PACKAGE_NAME}&referrer=${encodedPayload}`;
+
+    console.log('[claim-google] Play Store URL ready');
+
+    statusEl.textContent = 'Ready! Tap below to continue.';
+    goBtn.textContent = 'Continue to Google Play';
+    goBtn.style.display = 'block';
+
+    goBtn.onclick = () => {
+      console.log('[claim-google] redirecting to Play Store with referrer');
+      window.location.href = playUrl;
+    };
+
+    // Auto-scroll button into view and focus
+    goBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    goBtn.focus();
+  }
+
+  main().catch(err => {
+    console.error('[claim-google] fatal error:', err);
+    statusEl.textContent = 'Something went wrong. Please try again.';
+    goBtn.textContent = 'Go to Google Play';
+    goBtn.style.display = 'block';
+    goBtn.onclick = () => {
+      window.location.href = `${PLAY_STORE_BASE}?id=${PACKAGE_NAME}`;
+    };
+  });
+</script>
+</body>
+</html>

@@ -1,11 +1,15 @@
 RewriteEngine On
 
 # --- Claim routing (protect first) ---
-# Allow /claim.html to pass through untouched
+# Allow /claim.html and /claim-google.html to pass through untouched
 RewriteRule ^claim\.html$ - [L]
+RewriteRule ^claim-google\.html$ - [L]
 
-# Redirect /claim to the explicit file (avoid hitting the referral shortener)
+# Redirect /claim to the explicit iOS file
 RewriteRule ^claim$ /claim.html [R=302,L]
+
+# Redirect /claim-google to the explicit Android file
+RewriteRule ^claim-google$ /claim-google.html [R=302,L]
 
 # --- Referral shortener: /{code} -> /?ref={code} ---
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -14,6 +18,7 @@ RewriteCond %{REQUEST_URI} !^/\.well-known/
 RewriteCond %{REQUEST_URI} !^/(privacy_policy\.html|terms_of_service\.html|contact_us\.html|index\.html|favicon\.ico|robots\.txt|sitemap\.xml|assets/)
 RewriteCond %{REQUEST_URI} !^/apple-app-site-association$
 RewriteCond %{REQUEST_URI} !^/claim\.html$
+RewriteCond %{REQUEST_URI} !^/claim-google\.html$
 RewriteRule ^([a-zA-Z0-9_-]+)/?$ /?ref=$1 [R=302,L]
 
 # --- SPA fallback to index.html for everything else ---

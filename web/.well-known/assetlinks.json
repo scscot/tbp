@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.scott.ultimatefix",
+    "sha256_cert_fingerprints": [
+      "5F:5C:47:09:07:42:BD:B7:EF:A3:9A:D3:4F:E4:AC:25:17:40:9D:3B:AD:C6:59:FC:35:02:6B:4A:C7:9D:2D:E9"
+    ]
+  }
+}]

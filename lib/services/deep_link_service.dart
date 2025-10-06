@@ -12,6 +12,7 @@ import '../screens/new_registration_screen.dart';
 import '../services/session_manager.dart';
 import '../services/pasteboard_attribution_service.dart';
 import '../services/deep_link_claim_parser.dart';
+import '../services/install_referrer_bridge.dart';
 import '../main.dart' show navigatorKey, appId;
 
 class DeepLinkService {
@@ -90,6 +91,30 @@ class DeepLinkService {
         if (kDebugMode) {
           debugPrint(
               "🔗 Deep Link: No initial URI found. Checking for cached referral or navigating to generic homepage.");
+        }
+
+        // Android: Check for Install Referrer (deferred deep linking from Play Store)
+        if (Platform.isAndroid) {
+          final installReferrer = await InstallReferrerBridge.fetchOnce();
+          if (installReferrer != null && installReferrer.ref != null && installReferrer.ref!.isNotEmpty) {
+            print('[TBP-ANDROID-IR] Install Referrer found: ref=${installReferrer.ref} t=${installReferrer.t}');
+
+            _latestReferralCode = installReferrer.ref;
+            _latestQueryType = 'install_referrer';
+
+            await SessionManager.instance.setReferralData(
+              installReferrer.ref!,
+              '', // sponsor name will be resolved by registration screen
+              queryType: 'install_referrer',
+              source: 'install_referrer',
+              campaignType: installReferrer.t ?? '1'
+            );
+
+            _navigateToHomepage(_latestReferralCode, _latestQueryType);
+            return; // Skip cached data check
+          } else {
+            print('[TBP-ANDROID-IR] No Install Referrer data found');
+          }
         }
 
         // Clipboard checks are now user-initiated in UI (see ClipboardHelper)
