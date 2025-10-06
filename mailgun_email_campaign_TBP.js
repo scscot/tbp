@@ -42,11 +42,12 @@ async function sendTestEmail() {
     form.append('from', 'Stephen Scott <sscott@teambuildpro.com>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
-    form.append('subject', 'Team Build Pro — software for prospecting and follow-up');
+    form.append('subject', 'Recruit faster with an app for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'team build pro'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
-    
+    form.append('o:tag', templateVersion); // Tag for A/B test tracking
+
     // Template variables based on your CSV format (firstname lastname,email)
     form.append('h:X-Mailgun-Variables', JSON.stringify({
        first_name: 'Stephen',
@@ -81,10 +82,11 @@ async function sendBulkCampaign(recipientList) {
     const form = new FormData();
     
     form.append('from', 'Stephen Scott <sscott@teambuildpro.com>');
-    form.append('subject', 'Team Build Pro — software for prospecting and follow-up');
+    form.append('subject', 'Recruit faster with an app for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'team build pro'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
+    form.append('o:tag', templateVersion); // Tag for A/B test tracking
 
     // Add multiple recipients
     recipientList.forEach(recipient => {
@@ -265,11 +267,12 @@ async function sendCampaignToList() {
     const form = new FormData();
     form.append('from', 'Stephen Scott | Team Build Pro <sscott@teambuildpro.com>');
     form.append('to', MAILING_LIST_ADDRESS);
-    form.append('subject', 'Team Build Pro — software for prospecting and follow-up');
+    form.append('subject', 'Recruit faster with an app for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'team build pro'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
-    
+    form.append('o:tag', templateVersion); // Tag for A/B test tracking
+
     // Recipient variables will be automatically substituted by Mailgun
     // based on the vars we uploaded with each contact
 
@@ -468,10 +471,11 @@ async function sendBatchCampaign(options = {}) {
           const form = new FormData();
           form.append('from', 'Stephen Scott | Team Build Pro <sscott@teambuildpro.com>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
-          form.append('subject', 'Team Build Pro — software for prospecting and follow-up');
+          form.append('subject', 'Recruit faster with an app for direct sales');
           const templateVersion = getAlternatingTemplateVersion(verbose);
           form.append('template', 'team build pro'); // Template name
           form.append('t:version', templateVersion); // Alternating template version
+          form.append('o:tag', templateVersion); // Tag for A/B test tracking
           form.append('h:X-Mailgun-Variables', JSON.stringify({
             first_name: contact.first_name,
             last_name: contact.last_name,
