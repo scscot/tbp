@@ -16,6 +16,7 @@ migrate_working_dir/
 *.class
 *.log
 flutter_*.log
+*.md
 
 # === Environment Variables and Secrets ===
 # DO NOT commit sensitive environment variables or secrets.
