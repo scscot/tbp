@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
@@ -119,31 +120,79 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
   
   Future<void> _handleBiometricToggle(bool value) async {
     if (!_biometricAvailable) return;
-    
+
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
+
     if (value) {
       // Enabling biometric - test authentication first
       try {
         final authenticated = await BiometricService.authenticate(
           localizedReason: 'Test biometric authentication to enable this feature',
         );
-        
-        if (authenticated) {
+
+        if (!authenticated) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Biometric authentication failed. Please try again.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+
+        // Request password to securely store credentials
+        final password = await _showPasswordDialog();
+        if (password == null || password.isEmpty) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Password required to enable biometric login'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+
+        // Verify password by attempting Firebase authentication
+        final email = widget.user.email;
+        if (email == null) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('User email not found'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        try {
+          // Verify password is correct
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+
+          // Password is correct - store credentials
+          await BiometricService.storeCredentials(
+            email: email,
+            password: password,
+          );
+
+          // Enable biometric setting
           await BiometricService.setBiometricEnabled(true);
           setState(() => _biometricEnabled = true);
-          
+
           scaffoldMessenger.showSnackBar(
             const SnackBar(
               content: Text('✅ Biometric login enabled successfully'),
               backgroundColor: Colors.green,
             ),
           );
-        } else {
+        } on FirebaseAuthException catch (e) {
+          debugPrint('Password verification failed: ${e.code}');
           scaffoldMessenger.showSnackBar(
             const SnackBar(
-              content: Text('Biometric authentication failed. Please try again.'),
-              backgroundColor: Colors.orange,
+              content: Text('Incorrect password. Please try again.'),
+              backgroundColor: Colors.red,
             ),
           );
         }
@@ -162,7 +211,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (confirmed) {
         await BiometricService.setBiometricEnabled(false);
         setState(() => _biometricEnabled = false);
-        
+
         scaffoldMessenger.showSnackBar(
           const SnackBar(
             content: Text('Biometric login disabled'),
@@ -171,6 +220,55 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         );
       }
     }
+  }
+
+  Future<String?> _showPasswordDialog() async {
+    final passwordController = TextEditingController();
+
+    return await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Password'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'To securely store your credentials for biometric login, please enter your password.',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                ),
+                onSubmitted: (value) => Navigator.of(context).pop(value),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(passwordController.text),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
   }
   
   Future<bool> _showDisableBiometricDialog() async {

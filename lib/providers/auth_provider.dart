@@ -230,6 +230,17 @@ class AuthStateProvider extends ChangeNotifier {
 
       // Clear logout state on successful login
       await SessionManager.instance.clearLogoutState();
+
+      // Store credentials if biometric is enabled (for future biometric login)
+      final biometricEnabled = await BiometricService.isBiometricEnabled();
+      if (biometricEnabled) {
+        await BiometricService.storeCredentials(
+          email: email,
+          password: password,
+        );
+        debugPrint('🔐 AUTH_PROVIDER: Stored credentials for biometric login');
+      }
+
       debugPrint('🔐 AUTH_PROVIDER: Login successful');
 
       return result;

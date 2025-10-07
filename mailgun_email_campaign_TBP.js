@@ -39,12 +39,12 @@ async function sendTestEmail() {
     const form = new FormData();
     
     // Email configuration
-    form.append('from', 'Stephen Scott <sscott@teambuildpro.com>');
+    form.append('from', 'Stephen Scott <sscott@info.teambuildpro.com>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
-    form.append('subject', 'Recruit faster with an app for direct sales');
+    form.append('subject', 'Recruit faster with an app designed for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
-    form.append('template', 'team build pro'); // Template name
+    form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
     form.append('o:tag', templateVersion); // Tag for A/B test tracking
 
@@ -81,10 +81,10 @@ async function sendBulkCampaign(recipientList) {
   try {
     const form = new FormData();
     
-    form.append('from', 'Stephen Scott <sscott@teambuildpro.com>');
-    form.append('subject', 'Recruit faster with an app for direct sales');
+    form.append('from', 'Stephen Scott <sscott@info.teambuildpro.com>');
+    form.append('subject', 'Recruit faster with an app designed for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
-    form.append('template', 'team build pro'); // Template name
+    form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
     form.append('o:tag', templateVersion); // Tag for A/B test tracking
 
@@ -265,11 +265,11 @@ async function sendCampaignToList() {
     console.log('📧 Sending campaign to mailing list...');
 
     const form = new FormData();
-    form.append('from', 'Stephen Scott | Team Build Pro <sscott@teambuildpro.com>');
+    form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
     form.append('to', MAILING_LIST_ADDRESS);
-    form.append('subject', 'Recruit faster with an app for direct sales');
+    form.append('subject', 'Recruit faster with an app designed for direct sales');
     const templateVersion = getAlternatingTemplateVersion(false);
-    form.append('template', 'team build pro'); // Template name
+    form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
     form.append('o:tag', templateVersion); // Tag for A/B test tracking
 
@@ -469,11 +469,11 @@ async function sendBatchCampaign(options = {}) {
         if (!testMode) {
           // Send individual email
           const form = new FormData();
-          form.append('from', 'Stephen Scott | Team Build Pro <sscott@teambuildpro.com>');
+          form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
-          form.append('subject', 'Recruit faster with an app for direct sales');
+          form.append('subject', 'Recruit faster with an app designed for direct sales');
           const templateVersion = getAlternatingTemplateVersion(verbose);
-          form.append('template', 'team build pro'); // Template name
+          form.append('template', 'initial'); // Template name
           form.append('t:version', templateVersion); // Alternating template version
           form.append('o:tag', templateVersion); // Tag for A/B test tracking
           form.append('h:X-Mailgun-Variables', JSON.stringify({
