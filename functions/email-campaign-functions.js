@@ -10,27 +10,17 @@ const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { defau
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
 const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildpro.com" });
 
-const TEMPLATE_VERSIONS = ['initial', 'initial1'];
-let templateCounter = 0;
-
-function getAlternatingTemplateVersion() {
-  const selectedVersion = TEMPLATE_VERSIONS[templateCounter % TEMPLATE_VERSIONS.length];
-  templateCounter++;
-  return selectedVersion;
-}
-
 async function sendEmailViaMailgun(contact, apiKey, domain) {
   const form = new FormData();
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
-  form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
+  // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', 'Recruit Better. Build Faster.');
 
-  const templateVersion = getAlternatingTemplateVersion();
   form.append('template', 'initial');
-  form.append('t:version', templateVersion);
-  form.append('o:tag', templateVersion);
+  form.append('t:version', 'initial');
+  form.append('o:tag', 'initial');
   form.append('h:X-Mailgun-Variables', JSON.stringify({
     first_name: contact.firstName,
     last_name: contact.lastName,
