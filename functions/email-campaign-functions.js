@@ -24,6 +24,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain) {
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
+  form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', 'Recruit Better. Build Faster.');
 
   const templateVersion = getAlternatingTemplateVersion();
