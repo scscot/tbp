@@ -1272,7 +1272,8 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Prominent "Confirm sponsor" button (only if no ref yet)
-                    if (_initialReferralCode == null || _initialReferralCode!.isEmpty)
+                    if ((_initialReferralCode == null || _initialReferralCode!.isEmpty) &&
+                        (!Platform.isIOS || _canOfferPaste))
                       Container(
                         margin: const EdgeInsets.only(bottom: 16.0),
                         child: ElevatedButton.icon(

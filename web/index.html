@@ -4,20 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI-Driven Recruiting & Team Building for Direct Sales | Team Build Pro</title>
-    <meta name="description" content="AI-Driven Recruiting & Team Building for Direct Sales. 30-day free trial.">
-    <meta name="keywords" content="AI coach, direct sales recruiting, team building app, AI-powered sales tools, network marketing software, team management, business growth, AI recruiting assistant">
+    <title>Team Build Pro | Recruit Better. Build Faster. Direct Sales Team Building App</title>
+    <meta name="description" content="Smart technology built for relationship-driven success. Help recruiting prospects build momentum before Day 1. Accelerate growth across your entire team. Free for 30 days, then $4.99/mo.">
+    <meta name="keywords" content="direct sales team building, recruiting app, momentum builder, relationship-driven sales, network marketing software, team management app, pre-launch recruiting, team growth accelerator, direct sales tools">
     <meta name="author" content="Team Build Pro">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="AI-Driven Recruiting & Team Building for Direct Sales">
-    <meta property="og:description" content="Built-in AI Coach drafts messages, times follow-ups, and guides next steps. Try it free for 30 days.">
+    <meta property="og:title" content="Team Build Pro | Recruit Better. Build Faster.">
+    <meta property="og:description" content="Smart technology built for relationship-driven success. Help prospects build momentum before Day 1. Accelerate growth across your team. Free for 30 days, then $4.99/mo.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teambuildpro.com">
     <meta property="og:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta property="og:site_name" content="Team Build Pro">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI-Driven Recruiting & Team Building for Direct Sales">
-    <meta name="twitter:description" content="AI Coach for direct sales: faster recruiting, better duplication. 30-day free trial.">
+    <meta name="twitter:title" content="Team Build Pro | Recruit Better. Build Faster.">
+    <meta name="twitter:description" content="Recruit better. Build faster. Smart team building for direct sales professionals. Free for 30 days, then $4.99/mo.">
     <meta name="twitter:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta name="twitter:site" content="@teambuildpro">
     <!-- Google Fonts: Inter -->
@@ -32,7 +32,7 @@
     <link rel="icon" href="assets/icons/team-build-pro.png" type="image/png" />
     <!-- Apple Touch Icon for Universal Links -->
     <link rel="apple-touch-icon" href="assets/icons/team-build-pro.png" />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=2" />
 
     <!-- reCAPTCHA Enterprise Script -->
     <script
@@ -67,17 +67,31 @@
         <!-- Hero Section -->
         <section class="hero gradient-bg">
             <div class="container">
-                <div class="hero-content">
+                <div class="hero-content-enhanced">
                     <div id="personal-invite-container"></div>
 
-                    <span id="hero-badge" class="platform-badge">Now with AI Coach</span>
+                    <!-- Trust badge row -->
+                    <div class="hero-trust">
+                        <span class="platform-badge" aria-label="Compatibility badge">
+                            Recruit Better. Build Faster.
+                        </span>
+                    </div>
+
                     <h1 id="hero-headline">
-                        Most Direct Sales Professionals Quit Within 90 Days <br />
-                        <span class="accent">Track Real Results.</span>
+                        Most Direct Sales Professionals Struggle to Build Momentum<br /><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>
                     </h1>
+
                     <p id="hero-subheadline">
-                        AI-powered private coaching companion, advanced analytics, and secure global messaging—everything you need to manage and grow your direct sales organization.
+                        Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.
                     </p>
+
+                    <!-- Trial offer badge -->
+                    <div class="hero-trial-badge">
+                        <span class="trial-badge" aria-label="Trial offer">
+                            Free for 30 days, then $4.99/mo. Cancel anytime.
+                        </span>
+                    </div>
+
                     <div class="hero-buttons">
                         <div class="download-buttons" id="download-container">
                             <!-- Dynamically populated based on device detection -->
@@ -85,9 +99,11 @@
                         <div class="secondary-download" id="secondary-container">
                             <!-- Secondary option with smaller styling -->
                         </div>
-                        <div style="text-align: center; margin-top: 4px; font-size: clamp(14px, 4vw, 18px); font-weight: 600; color: white; line-height: 1.4; padding: 0 1rem; max-width: 320px; margin-left: auto; margin-right: auto;">
-                            30-Day Free Trial<br>(No Credit Card Required)
-                        </div>
+
+                        <!-- Microcopy under primary CTA -->
+                        <p class="hero-microcopy" role="note">
+                            Team Build Pro is an app for your <strong>existing</strong> business—not an invitation to join one.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -114,7 +130,7 @@
                         </div>
                     </div>
                     <div class="solution-content">
-                        <h3>Why 90% Fail</h3>
+                        <h3>Why 90% Struggle</h3>
                         <p>Too many talented professionals are handed an opportunity, but no blueprint. They're essentially starting a race from a standstill, struggling to gain the crucial momentum they need to succeed and avoid frustration.</p>
 
                         <h4>Team Build Pro Changes This</h4>
@@ -874,17 +890,15 @@
 
         // Function to get responsive heroBadge text
         function getResponsiveHeroBadgeText() {
-            return shouldUseMobileLineBreak() 
-                ? "AI-Driven Recruiting &<br>Team Building for Direct Sales"
-                : "AI-Driven Recruiting & Team Building for Direct Sales";
+            return "Try Free for 30 Days";
         }
 
         const contentFor = {
             partner: {
                 heroBadge: getResponsiveHeroBadgeText(),
-                heroHeadline: `Most Direct Sales Professionals Quit Within 90 Days<br><span class="accent">Not Because They Lack Talent—Because They Lack a System</span>`,
+                heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
                 heroSubheadline:
-                    "Stop starting from zero. Team Build Pro gives you the simple, repeatable system that turns cold starts into running starts.",
+                    "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
                 whoSubheadline:
                     "Whether you're an aspiring leader, an active builder, or a seasoned mentor, our tools grow with you.",
@@ -1171,9 +1185,9 @@
             },
             "t8": {
                 heroBadge: "Your Blueprint for Team Growth",
-                 heroHeadline: `Most Direct Sales Professionals Quit Within 90 Days<br><span class="accent">Not Because They Lack Talent—Because They Lack a System</span>`,
+                 heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
                 heroSubheadline:
-                    "Stop starting from zero. Team Build Pro gives you the simple, repeatable system that turns cold starts into running starts.",
+                    "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
                 whoSubheadline:
                     "Whether you're an aspiring leader, an active builder, or a seasoned mentor, our tools grow with you.",
@@ -1253,7 +1267,7 @@
             // Update Hero Section
             updateElement("hero-badge", content.heroBadge, true); // Enable HTML for heroBadge
             updateElement("hero-headline", content.heroHeadline, true);
-            updateElement("hero-subheadline", content.heroSubheadline);
+            updateElement("hero-subheadline", content.heroSubheadline, true);
 
             // Update "Who It's For" Section
             updateElement("who-headline", content.whoHeadline);
@@ -1334,7 +1348,7 @@
             inviteContainer.innerHTML = `
         <div class="invite-bar">
             <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
-            <span class="invite-text">You've been personally invited by <strong>${referrerFullName}</strong></span>
+            <span class="invite-text">Invited by <strong>${referrerFullName}</strong></span>
         </div>
     `;
 
@@ -1346,8 +1360,8 @@
 
             } else { // "partner"
                 // Journey for an existing leader referred by a colleague
-                heroHeadline.innerHTML = `Most Direct Sales Professionals Quit Within 90 Days<br><span class="accent">Not Because They Lack Talent—Because They Lack a System</span>`;
-                heroSubheadline.innerHTML = `Your ${opportunityName} colleague, ${referrerFullName} is inviting you to see the tool they're using to build their team, and thought it could help you build yours, too.<br><br>Advanced analytics, AI-powered recruiting assistance, and secure global messaging—everything you need to succeed.`;
+                heroHeadline.innerHTML = `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`;
+                heroSubheadline.innerHTML = `Your ${opportunityName} colleague is inviting you to see the tool they're using to build their team, and thought it could help you build yours, too.`;
             }
 
             // Hide the generic badge now that a personal invitation is shown
@@ -1631,25 +1645,10 @@
         }
 
         function createAndroidPreviewButton(isPrimary = true) {
-            const imageStyle = `
-                display: inline-block;
-                height: 60px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                vertical-align: top;
-            `;
-
-            const hoverStyle = `
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.filter='brightness(1.1)'"
-                onmouseout="this.style.transform='translateY(0)'; this.style.filter='brightness(1)'"
-            `;
-
             return `
-                <img src="assets/images/Google-Play.png"
-                     alt="Get it on Google Play"
-                     style="${imageStyle}"
-                     ${hoverStyle}
-                     onclick="openModal()" />
+                <a href="#" class="google-play-badge" onclick="event.preventDefault(); openModal();">
+                    <img src="assets/images/Google-Play.png" alt="Get it on Google Play" />
+                </a>
             `;
         }
 
