@@ -33,44 +33,66 @@ class DeepLinkService {
   /// Initialize deep link handling and manage initial navigation.
   Future<void> initialize() async {
     try {
+      bool branchInitialized = false;
+
       // Initialize Branch SDK first for deferred deep linking
-      await FlutterBranchSdk.init();
-      if (kDebugMode) {
-        debugPrint("🌿 Branch: SDK initialized");
+      try {
+        await FlutterBranchSdk.init();
+        branchInitialized = true;
+        if (kDebugMode) {
+          debugPrint("🌿 Branch: SDK initialized successfully");
+        }
+      } catch (branchError) {
+        if (kDebugMode) {
+          debugPrint("⚠️ Branch: SDK initialization failed: $branchError");
+          debugPrint("⚠️ Branch: Continuing without Branch SDK (deep links will still work via AppLinks)");
+        }
       }
 
-      // Listen for Branch data (handles deferred deep links from App Store installs)
-      _branchSubscription = FlutterBranchSdk.listSession().listen((data) async {
-        if (kDebugMode) {
-          debugPrint("🌿 Branch: Session data received: $data");
-        }
+      // Listen for Branch data only if SDK initialized successfully
+      if (branchInitialized) {
+        try {
+          _branchSubscription = FlutterBranchSdk.listSession().listen((data) async {
+          if (kDebugMode) {
+            debugPrint("🌿 Branch: Session data received: $data");
+          }
 
-        if (data.containsKey('+clicked_branch_link') &&
-            data['+clicked_branch_link'] == true) {
+          if (data.containsKey('+clicked_branch_link') &&
+              data['+clicked_branch_link'] == true) {
 
-          final referralCode = data['ref'] ?? data['new'];
-          final queryType = data.containsKey('new') ? 'new' :
-                           data.containsKey('ref') ? 'ref' : null;
+            final referralCode = data['ref'] ?? data['new'];
+            final queryType = data.containsKey('new') ? 'new' :
+                             data.containsKey('ref') ? 'ref' : null;
 
-          if (referralCode != null && referralCode.toString().isNotEmpty) {
-            _latestReferralCode = referralCode.toString();
-            _latestQueryType = queryType;
+            if (referralCode != null && referralCode.toString().isNotEmpty) {
+              _latestReferralCode = referralCode.toString();
+              _latestQueryType = queryType;
 
-            if (kDebugMode) {
-              debugPrint("🌿 Branch: Deferred deep link captured: $_latestReferralCode (type: $_latestQueryType)");
+              if (kDebugMode) {
+                debugPrint("🌿 Branch: Deferred deep link captured: $_latestReferralCode (type: $_latestQueryType)");
+              }
+
+              // Store in SessionManager for registration screen to pick up
+              await SessionManager.instance.setReferralData(
+                _latestReferralCode!,
+                '', // sponsor name will be resolved later by registration screen
+                queryType: _latestQueryType
+              );
+
+              _navigateToHomepage(_latestReferralCode, _latestQueryType);
             }
-
-            // Store in SessionManager for registration screen to pick up
-            await SessionManager.instance.setReferralData(
-              _latestReferralCode!,
-              '', // sponsor name will be resolved later by registration screen
-              queryType: _latestQueryType
-            );
-
-            _navigateToHomepage(_latestReferralCode, _latestQueryType);
+          }
+          }, onError: (error) {
+            if (kDebugMode) {
+              debugPrint("⚠️ Branch: Session listener error: $error");
+            }
+          });
+        } catch (e) {
+          if (kDebugMode) {
+            debugPrint("⚠️ Branch: Failed to start session listener: $e");
           }
         }
-      });
+      }
 
       // Handle app launch from a direct deep link (Universal Links or URI schemes)
       final initialUri = await _appLinks.getInitialLink();

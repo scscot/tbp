@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 import '../services/session_manager.dart';
@@ -26,14 +27,38 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool _understandConsequences = false;
   bool _acknowledgeNetworkImpact = false;
   final TextEditingController _confirmationController = TextEditingController();
+  String? _demoEmail;
 
   @override
   void initState() {
     super.initState();
-    // Listen to text field changes to update button state
+    _loadRemoteConfig();
     _confirmationController.addListener(() {
       setState(() {});
     });
+  }
+
+  Future<void> _loadRemoteConfig() async {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+
+      final demoEmail = remoteConfig.getString('demo_account_email');
+      if (mounted) {
+        setState(() {
+          _demoEmail = demoEmail.isNotEmpty ? demoEmail : null;
+        });
+      }
+
+      await remoteConfig.fetchAndActivate();
+      final updatedDemoEmail = remoteConfig.getString('demo_account_email');
+      if (mounted && updatedDemoEmail != demoEmail) {
+        setState(() {
+          _demoEmail = updatedDemoEmail.isNotEmpty ? updatedDemoEmail : null;
+        });
+      }
+    } catch (e) {
+      debugPrint('❌ DELETE_ACCOUNT: Error loading Remote Config: $e');
+    }
   }
 
   @override
@@ -45,6 +70,38 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   Future<void> _performAccountDeletion() async {
     final user = Provider.of<UserModel?>(context, listen: false);
     if (user == null) return;
+
+    if (_demoEmail != null && user.email?.toLowerCase() == _demoEmail?.toLowerCase()) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.info_outline, color: AppColors.info, size: 24),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text('Demo Account Protection', style: TextStyle(fontSize: 18)),
+                ),
+              ],
+            ),
+            content: const Text(
+              'This is a protected demo account and cannot be deleted.\n\n'
+              'Demo accounts are maintained for app review and demonstration purposes.\n\n'
+              'If you are testing the app, please create a new account for testing account deletion features.',
+              style: TextStyle(fontSize: 14, height: 1.5),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
 
     setState(() => _isDeleting = true);
 
@@ -90,14 +147,16 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       );
 
       // Show confirmation to user
-      final messenger = ScaffoldMessenger.of(navigatorKey.currentContext!);
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Account successfully deleted. Thank you for using Team Build Pro.'),
-          backgroundColor: AppColors.success,
-          duration: Duration(seconds: 5),
-        ),
-      );
+      final currentContext = navigatorKey.currentContext;
+      if (currentContext != null) {
+        ScaffoldMessenger.of(currentContext).showSnackBar(
+          const SnackBar(
+            content: Text('Account successfully deleted. Thank you for using Team Build Pro.'),
+            backgroundColor: AppColors.success,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
 
     } catch (e) {
       debugPrint('❌ DELETE_ACCOUNT: Error during deletion: $e');
@@ -120,16 +179,22 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     if (error is FirebaseFunctionsException) {
       switch (error.code) {
         case 'invalid-argument':
-          return 'Email confirmation does not match your account email.';
+          return 'The email address you entered does not match your account email. Please check and try again.';
         case 'not-found':
-          return 'Account not found.';
+          return 'We could not find your account in our system. Please contact support for assistance.';
         case 'unauthenticated':
-          return 'Please sign in again to delete your account.';
+          return 'Your session has expired. Please sign out and sign in again, then retry account deletion.';
+        case 'permission-denied':
+          return 'You do not have permission to delete this account. Please contact support if you need assistance.';
+        case 'internal':
+          return 'An unexpected error occurred on our servers. Please try again in a few minutes or contact support.';
+        case 'unavailable':
+          return 'The service is temporarily unavailable. Please check your internet connection and try again.';
         default:
-          return 'Account deletion failed. Please try again.';
+          return 'We encountered an issue processing your request. Please try again or contact support for help.';
       }
     }
-    return 'Account deletion failed. Please try again.';
+    return 'An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.';
   }
 
   Future<void> _launchSupportEmail() async {

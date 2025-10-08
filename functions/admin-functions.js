@@ -11,6 +11,8 @@ const {
   onDocumentWritten,
   onSchedule,
   logger,
+  functions,
+  admin,
   db,
   FieldValue,
   auth,
@@ -30,6 +32,7 @@ const {
 
 const { sendDemoInvitation } = require('./sendDemoInvitation');
 const { sendLaunchCampaign } = require('./sendLaunchCampaign');
+const fetch = require('node-fetch');
 
 // ==============================
 // Apple Subscription Management
@@ -670,26 +673,132 @@ async function sendDeletionNotificationsToNetwork(networkData) {
  */
 const validateAppleReceipt = onCall({ region: "us-central1" }, async (request) => {
   const userId = validateAuthentication(request);
-  const { receiptData } = request.data;
+  const { receiptData, isSandbox } = request.data;
 
   if (!receiptData) {
     throw new HttpsError("invalid-argument", "Receipt data is required");
   }
 
   try {
-    // Apple receipt validation logic would go here
-    // This is a simplified version
-    logger.info(`Validating Apple receipt for user ${userId}`);
+    logger.info(`📱 APPLE RECEIPT: Validating receipt for user ${userId}, sandbox: ${isSandbox}`);
 
-    // In production, you'd validate against Apple's servers
-    return {
-      success: true,
-      status: 'valid',
-      message: 'Receipt validated successfully'
-    };
+    const appleConfig = functions.config().apple || {};
+    const sharedSecret = appleConfig.shared_secret || '';
 
+    if (!sharedSecret) {
+      logger.warn('⚠️ APPLE RECEIPT: No shared secret configured');
+    }
+
+    const productionUrl = 'https://buy.itunes.apple.com/verifyReceipt';
+    const sandboxUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
+
+    const verifyUrl = isSandbox ? sandboxUrl : productionUrl;
+    let result;
+
+    const response = await fetch(verifyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        'receipt-data': receiptData,
+        'password': sharedSecret,
+        'exclude-old-transactions': true
+      })
+    });
+
+    if (!response.ok) {
+      logger.error(`❌ APPLE RECEIPT: HTTP error ${response.status} from Apple`);
+      throw new HttpsError("internal", `Apple verification service returned ${response.status}`);
+    }
+
+    try {
+      result = await response.json();
+    } catch (jsonError) {
+      logger.error(`❌ APPLE RECEIPT: Failed to parse JSON response from Apple`, jsonError);
+      throw new HttpsError("internal", "Invalid response from Apple verification service");
+    }
+
+    if (result.status === 21007 && !isSandbox) {
+      logger.info('📱 APPLE RECEIPT: Receipt is sandbox, retrying with sandbox URL');
+      const sandboxResponse = await fetch(sandboxUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'receipt-data': receiptData,
+          'password': sharedSecret,
+          'exclude-old-transactions': true
+        })
+      });
+
+      if (!sandboxResponse.ok) {
+        logger.error(`❌ APPLE RECEIPT: HTTP error ${sandboxResponse.status} from Apple sandbox`);
+        throw new HttpsError("internal", `Apple sandbox verification returned ${sandboxResponse.status}`);
+      }
+
+      try {
+        result = await sandboxResponse.json();
+      } catch (jsonError) {
+        logger.error(`❌ APPLE RECEIPT: Failed to parse JSON response from Apple sandbox`, jsonError);
+        throw new HttpsError("internal", "Invalid response from Apple sandbox verification");
+      }
+    } else if (result.status === 21008 && isSandbox) {
+      logger.info('📱 APPLE RECEIPT: Receipt is production, retrying with production URL');
+      const productionResponse = await fetch(productionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'receipt-data': receiptData,
+          'password': sharedSecret,
+          'exclude-old-transactions': true
+        })
+      });
+
+      if (!productionResponse.ok) {
+        logger.error(`❌ APPLE RECEIPT: HTTP error ${productionResponse.status} from Apple production`);
+        throw new HttpsError("internal", `Apple production verification returned ${productionResponse.status}`);
+      }
+
+      try {
+        result = await productionResponse.json();
+      } catch (jsonError) {
+        logger.error(`❌ APPLE RECEIPT: Failed to parse JSON response from Apple production`, jsonError);
+        throw new HttpsError("internal", "Invalid response from Apple production verification");
+      }
+    }
+
+    if (result.status === 0) {
+      logger.info(`✅ APPLE RECEIPT: Receipt validated successfully for user ${userId}`);
+
+      const latestReceipt = result.latest_receipt_info?.[0] || result.receipt?.in_app?.[0];
+      const expiresDate = latestReceipt?.expires_date_ms
+        ? new Date(parseInt(latestReceipt.expires_date_ms))
+        : null;
+
+      try {
+        await db.collection('users').doc(userId).update({
+          subscriptionStatus: 'active',
+          subscriptionExpiry: expiresDate,
+          subscriptionUpdated: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (firestoreError) {
+        logger.error(`❌ APPLE RECEIPT: Failed to update Firestore for user ${userId}`, firestoreError);
+        throw new HttpsError("internal", "Failed to update subscription status in database");
+      }
+
+      return {
+        isValid: true,
+        subscriptionStatus: 'active',
+        expiresDate: expiresDate?.toISOString(),
+        message: 'Receipt validated successfully'
+      };
+    } else {
+      logger.warn(`⚠️ APPLE RECEIPT: Validation failed with status ${result.status}`);
+      return {
+        isValid: false,
+        message: `Receipt validation failed: ${result.status}`
+      };
+    }
   } catch (error) {
-    logger.error('Error validating Apple receipt:', error);
+    logger.error('❌ APPLE RECEIPT: Error validating receipt:', error);
     throw new HttpsError("internal", "Failed to validate receipt");
   }
 });
@@ -782,43 +891,64 @@ const testGooglePlayNotificationSetup = onCall({ region: "us-central1" }, async 
  * Check for expired trials daily
  */
 const checkExpiredTrials = onSchedule("0 9 * * *", async (event) => {
-  logger.info("Starting daily expired trials check");
+  logger.info("⏰ TRIAL EXPIRY: Starting daily expired trials check");
 
   try {
     const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
     const usersSnapshot = await db.collection('users')
-      .where('trialExpiry', '<=', now)
       .where('subscriptionStatus', '==', 'trial')
       .get();
 
+    logger.info(`⏰ TRIAL EXPIRY: Found ${usersSnapshot.size} users with trial status`);
+
     const updatePromises = [];
+    let expiredCount = 0;
 
     for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
       const userId = userDoc.id;
-      updatePromises.push(
-        db.collection('users').doc(userId).update({
-          subscriptionStatus: 'expired',
-          trialExpired: true
-        }).then(() => {
-          return createNotification({
-            userId,
-            type: 'trial_expired',
-            title: '⏰ Trial Expired',
-            body: 'Your trial has expired. Subscribe now to continue using all features.',
-            docFields: {
-              route: '/subscription',
-              route_params: JSON.stringify({ action: 'subscribe' })
-            }
-          });
-        })
-      );
+      const trialStartDate = userData.trialStartDate?.toDate();
+
+      if (!trialStartDate) {
+        logger.warn(`⏰ TRIAL EXPIRY: User ${userId} has no trialStartDate, skipping`);
+        continue;
+      }
+
+      const daysSinceTrialStart = Math.floor((now - trialStartDate) / (1000 * 60 * 60 * 24));
+
+      if (daysSinceTrialStart > 30) {
+        logger.info(`⏰ TRIAL EXPIRY: User ${userId} trial expired (${daysSinceTrialStart} days since start)`);
+        expiredCount++;
+
+        updatePromises.push(
+          db.collection('users').doc(userId).update({
+            subscriptionStatus: 'expired',
+            subscriptionUpdated: now
+          }).then(() => {
+            return createNotification({
+              userId,
+              type: 'trial_expired',
+              title: '⏰ Trial Expired',
+              body: 'Your 30-day trial has expired. Subscribe now to continue using all features.',
+              docFields: {
+                route: '/subscription',
+                route_params: JSON.stringify({ action: 'subscribe' })
+              }
+            });
+          }).catch(error => {
+            logger.error(`⏰ TRIAL EXPIRY: Failed to update user ${userId}:`, error);
+          })
+        );
+      }
     }
 
     await Promise.allSettled(updatePromises);
-    logger.info(`Processed ${usersSnapshot.size} expired trials`);
+    logger.info(`✅ TRIAL EXPIRY: Processed ${expiredCount} expired trials out of ${usersSnapshot.size} total trial users`);
 
   } catch (error) {
-    logger.error("Error checking expired trials:", error);
+    logger.error("❌ TRIAL EXPIRY: Error checking expired trials:", error);
   }
 });
 

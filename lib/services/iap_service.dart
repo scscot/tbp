@@ -57,36 +57,54 @@ class IAPService {
 
   void _onPurchaseUpdated(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
+      bool isTerminalState = false;
+
       try {
         if (purchase.status == PurchaseStatus.purchased ||
             purchase.status == PurchaseStatus.restored) {
-          isPurchased = true;
+          isTerminalState = true;
           await _verifyAndCompleteSubscription(purchase);
 
-          // Only treat as success if server verification set us active
+          if (purchase.pendingCompletePurchase) {
+            await _iap.completePurchase(purchase);
+            debugPrint('✅ SUBSCRIPTION: Purchase completed in store');
+          }
+
           if (_currentSubscriptionStatus == 'active') {
-            // Complete the transaction
-            if (purchase.pendingCompletePurchase) {
-              await _iap.completePurchase(purchase);
-              debugPrint('✅ SUBSCRIPTION: Purchase completed');
-            }
+            isPurchased = true;
             _pendingOnSuccess?.call();
           } else {
+            isPurchased = false;
             debugPrint('❌ SUBSCRIPTION: Server verification failed - not active');
             _pendingOnFailure?.call();
           }
         } else if (purchase.status == PurchaseStatus.error) {
-          debugPrint('❌ Purchase error: ${purchase.error}');
+          isTerminalState = true;
+          final errorCode = purchase.error?.code ?? 'unknown';
+          final errorMessage = purchase.error?.message ?? 'Unknown error';
+          debugPrint('❌ SUBSCRIPTION: Purchase error - Code: $errorCode, Message: $errorMessage');
+
+          if (errorCode == 'storekit2_purchase_cancelled') {
+            debugPrint('⚠️ SUBSCRIPTION: User cancelled purchase');
+          }
+
           _pendingOnFailure?.call();
         } else if (purchase.status == PurchaseStatus.pending) {
-          debugPrint('⏳ Purchase pending: ${purchase.productID}');
+          debugPrint('⏳ SUBSCRIPTION: Purchase pending - ${purchase.productID}');
+        } else if (purchase.status == PurchaseStatus.canceled) {
+          isTerminalState = true;
+          debugPrint('❌ SUBSCRIPTION: Purchase cancelled by user');
+          _pendingOnFailure?.call();
         }
       } catch (e) {
-        debugPrint('❌ Error handling purchase update: $e');
+        isTerminalState = true;
+        debugPrint('❌ SUBSCRIPTION: Error handling purchase update: $e');
         _pendingOnFailure?.call();
       } finally {
-        _pendingOnComplete?.call();
-        _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
+        if (isTerminalState) {
+          _pendingOnComplete?.call();
+          _pendingOnSuccess = _pendingOnFailure = _pendingOnComplete = null;
+        }
       }
     }
   }
@@ -105,26 +123,14 @@ class IAPService {
         debugPrint('❌ SUBSCRIPTION: Unsupported platform');
         return;
       }
-
-      // Complete the purchase
-      if (purchase.pendingCompletePurchase) {
-        await _iap.completePurchase(purchase);
-        debugPrint('✅ SUBSCRIPTION: Purchase completed');
-      }
     } catch (e) {
       debugPrint('❌ SUBSCRIPTION: Error verifying purchase: $e');
-
-      // Still complete the purchase to avoid issues
-      if (purchase.pendingCompletePurchase) {
-        await _iap.completePurchase(purchase);
-      }
     }
   }
 
   /// Verify Apple App Store purchase
   Future<void> _verifyApplePurchase(PurchaseDetails purchase) async {
     try {
-      // Get receipt data for validation
       final receiptData = purchase.verificationData.serverVerificationData;
 
       if (receiptData.isEmpty) {
@@ -132,10 +138,12 @@ class IAPService {
         return;
       }
 
-      // Validate receipt with our Firebase Function
+      debugPrint('📱 APPLE SUBSCRIPTION: Receipt data length: ${receiptData.length} bytes');
+
       final validateFunction = _functions.httpsCallable('validateAppleReceipt');
       final result = await validateFunction.call({
         'receiptData': receiptData,
+        'isSandbox': true,
       });
 
       final validationResult = result.data as Map<String, dynamic>;
@@ -143,15 +151,13 @@ class IAPService {
       if (validationResult['isValid'] == true) {
         debugPrint('✅ APPLE SUBSCRIPTION: Receipt validated successfully');
 
-        // Update local subscription status
         _currentSubscriptionStatus = validationResult['subscriptionStatus'];
         if (validationResult['expiresDate'] != null) {
           _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
         }
 
-        isPurchased = _currentSubscriptionStatus == 'active';
-
         debugPrint('📱 APPLE SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
+        debugPrint('📱 APPLE SUBSCRIPTION: Expires: $_subscriptionExpiry');
       } else {
         debugPrint('❌ APPLE SUBSCRIPTION: Receipt validation failed: ${validationResult['message']}');
       }
@@ -197,13 +203,10 @@ class IAPService {
       if (validationResult['isValid'] == true) {
         debugPrint('✅ GOOGLE PLAY SUBSCRIPTION: Purchase validated successfully');
 
-        // Update local subscription status
         _currentSubscriptionStatus = validationResult['subscriptionStatus'];
         if (validationResult['expiresDate'] != null) {
           _subscriptionExpiry = DateTime.parse(validationResult['expiresDate']);
         }
-
-        isPurchased = _currentSubscriptionStatus == 'active';
 
         debugPrint('📱 GOOGLE PLAY SUBSCRIPTION: Status updated to: $_currentSubscriptionStatus');
         debugPrint('📱 GOOGLE PLAY SUBSCRIPTION: Order ID: ${validationResult['orderId']}');

@@ -109,6 +109,13 @@ const {
 } = require('./analytics-functions');
 
 // ==============================
+// Import Email Campaign Functions
+// ==============================
+const {
+  sendHourlyEmailCampaign,
+} = require('./email-campaign-functions');
+
+// ==============================
 // Import Admin Functions
 // ==============================
 const {
@@ -260,6 +267,9 @@ module.exports = {
   sendLaunchCampaign,
   chatbot,
   setup_faq,
+
+  // Email campaign (scheduled)
+  sendHourlyEmailCampaign,
 
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,

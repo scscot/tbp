@@ -606,12 +606,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Widget _buildQuickActions(UserModel user) {
     final subscriptionStatus = user.subscriptionStatus;
-    final shouldShowSubscriptionCard = subscriptionStatus == 'trial' || subscriptionStatus == 'expired' || subscriptionStatus == 'cancelled';
+    final shouldShowSubscriptionCard =
+      subscriptionStatus == 'expired' ||
+      subscriptionStatus == 'cancelled' ||
+      (subscriptionStatus == 'trial' && user.trialDaysRemaining <= 6);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Show subscription card at top for trial/expired users (urgent action needed)
+        // Show subscription card at top for expired/cancelled users or trial users in final 6 days (urgent action needed)
         if (!(_isDemoMode && _demoEmail != null) && shouldShowSubscriptionCard)
           _buildDynamicSubscriptionCard(user),
         if (user.role == 'admin') ...[
@@ -713,9 +716,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             );
           },
         ),
-        
-        // Subscription card is only shown at top for trial/expired users
-          
+
+        // Subscription card is only shown at top for expired/cancelled or trial (final 6 days)
+
           _buildActionCard(
             icon: Icons.manage_accounts,
             title: 'Create New Account',
