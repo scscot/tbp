@@ -42,6 +42,9 @@
 </head>
 
 <body>
+    <!-- Top Invite Bar (populated by JavaScript when referral exists) -->
+    <div id="top-invite-bar" class="top-invite-bar"></div>
+
     <!-- Header -->
     <header class="header">
         <nav class="nav container">
@@ -1344,15 +1347,20 @@
             const referrerFullName = `${firstName} ${lastName}`;
             const opportunityName = `<strong>${bizOppName || 'their opportunity'}</strong>`;
 
-            // 1. Create informational invite pill (no buttons - hero CTAs handle actions)
-            inviteContainer.innerHTML = `
-        <div class="invite-bar">
-            <img src="${avatarUrl}" alt="${referrerFullName}" class="invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
-            <span class="invite-text">Invited by <strong>${referrerFullName}</strong></span>
-        </div>
-    `;
+            // 1. Create top fixed invite bar
+            const topInviteBar = document.getElementById('top-invite-bar');
+            if (topInviteBar) {
+                topInviteBar.innerHTML = `
+                    <img src="${avatarUrl}" alt="${referrerFullName}" class="top-invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
+                    <span class="top-invite-text">Invited by ${referrerFullName}</span>
+                `;
+                topInviteBar.classList.add('visible');
+            }
 
-            // 2. Personalize the hero content based on the referral type
+            // 2. Hide the personal invite container in hero (we're using top bar now)
+            inviteContainer.style.display = 'none';
+
+            // 3. Personalize the hero content based on the referral type
             if (referralType === "new") {
                 // Journey for a new prospect invited to pre-build a team
                 heroHeadline.innerHTML = `Pre-Build Your Foundation <br> <span class="accent">Before Launch!</span>`;

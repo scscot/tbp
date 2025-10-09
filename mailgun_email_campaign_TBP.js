@@ -364,14 +364,20 @@ async function runFullCampaign() {
  */
 function readUnsentContacts(limit = null) {
   const contacts = readCSV();
-  
+
   // Filter for unsent emails (sent column empty/null/0)
   const unsent = contacts.filter(contact => {
     return !contact.sent || contact.sent === '' || contact.sent === '0';
   });
-  
-  console.log(`📊 Found ${unsent.length} unsent contacts out of ${contacts.length} total`);
-  
+
+  // Fisher-Yates shuffle for random selection
+  for (let i = unsent.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [unsent[i], unsent[j]] = [unsent[j], unsent[i]];
+  }
+
+  console.log(`📊 Found ${unsent.length} unsent contacts (randomized) out of ${contacts.length} total`);
+
   // Apply limit if specified
   return limit ? unsent.slice(0, limit) : unsent;
 }
