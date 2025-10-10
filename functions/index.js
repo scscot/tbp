@@ -171,6 +171,7 @@ const { addToDemoLeads } = require('./addToDemoLeads');
 const { getDemoCount } = require('./getDemoCount');
 const { appendDemoEmail } = require('./appendDemoEmail');
 const { addToDemoQueue } = require('./addToDemoQueue');
+const { sendDemoNotification } = require('./sendDemoNotification');
 
 // ==============================
 // Import Analytics Events Functions
@@ -281,6 +282,7 @@ module.exports = {
   getDemoCount,
   appendDemoEmail,
   addToDemoQueue,
+  sendDemoNotification,
 
   // ========== ANALYTICS FUNCTIONS ==========
   tbpEventLog,

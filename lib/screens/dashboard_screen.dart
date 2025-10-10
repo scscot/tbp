@@ -9,9 +9,10 @@ import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import '../services/network_service.dart';
-import '../services/subscription_service.dart'; // Add this line
+import '../services/subscription_service.dart';
+import '../services/subscription_navigation_guard.dart';
 import 'profile_screen.dart';
-import 'subscription_screen_enhanced.dart'; // Import SubscriptionScreenEnhanced directly
+import 'subscription_screen_enhanced.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
@@ -660,11 +661,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'Your AI Coach',
           color: AppColors.chatPrimary,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatBotScreen(onTabSelected: widget.onTabSelected),
-              ),
+            SubscriptionNavigationGuard.pushGuarded(
+              context: context,
+              routeName: 'chatbot',
+              screen: ChatBotScreen(onTabSelected: widget.onTabSelected),
+              appId: widget.appId,
             );
           },
         ),
@@ -708,11 +709,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           title: 'View Your Profile',
           color: AppColors.primary,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfileScreen(appId: widget.appId),
-              ),
+            SubscriptionNavigationGuard.pushGuarded(
+              context: context,
+              routeName: 'profile',
+              screen: ProfileScreen(appId: widget.appId),
+              appId: widget.appId,
             );
           },
         ),

@@ -1970,33 +1970,30 @@
                     isNewSignup = true;
                     shouldSendEmail = true;
 
-                    // Append email to demo_leads.csv
+                    // Send demo notification email to admin
                     if (wantDemo) {
                         try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
+                            const notificationResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendDemoNotification', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    email: email
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    email: email,
+                                    deviceType: deviceType
                                 })
                             });
 
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Email added to demo_leads.csv:', email);
-                                await docRef.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached');
+                            const notificationResult = await notificationResponse.json();
+                            if (notificationResult.success) {
+                                console.log('✅ Demo notification email sent to admin');
                             } else {
-                                console.warn('Failed to add to CSV:', csvResult.error);
+                                console.warn('Failed to send notification:', notificationResult.error);
                             }
-                        } catch (csvError) {
-                            console.error('Error adding to CSV:', csvError);
+                        } catch (notificationError) {
+                            console.error('Error sending demo notification:', notificationError);
                         }
                     }
                     
@@ -2019,32 +2016,29 @@
                         console.log('Demo access added for existing user:', `${email} (${deviceType})`);
                         shouldSendEmail = true; // Send email with demo instructions
 
-                        // Append existing user email to demo_leads.csv
+                        // Send demo notification email to admin for existing user
                         try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
+                            const notificationResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendDemoNotification', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    email: email
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    email: email,
+                                    deviceType: deviceType
                                 })
                             });
 
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Existing user email added to demo_leads.csv:', email);
-                                await existingDoc.ref.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached for existing user');
+                            const notificationResult = await notificationResponse.json();
+                            if (notificationResult.success) {
+                                console.log('✅ Demo notification email sent to admin for existing user');
                             } else {
-                                console.warn('Failed to add existing user to CSV:', csvResult.error);
+                                console.warn('Failed to send notification for existing user:', notificationResult.error);
                             }
-                        } catch (csvError) {
-                            console.error('Error adding existing user to CSV:', csvError);
+                        } catch (notificationError) {
+                            console.error('Error sending demo notification for existing user:', notificationError);
                         }
                         
                     } else {
@@ -2114,7 +2108,7 @@
                 const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
                 successContent.innerHTML = `
                     <p><strong>Perfect! You're all set!</strong></p>
-                    <p>📧 <strong>Demo access email sent!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
+                    <p>📧 <strong>Your demo access email will be sent shortly!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
                     <p style="margin: 15px 0;">We'll also notify you when Team Build Pro officially launches on Google Play.</p>
                     <p><strong>Thanks for being an early supporter!</strong></p>
                 `;

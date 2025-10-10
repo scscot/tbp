@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../models/user_model.dart';
 import '../services/network_service.dart';
+import '../services/subscription_navigation_guard.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_colors.dart';
@@ -1385,14 +1386,14 @@ class _NetworkScreenState extends State<NetworkScreen>
   }
 
   void _navigateToMemberDetail(UserModel member) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MemberDetailScreen(
-          userId: member.uid,
-          appId: widget.appId,
-        ),
+    SubscriptionNavigationGuard.pushGuarded(
+      context: context,
+      routeName: 'member_detail',
+      screen: MemberDetailScreen(
+        userId: member.uid,
+        appId: widget.appId,
       ),
+      appId: widget.appId,
     );
   }
 }

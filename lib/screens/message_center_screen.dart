@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../widgets/header_widgets.dart';
 import '../services/firestore_service.dart';
+import '../services/subscription_navigation_guard.dart';
 import 'message_thread_screen.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
@@ -140,16 +141,16 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
     ids.sort();
     final threadId = ids.join('_');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MessageThreadScreen(
-          threadId: threadId,
-          appId: widget.appId,
-          recipientId: user.uid,
-          recipientName: displayName,
-        ),
+    SubscriptionNavigationGuard.pushGuarded(
+      context: context,
+      routeName: 'message_thread',
+      screen: MessageThreadScreen(
+        threadId: threadId,
+        appId: widget.appId,
+        recipientId: user.uid,
+        recipientName: displayName,
       ),
+      appId: widget.appId,
     );
   }
 
@@ -396,16 +397,16 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                                     : null,
                                 onTap: () {
                                   if (otherUser != null) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => MessageThreadScreen(
-                                          threadId: thread.id,
-                                          appId: widget.appId,
-                                          recipientId: otherUser.uid,
-                                          recipientName: otherUserName,
-                                        ),
+                                    SubscriptionNavigationGuard.pushGuarded(
+                                      context: context,
+                                      routeName: 'message_thread',
+                                      screen: MessageThreadScreen(
+                                        threadId: thread.id,
+                                        appId: widget.appId,
+                                        recipientId: otherUser.uid,
+                                        recipientName: otherUserName,
                                       ),
+                                      appId: widget.appId,
                                     );
                                   }
                                 },

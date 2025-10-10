@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ultimatefix/screens/how_it_works_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/message_center_screen.dart';
@@ -12,6 +13,9 @@ import '../screens/business_screen.dart';
 import '../screens/company_screen.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/subscription_screen_enhanced.dart';
+import '../models/user_model.dart';
+import '../services/subscription_navigation_guard.dart';
+import 'subscription_required_modal.dart';
 
 class NavigationShell extends StatefulWidget {
   final String appId;
@@ -98,12 +102,18 @@ class NavigationShellState extends State<NavigationShell> {
   // Interpret command codes from child screens: 0..4 = tab switch; 5+ = push inside current tab
   void handleCommand(int code) {
     if (code >= 0 && code <= 4) {
-      navigateToTab(code);
+      // Tab switches for protected tabs (1=Network, 2=Share, 3=Messages)
+      if (code == 1 || code == 2 || code == 3) {
+        _navigateToTabWithGuard(code);
+      } else {
+        navigateToTab(code);
+      }
       return;
     }
     // Default to using Dashboard tab's navigator for detail flows
     final nav = _navigatorKeys[0].currentState;
     if (nav == null) return;
+    final navContext = nav.context;
 
     switch (code) {
       case 5:
@@ -111,31 +121,73 @@ class NavigationShellState extends State<NavigationShell> {
             builder: (_) => HowItWorksScreen(appId: widget.appId)));
         break;
       case 6:
-        nav.push(MaterialPageRoute(
-            builder: (_) => CompanyScreen(appId: widget.appId)));
+        SubscriptionNavigationGuard.pushGuarded(
+          context: navContext,
+          routeName: 'company',
+          screen: CompanyScreen(appId: widget.appId),
+          appId: widget.appId,
+        );
         break;
       case 7:
-        nav.push(MaterialPageRoute(
-            builder: (_) => BusinessScreen(appId: widget.appId)));
+        SubscriptionNavigationGuard.pushGuarded(
+          context: navContext,
+          routeName: 'business',
+          screen: BusinessScreen(appId: widget.appId),
+          appId: widget.appId,
+        );
         break;
       case 8:
-        nav.push(MaterialPageRoute(
-            builder: (_) => EligibilityScreen(appId: widget.appId)));
+        SubscriptionNavigationGuard.pushGuarded(
+          context: navContext,
+          routeName: 'eligibility',
+          screen: EligibilityScreen(appId: widget.appId),
+          appId: widget.appId,
+        );
         break;
       case 9:
-        nav.push(MaterialPageRoute(
-            builder: (_) => ProfileScreen(appId: widget.appId)));
+        SubscriptionNavigationGuard.pushGuarded(
+          context: navContext,
+          routeName: 'profile',
+          screen: ProfileScreen(appId: widget.appId),
+          appId: widget.appId,
+        );
         break;
       case 10:
         nav.push(MaterialPageRoute(
             builder: (_) => NotificationsScreen(appId: widget.appId)));
         break;
       case 11:
-        nav.push(MaterialPageRoute(
-            builder: (_) => PlatformManagementScreen(appId: widget.appId)));
+        SubscriptionNavigationGuard.pushGuarded(
+          context: navContext,
+          routeName: 'platform_management',
+          screen: PlatformManagementScreen(appId: widget.appId),
+          appId: widget.appId,
+        );
         break;
       default:
         break;
+    }
+  }
+
+  void _navigateToTabWithGuard(int tabIndex) {
+    final navContext = _navigatorKeys[0].currentState?.context;
+    if (navContext == null) return;
+
+    if (tabIndex < 1 || tabIndex > 3) {
+      navigateToTab(tabIndex);
+      return;
+    }
+
+    if (SubscriptionNavigationGuard.hasValidSubscription(
+        Provider.of<UserModel?>(navContext, listen: false))) {
+      navigateToTab(tabIndex);
+    } else {
+      showSubscriptionRequiredModal(
+        navContext,
+        Provider.of<UserModel?>(navContext, listen: false)?.subscriptionStatus ??
+            'expired',
+        widget.appId,
+      );
     }
   }
 
@@ -181,26 +233,50 @@ class NavigationShellState extends State<NavigationShell> {
             }
 
             return MaterialPageRoute(
-              builder: (context) => MemberDetailScreen(
-                userId: userId,
-                appId: widget.appId,
-              ),
+              builder: (context) {
+                SubscriptionNavigationGuard.pushGuarded(
+                  context: context,
+                  routeName: 'member_detail',
+                  screen: MemberDetailScreen(
+                    userId: userId,
+                    appId: widget.appId,
+                  ),
+                  appId: widget.appId,
+                );
+                return const SizedBox.shrink();
+              },
               settings: settings,
             );
           } else if (settings.name == '/network') {
             final args = settings.arguments as Map<String, dynamic>?;
             return MaterialPageRoute(
-              builder: (context) => NetworkScreen(
-                appId: widget.appId,
-                initialFilter: args != null && args.containsKey('filter')
-                    ? args['filter'] as String
-                    : null,
-              ),
+              builder: (context) {
+                SubscriptionNavigationGuard.pushGuarded(
+                  context: context,
+                  routeName: 'network',
+                  screen: NetworkScreen(
+                    appId: widget.appId,
+                    initialFilter: args != null && args.containsKey('filter')
+                        ? args['filter'] as String
+                        : null,
+                  ),
+                  appId: widget.appId,
+                );
+                return const SizedBox.shrink();
+              },
               settings: settings,
             );
           } else if (settings.name == '/business') {
             return MaterialPageRoute(
-              builder: (context) => BusinessScreen(appId: widget.appId),
+              builder: (context) {
+                SubscriptionNavigationGuard.pushGuarded(
+                  context: context,
+                  routeName: 'business',
+                  screen: BusinessScreen(appId: widget.appId),
+                  appId: widget.appId,
+                );
+                return const SizedBox.shrink();
+              },
               settings: settings,
             );
           } else if (settings.name == '/subscription') {

@@ -15,6 +15,7 @@ import '../screens/terms_of_service_screen.dart';
 import '../screens/privacy_policy_screen.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
+import '../services/subscription_navigation_guard.dart';
 import '../widgets/header_widgets.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -605,11 +606,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.deferToChild, // <— let children (buttons) handle taps first
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => MemberDetailScreen(
-                          userId: userId, appId: widget.appId))),
+              onTap: () => SubscriptionNavigationGuard.pushGuarded(
+                  context: context,
+                  routeName: 'member_detail',
+                  screen: MemberDetailScreen(
+                      userId: userId, appId: widget.appId),
+                  appId: widget.appId),
               child: Text(displayName,
                   style: const TextStyle(
                       color: Colors.blue,
