@@ -71,6 +71,7 @@ const sendHourlyEmailCampaign = onSchedule({
 
     const unsentSnapshot = await contactsRef
       .where('sent', '==', false)
+      .orderBy('randomIndex')
       .limit(batchSize)
       .get();
 
