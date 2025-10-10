@@ -81,7 +81,7 @@
                     </div>
 
                     <h1 id="hero-headline">
-                        Most Direct Sales Professionals Struggle to Build Momentum<br /><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>
+                        Most Direct Sales Professionals Struggle with Team Building<br /><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>
                     </h1>
 
                     <p id="hero-subheadline">
@@ -112,8 +112,8 @@
             </div>
         </section>
 
-        <!-- Industry Challenge Section -->
-        <section id="industry-challenge" class="section section-gray">
+        <!-- Industry Challenge Section (Original - Hidden) -->
+        <section id="industry-challenge-old" class="section section-gray" style="display: none;">
             <div class="container">
                 <div class="section-header">
                     <h2>The Direct Sales Reality</h2>
@@ -125,11 +125,11 @@
                     <div class="challenge-stats">
                         <div class="stat-card reveal-on-scroll">
                             <div class="stat-number">90%</div>
-                            <div class="stat-label">struggle with long-term retention</div>
+                            <div class="stat-label">struggle with recruiting new team members</div>
                         </div>
-                        <div class="stat-card reveal-on-scroll">
-                            <div class="stat-number">#1</div>
-                            <div class="stat-label">challenge is consistent team building</div>
+                        <div class="stat-card reveal-on-scroll" style="display: none;">
+                        <div class="stat-number">#1</div>
+                        <div class="stat-label">challenge is consistent team building</div>
                         </div>
                     </div>
                     <div class="solution-content">
@@ -148,12 +148,35 @@
             </div>
         </section>
 
+        <!-- Industry Challenge Section (Simplified) -->
+        <section id="industry-challenge" class="section section-gray">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Direct Sales Reality</h2>
+                    <p>Most direct sales representatives struggle—not from lack of ability, but from lack of system.</p>
+                </div>
+                <div class="challenge-stats" style="display: flex; gap: 20px; justify-content: center; max-width: 800px; margin: 0 auto;">
+                    <div class="stat-card reveal-on-scroll">
+                        <div class="stat-number">90%</div>
+                        <div class="stat-label">struggle with recruiting new team members</div>
+                    </div>
+                    <div class="stat-card reveal-on-scroll" style="display: none;">
+                        <div class="stat-number">#1</div>
+                        <div class="stat-label">challenge is consistent team building</div>
+                    </div>
+                </div>
+                <div class="section-header" style="margin-top: 40px; margin-bottom: 0;">
+                    <p>Team Build Pro brings an innovative, mobile-first approach to creating and sustaining real momentum—no matter your experience level or opportunity.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- "How It Works" Section -->
         <section id="how-it-works" class="section section-white">
             <div class="container">
                 <div class="section-header">
                     <h2>How It Works</h2>
-                   
+                    <p>Four simple steps to build unstoppable momentum.</p>
                 </div>
                 <div class="grid grid-4">
                     <div class="feature-card reveal-on-scroll">
@@ -899,7 +922,7 @@
         const contentFor = {
             partner: {
                 heroBadge: getResponsiveHeroBadgeText(),
-                heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
+                heroHeadline: `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`,
                 heroSubheadline:
                     "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
@@ -1188,7 +1211,7 @@
             },
             "t8": {
                 heroBadge: "Your Blueprint for Team Growth",
-                 heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
+                 heroHeadline: `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`,
                 heroSubheadline:
                     "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
@@ -1368,7 +1391,7 @@
 
             } else { // "partner"
                 // Journey for an existing leader referred by a colleague
-                heroHeadline.innerHTML = `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`;
+                heroHeadline.innerHTML = `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`;
                 heroSubheadline.innerHTML = `Help recruiting prospects build momentum before Day 1.<br />Help existing team members accelerate their growth.`;
             }
 
