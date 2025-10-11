@@ -42,7 +42,7 @@ async function sendTestEmail() {
     form.append('from', 'Stephen Scott <sscott@info.teambuildpro.com>');
     form.append('to', 'Stephen Scott <scscot@gmail.com>');
     // form.append('to', 'Jeanne Paquet <jpaquet2@ca.rr.com>');
-    form.append('subject', 'Recruit Better. Build Faster.');
+    form.append('subject', 'A smarter team-building system');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
@@ -82,7 +82,7 @@ async function sendBulkCampaign(recipientList) {
     const form = new FormData();
     
     form.append('from', 'Stephen Scott <sscott@info.teambuildpro.com>');
-    form.append('subject', 'Recruit Better. Build Faster.');
+    form.append('subject', 'A smarter team-building system');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
@@ -267,7 +267,7 @@ async function sendCampaignToList() {
     const form = new FormData();
     form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
     form.append('to', MAILING_LIST_ADDRESS);
-    form.append('subject', 'Recruit Better. Build Faster.');
+    form.append('subject', 'A smarter team-building system');
     const templateVersion = getAlternatingTemplateVersion(false);
     form.append('template', 'initial'); // Template name
     form.append('t:version', templateVersion); // Alternating template version
@@ -477,7 +477,7 @@ async function sendBatchCampaign(options = {}) {
           const form = new FormData();
           form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
           form.append('to', `${contact.first_name} ${contact.last_name} <${contact.email}>`);
-          form.append('subject', 'Recruit Better. Build Faster.');
+          form.append('subject', 'A smarter team-building system');
           const templateVersion = getAlternatingTemplateVersion(verbose);
           form.append('template', 'initial'); // Template name
           form.append('t:version', templateVersion); // Alternating template version
