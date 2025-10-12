@@ -61,45 +61,34 @@ function getEmailTemplate(firstName, demoUrl) {
         </p>
 
         <!-- Download Instructions -->
-        <div style="background-color: #f1f5f9; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">📱 How to Get Your Preview:</h3>
-
-          <ol style="color: #334155; line-height: 1.8; margin-left: 1rem;">
-            <li><strong>Click this link</strong> to access your preview: <br>
+        <div style="background-color: #f1f5f9; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1.5rem 0;">
+          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">How to Get Your Preview:</h4>
+ <p style="color: #1e40af; margin: 0; line-height: 1.6; font-size: 0.95rem;">
+ <strong>1. Click this link</strong> to access your preview: <br>
                 <a href="${demoUrl}"
                    style="color: #10b981; text-decoration: none; font-weight: 600; word-break: break-all;">
                   ${demoUrl}
-                </a>
-            </li>
-            <li><strong>Accept the invitation</strong> by clicking "Become a tester"</li>
-            <li><strong>Download Team Build Pro</strong> from the Google Play Store</li>
-            <li><strong>Start exploring!</strong> You'll have full access to all features</li>
-          </ol>
+                </a><br /><br />
+    <strong>2. Accept the invitation</strong><br />
+            <strong>3. Download Team Build Pro</strong><br />
+            
+        <strong>4. Start exploring!</strong>
+</p>
         </div>
+
 
         <!-- Important Notice -->
         <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1.5rem 0;">
-          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">⭐ Exclusive Preview Access:</h4>
+          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Exclusive Preview Access:</h4>
           <p style="color: #1e40af; margin: 0; line-height: 1.6; font-size: 0.95rem;">
-            You're getting <strong>exclusive early access</strong> to Team Build Pro before the official public launch. Experience everything the app has to offer and see how it can transform your team building!
-          </p>
-        </div>
-
-        <!-- What's Next -->
-        <div style="background-color: #ecfdf5; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">🎯 What You'll Get:</h3>
-          <ul style="color: #334155; line-height: 1.8; margin-left: 1rem;">
-            <li><strong>Full Feature Access:</strong> Use all Team Build Pro capabilities right away</li>
-            <li><strong>Early Updates:</strong> You'll receive new features before anyone else</li>
-            <li><strong>Launch Notification:</strong> We'll let you know when Team Build Pro goes fully public</li>
-          </ul>
+            You're getting <strong>exclusive early access</strong> to Team Build Pro before it's officially available on Google Play. Experience everything the app has to offer and see how it can transform your team building!<br /><br /><strong>We'll let you know when Team Build Pro is available on Google Play!</strong></p>
         </div>
 
         <!-- Call to Action -->
         <div style="text-align: center; margin: 2rem 0;">
           <a href="${demoUrl}"
              style="display: inline-block; background: linear-gradient(135deg, #10b981, #34d399); color: #ffffff; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem;">
-            🚀 Get Your Preview Now
+            Start Preview Now
           </a>
         </div>
 
