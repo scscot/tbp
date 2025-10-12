@@ -34,7 +34,7 @@ const transporter = nodemailer.createTransport({
 
 // Configuration
 const DEMO_CSV_PATH = path.join(__dirname, 'emails', 'demo_requesters.csv');
-const DEMO_URL = 'https://play.google.com/apps/internaltest/4701308473429988822';
+const DEMO_URL = 'https://play.google.com/apps/testing/com.scott.ultimatefix';
 
 /**
  * Email template for demo invitations (from sendDemoInvitation.js)
@@ -62,35 +62,36 @@ function getEmailTemplate(firstName, demoUrl) {
 
         <!-- Download Instructions -->
         <div style="background-color: #f1f5f9; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">📱 How to Download the Preview:</h3>
+          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">📱 How to Get Your Preview:</h3>
 
           <ol style="color: #334155; line-height: 1.8; margin-left: 1rem;">
-            <li><strong>Click this link</strong> to access the demo: <br>
+            <li><strong>Click this link</strong> to access your preview: <br>
                 <a href="${demoUrl}"
                    style="color: #10b981; text-decoration: none; font-weight: 600; word-break: break-all;">
                   ${demoUrl}
                 </a>
             </li>
-            <li><strong>Install the preview version of the app</strong> from Google Play</li>
-            <li><strong>Start exploring!</strong> Check out all the amazing features</li>
+            <li><strong>Accept the invitation</strong> by clicking "Become a tester"</li>
+            <li><strong>Download Team Build Pro</strong> from the Google Play Store</li>
+            <li><strong>Start exploring!</strong> You'll have full access to all features</li>
           </ol>
         </div>
 
         <!-- Important Notice -->
-        <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0;">
-          <h4 style="color: #92400e; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">⚠️ Important Preview Details:</h4>
-          <p style="color: #b45309; margin: 0; line-height: 1.6; font-size: 0.95rem;">
-            The preview app will appear with a temporary name: <strong>"com.scott.ultimatefix - unreviewed"</strong>.
-            This is just Google Play's temporary naming for internal previews - don't worry, it's the real Team Build Pro app!
+        <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1.5rem 0;">
+          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">⭐ Exclusive Preview Access:</h4>
+          <p style="color: #1e40af; margin: 0; line-height: 1.6; font-size: 0.95rem;">
+            You're getting <strong>exclusive early access</strong> to Team Build Pro before the official public launch. Experience everything the app has to offer and see how it can transform your team building!
           </p>
         </div>
 
         <!-- What's Next -->
         <div style="background-color: #ecfdf5; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">🎯 What to Expect:</h3>
+          <h3 style="color: #1e293b; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem;">🎯 What You'll Get:</h3>
           <ul style="color: #334155; line-height: 1.8; margin-left: 1rem;">
-            <li><strong>Full Feature Access:</strong> Experience all Team Build Pro capabilities</li>
-            <li><strong>Official Launch Notice:</strong> We'll email you when to delete the preview and download the official app</li>
+            <li><strong>Full Feature Access:</strong> Use all Team Build Pro capabilities right away</li>
+            <li><strong>Early Updates:</strong> You'll receive new features before anyone else</li>
+            <li><strong>Launch Notification:</strong> We'll let you know when Team Build Pro goes fully public</li>
           </ul>
         </div>
 
@@ -98,7 +99,7 @@ function getEmailTemplate(firstName, demoUrl) {
         <div style="text-align: center; margin: 2rem 0;">
           <a href="${demoUrl}"
              style="display: inline-block; background: linear-gradient(135deg, #10b981, #34d399); color: #ffffff; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem;">
-            🚀 Download Preview Now
+            🚀 Get Your Preview Now
           </a>
         </div>
 
@@ -120,7 +121,7 @@ function getEmailTemplate(firstName, demoUrl) {
           © 2025 Team Build Pro. Professional team building software.
         </p>
         <p style="color: #94a3b8; margin: 0.5rem 0 0 0; font-size: 0.8rem;">
-          This is a preview invitation. The official app will be available soon on Google Play.
+          You're part of our exclusive preview program. Get early access before the official launch!
         </p>
       </div>
     </div>
@@ -301,7 +302,7 @@ async function sendDemoBatch(options) {
                     const mailOptions = {
                         from: 'Team Build Pro <demo@teambuildpro.com>',
                         to: contact.email,
-                        subject: '🎉 Your Team Build Pro Demo Access is Ready!',
+                        subject: '🎉 Your Team Build Pro Preview is Ready!',
                         html: getEmailTemplate(contact.first_name, DEMO_URL)
                     };
 

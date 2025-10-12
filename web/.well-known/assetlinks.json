@@ -1,10 +1,16 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.scott.ultimatefix",
-    "sha256_cert_fingerprints": [
-      "5F:5C:47:09:07:42:BD:B7:EF:A3:9A:D3:4F:E4:AC:25:17:40:9D:3B:AD:C6:59:FC:35:02:6B:4A:C7:9D:2D:E9"
-    ]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.scott.ultimatefix",
+      "sha256_cert_fingerprints": [
+        "5F:5C:47:09:07:42:BD:B7:EF:A3:9A:D3:4F:E4:AC:25:17:40:9D:3B:AD:C6:59:FC:35:02:6B:4A:C7:9D:2D:E9",
+        "F4:F9:DF:F6:71:96:2F:AD:31:10:AA:E2:6F:87:50:82:8A:69:D1:16:CC:DE:42:E1:7C:16:31:30:4E:DD:68:A8"
+      ]
+    }
   }
-}]
+]

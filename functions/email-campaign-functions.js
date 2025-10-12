@@ -13,10 +13,17 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain) {
   const form = new FormData();
 
+  const subjectLines = [
+    'Build Your Team Smarter — With Tools That Work',
+    'A Better Way to Build Momentum in Direct Sales',
+    'Team Build Pro — Designed for Direct Sales Leaders'
+  ];
+  const randomSubject = subjectLines[Math.floor(Math.random() * subjectLines.length)];
+
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
-  form.append('subject', 'A smarter team-building system');
+  form.append('subject', randomSubject);
 
   form.append('template', 'initial');
   form.append('t:version', 'initial');
