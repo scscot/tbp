@@ -36,6 +36,9 @@ secrets/
 # VS Code
 .vscode/
 
+# TBP Website
+/web
+
 # eMail Lists
 emails/
 leads/

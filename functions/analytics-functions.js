@@ -361,12 +361,57 @@ const getMemberDetails = onCall({ region: "us-central1" }, async (request) => {
       biz_join_date: memberData.biz_join_date,
       country: memberData.country,
       state: memberData.state,
+      city: memberData.city,
       directSponsorCount: memberData.directSponsorCount || 0,
       totalTeamCount: memberData.totalTeamCount || 0,
       sponsor_id: memberData.sponsor_id,
+      role: memberData.role,
+      currentPartner: memberData.currentPartner,
+      referredBy: memberData.referredBy,
+      upline_admin: memberData.upline_admin,
     };
 
-    return { member: serializeData(sanitizedData) };
+    // Fetch sponsor information if sponsor_id exists
+    let sponsorData = null;
+    if (memberData.sponsor_id) {
+      try {
+        const sponsorDoc = await db.collection("users").doc(memberData.sponsor_id).get();
+        if (sponsorDoc.exists) {
+          const sponsor = sponsorDoc.data();
+          sponsorData = {
+            uid: memberData.sponsor_id,
+            firstName: sponsor.firstName,
+            lastName: sponsor.lastName,
+          };
+        }
+      } catch (error) {
+        logger.warn(`Failed to fetch sponsor data for ${memberData.sponsor_id}:`, error);
+      }
+    }
+
+    // Fetch team leader information if upline_admin exists
+    let teamLeaderData = null;
+    if (memberData.upline_admin) {
+      try {
+        const teamLeaderDoc = await db.collection("users").doc(memberData.upline_admin).get();
+        if (teamLeaderDoc.exists) {
+          const teamLeader = teamLeaderDoc.data();
+          teamLeaderData = {
+            uid: memberData.upline_admin,
+            firstName: teamLeader.firstName,
+            lastName: teamLeader.lastName,
+          };
+        }
+      } catch (error) {
+        logger.warn(`Failed to fetch team leader data for ${memberData.upline_admin}:`, error);
+      }
+    }
+
+    return {
+      member: serializeData(sanitizedData),
+      sponsor: sponsorData ? serializeData(sponsorData) : null,
+      teamLeader: teamLeaderData ? serializeData(teamLeaderData) : null,
+    };
 
   } catch (error) {
     if (error instanceof HttpsError) throw error;
