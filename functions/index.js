@@ -116,6 +116,15 @@ const {
 } = require('./email-campaign-functions');
 
 // ==============================
+// Import Beta Tester Functions
+// ==============================
+const {
+  grantBetaTesterLifetimeAccess,
+  revokeBetaTesterLifetimeAccess,
+  getBetaTesterStats,
+} = require('./beta-tester-functions');
+
+// ==============================
 // Import Admin Functions
 // ==============================
 const {
@@ -271,6 +280,11 @@ module.exports = {
 
   // Email campaign (scheduled)
   sendHourlyEmailCampaign,
+
+  // ========== BETA TESTER FUNCTIONS ==========
+  grantBetaTesterLifetimeAccess,
+  revokeBetaTesterLifetimeAccess,
+  getBetaTesterStats,
 
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,

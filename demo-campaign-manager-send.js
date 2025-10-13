@@ -60,39 +60,27 @@ function getEmailTemplate(firstName, demoUrl) {
           Thank you for your interest in Team Build Pro! We're excited to give you an early preview of our app.
         </p>
 
-        <!-- Download Instructions -->
-        <div style="background-color: #f1f5f9; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1.5rem 0;">
-          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">How to Get Your Preview:</h4>
- <p style="color: #1e40af; margin: 0; line-height: 1.6; font-size: 0.95rem;">
- <strong>1. Click this link</strong> to access your preview: <br>
-                <a href="${demoUrl}"
-                   style="color: #10b981; text-decoration: none; font-weight: 600; word-break: break-all;">
-                  ${demoUrl}
-                </a><br /><br />
-    <strong>2. Accept the invitation</strong><br />
-            <strong>3. Download Team Build Pro</strong><br />
-            
-        <strong>4. Start exploring!</strong>
-</p>
-        </div>
+       
 
 
-        <!-- Important Notice -->
-        <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1.5rem 0;">
-          <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem;">Exclusive Preview Access:</h4>
-          <p style="color: #1e40af; margin: 0; line-height: 1.6; font-size: 0.95rem;">
-            You're getting <strong>exclusive early access</strong> to Team Build Pro before it's officially available on Google Play. Experience everything the app has to offer and see how it can transform your team building!<br /><br /><strong>We'll let you know when Team Build Pro is available on Google Play!</strong></p>
+        <!-- Lifetime Free Access -->
+        <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.5rem; margin: 1.5rem 0;">
+          <h4 style="color: #92400e; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">Special Preview Benefit:</h4>
+          <p style="color: #92400e; margin: 0; line-height: 1.6; font-size: 1rem;">
+            <strong>Get Team Build Pro FREE for LIFE!</strong><br /><br />
+            As a preview tester, you'll receive lifetime free access (normally $4.99/month) simply by keeping the preview version installed on your device until it's officially available on Google Play. When we launch on Google Play, we'll send you instructions to upgrade—and your free access continues forever!
+          </p>
         </div>
 
         <!-- Call to Action -->
         <div style="text-align: center; margin: 2rem 0;">
           <a href="${demoUrl}"
              style="display: inline-block; background: linear-gradient(135deg, #10b981, #34d399); color: #ffffff; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem;">
-            Start Preview Now
+            Get Your Preview Access
           </a>
         </div>
 
-        <p style="color: #64748b; line-height: 1.6; margin-top: 2rem;">
+        <p style="color: #64748b; line-height: 1.6;">
           Questions or need help? Just reply to this email - we're here to help make your team building journey successful.
         </p>
 

@@ -37,6 +37,10 @@ class UserModel {
   final DateTime? trialStartDate;
   final DateTime? subscriptionUpdated;
 
+  // --- Beta Tester Lifetime Access ---
+  final bool lifetimeAccess;
+  final bool betaTester;
+
   UserModel({
     required this.uid,
     this.sponsorId,
@@ -71,6 +75,9 @@ class UserModel {
     this.subscriptionExpiry,
     this.trialStartDate,
     this.subscriptionUpdated,
+    // --- Beta Tester Lifetime Access ---
+    this.lifetimeAccess = false,
+    this.betaTester = false,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -157,6 +164,9 @@ class UserModel {
       subscriptionExpiry: parseDate(map['subscriptionExpiry']),
       trialStartDate: parseDate(map['trialStartDate']),
       subscriptionUpdated: parseDate(map['subscriptionUpdated']),
+      // --- Beta Tester Lifetime Access ---
+      lifetimeAccess: map['lifetimeAccess'] == true,
+      betaTester: map['betaTester'] == true,
     );
   }
 
@@ -203,6 +213,9 @@ class UserModel {
       'subscriptionUpdated': subscriptionUpdated != null
           ? Timestamp.fromDate(subscriptionUpdated!)
           : null,
+      // --- Beta Tester Lifetime Access ---
+      'lifetimeAccess': lifetimeAccess,
+      'betaTester': betaTester,
     };
   }
 
@@ -239,6 +252,8 @@ class UserModel {
       'subscriptionExpiry': subscriptionExpiry?.toIso8601String(),
       'trialStartDate': trialStartDate?.toIso8601String(),
       'subscriptionUpdated': subscriptionUpdated?.toIso8601String(),
+      'lifetimeAccess': lifetimeAccess,
+      'betaTester': betaTester,
     };
   }
 

@@ -46,6 +46,8 @@ class SubscriptionNavigationGuard {
   static bool hasValidSubscription(UserModel? user) {
     if (user == null) return false;
 
+    if (user.lifetimeAccess == true) return true;
+
     final status = user.subscriptionStatus;
 
     if (status == 'active') return true;

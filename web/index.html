@@ -1439,7 +1439,12 @@
         // Setup Universal Link → App Store fallback for invite handoff
         function setupInviteHandoff() {
             const UNIVERSAL_LINK_BASE = 'https://teambuildpro.com/';
-            const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+            const urlParams = new URLSearchParams(window.location.search);
+            const APP_STORE_URL = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
             const params = window.location.search || '';
             const universalLink = UNIVERSAL_LINK_BASE + (params.startsWith('?') ? params : ('?' + params));
@@ -1469,7 +1474,12 @@
             if (typeof window.openAppOrStore === 'function') return;
 
             window.openAppOrStore = function openAppOrStore() {
-                const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+                const urlParams = new URLSearchParams(window.location.search);
+                const APP_STORE_URL = urlParams.has('new')
+                    ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                    : urlParams.has('ref')
+                    ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                    : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
                 // Check if on iOS (including iPad desktop mode)
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1592,6 +1602,12 @@
 
             const qrCodeURL = generateQRCodeURL(token);
             const smsURL = generateSMSHelper(token);
+            const urlParams = new URLSearchParams(window.location.search);
+            const appStoreUrl = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
             return `
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; border-radius: 16px; color: white; text-align: center; margin: 20px 0; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
@@ -1613,7 +1629,7 @@
                         <!-- Direct App Store -->
                         <div style="text-align: center;">
                             <p style="margin: 0 0 8px 0; font-size: 14px; opacity: 0.9;">🍎 Direct Download</p>
-                            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" target="_blank" rel="noopener" style="display: inline-block;">
+                            <a href="${appStoreUrl}" target="_blank" rel="noopener" style="display: inline-block;">
                                 <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 50px; border-radius: 6px;" />
                             </a>
                         </div>
@@ -1628,8 +1644,14 @@
         async function createAppStoreBadge(isPrimary = true) {
             // All badges now try Universal Link → App Store fallback via openAppOrStore()
             // Capture-phase handler still runs for analytics/token copy
+            const urlParams = new URLSearchParams(window.location.search);
+            const appStoreUrl = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
             return `
-                <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
+                <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
@@ -2382,10 +2404,14 @@
     <script>
       // -------- CONFIG (set once) --------
       const TBP_FN_BASE   = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
-      const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
       // -------- Helpers --------
       const QP = new URLSearchParams(location.search);
+      const APP_STORE_URL = QP.has('new')
+          ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+          : QP.has('ref')
+          ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+          : 'https://apps.apple.com/app/team-build-pro/id6751211622';
       const qp = k => QP.get(k) || '';
 
       // Toast with debouncing (Joe's recommendation - prevents stacking on double-tap)
