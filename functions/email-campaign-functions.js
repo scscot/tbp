@@ -28,6 +28,9 @@ async function sendEmailViaMailgun(contact, apiKey, domain) {
   form.append('template', 'initial');
   form.append('t:version', 'initial');
   form.append('o:tag', 'initial');
+  form.append('o:tracking', 'yes');
+  form.append('o:tracking-opens', 'yes');
+  form.append('o:tracking-clicks', 'yes');
   form.append('h:X-Mailgun-Variables', JSON.stringify({
     first_name: contact.firstName,
     last_name: contact.lastName,
