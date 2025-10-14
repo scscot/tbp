@@ -37,7 +37,7 @@ secrets/
 .vscode/
 
 # TBP Website
-/web
+# /web
 
 # eMail Lists
 emails/
