@@ -608,9 +608,11 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _buildQuickActions(UserModel user) {
     final subscriptionStatus = user.subscriptionStatus;
     final shouldShowSubscriptionCard =
-      subscriptionStatus == 'expired' ||
-      subscriptionStatus == 'cancelled' ||
-      (subscriptionStatus == 'trial' && user.trialDaysRemaining <= 6);
+      user.lifetimeAccess != true && (
+        subscriptionStatus == 'expired' ||
+        subscriptionStatus == 'cancelled' ||
+        (subscriptionStatus == 'trial' && user.trialDaysRemaining <= 6)
+      );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -618,16 +620,25 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Show subscription card at top for expired/cancelled users or trial users in final 6 days (urgent action needed)
         if (!(_isDemoMode && _demoEmail != null) && shouldShowSubscriptionCard)
           _buildDynamicSubscriptionCard(user),
+
+        // Getting Started card - always shown first
+        _buildActionCard(
+          icon: Icons.rocket_launch,
+          title: 'Getting Started',
+          color: AppColors.opportunityPrimary,
+          onTap: () => widget.onTabSelected?.call(12),
+        ),
+
         if (user.role == 'admin') ...[
           _buildActionCard(
-            icon: Icons.rocket_launch,
+            icon: Icons.list,
             title: 'Opportunity Details',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(6),
           ),
         ] else if ((user.role == 'user' && user.qualifiedDate != null)) ...[
           _buildActionCard(
-            icon: Icons.rocket_launch,
+            icon: Icons.list,
             title: user.bizOppRefUrl != null
                 ? 'Opportunity Details'
                 : 'Join Opportunity!',

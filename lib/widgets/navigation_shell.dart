@@ -13,6 +13,7 @@ import '../screens/business_screen.dart';
 import '../screens/company_screen.dart';
 import '../screens/member_detail_screen.dart';
 import '../screens/subscription_screen_enhanced.dart';
+import '../screens/getting_started_screen.dart';
 import '../models/user_model.dart';
 import '../services/subscription_navigation_guard.dart';
 import 'subscription_required_modal.dart';
@@ -163,6 +164,10 @@ class NavigationShellState extends State<NavigationShell> {
           screen: PlatformManagementScreen(appId: widget.appId),
           appId: widget.appId,
         );
+        break;
+      case 12:
+        nav.push(MaterialPageRoute(
+            builder: (_) => GettingStartedScreen(appId: widget.appId)));
         break;
       default:
         break;
@@ -347,6 +352,8 @@ class NavigationShellState extends State<NavigationShell> {
             selectedItemColor: Theme.of(context).colorScheme.primary,
             unselectedItemColor:
                 Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            selectedFontSize: 12.0,
+            unselectedFontSize: 12.0,
             items: [
               const BottomNavigationBarItem(
                 icon: Icon(Icons.dashboard_outlined),
@@ -357,8 +364,8 @@ class NavigationShellState extends State<NavigationShell> {
                 label: 'Team',
               ),
               const BottomNavigationBarItem(
-                icon: Icon(Icons.trending_up),
-                label: 'Grow',
+                icon: Icon(Icons.share),
+                label: 'Share',
               ),
               const BottomNavigationBarItem(
                 icon: Icon(Icons.message_outlined),

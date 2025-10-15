@@ -88,10 +88,20 @@
                         Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.
                     </p>
 
+                    <!-- Early Adopter badges (hidden when all spots claimed) -->
+                    <div id="early-adopter-badges" class="hero-early-adopter-badges" style="display: none;">
+                        <span class="early-adopter-badge special" aria-label="Early adopter special">
+                            🎁 Early Adopter Special: FREE FOR LIFE!
+                        </span>
+                        <span class="early-adopter-badge urgency" aria-label="Spots remaining">
+                            🔥 Only <span id="spots-remaining">--</span> spots remaining
+                        </span>
+                    </div>
+
                     <!-- Trial offer badge -->
-                    <div class="hero-trial-badge" style="display: none;">
+                    <div class="hero-trial-badge">
                         <span class="trial-badge" aria-label="Trial offer">
-                            Cancel anytime.
+                             Free 30-day trial, then only $4.99/mo. Cancel anytime.
                         </span>
                     </div>
 
@@ -693,6 +703,44 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
+
+        // ============================================================================
+        // EARLY ADOPTER LIVE COUNTDOWN
+        // ============================================================================
+        async function updateEarlyAdopterBadges() {
+            try {
+                const earlyAdopterDoc = await db.collection('settings').doc('earlyAdopter').get();
+
+                if (!earlyAdopterDoc.exists) {
+                    console.log('Early adopter settings not found');
+                    return;
+                }
+
+                const data = earlyAdopterDoc.data();
+                const { totalGranted = 0, limit = 50, enabled = true } = data;
+                const remaining = limit - totalGranted;
+
+                const badgesContainer = document.getElementById('early-adopter-badges');
+                const spotsElement = document.getElementById('spots-remaining');
+                const trialBadge = document.querySelector('.hero-trial-badge');
+
+                if (enabled && remaining > 0) {
+                    spotsElement.textContent = remaining;
+                    badgesContainer.style.display = 'flex';
+                    trialBadge.style.display = 'none';
+                    console.log(`Early adopter: ${remaining} spots remaining`);
+                } else {
+                    badgesContainer.style.display = 'none';
+                    trialBadge.style.display = 'flex';
+                    console.log('Early adopter program full or disabled');
+                }
+            } catch (error) {
+                console.error('Error fetching early adopter data:', error);
+            }
+        }
+
+        // Update badges on page load
+        updateEarlyAdopterBadges();
 
         // ============================================================================
         // FIREBASE AUTH ACTION HANDLER FOR CUSTOM DOMAIN

@@ -306,6 +306,33 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
       trialStartDate: FieldValue.serverTimestamp(),
     };
 
+    logger.info("Checking early adopter eligibility...");
+    const earlyAdopterRef = db.collection('settings').doc('earlyAdopter');
+    const earlyAdopterSnap = await earlyAdopterRef.get();
+    const earlyAdopterData = earlyAdopterSnap.exists ? earlyAdopterSnap.data() : {};
+    const { totalGranted = 0, limit = 50, enabled = true } = earlyAdopterData;
+
+    if (enabled && totalGranted < limit) {
+      newUser.lifetimeAccess = true;
+      newUser.earlyAdopter = true;
+      newUser.earlyAdopterGrantedAt = FieldValue.serverTimestamp();
+
+      await earlyAdopterRef.update({
+        totalGranted: FieldValue.increment(1)
+      });
+
+      logger.info(`✅ EARLY ADOPTER #${totalGranted + 1}: Granted lifetime access to ${uid} (${email})`);
+    } else {
+      newUser.lifetimeAccess = false;
+      newUser.earlyAdopter = false;
+
+      if (!enabled) {
+        logger.info("Early adopter program is disabled");
+      } else if (totalGranted >= limit) {
+        logger.info(`Early adopter limit reached (${totalGranted}/${limit})`);
+      }
+    }
+
     logger.info("User document prepared:", JSON.stringify(newUser, null, 2));
     logger.info("Creating Firestore user document...");
     await db.collection("users").doc(uid).set(newUser);
