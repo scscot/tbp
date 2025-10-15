@@ -10,15 +10,19 @@ const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { defau
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
 const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildpro.com" });
 
-async function sendEmailViaMailgun(contact, apiKey, domain) {
+async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
   const subjectLines = [
-    'Build Your Team Smarter — With Tools That Work',
+    'Build Your Team Smarter — With a Tool That Works',
     'A Better Way to Build Momentum in Direct Sales',
-    'Team Build Pro — Designed for Direct Sales Leaders'
+'What if your recruits already had a team before they even started ?',
+'Stop the Day 1 Dropout: Give Your Prospects a Pre-Built Head Start'
   ];
   const randomSubject = subjectLines[Math.floor(Math.random() * subjectLines.length)];
+
+  const versions = ['initial', 'initialv1', 'initialv2', 'initialv3'];
+  const selectedVersion = versions[index % versions.length];
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -26,8 +30,8 @@ async function sendEmailViaMailgun(contact, apiKey, domain) {
   form.append('subject', randomSubject);
 
   form.append('template', 'initial');
-  form.append('t:version', 'initial');
-  form.append('o:tag', 'initial');
+  form.append('t:version', selectedVersion);
+  form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
@@ -95,13 +99,14 @@ const sendHourlyEmailCampaign = onSchedule({
     let sent = 0;
     let failed = 0;
 
-    for (const doc of unsentSnapshot.docs) {
+    for (let i = 0; i < unsentSnapshot.docs.length; i++) {
+      const doc = unsentSnapshot.docs[i];
       const contact = doc.data();
 
       try {
         console.log(`📤 Sending to ${contact.email}...`);
 
-        const result = await sendEmailViaMailgun(contact, apiKey, domain);
+        const result = await sendEmailViaMailgun(contact, apiKey, domain, i);
 
         await doc.ref.update({
           sent: true,
