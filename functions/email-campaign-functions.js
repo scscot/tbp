@@ -53,8 +53,8 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 }
 
 const sendHourlyEmailCampaign = onSchedule({
-  schedule: "0 * * * *",
-  timeZone: "UTC",
+  schedule: "0 10,12,15,18 * * 1-5",
+  timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
   timeoutSeconds: 60
