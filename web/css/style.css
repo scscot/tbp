@@ -415,6 +415,24 @@ body:has(.top-invite-bar.visible) .header {
     margin-bottom: 3rem;
 }
 
+/* Hero headline enhanced visibility */
+#hero-headline {
+    color: #ffffff;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3),
+                 0 4px 8px rgba(102, 126, 234, 0.4);
+    font-weight: 900;
+}
+
+/* Prospect benefits section - mirrors sponsor-benefits styling */
+.prospect-benefits {
+    padding: 5rem 0;
+}
+
+.prospect-benefits h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
 @media (max-width: 768px) {
     .ai-proof-microcopy {
         font-size: 0.85rem;
@@ -431,6 +449,10 @@ body:has(.top-invite-bar.visible) .header {
     }
 
     .sponsor-benefits {
+        padding: 4rem 0;
+    }
+
+    .prospect-benefits {
         padding: 4rem 0;
     }
 }

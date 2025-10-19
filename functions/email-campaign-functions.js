@@ -14,16 +14,29 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
   // Sponsor-focused subject lines aligned with AI messaging strategy
-  const subjectLines = [
-    'AI-Driven Recruiting for Direct Sales Leaders',
-    'Give Your Prospects a Real System That Builds Momentum',
-    'Stand Out as a Sponsor — AI-Powered Recruiting',
-    'The AI Recruiting Advantage for Direct Sales'
+  // Each subject line is matched to its corresponding template version
+  const versionConfig = [
+    {
+      version: 'version1',
+      subject: 'How AI Is Changing Direct Sales Recruiting'
+    },
+    {
+      version: 'version2',
+      subject: 'Give Your Prospects a Real System That Builds Momentum'
+    },
+    {
+      version: 'version3',
+      subject: 'Stand Out as a Sponsor — AI-Powered Recruiting'
+    },
+    {
+      version: 'version4',
+      subject: 'Your AI Recruiting Advantage Starts Here'
+    }
   ];
-  const selectedSubject = subjectLines[index % subjectLines.length];
 
-  const versions = ['version1', 'version2', 'version3', 'version4'];
-  const selectedVersion = versions[index % versions.length];
+  const selectedConfig = versionConfig[index % versionConfig.length];
+  const selectedVersion = selectedConfig.version;
+  const selectedSubject = selectedConfig.subject;
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
