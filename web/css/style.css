@@ -370,3 +370,67 @@ body:has(.top-invite-bar.visible) .header {
         font-size: 1.1rem !important;
     }
 }
+
+/* AI Messaging Components - Dual Audience Strategy */
+.ai-proof-microcopy {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+.hero-promise {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 1.5rem 0;
+    font-weight: 600;
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bridge-text {
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto 0;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #fbbf24;
+}
+
+.sponsor-benefits {
+    padding: 5rem 0;
+}
+
+.sponsor-benefits h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    .ai-proof-microcopy {
+        font-size: 0.85rem;
+    }
+    
+    .hero-promise {
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .bridge-text {
+        font-size: 1rem;
+        padding: 0.875rem 1.5rem;
+    }
+
+    .sponsor-benefits {
+        padding: 4rem 0;
+    }
+}

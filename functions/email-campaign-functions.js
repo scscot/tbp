@@ -13,12 +13,14 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
+  // Sponsor-focused subject lines aligned with AI messaging strategy
   const subjectLines = [
-    'Build Your Team Smarter — With Tools That Work',
-    'A Better Way to Build Momentum',
-    'AI-Driven Recruiting and Team Building'
+    'AI-Driven Recruiting for Direct Sales Leaders',
+    'Give Your Prospects a Real System That Builds Momentum',
+    'Stand Out as a Sponsor — AI-Powered Recruiting',
+    'The AI Recruiting Advantage for Direct Sales'
   ];
-  const randomSubject = subjectLines[Math.floor(Math.random() * subjectLines.length)];
+  const selectedSubject = subjectLines[index % subjectLines.length];
 
   const versions = ['version1', 'version2', 'version3', 'version4'];
   const selectedVersion = versions[index % versions.length];
@@ -26,8 +28,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
-  // form.append('subject', randomSubject);
-  form.append('subject', 'AI-Driven Recruiting and Team Building');
+  form.append('subject', selectedSubject);
 
   form.append('template', 'initial');
   form.append('t:version', selectedVersion);

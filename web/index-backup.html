@@ -4,20 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team Build Pro | Recruit Better. Build Faster. Direct Sales Team Building App</title>
-    <meta name="description" content="Smart technology built for relationship-driven success. Help recruiting prospects build momentum before Day 1. Accelerate growth across your entire team. Free for 30 days, then $4.99/mo.">
-    <meta name="keywords" content="direct sales team building, recruiting app, momentum builder, relationship-driven sales, network marketing software, team management app, pre-launch recruiting, team growth accelerator, direct sales tools">
+    <title>Team Build Pro | AI-driven direct sales team building.</title>
+    <meta name="description" content="Help recruiting prospects build momentum before Day 1 and empower existing team members to accelerate their growth. Works with your existing business.">
+    <meta name="keywords" content="direct sales,ai recruiting,prospecting,team building,ai coaching,network marketing,downline,contacts">
     <meta name="author" content="Team Build Pro">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Team Build Pro | Recruit Better. Build Faster.">
-    <meta property="og:description" content="Smart technology built for relationship-driven success. Help prospects build momentum before Day 1. Accelerate growth across your team. Free for 30 days, then $4.99/mo.">
+    <meta property="og:description" content="AI-driven direct sales team building.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teambuildpro.com">
     <meta property="og:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta property="og:site_name" content="Team Build Pro">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Team Build Pro | Recruit Better. Build Faster.">
-    <meta name="twitter:description" content="Recruit better. Build faster. Smart team building for direct sales professionals. Free for 30 days, then $4.99/mo.">
+    <meta name="twitter:title" content="Team Build Pro">
+    <meta name="twitter:description" content="AI-driven direct sales team building.">
     <meta name="twitter:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
     <meta name="twitter:site" content="@teambuildpro">
     <!-- Google Fonts: Inter -->
@@ -33,6 +33,7 @@
     <!-- Apple Touch Icon for Universal Links -->
     <link rel="apple-touch-icon" href="assets/icons/team-build-pro.png" />
     <link rel="stylesheet" href="css/style.css?v=2" />
+    <link rel="stylesheet" href="css/downline-animation.css" />
 
     <!-- reCAPTCHA Enterprise Script -->
     <script
@@ -81,17 +82,27 @@
                     </div>
 
                     <h1 id="hero-headline">
-                        Most Direct Sales Professionals Struggle to Build Momentum<br /><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>
+                        Most Direct Sales Professionals Struggle with Team Building<br /><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>
                     </h1>
 
                     <p id="hero-subheadline">
                         Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.
                     </p>
 
+                    <!-- Early Adopter badges (hidden when all spots claimed) -->
+                    <div id="early-adopter-badges" class="hero-early-adopter-badges" style="display: none;">
+                        <span class="early-adopter-badge special" aria-label="Early adopter special">
+                            🎁 Early Adopter Special: FREE FOR LIFE!
+                        </span>
+                        <span class="early-adopter-badge urgency" aria-label="Spots remaining">
+                            🔥 Only <span id="spots-remaining">--</span> spots remaining
+                        </span>
+                    </div>
+
                     <!-- Trial offer badge -->
                     <div class="hero-trial-badge">
                         <span class="trial-badge" aria-label="Trial offer">
-                            Free for 30 days, then $4.99/mo. Cancel anytime.
+                             Free 30-day trial, then only $4.99/mo. Cancel anytime.
                         </span>
                     </div>
 
@@ -112,8 +123,8 @@
             </div>
         </section>
 
-        <!-- Industry Challenge Section -->
-        <section id="industry-challenge" class="section section-gray">
+        <!-- Industry Challenge Section (Original - Hidden) -->
+        <section id="industry-challenge-old" class="section section-gray" style="display: none;">
             <div class="container">
                 <div class="section-header">
                     <h2>The Direct Sales Reality</h2>
@@ -125,11 +136,11 @@
                     <div class="challenge-stats">
                         <div class="stat-card reveal-on-scroll">
                             <div class="stat-number">90%</div>
-                            <div class="stat-label">struggle with long-term retention</div>
+                            <div class="stat-label">struggle with recruiting new team members</div>
                         </div>
-                        <div class="stat-card reveal-on-scroll">
-                            <div class="stat-number">#1</div>
-                            <div class="stat-label">challenge is consistent team building</div>
+                        <div class="stat-card reveal-on-scroll" style="display: none;">
+                        <div class="stat-number">#1</div>
+                        <div class="stat-label">challenge is consistent team building</div>
                         </div>
                     </div>
                     <div class="solution-content">
@@ -148,12 +159,35 @@
             </div>
         </section>
 
+        <!-- Industry Challenge Section (Simplified) -->
+        <section id="industry-challenge" class="section section-gray">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Direct Sales Reality</h2>
+                    <p>Most direct sales representatives struggle—not from lack of ability, but from lack of system.</p>
+                </div>
+                <div class="challenge-stats" style="display: flex; gap: 20px; justify-content: center; max-width: 800px; margin: 0 auto;">
+                    <div class="stat-card reveal-on-scroll">
+                        <div class="stat-number">90%</div>
+                        <div class="stat-label">struggle with recruiting new team members</div>
+                    </div>
+                    <div class="stat-card reveal-on-scroll" style="display: none;">
+                        <div class="stat-number">#1</div>
+                        <div class="stat-label">challenge is consistent team building</div>
+                    </div>
+                </div>
+                <div class="section-header" style="margin-top: 40px; margin-bottom: 0;">
+                    <p>Team Build Pro brings an innovative, mobile-first approach to creating and sustaining real momentum—no matter your experience level or opportunity.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- "How It Works" Section -->
         <section id="how-it-works" class="section section-white">
             <div class="container">
                 <div class="section-header">
                     <h2>How It Works</h2>
-                   
+                    <p>Four simple steps to build unstoppable momentum.</p>
                 </div>
                 <div class="grid grid-4">
                     <div class="feature-card reveal-on-scroll">
@@ -203,13 +237,70 @@
                 </div>
             </div>
         </section>
-        
+
+        <!-- Dual Downline Animation Section -->
+        <section id="downline-animation-section" class="downline-animation-section">
+            <div class="downline-container">
+                <div class="downline-header">
+                    <h2>See How Pre-Building Creates Momentum</h2>
+                    <p>Watch how recruiting prospects build their team BEFORE joining—positioning themselves for immediate success while feeding your business growth.</p>
+                </div>
+
+                <div class="downlines-wrapper">
+                    <!-- Left Side - Pre-Build Downline -->
+                    <div class="downline-side downline-left">
+                        <div class="downline-title">Recriting Prospects<br />Pre-Build with Team Build Pro</div>
+                        <div class="downline-tree" id="downline-left">
+                            <div class="downline-level downline-level-0"></div>
+                            <div class="downline-level downline-level-1"></div>
+                            <div class="downline-level downline-level-2"></div>
+                        </div>
+                        <div class="benefit-callout left" id="left-benefit">
+                            <strong>Prospect Advantage:</strong>
+                            Build team momentum before Day 1
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Business Opportunity Downline -->
+                    <div class="downline-side downline-right">
+                        <div class="downline-title">Recriting Prospects<br />Join Opportunity With Momentum</div>
+                        <div class="downline-tree" id="downline-right">
+                            <div class="downline-level downline-level-0"></div>
+                            <div class="downline-level downline-level-1"></div>
+                            <div class="downline-level downline-level-2"></div>
+                        </div>
+                        <div class="benefit-callout right" id="right-benefit">
+                            <strong>Your Advantage:</strong>
+                            Their pre-built team feeds your downline
+                        </div>
+                    </div>
+                </div>
+
+                <div class="downline-stats">
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-number">2x</div>
+                            <div class="stat-label">Faster Team Growth</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">Win-Win</div>
+                            <div class="stat-label">Both Sponsor & Prospect Benefit</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">Day 1</div>
+                            <div class="stat-label">Immediate Momentum</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
                 <!-- App Screenshots -->
-                <section id="screenshots" class="section section-gray">
+                <section id="screenshots" class="section section-white">
                     <div class="container">
                         <div class="section-header">
-                            <h2>AI-Powered Team Management</h2>
-                            <p>Smart tools with built-in AI guidance designed for serious direct sales professionals.</p>
+                            <h2>Your Complete Team Building System</h2>
+                            <p>Fully customizable for your opportunity. Built to grow with you at every stage.</p>
                         </div>
                         <div class="shots-grid" aria-label="App screenshots">
                             <figure class="shot">
@@ -262,8 +353,8 @@
                     </div>
                 </section>
                 
-                <!-- "Roadmap To Success" Section -->
-        <section id="the-why" class="section section-white">
+<!-- "Roadmap To Success" Section -->
+        <section id="the-why" class="section section-white" style="display: none;">
             <div class="container">
                 <div class="section-header">
                     <h2 id="why-headline">Roadmap To Success</h2>
@@ -352,7 +443,7 @@
 
 
         <!-- "Who It's For" Section -->
-        <section id="who-its-for" class="section section-white">
+        <section id="who-its-for" class="section section-white" style="display: none;">
             <div class="container">
                 <div class="section-header">
                     <h2 id="who-headline">Built for Every Stage</h2>
@@ -402,7 +493,7 @@
 
 
         <!-- "Features / Why Choose Us" Section -->
-        <section id="features" class="section section-gray">
+        <section id="features" class="section section-gray" style="display: none;">
             <div class="container">
                 <div class="section-header">
                     <h2>High-Performance<br>Team Building Tools</h2>
@@ -626,7 +717,7 @@
                         <label class="checkbox-label">
                             <input type="checkbox" id="demoInterest" tabindex="-1">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Check the box to preview the app on your Android device before it's officially available on Google Play</span>
+                            <span class="checkbox-text">Get FREE lifetime access (normally $4.99/mo) by previewing the app before official launch</span>
                         </label>
                     </div>
                     
@@ -670,6 +761,44 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
+
+        // ============================================================================
+        // EARLY ADOPTER LIVE COUNTDOWN
+        // ============================================================================
+        async function updateEarlyAdopterBadges() {
+            try {
+                const earlyAdopterDoc = await db.collection('settings').doc('earlyAdopter').get();
+
+                if (!earlyAdopterDoc.exists) {
+                    console.log('Early adopter settings not found');
+                    return;
+                }
+
+                const data = earlyAdopterDoc.data();
+                const { totalGranted = 0, limit = 50, enabled = true } = data;
+                const remaining = limit - totalGranted;
+
+                const badgesContainer = document.getElementById('early-adopter-badges');
+                const spotsElement = document.getElementById('spots-remaining');
+                const trialBadge = document.querySelector('.hero-trial-badge');
+
+                if (enabled && remaining > 0) {
+                    spotsElement.textContent = remaining;
+                    badgesContainer.style.display = 'flex';
+                    trialBadge.style.display = 'none';
+                    console.log(`Early adopter: ${remaining} spots remaining`);
+                } else {
+                    badgesContainer.style.display = 'none';
+                    trialBadge.style.display = 'flex';
+                    console.log('Early adopter program full or disabled');
+                }
+            } catch (error) {
+                console.error('Error fetching early adopter data:', error);
+            }
+        }
+
+        // Update badges on page load
+        updateEarlyAdopterBadges();
 
         // ============================================================================
         // FIREBASE AUTH ACTION HANDLER FOR CUSTOM DOMAIN
@@ -899,7 +1028,7 @@
         const contentFor = {
             partner: {
                 heroBadge: getResponsiveHeroBadgeText(),
-                heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
+                heroHeadline: `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`,
                 heroSubheadline:
                     "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
@@ -1188,7 +1317,7 @@
             },
             "t8": {
                 heroBadge: "Your Blueprint for Team Growth",
-                 heroHeadline: `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`,
+                 heroHeadline: `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`,
                 heroSubheadline:
                     "Help recruiting prospects build momentum before Day 1.<br>Help existing team members accelerate their growth.",
                 whoHeadline: "Built for Success at Every Level",
@@ -1368,7 +1497,7 @@
 
             } else { // "partner"
                 // Journey for an existing leader referred by a colleague
-                heroHeadline.innerHTML = `Most Direct Sales Professionals Struggle to Build Momentum<br><span class="accent">Smart Technology. Built for Relationship-Driven Success.</span>`;
+                heroHeadline.innerHTML = `Most Direct Sales Professionals Struggle with Team Building<br><span class="accent">Old methods fade. AI-driven recruiting builds teams that last.</span>`;
                 heroSubheadline.innerHTML = `Help recruiting prospects build momentum before Day 1.<br />Help existing team members accelerate their growth.`;
             }
 
@@ -1416,7 +1545,12 @@
         // Setup Universal Link → App Store fallback for invite handoff
         function setupInviteHandoff() {
             const UNIVERSAL_LINK_BASE = 'https://teambuildpro.com/';
-            const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+            const urlParams = new URLSearchParams(window.location.search);
+            const APP_STORE_URL = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
             const params = window.location.search || '';
             const universalLink = UNIVERSAL_LINK_BASE + (params.startsWith('?') ? params : ('?' + params));
@@ -1446,7 +1580,12 @@
             if (typeof window.openAppOrStore === 'function') return;
 
             window.openAppOrStore = function openAppOrStore() {
-                const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
+                const urlParams = new URLSearchParams(window.location.search);
+                const APP_STORE_URL = urlParams.has('new')
+                    ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                    : urlParams.has('ref')
+                    ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                    : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
                 // Check if on iOS (including iPad desktop mode)
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1569,6 +1708,12 @@
 
             const qrCodeURL = generateQRCodeURL(token);
             const smsURL = generateSMSHelper(token);
+            const urlParams = new URLSearchParams(window.location.search);
+            const appStoreUrl = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
             return `
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; border-radius: 16px; color: white; text-align: center; margin: 20px 0; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
@@ -1590,7 +1735,7 @@
                         <!-- Direct App Store -->
                         <div style="text-align: center;">
                             <p style="margin: 0 0 8px 0; font-size: 14px; opacity: 0.9;">🍎 Direct Download</p>
-                            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" target="_blank" rel="noopener" style="display: inline-block;">
+                            <a href="${appStoreUrl}" target="_blank" rel="noopener" style="display: inline-block;">
                                 <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 50px; border-radius: 6px;" />
                             </a>
                         </div>
@@ -1605,8 +1750,14 @@
         async function createAppStoreBadge(isPrimary = true) {
             // All badges now try Universal Link → App Store fallback via openAppOrStore()
             // Capture-phase handler still runs for analytics/token copy
+            const urlParams = new URLSearchParams(window.location.search);
+            const appStoreUrl = urlParams.has('new')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+                : urlParams.has('ref')
+                ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+                : 'https://apps.apple.com/app/team-build-pro/id6751211622';
             return `
-                <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
+                <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
@@ -1970,33 +2121,30 @@
                     isNewSignup = true;
                     shouldSendEmail = true;
 
-                    // Append email to demo_leads.csv
+                    // Send demo notification email to admin
                     if (wantDemo) {
                         try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
+                            const notificationResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendDemoNotification', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    email: email
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    email: email,
+                                    deviceType: deviceType
                                 })
                             });
 
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Email added to demo_leads.csv:', email);
-                                await docRef.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached');
+                            const notificationResult = await notificationResponse.json();
+                            if (notificationResult.success) {
+                                console.log('✅ Demo notification email sent to admin');
                             } else {
-                                console.warn('Failed to add to CSV:', csvResult.error);
+                                console.warn('Failed to send notification:', notificationResult.error);
                             }
-                        } catch (csvError) {
-                            console.error('Error adding to CSV:', csvError);
+                        } catch (notificationError) {
+                            console.error('Error sending demo notification:', notificationError);
                         }
                     }
                     
@@ -2019,32 +2167,29 @@
                         console.log('Demo access added for existing user:', `${email} (${deviceType})`);
                         shouldSendEmail = true; // Send email with demo instructions
 
-                        // Append existing user email to demo_leads.csv
+                        // Send demo notification email to admin for existing user
                         try {
-                            const csvResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/appendDemoEmail', {
+                            const notificationResponse = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/sendDemoNotification', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    email: email
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    email: email,
+                                    deviceType: deviceType
                                 })
                             });
 
-                            const csvResult = await csvResponse.json();
-                            if (csvResult.success) {
-                                console.log('✅ Existing user email added to demo_leads.csv:', email);
-                                await existingDoc.ref.update({
-                                    addedToCsv: true,
-                                    csvAddedDate: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            } else if (csvResult.limitReached) {
-                                console.warn('Demo limit reached for existing user');
+                            const notificationResult = await notificationResponse.json();
+                            if (notificationResult.success) {
+                                console.log('✅ Demo notification email sent to admin for existing user');
                             } else {
-                                console.warn('Failed to add existing user to CSV:', csvResult.error);
+                                console.warn('Failed to send notification for existing user:', notificationResult.error);
                             }
-                        } catch (csvError) {
-                            console.error('Error adding existing user to CSV:', csvError);
+                        } catch (notificationError) {
+                            console.error('Error sending demo notification for existing user:', notificationError);
                         }
                         
                     } else {
@@ -2114,7 +2259,7 @@
                 const deviceName = deviceType === 'ios' ? 'iPhone' : 'Android';
                 successContent.innerHTML = `
                     <p><strong>Perfect! You're all set!</strong></p>
-                    <p>📧 <strong>Demo access email sent!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
+                    <p>📧 <strong>Your demo access email will be sent shortly!</strong> Check your inbox for step-by-step instructions on how to download and preview the app on your Android device.</p>
                     <p style="margin: 15px 0;">We'll also notify you when Team Build Pro officially launches on Google Play.</p>
                     <p><strong>Thanks for being an early supporter!</strong></p>
                 `;
@@ -2174,7 +2319,7 @@
                 demoSection.classList.remove('show');
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box to preview the app on your Android device before it's officially available on Google Play";
+                    demoText.textContent = "Get FREE lifetime access (normally $4.99/mo) by previewing the app before official launch";
                 }
             }
             
@@ -2305,7 +2450,7 @@
                 // Update the demo text to be more contextual
                 const demoText = demoSection.querySelector('.checkbox-text');
                 if (demoText) {
-                    demoText.textContent = "Check the box to preview the app on your Android device before it's officially available on Google Play";
+                    demoText.textContent = "Get FREE lifetime access (normally $4.99/mo) by previewing the app before official launch";
                 }
 
                 // Make demo checkbox focusable
@@ -2365,10 +2510,14 @@
     <script>
       // -------- CONFIG (set once) --------
       const TBP_FN_BASE   = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
-      const APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro/id6751211622';
 
       // -------- Helpers --------
       const QP = new URLSearchParams(location.search);
+      const APP_STORE_URL = QP.has('new')
+          ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=2a144d9e-a5f0-4cac-a4ba-cf1c4f88e88a'
+          : QP.has('ref')
+          ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
+          : 'https://apps.apple.com/app/team-build-pro/id6751211622';
       const qp = k => QP.get(k) || '';
 
       // Toast with debouncing (Joe's recommendation - prevents stacking on double-tap)
@@ -2802,6 +2951,9 @@
         };
       })();
     </script>
+
+    <!-- Downline Animation Script -->
+    <script src="js/downline-animation.js"></script>
 
 </body>
 
