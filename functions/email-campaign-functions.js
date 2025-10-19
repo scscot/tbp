@@ -14,20 +14,20 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
   const subjectLines = [
-    'Build Your Team Smarter — With a Tool That Works',
-    'A Better Way to Build Momentum in Direct Sales',
-'What if your recruits already had a team before they even started ?',
-'Stop the Day 1 Dropout: Give Your Prospects a Pre-Built Head Start'
+    'Build Your Team Smarter — With Tools That Work',
+    'A Better Way to Build Momentum',
+    'AI-Driven Recruiting and Team Building'
   ];
   const randomSubject = subjectLines[Math.floor(Math.random() * subjectLines.length)];
 
-  const versions = ['initial', 'initialv1', 'initialv2', 'initialv3'];
+  const versions = ['version1', 'version2', 'version3', 'version4'];
   const selectedVersion = versions[index % versions.length];
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
-  form.append('subject', randomSubject);
+  // form.append('subject', randomSubject);
+  form.append('subject', 'AI-Driven Recruiting and Team Building');
 
   form.append('template', 'initial');
   form.append('t:version', selectedVersion);
@@ -53,7 +53,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 }
 
 const sendHourlyEmailCampaign = onSchedule({
-  schedule: "0 10,12,15,18 * * 1-5",
+  schedule: "0 10,12,15,18 * * 1-6",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

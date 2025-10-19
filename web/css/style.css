@@ -349,3 +349,24 @@ body:has(.top-invite-bar.visible) .header {
         font-size: 13px;
     }
 }
+
+/* Challenge Stats Enhancements - Override for better readability */
+.stat-card .stat-number {
+    font-size: 3.5rem !important;
+    color: white !important;
+}
+
+.stat-card .stat-label {
+    font-size: 1.125rem !important;
+    color: white !important;
+    opacity: 1 !important;
+}
+
+@media (max-width: 768px) {
+    .stat-card .stat-number {
+        font-size: 3rem !important;
+    }
+    .stat-card .stat-label {
+        font-size: 1.1rem !important;
+    }
+}

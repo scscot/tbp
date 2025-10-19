@@ -262,7 +262,7 @@
 }
 
 .benefit-callout {
-    position: absolute;
+    position: relative;
     background: white;
     padding: 16px 20px;
     border-radius: 12px;
@@ -274,6 +274,7 @@
     transition: all 0.4s ease;
     z-index: 100;
     max-width: 250px;
+    margin: 20px auto 0;
 }
 
 .benefit-callout.visible {
@@ -282,13 +283,11 @@
 }
 
 .benefit-callout.left {
-    left: -20px;
     border-left: 4px solid #667eea;
     color: #667eea;
 }
 
 .benefit-callout.right {
-    right: -20px;
     border-left: 4px solid #2ecc71;
     color: #2ecc71;
 }
@@ -319,7 +318,7 @@
     text-align: center;
 }
 
-.stat-number {
+.downline-stats .stat-number {
     font-size: 36px;
     font-weight: 800;
     background: linear-gradient(135deg, #667eea 0%, #2ecc71 100%);
@@ -328,7 +327,7 @@
     background-clip: text;
 }
 
-.stat-label {
+.downline-stats .stat-label {
     font-size: 14px;
     color: #6c757d;
     margin-top: 8px;
@@ -356,9 +355,6 @@
     }
 
     .benefit-callout {
-        position: relative;
-        left: 0 !important;
-        right: 0 !important;
         margin: 20px auto 0;
         max-width: 100%;
     }
@@ -381,7 +377,7 @@
         padding: 10px 16px;
     }
 
-    .stat-number {
+    .downline-stats .stat-number {
         font-size: 28px;
     }
 }

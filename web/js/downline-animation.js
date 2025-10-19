@@ -10,6 +10,8 @@ class DownlineAnimation {
         this.animationActive = false;
         this.observer = null;
         this.members = {}; // Store member avatars by ID
+        this.loopCount = 0;
+        this.maxLoops = 2;
 
         // Avatar emojis (mix of male/female representations)
         this.avatars = ['👨', '👩', '👨‍💼', '👩‍💼', '🧑', '👨‍🦰', '👩‍🦰', '👱‍♂️', '👱‍♀️'];
@@ -97,11 +99,16 @@ class DownlineAnimation {
         await this.delay(600);
         this.showBenefits();
 
-        // Loop animation
-        setTimeout(() => {
-            this.resetAnimation();
-            setTimeout(() => this.startAnimation(), 1000);
-        }, 10000);
+        // Loop animation (max 2 times)
+        this.loopCount++;
+        if (this.loopCount < this.maxLoops) {
+            setTimeout(() => {
+                this.resetAnimation();
+                setTimeout(() => this.startAnimation(), 1000);
+            }, 10000);
+        } else {
+            this.animationActive = false;
+        }
     }
 
     async buildLeftDownline() {
