@@ -242,49 +242,47 @@ class _ShareScreenState extends State<ShareScreen>
       'past_struggles': {
         'title': 'Addressing Past Struggles',
         'description': 'Perfect for prospects who have tried before and struggled',
-        'subject': 'A Different Approach This Time',
-        'message': 'I know the direct sales journey can feel overwhelming - maybe you\'ve even tried before and it didn\'t work out the way you hoped.\n\n'
-            'Here\'s what\'s different this time: you can build your $_bizOppName team BEFORE you even join, so you\'re not starting from zero like most people do.\n\n'
-            'Think about it - instead of that scary "cold start" where you\'re scrambling to find people, you could launch with a team already in place and growing.\n\n'
-            'Check it out: $_prospectReferralLink\n\n'
-            'This could be the game-changer you\'ve been looking for!\n\n'
-            'Please don\'t hesitate to reach out if you have questions or want to discuss further.\n\n'
-            'Best regards!',
+        'subject': 'A Smarter Way to Start This Time',
+        'message': 'If past attempts left you stuck at zero with no momentum, here\'s a smarter path.\n\n'
+            'Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you even join.\n\n'
+            'It drafts your messages, times your follow-ups, and tracks who\'s interested - so you don\'t start from scratch this time. You launch with people already waiting for you.\n\n'
+            'The AI walks you through every step. You won\'t be alone.\n\n'
+            'See how it works: $_prospectReferralLink\n\n'
+            'You deserve a real shot this time.',
       },
       'not_salesperson': {
         'title': 'For Non-Sales Minded',
         'description': 'Great for people who don\'t see themselves as "salespeople"',
-        'subject': 'No Pressure, Just Opportunity',
-        'message': 'I get it - when you hear "direct sales," you might think "I\'m not a salesperson" or worry about having to pressure friends and family.\n\n'
-            'What if I told you there\'s a way to build your $_bizOppName team that feels natural and authentic? You can actually pre-build your network BEFORE joining, focusing on relationships first.\n\n'
-            'No cold calls, no awkward pitches to relatives, no starting from scratch. Just a proven system with AI-powered coaching that guides you step-by-step, letting you build genuine connections naturally.\n\n'
-            'Take a look: $_prospectReferralLink\n\n'
-            'It might just change how you think about building a business!\n\n'
-            'Feel free to reach out with any questions.\n\n'
-            'Kind regards!',
+        'subject': 'You Don\'t Have to Be a "Salesperson"',
+        'message': 'Not a "natural salesperson"? That\'s okay. You have an AI Coach.\n\n'
+            'Team Build Pro helps you pre-build your $_bizOppName team with AI that drafts your messages, schedules your follow-ups, and tracks everyone\'s interest.\n\n'
+            'It\'s like having a recruiting assistant who never sleeps. You focus on relationships. The AI handles the rest.\n\n'
+            'Start building before you even join: $_prospectReferralLink\n\n'
+            'You don\'t need a "sales personality." You need smart tools. Now you have them.',
       },
       'hope_after_disappointment': {
         'title': 'Hope After Disappointment',
         'description': 'Ideal for prospects burned by previous opportunities',
-        'subject': 'You Deserve a Real Shot',
-        'message': 'If you\'ve been burned before by opportunities that promised the world but left you starting from zero... I understand.\n\n'
-            'Here\'s something different: imagine building your $_bizOppName team BEFORE you even join. No more hoping and praying for momentum - you create it first.\n\n'
-            'This isn\'t about empty promises or overnight success. It\'s about giving yourself the advantage that successful leaders have always had: starting with a foundation already in place.\n\n'
-            'See how it works: $_prospectReferralLink\n\n'
-            'You deserve a real shot at success.\n\n'
-            'I\'m here if you\'d like to discuss this further.\n\n'
-            'Take care!',
+        'subject': 'A Smarter Way to Start This Time',
+        'message': 'Been burned before? Promised the world, then left starting from zero?\n\n'
+            'This time is different. Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you join.\n\n'
+            'It drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches you on next steps. You gain real momentum before Day 1.\n\n'
+            'No hype. No empty promises. Just AI-powered tools that work.\n\n'
+            'See how: $_prospectReferralLink\n\n'
+            'You deserve a system that actually sets you up to win.',
       },
       'general_invitation': {
         'title': 'General Invitation',
         'description': 'A versatile message for any prospect situation',
-        'subject': 'Pre-Build Your Team!',
-        'message': 'Thanks for your interest in joining our $_bizOppName team! Here\'s something that could give you a HUGE advantage.\n\n'
-            'You can pre-build your $_bizOppName team *before* you even join, so you launch with instant momentum instead of starting from zero.\n\n'
-            'Check it out here: $_prospectReferralLink\n\n'
-            'This could be the difference between struggling to get started and hitting the ground running!\n\n'
-            'Please don\'t hesitate to reach out if you have questions or want to discuss further.\n\n'
-            'Best regards!',
+        'subject': 'Build Before You Join - Guided by AI',
+        'message': 'You\'re invited to try a smarter way to start.\n\n'
+            'With Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\n'
+            'Here\'s how it helps:\n'
+            '- Drafts personalized messages\n'
+            '- Schedules follow-ups automatically\n'
+            '- Tracks momentum and next steps\n\n'
+            'So Day 1 isn\'t a cold start - it\'s a running start.\n\n'
+            'Take a look: $_prospectReferralLink',
       },
     };
   }
@@ -336,55 +334,52 @@ class _ShareScreenState extends State<ShareScreen>
       'warm_market_exhausted': {
         'title': 'Warm Market Exhausted',
         'description': 'For partners who\'ve tapped out friends and family',
-        'subject': 'Finally, a Fresh Approach',
-        'message': 'I know you\'ve been grinding - maybe you\'ve already talked to everyone you know, spent money on leads that didn\'t pan out, or gotten tired of trying to get people to webinars they don\'t show up for.\n\n'
-            'I found something different that\'s working for me. Instead of chasing prospects, this lets them build momentum FIRST, before they even join $_bizOppName.\n\n'
-            'It\'s mobile-first (no more hotel meetings!), simple to duplicate, and prospects actually engage because they\'re building something for themselves.\n\n'
-            'Take a look: $_partnerReferralLink\n\n'
-            'This could be the breakthrough we\'ve been looking for.\n\n'
-            'Let me know what you think!\n\n'
-            'Best regards!',
+        'subject': 'Give Your Team an AI Recruiting Companion',
+        'message': 'Tapped out your warm market? Tired of leads that ghost you?\n\n'
+            'Give your $_bizOppName team an AI recruiting companion instead.\n\n'
+            'Team Build Pro drafts your team\'s recruiting messages, times their follow-ups, tracks prospect interest, and coaches every conversation.\n\n'
+            'Your prospects pre-build their teams before joining - so they launch with momentum, not from zero.\n\n'
+            'Best part? Your entire team gets the same AI advantage. True duplication at scale.\n\n'
+            'See how: $_partnerReferralLink\n\n'
+            'Stop chasing. Start coaching with AI.',
       },
       'expensive_system_fatigue': {
         'title': 'System Fatigue & Expense',
         'description': 'For partners burned out on expensive recruiting methods',
-        'subject': 'Stop Spending, Start Building',
-        'message': 'How much have we all spent on leads, funnels, and recruiting systems that promise the world but leave us starting from scratch every time?\n\n'
-            'I\'ve discovered a tool that flips the script entirely. Instead of expensive lead generation, prospects actually BUILD their $_bizOppName teams before joining - creating their own motivation and momentum.\n\n'
-            'No more paying for leads that don\'t convert. No more complex funnels your team can\'t duplicate. Just a simple, mobile system that works.\n\n'
+        'subject': 'The AI Recruiting System Inside Team Build Pro',
+        'message': 'Sick of paying for leads, funnels, and systems that don\'t duplicate?\n\n'
+            'Team Build Pro has AI recruiting built right in - no extra cost, no complex setup.\n\n'
+            'It drafts recruiting messages, schedules follow-ups, tracks engagement, and coaches your entire $_bizOppName team through every conversation.\n\n'
+            'Your prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone wins.\n\n'
+            'One simple system. Real results.\n\n'
             'Check it out: $_partnerReferralLink\n\n'
-            'Finally, a system that makes sense and doesn\'t break the bank.\n\n'
-            'Would love your thoughts on this.\n\n'
-            'Kind regards!',
+            'Stop overpaying. Start using AI.',
       },
       'duplication_struggle': {
         'title': 'Duplication Challenges',
         'description': 'For leaders struggling to get their team to duplicate',
-        'subject': 'Simple System Your Team Can Copy',
-        'message': 'You know the frustration - you\'ve found systems that work for you, but your team can\'t seem to duplicate them. Too complex, too expensive, or they just don\'t have your experience level.\n\n'
-            'I\'ve been testing something that changes this completely. It\'s so simple that anyone on your team can use it, and prospects actually WANT to engage because they\'re building their own $_bizOppName foundation.\n\n'
-            'Mobile-first, easy to share, and it creates momentum before prospects even join. Your team will actually be able to duplicate this.\n\n'
-            'See for yourself: $_partnerReferralLink\n\n'
-            'This could be the game-changer for true duplication.\n\n'
-            'I\'d love to hear your thoughts!\n\n'
-            'Take care!',
+        'subject': 'AI-Powered Duplication for Your Entire Team',
+        'message': 'Your team struggles to duplicate your recruiting success? Not anymore.\n\n'
+            'Team Build Pro gives every person on your $_bizOppName team the same AI recruiting coach.\n\n'
+            'It drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\n'
+            'New recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\n'
+            'Your prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\n'
+            'See it work: $_partnerReferralLink\n\n'
+            'Finally, a system your entire team can duplicate.',
       },
       'general_team_tool': {
         'title': 'General Team Tool',
         'description': 'A versatile message for any partner situation',
-        'subject': 'A Great App for Growth!',
-        'message': 'I\'ve found an incredible tool that\'s transforming how we build our $_bizOppName teams.\n\n'
-            'Here\'s what makes it special:\n\n'
-            '✅ Prospects can pre-build their teams BEFORE joining.\n'
-            '✅ Creates instant momentum from day one.\n'
-            '✅ AI coaching companion provides personalized guidance.\n'
-            '✅ Simple system that promotes duplication.\n'
-            '✅ Accelerates growth across our entire organization.\n\n'
-            'This is what we\'ve been looking for to give our team a competitive edge!\n\n'
+        'subject': 'The AI Recruiting Advantage for Your Team',
+        'message': 'Want to give your $_bizOppName team a real competitive edge?\n\n'
+            'Team Build Pro has AI recruiting built in. It helps your entire team:\n\n'
+            '- Draft personalized recruiting messages\n'
+            '- Schedule follow-ups automatically\n'
+            '- Track prospect engagement\n'
+            '- Coach every conversation\n\n'
+            'Your prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\n'
             'Check it out: $_partnerReferralLink\n\n'
-            'Let\'s help our recruiting prospects start strong!\n\n'
-            'I\'d love to hear your thoughts on this.\n\n'
-            'Best regards!',
+            'This is the AI advantage your team needs.',
       },
     };
   }
