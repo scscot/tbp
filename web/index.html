@@ -85,21 +85,10 @@
                         AI-Driven Recruiting System for Direct Sales Leaders
                     </h1>
 
-                    <p id="hero-subheadline" data-dynamic="hero-subheadline">
-                        Customize Team Build Pro with your company name and link — an AI-powered recruiting companion your prospects will love.
+                    <p id="hero-subheadline" class="hero-subheadline" data-dynamic="hero-subheadline">
+                        An AI recruiting companion that drives team growth and momentum. Customize it with your company name and link..
                     </p>
 
-                    <p class="ai-proof-microcopy" id="ai-proof-text" data-dynamic="ai-proof-text">
-                        Drafts your messages • Times your follow-ups • Tracks momentum • Coaches every prospect
-                    </p>
-
-                    <p class="hero-promise" id="hero-promise" data-dynamic="hero-promise">
-                        Stand out as a sponsor. Give your prospects a real system that builds momentum.
-                    </p>
-
-                    <p class="bridge-text reveal-on-scroll" id="bridge-text" data-dynamic="bridge-text" style="display: none;">
-                        When you join your sponsor, you'll already have the same AI tools they use to grow and duplicate success.
-                    </p>
                     <!-- Early Adopter badges (hidden when all spots claimed) -->
                     <div id="early-adopter-badges" class="hero-early-adopter-badges" style="display: none;">
                         <span class="early-adopter-badge special" aria-label="Early adopter special">
@@ -112,8 +101,8 @@
 
                     <!-- Trial offer badge -->
                     <div class="hero-trial-badge">
-                        <span class="trial-badge" aria-label="Trial offer">
-                             Free 30-day trial, then only $4.99/mo. Cancel anytime.
+                        <span class="trial-badge" id="trial-badge" data-dynamic="trial-note" aria-label="Trial offer">
+                            Free 30-day trial · $4.99/mo · Cancel anytime
                         </span>
                     </div>
 
@@ -1566,9 +1555,10 @@
             // 1. Create top fixed invite bar
             const topInviteBar = document.getElementById('top-invite-bar');
             if (topInviteBar) {
+                const label = (referralType === 'partner') ? 'Recommended by' : 'Invited by';
                 topInviteBar.innerHTML = `
                     <img src="${avatarUrl}" alt="${referrerFullName}" class="top-invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
-                    <span class="top-invite-text">Invited by ${referrerFullName}</span>
+                    <span class="top-invite-text">${label} ${referrerFullName}</span>
                 `;
                 topInviteBar.classList.add('visible');
             }
@@ -2011,54 +2001,101 @@
             const hero = document.querySelector('.hero');
             if (!hero) return;
 
+            // Helper function for creating/updating meta tags (defined once, reused across all audience types)
+            const ensureMeta = (selector, createAttrs) => {
+                let el = document.querySelector(selector);
+                if (!el) {
+                    el = document.createElement('meta');
+                    Object.entries(createAttrs).forEach(([k, v]) => el.setAttribute(k, v));
+                    document.head.appendChild(el);
+                }
+                return el;
+            };
+
             const referralType = referralInfo ? referralInfo.type : null;
             const isProspect = referralType === 'new' && userData;
 
             // Prepare content based on audience type
-            let heroHeadline, heroSubheadline, heroCorePromise, heroCTA, aiProofText, bridgeText;
+            let heroHeadline, heroSubheadline, trialNote;
 
             if (isProspect) {
                 // PROSPECT VIEW - Arrived via ?new= referral link
                 const referrerFullName = `${userData.firstName} ${userData.lastName}`;
                 const bizOppName = userData.bizOppName || 'their opportunity';
 
+                // Meta description - cached for reuse across subheadline and SEO tags (~150 chars for SERP snippets)
+                const descText = `${referrerFullName} from ${bizOppName} recommends Team Build Pro — the AI recruiting coach that helps you pre-build your team before you join.`;
+
                 heroHeadline = 'Build Your Team Before You Join — AI Coach Guides You Every Step';
-                heroSubheadline = `${referrerFullName} from ${bizOppName} has invited you to start strong. Use Team Build Pro to pre-build your foundation before you officially join.`;
-                heroCorePromise = 'Build momentum before Day 1. Launch with your team already in place.';
-                heroCTA = 'Accept Invite & Start Building Your Foundation';
-                aiProofText = 'Drafts your messages • Times your follow-ups • Tracks your momentum';
-                bridgeText = 'When you join your sponsor, you\'ll already have the same AI tools they use to grow and duplicate success.';
+                heroSubheadline = descText;
+                trialNote = 'Start free for 30 days · $4.99/mo after · Cancel anytime';
 
                 // Dynamic SEO for prospects
-                document.title = `Build Your ${bizOppName} Team Before Day 1 | Team Build Pro`;
-                const metaDesc = document.querySelector('meta[name="description"]');
-                if (metaDesc) {
-                    metaDesc.setAttribute('content', `${referrerFullName} invites you to pre-build your ${bizOppName} team with Team Build Pro's AI Coach.`);
-                }
+                document.title = `Pre-Build Your ${bizOppName} Team Before You Join | Team Build Pro`;
+
+                ensureMeta('meta[name="description"]', { name: 'description' })
+                    .setAttribute('content', descText);
 
                 // Update Open Graph tags
-                const ogTitle = document.querySelector('meta[property="og:title"]');
-                const ogDesc = document.querySelector('meta[property="og:description"]');
-                if (ogTitle) ogTitle.setAttribute('content', `Build Your ${bizOppName} Team Before Day 1`);
-                if (ogDesc) ogDesc.setAttribute('content', `${referrerFullName} invites you to pre-build your ${bizOppName} team with Team Build Pro's AI Coach.`);
+                ensureMeta('meta[property="og:title"]', { property: 'og:title' })
+                    .setAttribute('content', `Pre-Build Your ${bizOppName} Team Before You Join`);
+                ensureMeta('meta[property="og:description"]', { property: 'og:description' })
+                    .setAttribute('content', descText);
+                ensureMeta('meta[property="og:url"]', { property: 'og:url' })
+                    .setAttribute('content', window.location.href);
+
+                // Keep Twitter in sync for better share cards
+                ensureMeta('meta[name="twitter:title"]', { name: 'twitter:title' })
+                    .setAttribute('content', `Pre-Build Your ${bizOppName} Team Before You Join`);
+                ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' })
+                    .setAttribute('content', descText);
+
+
+            } else if (referralInfo && referralInfo.type === 'partner' && userData) {
+                // PARTNER VIEW – Arrived via ?ref= link (already in downline)
+                const referrerFullName = `${userData.firstName} ${userData.lastName}`;
+                const bizOppName = userData.bizOppName || 'your opportunity';
+
+                // ~150–160 chars; reused across subheadline + meta
+                const descText = `Your ${bizOppName} partner ${referrerFullName} recommends Team Build Pro — an AI recruiting coach that helps prospects pre-build teams and duplicate success.`;
+
+                heroHeadline = 'AI Recruiting Coach for Your Team';
+                heroSubheadline = descText;
+                trialNote = 'Free 30-day trial · $4.99/mo · Cancel anytime';
+
+                // ---- Dynamic SEO for partners
+                document.title = `AI Recruiting System for ${bizOppName} Teams — Recommended by ${referrerFullName} | Team Build Pro`;
+
+                // Meta description
+                ensureMeta('meta[name="description"]', { name: 'description' })
+                    .setAttribute('content', descText);
+
+                // ---- Open Graph
+                ensureMeta('meta[property="og:title"]', { property: 'og:title' })
+                    .setAttribute('content', `AI Recruiting for ${bizOppName} Teams`);
+                ensureMeta('meta[property="og:description"]', { property: 'og:description' })
+                    .setAttribute('content', descText);
+                ensureMeta('meta[property="og:url"]', { property: 'og:url' })
+                    .setAttribute('content', window.location.href);
+
+                // ---- Twitter (keep cards in sync)
+                ensureMeta('meta[name="twitter:title"]', { name: 'twitter:title' })
+                    .setAttribute('content', `AI Recruiting for ${bizOppName} Teams`);
+                ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' })
+                    .setAttribute('content', descText);
 
             } else {
-                // SPONSOR VIEW - Default audience (direct traffic or ?ref= partner link)
+                // DEFAULT SPONSOR VIEW – direct traffic (no referral)
                 heroHeadline = 'AI-Driven Recruiting System for Direct Sales Leaders';
-                heroSubheadline = 'Customize Team Build Pro with your company name and link — an AI-powered recruiting companion your prospects will love.';
-                heroCorePromise = 'Stand out as a sponsor. Give your prospects a real system that builds momentum.';
-                heroCTA = 'Try AI Recruiting Free for 30 Days';
-                aiProofText = 'Drafts messages • Times follow-ups • Tracks momentum • Coaches your prospects';
-                bridgeText = ''; // Hidden for sponsors
+                heroSubheadline = 'An AI recruiting companion that drives team growth and momentum. Customize it with your company name and link.';
+                trialNote = 'Free 30-day trial · $4.99/mo · Cancel anytime';
             }
 
             // DOM Batching - Single hero query, batch updates
             const elementsToUpdate = {
                 '[data-dynamic="hero-headline"]': heroHeadline,
                 '[data-dynamic="hero-subheadline"]': heroSubheadline,
-                '[data-dynamic="hero-promise"]': heroCorePromise,
-                '[data-dynamic="ai-proof-text"]': aiProofText,
-                '[data-dynamic="bridge-text"]': bridgeText
+                '[data-dynamic="trial-note"]': trialNote
             };
 
             Object.keys(elementsToUpdate).forEach(selector => {
