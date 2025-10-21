@@ -13,30 +13,22 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Sponsor-focused subject lines aligned with AI messaging strategy
-  // Each subject line is matched to its corresponding template version
-  const versionConfig = [
-    {
-      version: 'version1',
-      subject: 'How AI Is Changing Direct Sales Recruiting'
-    },
-    {
-      version: 'version2',
-      subject: 'Give Your Prospects a Real System That Builds Momentum'
-    },
-    {
-      version: 'version3',
-      subject: 'Stand Out as a Sponsor — AI-Powered Recruiting'
-    },
-    {
-      version: 'version4',
-      subject: 'Your AI Recruiting Advantage Starts Here'
-    }
+  // 4-way A/B testing: 2 subject lines × 2 template versions
+  // Rotation: S1+V1, S1+V12, S2+V1, S2+V12, S1+V1, S1+V12...
+  const subjectLines = [
+    'AI Recruiting for Direct Sales Professionals',
+    'The AI Recruiting System Built for Direct Sales'
   ];
 
-  const selectedConfig = versionConfig[index % versionConfig.length];
-  const selectedVersion = selectedConfig.version;
-  const selectedSubject = selectedConfig.subject;
+  const templateVersions = ['version1', 'version12'];
+
+  // Determine which subject (alternates every 2 emails)
+  const subjectIndex = Math.floor(index / 2) % subjectLines.length;
+  // Determine which version (alternates every email)
+  const versionIndex = index % templateVersions.length;
+
+  const selectedSubject = subjectLines[subjectIndex];
+  const selectedVersion = templateVersions[versionIndex];
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -45,6 +37,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'initial');
   form.append('t:version', selectedVersion);
+  form.append('o:tag', `subject${subjectIndex + 1}_${selectedVersion}`);
   form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
@@ -67,6 +60,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 }
 
 const sendHourlyEmailCampaign = onSchedule({
+  // schedule: "32 17 * * *",  // 4:40pm
   schedule: "0 8,10,12,15,18 * * 1-6",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
@@ -98,8 +92,9 @@ const sendHourlyEmailCampaign = onSchedule({
     const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
 
     const unsentSnapshot = await contactsRef
-      .where('sent', '==', false)
-      .orderBy('randomIndex')
+      // .where('email', '==', 'demo@teambuildpro.com')
+      .where('sent', '==', false)  // Commented out for testing - no index needed
+      .orderBy('randomIndex')  // Commented out for testing - no index needed
       .limit(batchSize)
       .get();
 
