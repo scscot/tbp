@@ -783,11 +783,16 @@
                         <input type="email" id="notificationEmail" placeholder="Enter your email address" required>
                     </div>
                     <!-- Demo Interest Section -->
-                    <div class="form-group demo-section">
+                    <div class="form-group demo-section show">
+                        <div style="margin-bottom: 12px; padding: 8px 12px; background-color: #FEF3C7; border-left: 4px solid #F59E0B; border-radius: 6px;">
+                            <div style="font-size: 15px; color: #92400E; font-weight: 700;">
+                                ⚠️ Gmail Users Only
+                            </div>
+                        </div>
                         <label class="checkbox-label">
-                            <input type="checkbox" id="demoInterest" tabindex="-1">
+                            <input type="checkbox" id="demoInterest" tabindex="0">
                             <span class="checkmark"></span>
-                            <span class="checkbox-text">Get FREE lifetime access (normally $4.99/mo) by previewing the app before official launch</span>
+                            <span class="checkbox-text">Get FREE lifetime access (normally $4.99/mo) by testing the app before official launch</span>
                         </label>
                     </div>
                     
@@ -2286,7 +2291,7 @@
             const firstName = firstNameInput.value.trim();
             const lastName = lastNameInput.value.trim();
             const email = emailInput.value.trim();
-            const wantDemo = demoCheckbox.checked;
+            let wantDemo = demoCheckbox.checked;
             const deviceType = 'android'; // Always Android since they clicked Google Play button
 
             if (!firstName || !lastName) {
@@ -2297,6 +2302,12 @@
             if (!email || !isValidEmail(email)) {
                 alert('Please enter a valid email address.');
                 return;
+            }
+
+            // Validate Gmail requirement for demo access
+            if (wantDemo && !email.toLowerCase().endsWith('@gmail.com')) {
+                alert('Only users with Gmail addresses are permitted to preview the Android version of the app. However, we will still notify you once the app is officially available for download on Google Play.');
+                wantDemo = false; // Continue with signup but no demo access
             }
             
             // Show loading state
@@ -2573,28 +2584,11 @@
         // ============================================================================
         // EMAIL DETECTION & DEMO PROMPT FUNCTIONALITY
         // ============================================================================
-        
+
         function setupEmailDetection() {
-            const emailInput = document.getElementById('notificationEmail');
-            const demoSection = document.querySelector('.demo-section');
-            let emailDetectionTimeout;
-            
-            if (!emailInput || !demoSection) return;
-            
-            emailInput.addEventListener('input', function() {
-                clearTimeout(emailDetectionTimeout);
-                
-                // Debounce email detection to avoid flickering
-                emailDetectionTimeout = setTimeout(() => {
-                    const email = emailInput.value.trim().toLowerCase();
-                    
-                    if (email.endsWith('@gmail.com')) {
-                        showDemoSection();
-                    } else {
-                        hideDemoSection();
-                    }
-                }, 500); // Wait 500ms after user stops typing
-            });
+            // Demo section is now always visible when Google Play button is clicked
+            // No need to show/hide based on email domain
+            return;
         }
         
         
