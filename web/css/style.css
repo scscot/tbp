@@ -478,3 +478,30 @@ body:has(.top-invite-bar.visible) .header {
         padding: 4rem 0;
     }
 }
+
+/* Screenshot figcaption styling */
+#screenshots .shot figcaption {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.4;
+    font-weight: 500;
+    padding: 0 8px;
+}
+
+@media(max-width:768px) {
+    #screenshots .shot figcaption {
+        font-size: 0.75rem;
+        margin-top: 10px;
+        padding: 0 6px;
+    }
+}
+
+@media(max-width:480px) {
+    #screenshots .shot figcaption {
+        font-size: 0.7rem;
+        margin-top: 8px;
+        line-height: 1.3;
+    }
+}

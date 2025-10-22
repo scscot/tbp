@@ -304,6 +304,8 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
       currentPartner: false,
       subscriptionStatus: 'trial',
       trialStartDate: FieldValue.serverTimestamp(),
+      hasPromptedForReview: false,
+      reviewPromptedAt: null,
     };
 
     logger.info("Checking early adopter eligibility...");

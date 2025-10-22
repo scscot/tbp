@@ -16,6 +16,7 @@ import 'subscription_screen_enhanced.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
+import '../services/review_service.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -75,6 +76,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     _networkService.startUserDocumentListener(
       onCountsChanged: _onRealtimeCountsChanged,
     );
+
+    // Check if user should be prompted for app review
+    _checkReviewPrompt();
+  }
+
+  Future<void> _checkReviewPrompt() async {
+    final user = Provider.of<UserModel?>(context, listen: false);
+    if (user != null) {
+      await ReviewService.checkAndPromptReview(user.uid);
+    }
   }
 
   // -------------------------------------------------------------
