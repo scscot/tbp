@@ -1,34 +1,8 @@
 RewriteEngine On
 
-# --- Disable caching for HTML files (temporary for SEO refresh) ---
-<FilesMatch "\.(html|htm)$">
-  Header set Cache-Control "no-cache, no-store, must-revalidate"
-  Header set Pragma "no-cache"
-  Header set Expires 0
-</FilesMatch>
-
-# --- Force HTTPS (must be first) ---
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-
-# --- Redirect www to non-www ---
+# --- Redirect www to non-www (must be first) ---
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-
-# --- Return 410 Gone for old removed pages ---
-# Old lander pages with country parameters
-RewriteCond %{QUERY_STRING} ^country=
-RewriteRule ^lander$ - [G]
-
-# Old lander base URL (no parameters)
-RewriteRule ^lander$ - [G]
-
-# Old testimonials pages with country parameters
-RewriteCond %{QUERY_STRING} ^country=
-RewriteRule ^testimonials$ - [G]
-
-# Legacy PHP file
-RewriteRule ^index\.php$ - [G]
 
 # --- Claim routing (protect first) ---
 # Allow /claim.html and /claim-google.html to pass through untouched

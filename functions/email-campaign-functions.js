@@ -16,8 +16,8 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // 4-way A/B testing: 2 subject lines × 2 template versions
   // Rotation: S1+V1, S1+V12, S2+V1, S2+V12, S1+V1, S1+V12...
   const subjectLines = [
-    'Your recruits already have a team waiting',
-    'Give new recruits a running start'
+    'AI Recruiting for Direct Sales',
+    'Direct Sales Recruiting Powered by AI'
   ];
 
   const templateVersions = ['version1', 'version12'];
