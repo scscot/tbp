@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Email Preferences - Team Build Pro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      max-width: 700px;
+      width: 100%;
+      padding: 60px 40px;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    p {
+      font-size: 1rem;
+      color: #4a5568;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 8px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    input[type="email"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .preferences-section {
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 25px;
+      margin: 25px 0;
+      display: none;
+    }
+    .preferences-section.active {
+      display: block;
+    }
+    .preference-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      padding: 20px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .preference-item:last-child {
+      border-bottom: none;
+    }
+    .preference-info {
+      flex: 1;
+      margin-right: 20px;
+    }
+    .preference-info h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+    .preference-info p {
+      font-size: 0.875rem;
+      color: #718096;
+      margin-bottom: 0;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 60px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e0;
+      transition: .4s;
+      border-radius: 30px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    input:checked + .slider:before {
+      transform: translateX(30px);
+    }
+    .btn {
+      width: 100%;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    .btn-secondary:hover {
+      background: #f7fafc;
+    }
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert-success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+    .alert-info {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      color: #1e40af;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #718096;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 40px 25px;
+      }
+      h1 {
+        font-size: 1.25rem;
+      }
+      .logo {
+        font-size: 1.5rem;
+      }
+      .preference-item {
+        flex-direction: column;
+      }
+      .preference-info {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Team Build Pro</div>
+    <h1>Email Preferences</h1>
+
+    <p>Manage your email communication preferences. Enter your email address to view and update your subscription settings.</p>
+
+    <div id="alert" class="alert"></div>
+
+    <form id="emailForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required placeholder="your@email.com">
+      </div>
+      <button type="submit" class="btn btn-primary" id="lookupBtn">View My Preferences</button>
+    </form>
+
+    <div id="loadingState" class="loading" style="display: none;">
+      Loading your preferences...
+    </div>
+
+    <div id="preferencesSection" class="preferences-section">
+      <div class="preference-item">
+        <div class="preference-info">
+          <h3>All Email Communications</h3>
+          <p>Receive all emails including tips, updates, and promotional content</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="allEmails" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="preference-item">
+        <div class="preference-info">
+          <h3>AI Recruiting Tips</h3>
+          <p>Weekly tips and strategies for AI-powered recruiting</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="recruitingTips" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="preference-item">
+        <div class="preference-info">
+          <h3>Product Updates</h3>
+          <p>New features and improvements to Team Build Pro</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="productUpdates" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="preference-item">
+        <div class="preference-info">
+          <h3>Promotional Offers</h3>
+          <p>Special offers, discounts, and promotional campaigns</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="promotions" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="saveBtn" style="margin-top: 25px;">Save Preferences</button>
+      <button type="button" class="btn btn-secondary" onclick="window.location.href='/unsubscribe.html'">Unsubscribe from All Emails</button>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 0.9rem; color: #718096;">
+        <a href="/">Return to Email Center</a> | <a href="https://teambuildpro.com">Visit Main Website</a>
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, query, where, getDocs, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7VNhXXEUJmrZPXxX5FbR3FsMKS5r6gOg",
+      authDomain: "teambuildpro-f4fc3.firebaseapp.com",
+      projectId: "teambuildpro-f4fc3",
+      storageBucket: "teambuildpro-f4fc3.appspot.com",
+      messagingSenderId: "1098296806862",
+      appId: "1:1098296806862:web:8f9b3e3b9e9e9e9e9e9e9e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const emailForm = document.getElementById('emailForm');
+    const emailInput = document.getElementById('email');
+    const lookupBtn = document.getElementById('lookupBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const alertBox = document.getElementById('alert');
+    const loadingState = document.getElementById('loadingState');
+    const preferencesSection = document.getElementById('preferencesSection');
+
+    let currentDocId = null;
+
+    function showAlert(message, type) {
+      alertBox.textContent = message;
+      alertBox.className = `alert alert-${type}`;
+      alertBox.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideAlert() {
+      alertBox.style.display = 'none';
+    }
+
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email = emailInput.value.trim().toLowerCase();
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = 'Looking up...';
+      loadingState.style.display = 'block';
+      preferencesSection.classList.remove('active');
+
+      try {
+        const contactsRef = collection(db, 'emailCampaigns', 'master', 'contacts');
+        const q = query(contactsRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          showAlert('Email address not found in our system. You may not be subscribed to our emails.', 'info');
+          loadingState.style.display = 'none';
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = 'View My Preferences';
+          return;
+        }
+
+        const docSnapshot = querySnapshot.docs[0];
+        currentDocId = docSnapshot.id;
+        const data = docSnapshot.data();
+
+        document.getElementById('allEmails').checked = !data.unsubscribed;
+        document.getElementById('recruitingTips').checked = data.preferences?.recruitingTips !== false;
+        document.getElementById('productUpdates').checked = data.preferences?.productUpdates !== false;
+        document.getElementById('promotions').checked = data.preferences?.promotions !== false;
+
+        loadingState.style.display = 'none';
+        preferencesSection.classList.add('active');
+        lookupBtn.textContent = 'View My Preferences';
+        lookupBtn.disabled = false;
+
+      } catch (error) {
+        console.error('Lookup error:', error);
+        showAlert('An error occurred while loading your preferences. Please try again.', 'error');
+        loadingState.style.display = 'none';
+        lookupBtn.disabled = false;
+        lookupBtn.textContent = 'View My Preferences';
+      }
+    });
+
+    document.getElementById('allEmails').addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      document.getElementById('recruitingTips').checked = checked;
+      document.getElementById('productUpdates').checked = checked;
+      document.getElementById('promotions').checked = checked;
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      if (!currentDocId) return;
+
+      hideAlert();
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const email = emailInput.value.trim().toLowerCase();
+        const contactsRef = collection(db, 'emailCampaigns', 'master', 'contacts');
+        const q = query(contactsRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const docRef = querySnapshot.docs[0].ref;
+
+          await updateDoc(docRef, {
+            unsubscribed: !document.getElementById('allEmails').checked,
+            preferences: {
+              recruitingTips: document.getElementById('recruitingTips').checked,
+              productUpdates: document.getElementById('productUpdates').checked,
+              promotions: document.getElementById('promotions').checked
+            },
+            preferencesUpdatedAt: new Date().toISOString()
+          });
+
+          showAlert('✓ Preferences saved successfully!', 'success');
+          saveBtn.textContent = 'Save Preferences';
+          saveBtn.disabled = false;
+        }
+
+      } catch (error) {
+        console.error('Save error:', error);
+        showAlert('An error occurred while saving your preferences. Please try again.', 'error');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Preferences';
+      }
+    });
+  </script>
+</body>
+</html>
