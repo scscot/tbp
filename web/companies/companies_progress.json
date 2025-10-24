@@ -1,15 +1,17 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 44,
+    "completed": 54,
     "in_progress": 0,
-    "pending": 80,
-    "last_updated": "2025-10-23",
-    "current_batch": 3,
+    "pending": 70,
+    "last_updated": "2025-10-24",
+    "current_batch": 4,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
-    "batch_2_companies": ["Forever Living", "Juice Plus", "Scentsy", "Jeunesse", "Enagic", "USANA", "Neora", "4Life", "Neumi", "Nature's Sunshine"]
+    "batch_2_companies": ["Forever Living", "Juice Plus", "Scentsy", "Jeunesse", "Enagic", "USANA", "Neora", "4Life", "Neumi", "Nature's Sunshine"],
+    "batch_3_completed": "2025-10-24",
+    "batch_3_companies": ["It Works!", "Modere", "Tranont", "Prüvit", "Xyngular", "Beautycounter", "Rodan + Fields", "Pampered Chef", "Younique", "Beachbody"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -55,15 +57,19 @@
     {"name": "Neora", "url": "https://neora.com", "file": "ai-recruiting-neora.html", "batch": 2},
     {"name": "4Life", "url": "https://4life.com", "file": "ai-recruiting-4life.html", "batch": 2},
     {"name": "Neumi", "url": "https://neumi.com", "file": "ai-recruiting-neumi.html", "batch": 2},
-    {"name": "Nature's Sunshine", "url": "https://naturessunshine.com", "file": "ai-recruiting-natures-sunshine.html", "batch": 2}
+    {"name": "Nature's Sunshine", "url": "https://naturessunshine.com", "file": "ai-recruiting-natures-sunshine.html", "batch": 2},
+    {"name": "It Works!", "url": "https://itworks.com", "file": "ai-recruiting-it-works.html", "batch": 3},
+    {"name": "Modere", "url": "https://modere.com", "file": "ai-recruiting-modere.html", "batch": 3, "note": "Ceased operations April 2025"},
+    {"name": "Tranont", "url": "https://tranont.com", "file": "ai-recruiting-tranont.html", "batch": 3},
+    {"name": "Prüvit", "url": "https://pruvitnow.com", "file": "ai-recruiting-pruvit.html", "batch": 3},
+    {"name": "Xyngular", "url": "https://xyngular.com", "file": "ai-recruiting-xyngular.html", "batch": 3},
+    {"name": "Beautycounter", "url": "https://beautycounter.com", "file": "ai-recruiting-beautycounter.html", "batch": 3, "note": "Ceased operations April 2024, relaunched as Counter"},
+    {"name": "Rodan + Fields", "url": "https://rodanandfields.com", "file": "ai-recruiting-rodan-fields.html", "batch": 3, "note": "Transitioned to affiliate program 2024"},
+    {"name": "Pampered Chef", "url": "https://pamperedchef.com", "file": "ai-recruiting-pampered-chef.html", "batch": 3},
+    {"name": "Younique", "url": "https://younique.com", "file": "ai-recruiting-younique.html", "batch": 3},
+    {"name": "Beachbody", "url": "https://beachbody.com", "file": "ai-recruiting-beachbody.html", "batch": 3, "note": "Transitioned from MLM to affiliate program Nov 2024"}
   ],
   "tier1_pending": [],
-  "tier2_pending": [
-    {"name": "It Works!", "url": "https://itworks.com", "tier": 2, "file": "ai-recruiting-it-works.html"},
-    {"name": "Modere", "url": "https://modere.com", "tier": 2, "file": "ai-recruiting-modere.html"},
-    {"name": "Tranont", "url": "https://tranont.com", "tier": 2, "file": "ai-recruiting-tranont.html"},
-    {"name": "Prüvit", "url": "https://pruvitnow.com", "tier": 2, "file": "ai-recruiting-pruvit.html"},
-    {"name": "Xyngular", "url": "https://xyngular.com", "tier": 2, "file": "ai-recruiting-xyngular.html"}
-  ],
+  "tier2_pending": [],
   "notes": "Tier 1 = Major global companies with highest search volume. Tier 2 = Growing/popular companies. Tier 3+ in direct_sales_urls.txt file."
 }
