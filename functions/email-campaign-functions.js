@@ -13,17 +13,19 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // 4-way A/B testing: 2 subject lines × 2 template versions
-  // Rotation: S1+V1, S1+V12, S2+V1, S2+V12, S1+V1, S1+V12...
+  // 8-way A/B testing: 4 subject lines × 2 template versions
+  // Top performing subjects based on Oct 15-17 data (13-16% open rates)
   const subjectLines = [
-    'AI Recruiting for Direct Sales',
-    'Direct Sales Recruiting Powered by AI'
+    'AI-Driven Recruiting and Team Building',
+    'Build Your Team Smarter — With a Tool That Works',
+    'What if your recruits already had a team before they even started ?',
+    'A Better Way to Build Momentum in Direct Sales'
   ];
 
   const templateVersions = ['version1', 'version12'];
 
-  // Determine which subject (alternates every 2 emails)
-  const subjectIndex = Math.floor(index / 2) % subjectLines.length;
+  // Rotate through all 4 subjects evenly
+  const subjectIndex = index % subjectLines.length;
   // Determine which version (alternates every email)
   const versionIndex = index % templateVersions.length;
 
