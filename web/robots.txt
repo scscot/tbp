@@ -1,0 +1,9 @@
+# This robots.txt file controls how search engine crawlers index the site.
+
+User-agent: *
+
+# Allow all public pages
+Allow: /
+
+# Sitemap location
+Sitemap: https://teambuildpro.com/sitemap.xml
