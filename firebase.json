@@ -45,25 +45,39 @@
         },
         "singleProjectMode": true
     },
-    "hosting": {
-        "public": "web",
-        "ignore": [
-            "firebase.json",
-            "**/.*",
-            "**/node_modules/**"
-        ],
-        "cleanUrls": true,
-        "trailingSlash": false,
-        "headers": [
-            {
-                "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff|woff2|ttf|eot)",
-                "headers": [
-                    {
-                        "key": "Cache-Control",
-                        "value": "max-age=31536000"
-                    }
-                ]
-            }
-        ]
-    }
+    "hosting": [
+        {
+            "target": "main",
+            "public": "web",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "cleanUrls": true,
+            "trailingSlash": false,
+            "headers": [
+                {
+                    "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff|woff2|ttf|eot)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "max-age=31536000"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "target": "info",
+            "public": "web-info",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "cleanUrls": true,
+            "trailingSlash": false
+        }
+    ]
 }
