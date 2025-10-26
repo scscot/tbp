@@ -27,6 +27,9 @@ RewriteRule ^lander$ - [G]
 RewriteCond %{QUERY_STRING} ^country=
 RewriteRule ^testimonials$ - [G]
 
+# Old testimonials base URL (no parameters)
+RewriteRule ^testimonials$ - [G]
+
 # Legacy PHP file
 RewriteRule ^index\.php$ - [G]
 
