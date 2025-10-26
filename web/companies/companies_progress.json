@@ -1,17 +1,19 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 54,
+    "completed": 64,
     "in_progress": 0,
-    "pending": 70,
-    "last_updated": "2025-10-24",
-    "current_batch": 4,
+    "pending": 60,
+    "last_updated": "2025-10-26",
+    "current_batch": 5,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
     "batch_2_companies": ["Forever Living", "Juice Plus", "Scentsy", "Jeunesse", "Enagic", "USANA", "Neora", "4Life", "Neumi", "Nature's Sunshine"],
     "batch_3_completed": "2025-10-24",
-    "batch_3_companies": ["It Works!", "Modere", "Tranont", "Prüvit", "Xyngular", "Beautycounter", "Rodan + Fields", "Pampered Chef", "Younique", "Beachbody"]
+    "batch_3_companies": ["It Works!", "Modere", "Tranont", "Prüvit", "Xyngular", "Beautycounter", "Rodan + Fields", "Pampered Chef", "Younique", "Beachbody"],
+    "batch_4_completed": "2025-10-26",
+    "batch_4_companies": ["Market America", "Seacret", "ACN", "Paparazzi Accessories", "SeneGence", "Le-Vel", "Mannatech", "Unicity", "pawTree", "Q Sciences"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -67,7 +69,17 @@
     {"name": "Rodan + Fields", "url": "https://rodanandfields.com", "file": "ai-recruiting-rodan-fields.html", "batch": 3, "note": "Transitioned to affiliate program 2024"},
     {"name": "Pampered Chef", "url": "https://pamperedchef.com", "file": "ai-recruiting-pampered-chef.html", "batch": 3},
     {"name": "Younique", "url": "https://younique.com", "file": "ai-recruiting-younique.html", "batch": 3},
-    {"name": "Beachbody", "url": "https://beachbody.com", "file": "ai-recruiting-beachbody.html", "batch": 3, "note": "Transitioned from MLM to affiliate program Nov 2024"}
+    {"name": "Beachbody", "url": "https://beachbody.com", "file": "ai-recruiting-beachbody.html", "batch": 3, "note": "Transitioned from MLM to affiliate program Nov 2024"},
+    {"name": "Market America", "url": "https://marketamerica.com", "file": "ai-recruiting-market-america.html", "batch": 4},
+    {"name": "Seacret", "url": "https://seacretdirect.com", "file": "ai-recruiting-seacret.html", "batch": 4},
+    {"name": "ACN", "url": "https://acn.com", "file": "ai-recruiting-acn.html", "batch": 4},
+    {"name": "Paparazzi Accessories", "url": "https://paparazziaccessories.com", "file": "ai-recruiting-paparazzi.html", "batch": 4},
+    {"name": "SeneGence", "url": "https://senegence.com", "file": "ai-recruiting-senegence.html", "batch": 4},
+    {"name": "Le-Vel", "url": "https://le-vel.com", "file": "ai-recruiting-le-vel.html", "batch": 4},
+    {"name": "Mannatech", "url": "https://mannatech.com", "file": "ai-recruiting-mannatech.html", "batch": 4},
+    {"name": "Unicity", "url": "https://unicity.com", "file": "ai-recruiting-unicity.html", "batch": 4},
+    {"name": "pawTree", "url": "https://pawtree.com", "file": "ai-recruiting-pawtree.html", "batch": 4},
+    {"name": "Q Sciences", "url": "https://qsciences.com", "file": "ai-recruiting-q-sciences.html", "batch": 4}
   ],
   "tier1_pending": [],
   "tier2_pending": [],
