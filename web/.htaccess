@@ -33,6 +33,9 @@ RewriteRule ^testimonials$ - [G]
 # Legacy PHP file
 RewriteRule ^index\.php$ - [G]
 
+# NOTE: Test files have been deleted from hosting, so 404 will be returned automatically
+# Firebase Hosting doesn't process .htaccess files - uses firebase.json instead
+
 # --- Claim routing (protect first) ---
 # Allow /claim.html and /claim-google.html to pass through untouched
 RewriteRule ^claim\.html$ - [L]
