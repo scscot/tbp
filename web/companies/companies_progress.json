@@ -1,11 +1,11 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 64,
+    "completed": 74,
     "in_progress": 0,
-    "pending": 60,
-    "last_updated": "2025-10-26",
-    "current_batch": 5,
+    "pending": 50,
+    "last_updated": "2025-10-28",
+    "current_batch": 6,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
@@ -13,7 +13,9 @@
     "batch_3_completed": "2025-10-24",
     "batch_3_companies": ["It Works!", "Modere", "Tranont", "Prüvit", "Xyngular", "Beautycounter", "Rodan + Fields", "Pampered Chef", "Younique", "Beachbody"],
     "batch_4_completed": "2025-10-26",
-    "batch_4_companies": ["Market America", "Seacret", "ACN", "Paparazzi Accessories", "SeneGence", "Le-Vel", "Mannatech", "Unicity", "pawTree", "Q Sciences"]
+    "batch_4_companies": ["Market America", "Seacret", "ACN", "Paparazzi Accessories", "SeneGence", "Le-Vel", "Mannatech", "Unicity", "pawTree", "Q Sciences"],
+    "batch_5_completed": "2025-10-28",
+    "batch_5_companies": ["Greenway Global", "BE", "LR World", "MyDailyChoice", "iGenius Global", "Crowd1", "Riman", "3 International", "Vida Divina", "ByDzyne"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -79,7 +81,17 @@
     {"name": "Mannatech", "url": "https://mannatech.com", "file": "ai-recruiting-mannatech.html", "batch": 4},
     {"name": "Unicity", "url": "https://unicity.com", "file": "ai-recruiting-unicity.html", "batch": 4},
     {"name": "pawTree", "url": "https://pawtree.com", "file": "ai-recruiting-pawtree.html", "batch": 4},
-    {"name": "Q Sciences", "url": "https://qsciences.com", "file": "ai-recruiting-q-sciences.html", "batch": 4}
+    {"name": "Q Sciences", "url": "https://qsciences.com", "file": "ai-recruiting-q-sciences.html", "batch": 4},
+    {"name": "Greenway Global", "url": "https://greenwayglobal.com", "file": "ai-recruiting-greenway-global.html", "batch": 5},
+    {"name": "BE", "url": "https://be.club", "file": "ai-recruiting-be.html", "batch": 5},
+    {"name": "LR World", "url": "https://lrworld.com", "file": "ai-recruiting-lr-world.html", "batch": 5},
+    {"name": "MyDailyChoice", "url": "https://mydailychoice.com", "file": "ai-recruiting-mydailychoice.html", "batch": 5},
+    {"name": "iGenius Global", "url": "https://igeniusglobal.com", "file": "ai-recruiting-igenius-global.html", "batch": 5},
+    {"name": "Crowd1", "url": "https://crowd1.com", "file": "ai-recruiting-crowd1.html", "batch": 5},
+    {"name": "Riman", "url": "https://riman.com", "file": "ai-recruiting-riman.html", "batch": 5},
+    {"name": "3 International", "url": "https://threeinternational.com", "file": "ai-recruiting-3-international.html", "batch": 5},
+    {"name": "Vida Divina", "url": "https://vidadivina.com", "file": "ai-recruiting-vida-divina.html", "batch": 5},
+    {"name": "ByDzyne", "url": "https://bydzyne.com", "file": "ai-recruiting-bydzyne.html", "batch": 5}
   ],
   "tier1_pending": [],
   "tier2_pending": [],
