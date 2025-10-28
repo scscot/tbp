@@ -13,24 +13,10 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // 8-way A/B testing: 4 subject lines × 2 template versions
-  // Top performing subjects based on Oct 15-17 data (13-16% open rates)
-  const subjectLines = [
-    'AI-Driven Recruiting and Team Building',
-    'Build Your Team Smarter — With a Tool That Works',
-    'What if your recruits already had a team before they even started ?',
-    'A Better Way to Build Momentum in Direct Sales'
-  ];
-
-  const templateVersions = ['version1', 'version12'];
-
-  // Rotate through all 4 subjects evenly
-  const subjectIndex = index % subjectLines.length;
-  // Determine which version (alternates every email)
-  const versionIndex = index % templateVersions.length;
-
-  const selectedSubject = subjectLines[subjectIndex];
-  const selectedVersion = templateVersions[versionIndex];
+  // Winner from Oct 2025 campaign analysis: 6.2% open rate
+  // Subject 1 + version1 outperformed all other combinations by 3x
+  const selectedSubject = 'AI-Driven Recruiting and Team Building';
+  const selectedVersion = 'version1';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -39,7 +25,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'initial');
   form.append('t:version', selectedVersion);
-  form.append('o:tag', `subject${subjectIndex + 1}_${selectedVersion}`);
+  form.append('o:tag', 'winning_combination');
   form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
