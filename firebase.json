@@ -56,7 +56,57 @@
             ],
             "cleanUrls": true,
             "trailingSlash": false,
+            "redirects": [
+                {
+                    "source": "/lander",
+                    "destination": "/index.html",
+                    "type": 301
+                },
+                {
+                    "source": "/testimonials",
+                    "destination": "/index.html",
+                    "type": 301
+                },
+                {
+                    "source": "/index.php",
+                    "destination": "/index.html",
+                    "type": 301
+                },
+                {
+                    "source": "/claim",
+                    "destination": "/claim.html",
+                    "type": 302
+                },
+                {
+                    "source": "/claim-google",
+                    "destination": "/claim-google.html",
+                    "type": 302
+                }
+            ],
+            "rewrites": [
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ],
             "headers": [
+                {
+                    "source": "**/*.@(html|htm)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "no-cache, no-store, must-revalidate"
+                        },
+                        {
+                            "key": "Pragma",
+                            "value": "no-cache"
+                        },
+                        {
+                            "key": "Expires",
+                            "value": "0"
+                        }
+                    ]
+                },
                 {
                     "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff|woff2|ttf|eot)",
                     "headers": [
