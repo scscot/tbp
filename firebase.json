@@ -83,12 +83,6 @@
                     "type": 302
                 }
             ],
-            "rewrites": [
-                {
-                    "source": "**",
-                    "destination": "/index.html"
-                }
-            ],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",
