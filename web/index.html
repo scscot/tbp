@@ -165,13 +165,6 @@
                         </span>
                     </div>
 
-                    <!-- Trial offer badge -->
-                    <div class="hero-trial-badge">
-                        <span class="trial-badge" id="trial-badge" data-dynamic="trial-note" aria-label="Trial offer">
-                            Free 30-day trial · $4.99/mo · Cancel anytime
-                        </span>
-                    </div>
-
                     <div class="hero-buttons">
                         <div class="download-buttons" id="download-container">
                             <!-- Dynamically populated based on device detection -->
@@ -179,6 +172,13 @@
                         <div class="secondary-download" id="secondary-container">
                             <!-- Secondary option with smaller styling -->
                         </div>
+                    </div>
+
+                    <!-- Trial offer badge -->
+                    <div class="hero-trial-badge">
+                        <span class="trial-badge" id="trial-badge" data-dynamic="trial-note" aria-label="Trial offer">
+                            Free 30-day trial · $4.99/mo · Cancel anytime
+                        </span>
                     </div>
                 </div>
             </div>
@@ -1766,13 +1766,30 @@
             const isIOS = /iPad|iPhone|iPod/.test(userAgent);
             const isAndroid = /Android/.test(userAgent);
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-            
+
             return {
                 isIOS,
                 isAndroid,
                 isMobile,
                 isDesktop: !isMobile
             };
+        }
+
+        // ==============================
+        // GOOGLE ANALYTICS EVENT TRACKING
+        // ==============================
+        function trackDownloadClick(platform, isPrimary, location = 'hero') {
+            // Send event to Google Analytics 4
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download_button_click', {
+                    'platform': platform,  // 'app_store' or 'google_play'
+                    'button_position': isPrimary ? 'primary' : 'secondary',
+                    'button_location': location,  // 'hero', 'pricing', 'footer'
+                    'device_type': getDeviceType().isMobile ? 'mobile' : 'desktop',
+                    'timestamp': new Date().toISOString()
+                });
+                console.log(`📊 GA Event: download_button_click | ${platform} | ${location} | ${isPrimary ? 'primary' : 'secondary'}`);
+            }
         }
 
         // ==============================
@@ -1900,7 +1917,7 @@
                 ? 'https://apps.apple.com/us/app/team-build-pro/id6751211622?ppid=3a1d377a-09ec-4707-bdb8-0bd147b99c6f'
                 : 'https://apps.apple.com/app/team-build-pro/id6751211622';
             return `
-                <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
+                <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="trackDownloadClick('app_store', ${isPrimary}, 'hero'); openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
                     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
@@ -1948,7 +1965,7 @@
 
         function createAndroidPreviewButton(isPrimary = true) {
             return `
-                <a href="#" class="google-play-badge" onclick="event.preventDefault(); openModal();">
+                <a href="#" class="google-play-badge" onclick="event.preventDefault(); trackDownloadClick('google_play', ${isPrimary}, 'hero'); openModal();">
                     <img src="assets/images/Google-Play.png" alt="Get it on Google Play" />
                 </a>
             `;
@@ -2663,7 +2680,7 @@
                 emailDetectionTimeout = setTimeout(() => {
                     const email = emailInput.value.trim().toLowerCase();
                     
-                    if (email.endsWith('@gmail.com')) {
+                    if (email.endsWith('@gmailXX.com')) {
                         showDemoSection();
                     } else {
                         hideDemoSection();
