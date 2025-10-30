@@ -1,0 +1,128 @@
+{
+  "categories": {
+    "wellness-supplements": {
+      "name": "Wellness & Supplements",
+      "companies": [
+        "amway", "herbalife", "usana", "isagenix", "plexus", "shaklee",
+        "4life", "juice-plus", "mannatech", "total-life-changes",
+        "unicity", "xyngular", "lifevantage", "tranont", "neumi",
+        "q-sciences", "vital-health-global", "amare", "asea-global",
+        "le-vel", "pruvit", "natures-sunshine", "modere", "livegood",
+        "bydzyne", "vida-divina"
+      ]
+    },
+    "essential-oils": {
+      "name": "Essential Oils",
+      "companies": ["doterra", "young-living"]
+    },
+    "skincare-beauty": {
+      "name": "Skincare & Beauty",
+      "companies": [
+        "nu-skin", "rodan-fields", "mary-kay", "arbonne",
+        "beautycounter", "jeunesse", "neora", "monat", "farmasi",
+        "seacret", "riman", "lr-world"
+      ]
+    },
+    "personal-care": {
+      "name": "Personal Care Products",
+      "companies": [
+        "scentsy", "pampered-chef", "younique", "senegence", "paparazzi"
+      ]
+    },
+    "tech-services": {
+      "name": "Technology & Services",
+      "companies": ["acn", "primerica", "legalshield", "enagic", "exp-realty"]
+    },
+    "travel-lifestyle": {
+      "name": "Travel & Lifestyle",
+      "companies": ["incruises", "jifu"]
+    },
+    "specialty": {
+      "name": "Specialty Products",
+      "companies": [
+        "beachbody", "it-works", "forever-living", "melaleuca",
+        "market-america", "atomy", "healy", "superpatch", "lifewave",
+        "pawtree", "chogan-group", "opulence-global", "bravenly-global",
+        "aplgo", "greenway-global", "be", "mydailychoice",
+        "igenius-global", "crowd1", "quiari", "pm-international",
+        "3-international"
+      ]
+    }
+  },
+  "related_companies": {
+    "amway": ["herbalife", "usana", "nu-skin", "shaklee", "melaleuca", "market-america"],
+    "herbalife": ["amway", "isagenix", "usana", "beachbody", "total-life-changes", "plexus"],
+    "nu-skin": ["amway", "jeunesse", "neora", "arbonne", "rodan-fields", "usana"],
+    "doterra": ["young-living", "amare", "lifevantage", "forever-living", "natures-sunshine", "melaleuca"],
+    "young-living": ["doterra", "forever-living", "arbonne", "amare", "natures-sunshine", "beautycounter"],
+    "mary-kay": ["arbonne", "rodan-fields", "beautycounter", "monat", "senegence", "younique"],
+    "rodan-fields": ["nu-skin", "jeunesse", "neora", "arbonne", "mary-kay", "beautycounter"],
+    "monat": ["arbonne", "neora", "it-works", "rodan-fields", "beautycounter", "mary-kay"],
+    "primerica": ["legalshield", "acn", "exp-realty", "market-america", "amway", "world-financial-group"],
+    "legalshield": ["primerica", "acn", "exp-realty", "market-america", "igenius-global"],
+    "beachbody": ["herbalife", "isagenix", "le-vel", "it-works", "xyngular", "plexus"],
+    "isagenix": ["herbalife", "beachbody", "plexus", "xyngular", "total-life-changes", "usana"],
+    "arbonne": ["beautycounter", "rodan-fields", "young-living", "doterra", "mary-kay", "monat"],
+    "beautycounter": ["arbonne", "rodan-fields", "mary-kay", "young-living", "beautycounter", "monat"],
+    "it-works": ["beachbody", "monat", "le-vel", "herbalife", "neora", "total-life-changes"],
+    "jeunesse": ["nu-skin", "neora", "lifevantage", "asea-global", "usana", "rodan-fields"],
+    "melaleuca": ["amway", "shaklee", "forever-living", "doterra", "young-living", "usana"],
+    "forever-living": ["young-living", "doterra", "melaleuca", "natures-sunshine", "shaklee", "market-america"],
+    "shaklee": ["amway", "melaleuca", "usana", "herbalife", "natures-sunshine", "market-america"],
+    "usana": ["amway", "nu-skin", "herbalife", "shaklee", "jeunesse", "lifevantage"],
+    "neora": ["nu-skin", "jeunesse", "rodan-fields", "monat", "it-works", "arbonne"],
+    "market-america": ["amway", "melaleuca", "total-life-changes", "legalshield", "primerica", "exp-realty"],
+    "plexus": ["herbalife", "isagenix", "beachbody", "xyngular", "pruvit", "total-life-changes"],
+    "lifevantage": ["jeunesse", "usana", "neumi", "asea-global", "doterra", "amare"],
+    "4life": ["usana", "mannatech", "natures-sunshine", "shaklee", "lifevantage", "jeunesse"],
+    "juice-plus": ["herbalife", "isagenix", "shaklee", "usana", "natures-sunshine", "melaleuca"],
+    "pampered-chef": ["scentsy", "paparazzi", "senegence", "younique", "mary-kay", "tupperware"],
+    "scentsy": ["pampered-chef", "paparazzi", "senegence", "younique", "pink-zebra", "gold-canyon"],
+    "paparazzi": ["scentsy", "pampered-chef", "younique", "senegence", "color-street", "origami-owl"],
+    "younique": ["mary-kay", "senegence", "arbonne", "rodan-fields", "paparazzi", "scentsy"],
+    "senegence": ["mary-kay", "younique", "arbonne", "monat", "paparazzi", "rodan-fields"],
+    "exp-realty": ["primerica", "legalshield", "acn", "market-america", "keller-williams", "realty-one"],
+    "acn": ["primerica", "legalshield", "exp-realty", "market-america", "ambit-energy", "stream-energy"],
+    "enagic": ["healy", "lifewave", "superpatch", "asea-global", "neumi", "vital-health-global"],
+    "incruises": ["jifu", "world-ventures", "travel-ventures", "trip-valet", "plannet-marketing"],
+    "jifu": ["incruises", "world-ventures", "travel-ventures", "trip-valet", "plannet-marketing"],
+    "pruvit": ["plexus", "le-vel", "xyngular", "total-life-changes", "herbalife", "isagenix"],
+    "le-vel": ["beachbody", "it-works", "pruvit", "xyngular", "herbalife", "total-life-changes"],
+    "xyngular": ["plexus", "pruvit", "le-vel", "isagenix", "herbalife", "total-life-changes"],
+    "total-life-changes": ["plexus", "pruvit", "xyngular", "herbalife", "isagenix", "le-vel"],
+    "farmasi": ["arbonne", "mary-kay", "beautycounter", "monat", "avon", "oriflame"],
+    "mannatech": ["usana", "4life", "shaklee", "lifevantage", "natures-sunshine", "amway"],
+    "natures-sunshine": ["shaklee", "melaleuca", "forever-living", "doterra", "young-living", "4life"],
+    "seacret": ["nu-skin", "jeunesse", "neora", "arbonne", "dead-sea-premier", "ahava"],
+    "tranont": ["lifevantage", "neumi", "vital-health-global", "q-sciences", "asea-global", "plexus"],
+    "unicity": ["herbalife", "usana", "shaklee", "plexus", "xyngular", "total-life-changes"],
+    "amare": ["lifevantage", "neumi", "doterra", "young-living", "asea-global", "jeunesse"],
+    "asea-global": ["lifevantage", "neumi", "jeunesse", "amare", "healy", "enagic"],
+    "modere": ["arbonne", "beautycounter", "melaleuca", "usana", "forever-living", "shaklee"],
+    "healy": ["lifewave", "superpatch", "enagic", "asea-global", "neumi", "vital-health-global"],
+    "lifewave": ["healy", "superpatch", "enagic", "asea-global", "neumi", "vital-health-global"],
+    "superpatch": ["healy", "lifewave", "enagic", "asea-global", "neumi", "vital-health-global"],
+    "neumi": ["lifevantage", "asea-global", "amare", "tranont", "vital-health-global", "q-sciences"],
+    "q-sciences": ["tranont", "neumi", "vital-health-global", "lifevantage", "asea-global", "amare"],
+    "vital-health-global": ["neumi", "tranont", "q-sciences", "lifevantage", "asea-global", "healy"],
+    "livegood": ["herbalife", "total-life-changes", "plexus", "xyngular", "le-vel", "pruvit"],
+    "pawtree": ["melaleuca", "shaklee", "natures-sunshine", "forever-living", "life's-abundance", "nuvet-plus"],
+    "atomy": ["amway", "market-america", "melaleuca", "shaklee", "usana", "herbalife"],
+    "riman": ["nu-skin", "jeunesse", "neora", "seacret", "arbonne", "amorepacific"],
+    "bravenly-global": ["total-life-changes", "livegood", "bydzyne", "vida-divina", "xyngular", "plexus"],
+    "opulence-global": ["market-america", "total-life-changes", "bravenly-global", "livegood", "bydzyne"],
+    "chogan-group": ["farmasi", "lr-world", "forever-living", "fm-world", "oriflame"],
+    "aplgo": ["neumi", "tranont", "vital-health-global", "healy", "lifewave", "superpatch"],
+    "greenway-global": ["melaleuca", "shaklee", "forever-living", "natures-sunshine", "atomy"],
+    "be": ["beachbody", "le-vel", "it-works", "total-life-changes", "bravenly-global"],
+    "lr-world": ["farmasi", "chogan-group", "forever-living", "avon", "oriflame"],
+    "mydailychoice": ["total-life-changes", "livegood", "bravenly-global", "bydzyne", "vida-divina"],
+    "igenius-global": ["legalshield", "acn", "exp-realty", "primerica", "market-america"],
+    "crowd1": ["total-life-changes", "mydailychoice", "livegood", "bydzyne", "vida-divina"],
+    "bydzyne": ["total-life-changes", "livegood", "bravenly-global", "vida-divina", "mydailychoice"],
+    "vida-divina": ["total-life-changes", "livegood", "bydzyne", "bravenly-global", "mydailychoice"],
+    "quiari": ["jeunesse", "neora", "nu-skin", "lifevantage", "asea-global", "amare"],
+    "pm-international": ["herbalife", "usana", "fitline", "unicity", "forever-living"],
+    "3-international": ["total-life-changes", "livegood", "bydzyne", "vida-divina", "bravenly-global"]
+  }
+}
