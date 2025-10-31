@@ -978,11 +978,13 @@ body:has(.top-invite-bar.visible) .header {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.section-header {
+/* Utility page section headers - only for DIV.section (not SECTION.section) */
+div.section .section-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
+    text-align: left;
 }
 
 .section-icon {

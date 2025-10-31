@@ -34,10 +34,11 @@
 }
 
 .downline-header p {
-    font-size: 18px;
-    color: #6c757d;
+    font-size: 1rem;
+    color: #475569;
     max-width: 700px;
     margin: 0 auto;
+    line-height: 1.6;
 }
 
 .downlines-wrapper {
@@ -351,7 +352,7 @@
     }
 
     .downline-header p {
-        font-size: 16px;
+        font-size: 1rem;
     }
 
     .benefit-callout {
