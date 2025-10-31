@@ -1,11 +1,11 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 89,
+    "completed": 104,
     "in_progress": 0,
-    "pending": 35,
+    "pending": 20,
     "last_updated": "2025-10-31",
-    "current_batch": 7,
+    "current_batch": 8,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
@@ -17,7 +17,9 @@
     "batch_5_completed": "2025-10-28",
     "batch_5_companies": ["Greenway Global", "BE", "LR World", "MyDailyChoice", "iGenius Global", "Crowd1", "Riman", "3 International", "Vida Divina", "ByDzyne"],
     "batch_6_completed": "2025-10-31",
-    "batch_6_companies": ["Optavia", "Oriflame", "Nikken", "Vorwerk", "Stella & Dot", "PartyLite", "Princess House", "Bode Pro", "Neolife", "Youngevity", "SendOutCards", "Touchstone Essentials", "Rain International", "Purium", "LimeLife by Alcone"]
+    "batch_6_companies": ["Optavia", "Oriflame", "Nikken", "Vorwerk", "Stella & Dot", "PartyLite", "Princess House", "Bode Pro", "Neolife", "Youngevity", "SendOutCards", "Touchstone Essentials", "Rain International", "Purium", "LimeLife by Alcone"],
+    "batch_7_completed": "2025-10-31",
+    "batch_7_companies": ["DXN", "QNET", "Coway", "Vestige", "FM World", "Tupperware", "Cutco", "Avon", "Grupo Hinode", "Immunotec", "NewULife", "Valentus", "Omnilife", "Faberlic", "Kannaway"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -108,7 +110,22 @@
     {"name": "Touchstone Essentials", "url": "https://touchstoneessentials.com", "file": "ai-recruiting-touchstone-essentials.html", "batch": 6},
     {"name": "Rain International", "url": "https://rainintl.com", "file": "ai-recruiting-rain-international.html", "batch": 6},
     {"name": "Purium", "url": "https://purium.com", "file": "ai-recruiting-purium.html", "batch": 6},
-    {"name": "LimeLife by Alcone", "url": "https://limelifebyalcone.com", "file": "ai-recruiting-limelife-alcone.html", "batch": 6}
+    {"name": "LimeLife by Alcone", "url": "https://limelifebyalcone.com", "file": "ai-recruiting-limelife-alcone.html", "batch": 6},
+    {"name": "DXN", "url": "https://dxn.com", "file": "ai-recruiting-dxn.html", "batch": 7},
+    {"name": "QNET", "url": "https://qnet.net", "file": "ai-recruiting-qnet.html", "batch": 7},
+    {"name": "Coway", "url": "https://coway.com", "file": "ai-recruiting-coway.html", "batch": 7},
+    {"name": "Vestige", "url": "https://myvestige.com", "file": "ai-recruiting-vestige.html", "batch": 7},
+    {"name": "FM World", "url": "https://fmworld.com", "file": "ai-recruiting-fm-world.html", "batch": 7},
+    {"name": "Tupperware", "url": "https://tupperware.com", "file": "ai-recruiting-tupperware.html", "batch": 7, "note": "Filed Chapter 11 bankruptcy Sept 2024, purchased by Party Products LLC"},
+    {"name": "Cutco", "url": "https://cutco.com", "file": "ai-recruiting-cutco.html", "batch": 7},
+    {"name": "Avon", "url": "https://avon.com", "file": "ai-recruiting-avon.html", "batch": 7, "note": "Filed Chapter 11 Aug 2024, sold to Regent LP Sept 2025"},
+    {"name": "Grupo Hinode", "url": "https://grupohinode.com", "file": "ai-recruiting-grupo-hinode.html", "batch": 7},
+    {"name": "Immunotec", "url": "https://immunotec.com", "file": "ai-recruiting-immunotec.html", "batch": 7},
+    {"name": "NewULife", "url": "https://newulife.com", "file": "ai-recruiting-newulife.html", "batch": 7, "note": "FDA testing found no HGH in Somaderm product Jan 2019"},
+    {"name": "Valentus", "url": "https://valentus.com", "file": "ai-recruiting-valentus.html", "batch": 7, "note": "Products illegal in UK, legal issues"},
+    {"name": "Omnilife", "url": "https://omnilife.com", "file": "ai-recruiting-omnilife.html", "batch": 7},
+    {"name": "Faberlic", "url": "https://faberlic.com", "file": "ai-recruiting-faberlic.html", "batch": 7},
+    {"name": "Kannaway", "url": "https://kannaway.com", "file": "ai-recruiting-kannaway.html", "batch": 7}
   ],
   "tier1_pending": [],
   "tier2_pending": [],
