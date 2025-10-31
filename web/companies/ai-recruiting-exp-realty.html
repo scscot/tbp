@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">EXP REALTY PLAYBOOK</span>
       <h1>AI Recruiting for eXp Realty Agents</h1>
       <p class="muted">Leverage the cloud-based brokerage model with AI-powered agent attraction tactics that duplicate across your organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your eXp Realty Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join eXp Realty distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What eXp Realty Offers (in plain English)</h2>
@@ -163,39 +174,68 @@
         <p>eXp Realty emphasizes agent education through eXp University (live classes, certifications, designation courses), eXp World campus tours, ICON Agent training, and technology onboarding for kvCORE and cloud collaboration tools. New agents receive sponsor mentorship, state-specific compliance training, and business planning workshops. The company hosts annual EXPCON conferences and regional meetups. The challenge: conveying the cloud-based model and revenue-share opportunity without appearing like an MLM recruitment scheme.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your eXp Realty Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for eXp Realty</h2>
-        <ol class="checklist">
-          <li><strong>Lead with agent pain points.</strong> Segment prospects into high-split seekers, tech-hungry agents, passive-income builders, equity-focused investors, or team leaders needing better splits. Your message changes by agent profile.</li>
-          <li><strong>Brokerage comparison calculator.</strong> Use AI to generate personalized commission split comparisons showing net income at eXp vs. their current brokerage, including cap benefits and stock value.</li>
-          <li><strong>eXp World demo walkthrough.</strong> Create repeatable virtual campus tours with AI-generated invites, reminder sequences, and post-tour follow-up questions about pain points and goals.</li>
-          <li><strong>Education-first content series.</strong> Host "Real Estate Business Building" workshops (lead gen, systems, scaling) with eXp as the backend solution—not the primary topic. AI automates invites and follow-ups.</li>
-          <li><strong>Icon Agent roadmap builder.</strong> For agents interested in attraction, create a 90-day roadmap to Icon Agent status with weekly AI check-ins on progress and coaching tips.</li>
-          <li><strong>Objection scripts for skeptics.</strong> Pre-script responses to "is this MLM?" and "why leave my brokerage?" with brokerage license proof, NASDAQ stock charts, and licensed agent testimonials.</li>
-          <li><strong>Duplicate the education system.</strong> Save your comparison calculators, demo scripts, and workshop outlines so new agents can attract others using value—not hype.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Lead with agent pain points.</strong> Segment prospects into high-split seekers, tech-hungry agents, passive-income builders, equity-focused investors, or team leaders needing better splits. Your message changes by agent profile.</li>
+          <li class="always-visible"><strong>Brokerage comparison calculator.</strong> Use AI to generate personalized commission split comparisons showing net income at eXp vs. their current brokerage, including cap benefits and stock value.</li>
+          <li class="always-visible"><strong>eXp World demo walkthrough.</strong> Create repeatable virtual campus tours with AI-generated invites, reminder sequences, and post-tour follow-up questions about pain points and goals.</li>
+          <li class="always-visible"><strong>Education-first content series.</strong> Host "Real Estate Business Building" workshops (lead gen, systems, scaling) with eXp as the backend solution—not the primary topic. AI automates invites and follow-ups.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Icon Agent roadmap builder.</strong> For agents interested in attraction, create a 90-day roadmap to Icon Agent status with weekly AI check-ins on progress and coaching tips.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Objection scripts for skeptics.</strong> Pre-script responses to "is this MLM?" and "why leave my brokerage?" with brokerage license proof, NASDAQ stock charts, and licensed agent testimonials.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate the education system.</strong> Save your comparison calculators, demo scripts, and workshop outlines so new agents can attract others using value—not hype.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with eXp Realty: Your First 30 Days</h2>
         <p class="muted">New to eXp Realty? Here's your step-by-step roadmap to launching your cloud-based real estate agent journey with revenue share and equity benefits:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation & License Transfer Process</strong> — Complete your eXp Realty agent onboarding and initiate license transfer from your current brokerage (verify transfer timelines and any contractual obligations you have). Study the eXp compensation structure—understand the 80/20 commission split with $16,000 annual cap (you keep 100% after cap), equity rewards (EXPI stock grants for production and attraction), revenue share system (earn from agents you sponsor and their growth), and Icon Agent program (passive income from agent attraction). Navigate the eXp World virtual campus—familiarize yourself with training resources, broker support, transaction coordination, and agent collaboration tools. This cloud-based infrastructure replaces traditional brick-and-mortar office overhead.</li>
-          <li><strong>Week 1: Personal Production & Split Analysis</strong> — Calculate your actual net income comparison between your previous brokerage and eXp based on your personal production levels. Example: if you closed $300,000 GCI last year at 70/30 split, you netted $210,000 minus desk fees/franchise costs. At eXp 80/20 split, you'd net $240,000 (plus stock and revenue share potential)—a $30,000 increase from split alone. Document this personal ROI analysis—it becomes your credibility foundation when discussing eXp with other agents. Focus your first week on understanding eXp's transaction support, broker accessibility, and tech tools so you can operate effectively without a physical office.</li>
-          <li><strong>Week 2: eXp World Mastery & Tech Stack Integration</strong> — Spend 7 days mastering eXp World virtual campus navigation—attend live training sessions, explore collaboration spaces, practice using virtual meeting rooms, access transaction coordinators, and leverage broker support efficiently. Integrate eXp's technology stack with your existing CRM, lead generation systems, and marketing tools. Learn Skyslope for transaction management, explore kvCORE (eXp's lead generation platform), and understand eXp marketing resources. Join eXp mastermind groups and agent collaboration forums—network with top producers and learn proven systems. Your comfort with cloud-based operations becomes essential for agent attraction credibility.</li>
-          <li><strong>Week 3: Revenue Share System Understanding</strong> — Study eXp's revenue share compensation plan thoroughly—understand how you earn from agents you personally sponsor (Tier 1), agents they sponsor (Tier 2-7), and the qualification requirements for revenue share eligibility. Learn Icon Agent qualification criteria (attracting 3 agents per month for 6 months) and passive income potential. Review official income disclosure statements to set realistic expectations. Calculate potential revenue share based on conservative agent attraction scenarios—don't lead with hype, position as supplemental income opportunity for active agents building teams. This education prepares you to discuss eXp's unique value proposition professionally.</li>
-          <li><strong>Week 3-4: Identify Agent Attraction Prospects</strong> — Define your ideal eXp prospect profiles based on agent pain points. High-split seekers: agents producing $150K+ GCI frustrated with 50-70% splits eating their profits. Tech-hungry agents: younger professionals wanting cloud-based, location-independent operations. Team leaders: agents with downlines getting poor splits for team members. Equity-focused: investors understanding NASDAQ-traded stock as wealth building. List 20-30 specific agents in your network matching these profiles. Don't contact them yet—study their current brokerage situations, production levels, business models, and specific pain points eXp solves.</li>
-          <li><strong>Week 4: First Value-Based Agent Conversations</strong> — Reach out to 10-15 agent prospects from your list with education-first conversations (not recruitment pitches). Offer to share brokerage comparison calculators showing their net income at eXp versus current situation based on their actual production numbers. Invite them to virtual eXp World demo tours—let them experience cloud-based operations firsthand. Share your personal eXp transition story authentically—what you were paying before, what you're netting now, technology benefits you've gained. Focus entirely on their business improvement, not your revenue share earnings. Document questions, objections, and interest signals.</li>
-          <li><strong>Day 30: Master the eXp AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up automated agent pain point segmentation, build brokerage comparison calculator tools, create eXp World demo walkthrough sequences with invites and follow-ups, develop education-first content series (real estate business building workshops), design Icon Agent roadmap builders with progress tracking, establish objection response scripts for skeptics, and package your entire education system for new agents you sponsor. The AI infrastructure handles qualification and nurturing—you focus on high-value agent conversations with pre-qualified prospects who have genuine interest in brokerage improvement.</li>
-          <li><strong>30 Days Forward: Agent Attraction & Icon Agent Path</strong> — Once you have personal eXp experience, technology mastery, and revenue share system knowledge, begin systematic agent attraction. Target 3-5 new agent conversations per month with focus on quality over quantity—one productive agent who closes deals and attracts others is worth more than ten inactive license holders. Share the eXp opportunity focusing on business improvement: better splits (more net income), technology leverage (cloud-based efficiency), equity rewards (wealth building through stock), and revenue share potential (supplemental income from team building). If you're pursuing Icon Agent status (3 agents/month for 6 months), create a systematic attraction system you can sustain long-term—education content, brokerage comparison tools, demo tours, value-first conversations.</li>
-          <li><strong>Duplicate & Scale</strong> — Package your brokerage comparison calculator templates, eXp World demo tour scripts, agent pain point qualification process, value-based conversation frameworks, objection handling responses, license transfer checklists, and revenue share education materials into a turnkey system for agents you sponsor. Train new agents on the same 30-day roadmap you followed—personal production focus → technology mastery → revenue share education → prospect identification → value-based conversations → agent sponsorship → Icon Agent pursuit. The goal: every new agent focuses on their personal production first, then builds attraction systems through documented value delivery, not recruitment hype.</li>
-          <li><strong>Ongoing: Production First, Attraction Second</strong> — Maintain credibility by prioritizing your personal real estate production—close deals, serve clients exceptionally, build your business. Agent attraction works best when you're a producing agent sharing genuine business improvements, not a recruiter who stopped selling real estate. Continue sharing eXp split advantages, technology benefits, and equity rewards with agents who demonstrate genuine interest in brokerage improvement. Focus on licensed, active agents producing $100K+ GCI—they're more likely to appreciate eXp's value proposition than brand-new licensees. Your recruiting power comes from documented production success and authentic business improvement testimonials, not MLM-style opportunity pitching.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation & License Transfer Process</strong> — Complete your eXp Realty agent onboarding and initiate license transfer from your current brokerage (verify transfer timelines and any contractual obligations you have). Study the eXp compensation structure—understand the 80/20 commission split with $16,000 annual cap (you keep 100% after cap), equity rewards (EXPI stock grants for production and attraction), revenue share system (earn from agents you sponsor and their growth), and Icon Agent program (passive income from agent attraction). Navigate the eXp World virtual campus—familiarize yourself with training resources, broker support, transaction coordination, and agent collaboration tools. This cloud-based infrastructure replaces traditional brick-and-mortar office overhead.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Personal Production & Split Analysis</strong> — Calculate your actual net income comparison between your previous brokerage and eXp based on your personal production levels. Example: if you closed $300,000 GCI last year at 70/30 split, you netted $210,000 minus desk fees/franchise costs. At eXp 80/20 split, you'd net $240,000 (plus stock and revenue share potential)—a $30,000 increase from split alone. Document this personal ROI analysis—it becomes your credibility foundation when discussing eXp with other agents. Focus your first week on understanding eXp's transaction support, broker accessibility, and tech tools so you can operate effectively without a physical office.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: eXp World Mastery & Tech Stack Integration</strong> — Spend 7 days mastering eXp World virtual campus navigation—attend live training sessions, explore collaboration spaces, practice using virtual meeting rooms, access transaction coordinators, and leverage broker support efficiently. Integrate eXp's technology stack with your existing CRM, lead generation systems, and marketing tools. Learn Skyslope for transaction management, explore kvCORE (eXp's lead generation platform), and understand eXp marketing resources. Join eXp mastermind groups and agent collaboration forums—network with top producers and learn proven systems. Your comfort with cloud-based operations becomes essential for agent attraction credibility.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: Revenue Share System Understanding</strong> — Study eXp's revenue share compensation plan thoroughly—understand how you earn from agents you personally sponsor (Tier 1), agents they sponsor (Tier 2-7), and the qualification requirements for revenue share eligibility. Learn Icon Agent qualification criteria (attracting 3 agents per month for 6 months) and passive income potential. Review official income disclosure statements to set realistic expectations. Calculate potential revenue share based on conservative agent attraction scenarios—don't lead with hype, position as supplemental income opportunity for active agents building teams. This education prepares you to discuss eXp's unique value proposition professionally.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: Identify Agent Attraction Prospects</strong> — Define your ideal eXp prospect profiles based on agent pain points. High-split seekers: agents producing $150K+ GCI frustrated with 50-70% splits eating their profits. Tech-hungry agents: younger professionals wanting cloud-based, location-independent operations. Team leaders: agents with downlines getting poor splits for team members. Equity-focused: investors understanding NASDAQ-traded stock as wealth building. List 20-30 specific agents in your network matching these profiles. Don't contact them yet—study their current brokerage situations, production levels, business models, and specific pain points eXp solves.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Value-Based Agent Conversations</strong> — Reach out to 10-15 agent prospects from your list with education-first conversations (not recruitment pitches). Offer to share brokerage comparison calculators showing their net income at eXp versus current situation based on their actual production numbers. Invite them to virtual eXp World demo tours—let them experience cloud-based operations firsthand. Share your personal eXp transition story authentically—what you were paying before, what you're netting now, technology benefits you've gained. Focus entirely on their business improvement, not your revenue share earnings. Document questions, objections, and interest signals.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Day 30: Master the eXp AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up automated agent pain point segmentation, build brokerage comparison calculator tools, create eXp World demo walkthrough sequences with invites and follow-ups, develop education-first content series (real estate business building workshops), design Icon Agent roadmap builders with progress tracking, establish objection response scripts for skeptics, and package your entire education system for new agents you sponsor. The AI infrastructure handles qualification and nurturing—you focus on high-value agent conversations with pre-qualified prospects who have genuine interest in brokerage improvement.</li>
+          <li class="collapsible-item" style="display: none;"><strong>30 Days Forward: Agent Attraction & Icon Agent Path</strong> — Once you have personal eXp experience, technology mastery, and revenue share system knowledge, begin systematic agent attraction. Target 3-5 new agent conversations per month with focus on quality over quantity—one productive agent who closes deals and attracts others is worth more than ten inactive license holders. Share the eXp opportunity focusing on business improvement: better splits (more net income), technology leverage (cloud-based efficiency), equity rewards (wealth building through stock), and revenue share potential (supplemental income from team building). If you're pursuing Icon Agent status (3 agents/month for 6 months), create a systematic attraction system you can sustain long-term—education content, brokerage comparison tools, demo tours, value-first conversations.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate & Scale</strong> — Package your brokerage comparison calculator templates, eXp World demo tour scripts, agent pain point qualification process, value-based conversation frameworks, objection handling responses, license transfer checklists, and revenue share education materials into a turnkey system for agents you sponsor. Train new agents on the same 30-day roadmap you followed—personal production focus → technology mastery → revenue share education → prospect identification → value-based conversations → agent sponsorship → Icon Agent pursuit. The goal: every new agent focuses on their personal production first, then builds attraction systems through documented value delivery, not recruitment hype.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Production First, Attraction Second</strong> — Maintain credibility by prioritizing your personal real estate production—close deals, serve clients exceptionally, build your business. Agent attraction works best when you're a producing agent sharing genuine business improvements, not a recruiter who stopped selling real estate. Continue sharing eXp split advantages, technology benefits, and equity rewards with agents who demonstrate genuine interest in brokerage improvement. Focus on licensed, active agents producing $100K+ GCI—they're more likely to appreciate eXp's value proposition than brand-new licensees. Your recruiting power comes from documented production success and authentic business improvement testimonials, not MLM-style opportunity pitching.</li>
         </ol>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="toggle-roadmap-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 0.5rem; padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            Show Full 30-Day Roadmap (7 more steps)
+          </button>
+        </div>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives eXp Realty agents a repeatable AI engine for agent attraction and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives eXp Realty agents a repeatable AI engine for agent attraction and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +244,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -257,10 +305,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-acn.html" class="cta-inline">ACN →</a></h3>
             <p>Essential services and telecommunications—energy, wireless, internet, home security with residual income focus through service subscriptions.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-market-america.html" class="cta-inline">Market America →</a></h3>
-            <p>Product brokerage and UnFranchise business model—cashback shopping portal plus product distribution creating multiple revenue streams.</p>
           </div>
         </div>
       </section>
@@ -311,6 +355,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

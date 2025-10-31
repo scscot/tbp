@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">SENEGENCE PLAYBOOK</span>
       <h1>AI Recruiting for SeneGence Distributors</h1>
       <p class="muted">Leverage LipSense's 18-hour wear technology and SeneGence's clean beauty commitment with AI-powered recruiting tactics that duplicate across your distributor organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your SeneGence Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join SeneGence distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What SeneGence Sells (in plain English)</h2>
@@ -162,40 +173,64 @@
         <p>SeneGence training emphasizes product application mastery, shade matching skills, skincare consultation techniques, clean beauty ingredient education, and VIP customer group management. Corporate provides online learning portals, virtual product demos, regional beauty events, and annual Seminar conventions. The challenge: traditional SeneGence recruiting relies on in-person color matching sessions, application tutorials, and hands-on product experiences—digitizing these tactile moments into automated nurture sequences requires strategic video content, virtual try-on tools, and sample strategy optimization.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your SeneGence Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for SeneGence</h2>
-        <ol class="checklist">
-          <li><strong>LipSense longevity proof sequences.</strong> Create automated campaigns featuring time-lapse videos, customer testimonials showing 8-18 hour wear, and before-after comparisons—AI sends the most compelling proof based on prospect lifestyle and makeup concerns.</li>
-          <li><strong>Shade matching virtual consultations.</strong> Build interactive shade finder tools that ask skin tone, undertone, and color preferences—AI recommends top three LipSense shades and triggers follow-up with application tutorials and sample offers.</li>
-          <li><strong>Clean beauty ingredient education.</strong> Develop content libraries explaining SeneGence's formulation standards, Microbiome skincare science, and ingredient transparency—AI matches education level to prospect sophistication and values alignment.</li>
-          <li><strong>Application tutorial automation.</strong> Create video series teaching the three-layer LipSense process, gloss selection, removal techniques, and troubleshooting—AI sequences tutorials based on customer purchase stage and application questions.</li>
-          <li><strong>VIP customer group templates.</strong> Package complete VIP group structures including welcome sequences, exclusive content calendars, new product reveals, reorder reminders, and business opportunity soft introductions—new distributors launch groups in 48 hours.</li>
-          <li><strong>Anti-aging skincare lane routing.</strong> Segment prospects interested in Microbiome skincare separate from makeup-only customers—each gets customized AI sequences with age-appropriate protocols, ingredient benefits, and clinical results.</li>
-          <li><strong>Duplicate the color matching system.</strong> Create a complete consultation framework including skin tone analysis, color theory basics, shade recommendation scripts, application coaching, and follow-up cadences—new distributors become confident color consultants in one week.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>LipSense longevity proof sequences.</strong> Create automated campaigns featuring time-lapse videos, customer testimonials showing 8-18 hour wear, and before-after comparisons—AI sends the most compelling proof based on prospect lifestyle and makeup concerns.</li>
+          <li class="always-visible"><strong>Shade matching virtual consultations.</strong> Build interactive shade finder tools that ask skin tone, undertone, and color preferences—AI recommends top three LipSense shades and triggers follow-up with application tutorials and sample offers.</li>
+          <li class="always-visible"><strong>Clean beauty ingredient education.</strong> Develop content libraries explaining SeneGence's formulation standards, Microbiome skincare science, and ingredient transparency—AI matches education level to prospect sophistication and values alignment.</li>
+          <li class="always-visible"><strong>Application tutorial automation.</strong> Create video series teaching the three-layer LipSense process, gloss selection, removal techniques, and troubleshooting—AI sequences tutorials based on customer purchase stage and application questions.</li>
+          <li class="collapsible-item" style="display: none;"><strong>VIP customer group templates.</strong> Package complete VIP group structures including welcome sequences, exclusive content calendars, new product reveals, reorder reminders, and business opportunity soft introductions—new distributors launch groups in 48 hours.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Anti-aging skincare lane routing.</strong> Segment prospects interested in Microbiome skincare separate from makeup-only customers—each gets customized AI sequences with age-appropriate protocols, ingredient benefits, and clinical results.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate the color matching system.</strong> Create a complete consultation framework including skin tone analysis, color theory basics, shade recommendation scripts, application coaching, and follow-up cadences—new distributors become confident color consultants in one week.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with SeneGence: Your First 30 Days</h2>
         <p class="muted">New to SeneGence? Here's your step-by-step roadmap to launching your distributor journey with LipSense's 18-hour wear technology and clean beauty products:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation Setup</strong> — Complete your SeneGence distributor enrollment, order your personal product starter collection (must include at least 3 LipSense shades that complement your skin tone—one neutral everyday color, one bold statement shade, one versatile rose/berry, plus matching glosses and Ooops remover), and set up your replicated website. Study the compensation plan—understand 20-50% discount structure on personal purchases, retail margin income from customer sales, team override percentages, rank progression from Distributor to Crown Princess, and leadership bonuses.</li>
-          <li><strong>Week 1: Personal LipSense Mastery</strong> — Spend 7 days wearing different LipSense shades daily to experience 18-hour wear firsthand. Master the three-layer application technique: exfoliate lips, apply three thin coats of LipSense color (letting each dry 5-10 seconds), seal with gloss top coat, and reapply gloss throughout the day for conditioning. Document your wear time—coffee test, meal test, kiss test—and troubleshoot any application issues. Your personal 18-hour wear proof becomes your strongest recruiting asset—"I wore this shade for 12 hours including lunch and it's still perfect."</li>
-          <li><strong>Week 1: Product & Brand Education</strong> — Study SeneGence's founding story—Joni Rogers-Kante creating LipSense in 1999 as the world's first long-lasting liquid lip color after frustration with constant reapplication. Learn the science behind Microbiome skincare, clean beauty ingredient standards, dermatologist testing protocols, and the 300+ product portfolio beyond lip color. Master SeneGence's positioning: premium clean beauty with performance that exceeds conventional cosmetics.</li>
-          <li><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by beauty interest: busy professionals needing all-day makeup (teachers, nurses, executives), moms seeking low-maintenance beauty routines, brides wanting kiss-proof wedding day lips, clean beauty advocates, anti-aging skincare seekers (Microbiome line), makeup enthusiasts who collect lip colors, and business opportunity seekers. Share your personal Week 1 LipSense wear test results with appropriate contacts. Lead with longevity proof and shade matching, not sales pitch.</li>
-          <li><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline by beauty interest category (busy professionals, clean beauty, skincare, makeup collectors, business), track who's engaged with your LipSense demo videos and shade guides, and let qualified prospects start building their own teams before officially joining, so they launch with pre-built momentum and existing customer interest.</li>
-          <li><strong>Week 3: First Color Matching Consultations</strong> — Conduct 10-15 beauty consultations (virtual shade matching sessions, coffee meetups with application demos, small group color parties). Use skin tone analysis to recommend 2-3 perfect LipSense shades for each prospect. Demonstrate the three-layer application technique—let prospects try on testers or send samples. Explain the gloss system for hydration and shine throughout the day. Address common objections: application learning curve (show technique video), price vs value (calculate cost per wear over 18 hours), and shade selection overwhelm (narrow to 3 personalized recommendations).</li>
-          <li><strong>Week 3-4: First Customers & Reorder Systems</strong> — Convert 5-10 consultation prospects to customers with initial LipSense purchases (aim for 2-3 colors plus matching gloss per customer for variety). Set up automatic reorder reminders for when their LipSense runs low (typically 3-4 months for daily users). Create VIP customer groups (Facebook, text group, etc.) for new shade announcements, application tips, and exclusive offers. Track customer satisfaction—address any application issues immediately with technique coaching. Satisfied LipSense customers become walking billboards and referral sources.</li>
-          <li><strong>Week 4: First Distributors</strong> — Identify 2-3 serious business builders—people loving their LipSense results, getting compliments and questions from others, understanding the margin-based income model (buy wholesale, sell retail, keep the difference), and having strong networks in beauty, professional, or mom communities. Walk them through distributor enrollment. Help them order their starter collection and plan their first 10 color matching consultations for Week 5. Share your shade matching guide, application tutorial videos, and VIP group templates.</li>
-          <li><strong>First 30 Days: Color Consultation Playbook Duplication</strong> — Package your entire system—skin tone analysis questionnaire, shade recommendation flowchart by undertone, three-layer application tutorial video, wear test proof photos, gloss selection guide, troubleshooting FAQ, sample strategy (when to send vs in-person demo), VIP customer group welcome sequence, and reorder reminder templates—into a simple playbook your new distributors can use to start color consultations in 48 hours without makeup artistry degrees.</li>
-          <li><strong>Ongoing: Performance-Proof Team Growth</strong> — Use Team Build Pro to track your organization's customer reorder rates, identify distributors hitting rank milestones, maintain consistent communication across your team, and share LipSense longevity proof that creates viral word-of-mouth. SeneGence's 18-hour wear performance is self-demonstrating—customers become believers after first use. Focus on application mastery, shade matching expertise, and VIP customer community building rather than hype.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation Setup</strong> — Complete your SeneGence distributor enrollment, order your personal product starter collection (must include at least 3 LipSense shades that complement your skin tone—one neutral everyday color, one bold statement shade, one versatile rose/berry, plus matching glosses and Ooops remover), and set up your replicated website. Study the compensation plan—understand 20-50% discount structure on personal purchases, retail margin income from customer sales, team override percentages, rank progression from Distributor to Crown Princess, and leadership bonuses.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Personal LipSense Mastery</strong> — Spend 7 days wearing different LipSense shades daily to experience 18-hour wear firsthand. Master the three-layer application technique: exfoliate lips, apply three thin coats of LipSense color (letting each dry 5-10 seconds), seal with gloss top coat, and reapply gloss throughout the day for conditioning. Document your wear time—coffee test, meal test, kiss test—and troubleshoot any application issues. Your personal 18-hour wear proof becomes your strongest recruiting asset—"I wore this shade for 12 hours including lunch and it's still perfect."</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Product & Brand Education</strong> — Study SeneGence's founding story—Joni Rogers-Kante creating LipSense in 1999 as the world's first long-lasting liquid lip color after frustration with constant reapplication. Learn the science behind Microbiome skincare, clean beauty ingredient standards, dermatologist testing protocols, and the 300+ product portfolio beyond lip color. Master SeneGence's positioning: premium clean beauty with performance that exceeds conventional cosmetics.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by beauty interest: busy professionals needing all-day makeup (teachers, nurses, executives), moms seeking low-maintenance beauty routines, brides wanting kiss-proof wedding day lips, clean beauty advocates, anti-aging skincare seekers (Microbiome line), makeup enthusiasts who collect lip colors, and business opportunity seekers. Share your personal Week 1 LipSense wear test results with appropriate contacts. Lead with longevity proof and shade matching, not sales pitch.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline by beauty interest category (busy professionals, clean beauty, skincare, makeup collectors, business), track who's engaged with your LipSense demo videos and shade guides, and let qualified prospects start building their own teams before officially joining, so they launch with pre-built momentum and existing customer interest.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: First Color Matching Consultations</strong> — Conduct 10-15 beauty consultations (virtual shade matching sessions, coffee meetups with application demos, small group color parties). Use skin tone analysis to recommend 2-3 perfect LipSense shades for each prospect. Demonstrate the three-layer application technique—let prospects try on testers or send samples. Explain the gloss system for hydration and shine throughout the day. Address common objections: application learning curve (show technique video), price vs value (calculate cost per wear over 18 hours), and shade selection overwhelm (narrow to 3 personalized recommendations).</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: First Customers & Reorder Systems</strong> — Convert 5-10 consultation prospects to customers with initial LipSense purchases (aim for 2-3 colors plus matching gloss per customer for variety). Set up automatic reorder reminders for when their LipSense runs low (typically 3-4 months for daily users). Create VIP customer groups (Facebook, text group, etc.) for new shade announcements, application tips, and exclusive offers. Track customer satisfaction—address any application issues immediately with technique coaching. Satisfied LipSense customers become walking billboards and referral sources.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Distributors</strong> — Identify 2-3 serious business builders—people loving their LipSense results, getting compliments and questions from others, understanding the margin-based income model (buy wholesale, sell retail, keep the difference), and having strong networks in beauty, professional, or mom communities. Walk them through distributor enrollment. Help them order their starter collection and plan their first 10 color matching consultations for Week 5. Share your shade matching guide, application tutorial videos, and VIP group templates.</li>
+          <li class="collapsible-item" style="display: none;"><strong>First 30 Days: Color Consultation Playbook Duplication</strong> — Package your entire system—skin tone analysis questionnaire, shade recommendation flowchart by undertone, three-layer application tutorial video, wear test proof photos, gloss selection guide, troubleshooting FAQ, sample strategy (when to send vs in-person demo), VIP customer group welcome sequence, and reorder reminder templates—into a simple playbook your new distributors can use to start color consultations in 48 hours without makeup artistry degrees.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Performance-Proof Team Growth</strong> — Use Team Build Pro to track your organization's customer reorder rates, identify distributors hitting rank milestones, maintain consistent communication across your team, and share LipSense longevity proof that creates viral word-of-mouth. SeneGence's 18-hour wear performance is self-demonstrating—customers become believers after first use. Focus on application mastery, shade matching expertise, and VIP customer community building rather than hype.</li>
         </ol>
         <p><strong>Why this matters:</strong> New SeneGence distributors who master LipSense application in Week 1, convert 5+ customers with successful wear experiences, and become confident color consultants within 60 days build teams with 4x higher retention. Team Build Pro helps you track color consultations, organize by beauty interest category, and duplicate your shade matching system as your team grows.</p>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives SeneGence Distributors a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives SeneGence Distributors a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +239,19 @@
           <li><strong>Secure global communication</strong> — Message your team across countries with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -257,18 +300,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-arbonne.html" class="cta-inline">Arbonne →</a></h3>
             <p>Vegan and clean beauty with Swiss heritage and 40+ year track record, paralleling SeneGence's clean beauty commitment and premium positioning.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-monat.html" class="cta-inline">Monat →</a></h3>
-            <p>Hair care with naturally based ingredients and VIP customer programs, offering beauty-focused business model with customer group building like SeneGence's approach.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-paparazzi.html" class="cta-inline">Paparazzi →</a></h3>
-            <p>$5 jewelry and accessories with low-price-point model and party-based selling, providing fashion accessory business that complements SeneGence's beauty focus.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-rodan-fields.html" class="cta-inline">Rodan + Fields →</a></h3>
-            <p>Dermatologist-created skincare with Redefine regimens and clinical backing, offering professional-grade beauty business similar to SeneGence's premium positioning.</p>
           </div>
         </div>
       </section>
@@ -319,6 +350,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

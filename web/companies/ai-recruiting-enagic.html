@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">ENAGIC PLAYBOOK</span>
       <h1>AI Recruiting for Enagic Distributors</h1>
       <p class="muted">Leverage 50 years of water ionization technology with AI-powered recruiting tactics that duplicate across your distributor organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your Enagic Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join Enagic distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What Enagic Sells (in plain English)</h2>
@@ -162,39 +173,68 @@
         <p>Enagic emphasizes water demonstrations, pH testing, and alkaline health education in training. New distributors learn the electrolysis process, Okinawan longevity connection, and environmental impact of bottled water through corporate videos, regional demonstrations, and upline support. The company provides demo machines, testing kits, and marketing materials. However, traditional training relies heavily on in-home water tastings, hotel presentations, and multi-hour product demonstrations—leaving digital prospecting, automated follow-up systems, and scalable nurture campaigns largely unaddressed. Most distributors struggle with lead generation beyond immediate networks and converting skeptical prospects on a $4,000+ purchase.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your Enagic Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for Enagic</h2>
-        <ol class="checklist">
-          <li><strong>Environmental angle targeting.</strong> Create content focused on eliminating plastic bottle waste and lifetime cost comparison. "Your family buys $2,000 worth of bottled water every 2 years—Kangen pays for itself." Use AI to target eco-conscious audiences on social platforms with these specific savings calculators.</li>
-          <li><strong>Athletic performance prospecting.</strong> Target CrossFit gyms, running clubs, triathletes, and sports performance centers. Position hydrogen-rich alkaline water as recovery optimization. Create case studies with local athletes and automate sharing to relevant communities. Sports professionals understand equipment investment better than general consumers.</li>
-          <li><strong>Medical professional credibility building.</strong> Enagic has medical device certifications in multiple countries. Build content featuring chiropractors, naturopaths, and wellness clinics using Kangen systems. Use AI to distribute to healthcare professional networks on LinkedIn. Their endorsement carries weight general influencers lack.</li>
-          <li><strong>Home demo scheduling automation.</strong> High-ticket sales require in-person or virtual demos. Use AI to qualify prospects with pre-demo questions about water concerns, health goals, and budget readiness. Only schedule demos with qualified leads—your time is your most valuable asset in high-commission selling.</li>
-          <li><strong>Payment plan objection handling.</strong> $4,000+ is the primary objection. Create automated responses with financing options, cost-per-gallon breakdowns vs. bottled water, and family health ROI positioning. Build a searchable objection database your team can access instantly during sales conversations.</li>
-          <li><strong>Longevity and Okinawa storytelling.</strong> Enagic's Japanese origin in Okinawa (a Blue Zone) is a powerful narrative. Create shareable content connecting water quality to longevity. Use AI to deploy this content to audiences interested in biohacking, longevity, and healthy aging—they're your ideal customer profile.</li>
-          <li><strong>Commission milestone celebrations.</strong> First $1,000+ commission is life-changing for most people. Build automated sequences that help new distributors visualize their first sale: "5 demos typically = 1 sale = $1,000 commission. Book your first 5 this week." Gamify the high-ticket sales process to prevent discouragement.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Environmental angle targeting.</strong> Create content focused on eliminating plastic bottle waste and lifetime cost comparison. "Your family buys $2,000 worth of bottled water every 2 years—Kangen pays for itself." Use AI to target eco-conscious audiences on social platforms with these specific savings calculators.</li>
+          <li class="always-visible"><strong>Athletic performance prospecting.</strong> Target CrossFit gyms, running clubs, triathletes, and sports performance centers. Position hydrogen-rich alkaline water as recovery optimization. Create case studies with local athletes and automate sharing to relevant communities. Sports professionals understand equipment investment better than general consumers.</li>
+          <li class="always-visible"><strong>Medical professional credibility building.</strong> Enagic has medical device certifications in multiple countries. Build content featuring chiropractors, naturopaths, and wellness clinics using Kangen systems. Use AI to distribute to healthcare professional networks on LinkedIn. Their endorsement carries weight general influencers lack.</li>
+          <li class="always-visible"><strong>Home demo scheduling automation.</strong> High-ticket sales require in-person or virtual demos. Use AI to qualify prospects with pre-demo questions about water concerns, health goals, and budget readiness. Only schedule demos with qualified leads—your time is your most valuable asset in high-commission selling.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Payment plan objection handling.</strong> $4,000+ is the primary objection. Create automated responses with financing options, cost-per-gallon breakdowns vs. bottled water, and family health ROI positioning. Build a searchable objection database your team can access instantly during sales conversations.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Longevity and Okinawa storytelling.</strong> Enagic's Japanese origin in Okinawa (a Blue Zone) is a powerful narrative. Create shareable content connecting water quality to longevity. Use AI to deploy this content to audiences interested in biohacking, longevity, and healthy aging—they're your ideal customer profile.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Commission milestone celebrations.</strong> First $1,000+ commission is life-changing for most people. Build automated sequences that help new distributors visualize their first sale: "5 demos typically = 1 sale = $1,000 commission. Book your first 5 this week." Gamify the high-ticket sales process to prevent discouragement.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with Enagic: Your First 30 Days</h2>
         <p class="muted">New to Enagic? Here's your step-by-step roadmap to launching your Kangen Water distributor journey with high-ticket alkaline ionizer sales:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation & Personal Machine Experience</strong> — Complete your Enagic distributor enrollment and immediately invest in your own Kangen Water machine (required for credibility—you cannot sell high-ticket water ionizers you don't personally use). Choose the model that fits your budget and household needs (SD501, K8, or entry-level options). Study the compensation plan structure—understand the $1,000+ commission potential per machine sale, rank advancement system, and residual team bonuses. Install your Kangen machine and begin documenting your personal water experience from Day 1. This 30-day personal experience documentation becomes your most powerful sales tool—prospects need to see authentic transformation, not scripted marketing claims.</li>
-          <li><strong>Week 1: Water Science Education & pH Testing</strong> — Spend 7 days learning the alkaline ionized water science that justifies Kangen's premium pricing. Study electrolysis principles, oxidation reduction potential (ORP), hydrogen-rich water benefits, and pH level health theories. Learn to operate your machine's multiple water settings—drinking water (8.5-9.5 pH), strong Kangen water (11.5 pH for cleaning), beauty water (acidic for skin), and strong acidic water (2.5 pH for sanitizing). Practice pH testing demonstrations using drops or electronic meters—visual proof of alkalinity is critical for sales conversations. Document your own hydration improvements, energy changes, and any health observations (without making medical claims).</li>
-          <li><strong>Week 2: Demo Presentation Mastery</strong> — Attend live Enagic demos or watch virtual presentations to learn the standard Kangen sales demonstration structure. Key components: tap water quality concerns (show contamination data), bottled water cost analysis (lifetime spending calculator), alkaline water health theory (longevity/Okinawa connection), hydrogen-rich water benefits (athletic performance angle), machine functionality demonstration (multiple water types), environmental impact (plastic waste reduction), investment ROI breakdown (cost per gallon over 15+ year lifespan), and commission disclosure if discussing business opportunity. Practice your demo presentation 10+ times with friends or family—get comfortable with objections, technical questions, and pricing conversations.</li>
-          <li><strong>Week 3: Identify High-Ticket Prospects & Qualification</strong> — Define your ideal Kangen customer profiles: health-conscious families (concerned about tap water quality), eco-conscious consumers (eliminating plastic bottles), athletes (seeking performance optimization), wellness professionals (chiropractors, naturopaths, yoga studios), high-income earners (can afford $4,000-$6,000 equipment), homeowners (not renters who move frequently), longevity/biohacking enthusiasts (Blue Zone storytelling resonates). List 20-30 specific people matching these profiles. CRITICAL: Pre-qualify financial readiness—Kangen is high-ticket, so time-wasters destroy your demo-to-sale ratio. Ask: "Are you currently researching water solutions in the $4,000-$6,000 range, or are you just curious about alkaline water in general?" Only demo to qualified, budget-ready prospects.</li>
-          <li><strong>Week 3-4: Schedule & Conduct First 5 Demos</strong> — Book your first 5 Kangen demonstrations with pre-qualified prospects from your list. Options: in-home demos (most effective for showing installation and family usage), virtual demos (scalable but lower conversion), public group demos (leverage time, create social proof). Prepare demo materials: pH testing supplies, water samples (tap vs. Kangen comparison), bottled water cost breakdown charts, environmental impact visuals, financing information, and enrollment forms. Execute each demo methodically—water quality concerns → health benefits positioning → machine functionality demonstration → cost-benefit analysis → close or follow-up plan. Document objections, questions, and feedback from each demo to improve your approach.</li>
-          <li><strong>Week 4: First Machine Sale & Commission Celebration</strong> — Focus intensely on converting 1-2 of your warmest demo prospects into Kangen machine purchasers. Address pricing objections with lifetime value positioning: "$5,000 machine ÷ 15 years ÷ 365 days = $0.91 per day for your family's water. Compare that to bottled water at $3-$5 daily." Offer financing options if available through Enagic or third-party providers. Walk customers through installation process, water usage instructions, maintenance requirements, and filter replacement schedules. Celebrate your first $1,000+ commission check with your upline sponsor—get coaching on improving demo effectiveness and overcoming specific objections you encountered.</li>
-          <li><strong>Day 30: Master the Enagic AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up automated environmental angle content targeting eco-conscious audiences, build athletic performance prospecting sequences for sports communities, develop medical professional credibility content featuring healthcare practitioners, create home demo scheduling automation with pre-qualification questions, design payment plan objection handling responses, establish longevity/Okinawa storytelling content for biohacking audiences, and package commission milestone celebration sequences to motivate new distributors. The AI infrastructure handles lead qualification and nurturing—you focus on high-impact demo delivery with pre-qualified, budget-ready prospects.</li>
-          <li><strong>30 Days Forward: Build Business Opportunity Positioning</strong> — Once you have personal water experience, demo presentation skills, and 1-2 machine sales completed, begin positioning the Enagic business opportunity to customers and prospects. Identify who demonstrates entrepreneurial interest—people asking detailed questions about your business, expressing income concerns, showing interest in the commission structure, or currently involved in sales or network marketing. Share the opportunity presentation focusing on Enagic's unique advantages: high-ticket commissions ($1,000+ per sale vs. $20-$100 in traditional MLM), consumable-free business model (no monthly autoship requirements), 48-year company stability (Japanese medical device manufacturer), and passive income potential from team sales. Position Enagic as professional sales opportunity, not lottery ticket—serious business builders who master demos earn serious income.</li>
-          <li><strong>Duplicate & Scale</strong> — Package your personal water transformation documentation, water science education materials, demo presentation scripts, prospect qualification criteria, high-ticket objection handling frameworks, customer installation guides, and business opportunity presentation into a turnkey system for your team. Train new distributors on the same 30-day roadmap you followed—personal machine experience → water science mastery → demo presentation skills → prospect qualification → demo execution → first machine sale → business opportunity positioning. The goal: every new distributor can conduct credible demos and close high-ticket sales within their first 30-45 days by duplicating your documented system.</li>
-          <li><strong>Ongoing: Leverage Medical Certifications & Social Proof</strong> — Continue building credibility through Enagic's medical device certifications (ISO 13485, Japanese Ministry of Health approval, Gold Seal from Water Quality Association). Feature testimonials from healthcare professionals using Kangen machines in their practices. Create case studies showing customer transformations (hydration improvements, athletic performance gains, environmental impact from eliminating bottled water). Focus recruiting on quality over quantity—one serious business builder who masters high-ticket sales is worth more than ten hobbyists who never conduct demos. Your recruiting power comes from proven demo-to-sale conversion rates and documented commission earnings, not hype or health cure claims.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation & Personal Machine Experience</strong> — Complete your Enagic distributor enrollment and immediately invest in your own Kangen Water machine (required for credibility—you cannot sell high-ticket water ionizers you don't personally use). Choose the model that fits your budget and household needs (SD501, K8, or entry-level options). Study the compensation plan structure—understand the $1,000+ commission potential per machine sale, rank advancement system, and residual team bonuses. Install your Kangen machine and begin documenting your personal water experience from Day 1. This 30-day personal experience documentation becomes your most powerful sales tool—prospects need to see authentic transformation, not scripted marketing claims.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Water Science Education & pH Testing</strong> — Spend 7 days learning the alkaline ionized water science that justifies Kangen's premium pricing. Study electrolysis principles, oxidation reduction potential (ORP), hydrogen-rich water benefits, and pH level health theories. Learn to operate your machine's multiple water settings—drinking water (8.5-9.5 pH), strong Kangen water (11.5 pH for cleaning), beauty water (acidic for skin), and strong acidic water (2.5 pH for sanitizing). Practice pH testing demonstrations using drops or electronic meters—visual proof of alkalinity is critical for sales conversations. Document your own hydration improvements, energy changes, and any health observations (without making medical claims).</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Demo Presentation Mastery</strong> — Attend live Enagic demos or watch virtual presentations to learn the standard Kangen sales demonstration structure. Key components: tap water quality concerns (show contamination data), bottled water cost analysis (lifetime spending calculator), alkaline water health theory (longevity/Okinawa connection), hydrogen-rich water benefits (athletic performance angle), machine functionality demonstration (multiple water types), environmental impact (plastic waste reduction), investment ROI breakdown (cost per gallon over 15+ year lifespan), and commission disclosure if discussing business opportunity. Practice your demo presentation 10+ times with friends or family—get comfortable with objections, technical questions, and pricing conversations.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: Identify High-Ticket Prospects & Qualification</strong> — Define your ideal Kangen customer profiles: health-conscious families (concerned about tap water quality), eco-conscious consumers (eliminating plastic bottles), athletes (seeking performance optimization), wellness professionals (chiropractors, naturopaths, yoga studios), high-income earners (can afford $4,000-$6,000 equipment), homeowners (not renters who move frequently), longevity/biohacking enthusiasts (Blue Zone storytelling resonates). List 20-30 specific people matching these profiles. CRITICAL: Pre-qualify financial readiness—Kangen is high-ticket, so time-wasters destroy your demo-to-sale ratio. Ask: "Are you currently researching water solutions in the $4,000-$6,000 range, or are you just curious about alkaline water in general?" Only demo to qualified, budget-ready prospects.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: Schedule & Conduct First 5 Demos</strong> — Book your first 5 Kangen demonstrations with pre-qualified prospects from your list. Options: in-home demos (most effective for showing installation and family usage), virtual demos (scalable but lower conversion), public group demos (leverage time, create social proof). Prepare demo materials: pH testing supplies, water samples (tap vs. Kangen comparison), bottled water cost breakdown charts, environmental impact visuals, financing information, and enrollment forms. Execute each demo methodically—water quality concerns → health benefits positioning → machine functionality demonstration → cost-benefit analysis → close or follow-up plan. Document objections, questions, and feedback from each demo to improve your approach.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Machine Sale & Commission Celebration</strong> — Focus intensely on converting 1-2 of your warmest demo prospects into Kangen machine purchasers. Address pricing objections with lifetime value positioning: "$5,000 machine ÷ 15 years ÷ 365 days = $0.91 per day for your family's water. Compare that to bottled water at $3-$5 daily." Offer financing options if available through Enagic or third-party providers. Walk customers through installation process, water usage instructions, maintenance requirements, and filter replacement schedules. Celebrate your first $1,000+ commission check with your upline sponsor—get coaching on improving demo effectiveness and overcoming specific objections you encountered.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Day 30: Master the Enagic AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up automated environmental angle content targeting eco-conscious audiences, build athletic performance prospecting sequences for sports communities, develop medical professional credibility content featuring healthcare practitioners, create home demo scheduling automation with pre-qualification questions, design payment plan objection handling responses, establish longevity/Okinawa storytelling content for biohacking audiences, and package commission milestone celebration sequences to motivate new distributors. The AI infrastructure handles lead qualification and nurturing—you focus on high-impact demo delivery with pre-qualified, budget-ready prospects.</li>
+          <li class="collapsible-item" style="display: none;"><strong>30 Days Forward: Build Business Opportunity Positioning</strong> — Once you have personal water experience, demo presentation skills, and 1-2 machine sales completed, begin positioning the Enagic business opportunity to customers and prospects. Identify who demonstrates entrepreneurial interest—people asking detailed questions about your business, expressing income concerns, showing interest in the commission structure, or currently involved in sales or network marketing. Share the opportunity presentation focusing on Enagic's unique advantages: high-ticket commissions ($1,000+ per sale vs. $20-$100 in traditional MLM), consumable-free business model (no monthly autoship requirements), 48-year company stability (Japanese medical device manufacturer), and passive income potential from team sales. Position Enagic as professional sales opportunity, not lottery ticket—serious business builders who master demos earn serious income.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate & Scale</strong> — Package your personal water transformation documentation, water science education materials, demo presentation scripts, prospect qualification criteria, high-ticket objection handling frameworks, customer installation guides, and business opportunity presentation into a turnkey system for your team. Train new distributors on the same 30-day roadmap you followed—personal machine experience → water science mastery → demo presentation skills → prospect qualification → demo execution → first machine sale → business opportunity positioning. The goal: every new distributor can conduct credible demos and close high-ticket sales within their first 30-45 days by duplicating your documented system.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Leverage Medical Certifications & Social Proof</strong> — Continue building credibility through Enagic's medical device certifications (ISO 13485, Japanese Ministry of Health approval, Gold Seal from Water Quality Association). Feature testimonials from healthcare professionals using Kangen machines in their practices. Create case studies showing customer transformations (hydration improvements, athletic performance gains, environmental impact from eliminating bottled water). Focus recruiting on quality over quantity—one serious business builder who masters high-ticket sales is worth more than ten hobbyists who never conduct demos. Your recruiting power comes from proven demo-to-sale conversion rates and documented commission earnings, not hype or health cure claims.</li>
         </ol>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="toggle-roadmap-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 0.5rem; padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            Show Full 30-Day Roadmap (7 more steps)
+          </button>
+        </div>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives Enagic distributors a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives Enagic distributors a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -203,11 +243,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -256,18 +304,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-superpatch.html" class="cta-inline">SuperPatch →</a></h3>
             <p>Vibrotactile technology patches influencing nervous system—performance enhancement and wellness support through wearable frequency technology.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-asea-global.html" class="cta-inline">ASEA Global →</a></h3>
-            <p>Redox signaling molecules in shelf-stable form—patented cellular communication technology with athlete and biohacker market positioning.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-neumi.html" class="cta-inline">Neumi →</a></h3>
-            <p>Nano-sized glutathione and molecular hydrogen supplements—advanced delivery systems targeting cellular health and detoxification support.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-vital-health-global.html" class="cta-inline">Vital Health Global →</a></h3>
-            <p>Patented CBD and wellness supplement technology—cannabinoid science positioning with professional-grade formulations and third-party testing focus.</p>
           </div>
         </div>
       </section>
@@ -318,6 +354,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">JEUNESSE PLAYBOOK</span>
       <h1>AI Recruiting for Jeunesse Distributors</h1>
       <p class="muted">Leverage stem cell science and anti-aging innovation with AI-powered recruiting tactics that duplicate across your distributor organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your Jeunesse Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join Jeunesse distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What Jeunesse Sells (in plain English)</h2>
@@ -162,40 +173,64 @@
         <p>Jeunesse emphasizes product science, before-and-after visual results, and fast-paced team building in training. New distributors learn the APT-200 stem cell story, product application techniques, and binary team structure through corporate webinars, regional events, and upline mentorship. The company provides marketing materials, social media templates, and product certification programs. However, traditional training focuses on hotel events, global rallies, and high-energy presentations—leaving systematic digital prospecting, automated follow-up sequences, and compliance-friendly messaging largely underdeveloped. Most distributors struggle with sustainable lead generation beyond their warm market.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your Jeunesse Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for Jeunesse</h2>
-        <ol class="checklist">
-          <li><strong>Science-first lead qualification.</strong> Create a 90-second explainer video on APT-200 adult stem cell technology and telomere science. Use this as your filter—prospects who watch and engage are scientifically-minded buyers worth pursuing. Those who skip it aren't your audience.</li>
-          <li><strong>Before-and-after collection system.</strong> Build an AI-prompted protocol for customers to submit weekly selfies during their 90-day Luminesce regimen. Automate check-ins on days 7, 30, 60, and 90 asking for photos and experience notes. Use compliant results to build social proof libraries your entire team can leverage.</li>
-          <li><strong>Premium positioning messaging.</strong> Jeunesse products command luxury pricing—don't compete on cost. Create content comparing ingredient quality and concentration to department store brands. "Same technology as $300 serums for $150" resonates better than generic anti-aging claims. Use AI to deploy this across targeted beauty and wellness audiences.</li>
-          <li><strong>RESERVE subscription automation.</strong> Identify customers who reorder RESERVE monthly. Build an automated sequence offering them wholesale pricing advantages after 3 consecutive orders. "You're spending $150/month—save 25% as a distributor" converts repeat buyers into business builders.</li>
-          <li><strong>Binary leg balance alerts.</strong> Use AI to monitor your team structure and alert you when one leg is significantly ahead. Automate placement recommendations for new recruits to maximize cycle commissions. Most distributors manually track this—automation gives you competitive advantage.</li>
-          <li><strong>Beauty professional targeting.</strong> Create LinkedIn and Instagram campaigns targeting estheticians, makeup artists, and salon owners. Position Jeunesse as their professional-grade product line without needing supplier relationships or inventory. "Add $2,000-5,000/month selling to existing clients" speaks their language.</li>
-          <li><strong>Age-specific nurture sequences.</strong> Segment prospects by age concerns: 30s (prevention, early fine lines), 40s (texture, elasticity), 50s+ (deep wrinkles, firmness). Customize product recommendations and testimonial matching to their demographic. Generic anti-aging talk doesn't convert—specific age-related solutions do.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Science-first lead qualification.</strong> Create a 90-second explainer video on APT-200 adult stem cell technology and telomere science. Use this as your filter—prospects who watch and engage are scientifically-minded buyers worth pursuing. Those who skip it aren't your audience.</li>
+          <li class="always-visible"><strong>Before-and-after collection system.</strong> Build an AI-prompted protocol for customers to submit weekly selfies during their 90-day Luminesce regimen. Automate check-ins on days 7, 30, 60, and 90 asking for photos and experience notes. Use compliant results to build social proof libraries your entire team can leverage.</li>
+          <li class="always-visible"><strong>Premium positioning messaging.</strong> Jeunesse products command luxury pricing—don't compete on cost. Create content comparing ingredient quality and concentration to department store brands. "Same technology as $300 serums for $150" resonates better than generic anti-aging claims. Use AI to deploy this across targeted beauty and wellness audiences.</li>
+          <li class="always-visible"><strong>RESERVE subscription automation.</strong> Identify customers who reorder RESERVE monthly. Build an automated sequence offering them wholesale pricing advantages after 3 consecutive orders. "You're spending $150/month—save 25% as a distributor" converts repeat buyers into business builders.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Binary leg balance alerts.</strong> Use AI to monitor your team structure and alert you when one leg is significantly ahead. Automate placement recommendations for new recruits to maximize cycle commissions. Most distributors manually track this—automation gives you competitive advantage.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Beauty professional targeting.</strong> Create LinkedIn and Instagram campaigns targeting estheticians, makeup artists, and salon owners. Position Jeunesse as their professional-grade product line without needing supplier relationships or inventory. "Add $2,000-5,000/month selling to existing clients" speaks their language.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Age-specific nurture sequences.</strong> Segment prospects by age concerns: 30s (prevention, early fine lines), 40s (texture, elasticity), 50s+ (deep wrinkles, firmness). Customize product recommendations and testimonial matching to their demographic. Generic anti-aging talk doesn't convert—specific age-related solutions do.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with Jeunesse: Your First 30 Days</h2>
         <p class="muted">New to Jeunesse? Here's your step-by-step roadmap to launching your Distributor journey with the binary compensation plan and anti-aging science:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation Setup</strong> — Complete your Jeunesse Distributor enrollment, order your Luminesce starter kit (Cellular Rejuvenation Serum, Advanced Night Repair, Daily Moisturizing Complex), and set up your replicated website. Understand the binary team structure—you'll need to build two legs for cycle commissions.</li>
-          <li><strong>Week 1: Personal Product Experience</strong> — Begin your own 90-day Luminesce skincare regimen. Take Day 0 photos from multiple angles in consistent lighting. Use the Cellular Rejuvenation Serum and Advanced Night Repair daily. Document texture changes, fine line improvements, and how your skin feels after 7 days.</li>
-          <li><strong>Week 1: APT-200 Science Education</strong> — Study the adult stem cell technology story behind Luminesce—how APT-200 signals skin cells to renew themselves. Learn the clinical backing, ingredient quality positioning, and how Jeunesse compares to department store brands. This scientific credibility is your strongest differentiator.</li>
-          <li><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by age and concern: 30s (prevention/early fine lines), 40s (texture/elasticity), 50s+ (deep wrinkles/firmness). Share your personal Week 1 progress update with age-appropriate contacts. Focus on visual results, not generic anti-aging claims.</li>
-          <li><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline, track interest in products vs business opportunity, and manage your binary team structure. Let qualified prospects start building their teams in the app before officially joining, so they launch with placement momentum.</li>
-          <li><strong>Week 3: First Skincare Consultations</strong> — Conduct 10-15 virtual or in-person skincare consultations. Use the APT-200 explainer video as your qualifier—those who engage with the science are your buyers. Offer 90-day transformation packages with photo tracking at Days 7, 30, 60, and 90. Position Luminesce against luxury department store alternatives.</li>
-          <li><strong>Week 3-4: First Customers & RESERVE Subscriptions</strong> — Convert 5-10 people to preferred customers with monthly auto-ship orders. Focus on Luminesce regimen subscriptions (serum + night repair + moisturizer) and RESERVE gel subscriptions. These create recurring volume for your binary qualification and provide residual customer base for future business builder recruiting.</li>
-          <li><strong>Week 4: First Distributors & Binary Placement</strong> — Identify 2-3 serious business builders—beauty professionals, experienced networkers, or customers who love the products and want income. Walk them through Distributor enrollment. Strategically place them in your binary legs to balance volume. Help them order their Luminesce starter kit and set their first consultation targets.</li>
-          <li><strong>First 30 Days: Binary Duplication System</strong> — Package your entire system—APT-200 explainer, skincare consultation script, 90-day photo tracking process, RESERVE customer conversion strategy, and binary placement guidelines—into a simple playbook your new Distributors can use to launch their first leg in 7 days.</li>
-          <li><strong>Ongoing: Binary Optimization & Team Growth</strong> — Use Team Build Pro to monitor your binary leg balance, track which leg needs volume, identify optimal placement for new recruits, and maintain consistent communication across your organization. Binary plans reward strategic placement—organization tracking is critical for maximizing cycle commissions.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation Setup</strong> — Complete your Jeunesse Distributor enrollment, order your Luminesce starter kit (Cellular Rejuvenation Serum, Advanced Night Repair, Daily Moisturizing Complex), and set up your replicated website. Understand the binary team structure—you'll need to build two legs for cycle commissions.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Personal Product Experience</strong> — Begin your own 90-day Luminesce skincare regimen. Take Day 0 photos from multiple angles in consistent lighting. Use the Cellular Rejuvenation Serum and Advanced Night Repair daily. Document texture changes, fine line improvements, and how your skin feels after 7 days.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: APT-200 Science Education</strong> — Study the adult stem cell technology story behind Luminesce—how APT-200 signals skin cells to renew themselves. Learn the clinical backing, ingredient quality positioning, and how Jeunesse compares to department store brands. This scientific credibility is your strongest differentiator.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by age and concern: 30s (prevention/early fine lines), 40s (texture/elasticity), 50s+ (deep wrinkles/firmness). Share your personal Week 1 progress update with age-appropriate contacts. Focus on visual results, not generic anti-aging claims.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline, track interest in products vs business opportunity, and manage your binary team structure. Let qualified prospects start building their teams in the app before officially joining, so they launch with placement momentum.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: First Skincare Consultations</strong> — Conduct 10-15 virtual or in-person skincare consultations. Use the APT-200 explainer video as your qualifier—those who engage with the science are your buyers. Offer 90-day transformation packages with photo tracking at Days 7, 30, 60, and 90. Position Luminesce against luxury department store alternatives.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: First Customers & RESERVE Subscriptions</strong> — Convert 5-10 people to preferred customers with monthly auto-ship orders. Focus on Luminesce regimen subscriptions (serum + night repair + moisturizer) and RESERVE gel subscriptions. These create recurring volume for your binary qualification and provide residual customer base for future business builder recruiting.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Distributors & Binary Placement</strong> — Identify 2-3 serious business builders—beauty professionals, experienced networkers, or customers who love the products and want income. Walk them through Distributor enrollment. Strategically place them in your binary legs to balance volume. Help them order their Luminesce starter kit and set their first consultation targets.</li>
+          <li class="collapsible-item" style="display: none;"><strong>First 30 Days: Binary Duplication System</strong> — Package your entire system—APT-200 explainer, skincare consultation script, 90-day photo tracking process, RESERVE customer conversion strategy, and binary placement guidelines—into a simple playbook your new Distributors can use to launch their first leg in 7 days.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Binary Optimization & Team Growth</strong> — Use Team Build Pro to monitor your binary leg balance, track which leg needs volume, identify optimal placement for new recruits, and maintain consistent communication across your organization. Binary plans reward strategic placement—organization tracking is critical for maximizing cycle commissions.</li>
         </ol>
         <p><strong>Why this matters:</strong> New Jeunesse Distributors who complete their personal 30-day transformation and strategically build both binary legs within 60 days earn 4x more in their first year. Team Build Pro helps you balance your legs, track placements, and duplicate your consultation system as your team grows globally.</p>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives Jeunesse distributors a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives Jeunesse distributors a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +239,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -257,18 +300,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-lifevantage.html" class="cta-inline">LifeVantage →</a></h3>
             <p>Protandim Nrf2 Synergizer and biohacking wellness products emphasizing cellular health and longevity science from a nutritional angle.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-asea-global.html" class="cta-inline">ASEA Global →</a></h3>
-            <p>Redox signaling molecules and cellular health products with unique science positioning similar to Jeunesse's stem cell technology story.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-usana.html" class="cta-inline">USANA →</a></h3>
-            <p>Pharmaceutical-grade supplements and Celavive skincare with InCelligence Technology, offering science-backed cellular nutrition and anti-aging.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-rodan-fields.html" class="cta-inline">Rodan + Fields →</a></h3>
-            <p>Dermatologist-created skincare regimens with clinical results focus, targeting age-conscious consumers seeking professional-grade solutions.</p>
           </div>
         </div>
       </section>
@@ -319,6 +350,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

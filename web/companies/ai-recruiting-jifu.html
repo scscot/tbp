@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">JIFU PLAYBOOK</span>
       <h1>AI Recruiting for JIFU Travel Affiliates</h1>
       <p class="muted">Leverage travel membership savings with AI-powered recruiting tactics that duplicate across your organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your JIFU Travel Affiliates Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join JIFU Travel Affiliates distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What JIFU Sells (in plain English)</h2>
@@ -163,39 +174,68 @@
         <p>JIFU emphasizes portal demonstration training through screen recording tutorials, live webinar walk-throughs, and side-by-side price comparison exercises. New affiliates learn to conduct virtual tours showcasing the booking dashboard, price comparison tools, and member savings calculators. Training includes travel preference profiling questions, seasonal deal promotion strategies, and objection handling around membership fees versus booking savings. Corporate provides promotional materials featuring destination spotlights, travel inspiration content, and seasonal campaign assets. The challenge: converting tire-kickers into committed members who use the platform regularly and helping new affiliates master the portal demo before recruiting aggressively.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your JIFU Travel Affiliates Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for JIFU</h2>
-        <ol class="checklist">
-          <li><strong>Portal demo automation.</strong> Create standardized screen recording tours of the JIFU dashboard with AI-generated personalized introductions based on prospect travel preferences.</li>
-          <li><strong>Trip profiling quiz.</strong> Use AI chatbots to ask destination preferences, travel frequency, and budget parameters—then auto-generate customized portal tours showing relevant savings.</li>
-          <li><strong>Seasonal deal timing.</strong> Schedule automated outreach campaigns around school breaks, holiday seasons, and summer vacation planning windows with destination-specific offers.</li>
-          <li><strong>Price comparison capture.</strong> Save screenshots of retail vs member pricing on popular routes and create shareable comparison cards organized by destination type.</li>
-          <li><strong>Dream trip visualization.</strong> Guide prospects through bucket list destination conversations and show real savings on their ideal trips using portal pricing examples.</li>
-          <li><strong>Family travel lane.</strong> Segment family-focused prospects and create messaging around multi-room bookings, kid-friendly resorts, and group travel coordination through the platform.</li>
-          <li><strong>Duplicate the demo system.</strong> Save your portal tour templates, comparison screenshots, and trip profiling questions so new affiliates can launch identical presentation systems immediately.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Portal demo automation.</strong> Create standardized screen recording tours of the JIFU dashboard with AI-generated personalized introductions based on prospect travel preferences.</li>
+          <li class="always-visible"><strong>Trip profiling quiz.</strong> Use AI chatbots to ask destination preferences, travel frequency, and budget parameters—then auto-generate customized portal tours showing relevant savings.</li>
+          <li class="always-visible"><strong>Seasonal deal timing.</strong> Schedule automated outreach campaigns around school breaks, holiday seasons, and summer vacation planning windows with destination-specific offers.</li>
+          <li class="always-visible"><strong>Price comparison capture.</strong> Save screenshots of retail vs member pricing on popular routes and create shareable comparison cards organized by destination type.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Dream trip visualization.</strong> Guide prospects through bucket list destination conversations and show real savings on their ideal trips using portal pricing examples.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Family travel lane.</strong> Segment family-focused prospects and create messaging around multi-room bookings, kid-friendly resorts, and group travel coordination through the platform.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate the demo system.</strong> Save your portal tour templates, comparison screenshots, and trip profiling questions so new affiliates can launch identical presentation systems immediately.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with JIFU: Your First 30 Days</h2>
         <p class="muted">New to JIFU? Here's your step-by-step roadmap to launching your travel membership and lifestyle rewards affiliate journey:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Membership Activation & Portal Navigation</strong> — Complete JIFU affiliate enrollment and activate personal membership. Study compensation plan (membership commissions, travel credits, team bonuses). Navigate JIFU booking portal—explore vacation packages, hotel inventory, experiences, credit system. Subscribe at tier matching your travel frequency and budget. Begin accumulating travel credits through monthly subscription—understand how credits apply to bookings and member pricing advantages over retail travel sites.</li>
-          <li><strong>Week 1: Book Personal Travel Experience</strong> — Use JIFU platform to book actual trip (even if months away) establishing firsthand credibility. Compare JIFU member pricing to Expedia, Booking.com, direct hotel rates—document real savings. Screenshot booking process, credit application, final pricing for demonstration materials. This personal booking journey becomes your most authentic selling tool—you cannot credibly sell travel membership without using it yourself.</li>
-          <li><strong>Week 2: Travel Savings Analysis & Value Positioning</strong> — Calculate your personal ROI: monthly membership fee versus travel savings achieved plus credit accumulation. Practice explaining JIFU value clearly: works best for people traveling 2+ times yearly, less compelling for occasional vacationers. Develop honest positioning about membership benefits, credit limitations, booking restrictions. Study how different membership tiers affect credit accumulation and booking options.</li>
-          <li><strong>Week 3: Target Market Identification</strong> — Define ideal JIFU prospects: frequent travelers (2+ trips annually), family vacation planners, experience collectors, travel deal seekers, aspiring travelers wanting affordability. List 20-30 people with demonstrated travel interest—past trips, vacation talk, travel social media posts. Focus on travel enthusiasts who'd genuinely use membership, not just anyone wanting income opportunity.</li>
-          <li><strong>Week 3-4: Portal Demo Conversations</strong> — Reach out to 10-15 travel-focused prospects with value-first approach. Share personal JIFU booking experience, pricing comparisons, membership benefits. Offer portal demonstrations showing inventory browsing, credit application, member pricing versus retail. Focus on their specific travel preferences—beach resorts, European adventures, family theme parks—showing real pricing for trips they'd actually book.</li>
-          <li><strong>Week 4: First Membership Enrollments</strong> — Convert 1-2 warmest travel-loving prospects into JIFU members. Walk through subscription tiers, credit accumulation timelines, portal navigation. Help plan their first booking. If they show entrepreneurial interest, explain affiliate opportunity: "Beyond saving on your own travel, you can earn income helping other travelers access member pricing."</li>
-          <li><strong>Day 30: Master JIFU AI Playbook</strong> — Implement AI tactics: portal demo automation, trip profiling quizzes, seasonal deal timing campaigns, price comparison tools, dream trip visualization, family travel lane segmentation. Package demo system for new affiliates.</li>
-          <li><strong>30 Days Forward: Affiliate Opportunity Positioning</strong> — After personal travel booking and member enrollments, position JIFU affiliate opportunity selectively to travel enthusiasts with entrepreneurial interest. Focus on helping travelers save money while earning commissions.</li>
-          <li><strong>Duplicate & Scale</strong> — Package portal demo templates, pricing comparison screenshots, membership guides, booking walkthroughs into turnkey system for new affiliates duplicating your travel-focused approach.</li>
-          <li><strong>Ongoing: Build Travel Authority</strong> — Share travel content, destination guides, booking tips. Position as trusted travel resource. Focus recruiting on genuine travel enthusiasts—authentic passion converts better than opportunity pitching.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Membership Activation & Portal Navigation</strong> — Complete JIFU affiliate enrollment and activate personal membership. Study compensation plan (membership commissions, travel credits, team bonuses). Navigate JIFU booking portal—explore vacation packages, hotel inventory, experiences, credit system. Subscribe at tier matching your travel frequency and budget. Begin accumulating travel credits through monthly subscription—understand how credits apply to bookings and member pricing advantages over retail travel sites.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Book Personal Travel Experience</strong> — Use JIFU platform to book actual trip (even if months away) establishing firsthand credibility. Compare JIFU member pricing to Expedia, Booking.com, direct hotel rates—document real savings. Screenshot booking process, credit application, final pricing for demonstration materials. This personal booking journey becomes your most authentic selling tool—you cannot credibly sell travel membership without using it yourself.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Travel Savings Analysis & Value Positioning</strong> — Calculate your personal ROI: monthly membership fee versus travel savings achieved plus credit accumulation. Practice explaining JIFU value clearly: works best for people traveling 2+ times yearly, less compelling for occasional vacationers. Develop honest positioning about membership benefits, credit limitations, booking restrictions. Study how different membership tiers affect credit accumulation and booking options.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: Target Market Identification</strong> — Define ideal JIFU prospects: frequent travelers (2+ trips annually), family vacation planners, experience collectors, travel deal seekers, aspiring travelers wanting affordability. List 20-30 people with demonstrated travel interest—past trips, vacation talk, travel social media posts. Focus on travel enthusiasts who'd genuinely use membership, not just anyone wanting income opportunity.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: Portal Demo Conversations</strong> — Reach out to 10-15 travel-focused prospects with value-first approach. Share personal JIFU booking experience, pricing comparisons, membership benefits. Offer portal demonstrations showing inventory browsing, credit application, member pricing versus retail. Focus on their specific travel preferences—beach resorts, European adventures, family theme parks—showing real pricing for trips they'd actually book.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Membership Enrollments</strong> — Convert 1-2 warmest travel-loving prospects into JIFU members. Walk through subscription tiers, credit accumulation timelines, portal navigation. Help plan their first booking. If they show entrepreneurial interest, explain affiliate opportunity: "Beyond saving on your own travel, you can earn income helping other travelers access member pricing."</li>
+          <li class="collapsible-item" style="display: none;"><strong>Day 30: Master JIFU AI Playbook</strong> — Implement AI tactics: portal demo automation, trip profiling quizzes, seasonal deal timing campaigns, price comparison tools, dream trip visualization, family travel lane segmentation. Package demo system for new affiliates.</li>
+          <li class="collapsible-item" style="display: none;"><strong>30 Days Forward: Affiliate Opportunity Positioning</strong> — After personal travel booking and member enrollments, position JIFU affiliate opportunity selectively to travel enthusiasts with entrepreneurial interest. Focus on helping travelers save money while earning commissions.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate & Scale</strong> — Package portal demo templates, pricing comparison screenshots, membership guides, booking walkthroughs into turnkey system for new affiliates duplicating your travel-focused approach.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Build Travel Authority</strong> — Share travel content, destination guides, booking tips. Position as trusted travel resource. Focus recruiting on genuine travel enthusiasts—authentic passion converts better than opportunity pitching.</li>
         </ol>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="toggle-roadmap-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 0.5rem; padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            Show Full 30-Day Roadmap (7 more steps)
+          </button>
+        </div>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives JIFU Affiliates a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives JIFU Affiliates a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +244,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -303,6 +351,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

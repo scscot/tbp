@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">LEGALSHIELD PLAYBOOK</span>
       <h1>AI Recruiting for LegalShield Associates</h1>
       <p class="muted">Leverage legal service subscription access with AI-powered recruiting tactics that duplicate across your organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your LegalShield Associates Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join LegalShield Associates distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What LegalShield Sells (in plain English)</h2>
@@ -163,39 +174,68 @@
         <p>LegalShield emphasizes scenario-based training through common legal situation role plays, app demonstration walk-throughs, and member service utilization education. New Associates learn to lead conversations with everyday legal questions like lease clause confusion, contract interpretation needs, traffic ticket defense, will updates, and identity theft concerns. Training includes app feature navigation, provider law firm contact procedures, and compliance around legal advice disclaimers versus membership benefit explanations. Corporate provides presentation decks, video testimonials, app demo scripts, and scenario-based marketing materials. The challenge: converting prospects who perceive legal services as unnecessary expense into members who understand preventative protection value and helping new Associates master scenario-based conversations before recruiting aggressively.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your LegalShield Associates Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for LegalShield</h2>
-        <ol class="checklist">
-          <li><strong>Scenario-based outreach automation.</strong> Create AI chatbot flows that surface common legal scenarios through qualifying questions—then match prospects to relevant LegalShield service examples.</li>
-          <li><strong>App demo scheduling.</strong> Automate app demonstration invitations with screen recording tours showing member portal, attorney contact process, and service request submission flows.</li>
-          <li><strong>Life event targeting.</strong> Schedule campaigns around common legal trigger events—new home purchases, job changes, small business launches, family changes, identity theft news cycles.</li>
-          <li><strong>Compliance-friendly framing.</strong> Save pre-approved language around membership benefits versus legal advice disclaimers, service scope explanations, and attorney network descriptions.</li>
-          <li><strong>ID protection lane separation.</strong> Segment prospects by legal services interest versus identity protection concern and create dual-track messaging for standalone or bundled subscriptions.</li>
-          <li><strong>Daily activity tracker.</strong> Build AI-powered daily outreach prompts based on prospect conversation stage—scenario questioning, app demo scheduling, follow-up after demo, enrollment support.</li>
-          <li><strong>Duplicate the scenario system.</strong> Save your qualifying questions, scenario examples, app demo templates, and compliance-approved messaging so new Associates can launch identical systems immediately.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Scenario-based outreach automation.</strong> Create AI chatbot flows that surface common legal scenarios through qualifying questions—then match prospects to relevant LegalShield service examples.</li>
+          <li class="always-visible"><strong>App demo scheduling.</strong> Automate app demonstration invitations with screen recording tours showing member portal, attorney contact process, and service request submission flows.</li>
+          <li class="always-visible"><strong>Life event targeting.</strong> Schedule campaigns around common legal trigger events—new home purchases, job changes, small business launches, family changes, identity theft news cycles.</li>
+          <li class="always-visible"><strong>Compliance-friendly framing.</strong> Save pre-approved language around membership benefits versus legal advice disclaimers, service scope explanations, and attorney network descriptions.</li>
+          <li class="collapsible-item" style="display: none;"><strong>ID protection lane separation.</strong> Segment prospects by legal services interest versus identity protection concern and create dual-track messaging for standalone or bundled subscriptions.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Daily activity tracker.</strong> Build AI-powered daily outreach prompts based on prospect conversation stage—scenario questioning, app demo scheduling, follow-up after demo, enrollment support.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate the scenario system.</strong> Save your qualifying questions, scenario examples, app demo templates, and compliance-approved messaging so new Associates can launch identical systems immediately.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with LegalShield: Your First 30 Days</h2>
         <p class="muted">New to LegalShield? Here's your step-by-step roadmap to launching your legal services subscription associate journey:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation & Membership Activation</strong> — Complete LegalShield Associate enrollment and activate personal membership (legal plan plus IDShield identity protection). Study compensation plan. Download LegalShield member app—explore attorney access, legal forms library, service request process, identity monitoring dashboard. Begin using services personally—consult attorney on personal legal question, review legal documents, test identity monitoring features—establishing firsthand experience credibility.</li>
-          <li><strong>Week 1: Service Experience & Use Case Documentation</strong> — Spend 7 days actively using LegalShield membership services. Contact provider attorney with legal question, use document review for personal contract, explore legal forms library, test identity theft protection features. Document your experience—response time, attorney accessibility, service quality, app ease-of-use. Calculate value: $30-40/month for unlimited attorney consultations versus $200-400/hour retail attorney rates. This personal usage becomes your credibility foundation.</li>
-          <li><strong>Week 2: Legal Scenario Identification & Positioning</strong> — Study common legal situations LegalShield covers: traffic tickets, contract reviews, identity theft, will preparation, landlord/tenant disputes, small business legal needs, debt collection defense, real estate transactions. Practice explaining membership benefits clearly with proper disclaimers—LegalShield provides attorney access, not guaranteed legal outcomes. Learn compliance boundaries: avoid unauthorized practice of law, don't guarantee case results, position as attorney access subscription.</li>
-          <li><strong>Week 3: Target Market & Life Event Triggers</strong> — Define ideal LegalShield prospects: small business owners (ongoing legal needs), homeowners (contracts, disputes), parents (will/estate planning), identity theft concerned (credit monitoring), entrepreneurs (business formation, contracts), individuals facing legal issues (traffic tickets, disputes). List 20-30 people in life transition moments—new businesses, home purchases, job changes, family changes. Focus on demonstrated legal service needs.</li>
-          <li><strong>Week 3-4: App Demo Conversations</strong> — Reach out to 10-15 prospects with education-first approach. Share personal LegalShield experience—attorney consultations used, documents reviewed, identity protection value. Offer app demonstrations showing: attorney contact process, legal services covered, identity theft monitoring, member portal navigation. Focus on their specific legal concerns matching covered services. Document interest signals and objections.</li>
-          <li><strong>Week 4: First Membership Enrollments</strong> — Convert 1-2 warmest prospects into LegalShield members. Walk through service coverage, attorney access process, identity protection features, monthly subscription costs. Set realistic expectations—membership provides attorney access, not free unlimited legal work or guaranteed outcomes. If entrepreneurial interest shown, explain Associate opportunity: "Beyond using legal services yourself, you can earn income helping others access affordable attorney access."</li>
-          <li><strong>Day 30: Master LegalShield AI Playbook</strong> — Implement AI tactics: scenario-based outreach automation, app demo scheduling, life event targeting campaigns, compliance-friendly messaging, ID protection lane separation, daily activity tracking. Package scenario system for new Associates.</li>
-          <li><strong>30 Days Forward: Associate Opportunity Positioning</strong> — After personal service usage and member enrollments, position LegalShield business opportunity selectively to entrepreneurs, small business owners, and service-minded professionals who understand subscription value and compliance requirements.</li>
-          <li><strong>Duplicate & Scale</strong> — Package scenario qualification questions, app demo templates, compliance-approved messaging, service coverage guides into turnkey system for new Associates duplicating your education-first, scenario-based approach.</li>
-          <li><strong>Ongoing: Build Legal Access Advocacy</strong> — Share legal education content—consumer rights, small business legal tips, identity theft protection. Position as trusted legal access resource. Maintain strict compliance—never provide legal advice, avoid outcome guarantees, use proper disclaimers. Focus recruiting on service users who understand membership value.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation & Membership Activation</strong> — Complete LegalShield Associate enrollment and activate personal membership (legal plan plus IDShield identity protection). Study compensation plan. Download LegalShield member app—explore attorney access, legal forms library, service request process, identity monitoring dashboard. Begin using services personally—consult attorney on personal legal question, review legal documents, test identity monitoring features—establishing firsthand experience credibility.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Service Experience & Use Case Documentation</strong> — Spend 7 days actively using LegalShield membership services. Contact provider attorney with legal question, use document review for personal contract, explore legal forms library, test identity theft protection features. Document your experience—response time, attorney accessibility, service quality, app ease-of-use. Calculate value: $30-40/month for unlimited attorney consultations versus $200-400/hour retail attorney rates. This personal usage becomes your credibility foundation.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Legal Scenario Identification & Positioning</strong> — Study common legal situations LegalShield covers: traffic tickets, contract reviews, identity theft, will preparation, landlord/tenant disputes, small business legal needs, debt collection defense, real estate transactions. Practice explaining membership benefits clearly with proper disclaimers—LegalShield provides attorney access, not guaranteed legal outcomes. Learn compliance boundaries: avoid unauthorized practice of law, don't guarantee case results, position as attorney access subscription.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: Target Market & Life Event Triggers</strong> — Define ideal LegalShield prospects: small business owners (ongoing legal needs), homeowners (contracts, disputes), parents (will/estate planning), identity theft concerned (credit monitoring), entrepreneurs (business formation, contracts), individuals facing legal issues (traffic tickets, disputes). List 20-30 people in life transition moments—new businesses, home purchases, job changes, family changes. Focus on demonstrated legal service needs.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: App Demo Conversations</strong> — Reach out to 10-15 prospects with education-first approach. Share personal LegalShield experience—attorney consultations used, documents reviewed, identity protection value. Offer app demonstrations showing: attorney contact process, legal services covered, identity theft monitoring, member portal navigation. Focus on their specific legal concerns matching covered services. Document interest signals and objections.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Membership Enrollments</strong> — Convert 1-2 warmest prospects into LegalShield members. Walk through service coverage, attorney access process, identity protection features, monthly subscription costs. Set realistic expectations—membership provides attorney access, not free unlimited legal work or guaranteed outcomes. If entrepreneurial interest shown, explain Associate opportunity: "Beyond using legal services yourself, you can earn income helping others access affordable attorney access."</li>
+          <li class="collapsible-item" style="display: none;"><strong>Day 30: Master LegalShield AI Playbook</strong> — Implement AI tactics: scenario-based outreach automation, app demo scheduling, life event targeting campaigns, compliance-friendly messaging, ID protection lane separation, daily activity tracking. Package scenario system for new Associates.</li>
+          <li class="collapsible-item" style="display: none;"><strong>30 Days Forward: Associate Opportunity Positioning</strong> — After personal service usage and member enrollments, position LegalShield business opportunity selectively to entrepreneurs, small business owners, and service-minded professionals who understand subscription value and compliance requirements.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate & Scale</strong> — Package scenario qualification questions, app demo templates, compliance-approved messaging, service coverage guides into turnkey system for new Associates duplicating your education-first, scenario-based approach.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Build Legal Access Advocacy</strong> — Share legal education content—consumer rights, small business legal tips, identity theft protection. Position as trusted legal access resource. Maintain strict compliance—never provide legal advice, avoid outcome guarantees, use proper disclaimers. Focus recruiting on service users who understand membership value.</li>
         </ol>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="toggle-roadmap-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 0.5rem; padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            Show Full 30-Day Roadmap (7 more steps)
+          </button>
+        </div>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives LegalShield Associates a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives LegalShield Associates a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +244,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -307,6 +355,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

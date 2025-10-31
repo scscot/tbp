@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">NATURE'S SUNSHINE PLAYBOOK</span>
       <h1>AI Recruiting for Nature's Sunshine Distributors</h1>
       <p class="muted">Leverage 50+ years of herbal expertise and encapsulation innovation with AI-powered recruiting tactics that duplicate across your distributor organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your Nature's Sunshine Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join Nature's Sunshine distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What Nature's Sunshine Sells (in plain English)</h2>
@@ -162,40 +173,64 @@
         <p>Nature's Sunshine emphasizes herbal education, product knowledge, and holistic health philosophy in training. New distributors learn about botanical properties, traditional uses of herbs, and modern scientific validation through online training portals, product certifications, and herbal education programs. The company provides formulation guides, dosing protocols, and wellness assessments. However, traditional training focuses heavily on product education and herbal theory—leaving systematic digital marketing, automated prospecting systems, and scalable team duplication largely underdeveloped. Most distributors excel at product knowledge but struggle with consistent lead generation and modern marketing execution beyond warm market referrals.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your Nature's Sunshine Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for Nature's Sunshine</h2>
-        <ol class="checklist">
-          <li><strong>Herbal education content series.</strong> Create 7-day automated email courses on specific topics: immune support herbs, digestive wellness, adaptogenic stress management, sleep support botanicals. Gate behind email opt-in. Position yourself as educator first, seller second—this builds authority in natural health communities and filters serious prospects.</li>
-          <li><strong>Seasonal wellness campaigns.</strong> Build automated sequences for cold/flu season (immune formulas), allergy season (respiratory support), holiday stress (adaptogens), and New Year detox (cleansing protocols). Use AI to trigger these annually without manual setup—your seasonal promotions run on autopilot while competitors scramble each year.</li>
-          <li><strong>Herbalist and practitioner networking.</strong> Target naturopaths, acupuncturists, herbalism students, and holistic health practitioners on LinkedIn. Position Nature's Sunshine as their professional product line with 50+ years of formulation expertise. Use AI to systematically connect with and nurture these high-value relationships—one practitioner can generate dozens of patient referrals.</li>
-          <li><strong>Encapsulation origin storytelling.</strong> Nature's Sunshine pioneered encapsulated herbs in a home kitchen in 1972. This David-vs-Goliath origin story resonates with entrepreneurial prospects. Create shareable content about the company's founding and innovation legacy. Use AI to deploy this across communities valuing authenticity and innovation over corporate polish.</li>
-          <li><strong>Product comparison library.</strong> Build AI-searchable database comparing Nature's Sunshine formulations to competing brands on ingredient quality, sourcing, concentration, and price-per-serving. When prospects ask "how's this different from Amazon herbs," instant credible answers close sales. Most distributors fumble this question—automation makes you the expert.</li>
-          <li><strong>Wellness assessment automation.</strong> Create interactive quizzes identifying health concerns and recommending specific Nature's Sunshine products. "Find your herbal protocol in 2 minutes" generates leads, qualifies prospects, and provides personalized recommendations at scale. Human consultations don't scale—AI assessments do.</li>
-          <li><strong>Stability and longevity positioning.</strong> In an industry full of startup companies and trendy fads, 50+ years in business is a massive competitive advantage. Build content emphasizing proven formulations, established supply chains, and financial stability. Use AI to target network marketers burned by company closures—they'll pay premium for security.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Herbal education content series.</strong> Create 7-day automated email courses on specific topics: immune support herbs, digestive wellness, adaptogenic stress management, sleep support botanicals. Gate behind email opt-in. Position yourself as educator first, seller second—this builds authority in natural health communities and filters serious prospects.</li>
+          <li class="always-visible"><strong>Seasonal wellness campaigns.</strong> Build automated sequences for cold/flu season (immune formulas), allergy season (respiratory support), holiday stress (adaptogens), and New Year detox (cleansing protocols). Use AI to trigger these annually without manual setup—your seasonal promotions run on autopilot while competitors scramble each year.</li>
+          <li class="always-visible"><strong>Herbalist and practitioner networking.</strong> Target naturopaths, acupuncturists, herbalism students, and holistic health practitioners on LinkedIn. Position Nature's Sunshine as their professional product line with 50+ years of formulation expertise. Use AI to systematically connect with and nurture these high-value relationships—one practitioner can generate dozens of patient referrals.</li>
+          <li class="always-visible"><strong>Encapsulation origin storytelling.</strong> Nature's Sunshine pioneered encapsulated herbs in a home kitchen in 1972. This David-vs-Goliath origin story resonates with entrepreneurial prospects. Create shareable content about the company's founding and innovation legacy. Use AI to deploy this across communities valuing authenticity and innovation over corporate polish.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Product comparison library.</strong> Build AI-searchable database comparing Nature's Sunshine formulations to competing brands on ingredient quality, sourcing, concentration, and price-per-serving. When prospects ask "how's this different from Amazon herbs," instant credible answers close sales. Most distributors fumble this question—automation makes you the expert.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Wellness assessment automation.</strong> Create interactive quizzes identifying health concerns and recommending specific Nature's Sunshine products. "Find your herbal protocol in 2 minutes" generates leads, qualifies prospects, and provides personalized recommendations at scale. Human consultations don't scale—AI assessments do.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Stability and longevity positioning.</strong> In an industry full of startup companies and trendy fads, 50+ years in business is a massive competitive advantage. Build content emphasizing proven formulations, established supply chains, and financial stability. Use AI to target network marketers burned by company closures—they'll pay premium for security.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with Nature's Sunshine: Your First 30 Days</h2>
         <p class="muted">New to Nature's Sunshine? Here's your step-by-step roadmap to launching your distributor journey with 50+ years of herbal expertise:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation Setup</strong> — Complete your Nature's Sunshine distributor enrollment, order your personal product starter pack (choose based on your primary health interest: Immune Stimulator for immunity, Probiotic Eleven for digestion, BP-X for cardiovascular support, or a variety pack to test multiple formulas), and set up your replicated website. Study the compensation plan—understand commission structure, team volume bonuses, and rank progression.</li>
-          <li><strong>Week 1: Personal Herbal Experience</strong> — Begin your own 30-day herbal protocol with Nature's Sunshine products. Take your chosen supplements daily as directed (read labels for proper dosing and timing). Document your wellness observations—energy levels, digestive comfort, immune resilience, sleep quality, or other relevant benefits after 7 days. Your personal herbal journey becomes your strongest recruiting tool—"I've been taking Immune Stimulator for a week and here's what I noticed."</li>
-          <li><strong>Week 1: Herbal & Company History Education</strong> — Study Nature's Sunshine's founding story—Gene and Kristine Hughes pioneering encapsulated herbs in 1972 from their home kitchen with cayenne pepper capsules. Learn about 50+ years of botanical sourcing expertise, quality control at the Spanish Fork facility, traditional herbal applications, and modern scientific validation. Master the heritage story for natural health enthusiasts who value proven formulations over trendy startups.</li>
-          <li><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by wellness interest: immune support seekers, digestive health concerns, cardiovascular wellness, joint health needs, weight management goals, natural health practitioners (naturopaths, herbalists, chiropractors), and business opportunity seekers. Share your personal Week 1 herbal experience with interest-appropriate contacts. Lead with botanical education, not sales pitch.</li>
-          <li><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline by herbal interest category (immune, digestive, cardiovascular, holistic practitioners, business), track who's engaged with your herbal education content, and let qualified prospects start building their own teams before officially joining, so they launch with pre-built momentum.</li>
-          <li><strong>Week 3: First Herbal Wellness Consultations</strong> — Conduct 10-15 wellness consultations (virtual or in-person). Use health concern questionnaires to identify needs. Share the encapsulated herb origin story—how Nature's Sunshine made potent botanicals convenient and palatable. Explain product formulations: single herbs vs combinations, traditional uses with modern science backing. Offer 30-day protocols with specific products for their concerns. Emphasize 50+ year formulation expertise vs new companies.</li>
-          <li><strong>Week 3-4: First Customers & Monthly Reorders</strong> — Convert 5-10 consultation prospects to customers with monthly auto-ship orders. Focus on foundational formulas (Immune Stimulator for prevention, Probiotic Eleven for daily digestive health, BP-X for cardiovascular support) that create consistent reorders. Track 30-day wellness feedback—improved energy, better digestion, immune resilience. Use customer testimonials (with proper disclaimers) to recruit next wave.</li>
-          <li><strong>Week 4: First Distributors</strong> — Identify 2-3 serious business builders—people experiencing personal herbal benefits, understanding the 50-year heritage advantage, and having strong networks in natural health communities or practitioner connections. Walk them through distributor enrollment. Help them order their starter pack and plan their first 10 wellness consultations for Week 5. Share your health questionnaire templates and herbal education resources.</li>
-          <li><strong>First 30 Days: Herbal Education Playbook Duplication</strong> — Package your entire system—wellness assessment questionnaires, encapsulation origin story video, product comparison guide (Nature's Sunshine vs Amazon herbs on quality/sourcing/concentration), 30-day protocol templates by health concern, practitioner networking scripts for naturopaths/herbalists, objection responses, and seasonal wellness campaign calendar—into a simple playbook your new distributors can use to start herbal consultations in 48 hours.</li>
-          <li><strong>Ongoing: Heritage-Based Team Growth</strong> — Use Team Build Pro to track your organization's monthly reorder rates, identify distributors hitting commission milestones, maintain consistent communication across your team, and share the 50+ year heritage story that creates stability credibility. Nature's Sunshine's proven longevity differentiates you from startup wellness MLMs—emphasize established formulations over trendy fads.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation Setup</strong> — Complete your Nature's Sunshine distributor enrollment, order your personal product starter pack (choose based on your primary health interest: Immune Stimulator for immunity, Probiotic Eleven for digestion, BP-X for cardiovascular support, or a variety pack to test multiple formulas), and set up your replicated website. Study the compensation plan—understand commission structure, team volume bonuses, and rank progression.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Personal Herbal Experience</strong> — Begin your own 30-day herbal protocol with Nature's Sunshine products. Take your chosen supplements daily as directed (read labels for proper dosing and timing). Document your wellness observations—energy levels, digestive comfort, immune resilience, sleep quality, or other relevant benefits after 7 days. Your personal herbal journey becomes your strongest recruiting tool—"I've been taking Immune Stimulator for a week and here's what I noticed."</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Herbal & Company History Education</strong> — Study Nature's Sunshine's founding story—Gene and Kristine Hughes pioneering encapsulated herbs in 1972 from their home kitchen with cayenne pepper capsules. Learn about 50+ years of botanical sourcing expertise, quality control at the Spanish Fork facility, traditional herbal applications, and modern scientific validation. Master the heritage story for natural health enthusiasts who value proven formulations over trendy startups.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Warm Market Outreach</strong> — Create your contact list of 50-100 people. Segment by wellness interest: immune support seekers, digestive health concerns, cardiovascular wellness, joint health needs, weight management goals, natural health practitioners (naturopaths, herbalists, chiropractors), and business opportunity seekers. Share your personal Week 1 herbal experience with interest-appropriate contacts. Lead with botanical education, not sales pitch.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Team Build Pro Setup</strong> — Download Team Build Pro to organize your prospect pipeline by herbal interest category (immune, digestive, cardiovascular, holistic practitioners, business), track who's engaged with your herbal education content, and let qualified prospects start building their own teams before officially joining, so they launch with pre-built momentum.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: First Herbal Wellness Consultations</strong> — Conduct 10-15 wellness consultations (virtual or in-person). Use health concern questionnaires to identify needs. Share the encapsulated herb origin story—how Nature's Sunshine made potent botanicals convenient and palatable. Explain product formulations: single herbs vs combinations, traditional uses with modern science backing. Offer 30-day protocols with specific products for their concerns. Emphasize 50+ year formulation expertise vs new companies.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: First Customers & Monthly Reorders</strong> — Convert 5-10 consultation prospects to customers with monthly auto-ship orders. Focus on foundational formulas (Immune Stimulator for prevention, Probiotic Eleven for daily digestive health, BP-X for cardiovascular support) that create consistent reorders. Track 30-day wellness feedback—improved energy, better digestion, immune resilience. Use customer testimonials (with proper disclaimers) to recruit next wave.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Distributors</strong> — Identify 2-3 serious business builders—people experiencing personal herbal benefits, understanding the 50-year heritage advantage, and having strong networks in natural health communities or practitioner connections. Walk them through distributor enrollment. Help them order their starter pack and plan their first 10 wellness consultations for Week 5. Share your health questionnaire templates and herbal education resources.</li>
+          <li class="collapsible-item" style="display: none;"><strong>First 30 Days: Herbal Education Playbook Duplication</strong> — Package your entire system—wellness assessment questionnaires, encapsulation origin story video, product comparison guide (Nature's Sunshine vs Amazon herbs on quality/sourcing/concentration), 30-day protocol templates by health concern, practitioner networking scripts for naturopaths/herbalists, objection responses, and seasonal wellness campaign calendar—into a simple playbook your new distributors can use to start herbal consultations in 48 hours.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Heritage-Based Team Growth</strong> — Use Team Build Pro to track your organization's monthly reorder rates, identify distributors hitting commission milestones, maintain consistent communication across your team, and share the 50+ year heritage story that creates stability credibility. Nature's Sunshine's proven longevity differentiates you from startup wellness MLMs—emphasize established formulations over trendy fads.</li>
         </ol>
         <p><strong>Why this matters:</strong> New Nature's Sunshine distributors who complete their personal 30-day herbal protocol, convert 5+ customers with consistent reorders, and master heritage-based positioning within 60 days build teams with 4x higher retention. Team Build Pro helps you track wellness consultations, organize by health concern category, and duplicate your herbal education system as your team grows.</p>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives Nature's Sunshine distributors a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives Nature's Sunshine distributors a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +239,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -257,18 +300,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-shaklee.html" class="cta-inline">Shaklee →</a></h3>
             <p>70-year wellness supplement heritage with Vivix and environmental sustainability, combining longevity credibility with natural health focus like Nature's Sunshine.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-doterra.html" class="cta-inline">doTERRA →</a></h3>
-            <p>CPTG essential oils with quality testing and botanical wellness education, offering natural plant-based solutions that complement Nature's Sunshine's herbal philosophy.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-young-living.html" class="cta-inline">Young Living →</a></h3>
-            <p>Essential oils and Seed to Seal quality standards with botanical sourcing expertise, paralleling Nature's Sunshine's emphasis on ingredient quality and traditional plant wisdom.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-juice-plus.html" class="cta-inline">Juice Plus →</a></h3>
-            <p>Whole-food concentrate capsules with 40+ clinical studies and plant-based nutrition, sharing Nature's Sunshine's focus on natural wellness and scientific validation.</p>
           </div>
         </div>
       </section>
@@ -319,6 +350,23 @@
     });
 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>

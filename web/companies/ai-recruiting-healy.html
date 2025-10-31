@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="stylesheet" href="/css/style.css?v=8" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -109,13 +109,14 @@
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
-        <span class="material-symbols-outlined">menu</span>
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
         <a href="/" role="menuitem">Home</a>
         <a href="/#screenshots" role="menuitem">Screenshots</a>
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/books/" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -129,12 +130,22 @@
       <span class="eyebrow">HEALY PLAYBOOK</span>
       <h1>AI Recruiting for Healy Partners</h1>
       <p class="muted">Leverage frequency wellness technology with AI-powered recruiting tactics that duplicate across your organization.</p>
-
-      <div class="note">
-        <strong>Quick links:</strong>
-        <a class="cta-inline" href="https://teambuildpro.com">Start your 30‑day free trial →</a> &nbsp;|&nbsp;
-        <a class="cta-inline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Get the iOS app →</a>
-      </div>
+      <!-- Hero CTA Section -->
+      <section class="hero-cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2.5rem 2rem; margin: 2rem 0; text-align: center; color: white;">
+        <h2 style="color: white; font-size: 1.75rem; margin-bottom: 0.5rem;">Start Building Your Healy Partners Team Today</h2>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.125rem; margin-bottom: 1.5rem;">Join Healy Partners distributors using the Team Build Pro app to recruit smarter with AI-powered tools</p>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
 
       <section>
         <h2>What Healy Sells (in plain English)</h2>
@@ -163,39 +174,68 @@
         <p>Healy emphasizes product experience through demo sessions, personal testimonials, and practitioner case studies. New Partners are trained on device functionality, program selection, HealAdvisor app features, and compliance around wellness claims. Corporate provides webinars, certification programs for practitioners, and a knowledge base with frequency science explanations. The challenge: translating quantum sensor technology and frequency medicine into simple, relatable stories without overpromising outcomes.</p>
       </section>
 
+
+      <!-- Mid-Content CTA Interrupt -->
+      <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; padding: 2rem; margin: 2.5rem 0; text-align: center; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; margin-top: 0;">Ready to Build Your Healy Partners Team with Team Build Pro?</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0; text-align: left; display: inline-block; color: rgba(255,255,255,0.95); line-height: 2;">
+            <li>✓ Pre-building advantage: Prospects build teams before joining</li>
+            <li>✓ AI Coach guidance: Personalized coaching and milestone roadmaps</li>
+            <li>✓ Real-time network visibility: Track your entire organization</li>
+          </ul>
+        </div>
+        <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+          <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+          </a>
+        </div>
+        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
+          Free 30-day trial · $4.99/mo · Cancel anytime
+        </div>
+      </section>
+
       <section>
         <h2>Your AI Recruiting Playbook for Healy</h2>
-        <ol class="checklist">
-          <li><strong>Lead with experience lanes.</strong> Segment prospects into stress/sleep seekers, pain management, fitness recovery, energy optimization, or spiritual/energy work. Your demo focus changes by lane.</li>
-          <li><strong>Demo-first methodology.</strong> Offer live or video demos showing device setup, program selection, and session tracking. AI generates demo invites, reminder sequences, and follow-up questions.</li>
-          <li><strong>Testimonial library organization.</strong> Catalog user stories by category (sleep, pain, energy, mental clarity) with disclaimers. AI helps you pull the right story for each prospect.</li>
-          <li><strong>Frequency science simplification.</strong> Use AI to translate quantum sensor and microcurrent concepts into layman's terms—avoid jargon overload. Create 2-minute explainer scripts.</li>
-          <li><strong>7-day experience tracker.</strong> After someone tries Healy, automate check-ins on days 1, 3, 7 asking about their experience and offering program recommendations.</li>
-          <li><strong>Objection handling for skeptics.</strong> Pre-script responses to "is this real science?" and "does it actually work?" with balanced explanations of frequency therapy history and device certifications.</li>
-          <li><strong>Duplicate the demo flow.</strong> Save your demo script, program selection guide, and follow-up sequence so new Partners can run identical sessions from day one.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Lead with experience lanes.</strong> Segment prospects into stress/sleep seekers, pain management, fitness recovery, energy optimization, or spiritual/energy work. Your demo focus changes by lane.</li>
+          <li class="always-visible"><strong>Demo-first methodology.</strong> Offer live or video demos showing device setup, program selection, and session tracking. AI generates demo invites, reminder sequences, and follow-up questions.</li>
+          <li class="always-visible"><strong>Testimonial library organization.</strong> Catalog user stories by category (sleep, pain, energy, mental clarity) with disclaimers. AI helps you pull the right story for each prospect.</li>
+          <li class="always-visible"><strong>Frequency science simplification.</strong> Use AI to translate quantum sensor and microcurrent concepts into layman's terms—avoid jargon overload. Create 2-minute explainer scripts.</li>
+          <li class="collapsible-item" style="display: none;"><strong>7-day experience tracker.</strong> After someone tries Healy, automate check-ins on days 1, 3, 7 asking about their experience and offering program recommendations.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Objection handling for skeptics.</strong> Pre-script responses to "is this real science?" and "does it actually work?" with balanced explanations of frequency therapy history and device certifications.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate the demo flow.</strong> Save your demo script, program selection guide, and follow-up sequence so new Partners can run identical sessions from day one.</li>
         </ol>
       </section>
 
       <section>
         <h2>Getting Started with Healy: Your First 30 Days</h2>
         <p class="muted">New to Healy? Here's your step-by-step roadmap to launching your wearable frequency device partner journey with bioenergetic wellness technology:</p>
-        <ol class="checklist">
-          <li><strong>Day 1-3: Foundation & Personal Device Experience</strong> — Complete your Healy Partner enrollment and purchase your personal Healy device (required for credibility—you cannot sell frequency technology you don't personally use). Study the compensation plan structure (retail profit margins, team building bonuses, rank advancement). Download the Healy app and complete device setup—Bluetooth pairing, account registration, program library access. Begin your personal Healy experience immediately using foundational programs (Pure, Care, Balance, Being, Energy, Relax). Document your initial sensations, energy changes, sleep quality, stress levels from Day 1—this personal journey documentation becomes your most authentic selling tool.</li>
-          <li><strong>Week 1: Program Exploration & Experience Tracking</strong> — Spend 7 days systematically testing different Healy program categories based on your wellness goals. Sleep issues: test Sleep, Deep Sleep programs. Stress/anxiety: run Mental Balance, Inner Strength. Physical discomfort: try Local Stimulation, Pain/Psyche programs. Energy optimization: use Fitness, Performance, Recovery programs. Document your experience with each program—duration, intensity settings, subjective effects, timing of use (morning vs evening). Track measurable outcomes: sleep quality (1-10 scale), energy levels throughout day, stress response, physical comfort. Photograph the device, app interface, program selections to create visual content for future demonstrations.</li>
-          <li><strong>Week 2: Frequency Science Education & Compliance</strong> — Study the science behind Healy's microcurrent frequency technology—understand quantum sensor, individualized frequency programs, bioenergetic field concepts, historical context of frequency therapy. Learn medical device certifications Healy holds in various jurisdictions. CRITICAL: understand compliance boundaries—Healy is NOT a medical device in many countries, avoid disease treatment claims, focus on wellness support and bioenergetic balance language. Practice explaining frequency concepts in accessible terms: "Healy delivers personalized microcurrent frequencies that may support your body's natural balance" versus complex quantum sensor technical jargon that confuses prospects.</li>
-          <li><strong>Week 3: Demo Format Development & Practice</strong> — Develop your signature Healy demonstration format (15-30 minutes): device introduction, app navigation walkthrough, program category overview, live session demonstration (showing someone experiencing a Healy program), frequency selection explanation, subscription tier comparison, device pricing and payment options. Practice your demo presentation 5-10 times with friends or family—get comfortable answering questions about "how it works," "what does it feel like," "is this proven science," "how quickly will I see results." Create demo materials: comparison charts (Healy editions), program selection guides organized by wellness goals, testimonial compilation (with proper disclaimers), pricing breakdowns.</li>
-          <li><strong>Week 3-4: Identify & Conduct First Demos</strong> — Define your ideal Healy prospect profiles: wellness enthusiasts open to alternative therapies, chronic pain sufferers seeking non-pharmaceutical options, biohackers interested in optimization technology, energy workers/spiritual practitioners familiar with frequency concepts, athletes seeking recovery optimization, stressed professionals wanting balance tools. List 20-30 people matching these profiles. Schedule 5-10 Healy demonstrations (in-person or virtual)—let prospects experience the device firsthand during sessions. Focus on their specific wellness goals and match appropriate programs. Document their feedback, sensations during sessions, and follow-up interest signals.</li>
-          <li><strong>Week 4: First Device Sales</strong> — Convert 1-2 of your warmest demo prospects into Healy device purchasers. Address pricing objections ($500-$4,000+ depending on edition) with wellness investment positioning: daily cost breakdown, comparison to ongoing supplement expenses, long-term value of frequency access. Explain subscription tiers (programs included) and device edition differences (Healy Gold, Holistic Health, Resonance editions). Walk customers through setup, app installation, initial program recommendations based on their goals. Set up 7-day experience tracking—check in at Days 1, 3, 7 to gather feedback and offer program guidance. Celebrate first device sale commission with upline sponsor.</li>
-          <li><strong>Day 30: Master the Healy AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up experience lane segmentation, create demo-first methodology with automated invites, build testimonial library organized by category, develop frequency science simplification scripts, design 7-day experience tracker with automated check-ins, establish objection handling responses for skeptics, and package your demo flow for new partners. The AI infrastructure handles education and follow-up—you focus on high-touch demo delivery and personal experience sharing.</li>
-          <li><strong>30 Days Forward: Business Opportunity Positioning</strong> — Once you have personal device experience, demo presentation skills, and 1-2 device sales completed, begin positioning the Healy business opportunity. Identify customers demonstrating entrepreneurial interest—people asking about your business, expressing income goals, showing passion for wellness advocacy, or currently involved in health/wellness professions. Share the opportunity focusing on Healy's unique positioning: cutting-edge frequency technology, growing wellness device market, passionate user base, recurring subscription revenue potential. Position as wellness advocacy business: "I help people access frequency technology while building income in the wellness sector."</li>
-          <li><strong>Duplicate & Scale</strong> — Package your personal experience documentation, frequency science education materials, demo presentation scripts, program selection guides, experience tracking tools, device comparison charts, and business opportunity presentation into a turnkey system. Train new partners on the same 30-day roadmap: personal device experience → program exploration → frequency science education → demo format development → prospect demos → first device sales → business opportunity positioning. Goal: new partners can conduct credible demos and make device sales within first 30-45 days by duplicating your documented approach.</li>
-          <li><strong>Ongoing: Build Frequency Technology Authority</strong> — Continue sharing your personal Healy journey—wellness improvements, program discoveries, frequency science education, device use cases. Position yourself as trusted frequency technology resource, not aggressive device salesperson. Focus recruiting on customers who already love their Healy devices and demonstrate wellness advocacy—their authentic enthusiasm for technology converts better than opportunity-focused recruiting. Maintain strict compliance: avoid disease cure claims, use proper disclaimers, focus on bioenergetic wellness support language. Your recruiting power comes from documented personal transformation and authentic frequency technology advocacy, not unverified healing claims.</li>
+        <ol class="checklist" id="getting-started-list">
+          <li class="always-visible"><strong>Day 1-3: Foundation & Personal Device Experience</strong> — Complete your Healy Partner enrollment and purchase your personal Healy device (required for credibility—you cannot sell frequency technology you don't personally use). Study the compensation plan structure (retail profit margins, team building bonuses, rank advancement). Download the Healy app and complete device setup—Bluetooth pairing, account registration, program library access. Begin your personal Healy experience immediately using foundational programs (Pure, Care, Balance, Being, Energy, Relax). Document your initial sensations, energy changes, sleep quality, stress levels from Day 1—this personal journey documentation becomes your most authentic selling tool.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 1: Program Exploration & Experience Tracking</strong> — Spend 7 days systematically testing different Healy program categories based on your wellness goals. Sleep issues: test Sleep, Deep Sleep programs. Stress/anxiety: run Mental Balance, Inner Strength. Physical discomfort: try Local Stimulation, Pain/Psyche programs. Energy optimization: use Fitness, Performance, Recovery programs. Document your experience with each program—duration, intensity settings, subjective effects, timing of use (morning vs evening). Track measurable outcomes: sleep quality (1-10 scale), energy levels throughout day, stress response, physical comfort. Photograph the device, app interface, program selections to create visual content for future demonstrations.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 2: Frequency Science Education & Compliance</strong> — Study the science behind Healy's microcurrent frequency technology—understand quantum sensor, individualized frequency programs, bioenergetic field concepts, historical context of frequency therapy. Learn medical device certifications Healy holds in various jurisdictions. CRITICAL: understand compliance boundaries—Healy is NOT a medical device in many countries, avoid disease treatment claims, focus on wellness support and bioenergetic balance language. Practice explaining frequency concepts in accessible terms: "Healy delivers personalized microcurrent frequencies that may support your body's natural balance" versus complex quantum sensor technical jargon that confuses prospects.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3: Demo Format Development & Practice</strong> — Develop your signature Healy demonstration format (15-30 minutes): device introduction, app navigation walkthrough, program category overview, live session demonstration (showing someone experiencing a Healy program), frequency selection explanation, subscription tier comparison, device pricing and payment options. Practice your demo presentation 5-10 times with friends or family—get comfortable answering questions about "how it works," "what does it feel like," "is this proven science," "how quickly will I see results." Create demo materials: comparison charts (Healy editions), program selection guides organized by wellness goals, testimonial compilation (with proper disclaimers), pricing breakdowns.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 3-4: Identify & Conduct First Demos</strong> — Define your ideal Healy prospect profiles: wellness enthusiasts open to alternative therapies, chronic pain sufferers seeking non-pharmaceutical options, biohackers interested in optimization technology, energy workers/spiritual practitioners familiar with frequency concepts, athletes seeking recovery optimization, stressed professionals wanting balance tools. List 20-30 people matching these profiles. Schedule 5-10 Healy demonstrations (in-person or virtual)—let prospects experience the device firsthand during sessions. Focus on their specific wellness goals and match appropriate programs. Document their feedback, sensations during sessions, and follow-up interest signals.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Week 4: First Device Sales</strong> — Convert 1-2 of your warmest demo prospects into Healy device purchasers. Address pricing objections ($500-$4,000+ depending on edition) with wellness investment positioning: daily cost breakdown, comparison to ongoing supplement expenses, long-term value of frequency access. Explain subscription tiers (programs included) and device edition differences (Healy Gold, Holistic Health, Resonance editions). Walk customers through setup, app installation, initial program recommendations based on their goals. Set up 7-day experience tracking—check in at Days 1, 3, 7 to gather feedback and offer program guidance. Celebrate first device sale commission with upline sponsor.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Day 30: Master the Healy AI Playbook</strong> — Return to this page and implement each AI recruiting tactic systematically. Set up experience lane segmentation, create demo-first methodology with automated invites, build testimonial library organized by category, develop frequency science simplification scripts, design 7-day experience tracker with automated check-ins, establish objection handling responses for skeptics, and package your demo flow for new partners. The AI infrastructure handles education and follow-up—you focus on high-touch demo delivery and personal experience sharing.</li>
+          <li class="collapsible-item" style="display: none;"><strong>30 Days Forward: Business Opportunity Positioning</strong> — Once you have personal device experience, demo presentation skills, and 1-2 device sales completed, begin positioning the Healy business opportunity. Identify customers demonstrating entrepreneurial interest—people asking about your business, expressing income goals, showing passion for wellness advocacy, or currently involved in health/wellness professions. Share the opportunity focusing on Healy's unique positioning: cutting-edge frequency technology, growing wellness device market, passionate user base, recurring subscription revenue potential. Position as wellness advocacy business: "I help people access frequency technology while building income in the wellness sector."</li>
+          <li class="collapsible-item" style="display: none;"><strong>Duplicate & Scale</strong> — Package your personal experience documentation, frequency science education materials, demo presentation scripts, program selection guides, experience tracking tools, device comparison charts, and business opportunity presentation into a turnkey system. Train new partners on the same 30-day roadmap: personal device experience → program exploration → frequency science education → demo format development → prospect demos → first device sales → business opportunity positioning. Goal: new partners can conduct credible demos and make device sales within first 30-45 days by duplicating your documented approach.</li>
+          <li class="collapsible-item" style="display: none;"><strong>Ongoing: Build Frequency Technology Authority</strong> — Continue sharing your personal Healy journey—wellness improvements, program discoveries, frequency science education, device use cases. Position yourself as trusted frequency technology resource, not aggressive device salesperson. Focus recruiting on customers who already love their Healy devices and demonstrate wellness advocacy—their authentic enthusiasm for technology converts better than opportunity-focused recruiting. Maintain strict compliance: avoid disease cure claims, use proper disclaimers, focus on bioenergetic wellness support language. Your recruiting power comes from documented personal transformation and authentic frequency technology advocacy, not unverified healing claims.</li>
         </ol>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <button id="toggle-roadmap-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 0.5rem; padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            Show Full 30-Day Roadmap (7 more steps)
+          </button>
+        </div>
       </section>
 
       <section class="card">
         <h3>How Team Build Pro Fits In</h3>
-        <p><strong>Team Build Pro</strong> gives Healy Partners a repeatable AI engine for recruiting and duplication:</p>
+        <p>The <strong>Team Build Pro app</strong> gives Healy Partners a repeatable AI engine for recruiting and duplication:</p>
                 <ul class="checklist">
           <li><strong>Pre-building advantage</strong> — Let recruiting prospects build their own team before joining, so they launch Day 1 with momentum already in place.</li>
           <li><strong>AI Coach guidance</strong> — Get personalized coaching on your specific situation, milestone roadmaps, and suggested next steps for team growth.</li>
@@ -204,11 +244,19 @@
           <li><strong>Secure global communication</strong> — Message your team across time zones with enterprise-grade security and 24/7 access.</li>
         </ul>
                 <p>Bottom line: your recruiting prospects gain momentum before Day 1, your team stays connected globally, and everyone works from the same proven system.</p>
-        <p>
-          <a class="btn btn-primary" href="https://teambuildpro.com">Try Team Build Pro Free for 30 Days</a>
-          &nbsp;
-          <a class="btn btn-outline" href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622">Download on iOS</a>
-        </p>
+        <div style="margin: 2rem 0; text-align: center;">
+          <div class="download-buttons" style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;">
+            <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="app-store-badge" style="display: inline-block; transition: transform 0.2s;">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+            <a href="#" class="google-play-badge" style="display: inline-block; transition: transform 0.2s;" onclick="event.preventDefault(); alert('Android version coming soon! We\'ll notify you when it\'s available.');">
+              <img src="/assets/images/Google-Play.png" alt="Get it on Google Play" style="height: 60px;" onmouseover="this.parentElement.style.transform='translateY(-2px)'" onmouseout="this.parentElement.style.transform='translateY(0)'" />
+            </a>
+          </div>
+          <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
+            Free 30-day trial · $4.99/mo · Cancel anytime
+          </div>
+        </div>
       </section>
 
       <section>
@@ -257,18 +305,6 @@
           <div class="card">
             <h3><a href="/companies/ai-recruiting-enagic.html" class="cta-inline">Enagic →</a></h3>
             <p>Kangen water ionizer systems with alkaline water focus—high-ticket wellness equipment with Japanese medical device certifications.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-asea-global.html" class="cta-inline">ASEA Global →</a></h3>
-            <p>Redox signaling molecules in shelf-stable form—patented cellular communication technology with athlete and biohacker market positioning.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-neumi.html" class="cta-inline">Neumi →</a></h3>
-            <p>Nano-sized glutathione and molecular hydrogen supplements—advanced delivery systems targeting cellular health and detoxification support.</p>
-          </div>
-          <div class="card">
-            <h3><a href="/companies/ai-recruiting-vital-health-global.html" class="cta-inline">Vital Health Global →</a></h3>
-            <p>Patented CBD and wellness supplement technology—cannabinoid science positioning with professional-grade formulations and third-party testing focus.</p>
           </div>
         </div>
       </section>
@@ -322,6 +358,23 @@
 
     // Footer year
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Getting Started collapse/expand functionality
+    const toggleBtn = document.getElementById('toggle-roadmap-btn');
+    const collapsibleItems = document.querySelectorAll('.collapsible-item');
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        collapsibleItems.forEach(item => {
+          item.style.display = isExpanded ? 'list-item' : 'none';
+        });
+        toggleBtn.textContent = isExpanded
+          ? 'Hide Extended Roadmap'
+          : 'Show Full 30-Day Roadmap (7 more steps)';
+      });
+    }
   </script>
 </body>
 </html>
