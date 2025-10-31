@@ -1,11 +1,11 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 74,
+    "completed": 89,
     "in_progress": 0,
-    "pending": 50,
-    "last_updated": "2025-10-28",
-    "current_batch": 6,
+    "pending": 35,
+    "last_updated": "2025-10-31",
+    "current_batch": 7,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
@@ -15,7 +15,9 @@
     "batch_4_completed": "2025-10-26",
     "batch_4_companies": ["Market America", "Seacret", "ACN", "Paparazzi Accessories", "SeneGence", "Le-Vel", "Mannatech", "Unicity", "pawTree", "Q Sciences"],
     "batch_5_completed": "2025-10-28",
-    "batch_5_companies": ["Greenway Global", "BE", "LR World", "MyDailyChoice", "iGenius Global", "Crowd1", "Riman", "3 International", "Vida Divina", "ByDzyne"]
+    "batch_5_companies": ["Greenway Global", "BE", "LR World", "MyDailyChoice", "iGenius Global", "Crowd1", "Riman", "3 International", "Vida Divina", "ByDzyne"],
+    "batch_6_completed": "2025-10-31",
+    "batch_6_companies": ["Optavia", "Oriflame", "Nikken", "Vorwerk", "Stella & Dot", "PartyLite", "Princess House", "Bode Pro", "Neolife", "Youngevity", "SendOutCards", "Touchstone Essentials", "Rain International", "Purium", "LimeLife by Alcone"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -91,7 +93,22 @@
     {"name": "Riman", "url": "https://riman.com", "file": "ai-recruiting-riman.html", "batch": 5},
     {"name": "3 International", "url": "https://threeinternational.com", "file": "ai-recruiting-3-international.html", "batch": 5},
     {"name": "Vida Divina", "url": "https://vidadivina.com", "file": "ai-recruiting-vida-divina.html", "batch": 5},
-    {"name": "ByDzyne", "url": "https://bydzyne.com", "file": "ai-recruiting-bydzyne.html", "batch": 5}
+    {"name": "ByDzyne", "url": "https://bydzyne.com", "file": "ai-recruiting-bydzyne.html", "batch": 5},
+    {"name": "Optavia", "url": "https://optavia.com", "file": "ai-recruiting-optavia.html", "batch": 6},
+    {"name": "Oriflame", "url": "https://oriflame.com", "file": "ai-recruiting-oriflame.html", "batch": 6},
+    {"name": "Nikken", "url": "https://nikken.com", "file": "ai-recruiting-nikken.html", "batch": 6},
+    {"name": "Vorwerk", "url": "https://vorwerk.com", "file": "ai-recruiting-vorwerk.html", "batch": 6},
+    {"name": "Stella & Dot", "url": "https://stelladot.com", "file": "ai-recruiting-stella-dot.html", "batch": 6},
+    {"name": "PartyLite", "url": "https://partylite.com", "file": "ai-recruiting-partylite.html", "batch": 6, "note": "Transitioned to DTC in North America 2024"},
+    {"name": "Princess House", "url": "https://princesshouse.com", "file": "ai-recruiting-princess-house.html", "batch": 6},
+    {"name": "Bode Pro", "url": "https://bodepro.com", "file": "ai-recruiting-bode-pro.html", "batch": 6, "note": "Acquired by Zinzino Sept 2025"},
+    {"name": "Neolife", "url": "https://neolife.com", "file": "ai-recruiting-neolife.html", "batch": 6},
+    {"name": "Youngevity", "url": "https://youngevity.com", "file": "ai-recruiting-youngevity.html", "batch": 6},
+    {"name": "SendOutCards", "url": "https://sendoutcards.com", "file": "ai-recruiting-sendoutcards.html", "batch": 6},
+    {"name": "Touchstone Essentials", "url": "https://touchstoneessentials.com", "file": "ai-recruiting-touchstone-essentials.html", "batch": 6},
+    {"name": "Rain International", "url": "https://rainintl.com", "file": "ai-recruiting-rain-international.html", "batch": 6},
+    {"name": "Purium", "url": "https://purium.com", "file": "ai-recruiting-purium.html", "batch": 6},
+    {"name": "LimeLife by Alcone", "url": "https://limelifebyalcone.com", "file": "ai-recruiting-limelife-alcone.html", "batch": 6}
   ],
   "tier1_pending": [],
   "tier2_pending": [],
