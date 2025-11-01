@@ -58,18 +58,23 @@
             "trailingSlash": false,
             "redirects": [
                 {
+                    "source": "/index.html",
+                    "destination": "/",
+                    "type": 301
+                },
+                {
                     "source": "/lander",
-                    "destination": "/index.html",
+                    "destination": "/",
                     "type": 301
                 },
                 {
                     "source": "/testimonials",
-                    "destination": "/index.html",
+                    "destination": "/",
                     "type": 301
                 },
                 {
                     "source": "/index.php",
-                    "destination": "/index.html",
+                    "destination": "/",
                     "type": 301
                 },
                 {
