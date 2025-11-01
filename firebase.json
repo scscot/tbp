@@ -63,21 +63,6 @@
                     "type": 301
                 },
                 {
-                    "source": "/lander",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/testimonials",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/index.php",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
                     "source": "/claim",
                     "destination": "/claim.html",
                     "type": 302
