@@ -81,6 +81,16 @@
                     "source": "/claim-google",
                     "destination": "/claim-google.html",
                     "type": 302
+                },
+                {
+                    "source": "/delete-account",
+                    "destination": "/delete-account.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy_policy",
+                    "destination": "/privacy_policy.html",
+                    "type": 301
                 }
             ],
             "headers": [
