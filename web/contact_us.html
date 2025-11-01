@@ -79,7 +79,18 @@
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
-        gtag('config', 'G-G4E4TBBPZ7');
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.ip === '76.33.111.72') {
+                    gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+                } else {
+                    gtag('config', 'G-G4E4TBBPZ7');
+                }
+            })
+            .catch(() => {
+                gtag('config', 'G-G4E4TBBPZ7');
+            });
     </script>
 
     <div class="container">

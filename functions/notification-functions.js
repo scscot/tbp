@@ -1986,6 +1986,243 @@ const triggerSponsorship = onCall(
 );
 
 // ==============================
+// Testing and Debugging Functions
+// ==============================
+
+/**
+ * Test push notifications for all notification types
+ * Callable function to validate FCM delivery across all notification types
+ */
+const testPushNotifications = onCall(
+  { region: 'us-central1', timeoutSeconds: 60, memory: '512MiB' },
+  async (req) => {
+    const uid = req.auth?.uid;
+    if (!uid) throw new HttpsError('unauthenticated', 'Must be signed in');
+
+    const traceId = `test_notif_${uid}_${Date.now()}`;
+    console.log('TEST NOTIF: Starting notification tests', { traceId, uid });
+
+    const { notificationTypes } = req.data || {};
+    const typesToTest = notificationTypes || [
+      'milestone_direct',
+      'milestone_team',
+      'chat_message',
+      'subscription_active',
+      'subscription_cancelled',
+      'subscription_expired',
+      'subscription_expiring_soon',
+      'biz_opp_visit',
+      'new_member',
+      'new_network_members',
+      'launch_confirmation'
+    ];
+
+    const results = {};
+
+    // Get user data for personalized messages
+    const userDoc = await db.collection('users').doc(uid).get();
+    if (!userDoc.exists) {
+      throw new HttpsError('not-found', 'User not found');
+    }
+    const userData = userDoc.data();
+    const firstName = userData.firstName || 'User';
+
+    // Test each notification type
+    for (const type of typesToTest) {
+      try {
+        console.log(`TEST NOTIF: Testing ${type}`, { traceId, uid });
+
+        let notificationContent = null;
+        let notifId = `test_${type}_${uid}_${Date.now()}`;
+
+        switch (type) {
+          case 'milestone_direct':
+            notificationContent = {
+              type: 'milestone',
+              title: '🎉 Amazing Progress!',
+              body: `[TEST] Congratulations, ${firstName}! You've reached 4 direct sponsors! Just 15 more team members needed to unlock your business invitation. Keep building!`,
+              docFields: {
+                subtype: 'direct',
+                route: '/network',
+                route_params: JSON.stringify({}),
+              }
+            };
+            break;
+
+          case 'milestone_team':
+            notificationContent = {
+              type: 'milestone',
+              title: '🚀 Incredible Growth!',
+              body: `[TEST] Amazing progress, ${firstName}! You've built a team of 20! Just 3 more direct sponsors needed to qualify for your business. You're so close!`,
+              docFields: {
+                subtype: 'team',
+                route: '/network',
+                route_params: JSON.stringify({}),
+              }
+            };
+            break;
+
+          case 'chat_message':
+            notificationContent = {
+              type: 'chat_message',
+              title: 'New Message from Test User',
+              body: '[TEST] This is a test chat message notification',
+              docFields: {
+                chatId: 'test_thread_123',
+                messageId: 'test_msg_456',
+                fromUid: uid,
+                fromName: 'Test User',
+                route: '/message_thread',
+                route_params: JSON.stringify({ threadId: 'test_thread_123' }),
+              }
+            };
+            break;
+
+          case 'subscription_active':
+            notificationContent = {
+              type: 'subscription_active',
+              title: '✅ Subscription Active',
+              body: `[TEST] Your subscription is now active until ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}.`,
+              docFields: {}
+            };
+            break;
+
+          case 'subscription_cancelled':
+            notificationContent = {
+              type: 'subscription_cancelled',
+              title: '⚠️ Subscription Cancelled',
+              body: `[TEST] Your subscription has been cancelled but remains active until ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}.`,
+              docFields: {}
+            };
+            break;
+
+          case 'subscription_expired':
+            notificationContent = {
+              type: 'subscription_expired',
+              title: '❌ Subscription Expired',
+              body: '[TEST] Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.',
+              docFields: {
+                route: '/subscription',
+                route_params: JSON.stringify({ action: 'renew' }),
+              }
+            };
+            break;
+
+          case 'subscription_expiring_soon':
+            notificationContent = {
+              type: 'subscription_expiring_soon',
+              title: '⏰ Subscription Expiring Soon',
+              body: `[TEST] Your subscription expires on ${new Date(Date.now() + 5*24*60*60*1000).toLocaleDateString()}. Renew now to avoid interruption.`,
+              docFields: {
+                route: '/subscription',
+                route_params: JSON.stringify({ action: 'renew' }),
+              }
+            };
+            break;
+
+          case 'biz_opp_visit':
+            notificationContent = {
+              type: 'biz_opp_visit',
+              title: '👀 Team Member Activity',
+              body: `[TEST] Test User visited the business opportunity page!`,
+              docFields: {
+                visitingUserId: uid,
+                visitingUserName: 'Test User',
+                route: '/team',
+                route_params: JSON.stringify({ action: 'view_activity' }),
+              }
+            };
+            break;
+
+          case 'new_member':
+            notificationContent = {
+              type: 'new_member',
+              title: '🎉 You have a new team member!',
+              body: `[TEST] Congratulations, ${firstName}! Test User from Test City, Test State has just joined your team on the Team Build Pro app. This is the first step in creating powerful momentum together! Click Here to view their profile.`,
+              docFields: {
+                route: '/member_detail',
+                route_params: JSON.stringify({ userId: uid }),
+              }
+            };
+            break;
+
+          case 'new_network_members':
+            notificationContent = {
+              type: 'new_network_members',
+              title: 'Your Team Is Growing!',
+              body: `[TEST] Your team's momentum is growing, ${firstName}! 3 new members joined your downline team yesterday. Click Here to see your team's progress`,
+              docFields: {
+                route: '/network',
+                route_params: JSON.stringify({ filter: 'newMembersYesterday' }),
+              }
+            };
+            break;
+
+          case 'launch_confirmation':
+            notificationContent = {
+              type: 'launch_confirmation',
+              title: '🚀 Launch Campaign Sent!',
+              body: '[TEST] Your launch campaign has been successfully sent to your network.',
+              docFields: {
+                campaignId: 'test_campaign_123',
+                route: '/campaigns',
+                route_params: JSON.stringify({ action: 'view_campaign', id: 'test_campaign_123' }),
+              }
+            };
+            break;
+
+          default:
+            console.warn(`TEST NOTIF: Unknown notification type ${type}`, { traceId });
+            continue;
+        }
+
+        if (notificationContent) {
+          const result = await createNotification({
+            userId: uid,
+            notifId,
+            type: notificationContent.type,
+            title: notificationContent.title,
+            body: notificationContent.body,
+            docFields: notificationContent.docFields,
+          });
+
+          results[type] = {
+            success: result.ok,
+            notificationId: result.notificationId,
+            message: result.ok ? 'Notification created and sent' : 'Failed to create notification'
+          };
+
+          console.log(`TEST NOTIF: ${type} - ${result.ok ? 'SUCCESS' : 'FAILED'}`, { traceId, notifId: result.notificationId });
+        }
+
+      } catch (error) {
+        console.error(`TEST NOTIF: Error testing ${type}:`, { traceId, error: error.message });
+        results[type] = {
+          success: false,
+          message: error.message
+        };
+      }
+    }
+
+    const summary = {
+      total: Object.keys(results).length,
+      successful: Object.values(results).filter(r => r.success).length,
+      failed: Object.values(results).filter(r => !r.success).length
+    };
+
+    console.log('TEST NOTIF: Complete', { traceId, uid, summary });
+
+    return {
+      success: true,
+      userId: uid,
+      summary,
+      results,
+      traceId
+    };
+  }
+);
+
+// ==============================
 // Exports
 // ==============================
 
@@ -2030,6 +2267,9 @@ module.exports = {
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,
+
+  // Testing and debugging functions
+  testPushNotifications,
 
   // Utility functions
   toStringMap,

@@ -43,17 +43,28 @@
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4E4TBBPZ7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.ip === '76.33.111.72') {
+                    gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+                } else {
+                    gtag('config', 'G-G4E4TBBPZ7');
+                }
+            })
+            .catch(() => {
+                gtag('config', 'G-G4E4TBBPZ7');
+            });
+    </script>
 
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4E4TBBPZ7"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-G4E4TBBPZ7');
-</script>
 
 <body>
     <!-- Header -->
