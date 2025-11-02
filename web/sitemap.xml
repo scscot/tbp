@@ -59,6 +59,49 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- Blog Pages -->
+  <url>
+    <loc>https://teambuildpro.com/blog.html</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teambuildpro.com/blog/ai-recruiting-best-practices-2025.html</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://teambuildpro.com/blog/qualify-new-recruits-30-days.html</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://teambuildpro.com/blog/team-build-pro-november-2025-update.html</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://teambuildpro.com/blog/ai-automation-transforms-direct-sales.html</loc>
+    <lastmod>2025-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://teambuildpro.com/blog/young-living-recruiting-strategies.html</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- AI Recruiting Guides by Company -->
   <url>
     <loc>https://teambuildpro.com/companies/ai-recruiting-amare.html</loc>

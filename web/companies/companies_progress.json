@@ -1,11 +1,11 @@
 {
   "metadata": {
     "total_companies": 124,
-    "completed": 104,
+    "completed": 114,
     "in_progress": 0,
-    "pending": 20,
-    "last_updated": "2025-10-31",
-    "current_batch": 8,
+    "pending": 10,
+    "last_updated": "2025-11-01",
+    "current_batch": 9,
     "batch_1_completed": "2025-10-23",
     "batch_1_companies": ["Herbalife", "Amway", "Mary Kay", "Nu Skin", "Primerica", "Arbonne", "Shaklee", "Isagenix", "Monat", "Plexus"],
     "batch_2_completed": "2025-10-23",
@@ -19,7 +19,9 @@
     "batch_6_completed": "2025-10-31",
     "batch_6_companies": ["Optavia", "Oriflame", "Nikken", "Vorwerk", "Stella & Dot", "PartyLite", "Princess House", "Bode Pro", "Neolife", "Youngevity", "SendOutCards", "Touchstone Essentials", "Rain International", "Purium", "LimeLife by Alcone"],
     "batch_7_completed": "2025-10-31",
-    "batch_7_companies": ["DXN", "QNET", "Coway", "Vestige", "FM World", "Tupperware", "Cutco", "Avon", "Grupo Hinode", "Immunotec", "NewULife", "Valentus", "Omnilife", "Faberlic", "Kannaway"]
+    "batch_7_companies": ["DXN", "QNET", "Coway", "Vestige", "FM World", "Tupperware", "Cutco", "Avon", "Grupo Hinode", "Immunotec", "NewULife", "Valentus", "Omnilife", "Faberlic", "Kannaway"],
+    "batch_8_completed": "2025-11-01",
+    "batch_8_companies": ["Mavie Global", "Ambit Energy", "Velovita", "iBuumerang", "HC Wellness", "Arieyl", "DuoLife", "Luüme", "One More International", "Soluni"]
   },
   "completed": [
     {"name": "Amare Global", "url": "https://amareglobal.com", "file": "ai-recruiting-amare.html"},
@@ -125,7 +127,17 @@
     {"name": "Valentus", "url": "https://valentus.com", "file": "ai-recruiting-valentus.html", "batch": 7, "note": "Products illegal in UK, legal issues"},
     {"name": "Omnilife", "url": "https://omnilife.com", "file": "ai-recruiting-omnilife.html", "batch": 7},
     {"name": "Faberlic", "url": "https://faberlic.com", "file": "ai-recruiting-faberlic.html", "batch": 7},
-    {"name": "Kannaway", "url": "https://kannaway.com", "file": "ai-recruiting-kannaway.html", "batch": 7}
+    {"name": "Kannaway", "url": "https://kannaway.com", "file": "ai-recruiting-kannaway.html", "batch": 7},
+    {"name": "Mavie Global", "url": "https://mavieglobal.com", "file": "ai-recruiting-mavie-global.html", "batch": 8},
+    {"name": "Ambit Energy", "url": "https://ambitenergy.com", "file": "ai-recruiting-ambit-energy.html", "batch": 8},
+    {"name": "Velovita", "url": "https://velovita.com", "file": "ai-recruiting-velovita.html", "batch": 8},
+    {"name": "iBuumerang", "url": "https://ibuumerang.com", "file": "ai-recruiting-ibuumerang.html", "batch": 8},
+    {"name": "HC Wellness", "url": "https://hcwellness.com", "file": "ai-recruiting-hc-wellness.html", "batch": 8},
+    {"name": "Arieyl", "url": "https://arieyl.com", "file": "ai-recruiting-arieyl.html", "batch": 8},
+    {"name": "DuoLife", "url": "https://duolife.eu", "file": "ai-recruiting-duolife.html", "batch": 8},
+    {"name": "Luüme", "url": "https://luume.com", "file": "ai-recruiting-luume.html", "batch": 8},
+    {"name": "One More International", "url": "https://onemoreglobal.com", "file": "ai-recruiting-one-more-international.html", "batch": 8},
+    {"name": "Soluni", "url": "https://soluni.com", "file": "ai-recruiting-soluni.html", "batch": 8}
   ],
   "tier1_pending": [],
   "tier2_pending": [],
