@@ -386,34 +386,66 @@ const validateReferralUrl = onCall({ region: "us-central1" }, async (request) =>
   const url = request.data.url;
 
   if (!url || typeof url !== 'string') {
-    throw createError('invalid-argument', 'A valid URL is required.');
+    return { valid: false, error: 'URL is required' };
   }
 
-  // Basic URL structure check
+  // Trim whitespace
+  const trimmedUrl = url.trim();
+
+  // Parse and validate URL structure
+  let parsedUrl;
   try {
-    new URL(url);
+    parsedUrl = new URL(trimmedUrl);
   } catch (e) {
-    throw createError('invalid-argument', 'Malformed URL.');
+    return { valid: false, error: 'Invalid URL format. Please enter a complete URL like https://example.com' };
   }
 
+  // 1. HTTPS enforcement (strict security requirement)
+  if (parsedUrl.protocol !== 'https:') {
+    return { valid: false, error: 'Referral link must use HTTPS (not HTTP) for security' };
+  }
+
+  // 2. Validate hostname exists
+  const hostname = parsedUrl.hostname;
+  if (!hostname || hostname.length === 0) {
+    return { valid: false, error: 'URL must include a valid domain name' };
+  }
+
+  // 3. DNS validation - verify domain exists
   try {
-    const response = await fetch(url, {
+    const dns = require('dns').promises;
+    await dns.resolve(hostname);
+  } catch (dnsError) {
+    return { valid: false, error: `Domain "${hostname}" does not exist. Please check for typos.` };
+  }
+
+  // 4. Reachability check - verify URL responds
+  try {
+    const response = await fetch(trimmedUrl, {
       method: 'HEAD',
       timeout: 5000,
       redirect: 'follow',
     });
 
-    const isValid = response.status === 200;
+    // Accept 2xx and 3xx status codes (successful and redirects)
+    const isValid = response.status >= 200 && response.status < 400;
+
+    if (!isValid) {
+      return {
+        valid: false,
+        error: 'Your referral link returned an error page. Please verify you entered the correct referral link.',
+      };
+    }
 
     return {
-      valid: isValid,
+      valid: true,
       status: response.status,
       redirected: response.redirected,
     };
   } catch (error) {
     return {
       valid: false,
-      error: error.message,
+      error: 'Unable to reach your referral link. Please check for typos or verify it is accessible.',
     };
   }
 });

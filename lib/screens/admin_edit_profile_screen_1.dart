@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../widgets/navigation_shell.dart';
+import '../services/link_validator_service.dart';
 
 class AdminEditProfileScreen1 extends StatefulWidget {
   final String appId;
@@ -34,6 +35,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   final _refLinkConfirmKey = GlobalKey();
 
   bool _isLoading = false;
+  bool _isValidatingUrl = false;
 
   Future<void> _scrollToField(GlobalKey fieldKey) async {
     if (fieldKey.currentContext != null) {
@@ -44,6 +46,35 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
         curve: Curves.easeInOut,
         alignment: 0.2, // Position field at 20% from top of visible area
       );
+    }
+  }
+
+  Future<String?> _validateReferralLinkAsync(String referralLink) async {
+    // Client-side pre-checks for instant feedback
+    try {
+      final uri = Uri.parse(referralLink);
+      if (!uri.isAbsolute || uri.host.isEmpty) {
+        return 'Please enter a valid URL (e.g., https://example.com)';
+      }
+      if (uri.scheme != 'https') {
+        return 'Referral link must use HTTPS (not HTTP) for security';
+      }
+    } catch (_) {
+      return 'Invalid URL format. Please check your referral link.';
+    }
+
+    // Server-side validation with comprehensive checks
+    setState(() => _isValidatingUrl = true);
+    try {
+      final result = await LinkValidatorService.validateReferralUrl(referralLink);
+      if (!result.isValid) {
+        return result.error ?? 'Unable to verify referral link';
+      }
+      return null; // Valid
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingUrl = false);
+      }
     }
   }
 
@@ -81,7 +112,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       return 'Business name can only contain letters, numbers, and common punctuation.';
     }
 
-    // Referral Link URL Validation
+    // Referral Link URL Validation - basic client-side check only
+    // (comprehensive validation happens in _submit() via async call)
     final referralLink = _refLinkController.text.trim();
     try {
       final uri = Uri.parse(referralLink);
@@ -119,6 +151,22 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
 
     // Additional form validation check
     if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Comprehensive async referral link validation
+    final referralLink = _refLinkController.text.trim();
+    final urlValidationError = await _validateReferralLinkAsync(referralLink);
+    if (urlValidationError != null) {
+      _scrollToField(_refLinkKey);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(urlValidationError),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
       return;
     }
 
@@ -275,12 +323,24 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                           TextFormField(
                             key: _refLinkKey,
                             controller: _refLinkController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Your Referral Link',
                               helperText: 'This cannot be changed once set',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
+                              suffixIcon: _isValidatingUrl
+                                  ? const Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    )
+                                  : null,
                             ),
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,
