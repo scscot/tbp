@@ -35,6 +35,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
   String _bizOppName = 'business opportunity';
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isValidatingUrl = false;
   bool _hasShownDialog = false; // Track if dialog has been shown
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -187,12 +188,21 @@ class _AddLinkScreenState extends State<AddLinkScreen>
       final completeReferralUrl = _bizOppRefUrlController.text.trim();
 
       // Validate the referral URL accessibility using Firebase Cloud Function
-      final isValidUrl =
+      setState(() => _isValidatingUrl = true);
+      final validationResult =
           await LinkValidatorService.validateReferralUrl(completeReferralUrl);
-      if (!isValidUrl) {
+      setState(() => _isValidatingUrl = false);
+
+      if (!validationResult.isValid) {
         if (mounted) {
           setState(() => _isSaving = false);
-          _showUrlValidationFailedDialog();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(validationResult.error ?? 'Unable to verify referral link'),
+              duration: const Duration(seconds: 5),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
         return;
       }
@@ -403,6 +413,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
   }
 
   /// Show dialog when referral URL validation fails
+  // ignore: unused_element
   void _showUrlValidationFailedDialog() {
     showDialog(
       context: context,
@@ -876,6 +887,18 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               border: const OutlineInputBorder(),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              suffixIcon: _isValidatingUrl
+                  ? const Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                  : null,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {

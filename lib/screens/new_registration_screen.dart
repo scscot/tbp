@@ -291,10 +291,10 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       // Fallback: try to get cached referral data from SessionManager
       final cachedReferralData = await SessionManager.instance.getReferralData();
 
-      print('[TBP-REG-INIT] SessionManager => ${cachedReferralData?.toString() ?? 'null'}');
+      debugPrint('[TBP-REG-INIT] SessionManager => ${cachedReferralData?.toString() ?? 'null'}');
 
       if (cachedReferralData != null) {
-        print('[TBP-REG-INIT] Using cached referral data');
+        debugPrint('[TBP-REG-INIT] Using cached referral data');
         final newReferralCode = cachedReferralData['referralCode'];
         final newSponsorName = cachedReferralData['sponsorName'];
 
@@ -443,7 +443,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
       final clipboardData = await Clipboard.getData('text/plain');
       final text = clipboardData?.text ?? '';
 
-      print('[TBP-CLIPBOARD] Checking clipboard: ${text.isNotEmpty ? "has content" : "empty"}');
+      debugPrint('[TBP-CLIPBOARD] Checking clipboard: ${text.isNotEmpty ? "has content" : "empty"}');
 
       // Parse TBP_REF payload: TBP_REF:{sponsor};TKN:{token};T:{t};V:{version}
       // V: is optional for backward compatibility
@@ -456,7 +456,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         final clipboardT = match.group(3) ?? '1';
 
         if (clipboardSponsor.isNotEmpty) {
-          print('[TBP-CLIPBOARD] Found payload - sponsor=$clipboardSponsor token=${clipboardToken.substring(0, 8)}... t=$clipboardT');
+          debugPrint('[TBP-CLIPBOARD] Found payload - sponsor=$clipboardSponsor token=${clipboardToken.substring(0, 8)}... t=$clipboardT');
 
           // Apply to current registration if not already set
           if (_initialReferralCode == null || _initialReferralCode!.isEmpty) {
@@ -472,7 +472,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
               campaignType: clipboardT
             );
 
-            print('[TBP-CLIPBOARD] Applied and stored - ref=$_initialReferralCode source=$_referralSource');
+            debugPrint('[TBP-CLIPBOARD] Applied and stored - ref=$_initialReferralCode source=$_referralSource');
 
             // Fetch sponsor name from backend
             try {
@@ -495,26 +495,26 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                   campaignType: clipboardT
                 );
 
-                print('[TBP-CLIPBOARD] Sponsor name resolved: $sponsorName');
+                debugPrint('[TBP-CLIPBOARD] Sponsor name resolved: $sponsorName');
               } else {
-                print('[TBP-CLIPBOARD] Failed to fetch sponsor name: ${response.statusCode}');
+                debugPrint('[TBP-CLIPBOARD] Failed to fetch sponsor name: ${response.statusCode}');
               }
             } catch (e) {
-              print('[TBP-CLIPBOARD] Error fetching sponsor name: $e');
+              debugPrint('[TBP-CLIPBOARD] Error fetching sponsor name: $e');
             }
           } else {
-            print('[TBP-CLIPBOARD] Payload found but already have ref=$_initialReferralCode');
+            debugPrint('[TBP-CLIPBOARD] Payload found but already have ref=$_initialReferralCode');
           }
 
           // Clear clipboard to prevent reprocessing
           await Clipboard.setData(const ClipboardData(text: ''));
-          print('[TBP-CLIPBOARD] Cleared clipboard');
+          debugPrint('[TBP-CLIPBOARD] Cleared clipboard');
         }
       } else {
-        print('[TBP-CLIPBOARD] No TBP_REF payload found');
+        debugPrint('[TBP-CLIPBOARD] No TBP_REF payload found');
       }
     } catch (e) {
-      print('[TBP-CLIPBOARD] Check failed: $e');
+      debugPrint('[TBP-CLIPBOARD] Check failed: $e');
     }
   }
 

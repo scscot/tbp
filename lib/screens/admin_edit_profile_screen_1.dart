@@ -49,6 +49,94 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
     }
   }
 
+  void _showValidationErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 28,
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text(
+                'Referral Link Error',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              errorMessage,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Please verify your referral link and try again.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              try {
+                Navigator.of(dialogContext).pop();
+              } catch (e) {
+                debugPrint('❌ ADMIN_PROFILE: Error closing validation dialog: $e');
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text(
+              'OK',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<String?> _validateReferralLinkAsync(String referralLink) async {
     // Client-side pre-checks for instant feedback
     try {
@@ -71,6 +159,13 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
         return result.error ?? 'Unable to verify referral link';
       }
       return null; // Valid
+    } catch (e) {
+      debugPrint('❌ ADMIN_PROFILE: Validation error: $e');
+      // Handle network/connection errors with user-friendly message
+      if (e.toString().contains('fetch failed') || e.toString().contains('network')) {
+        return 'The referral link you entered could not be verified. Please check your internet connection and try again.';
+      }
+      return 'The referral link you entered could not be verified. Please check the URL and try again.';
     } finally {
       if (mounted) {
         setState(() => _isValidatingUrl = false);
@@ -160,12 +255,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
     if (urlValidationError != null) {
       _scrollToField(_refLinkKey);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(urlValidationError),
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        _showValidationErrorDialog(urlValidationError);
       }
       return;
     }
@@ -230,7 +320,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Admin Setup', actions: []),
+      appBar: const AppScreenBar(title: 'Business Setup', actions: []),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -253,10 +343,28 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                     // Business Opportunity Section
                     const Divider(color: Colors.blue, thickness: 2),
                     const SizedBox(height: 16),
-                    const Text(
-                      "Your business opportunity information can only be set once and cannot be changed.",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.red),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "⚠️ Important: This information cannot be changed once saved.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Your business opportunity name and referral link ensure that Team Build Pro members "
+                          "are accurately placed in your business opportunity downline when they qualify. "
+                          "Changing this would break the connection between your networks.",
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     TextFormField(

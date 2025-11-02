@@ -149,6 +149,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       // Show confirmation to user
       final currentContext = navigatorKey.currentContext;
       if (currentContext != null) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(currentContext).showSnackBar(
           const SnackBar(
             content: Text('Account successfully deleted. Thank you for using Team Build Pro.'),

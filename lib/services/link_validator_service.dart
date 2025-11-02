@@ -44,9 +44,19 @@ class LinkValidatorService {
       }
     } catch (e) {
       debugPrint('❌ Error validating URL: $e');
+      // Provide user-friendly error message based on error type
+      String errorMessage;
+      if (e.toString().contains('fetch failed') || e.toString().contains('network')) {
+        errorMessage = 'The referral link you entered could not be verified. Please check your internet connection and try again.';
+      } else if (e.toString().contains('timeout')) {
+        errorMessage = 'The referral link validation timed out. Please try again.';
+      } else {
+        errorMessage = 'The referral link you entered could not be verified. Please check the URL and try again.';
+      }
+
       return ValidationResult(
         isValid: false,
-        error: 'Network error. Please check your connection and try again.',
+        error: errorMessage,
       );
     }
   }

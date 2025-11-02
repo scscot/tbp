@@ -119,7 +119,7 @@ class DeepLinkService {
         if (Platform.isAndroid) {
           final installReferrer = await InstallReferrerBridge.fetchOnce();
           if (installReferrer != null && installReferrer.ref != null && installReferrer.ref!.isNotEmpty) {
-            print('[TBP-ANDROID-IR] Install Referrer found: ref=${installReferrer.ref} t=${installReferrer.t}');
+            debugPrint('[TBP-ANDROID-IR] Install Referrer found: ref=${installReferrer.ref} t=${installReferrer.t}');
 
             _latestReferralCode = installReferrer.ref;
             _latestQueryType = 'install_referrer';
@@ -135,7 +135,7 @@ class DeepLinkService {
             _navigateToHomepage(_latestReferralCode, _latestQueryType);
             return; // Skip cached data check
           } else {
-            print('[TBP-ANDROID-IR] No Install Referrer data found');
+            debugPrint('[TBP-ANDROID-IR] No Install Referrer data found');
           }
         }
 
@@ -184,11 +184,11 @@ class DeepLinkService {
   /// Returns true if the URI was a claim path and was handled.
   Future<bool> _handleClaimUri(Uri uri, {required String source}) async {
     final raw = uri.toString();
-    print('[TBP-DEEPLINK-$source] $raw');
+    debugPrint('[TBP-DEEPLINK-$source] $raw');
 
     final path = uri.path.toLowerCase();
     if (!path.contains('claim')) {
-      print('[TBP-DEEPLINK-$source] Not a claim path, skipping');
+      debugPrint('[TBP-DEEPLINK-$source] Not a claim path, skipping');
       return false; // Not a claim path, let other handlers process it
     }
 
@@ -197,7 +197,7 @@ class DeepLinkService {
     final tkn = uri.queryParameters['tkn']?.trim();
     final t = uri.queryParameters['t']?.trim();
 
-    print('[TBP-CLAIM-PARSED] ref:$ref tkn:${tkn != null ? 'present' : 'none'} t:$t');
+    debugPrint('[TBP-CLAIM-PARSED] ref:$ref tkn:${tkn != null ? 'present' : 'none'} t:$t');
 
     if (ref != null && ref.isNotEmpty) {
       // Store in SessionManager with all available data
@@ -212,13 +212,13 @@ class DeepLinkService {
       _latestReferralCode = ref;
       _latestQueryType = 'claim';
 
-      print('[TBP-SESSIONMGR] Stored ref=$ref source=claim_uri_$source tkn=${tkn != null ? 'present' : 'none'}');
+      debugPrint('[TBP-SESSIONMGR] Stored ref=$ref source=claim_uri_$source tkn=${tkn != null ? 'present' : 'none'}');
 
       // Navigate to registration with claim data
       _navigateToHomepage(ref, 'claim');
       return true;
     } else {
-      print('[TBP-CLAIM-PARSED] No ref parameter found');
+      debugPrint('[TBP-CLAIM-PARSED] No ref parameter found');
       return false;
     }
   }

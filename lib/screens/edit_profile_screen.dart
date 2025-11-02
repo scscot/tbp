@@ -58,6 +58,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
   File? _imageFile;
   bool _isLoading = false;
+  bool _isValidatingUrl = false;
 
   // MODIFICATION: Added state variable to hold the image validation error text.
   String? _imageErrorText;
@@ -234,6 +235,35 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  Future<String?> _validateReferralLinkAsync(String referralLink) async {
+    // Client-side pre-checks for instant feedback
+    try {
+      final uri = Uri.parse(referralLink);
+      if (!uri.isAbsolute || uri.host.isEmpty) {
+        return 'Please enter a valid URL (e.g., https://example.com)';
+      }
+      if (uri.scheme != 'https') {
+        return 'Referral link must use HTTPS (not HTTP) for security';
+      }
+    } catch (_) {
+      return 'Invalid URL format. Please check your referral link.';
+    }
+
+    // Server-side validation with comprehensive checks
+    setState(() => _isValidatingUrl = true);
+    try {
+      final result = await LinkValidatorService.validateReferralUrl(referralLink);
+      if (!result.isValid) {
+        return result.error ?? 'Unable to verify referral link';
+      }
+      return null; // Valid
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingUrl = false);
+      }
+    }
+  }
+
   /// Validate that the link begins with the expected host from the business opportunity
   String? _validateUrlStructure(String url) {
     if (_bizOppName == 'business opportunity' || _baseUrl == null) {
@@ -407,6 +437,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   /// Show dialog when referral URL validation fails
+  // ignore: unused_element
   void _showUrlValidationFailedDialog() {
     showDialog(
       context: context,
@@ -567,15 +598,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
-    // Validate referral URL accessibility if user is a business opportunity representative
+    // Comprehensive async referral link validation
     if (_isBizOppRepresentative &&
         _bizOppRefUrlController.text.trim().isNotEmpty) {
       final referralUrl = _bizOppRefUrlController.text.trim();
-      final isValidUrl =
-          await LinkValidatorService.validateReferralUrl(referralUrl);
-      if (!isValidUrl) {
+      final urlValidationError = await _validateReferralLinkAsync(referralUrl);
+      if (urlValidationError != null) {
+        _scrollToField(_bizOppRefUrlKey);
         if (mounted) {
-          _showUrlValidationFailedDialog();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(urlValidationError),
+              duration: const Duration(seconds: 5),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
         return;
       }
@@ -1000,6 +1037,18 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         border: const OutlineInputBorder(),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
+                        suffixIcon: _isValidatingUrl
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : null,
                       ),
                       validator: (value) {
                         if (_isBizOppRepresentative &&
