@@ -24,6 +24,14 @@ const faqData = [
     category: 'getting_started',
   },
   {
+    id: 'after_qualification',
+    question: 'What happens after I qualify?',
+    answer:
+      'After qualifying with 4 direct sponsors and 20 total team members, you receive invitations to legitimate business opportunities. Your Team Build Pro network becomes your foundation - ready to join opportunities with an established team. You can continue growing your Team Build Pro network, support your team members, and evaluate which business opportunities align with your goals. Your subscription continues at $4.99/month to maintain access to your network and team building tools.',
+    keywords: ['after qualify', 'post qualification', 'once qualified', 'what happens', 'what next', 'qualified now what'],
+    category: 'getting_started',
+  },
+  {
     id: 'not_mlm',
     question: 'How is this different from an MLM?',
     answer:
