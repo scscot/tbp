@@ -238,7 +238,7 @@ class ChatBotService {
       "What should I focus on next?",
       "How do I cancel my subscription?",
       "Why do most people fail at direct sales?",
-      "How long does it take to qualify?",
+      "What are the qualification requirements?",
     ];
   }
   

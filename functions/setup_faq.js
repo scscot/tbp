@@ -75,8 +75,8 @@ const faqData = [
     id: 'qualification_timeline',
     question: 'How long does it take to qualify?',
     answer:
-      'Timeline varies based on effort and strategy. Typical ranges: Very active users: 2-4 months, Consistent users: 4-8 months, Casual users: 8-12 months. Key factors: daily activity, invitation quality, team support, and persistence through challenges.',
-    keywords: ['how long', 'timeline', 'qualify', 'time frame', 'duration'],
+      'Qualification requires 4 direct sponsors + 20 total team members. Timeline depends entirely on your effort and activity level. Very active users who dedicate consistent daily effort can qualify in less than 30 days. More casual users typically take 1-3 months. The built-in pre-qualification system lets you build at your own pace before joining any business opportunity.',
+    keywords: ['how long', 'timeline', 'qualify', 'time frame', 'duration', '30 days', 'less than 30', 'fast qualification'],
     category: 'success_strategies',
   },
   {
