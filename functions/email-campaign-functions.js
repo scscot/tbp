@@ -14,9 +14,9 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
   // Winner from Oct 2025 campaign analysis: 6.2% open rate
-  // Subject 1 + version1 outperformed all other combinations by 3x
-  const selectedSubject = 'AI-Driven Recruiting and Team Building';
-  const selectedVersion = 'version1';
+  // Subject 1 + 1version outperformed all other combinations by 3x
+  const selectedSubject = `${contact.firstName}, tired of recruits quitting in 60 days?`;
+  const selectedVersion = '1version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
