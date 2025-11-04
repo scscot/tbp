@@ -850,7 +850,6 @@
                 <a href="/terms_of_service.html">Terms of Service</a>
             </div>
 
-
             <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
         </div>
     </footer>
@@ -1906,7 +1905,7 @@
                         <div style="text-align: center;">
                             <p style="margin: 0 0 8px 0; font-size: 14px; opacity: 0.9;">🍎 Direct Download</p>
                             <a href="${appStoreUrl}" target="_blank" rel="noopener" style="display: inline-block;">
-                                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height: 50px; border-radius: 6px;" />
+                                <img src="/assets/images/app_store_badges/black.svg" alt="Download on the App Store" style="height: 50px; border-radius: 6px;" />
                             </a>
                         </div>
                     </div>
@@ -1928,7 +1927,7 @@
                 : 'https://apps.apple.com/app/team-build-pro/id6751211622';
             return `
                 <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="trackDownloadClick('app_store', ${isPrimary}, 'hero'); openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
-                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                    <img src="/assets/images/app_store_badges/black.svg"
                          alt="Download on the App Store" style="height: 60px;" />
                 </a>
             `;

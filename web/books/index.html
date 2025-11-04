@@ -258,24 +258,21 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 40px; height: 40px; border-radius: 50%; margin-bottom: 12px;">
-          <p>AI-powered recruiting for direct sales professionals.</p>
-        </div>
-        <div class="footer-links">
-          <a href="/#pricing">Pricing</a>
-          <a href="/faq.html">FAQ</a>
-          <a href="/contact_us.html">Contact</a>
-          <a href="/companies.html">Recruiting Guides</a>
-          <a href="/books/">Books</a>
-          <a href="/privacy_policy.html">Privacy Policy</a>
-          <a href="/terms_of_service.html">Terms of Service</a>
-        </div>
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 Team Build Pro. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books/">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
       </div>
+
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
     </div>
   </footer>
 
@@ -310,6 +307,11 @@
           menuIcon.textContent = 'menu';
         }
       });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentYearEl = document.getElementById("currentYear");
+      if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
     });
   </script>
 
