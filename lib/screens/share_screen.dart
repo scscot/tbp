@@ -131,6 +131,10 @@ class _ShareScreenState extends State<ShareScreen>
         case 'expensive_system_fatigue': return '6';
         case 'duplication_struggle': return '7';
         case 'general_team_tool': return '8';
+        case 'retention_crisis': return '13';
+        case 'skill_gap_team': return '14';
+        case 'recruitment_fatigue': return '15';
+        case 'availability_gap': return '16';
         default: return '8';
       }
     } else {
@@ -139,6 +143,10 @@ class _ShareScreenState extends State<ShareScreen>
         case 'not_salesperson': return '2';
         case 'hope_after_disappointment': return '3';
         case 'general_invitation': return '4';
+        case 'social_anxiety': return '9';
+        case 'time_constrained': return '10';
+        case 'financial_risk_averse': return '11';
+        case 'skeptical_realist': return '12';
         default: return '4';
       }
     }
@@ -284,6 +292,57 @@ class _ShareScreenState extends State<ShareScreen>
             'So Day 1 isn\'t a cold start - it\'s a running start.\n\n'
             'Take a look: $_prospectReferralLink',
       },
+      'social_anxiety': {
+        'title': 'Avoiding Awkward Conversations',
+        'description': 'Perfect for introverts or those uncomfortable with face-to-face recruiting',
+        'subject': 'Build Your Team Without Awkward Conversations',
+        'message': 'Uncomfortable approaching friends and family? You don\'t have to.\n\n'
+            'Team Build Pro lets you build your $_bizOppName network online first - where it feels comfortable.\n\n'
+            'The AI Coach drafts your messages, suggests who to contact, and tracks responses. You build relationships at your own pace, without pressure.\n\n'
+            'No cold calls. No awkward pitches. Just genuine connections guided by AI.\n\n'
+            'Start building on your terms: $_prospectReferralLink\n\n'
+            'Finally, a way to grow your network that feels natural to you.',
+      },
+      'time_constrained': {
+        'title': 'For Busy Professionals',
+        'description': 'Ideal for prospects juggling job, family, and other commitments',
+        'subject': 'Build Your Team in the Gaps',
+        'message': 'Can\'t dedicate full-time hours? You don\'t need to.\n\n'
+            'Team Build Pro works around your schedule. Build your $_bizOppName team during morning coffee, lunch breaks, or evening downtime.\n\n'
+            'The AI handles the heavy lifting:\n'
+            '- Schedules your follow-ups automatically\n'
+            '- Reminds you when it\'s time to reach out\n'
+            '- Tracks everything so you never lose momentum\n\n'
+            'Work 15 minutes here, 20 minutes there. The AI makes every minute count.\n\n'
+            'See how it fits your life: $_prospectReferralLink\n\n'
+            'Build a real business without sacrificing everything else.',
+      },
+      'financial_risk_averse': {
+        'title': 'Afraid of Losing Money',
+        'description': 'Great for prospects worried about financial risk',
+        'subject': 'See Results Before Investing Heavily',
+        'message': 'Worried about losing money? Smart.\n\n'
+            'With Team Build Pro, you can pre-build your $_bizOppName team and see real results before investing heavily.\n\n'
+            'Start for free. Test the system. Track your actual progress in real-time. Only \$4.99/month once you\'re ready to invite your first prospects.\n\n'
+            'No expensive lead funnels. No complex systems. Just AI-powered tools that help you build real relationships and real momentum.\n\n'
+            'See proof first: $_prospectReferralLink\n\n'
+            'You deserve to see what\'s possible before risking anything.',
+      },
+      'skeptical_realist': {
+        'title': 'Show Me Proof',
+        'description': 'Perfect for prospects burned by false promises',
+        'subject': 'No Hype. Just Track Your Real Progress',
+        'message': 'Tired of empty promises and hype?\n\n'
+            'Team Build Pro shows you real metrics. No fluff. No exaggeration.\n\n'
+            'Your dashboard tracks:\n'
+            '- How many people you\'ve contacted\n'
+            '- Who\'s responded and who\'s interested\n'
+            '- Your actual momentum toward qualification (4 direct + 20 total)\n'
+            '- Next steps the AI recommends\n\n'
+            'You\'ll know exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\n'
+            'See the transparency: $_prospectReferralLink\n\n'
+            'Finally, a system that shows you the truth.',
+      },
     };
   }
 
@@ -380,6 +439,67 @@ class _ShareScreenState extends State<ShareScreen>
             'Your prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\n'
             'Check it out: $_partnerReferralLink\n\n'
             'This is the AI advantage your team needs.',
+      },
+      'retention_crisis': {
+        'title': 'Team Dropout Problem',
+        'description': 'For leaders frustrated by team members quitting early',
+        'subject': 'Stop Losing Your Team in the First Year',
+        'message': 'Watching your $_bizOppName team quit before they succeed?\n\n'
+            '75% drop out in their first year. Usually because they feel lost, unsupported, or overwhelmed.\n\n'
+            'Team Build Pro changes that. Every person on your team gets an AI Coach that:\n'
+            '- Guides them through every recruiting conversation\n'
+            '- Tracks their progress and celebrates wins\n'
+            '- Reminds them what to do next\n'
+            '- Keeps momentum going when motivation dips\n\n'
+            'They\'re never alone. They always know their next step. They stay engaged longer.\n\n'
+            'Give your team the support they need: $_partnerReferralLink\n\n'
+            'Stop watching them quit. Start watching them succeed.',
+      },
+      'skill_gap_team': {
+        'title': 'Non-Sales Team Members',
+        'description': 'Perfect for teams where most people lack sales experience',
+        'subject': 'Your Non-Sales Team Can Win with AI',
+        'message': 'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been the problem.\n\n'
+            'Team Build Pro solves it. The AI Coach turns non-sales people into confident recruiters by:\n'
+            '- Drafting their recruiting messages for them\n'
+            '- Suggesting exactly who to contact next\n'
+            '- Coaching them through every conversation\n'
+            '- Tracking progress so they see real momentum\n\n'
+            'Your introverts, your part-timers, your "I\'m not good at sales" people - they all get the same AI advantage.\n\n'
+            'Finally, everyone can duplicate your success.\n\n'
+            'See how: $_partnerReferralLink\n\n'
+            'You don\'t need a team of salespeople. You need a team with AI.',
+      },
+      'recruitment_fatigue': {
+        'title': 'Tired of Constant Recruiting',
+        'description': 'For partners exhausted from the endless recruiting cycle',
+        'subject': 'Automate the Grind. Keep the Growth.',
+        'message': 'Burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\n'
+            'Team Build Pro\'s AI handles the grind so you don\'t have to.\n\n'
+            'For your entire $_bizOppName team, the AI:\n'
+            '- Schedules follow-ups automatically\n'
+            '- Tracks every prospect and their status\n'
+            '- Reminds your team when to reach out\n'
+            '- Coaches them on what to say next\n\n'
+            'You stay focused on high-value activities. Your team stays productive without burning out.\n\n'
+            'The AI never gets tired. Your momentum never stops.\n\n'
+            'Try it: $_partnerReferralLink\n\n'
+            'Sustainable growth without the burnout.',
+      },
+      'availability_gap': {
+        'title': 'Can\'t Be There 24/7',
+        'description': 'Ideal for leaders who can\'t be constantly available to their team',
+        'subject': 'Your Team Grows Even When You\'re Not There',
+        'message': 'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\n'
+            'Team Build Pro gives your team an AI Coach that\'s always on. While you sleep, work your day job, or spend time with family, the AI:\n'
+            '- Guides your team through recruiting conversations\n'
+            '- Answers their "what do I do next?" questions\n'
+            '- Tracks their progress and keeps them motivated\n'
+            '- Ensures nothing falls through the cracks\n\n'
+            'Your team gets the support they need, exactly when they need it.\n\n'
+            'You stay focused on leadership. The AI handles daily coaching.\n\n'
+            'See it work: $_partnerReferralLink\n\n'
+            'Finally, a team that grows without needing you every minute.',
       },
     };
   }
