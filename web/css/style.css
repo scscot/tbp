@@ -471,7 +471,7 @@ body:has(.top-invite-bar.visible) .header {
     }
 
     .sponsor-benefits {
-        padding: 4rem 0;
+        padding: 1rem 0;
     }
 
     .prospect-benefits {
