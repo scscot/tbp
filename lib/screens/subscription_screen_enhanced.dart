@@ -221,6 +221,16 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
       statusText = 'Active Subscription';
       subtitle = 'You have full access to all premium features';
       icon = Icons.check_circle;
+    } else if (status == 'paused') {
+      cardColor = Colors.amber.shade50;
+      statusText = 'Subscription Paused';
+      subtitle = 'Your subscription is paused. Resume to restore access.';
+      icon = Icons.pause_circle;
+    } else if (status == 'on_hold') {
+      cardColor = Colors.orange.shade50;
+      statusText = 'Payment Issue';
+      subtitle = 'Update payment method to restore access';
+      icon = Icons.payment;
     } else if (isTrialValid) {
       cardColor = Colors.blue.shade50;
       statusText = 'Free Trial Active';

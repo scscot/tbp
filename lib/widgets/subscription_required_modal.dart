@@ -31,6 +31,8 @@ class SubscriptionRequiredModal extends StatelessWidget {
   Widget build(BuildContext context) {
     final isExpired = subscriptionStatus == 'expired';
     final isCancelled = subscriptionStatus == 'cancelled';
+    final isPaused = subscriptionStatus == 'paused';
+    final isOnHold = subscriptionStatus == 'on_hold';
 
     String title;
     String message;
@@ -48,6 +50,18 @@ class SubscriptionRequiredModal extends StatelessWidget {
       message =
           'Your subscription was cancelled. Renew now to restore access to premium features and continue building your team!';
       icon = Icons.cancel_outlined;
+      iconColor = Colors.orange;
+    } else if (isPaused) {
+      title = 'Subscription Paused';
+      message =
+          'Your subscription is currently paused. Resume your subscription in the Play Store to restore access to all features.';
+      icon = Icons.pause_circle_outlined;
+      iconColor = Colors.amber;
+    } else if (isOnHold) {
+      title = 'Payment Issue';
+      message =
+          'Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store to restore access.';
+      icon = Icons.payment_outlined;
       iconColor = Colors.orange;
     } else {
       title = 'Subscription Required';

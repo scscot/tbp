@@ -362,6 +362,47 @@ const handleGooglePlayNotification = onRequest({ region: "us-central1", cors: fa
         await createSubscriptionNotification(userId, 'active');
         break;
 
+      case 5: // SUBSCRIPTION_ON_HOLD
+        await updateUserSubscription(userId, 'on_hold');
+        await createSubscriptionNotification(userId, 'on_hold');
+        logger.info(`📱 GOOGLE PLAY: Subscription on hold for user ${userId} - payment failure`);
+        break;
+
+      case 6: // SUBSCRIPTION_IN_GRACE_PERIOD
+        await updateUserSubscription(userId, 'active');
+        logger.info(`📱 GOOGLE PLAY: Subscription in grace period for user ${userId}`);
+        break;
+
+      case 7: // SUBSCRIPTION_RESTARTED
+        await updateUserSubscription(userId, 'active');
+        await createSubscriptionNotification(userId, 'active');
+        logger.info(`📱 GOOGLE PLAY: Subscription restarted for user ${userId}`);
+        break;
+
+      case 8: // SUBSCRIPTION_PRICE_CHANGE_CONFIRMED
+        logger.info(`📱 GOOGLE PLAY: Price change confirmed for user ${userId}`);
+        break;
+
+      case 9: // SUBSCRIPTION_DEFERRED
+        logger.info(`📱 GOOGLE PLAY: Subscription deferred for user ${userId}`);
+        break;
+
+      case 10: // SUBSCRIPTION_PAUSED
+        await updateUserSubscription(userId, 'paused');
+        await createSubscriptionNotification(userId, 'paused');
+        logger.info(`📱 GOOGLE PLAY: Subscription paused for user ${userId}`);
+        break;
+
+      case 11: // SUBSCRIPTION_PAUSE_SCHEDULE_CHANGED
+        logger.info(`📱 GOOGLE PLAY: Pause schedule changed for user ${userId}`);
+        break;
+
+      case 12: // SUBSCRIPTION_REVOKED
+        await updateUserSubscription(userId, 'expired');
+        await createSubscriptionNotification(userId, 'expired');
+        logger.info(`📱 GOOGLE PLAY: Subscription revoked for user ${userId}`);
+        break;
+
       case 13: // SUBSCRIPTION_EXPIRED
         await updateUserSubscription(userId, 'expired');
         await createSubscriptionNotification(userId, 'expired');

@@ -32,7 +32,7 @@ class UserModel {
   final bool currentPartner;
 
   // --- PHASE 1: Apple Store Subscription Fields ---
-  final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired'
+  final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired', 'paused', 'on_hold'
   final DateTime? subscriptionExpiry;
   final DateTime? trialStartDate;
   final DateTime? subscriptionUpdated;
@@ -292,5 +292,15 @@ class UserModel {
     return subscriptionStatus == 'cancelled' &&
         subscriptionExpiry != null &&
         DateTime.now().isBefore(subscriptionExpiry!);
+  }
+
+  /// Returns true if subscription is paused by user
+  bool get isSubscriptionPaused {
+    return subscriptionStatus == 'paused';
+  }
+
+  /// Returns true if subscription is on hold due to payment failure
+  bool get isSubscriptionOnHold {
+    return subscriptionStatus == 'on_hold';
   }
 }
