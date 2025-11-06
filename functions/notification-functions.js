@@ -614,6 +614,26 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
         }
         break;
 
+      case 'paused':
+        notificationContent = {
+          title: "⏸️ Subscription Paused",
+          message: "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
+          type: "subscription_paused",
+          route: "/subscription",
+          route_params: JSON.stringify({ "action": "resume" })
+        };
+        break;
+
+      case 'on_hold':
+        notificationContent = {
+          title: "⚠️ Payment Issue",
+          message: "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
+          type: "subscription_on_hold",
+          route: "/subscription",
+          route_params: JSON.stringify({ "action": "update_payment" })
+        };
+        break;
+
       default:
         logger.warn('Unknown subscription status for notification:', status);
         return;
