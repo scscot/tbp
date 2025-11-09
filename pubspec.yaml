@@ -59,7 +59,7 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/env.prod
+    # - assets/env.prod  # Legacy entry, not used in production
     - assets/icons/
 
   fonts:
