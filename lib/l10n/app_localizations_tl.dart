@@ -371,4 +371,122 @@ class AppLocalizationsTl extends AppLocalizations {
   String recruitT16Gratitude(String prospectName, String companyName) {
     return 'Thanks for being part of our $companyName team, $prospectName. Your energy makes a difference!';
   }
+
+  @override
+  String get notifMilestoneDirectTitle => '🎉 Amazing Progress!';
+
+  @override
+  String notifMilestoneDirectBody(
+      String firstName, int directCount, int remaining, String bizName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      remaining,
+      locale: localeName,
+      other: 'members',
+      one: 'member',
+    );
+    return 'Congratulations, $firstName! You\'ve reached $directCount direct sponsors! Just $remaining more team $_temp0 needed to unlock your $bizName invitation. Keep building!';
+  }
+
+  @override
+  String get notifMilestoneTeamTitle => '🚀 Incredible Growth!';
+
+  @override
+  String notifMilestoneTeamBody(
+      String firstName, int teamCount, int remaining, String bizName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      remaining,
+      locale: localeName,
+      other: 'sponsors',
+      one: 'sponsor',
+    );
+    return 'Amazing progress, $firstName! You\'ve built a team of $teamCount! Just $remaining more direct $_temp0 needed to qualify for $bizName. You\'re so close!';
+  }
+
+  @override
+  String get notifSubActiveTitle => '✅ Subscription Active';
+
+  @override
+  String notifSubActiveBody(String expiryDate) {
+    return 'Your subscription is now active until $expiryDate.';
+  }
+
+  @override
+  String get notifSubCancelledTitle => '⚠️ Subscription Cancelled';
+
+  @override
+  String notifSubCancelledBody(String expiryDate) {
+    return 'Your subscription has been cancelled but remains active until $expiryDate.';
+  }
+
+  @override
+  String get notifSubExpiredTitle => '❌ Subscription Expired';
+
+  @override
+  String get notifSubExpiredBody =>
+      'Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.';
+
+  @override
+  String get notifSubExpiringSoonTitle => '⏰ Subscription Expiring Soon';
+
+  @override
+  String notifSubExpiringSoonBody(String expiryDate) {
+    return 'Your subscription expires on $expiryDate. Renew now to avoid interruption.';
+  }
+
+  @override
+  String get notifSubPausedTitle => '⏸️ Subscription Paused';
+
+  @override
+  String get notifSubPausedBody =>
+      'Your subscription has been paused. Resume in the Play Store to restore access to all features.';
+
+  @override
+  String get notifSubPaymentIssueTitle => '⚠️ Payment Issue';
+
+  @override
+  String get notifSubPaymentIssueBody =>
+      'Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.';
+
+  @override
+  String notifNewMessageTitle(String senderName) {
+    return 'New Message from $senderName';
+  }
+
+  @override
+  String get notifTeamActivityTitle => '👀 Team Member Activity';
+
+  @override
+  String notifTeamActivityBody(String visitorName) {
+    return '$visitorName visited the business opportunity page!';
+  }
+
+  @override
+  String get notifLaunchSentTitle => 'Launch Campaign Sent';
+
+  @override
+  String get notifLaunchSentBody =>
+      'Your launch campaign has been successfully sent to your network.';
+
+  @override
+  String get emptyNotifications => 'No notifications yet.';
+
+  @override
+  String get emptyMessageContent => 'No message content.';
+
+  @override
+  String get emptyNotificationTitle => 'No Title';
+
+  @override
+  String get emptyMessageThreads => 'No message threads found.';
+
+  @override
+  String get emptyTeamMember => 'Team member not found.';
+
+  @override
+  String get errorLoadingNotifications => 'Error loading notifications';
+
+  @override
+  String errorGeneric(String error) {
+    return 'Error: $error';
+  }
 }

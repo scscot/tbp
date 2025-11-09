@@ -357,4 +357,143 @@ void main() {
       });
     }
   });
+
+  group('Notification Messages', () {
+    final supportedLocales = [
+      const Locale('en'),
+      const Locale('es'),
+      const Locale('pt'),
+      const Locale('tl'),
+    ];
+
+    for (final locale in supportedLocales) {
+      group('Locale: ${locale.languageCode}', () {
+        late AppLocalizations l10n;
+
+        setUp(() async {
+          l10n = await AppLocalizations.delegate.load(locale);
+        });
+
+        test('notifMilestoneDirectTitle should be non-null', () {
+          final result = l10n.notifMilestoneDirectTitle;
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+        });
+
+        test('notifMilestoneDirectBody should format all placeholders', () {
+          final result = l10n.notifMilestoneDirectBody('María', 4, 15, 'NeoLife');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('María'));
+          expect(result, contains('4'));
+          expect(result, contains('15'));
+          expect(result, contains('NeoLife'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+
+        test('notifMilestoneTeamBody should format all placeholders', () {
+          final result = l10n.notifMilestoneTeamBody('Stephen', 20, 3, 'NeoLife');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('Stephen'));
+          expect(result, contains('20'));
+          expect(result, contains('3'));
+          expect(result, contains('NeoLife'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+
+        test('notifSubActiveBody should format date placeholder', () {
+          final result = l10n.notifSubActiveBody('January 15, 2026');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('January 15, 2026'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+
+        test('notifNewMessageTitle should format sender name', () {
+          final result = l10n.notifNewMessageTitle('Stephen');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('Stephen'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+
+        test('notifTeamActivityBody should format visitor name', () {
+          final result = l10n.notifTeamActivityBody('María');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('María'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+
+        test('all subscription notification titles should be non-null', () {
+          expect(l10n.notifSubActiveTitle, isNotEmpty);
+          expect(l10n.notifSubCancelledTitle, isNotEmpty);
+          expect(l10n.notifSubExpiredTitle, isNotEmpty);
+          expect(l10n.notifSubExpiringSoonTitle, isNotEmpty);
+          expect(l10n.notifSubPausedTitle, isNotEmpty);
+          expect(l10n.notifSubPaymentIssueTitle, isNotEmpty);
+        });
+
+        test('all subscription notification bodies should be non-null', () {
+          expect(l10n.notifSubExpiredBody, isNotEmpty);
+          expect(l10n.notifSubPausedBody, isNotEmpty);
+          expect(l10n.notifSubPaymentIssueBody, isNotEmpty);
+          expect(l10n.notifLaunchSentTitle, isNotEmpty);
+          expect(l10n.notifLaunchSentBody, isNotEmpty);
+        });
+      });
+    }
+  });
+
+  group('Empty States & Error Messages', () {
+    final supportedLocales = [
+      const Locale('en'),
+      const Locale('es'),
+      const Locale('pt'),
+      const Locale('tl'),
+    ];
+
+    for (final locale in supportedLocales) {
+      group('Locale: ${locale.languageCode}', () {
+        late AppLocalizations l10n;
+
+        setUp(() async {
+          l10n = await AppLocalizations.delegate.load(locale);
+        });
+
+        test('all empty state messages should be non-null', () {
+          expect(l10n.emptyNotifications, isNotEmpty);
+          expect(l10n.emptyMessageContent, isNotEmpty);
+          expect(l10n.emptyNotificationTitle, isNotEmpty);
+          expect(l10n.emptyMessageThreads, isNotEmpty);
+          expect(l10n.emptyTeamMember, isNotEmpty);
+        });
+
+        test('error messages should be non-null', () {
+          expect(l10n.errorLoadingNotifications, isNotEmpty);
+        });
+
+        test('errorGeneric should format error placeholder', () {
+          final result = l10n.errorGeneric('Network connection failed');
+
+          expect(result, isNotNull);
+          expect(result, isNotEmpty);
+          expect(result, contains('Network connection failed'));
+          expect(result, isNot(contains('{')));
+          expect(result, isNot(contains('}')));
+        });
+      });
+    }
+  });
 }

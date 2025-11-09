@@ -795,5 +795,280 @@
         "example": "NeoLife"
       }
     }
+  },
+
+  "notifMilestoneDirectTitle": "🎉 Amazing Progress!",
+  "@notifMilestoneDirectTitle": {
+    "description": "Push notification title when user reaches direct sponsor milestone",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifMilestoneDirectBody": "Congratulations, {firstName}! You've reached {directCount} direct sponsors! Just {remaining} more team {remaining, plural, one {member} other {members}} needed to unlock your {bizName} invitation. Keep building!",
+  "@notifMilestoneDirectBody": {
+    "description": "Push notification body for direct sponsor milestone",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "firstName": {
+        "type": "String",
+        "example": "María"
+      },
+      "directCount": {
+        "type": "int",
+        "example": "4"
+      },
+      "remaining": {
+        "type": "int",
+        "example": "15"
+      },
+      "bizName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "notifMilestoneTeamTitle": "🚀 Incredible Growth!",
+  "@notifMilestoneTeamTitle": {
+    "description": "Push notification title when user reaches team size milestone",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifMilestoneTeamBody": "Amazing progress, {firstName}! You've built a team of {teamCount}! Just {remaining} more direct {remaining, plural, one {sponsor} other {sponsors}} needed to qualify for {bizName}. You're so close!",
+  "@notifMilestoneTeamBody": {
+    "description": "Push notification body for team size milestone",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "firstName": {
+        "type": "String",
+        "example": "María"
+      },
+      "teamCount": {
+        "type": "int",
+        "example": "20"
+      },
+      "remaining": {
+        "type": "int",
+        "example": "3"
+      },
+      "bizName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "notifSubActiveTitle": "✅ Subscription Active",
+  "@notifSubActiveTitle": {
+    "description": "Push notification title when subscription is activated",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubActiveBody": "Your subscription is now active until {expiryDate}.",
+  "@notifSubActiveBody": {
+    "description": "Push notification body for active subscription",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "expiryDate": {
+        "type": "String",
+        "example": "January 15, 2026"
+      }
+    }
+  },
+
+  "notifSubCancelledTitle": "⚠️ Subscription Cancelled",
+  "@notifSubCancelledTitle": {
+    "description": "Push notification title when subscription is cancelled",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubCancelledBody": "Your subscription has been cancelled but remains active until {expiryDate}.",
+  "@notifSubCancelledBody": {
+    "description": "Push notification body for cancelled subscription",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "expiryDate": {
+        "type": "String",
+        "example": "January 15, 2026"
+      }
+    }
+  },
+
+  "notifSubExpiredTitle": "❌ Subscription Expired",
+  "@notifSubExpiredTitle": {
+    "description": "Push notification title when subscription expires",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubExpiredBody": "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+  "@notifSubExpiredBody": {
+    "description": "Push notification body for expired subscription",
+    "cap": {
+      "pushBody": 140
+    }
+  },
+
+  "notifSubExpiringSoonTitle": "⏰ Subscription Expiring Soon",
+  "@notifSubExpiringSoonTitle": {
+    "description": "Push notification title when subscription is expiring soon",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubExpiringSoonBody": "Your subscription expires on {expiryDate}. Renew now to avoid interruption.",
+  "@notifSubExpiringSoonBody": {
+    "description": "Push notification body for expiring subscription",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "expiryDate": {
+        "type": "String",
+        "example": "January 15"
+      }
+    }
+  },
+
+  "notifSubPausedTitle": "⏸️ Subscription Paused",
+  "@notifSubPausedTitle": {
+    "description": "Push notification title when subscription is paused",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubPausedBody": "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
+  "@notifSubPausedBody": {
+    "description": "Push notification body for paused subscription",
+    "cap": {
+      "pushBody": 140
+    }
+  },
+
+  "notifSubPaymentIssueTitle": "⚠️ Payment Issue",
+  "@notifSubPaymentIssueTitle": {
+    "description": "Push notification title when there's a payment problem",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifSubPaymentIssueBody": "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
+  "@notifSubPaymentIssueBody": {
+    "description": "Push notification body for payment issue",
+    "cap": {
+      "pushBody": 140
+    }
+  },
+
+  "notifNewMessageTitle": "New Message from {senderName}",
+  "@notifNewMessageTitle": {
+    "description": "Push notification title for new chat message",
+    "cap": {
+      "pushTitle": 65
+    },
+    "placeholders": {
+      "senderName": {
+        "type": "String",
+        "example": "Stephen"
+      }
+    }
+  },
+
+  "notifTeamActivityTitle": "👀 Team Member Activity",
+  "@notifTeamActivityTitle": {
+    "description": "Push notification title when team member visits business page",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifTeamActivityBody": "{visitorName} visited the business opportunity page!",
+  "@notifTeamActivityBody": {
+    "description": "Push notification body for team member activity",
+    "cap": {
+      "pushBody": 140
+    },
+    "placeholders": {
+      "visitorName": {
+        "type": "String",
+        "example": "María"
+      }
+    }
+  },
+
+  "notifLaunchSentTitle": "Launch Campaign Sent",
+  "@notifLaunchSentTitle": {
+    "description": "Confirmation that launch campaign was sent successfully",
+    "cap": {
+      "pushTitle": 65
+    }
+  },
+
+  "notifLaunchSentBody": "Your launch campaign has been successfully sent to your network.",
+  "@notifLaunchSentBody": {
+    "description": "Body for launch campaign confirmation notification",
+    "cap": {
+      "pushBody": 140
+    }
+  },
+
+  "emptyNotifications": "No notifications yet.",
+  "@emptyNotifications": {
+    "description": "Empty state when user has no notifications"
+  },
+
+  "emptyMessageContent": "No message content.",
+  "@emptyMessageContent": {
+    "description": "Fallback when notification has no message body"
+  },
+
+  "emptyNotificationTitle": "No Title",
+  "@emptyNotificationTitle": {
+    "description": "Fallback when notification has no title"
+  },
+
+  "emptyMessageThreads": "No message threads found.",
+  "@emptyMessageThreads": {
+    "description": "Empty state when user has no message conversations"
+  },
+
+  "emptyTeamMember": "Team member not found.",
+  "@emptyTeamMember": {
+    "description": "Error state when team member profile doesn't exist"
+  },
+
+  "errorLoadingNotifications": "Error loading notifications",
+  "@errorLoadingNotifications": {
+    "description": "Error state when notifications fail to load"
+  },
+
+  "errorGeneric": "Error: {error}",
+  "@errorGeneric": {
+    "description": "Generic error message with error details",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network connection failed"
+      }
+    }
   }
 }

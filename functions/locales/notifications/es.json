@@ -1,0 +1,23 @@
+{
+  "notifMilestoneDirectTitle": "🎉 Amazing Progress!",
+  "notifMilestoneDirectBody": "Congratulations, {firstName}! You've reached {directCount} direct sponsors! Just {remaining} more team {remaining, plural, one {member} other {members}} needed to unlock your {bizName} invitation. Keep building!",
+  "notifMilestoneTeamTitle": "🚀 Incredible Growth!",
+  "notifMilestoneTeamBody": "Amazing progress, {firstName}! You've built a team of {teamCount}! Just {remaining} more direct {remaining, plural, one {sponsor} other {sponsors}} needed to qualify for {bizName}. You're so close!",
+  "notifSubActiveTitle": "✅ Subscription Active",
+  "notifSubActiveBody": "Your subscription is now active until {expiryDate}.",
+  "notifSubCancelledTitle": "⚠️ Subscription Cancelled",
+  "notifSubCancelledBody": "Your subscription has been cancelled but remains active until {expiryDate}.",
+  "notifSubExpiredTitle": "❌ Subscription Expired",
+  "notifSubExpiredBody": "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+  "notifSubExpiringSoonTitle": "⏰ Subscription Expiring Soon",
+  "notifSubExpiringSoonBody": "Your subscription expires on {expiryDate}. Renew now to avoid interruption.",
+  "notifSubPausedTitle": "⏸️ Subscription Paused",
+  "notifSubPausedBody": "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
+  "notifSubPaymentIssueTitle": "⚠️ Payment Issue",
+  "notifSubPaymentIssueBody": "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
+  "notifNewMessageTitle": "New Message from {senderName}",
+  "notifTeamActivityTitle": "👀 Team Member Activity",
+  "notifTeamActivityBody": "{visitorName} visited the business opportunity page!",
+  "notifLaunchSentTitle": "Launch Campaign Sent",
+  "notifLaunchSentBody": "Your launch campaign has been successfully sent to your network."
+}

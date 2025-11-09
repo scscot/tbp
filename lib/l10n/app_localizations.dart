@@ -698,6 +698,176 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thanks for being part of our {companyName} team, {prospectName}. Your energy makes a difference!'**
   String recruitT16Gratitude(String prospectName, String companyName);
+
+  /// Push notification title when user reaches direct sponsor milestone
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Amazing Progress!'**
+  String get notifMilestoneDirectTitle;
+
+  /// Push notification body for direct sponsor milestone
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations, {firstName}! You\'ve reached {directCount} direct sponsors! Just {remaining} more team {remaining, plural, one {member} other {members}} needed to unlock your {bizName} invitation. Keep building!'**
+  String notifMilestoneDirectBody(
+      String firstName, int directCount, int remaining, String bizName);
+
+  /// Push notification title when user reaches team size milestone
+  ///
+  /// In en, this message translates to:
+  /// **'🚀 Incredible Growth!'**
+  String get notifMilestoneTeamTitle;
+
+  /// Push notification body for team size milestone
+  ///
+  /// In en, this message translates to:
+  /// **'Amazing progress, {firstName}! You\'ve built a team of {teamCount}! Just {remaining} more direct {remaining, plural, one {sponsor} other {sponsors}} needed to qualify for {bizName}. You\'re so close!'**
+  String notifMilestoneTeamBody(
+      String firstName, int teamCount, int remaining, String bizName);
+
+  /// Push notification title when subscription is activated
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Subscription Active'**
+  String get notifSubActiveTitle;
+
+  /// Push notification body for active subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription is now active until {expiryDate}.'**
+  String notifSubActiveBody(String expiryDate);
+
+  /// Push notification title when subscription is cancelled
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Subscription Cancelled'**
+  String get notifSubCancelledTitle;
+
+  /// Push notification body for cancelled subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has been cancelled but remains active until {expiryDate}.'**
+  String notifSubCancelledBody(String expiryDate);
+
+  /// Push notification title when subscription expires
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Subscription Expired'**
+  String get notifSubExpiredTitle;
+
+  /// Push notification body for expired subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.'**
+  String get notifSubExpiredBody;
+
+  /// Push notification title when subscription is expiring soon
+  ///
+  /// In en, this message translates to:
+  /// **'⏰ Subscription Expiring Soon'**
+  String get notifSubExpiringSoonTitle;
+
+  /// Push notification body for expiring subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription expires on {expiryDate}. Renew now to avoid interruption.'**
+  String notifSubExpiringSoonBody(String expiryDate);
+
+  /// Push notification title when subscription is paused
+  ///
+  /// In en, this message translates to:
+  /// **'⏸️ Subscription Paused'**
+  String get notifSubPausedTitle;
+
+  /// Push notification body for paused subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has been paused. Resume in the Play Store to restore access to all features.'**
+  String get notifSubPausedBody;
+
+  /// Push notification title when there's a payment problem
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Payment Issue'**
+  String get notifSubPaymentIssueTitle;
+
+  /// Push notification body for payment issue
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.'**
+  String get notifSubPaymentIssueBody;
+
+  /// Push notification title for new chat message
+  ///
+  /// In en, this message translates to:
+  /// **'New Message from {senderName}'**
+  String notifNewMessageTitle(String senderName);
+
+  /// Push notification title when team member visits business page
+  ///
+  /// In en, this message translates to:
+  /// **'👀 Team Member Activity'**
+  String get notifTeamActivityTitle;
+
+  /// Push notification body for team member activity
+  ///
+  /// In en, this message translates to:
+  /// **'{visitorName} visited the business opportunity page!'**
+  String notifTeamActivityBody(String visitorName);
+
+  /// Confirmation that launch campaign was sent successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Launch Campaign Sent'**
+  String get notifLaunchSentTitle;
+
+  /// Body for launch campaign confirmation notification
+  ///
+  /// In en, this message translates to:
+  /// **'Your launch campaign has been successfully sent to your network.'**
+  String get notifLaunchSentBody;
+
+  /// Empty state when user has no notifications
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet.'**
+  String get emptyNotifications;
+
+  /// Fallback when notification has no message body
+  ///
+  /// In en, this message translates to:
+  /// **'No message content.'**
+  String get emptyMessageContent;
+
+  /// Fallback when notification has no title
+  ///
+  /// In en, this message translates to:
+  /// **'No Title'**
+  String get emptyNotificationTitle;
+
+  /// Empty state when user has no message conversations
+  ///
+  /// In en, this message translates to:
+  /// **'No message threads found.'**
+  String get emptyMessageThreads;
+
+  /// Error state when team member profile doesn't exist
+  ///
+  /// In en, this message translates to:
+  /// **'Team member not found.'**
+  String get emptyTeamMember;
+
+  /// Error state when notifications fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading notifications'**
+  String get errorLoadingNotifications;
+
+  /// Generic error message with error details
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String errorGeneric(String error);
 }
 
 class _AppLocalizationsDelegate
