@@ -79,7 +79,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final l10n = AppLocalizations.of(context);
-              return Text(l10n!.appTitle);
+              return Text(l10n.appTitle);
             },
           ),
         ),
@@ -121,7 +121,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final l10n = AppLocalizations.of(context);
-              return Text(l10n!.appTitle);
+              return Text(l10n.appTitle);
             },
           ),
         ),
