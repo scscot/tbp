@@ -70,7 +70,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.35.7'
+          flutter-version: '3.32.5'
 
       # TODO: Remove --no-fatal-warnings after dropdown refactor lands (issue #18)
       - name: Flutter analyze (temporary warnings allowed)
