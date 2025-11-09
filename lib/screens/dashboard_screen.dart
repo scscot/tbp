@@ -17,6 +17,9 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
 import '../services/review_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import '../i18n/dashboard_analytics.dart';
+import '../widgets/localized_text.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -79,6 +82,12 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     // Check if user should be prompted for app review
     _checkReviewPrompt();
+
+    // Track dashboard view
+    FirebaseAnalytics.instance.logEvent(
+      name: DashboardAnalytics.dashView,
+      parameters: {'locale': Localizations.localeOf(context).toLanguageTag()},
+    );
   }
 
   Future<void> _checkReviewPrompt() async {
@@ -172,10 +181,15 @@ class _DashboardScreenState extends State<DashboardScreen>
           _cachedNetworkCounts = counts;
         });
 
+        FirebaseAnalytics.instance.logEvent(
+          name: DashboardAnalytics.dashStatsRefresh,
+          parameters: {'method': 'manual', 'locale': Localizations.localeOf(context).toLanguageTag(), 'success': true},
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ Team stats refreshed'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(context.l10n?.dashStatsRefreshed ?? 'Team stats refreshed'),
+            duration: const Duration(seconds: 2),
             backgroundColor: Colors.green,
           ),
         );
@@ -190,9 +204,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
 
       if (mounted) {
+        FirebaseAnalytics.instance.logEvent(
+          name: DashboardAnalytics.dashStatsRefresh,
+          parameters: {'method': 'manual', 'locale': Localizations.localeOf(context).toLanguageTag(), 'success': false},
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('❌ Error refreshing stats: $e'),
+            content: Text(context.l10n?.dashStatsError(e.toString()) ?? 'Error refreshing stats: $e'),
             duration: const Duration(seconds: 3),
             backgroundColor: Colors.red,
           ),
@@ -443,7 +462,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   child: _buildStatItem(
                     icon: Icons.people,
                     value: directSponsors.toString(),
-                    label: 'Direct\nSponsors',
+                    label: context.l10n?.dashKpiDirectSponsors ?? 'Direct Sponsors',
                     color: Colors.blue.shade600,
                     isLoading: _isLoadingCounts,
                   ),
@@ -454,7 +473,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   child: _buildStatItem(
                     icon: Icons.groups,
                     value: totalTeam.toString(),
-                    label: 'Total Team\nMembers',
+                    label: context.l10n?.dashKpiTotalTeam ?? 'Total Team Members',
                     color: Colors.green.shade600,
                     isLoading: _isLoadingCounts,
                   ),
@@ -635,15 +654,21 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Getting Started card - always shown first
         _buildActionCard(
           icon: Icons.rocket_launch,
-          title: 'Getting Started',
+          title: context.l10n?.dashTileGettingStarted ?? 'Getting Started',
           color: AppColors.opportunityPrimary,
-          onTap: () => widget.onTabSelected?.call(12),
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashTileTap,
+              parameters: {'tile': 'getting_started', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            widget.onTabSelected?.call(12);
+          },
         ),
 
         if (user.role == 'admin') ...[
           _buildActionCard(
             icon: Icons.list,
-            title: 'Opportunity Details',
+            title: context.l10n?.dashTileOpportunity ?? 'Opportunity Details',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(6),
           ),
@@ -651,7 +676,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           _buildActionCard(
             icon: Icons.list,
             title: user.bizOppRefUrl != null
-                ? 'Opportunity Details'
+                ? (context.l10n?.dashTileOpportunity ?? 'Opportunity Details')
                 : 'Join Opportunity!',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(
@@ -661,26 +686,38 @@ class _DashboardScreenState extends State<DashboardScreen>
         ] else ...[
           _buildActionCard(
             icon: Icons.assessment,
-            title: 'Your Eligibility Status',
+            title: context.l10n?.dashTileEligibility ?? 'Your Eligibility Status',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(8),
           ),
         ],
         _buildActionCard(
           icon: Icons.trending_up,
-          title: 'Grow Your Team',
+          title: context.l10n?.dashTileGrowTeam ?? 'Grow Your Team',
           color: AppColors.growthPrimary,
-          onTap: () => widget.onTabSelected?.call(2),
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'grow_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            widget.onTabSelected?.call(2);
+          },
         ),
         _buildActionCard(
           icon: Icons.groups,
-          title: 'View Your Team',
+          title: context.l10n?.dashTileViewTeam ?? 'View Your Team',
           color: AppColors.teamPrimary,
-          onTap: () => widget.onTabSelected?.call(1),
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'view_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            widget.onTabSelected?.call(1);
+          },
         ),
         _buildActionCard(
           icon: Icons.smart_toy,
-          title: 'Your AI Coach',
+          title: context.l10n?.dashTileAiCoach ?? 'Your AI Coach',
           color: AppColors.chatPrimary,
           onTap: () {
             SubscriptionNavigationGuard.pushGuarded(
@@ -693,15 +730,21 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.message,
-          title: 'Message Center',
+          title: context.l10n?.dashTileMessageCenter ?? 'Message Center',
           color: AppColors.messagePrimary,
           hasBadge: _unreadMessageCount > 0,
           badgeCount: _unreadMessageCount,
-          onTap: () => widget.onTabSelected?.call(3),
+          onTap: () {
+            FirebaseAnalytics.instance.logEvent(
+              name: DashboardAnalytics.dashCtaTap,
+              parameters: {'cta': 'message_center', 'locale': Localizations.localeOf(context).toLanguageTag()},
+            );
+            widget.onTabSelected?.call(3);
+          },
         ),
         _buildActionCard(
           icon: Icons.notifications,
-          title: 'Notifications',
+          title: context.l10n?.dashTileNotifications ?? 'Notifications',
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
@@ -709,13 +752,13 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.help_outline,
-          title: 'How It Works',
+          title: context.l10n?.dashTileHowItWorks ?? 'How It Works',
           color: AppColors.teamAccent,
           onTap: () => widget.onTabSelected?.call(5),
         ),
         _buildActionCard(
           icon: Icons.quiz,
-          title: 'FAQ\'s',
+          title: context.l10n?.dashTileFaqs ?? 'FAQ\'s',
           color: AppColors.info,
           onTap: () {
             Navigator.push(
@@ -728,7 +771,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         _buildActionCard(
           icon: Icons.person,
-          title: 'View Your Profile',
+          title: context.l10n?.dashTileProfile ?? 'View Your Profile',
           color: AppColors.primary,
           onTap: () {
             SubscriptionNavigationGuard.pushGuarded(
@@ -744,7 +787,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
           _buildActionCard(
             icon: Icons.manage_accounts,
-            title: 'Create New Account',
+            title: context.l10n?.dashTileCreateAccount ?? 'Create New Account',
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(11),
           ),
@@ -878,7 +921,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: AppScreenBar(title: 'Control Center', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.dashTitle ?? 'Control Center', appId: widget.appId),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(

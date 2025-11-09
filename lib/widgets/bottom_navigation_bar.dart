@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
+import 'localized_text.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -30,21 +31,21 @@ class AppBottomNavigationBar extends StatelessWidget {
       selectedItemColor: Theme.of(context).primaryColor,
       unselectedItemColor: Colors.grey,
       items: [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.home),
+          label: context.l10n?.navHome,
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.message),
-          label: 'Messages',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.message),
+          label: context.l10n?.navMessages,
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.share),
-          label: 'Share',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.share),
+          label: context.l10n?.navShare,
         ),
         BottomNavigationBarItem(
           icon: _buildProfileIcon(user),
-          label: 'Profile',
+          label: context.l10n?.navProfile,
         ),
       ],
     );

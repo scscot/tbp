@@ -15,13 +15,14 @@ import 'package:crypto/crypto.dart';
 import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
 import '../services/clipboard_helper.dart';
+import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
-import 'privacy_policy_screen.dart';
-import 'terms_of_service_screen.dart';
+import '../i18n/analytics_events.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
 import 'login_screen_enhanced.dart';
@@ -80,6 +81,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseAnalytics.instance.logEvent(
+      name: AnalyticsEvents.authView,
+      parameters: {'screen': 'signup'},
+    );
+
     _authSub = FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (!mounted || user == null || _navigated) return;
 
@@ -526,14 +533,19 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
     if (!_acceptedPrivacyPolicy) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-              'Please accept the Privacy Policy and Terms of Service to continue'),
+              context.l10n?.authSignupTosRequired ?? 'Please accept the Privacy Policy and Terms of Service to continue'),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
+
+    FirebaseAnalytics.instance.logEvent(
+      name: AnalyticsEvents.authSubmit,
+      parameters: {'method': 'email', 'screen': 'signup'},
+    );
 
     setState(() {
       _isLoading = true;
@@ -632,15 +644,47 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           '❌ REGISTER: FirebaseFunctionsException - Code: ${e.code}, Message: ${e.message}');
       debugPrint(
           '❌ REGISTER: FirebaseFunctionsException - Details: ${e.details}');
+
+      FirebaseAnalytics.instance.logEvent(
+        name: AnalyticsEvents.authError,
+        parameters: {
+          'screen': 'signup',
+          'method': 'email',
+          'code': e.code,
+          'message': e.message ?? 'Registration failed',
+        },
+      );
+
       _showErrorSnackbar(
           scaffoldMessenger, e.message ?? 'Registration failed.');
     } on FirebaseAuthException catch (e) {
       debugPrint(
           '❌ REGISTER: FirebaseAuthException - Code: ${e.code}, Message: ${e.message}');
+
+      FirebaseAnalytics.instance.logEvent(
+        name: AnalyticsEvents.authError,
+        parameters: {
+          'screen': 'signup',
+          'method': 'email',
+          'code': e.code,
+          'message': e.message ?? 'Login failed',
+        },
+      );
+
       _showErrorSnackbar(scaffoldMessenger, e.message ?? 'Login failed.');
     } catch (e, stackTrace) {
       debugPrint('❌ REGISTER: Unexpected error: $e');
       debugPrint('❌ REGISTER: Stack trace: $stackTrace');
+
+      FirebaseAnalytics.instance.logEvent(
+        name: AnalyticsEvents.authError,
+        parameters: {
+          'screen': 'signup',
+          'method': 'email',
+          'message': e.toString(),
+        },
+      );
+
       _showErrorSnackbar(scaffoldMessenger, 'An unexpected error occurred: $e');
     } finally {
       if (mounted) {
@@ -1445,25 +1489,27 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                     
                     TextFormField(
                         controller: _firstNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'First Name',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.authSignupLabelFirstName,
+                          hintText: context.l10n?.authSignupHintFirstName,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         validator: (v) =>
-                            v == null || v.isEmpty ? 'Required' : null),
+                            v == null || v.isEmpty ? (context.l10n?.authSignupFirstNameRequired ?? 'Required') : null),
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _lastNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Last Name',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.authSignupLabelLastName,
+                          hintText: context.l10n?.authSignupHintLastName,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         validator: (v) =>
-                            v == null || v.isEmpty ? 'Required' : null),
+                            v == null || v.isEmpty ? (context.l10n?.authSignupLastNameRequired ?? 'Required') : null),
 
                     // Create Your Login section with privacy assurance
                     Container(
@@ -1496,41 +1542,44 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
 
                     TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email Address',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.authSignupLabelEmail,
+                          hintText: context.l10n?.authSignupHintEmail,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) => v == null || !v.contains('@')
-                            ? 'A valid email is required'
+                            ? (context.l10n?.authSignupEmailInvalid ?? 'A valid email is required')
                             : null),
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.authSignupLabelPassword,
+                          hintText: context.l10n?.authSignupHintPassword,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         obscureText: true,
                         validator: (v) => (v?.length ?? 0) < 6
-                            ? 'Password must be at least 6 characters'
+                            ? (context.l10n?.authSignupPasswordTooShort(6) ?? 'Password must be at least 6 characters')
                             : null),
                     const SizedBox(height: 12),
                     TextFormField(
                         controller: _confirmPasswordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Confirm Password',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.authSignupLabelConfirmPassword,
+                          hintText: context.l10n?.authSignupHintConfirmPassword,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         obscureText: true,
                         validator: (v) => v != _passwordController.text
-                            ? 'Passwords do not match'
+                            ? (context.l10n?.authSignupPasswordMismatch ?? 'Passwords do not match')
                             : null),
                     const SizedBox(height: 24),
 
@@ -1567,68 +1616,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 12),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: AppColors.textSecondary,
-                                          height: 1.4,
-                                        ),
-                                        children: [
-                                          const TextSpan(
-                                              text: 'I agree to the '),
-                                          WidgetSpan(
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PrivacyPolicyScreen(
-                                                      appId: widget.appId,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text(
-                                                'Privacy Policy',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: AppColors.primary,
-                                                  fontWeight: FontWeight.w600,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const TextSpan(text: ' and '),
-                                          WidgetSpan(
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TermsOfServiceScreen(
-                                                      appId: widget.appId,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text(
-                                                'Terms of Service',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: AppColors.primary,
-                                                  fontWeight: FontWeight.w600,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    child: LocalizedText(
+                                      (l10n) => l10n.authSignupTosConsent,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textSecondary,
+                                        height: 1.4,
                                       ),
                                     ),
                                   ),
@@ -1661,7 +1654,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                                 child: CircularProgressIndicator(
                                     color: Colors.white, strokeWidth: 3),
                               )
-                            : const Text('Create Account'),
+                            : LocalizedText((l10n) => l10n.authSignupButtonCreateAccount),
                       ),
                     ),
                   ],

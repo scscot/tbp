@@ -1,0 +1,799 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "Team Build Pro",
+  "@appTitle": {
+    "description": "Application title"
+  },
+
+  "authLoginHeaderTitle": "Welcome back",
+  "@authLoginHeaderTitle": {
+    "description": "Main header on login screen - sentence case",
+    "maxLength": 36
+  },
+
+  "authLoginLabelEmail": "Email",
+  "@authLoginLabelEmail": {
+    "description": "Email input field label"
+  },
+
+  "authLoginHintEmail": "Enter your email address",
+  "@authLoginHintEmail": {
+    "description": "Email input field placeholder"
+  },
+
+  "authLoginEmailRequired": "Please enter your email",
+  "@authLoginEmailRequired": {
+    "description": "Validation error when email field is empty"
+  },
+
+  "authLoginEmailInvalid": "Please enter a valid email",
+  "@authLoginEmailInvalid": {
+    "description": "Validation error when email format is invalid"
+  },
+
+  "authLoginLabelPassword": "Password",
+  "@authLoginLabelPassword": {
+    "description": "Password input field label"
+  },
+
+  "authLoginHintPassword": "Enter your password",
+  "@authLoginHintPassword": {
+    "description": "Password input field placeholder"
+  },
+
+  "authLoginPasswordRequired": "Please enter your password",
+  "@authLoginPasswordRequired": {
+    "description": "Validation error when password field is empty"
+  },
+
+  "authLoginPasswordTooShort": "Password must be at least {min} characters",
+  "@authLoginPasswordTooShort": {
+    "description": "Validation error when password is too short",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
+
+  "authLoginButtonSignIn": "Sign In",
+  "@authLoginButtonSignIn": {
+    "description": "Sign in button label - title case",
+    "maxLength": 22
+  },
+
+  "authLoginNoAccountPrompt": "Don't have an account?",
+  "@authLoginNoAccountPrompt": {
+    "description": "Text shown before sign up link"
+  },
+
+  "authLoginLinkSignUp": "Sign Up",
+  "@authLoginLinkSignUp": {
+    "description": "Link to navigate to sign up screen",
+    "maxLength": 22
+  },
+
+  "authLoginBiometric": "Sign in with {method}",
+  "@authLoginBiometric": {
+    "description": "Biometric authentication button label with method placeholder",
+    "maxLength": 22,
+    "placeholders": {
+      "method": {
+        "type": "String",
+        "example": "Face ID"
+      }
+    }
+  },
+
+  "authLoginBiometricMethodFace": "Face ID",
+  "@authLoginBiometricMethodFace": {
+    "description": "Face ID biometric method name (iOS)"
+  },
+
+  "authLoginBiometricMethodTouch": "Touch ID",
+  "@authLoginBiometricMethodTouch": {
+    "description": "Touch ID biometric method name (iOS)"
+  },
+
+  "authLoginBiometricMethodGeneric": "Biometrics",
+  "@authLoginBiometricMethodGeneric": {
+    "description": "Generic biometric method name (Android/fallback)"
+  },
+
+  "authSignupHeaderTitle": "Create your account",
+  "@authSignupHeaderTitle": {
+    "description": "Main header on signup screen - sentence case",
+    "maxLength": 36
+  },
+
+  "authSignupLabelFirstName": "First Name",
+  "@authSignupLabelFirstName": {
+    "description": "First name input field label"
+  },
+
+  "authSignupHintFirstName": "Enter your first name",
+  "@authSignupHintFirstName": {
+    "description": "First name input field placeholder"
+  },
+
+  "authSignupFirstNameRequired": "Please enter your first name",
+  "@authSignupFirstNameRequired": {
+    "description": "Validation error when first name field is empty"
+  },
+
+  "authSignupLabelLastName": "Last Name",
+  "@authSignupLabelLastName": {
+    "description": "Last name input field label"
+  },
+
+  "authSignupHintLastName": "Enter your last name",
+  "@authSignupHintLastName": {
+    "description": "Last name input field placeholder"
+  },
+
+  "authSignupLastNameRequired": "Please enter your last name",
+  "@authSignupLastNameRequired": {
+    "description": "Validation error when last name field is empty"
+  },
+
+  "authSignupLabelEmail": "Email",
+  "@authSignupLabelEmail": {
+    "description": "Email input field label"
+  },
+
+  "authSignupHintEmail": "Enter your email address",
+  "@authSignupHintEmail": {
+    "description": "Email input field placeholder"
+  },
+
+  "authSignupEmailRequired": "Please enter your email",
+  "@authSignupEmailRequired": {
+    "description": "Validation error when email field is empty"
+  },
+
+  "authSignupEmailInvalid": "Please enter a valid email",
+  "@authSignupEmailInvalid": {
+    "description": "Validation error when email format is invalid"
+  },
+
+  "authSignupLabelPassword": "Password",
+  "@authSignupLabelPassword": {
+    "description": "Password input field label"
+  },
+
+  "authSignupHintPassword": "Create a password",
+  "@authSignupHintPassword": {
+    "description": "Password input field placeholder"
+  },
+
+  "authSignupPasswordRequired": "Please enter a password",
+  "@authSignupPasswordRequired": {
+    "description": "Validation error when password field is empty"
+  },
+
+  "authSignupPasswordTooShort": "Password must be at least {min} characters",
+  "@authSignupPasswordTooShort": {
+    "description": "Validation error when password is too short",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
+
+  "authSignupLabelConfirmPassword": "Confirm Password",
+  "@authSignupLabelConfirmPassword": {
+    "description": "Confirm password input field label"
+  },
+
+  "authSignupHintConfirmPassword": "Re-enter your password",
+  "@authSignupHintConfirmPassword": {
+    "description": "Confirm password input field placeholder"
+  },
+
+  "authSignupConfirmPasswordRequired": "Please confirm your password",
+  "@authSignupConfirmPasswordRequired": {
+    "description": "Validation error when confirm password field is empty"
+  },
+
+  "authSignupPasswordMismatch": "Passwords don't match",
+  "@authSignupPasswordMismatch": {
+    "description": "Validation error when password and confirm password don't match"
+  },
+
+  "authSignupLabelReferralCode": "Referral Code (Optional)",
+  "@authSignupLabelReferralCode": {
+    "description": "Referral code input field label"
+  },
+
+  "authSignupHintReferralCode": "Enter invite code if you have one",
+  "@authSignupHintReferralCode": {
+    "description": "Referral code input field placeholder"
+  },
+
+  "authSignupButtonPasteCode": "Paste",
+  "@authSignupButtonPasteCode": {
+    "description": "Paste referral code from clipboard button",
+    "maxLength": 22
+  },
+
+  "authSignupTosConsent": "By continuing, you agree to the Terms of Service and Privacy Policy",
+  "@authSignupTosConsent": {
+    "description": "Terms and privacy consent text. Will be enhanced with tappable links in Phase 1C"
+  },
+
+  "authSignupTermsShort": "Terms of Service",
+  "@authSignupTermsShort": {
+    "description": "Short label for terms of service link"
+  },
+
+  "authSignupPrivacyShort": "Privacy Policy",
+  "@authSignupPrivacyShort": {
+    "description": "Short label for privacy policy link"
+  },
+
+  "authSignupTosRequired": "You must accept the terms to continue",
+  "@authSignupTosRequired": {
+    "description": "Validation error when user hasn't accepted terms"
+  },
+
+  "authSignupButtonCreateAccount": "Create Account",
+  "@authSignupButtonCreateAccount": {
+    "description": "Create account button label - title case",
+    "maxLength": 22
+  },
+
+  "authSignupHaveAccountPrompt": "Already have an account?",
+  "@authSignupHaveAccountPrompt": {
+    "description": "Text shown before sign in link"
+  },
+
+  "authSignupLinkSignIn": "Sign In",
+  "@authSignupLinkSignIn": {
+    "description": "Link to navigate to sign in screen",
+    "maxLength": 22
+  },
+
+  "authPasswordShow": "Show password",
+  "@authPasswordShow": {
+    "description": "Accessibility label for show password icon button"
+  },
+
+  "authPasswordHide": "Hide password",
+  "@authPasswordHide": {
+    "description": "Accessibility label for hide password icon button"
+  },
+
+  "authErrorInvalidEmail": "That email isn't valid. Please check and try again.",
+  "@authErrorInvalidEmail": {
+    "description": "Error message for invalid email from Firebase auth"
+  },
+
+  "authErrorUserDisabled": "This account has been disabled. Please contact support.",
+  "@authErrorUserDisabled": {
+    "description": "Error message when user account is disabled"
+  },
+
+  "authErrorUserNotFound": "No account found with that email.",
+  "@authErrorUserNotFound": {
+    "description": "Error message when user doesn't exist"
+  },
+
+  "authErrorWrongPassword": "Incorrect password. Please try again.",
+  "@authErrorWrongPassword": {
+    "description": "Error message for wrong password"
+  },
+
+  "authErrorEmailInUse": "An account with that email already exists.",
+  "@authErrorEmailInUse": {
+    "description": "Error message when email is already registered"
+  },
+
+  "authErrorWeakPassword": "Please choose a stronger password.",
+  "@authErrorWeakPassword": {
+    "description": "Error message for weak password"
+  },
+
+  "authErrorNetworkError": "Network error. Please check your connection.",
+  "@authErrorNetworkError": {
+    "description": "Error message for network failures"
+  },
+
+  "authErrorTooMany": "Too many attempts. Please wait a moment.",
+  "@authErrorTooMany": {
+    "description": "Error message for too many failed attempts"
+  },
+
+  "authErrorInvalidCredential": "Those details don't match our records.",
+  "@authErrorInvalidCredential": {
+    "description": "Error message for invalid credentials"
+  },
+
+  "authErrorUnknown": "An error occurred. Please try again.",
+  "@authErrorUnknown": {
+    "description": "Generic error message for unknown errors"
+  },
+
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom navigation tab label for home/dashboard",
+    "maxLength": 14
+  },
+
+  "navTeam": "Team",
+  "@navTeam": {
+    "description": "Bottom navigation tab label for team/network",
+    "maxLength": 14
+  },
+
+  "navShare": "Share",
+  "@navShare": {
+    "description": "Bottom navigation tab label for sharing",
+    "maxLength": 14
+  },
+
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Bottom navigation tab label for messages",
+    "maxLength": 14
+  },
+
+  "navNotices": "Notices",
+  "@navNotices": {
+    "description": "Bottom navigation tab label for notifications",
+    "maxLength": 14
+  },
+
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Bottom navigation tab label for profile",
+    "maxLength": 14
+  },
+
+  "dashTitle": "Control Center",
+  "@dashTitle": {
+    "description": "Dashboard screen title in app bar",
+    "maxLength": 32
+  },
+
+  "dashKpiDirectSponsors": "Direct Sponsors",
+  "@dashKpiDirectSponsors": {
+    "description": "Label for direct sponsors count KPI",
+    "maxLength": 28
+  },
+
+  "dashKpiTotalTeam": "Total Team Members",
+  "@dashKpiTotalTeam": {
+    "description": "Label for total team members count KPI",
+    "maxLength": 28
+  },
+
+  "dashStatsRefreshed": "Team stats refreshed",
+  "@dashStatsRefreshed": {
+    "description": "Success message after refreshing team statistics"
+  },
+
+  "dashStatsError": "Error refreshing stats: {error}",
+  "@dashStatsError": {
+    "description": "Error message when statistics refresh fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "dashTileGettingStarted": "Getting Started",
+  "@dashTileGettingStarted": {
+    "description": "Dashboard tile title for getting started guide",
+    "maxLength": 28
+  },
+
+  "dashTileOpportunity": "Opportunity Details",
+  "@dashTileOpportunity": {
+    "description": "Dashboard tile title for business opportunity details",
+    "maxLength": 28
+  },
+
+  "dashTileEligibility": "Your Eligibility Status",
+  "@dashTileEligibility": {
+    "description": "Dashboard tile title for eligibility status",
+    "maxLength": 32
+  },
+
+  "dashTileGrowTeam": "Grow Your Team",
+  "@dashTileGrowTeam": {
+    "description": "Dashboard tile title/CTA for growing team",
+    "maxLength": 22
+  },
+
+  "dashTileViewTeam": "View Your Team",
+  "@dashTileViewTeam": {
+    "description": "Dashboard tile title/CTA for viewing team",
+    "maxLength": 22
+  },
+
+  "dashTileAiCoach": "Your AI Coach",
+  "@dashTileAiCoach": {
+    "description": "Dashboard tile title for AI coaching assistant",
+    "maxLength": 28
+  },
+
+  "dashTileMessageCenter": "Message Center",
+  "@dashTileMessageCenter": {
+    "description": "Dashboard tile title for message center",
+    "maxLength": 28
+  },
+
+  "dashTileNotifications": "Notifications",
+  "@dashTileNotifications": {
+    "description": "Dashboard tile title for notifications",
+    "maxLength": 28
+  },
+
+  "dashTileHowItWorks": "How It Works",
+  "@dashTileHowItWorks": {
+    "description": "Dashboard tile title for how it works guide",
+    "maxLength": 28
+  },
+
+  "dashTileFaqs": "FAQ's",
+  "@dashTileFaqs": {
+    "description": "Dashboard tile title for frequently asked questions",
+    "maxLength": 22
+  },
+
+  "dashTileProfile": "View Your Profile",
+  "@dashTileProfile": {
+    "description": "Dashboard tile title/CTA for viewing profile",
+    "maxLength": 22
+  },
+
+  "dashTileCreateAccount": "Create New Account",
+  "@dashTileCreateAccount": {
+    "description": "Dashboard tile title/CTA for creating account (admin only)",
+    "maxLength": 22
+  },
+
+  "recruitT01FirstTouch": "Hey {prospectName}, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
+  "@recruitT01FirstTouch": {
+    "description": "Initial outreach message with prospect name",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "senderFirst": {
+        "type": "String",
+        "example": "Stephen"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT01FirstTouchNoName": "Hey, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
+  "@recruitT01FirstTouchNoName": {
+    "description": "Initial outreach message without prospect name (fallback)",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "senderFirst": {
+        "type": "String",
+        "example": "Stephen"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT02FollowUpWarm": "Hi {prospectName}! Following up on {companyName}. I saw great results this week. Have time for a quick chat? {shortLink}",
+  "@recruitT02FollowUpWarm": {
+    "description": "Warm follow-up message after initial contact",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT03DeadlineNudge": "{prospectName}, spots are filling up for our {companyName} launch. Want me to save you one? {shortLink}",
+  "@recruitT03DeadlineNudge": {
+    "description": "Urgency-based message about limited availability",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT04TeamNeeded": "{remaining, plural, =0 {You're day-one ready.} one {You're # person away from a strong start.} other {You're # people away from a strong start.}}",
+  "@recruitT04TeamNeeded": {
+    "description": "Team building progress message with plural logic",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "remaining": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "recruitT05MilestoneReached": "🎉 {prospectName}, you hit your first milestone with {companyName}! Your team is growing. Keep it up!",
+  "@recruitT05MilestoneReached": {
+    "description": "Celebration message for reaching first milestone",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT06WelcomeOnboard": "Welcome, {prospectName}! I'm {senderFirst} and here to help. Let's get started: {inviteLink}",
+  "@recruitT06WelcomeOnboard": {
+    "description": "Welcome message for new team member",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "senderFirst": {
+        "type": "String",
+        "example": "Stephen"
+      },
+      "inviteLink": {
+        "type": "String",
+        "example": "teambuildpro.com/join/abc123xyz"
+      }
+    }
+  },
+
+  "recruitT07WeeklyCheckIn": "Hey {prospectName}, quick check-in on {companyName}. How are things going? Any questions I can help with?",
+  "@recruitT07WeeklyCheckIn": {
+    "description": "Weekly check-in message with open-ended question",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT08Deadline": "We kick off in {days, plural, one {# day} other {# days}}. Want me to hold your spot? {shortLink}",
+  "@recruitT08Deadline": {
+    "description": "Countdown to start date with days remaining",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT09ResourceShare": "{prospectName}, I found this helpful for {companyName}. Thought you'd want to see it: {inviteLink}",
+  "@recruitT09ResourceShare": {
+    "description": "Message sharing helpful resource or content",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "inviteLink": {
+        "type": "String",
+        "example": "teambuildpro.com/join/abc123xyz"
+      }
+    }
+  },
+
+  "recruitT10InviteReminder": "Hi {prospectName}, you still have an invite waiting for {companyName}. Ready to join? {shortLink}",
+  "@recruitT10InviteReminder": {
+    "description": "Reminder about pending invitation",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "shortLink": {
+        "type": "String",
+        "example": "tbp.app/abc123"
+      }
+    }
+  },
+
+  "recruitT11TeamGrowth": "Great news, {prospectName}! Your {companyName} team grew this week. You're making real progress!",
+  "@recruitT11TeamGrowth": {
+    "description": "Positive update about team growth",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT12Encouragement": "{prospectName}, building with {companyName} takes time. You're doing great. Keep going!",
+  "@recruitT12Encouragement": {
+    "description": "Encouragement message for long-term motivation",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT13TrainingInvite": "Hey {prospectName}, we have a {companyName} training session coming up. Want to join? {inviteLink}",
+  "@recruitT13TrainingInvite": {
+    "description": "Invitation to upcoming training or event",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "inviteLink": {
+        "type": "String",
+        "example": "teambuildpro.com/join/abc123xyz"
+      }
+    }
+  },
+
+  "recruitT14QuickWin": "Nice work, {prospectName}! That was a solid win with {companyName}. Let's keep the momentum going!",
+  "@recruitT14QuickWin": {
+    "description": "Celebration of small achievement",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT15SupportOffer": "Hey {prospectName}, I'm here if you need help with {companyName}. Just reach out anytime.",
+  "@recruitT15SupportOffer": {
+    "description": "Offer of ongoing support and availability",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+
+  "recruitT16Gratitude": "Thanks for being part of our {companyName} team, {prospectName}. Your energy makes a difference!",
+  "@recruitT16Gratitude": {
+    "description": "Expression of gratitude and appreciation",
+    "cap": {
+      "sms": 140
+    },
+    "placeholders": {
+      "prospectName": {
+        "type": "String",
+        "example": "María"
+      },
+      "companyName": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  }
+}

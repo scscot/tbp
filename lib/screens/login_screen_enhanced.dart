@@ -8,11 +8,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../providers/auth_provider.dart' as auth;
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
 import '../services/biometric_service.dart';
 import '../services/session_manager.dart';
+import '../i18n/analytics_events.dart';
 import '../main.dart';
 import 'new_registration_screen.dart';
 
@@ -44,6 +47,12 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseAnalytics.instance.logEvent(
+      name: AnalyticsEvents.authView,
+      parameters: {'screen': 'login'},
+    );
+
     _setupAuthStateListener();
     _initializeBiometric();
     _checkAppleSignInAvailability();
@@ -237,8 +246,8 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
               children: [
                 // Header
                 const SizedBox(height: 40),
-                Text(
-                  'Welcome Back',
+                LocalizedText(
+                  (l10n) => l10n.authLoginHeaderTitle,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
@@ -329,13 +338,14 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Don't have an account? ",
+                    LocalizedText(
+                      (l10n) => l10n.authLoginNoAccountPrompt,
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
+                    const SizedBox(width: 4),
                     TextButton(
                       onPressed: authProvider.isLoading ? null : _navigateToRegistration,
-                      child: const Text('Sign Up'),
+                      child: LocalizedText((l10n) => l10n.authLoginLinkSignUp),
                     ),
                   ],
                 ),
@@ -380,8 +390,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                 autocorrect: false,
                 enabled: !authProvider.isLoading,
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter your email address',
+                  labelText: context.l10n?.authLoginLabelEmail,
+                  hintText: context.l10n?.authLoginHintEmail,
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -389,10 +399,10 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return context.l10n?.authLoginEmailRequired ?? 'Please enter your email';
                   }
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Please enter a valid email';
+                    return context.l10n?.authLoginEmailInvalid ?? 'Please enter a valid email';
                   }
                   return null;
                 },
@@ -405,8 +415,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                 obscureText: true,
                 enabled: !authProvider.isLoading,
                 decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
+                  labelText: context.l10n?.authLoginLabelPassword,
+                  hintText: context.l10n?.authLoginHintPassword,
                   prefixIcon: const Icon(Icons.lock_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -414,10 +424,10 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return context.l10n?.authLoginPasswordRequired ?? 'Please enter your password';
                   }
                   if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
+                    return context.l10n?.authLoginPasswordTooShort(6) ?? 'Password must be at least 6 characters';
                   }
                   return null;
                 },
@@ -446,9 +456,9 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text(
-                          'Sign In',
-                          style: TextStyle(
+                      : LocalizedText(
+                          (l10n) => l10n.authLoginButtonSignIn,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -481,6 +491,11 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   Future<void> _signIn(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
+    FirebaseAnalytics.instance.logEvent(
+      name: AnalyticsEvents.authSubmit,
+      parameters: {'method': 'email', 'screen': 'login'},
+    );
+
     final authProvider = context.read<auth.AuthStateProvider>();
 
     final success = await authProvider.signInWithEmailAndPassword(
@@ -490,6 +505,15 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
 
     if (success != null && mounted) {
       debugPrint('✅ LOGIN_ENHANCED: Sign-in successful');
+    } else if (authProvider.errorMessage != null && mounted) {
+      FirebaseAnalytics.instance.logEvent(
+        name: AnalyticsEvents.authError,
+        parameters: {
+          'screen': 'login',
+          'method': 'email',
+          'message': authProvider.errorMessage!,
+        },
+      );
     }
   }
 

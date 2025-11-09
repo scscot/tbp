@@ -1,0 +1,19 @@
+{
+  "name": "teambuildpro-locales",
+  "version": "1.0.0",
+  "description": "Localization infrastructure for Team Build Pro",
+  "scripts": {
+    "sync": "node generators/sync_keys.js",
+    "pseudo": "node generators/generate_pseudo.js",
+    "check:parity": "node generators/check_key_parity.js",
+    "check:icu": "node generators/check_icu_syntax.js",
+    "check:concat": "node generators/check_forbidden_concat.js",
+    "check:buttons": "node generators/check_button_length.js",
+    "check:lengths": "node generators/check_message_length.js",
+    "check:strings": "node generators/check_raw_strings.js",
+    "check": "npm run check:parity && npm run check:icu && npm run check:concat && npm run check:buttons && npm run check:lengths",
+    "i18n": "npm run sync && npm run pseudo && npm run check"
+  },
+  "author": "Team Build Pro",
+  "license": "UNLICENSED"
+}

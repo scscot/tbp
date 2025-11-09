@@ -1,11 +1,15 @@
 // lib/main.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'config/app_constants.dart';
 import 'firebase_options.dart';
@@ -44,6 +48,8 @@ void main() async {
     debugPrint('🚀 MAIN: Starting app initialization...');
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint('🚀 MAIN: Flutter binding initialized');
+    _registerFontLicenses();
+    debugPrint('🚀 MAIN: Font licenses registered');
     await _initializeFirebaseWithRetry();
     debugPrint('🚀 MAIN: Firebase initialized');
     await AppConstants.initialize();
@@ -64,6 +70,13 @@ void main() async {
     debugPrint('❌ MAIN: Stack trace: $stackTrace');
     runApp(RestartWidget(child: const MyApp()));
   }
+}
+
+void _registerFontLicenses() {
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Inter'], license);
+  });
 }
 
 Future<void> _initializeFirebaseWithRetry() async {
@@ -210,6 +223,40 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         child: MaterialApp(
           navigatorKey: navigatorKey,
           title: 'Team Build Pro',
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('es'),
+            Locale('pt'),
+            Locale('tl'),
+            Locale('en', 'XA'), // Pseudo-locale for i18n testing
+          ],
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            if (deviceLocale == null) return const Locale('en');
+
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == deviceLocale.languageCode &&
+                  supportedLocale.countryCode == deviceLocale.countryCode) {
+                return supportedLocale;
+              }
+            }
+
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == deviceLocale.languageCode) {
+                return supportedLocale;
+              }
+            }
+
+            return const Locale('en');
+          },
+          locale: const String.fromEnvironment('PSEUDO_LOCALE') == 'true'
+              ? const Locale('en', 'XA')
+              : null,
           theme: ThemeData(
             primarySwatch: Colors.indigo,
             fontFamily: 'Inter',

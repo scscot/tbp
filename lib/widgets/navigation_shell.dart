@@ -17,6 +17,7 @@ import '../screens/getting_started_screen.dart';
 import '../models/user_model.dart';
 import '../services/subscription_navigation_guard.dart';
 import 'subscription_required_modal.dart';
+import 'localized_text.dart';
 
 class NavigationShell extends StatefulWidget {
   final String appId;
@@ -355,25 +356,25 @@ class NavigationShellState extends State<NavigationShell> {
             selectedFontSize: 12.0,
             unselectedFontSize: 12.0,
             items: [
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.dashboard_outlined),
-                label: 'Home',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.dashboard_outlined),
+                label: context.l10n?.navHome,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.people_outline),
-                label: 'Team',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.people_outline),
+                label: context.l10n?.navTeam,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.share),
-                label: 'Share',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.share),
+                label: context.l10n?.navShare,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.message_outlined),
-                label: 'Messages',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.message_outlined),
+                label: context.l10n?.navMessages,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.notifications_outlined),
-                label: 'Notices',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.notifications_outlined),
+                label: context.l10n?.navNotices,
               ),
             ],
           ),

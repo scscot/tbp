@@ -1,0 +1,53 @@
+name: i18n & UI String Guards
+
+on:
+  pull_request:
+    paths:
+      - 'lib/l10n/**'
+      - 'locales/**'
+      - 'lib/screens/**'
+      - 'lib/widgets/**'
+      - 'pubspec.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/l10n/**'
+      - 'locales/**'
+      - 'lib/screens/**'
+      - 'lib/widgets/**'
+      - 'pubspec.yaml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install locale tools
+        run: |
+          cd locales
+          npm ci
+
+      - name: i18n parity & ICU
+        run: |
+          cd locales
+          npm run check
+
+      - name: Raw string scan
+        run: |
+          cd locales
+          npm run check:strings
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Flutter analyze (sanity)
+        run: flutter analyze
