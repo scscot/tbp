@@ -72,7 +72,7 @@ jobs:
           channel: 'stable'
           flutter-version: '3.35.7'
 
-      # TODO: Remove --no-fatal-warnings after dropdown refactor lands (see GitHub issue)
+      # TODO: Remove --no-fatal-warnings after dropdown refactor lands (issue #18)
       - name: Flutter analyze (temporary warnings allowed)
         run: flutter analyze --no-fatal-warnings
 
