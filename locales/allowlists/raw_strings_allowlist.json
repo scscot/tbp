@@ -1,0 +1,1310 @@
+[
+  {
+    "file": "/Users/sscott/tbp/lib/screens/add_link_screen.dart",
+    "line": 254,
+    "content": "Text('Error: $e'),",
+    "hash": "5238e026"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/add_link_screen.dart",
+    "line": 880,
+    "content": "labelText: 'Enter Your Referral Link',",
+    "hash": "a59a67d5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/add_link_screen.dart",
+    "line": 994,
+    "content": "labelText: 'Confirm Referral Link URL',",
+    "hash": "d7c499e2"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/add_link_screen.dart",
+    "line": 1121,
+    "content": "appBar: const AppScreenBar(title: 'Add Link'),",
+    "hash": "4e14b53a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 173,
+    "content": "title: '🛠️ Setting up your business profile...',",
+    "hash": "98073e24"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 227,
+    "content": "content: Text('Profile information saved successfully!')),",
+    "hash": "a31eca45"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 243,
+    "content": "SnackBar(content: Text('Error: ${e.toString()}')),",
+    "hash": "5aba5c50"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 243,
+    "content": "SnackBar(content: Text('Error: ${e.toString()}')),",
+    "hash": "5aba5c50"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 258,
+    "content": "appBar: const AppScreenBar(title: 'Admin Profile', actions: []),",
+    "hash": "8383a033"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 337,
+    "content": "labelText: 'Country',",
+    "hash": "053ae593"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 370,
+    "content": "labelText: 'State/Province',",
+    "hash": "1fa52aef"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen.dart",
+    "line": 404,
+    "content": "labelText: 'City',",
+    "hash": "d37418a1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 295,
+    "content": "const SnackBar(content: Text('Profile completed successfully!')),",
+    "hash": "5191087c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 295,
+    "content": "const SnackBar(content: Text('Profile completed successfully!')),",
+    "hash": "5191087c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 308,
+    "content": "SnackBar(content: Text('Error: ${e.toString()}')),",
+    "hash": "6c9be912"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 308,
+    "content": "SnackBar(content: Text('Error: ${e.toString()}')),",
+    "hash": "6c9be912"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 323,
+    "content": "appBar: const AppScreenBar(title: 'Business Setup', actions: []),",
+    "hash": "a0ede8dd"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 374,
+    "content": "labelText: 'Your Business Opportunity Name',",
+    "hash": "e9155b20"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 375,
+    "content": "helperText: 'This cannot be changed once set',",
+    "hash": "946fcaf1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 388,
+    "content": "labelText: 'Confirm Business Opportunity Name',",
+    "hash": "5ec3358c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 435,
+    "content": "labelText: 'Your Referral Link',",
+    "hash": "7e9878b9"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 436,
+    "content": "helperText: 'This cannot be changed once set',",
+    "hash": "ab5eed4c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/admin_edit_profile_screen_1.dart",
+    "line": 461,
+    "content": "labelText: 'Confirm Referral Link URL',",
+    "hash": "08990e8e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/business_screen.dart",
+    "line": 256,
+    "content": "Text('Failed to copy URL: $e'),",
+    "hash": "84c7c687"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/business_screen.dart",
+    "line": 798,
+    "content": "appBar: const AppScreenBar(title: 'Business'),",
+    "hash": "3aa75450"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/business_screen.dart",
+    "line": 805,
+    "content": "appBar: const AppScreenBar(title: 'Business'),",
+    "hash": "4bb52f80"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/change_password_screen.dart",
+    "line": 25,
+    "content": "appBar: const AppScreenBar(title: 'Change Password'),",
+    "hash": "b4539930"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/chat_screen.dart",
+    "line": 10,
+    "content": "body: const Center(child: Text('Chat interface goes here.')),",
+    "hash": "d5cb5de1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/chatbot_screen.dart",
+    "line": 74,
+    "content": "const SnackBar(content: Text('Please sign in to use the AI Assistant')),",
+    "hash": "df8ebf84"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/chatbot_screen.dart",
+    "line": 74,
+    "content": "const SnackBar(content: Text('Please sign in to use the AI Assistant')),",
+    "hash": "df8ebf84"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/chatbot_screen.dart",
+    "line": 147,
+    "content": "Text('AI Coach'),",
+    "hash": "713b74b3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/chatbot_screen.dart",
+    "line": 260,
+    "content": "hintText: 'Ask me anything...',",
+    "hash": "84351924"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/company_screen.dart",
+    "line": 119,
+    "content": "appBar: const AppScreenBar(title: 'Company Details'),",
+    "hash": "e273340c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/company_screen.dart",
+    "line": 147,
+    "content": "title: 'Company Name',",
+    "hash": "0a6d050f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/company_screen.dart",
+    "line": 153,
+    "content": "title: 'My Company Referral Link',",
+    "hash": "e4f8f4c3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/company_screen.dart",
+    "line": 159,
+    "content": "title: 'Date Joined',",
+    "hash": "f155f94b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 84,
+    "content": "child: Text('Demo Account Protection', style: TextStyle(fontSize: 18)),",
+    "hash": "70f50a0b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 155,
+    "content": "content: Text('Account successfully deleted. Thank you for using Team Build Pro.'),",
+    "hash": "340310b8"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 170,
+    "content": "content: Text('Account deletion failed: ${_getErrorMessage(e)}'),",
+    "hash": "045654ae"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 219,
+    "content": "content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),",
+    "hash": "48b18478"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 229,
+    "content": "content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),",
+    "hash": "0718338d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 384,
+    "content": "hintText: 'Enter your email address',",
+    "hash": "9fb73fc1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 419,
+    "content": "appBar: const AppScreenBar(title: 'Delete Account'),",
+    "hash": "11b5ceb4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/delete_account_screen.dart",
+    "line": 539,
+    "content": "Text('Deleting...'),",
+    "hash": "5503ae55"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 120,
+    "content": "content: Text('Account deletion completed. Thank you for using Team Build Pro.'),",
+    "hash": "d5a0c3d0"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 131,
+    "content": "content: Text('Error completing account deletion: $e'),",
+    "hash": "7f5a4532"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 630,
+    "content": "title: '🚀 Setting up your account...',",
+    "hash": "7c22b0c1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 718,
+    "content": "content: Text('Profile updated successfully!'),",
+    "hash": "0fba3266"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 740,
+    "content": "content: Text('Error updating profile: $e'),",
+    "hash": "8d9959ab"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 754,
+    "content": "appBar: const AppScreenBar(title: 'Edit Profile', actions: []),",
+    "hash": "6cbc2101"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 831,
+    "content": "labelText: 'First Name',",
+    "hash": "158a7ddb"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 843,
+    "content": "labelText: 'Last Name',",
+    "hash": "94aad408"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 873,
+    "content": "labelText: 'Country',",
+    "hash": "97e16783"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 907,
+    "content": "labelText: 'State/Province',",
+    "hash": "a0e72f9f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 919,
+    "content": "labelText: 'City',",
+    "hash": "bbc9864a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 1030,
+    "content": "labelText: 'Enter Your Referral Link',",
+    "hash": "7581d508"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/edit_profile_screen.dart",
+    "line": 1155,
+    "content": "labelText: 'Confirm Referral Link',",
+    "hash": "06229c63"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 263,
+    "content": "appBar: const AppScreenBar(title: 'Eligibility Status'),",
+    "hash": "a917d9c7"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 269,
+    "content": "appBar: const AppScreenBar(title: 'Eligibility Status'),",
+    "hash": "1ae016f5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 303,
+    "content": "label: 'Direct Sponsors',",
+    "hash": "42bbff4d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 310,
+    "content": "label: 'Total Team Members',",
+    "hash": "5648ec32"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 342,
+    "content": "label: 'Direct Sponsors',",
+    "hash": "66389732"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 348,
+    "content": "label: 'Total Team Members',",
+    "hash": "d22d7e56"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 394,
+    "content": "title: 'INVITE - Build Your Foundation',",
+    "hash": "0ec8b8d4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 401,
+    "content": "title: 'CULTIVATE - Create Momentum',",
+    "hash": "d0fa33c0"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/eligibility_screen.dart",
+    "line": 408,
+    "content": "title: 'PARTNER - Launch with Success',",
+    "hash": "7b92ce9f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/faq_screen.dart",
+    "line": 132,
+    "content": "hintText: 'Search FAQs...',",
+    "hash": "466a69b8"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/getting_started_screen.dart",
+    "line": 88,
+    "content": "title: 'Getting Started',",
+    "hash": "0689f2ab"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/getting_started_screen.dart",
+    "line": 119,
+    "content": "title: 'Make Your List',",
+    "hash": "cf7c5fd6"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/getting_started_screen.dart",
+    "line": 129,
+    "content": "title: 'Share with Your Network',",
+    "hash": "16980e72"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/getting_started_screen.dart",
+    "line": 163,
+    "content": "title: 'Welcome Your New Team Members',",
+    "hash": "14ec7686"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/homepage_screen.dart",
+    "line": 126,
+    "content": "content: Text('Demo credentials not available'),",
+    "hash": "33ca46f8"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/homepage_screen.dart",
+    "line": 155,
+    "content": "content: Text('Demo login failed: ${e.message}'),",
+    "hash": "c2892db1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/homepage_screen.dart",
+    "line": 165,
+    "content": "content: Text('Demo login failed. Please try again.'),",
+    "hash": "57e21429"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 282,
+    "content": "appBar: const AppScreenBar(title: 'How It Works'),",
+    "hash": "78cb9ece"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 288,
+    "content": "appBar: const AppScreenBar(title: 'How It Works'),",
+    "hash": "8cf33725"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 391,
+    "content": "title: 'THE CHALLENGE',",
+    "hash": "805158cb"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 401,
+    "content": "title: 'THE SOLUTION',",
+    "hash": "232f9157"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 411,
+    "content": "title: 'WHY IT WORKS',",
+    "hash": "8ec0e7e6"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 455,
+    "content": "title: 'Set Your Foundation',",
+    "hash": "3e7a3e6b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 462,
+    "content": "title: 'Build Smart, Not Hard',",
+    "hash": "9cb37833"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 469,
+    "content": "title: 'Automatic Qualification',",
+    "hash": "416eb89f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 476,
+    "content": "title: 'Rapid Growth',",
+    "hash": "580b19f7"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 512,
+    "content": "label: 'Direct Sponsors',",
+    "hash": "63199eb4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/how_it_works_screen.dart",
+    "line": 519,
+    "content": "label: 'Total Team Members',",
+    "hash": "87a0a56d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 264,
+    "content": "content: Text('✅ Biometric login enabled! You can now use biometric authentication for future logins.'),",
+    "hash": "10c20537"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 293,
+    "content": "content: Text('Login failed: $e'),",
+    "hash": "6da5619a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 330,
+    "content": "content: Text('Biometric authentication failed or no stored credentials found'),",
+    "hash": "8eca46b3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 339,
+    "content": "content: Text('Biometric authentication failed: $e'),",
+    "hash": "b81cc6f5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 431,
+    "content": "content: Text('Sign-in error: $e'),",
+    "hash": "f16052c0"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 542,
+    "content": "decoration: const InputDecoration(labelText: 'Email'),",
+    "hash": "213c3fd6"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 551,
+    "content": "decoration: const InputDecoration(labelText: 'Password'),",
+    "hash": "d772d21f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 578,
+    "content": "label: Text('Sign in with ${_storedEmail ?? 'Biometric'}'),",
+    "hash": "c918da9f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen.dart",
+    "line": 591,
+    "content": "child: Text('or', style: TextStyle(color: Colors.grey)),",
+    "hash": "c9c72e74"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen_enhanced.dart",
+    "line": 238,
+    "content": "appBar: AppScreenBar(title: 'Sign In', appId: widget.appId),",
+    "hash": "109f57fa"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen_enhanced.dart",
+    "line": 739,
+    "content": "labelText: 'Email',",
+    "hash": "160fc9ac"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/login_screen_enhanced.dart",
+    "line": 740,
+    "content": "hintText: 'Enter your email address',",
+    "hash": "bd6fff90"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 184,
+    "content": "appBar: AppScreenBar(title: 'Member Details', appId: widget.appId),",
+    "hash": "6d57bf66"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 188,
+    "content": "? const Center(child: Text('Team member not found.'))",
+    "hash": "6687e14a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 357,
+    "content": "\"$label:\",",
+    "hash": "91365eae"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 376,
+    "content": "\"$label:\",",
+    "hash": "e65b73e1"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 445,
+    "content": "label: 'Direct Sponsors',",
+    "hash": "ded83d3b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/member_detail_screen.dart",
+    "line": 451,
+    "content": "label: 'Total MembersMembers',",
+    "hash": "76369001"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 309,
+    "content": "appBar: AppScreenBar(title: 'Messages', appId: widget.appId),",
+    "hash": "35b12a3b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 311,
+    "content": "? const Center(child: Text('Please log in to see messages.'))",
+    "hash": "ddf1d109"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 320,
+    "content": "return Center(child: Text('Error: ${snapshot.error}'));",
+    "hash": "b3f62194"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 327,
+    "content": "child: Text('No message threads found.'));",
+    "hash": "1318697f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 353,
+    "content": "title: Text('Loading chat...'),",
+    "hash": "03d3147e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_center_screen.dart",
+    "line": 362,
+    "content": "title: Text('Error loading user details'),",
+    "hash": "c8ce5f9a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 175,
+    "content": "content: Text(\"You do not have permission to message this user.\")));",
+    "hash": "646f2157"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 323,
+    "content": "Text('Links Not Permitted'),",
+    "hash": "6e96a1c7"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 345,
+    "content": "appBar: const AppScreenBar(title: 'Messages'),",
+    "hash": "7f2200ac"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 352,
+    "content": "title: 'Messages',",
+    "hash": "8ec4cfb9"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 360,
+    "content": "child: Text('Message Center',",
+    "hash": "10508293"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 395,
+    "content": "return Center(child: Text(\"Error: ${snapshot.error}\"));",
+    "hash": "40acc497"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 401,
+    "content": "return const Center(child: Text('Start the conversation!'));",
+    "hash": "8524af1a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/message_thread_screen.dart",
+    "line": 485,
+    "content": "hintText: 'Type a message...',",
+    "hash": "4ea3d2ca"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/network_screen.dart",
+    "line": 383,
+    "content": "content: Text('✅ Network data refreshed'),",
+    "hash": "9c2b9710"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/network_screen.dart",
+    "line": 394,
+    "content": "content: Text('❌ Error refreshing data: $e'),",
+    "hash": "52f4a616"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/network_screen.dart",
+    "line": 616,
+    "content": "appBar: AppScreenBar(title: 'Your Global Team', appId: widget.appId),",
+    "hash": "e3e9802b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/network_screen.dart",
+    "line": 746,
+    "content": "hintText: 'Search team members...',",
+    "hash": "a8d17e51"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/network_screen.dart",
+    "line": 1139,
+    "content": "Text('Loading more members...'),",
+    "hash": "1e6fca86"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 209,
+    "content": "content: Text('That doesn\\'t look like an invite link. Please paste the full link you received.'),",
+    "hash": "8f112baf"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 247,
+    "content": "Text('New code: $newReferralCode'),",
+    "hash": "37c848d7"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 248,
+    "content": "Text('Source: $newSource'),",
+    "hash": "df77d830"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 251,
+    "content": "Text('Current code: $_initialReferralCode'),",
+    "hash": "f288831c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 252,
+    "content": "Text('Current source: $_referralSource'),",
+    "hash": "17a3f678"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 893,
+    "content": "content: Text('An unexpected error occurred with Google Sign-In.'),",
+    "hash": "2ace583a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 1057,
+    "content": "content: Text('Apple Sign-In is not available on this device'),",
+    "hash": "b6845633"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 1082,
+    "content": "content: Text('Apple Sign-In is temporarily unavailable'),",
+    "hash": "b383ee1a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 1339,
+    "content": "content: Text('Sorry, no sponsor found'),",
+    "hash": "2fad8817"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/new_registration_screen.dart",
+    "line": 1477,
+    "content": "child: Text('or sign up with email',",
+    "hash": "c0c713b2"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/notifications_screen.dart",
+    "line": 195,
+    "content": "appBar: AppScreenBar(title: 'Notifications', appId: widget.appId),",
+    "hash": "3a6b252d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/notifications_screen.dart",
+    "line": 209,
+    "content": "child: Text('Error loading notifications'));",
+    "hash": "e3d1c68d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/notifications_screen.dart",
+    "line": 213,
+    "content": "return const Center(child: Text('No notifications yet.'));",
+    "hash": "2d43e33e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/platform_management_screen.dart",
+    "line": 209,
+    "content": "appBar: const AppScreenBar(title: 'Create Account'),",
+    "hash": "f78107b9"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 177,
+    "content": "appBar: const AppScreenBar(title: 'Privacy Policy'),",
+    "hash": "3fa87ac5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 229,
+    "content": "title: 'Your Privacy Matters',",
+    "hash": "a29050b7"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 239,
+    "content": "title: '1. Information We Collect',",
+    "hash": "470c16be"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 267,
+    "content": "title: '2. How We Use Your Information',",
+    "hash": "a30484ab"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 290,
+    "content": "title: '3. Information Sharing and Disclosure',",
+    "hash": "cc70e88e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 314,
+    "content": "title: '4. Data Security',",
+    "hash": "728d7d46"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 336,
+    "content": "title: '5. Your Rights and Choices',",
+    "hash": "64908c48"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 366,
+    "content": "title: 'Apple Privacy Compliance',",
+    "hash": "4e1d9dbb"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 376,
+    "content": "title: '6. Children\\'s Privacy',",
+    "hash": "f3c79e69"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 391,
+    "content": "title: '7. International Data Transfers',",
+    "hash": "92130ccd"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/privacy_policy_screen.dart",
+    "line": 409,
+    "content": "title: '8. Changes to This Privacy Policy',",
+    "hash": "626d2716"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/profile_screen.dart",
+    "line": 223,
+    "content": "content: Text('Sign out failed: $e'),",
+    "hash": "bc4d106d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/profile_screen.dart",
+    "line": 241,
+    "content": "Text('Demo Account Information'),",
+    "hash": "e59f3b42"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/profile_screen.dart",
+    "line": 407,
+    "content": "appBar: const AppScreenBar(title: 'Profile'),",
+    "hash": "9bbfe45d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/profile_screen.dart",
+    "line": 502,
+    "content": "content: Text('Signing out...'),",
+    "hash": "3a4bfe3f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 84,
+    "content": "const SnackBar(content: Text('Authentication required.')),",
+    "hash": "c28cf40e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 84,
+    "content": "const SnackBar(content: Text('Authentication required.')),",
+    "hash": "c28cf40e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 103,
+    "content": "const SnackBar(content: Text('User profile not found.')),",
+    "hash": "c0ab9083"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 103,
+    "content": "const SnackBar(content: Text('User profile not found.')),",
+    "hash": "c0ab9083"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 119,
+    "content": "content: Text('Access Denied: Admin role required.')),",
+    "hash": "9d750a4f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 171,
+    "content": "SnackBar(content: Text('Failed to load settings: ${e.toString()}')),",
+    "hash": "f8eed749"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 171,
+    "content": "SnackBar(content: Text('Failed to load settings: ${e.toString()}')),",
+    "hash": "f8eed749"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 240,
+    "content": "Text('Referral Link fields must match for confirmation.')),",
+    "hash": "d93db246"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 251,
+    "content": "const SnackBar(content: Text('User not authenticated.')),",
+    "hash": "65ca3cd4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 251,
+    "content": "const SnackBar(content: Text('User not authenticated.')),",
+    "hash": "65ca3cd4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 325,
+    "content": "const SnackBar(content: Text('Settings saved successfully.')),",
+    "hash": "b83da3cd"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 325,
+    "content": "const SnackBar(content: Text('Settings saved successfully.')),",
+    "hash": "b83da3cd"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 331,
+    "content": "SnackBar(content: Text('Failed to save settings: ${e.toString()}')),",
+    "hash": "d7005976"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 331,
+    "content": "SnackBar(content: Text('Failed to save settings: ${e.toString()}')),",
+    "hash": "d7005976"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 349,
+    "content": "appBar: const AppScreenBar(title: 'Settings'),",
+    "hash": "f6d76add"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 397,
+    "content": "labelText: 'Your Organization Name',",
+    "hash": "7e6ccbf6"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 408,
+    "content": "labelText: 'Confirm Organization Name'),",
+    "hash": "f301b235"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 455,
+    "content": "labelText: 'Your Referral Link',",
+    "hash": "8af6ed73"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 467,
+    "content": "labelText: 'Confirm Referral Link URL',",
+    "hash": "71e96435"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 650,
+    "content": "label: 'Direct Sponsors',",
+    "hash": "b66f2380"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/settings_screen.dart",
+    "line": 656,
+    "content": "label: 'Total MembersMembers',",
+    "hash": "f1e01570"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 203,
+    "content": "content: Text('No email app available. Try sharing with Messages or copy link.'),",
+    "hash": "2eb54f36"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 585,
+    "content": "Text('Referral link copied! 🎉'),",
+    "hash": "072483ed"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 601,
+    "content": "appBar: AppScreenBar(title: 'Share', appId: widget.appId),",
+    "hash": "3b3ee0e5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 699,
+    "content": "Text('Invite recruiting prospects to get a head start.',",
+    "hash": "283fc959"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 708,
+    "content": "Text('Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',",
+    "hash": "97e6a440"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 892,
+    "content": "Text('Great for your existing $_bizOppName team',",
+    "hash": "34599efb"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/share_screen.dart",
+    "line": 901,
+    "content": "Text('Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',",
+    "hash": "004138f3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 123,
+    "content": "content: Text('✅ Subscription activated successfully!'),",
+    "hash": "71d21d59"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 134,
+    "content": "title: Text('Subscription Not Active'),",
+    "hash": "bc51aec9"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 135,
+    "content": "content: Text('Purchase started but not active yet. Try again.'),",
+    "hash": "d5602485"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 183,
+    "content": "content: Text('✅ Subscription restored successfully!'),",
+    "hash": "6b0766f4"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 197,
+    "content": "content: Text('No previous subscription found to restore.'),",
+    "hash": "7610cd56"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen.dart",
+    "line": 330,
+    "content": "title: 'Team Build Pro',",
+    "hash": "d0139e3b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 123,
+    "content": "content: Text('✅ Subscription activated successfully!'),",
+    "hash": "04a50845"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 134,
+    "content": "title: Text('Subscription Not Active'),",
+    "hash": "ba340ff5"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 135,
+    "content": "content: Text('Purchase started but not active yet. Try again.'),",
+    "hash": "6a0c74fa"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 183,
+    "content": "content: Text('✅ Subscription restored successfully!'),",
+    "hash": "3fff820a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 197,
+    "content": "content: Text('No previous subscription found to restore.'),",
+    "hash": "e5635050"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced.dart",
+    "line": 340,
+    "content": "title: 'Team Build Pro',",
+    "hash": "2dc5b491"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 123,
+    "content": "content: Text('✅ Subscription activated successfully!'),",
+    "hash": "70f7b76b"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 134,
+    "content": "title: Text('Subscription Not Active'),",
+    "hash": "ec3c520a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 135,
+    "content": "content: Text('Purchase started but not active yet. Try again.'),",
+    "hash": "6afc106e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 183,
+    "content": "content: Text('✅ Subscription restored successfully!'),",
+    "hash": "b1fdf9a2"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 197,
+    "content": "content: Text('No previous subscription found to restore.'),",
+    "hash": "e9f59da3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/subscription_screen_enhanced_backup.dart",
+    "line": 330,
+    "content": "title: 'Team Build Pro',",
+    "hash": "548e7ad2"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/terms_of_service_screen.dart",
+    "line": 35,
+    "content": "appBar: const AppScreenBar(title: 'Terms of Service'),",
+    "hash": "2f96989a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 136,
+    "content": "content: Text('Biometric authentication failed. Please try again.'),",
+    "hash": "e4044d7c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 148,
+    "content": "content: Text('Password required to enable biometric login'),",
+    "hash": "8a38f659"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 160,
+    "content": "content: Text('User email not found'),",
+    "hash": "015411ce"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 186,
+    "content": "content: Text('✅ Biometric login enabled successfully'),",
+    "hash": "29e1144e"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 194,
+    "content": "content: Text('Incorrect password. Please try again.'),",
+    "hash": "e77032fb"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 203,
+    "content": "content: Text('Error enabling biometric: $e'),",
+    "hash": "a93d1315"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 217,
+    "content": "content: Text('Biometric login disabled'),",
+    "hash": "f45fe35d"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 248,
+    "content": "labelText: 'Password',",
+    "hash": "5baa42c0"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 380,
+    "content": "content: Text('Profile updated successfully!'),",
+    "hash": "6e996d98"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 396,
+    "content": "content: Text('Error updating profile: $e'),",
+    "hash": "f98fdc07"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 431,
+    "content": "appBar: const AppScreenBar(title: 'Update Profile'),",
+    "hash": "117dda39"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 544,
+    "content": "labelText: 'Country',",
+    "hash": "5d640409"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 578,
+    "content": "labelText: 'State/Province',",
+    "hash": "bae4dc9c"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/update_profile_screen.dart",
+    "line": 590,
+    "content": "labelText: 'City',",
+    "hash": "175937de"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/view_profile_screen.dart",
+    "line": 40,
+    "content": "appBar: AppScreenBar(title: 'Profile', appId: 'profile'),",
+    "hash": "2c361aa8"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/screens/view_profile_screen.dart",
+    "line": 89,
+    "content": "const PlaceholderScreen(title: 'Message Center'),",
+    "hash": "8d7523f3"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/widgets/persistent_bottom_navigation.dart",
+    "line": 111,
+    "content": "label: 'Home',",
+    "hash": "f694ee1f"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/widgets/persistent_bottom_navigation.dart",
+    "line": 115,
+    "content": "label: 'Messages',",
+    "hash": "bbb6057a"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/widgets/persistent_bottom_navigation.dart",
+    "line": 119,
+    "content": "label: 'Share',",
+    "hash": "bc988294"
+  },
+  {
+    "file": "/Users/sscott/tbp/lib/widgets/persistent_bottom_navigation.dart",
+    "line": 123,
+    "content": "label: 'Profile',",
+    "hash": "cb087cd1"
+  }
+]

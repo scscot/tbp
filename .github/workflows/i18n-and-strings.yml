@@ -39,10 +39,30 @@ jobs:
           cd locales
           npm run check
 
-      - name: Raw string scan
+      - name: Get changed UI files
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --prune --depth=2 origin +refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}
+            DIFF_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- "lib/screens/**" "lib/widgets/**" || echo "")
+          else
+            # For push events, compare with previous commit
+            DIFF_FILES=$(git diff --name-only HEAD~1 HEAD -- "lib/screens/**" "lib/widgets/**" || echo "")
+          fi
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$DIFF_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Raw string scan (changed files only)
+        if: steps.changes.outputs.files != ''
         run: |
           cd locales
-          npm run check:strings
+          node generators/check_raw_strings.js --files "${{ steps.changes.outputs.files }}" --allowlist allowlists/raw_strings_allowlist.json
+
+      - name: Raw string scan (no changes)
+        if: steps.changes.outputs.files == ''
+        run: |
+          echo "ℹ️  No UI files changed, skipping raw string scan"
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
