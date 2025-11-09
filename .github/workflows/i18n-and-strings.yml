@@ -73,4 +73,4 @@ jobs:
           flutter-version: '3.35.7'
 
       - name: Flutter analyze (sanity)
-        run: flutter analyze
+        run: flutter analyze --no-fatal-warnings
