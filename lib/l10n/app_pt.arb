@@ -1870,7 +1870,7 @@
     "description": "Button to refresh data",
     "maxLength": 14
   },
-  "recruitT01FirstTouch": "Oi {prospectName}, é o {senderFirst}. Estou usando um app para ajudar amigos a começar com {companyName}. Dá uma olhada? {shortLink}",
+  "recruitT01FirstTouch": "Oi {prospectName}, sou {senderFirst}. Uso app pra ajudar amigos com {companyName}. Dá uma olhada? {shortLink}",
   "@recruitT01FirstTouch": {
     "description": "Initial outreach message with prospect name",
     "cap": {
@@ -1916,7 +1916,7 @@
       }
     }
   },
-  "recruitT02FollowUpWarm": "Oi {prospectName}! Fazendo um follow-up sobre {companyName}. Vi ótimos resultados essa semana. Tem tempo para um papo rápido? {shortLink}",
+  "recruitT02FollowUpWarm": "Oi {prospectName}! Follow-up sobre {companyName}. Ótimos resultados essa semana. Tempo pra um papo? {shortLink}",
   "@recruitT02FollowUpWarm": {
     "description": "Warm follow-up message after initial interest",
     "cap": {
@@ -1937,7 +1937,7 @@
       }
     }
   },
-  "recruitT03DeadlineNudge": "{prospectName}, as vagas estão se preenchendo para nosso lançamento com {companyName}. Quer que eu reserve uma para você? {shortLink}",
+  "recruitT03DeadlineNudge": "{prospectName}, vagas preenchendo pro lançamento {companyName}. Reservo uma pra você? {shortLink}",
   "@recruitT03DeadlineNudge": {
     "description": "Time-sensitive reminder about limited availability",
     "cap": {
@@ -2119,7 +2119,7 @@
       }
     }
   },
-  "recruitT13TrainingInvite": "Oi {prospectName}, temos uma sessão de treinamento de {companyName} chegando. Quer participar? {inviteLink}",
+  "recruitT13TrainingInvite": "Oi {prospectName}, treinamento {companyName} chegando. Quer participar? {inviteLink}",
   "@recruitT13TrainingInvite": {
     "description": "Invitation to training or event",
     "cap": {

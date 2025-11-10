@@ -377,7 +377,7 @@
     "description": "Dashboard tile title/CTA for creating account (admin only)",
     "maxLength": 22
   },
-  "recruitT01FirstTouch": "Hey {prospectName}, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
+  "recruitT01FirstTouch": "Hey {prospectName}, it's {senderFirst}. Using an app to help friends start with {companyName}. Look? {shortLink}",
   "@recruitT01FirstTouch": {
     "description": "Initial outreach message with prospect name",
     "cap": {
@@ -423,7 +423,7 @@
       }
     }
   },
-  "recruitT02FollowUpWarm": "Hi {prospectName}! Following up on {companyName}. I saw great results this week. Have time for a quick chat? {shortLink}",
+  "recruitT02FollowUpWarm": "Hi {prospectName}! Following up on {companyName}. Great results this week. Quick chat? {shortLink}",
   "@recruitT02FollowUpWarm": {
     "description": "Warm follow-up message after initial interest",
     "cap": {
@@ -626,7 +626,7 @@
       }
     }
   },
-  "recruitT13TrainingInvite": "Hey {prospectName}, we have a {companyName} training session coming up. Want to join? {inviteLink}",
+  "recruitT13TrainingInvite": "Hey {prospectName}, {companyName} training session coming up. Join? {inviteLink}",
   "@recruitT13TrainingInvite": {
     "description": "Invitation to training or event",
     "cap": {
