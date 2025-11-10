@@ -1,9 +1,10 @@
 {
+  "@@locale": "pt",
   "appTitle": "Team Build Pro",
   "@appTitle": {
     "description": "Application title"
   },
-  "authLoginHeaderTitle": "Welcome back",
+  "authLoginHeaderTitle": "Bem-vindo de volta",
   "@authLoginHeaderTitle": {
     "description": "Main header on login screen - sentence case",
     "maxLength": 36
@@ -12,31 +13,31 @@
   "@authLoginLabelEmail": {
     "description": "Email input field label"
   },
-  "authLoginHintEmail": "Enter your email address",
+  "authLoginHintEmail": "Digite seu endereço de email",
   "@authLoginHintEmail": {
     "description": "Email input field placeholder"
   },
-  "authLoginEmailRequired": "Please enter your email",
+  "authLoginEmailRequired": "Por favor, digite seu email",
   "@authLoginEmailRequired": {
     "description": "Validation error when email field is empty"
   },
-  "authLoginEmailInvalid": "Please enter a valid email",
+  "authLoginEmailInvalid": "Por favor, digite um email válido",
   "@authLoginEmailInvalid": {
     "description": "Validation error when email format is invalid"
   },
-  "authLoginLabelPassword": "Password",
+  "authLoginLabelPassword": "Senha",
   "@authLoginLabelPassword": {
     "description": "Password input field label"
   },
-  "authLoginHintPassword": "Enter your password",
+  "authLoginHintPassword": "Digite sua senha",
   "@authLoginHintPassword": {
     "description": "Password input field placeholder"
   },
-  "authLoginPasswordRequired": "Please enter your password",
+  "authLoginPasswordRequired": "Por favor, digite sua senha",
   "@authLoginPasswordRequired": {
     "description": "Validation error when password field is empty"
   },
-  "authLoginPasswordTooShort": "Password must be at least {min} characters",
+  "authLoginPasswordTooShort": "A senha deve ter pelo menos {min} caracteres",
   "@authLoginPasswordTooShort": {
     "description": "Validation error when password is too short",
     "placeholders": {
@@ -46,21 +47,21 @@
       }
     }
   },
-  "authLoginButtonSignIn": "Sign In",
+  "authLoginButtonSignIn": "Entrar",
   "@authLoginButtonSignIn": {
     "description": "Sign in button label - title case",
     "maxLength": 22
   },
-  "authLoginNoAccountPrompt": "Don't have an account?",
+  "authLoginNoAccountPrompt": "Não tem uma conta?",
   "@authLoginNoAccountPrompt": {
     "description": "Text shown before sign up link"
   },
-  "authLoginLinkSignUp": "Sign Up",
+  "authLoginLinkSignUp": "Cadastre-se",
   "@authLoginLinkSignUp": {
     "description": "Link to navigate to sign up screen",
     "maxLength": 22
   },
-  "authLoginBiometric": "Sign in with {method}",
+  "authLoginBiometric": "Entrar com {method}",
   "@authLoginBiometric": {
     "description": "Biometric authentication button label with method placeholder",
     "maxLength": 22,
@@ -79,36 +80,36 @@
   "@authLoginBiometricMethodTouch": {
     "description": "Touch ID biometric method name (iOS)"
   },
-  "authLoginBiometricMethodGeneric": "Biometrics",
+  "authLoginBiometricMethodGeneric": "Biometria",
   "@authLoginBiometricMethodGeneric": {
     "description": "Generic biometric method name (Android/fallback)"
   },
-  "authSignupHeaderTitle": "Create your account",
+  "authSignupHeaderTitle": "Crie sua conta",
   "@authSignupHeaderTitle": {
     "description": "Main header on signup screen - sentence case",
     "maxLength": 36
   },
-  "authSignupLabelFirstName": "First Name",
+  "authSignupLabelFirstName": "Nome",
   "@authSignupLabelFirstName": {
     "description": "First name input field label"
   },
-  "authSignupHintFirstName": "Enter your first name",
+  "authSignupHintFirstName": "Digite seu nome",
   "@authSignupHintFirstName": {
     "description": "First name input field placeholder"
   },
-  "authSignupFirstNameRequired": "Please enter your first name",
+  "authSignupFirstNameRequired": "Por favor, digite seu nome",
   "@authSignupFirstNameRequired": {
     "description": "Validation error when first name field is empty"
   },
-  "authSignupLabelLastName": "Last Name",
+  "authSignupLabelLastName": "Sobrenome",
   "@authSignupLabelLastName": {
     "description": "Last name input field label"
   },
-  "authSignupHintLastName": "Enter your last name",
+  "authSignupHintLastName": "Digite seu sobrenome",
   "@authSignupHintLastName": {
     "description": "Last name input field placeholder"
   },
-  "authSignupLastNameRequired": "Please enter your last name",
+  "authSignupLastNameRequired": "Por favor, digite seu sobrenome",
   "@authSignupLastNameRequired": {
     "description": "Validation error when last name field is empty"
   },
@@ -116,31 +117,31 @@
   "@authSignupLabelEmail": {
     "description": "Email input field label"
   },
-  "authSignupHintEmail": "Enter your email address",
+  "authSignupHintEmail": "Digite seu endereço de email",
   "@authSignupHintEmail": {
     "description": "Email input field placeholder"
   },
-  "authSignupEmailRequired": "Please enter your email",
+  "authSignupEmailRequired": "Por favor, digite seu email",
   "@authSignupEmailRequired": {
     "description": "Validation error when email field is empty"
   },
-  "authSignupEmailInvalid": "Please enter a valid email",
+  "authSignupEmailInvalid": "Por favor, digite um email válido",
   "@authSignupEmailInvalid": {
     "description": "Validation error when email format is invalid"
   },
-  "authSignupLabelPassword": "Password",
+  "authSignupLabelPassword": "Senha",
   "@authSignupLabelPassword": {
     "description": "Password input field label"
   },
-  "authSignupHintPassword": "Create a password",
+  "authSignupHintPassword": "Crie uma senha",
   "@authSignupHintPassword": {
     "description": "Password input field placeholder"
   },
-  "authSignupPasswordRequired": "Please enter a password",
+  "authSignupPasswordRequired": "Por favor, digite uma senha",
   "@authSignupPasswordRequired": {
     "description": "Validation error when password field is empty"
   },
-  "authSignupPasswordTooShort": "Password must be at least {min} characters",
+  "authSignupPasswordTooShort": "A senha deve ter pelo menos {min} caracteres",
   "@authSignupPasswordTooShort": {
     "description": "Validation error when password is too short",
     "placeholders": {
@@ -150,163 +151,163 @@
       }
     }
   },
-  "authSignupLabelConfirmPassword": "Confirm Password",
+  "authSignupLabelConfirmPassword": "Confirmar Senha",
   "@authSignupLabelConfirmPassword": {
     "description": "Confirm password input field label"
   },
-  "authSignupHintConfirmPassword": "Re-enter your password",
+  "authSignupHintConfirmPassword": "Digite sua senha novamente",
   "@authSignupHintConfirmPassword": {
     "description": "Confirm password input field placeholder"
   },
-  "authSignupConfirmPasswordRequired": "Please confirm your password",
+  "authSignupConfirmPasswordRequired": "Por favor, confirme sua senha",
   "@authSignupConfirmPasswordRequired": {
     "description": "Validation error when confirm password field is empty"
   },
-  "authSignupPasswordMismatch": "Passwords don't match",
+  "authSignupPasswordMismatch": "As senhas não coincidem",
   "@authSignupPasswordMismatch": {
     "description": "Validation error when password and confirm password don't match"
   },
-  "authSignupLabelReferralCode": "Referral Code (Optional)",
+  "authSignupLabelReferralCode": "Código de Indicação (Opcional)",
   "@authSignupLabelReferralCode": {
     "description": "Referral code input field label"
   },
-  "authSignupHintReferralCode": "Enter invite code if you have one",
+  "authSignupHintReferralCode": "Digite o código de convite se você tiver um",
   "@authSignupHintReferralCode": {
     "description": "Referral code input field placeholder"
   },
-  "authSignupButtonPasteCode": "Paste",
+  "authSignupButtonPasteCode": "Colar",
   "@authSignupButtonPasteCode": {
     "description": "Paste referral code from clipboard button",
     "maxLength": 22
   },
-  "authSignupTosConsent": "By continuing, you agree to the Terms of Service and Privacy Policy",
+  "authSignupTosConsent": "Ao continuar, você concorda com os Termos de Serviço e Política de Privacidade",
   "@authSignupTosConsent": {
     "description": "Terms and privacy consent text. Will be enhanced with tappable links in Phase 1C"
   },
-  "authSignupTermsShort": "Terms of Service",
+  "authSignupTermsShort": "Termos de Serviço",
   "@authSignupTermsShort": {
     "description": "Short label for terms of service link"
   },
-  "authSignupPrivacyShort": "Privacy Policy",
+  "authSignupPrivacyShort": "Política de Privacidade",
   "@authSignupPrivacyShort": {
     "description": "Short label for privacy policy link"
   },
-  "authSignupTosRequired": "You must accept the terms to continue",
+  "authSignupTosRequired": "Você deve aceitar os termos para continuar",
   "@authSignupTosRequired": {
     "description": "Validation error when user hasn't accepted terms"
   },
-  "authSignupButtonCreateAccount": "Create Account",
+  "authSignupButtonCreateAccount": "Criar Conta",
   "@authSignupButtonCreateAccount": {
     "description": "Create account button label - title case",
     "maxLength": 22
   },
-  "authSignupHaveAccountPrompt": "Already have an account?",
+  "authSignupHaveAccountPrompt": "Já tem uma conta?",
   "@authSignupHaveAccountPrompt": {
     "description": "Text shown before sign in link"
   },
-  "authSignupLinkSignIn": "Sign In",
+  "authSignupLinkSignIn": "Entrar",
   "@authSignupLinkSignIn": {
     "description": "Link to navigate to sign in screen",
     "maxLength": 22
   },
-  "authPasswordShow": "Show password",
+  "authPasswordShow": "Mostrar senha",
   "@authPasswordShow": {
     "description": "Accessibility label for show password icon button"
   },
-  "authPasswordHide": "Hide password",
+  "authPasswordHide": "Ocultar senha",
   "@authPasswordHide": {
     "description": "Accessibility label for hide password icon button"
   },
-  "authErrorInvalidEmail": "That email isn't valid. Please check and try again.",
+  "authErrorInvalidEmail": "Esse email não é válido. Por favor, verifique e tente novamente.",
   "@authErrorInvalidEmail": {
     "description": "Error message for invalid email from Firebase auth"
   },
-  "authErrorUserDisabled": "This account has been disabled. Please contact support.",
+  "authErrorUserDisabled": "Esta conta foi desativada. Por favor, entre em contato com o suporte.",
   "@authErrorUserDisabled": {
     "description": "Error message when user account is disabled"
   },
-  "authErrorUserNotFound": "No account found with that email.",
+  "authErrorUserNotFound": "Nenhuma conta encontrada com esse email.",
   "@authErrorUserNotFound": {
     "description": "Error message when user doesn't exist"
   },
-  "authErrorWrongPassword": "Incorrect password. Please try again.",
+  "authErrorWrongPassword": "Senha incorreta. Por favor, tente novamente.",
   "@authErrorWrongPassword": {
     "description": "Error message for wrong password"
   },
-  "authErrorEmailInUse": "An account with that email already exists.",
+  "authErrorEmailInUse": "Já existe uma conta com esse email.",
   "@authErrorEmailInUse": {
     "description": "Error message when email is already registered"
   },
-  "authErrorWeakPassword": "Please choose a stronger password.",
+  "authErrorWeakPassword": "Por favor, escolha uma senha mais forte.",
   "@authErrorWeakPassword": {
     "description": "Error message for weak password"
   },
-  "authErrorNetworkError": "Network error. Please check your connection.",
+  "authErrorNetworkError": "Erro de rede. Por favor, verifique sua conexão.",
   "@authErrorNetworkError": {
     "description": "Error message for network failures"
   },
-  "authErrorTooMany": "Too many attempts. Please wait a moment.",
+  "authErrorTooMany": "Muitas tentativas. Por favor, aguarde um momento.",
   "@authErrorTooMany": {
     "description": "Error message for too many failed attempts"
   },
-  "authErrorInvalidCredential": "Those details don't match our records.",
+  "authErrorInvalidCredential": "Esses dados não correspondem aos nossos registros.",
   "@authErrorInvalidCredential": {
     "description": "Error message for invalid credentials"
   },
-  "authErrorUnknown": "An error occurred. Please try again.",
+  "authErrorUnknown": "Ocorreu um erro. Por favor, tente novamente.",
   "@authErrorUnknown": {
     "description": "Generic error message for unknown errors"
   },
-  "navHome": "Home",
+  "navHome": "Início",
   "@navHome": {
     "description": "Bottom navigation tab label for home/dashboard",
     "maxLength": 14
   },
-  "navTeam": "Team",
+  "navTeam": "Equipe",
   "@navTeam": {
     "description": "Bottom navigation tab label for team/network",
     "maxLength": 14
   },
-  "navShare": "Share",
+  "navShare": "Compartilhar",
   "@navShare": {
     "description": "Bottom navigation tab label for sharing",
     "maxLength": 14
   },
-  "navMessages": "Messages",
+  "navMessages": "Mensagens",
   "@navMessages": {
     "description": "Bottom navigation tab label for messages",
     "maxLength": 14
   },
-  "navNotices": "Notices",
+  "navNotices": "Avisos",
   "@navNotices": {
     "description": "Bottom navigation tab label for notifications",
     "maxLength": 14
   },
-  "navProfile": "Profile",
+  "navProfile": "Perfil",
   "@navProfile": {
     "description": "Bottom navigation tab label for profile",
     "maxLength": 14
   },
-  "dashTitle": "Control Center",
+  "dashTitle": "Centro de Controle",
   "@dashTitle": {
     "description": "Dashboard screen title in app bar",
     "maxLength": 32
   },
-  "dashKpiDirectSponsors": "Direct Sponsors",
+  "dashKpiDirectSponsors": "Patrocinadores Diretos",
   "@dashKpiDirectSponsors": {
     "description": "Label for direct sponsors count KPI",
     "maxLength": 28
   },
-  "dashKpiTotalTeam": "Total Team Members",
+  "dashKpiTotalTeam": "Total de Membros da Equipe",
   "@dashKpiTotalTeam": {
     "description": "Label for total team members count KPI",
     "maxLength": 28
   },
-  "dashStatsRefreshed": "Team stats refreshed",
+  "dashStatsRefreshed": "Estatísticas da equipe atualizadas",
   "@dashStatsRefreshed": {
     "description": "Success message after refreshing team statistics"
   },
-  "dashStatsError": "Error refreshing stats: {error}",
+  "dashStatsError": "Erro ao atualizar estatísticas: {error}",
   "@dashStatsError": {
     "description": "Error message when statistics refresh fails",
     "placeholders": {
@@ -316,67 +317,1619 @@
       }
     }
   },
-  "dashTileGettingStarted": "Getting Started",
+  "dashTileGettingStarted": "Primeiros Passos",
   "@dashTileGettingStarted": {
     "description": "Dashboard tile title for getting started guide",
     "maxLength": 28
   },
-  "dashTileOpportunity": "Opportunity Details",
+  "dashTileOpportunity": "Detalhes da Oportunidade",
   "@dashTileOpportunity": {
     "description": "Dashboard tile title for business opportunity details",
     "maxLength": 28
   },
-  "dashTileEligibility": "Your Eligibility Status",
+  "dashTileEligibility": "Seu Status de Elegibilidade",
   "@dashTileEligibility": {
     "description": "Dashboard tile title for eligibility status",
     "maxLength": 32
   },
-  "dashTileGrowTeam": "Grow Your Team",
+  "dashTileGrowTeam": "Expanda Sua Equipe",
   "@dashTileGrowTeam": {
     "description": "Dashboard tile title/CTA for growing team",
     "maxLength": 22
   },
-  "dashTileViewTeam": "View Your Team",
+  "dashTileViewTeam": "Ver Sua Equipe",
   "@dashTileViewTeam": {
     "description": "Dashboard tile title/CTA for viewing team",
     "maxLength": 22
   },
-  "dashTileAiCoach": "Your AI Coach",
+  "dashTileAiCoach": "Seu Coach de IA",
   "@dashTileAiCoach": {
     "description": "Dashboard tile title for AI coaching assistant",
     "maxLength": 28
   },
-  "dashTileMessageCenter": "Message Center",
+  "dashTileMessageCenter": "Central de Mensagens",
   "@dashTileMessageCenter": {
     "description": "Dashboard tile title for message center",
     "maxLength": 28
   },
-  "dashTileNotifications": "Notifications",
+  "dashTileNotifications": "Notificações",
   "@dashTileNotifications": {
     "description": "Dashboard tile title for notifications",
     "maxLength": 28
   },
-  "dashTileHowItWorks": "How It Works",
+  "dashTileHowItWorks": "Como Funciona",
   "@dashTileHowItWorks": {
     "description": "Dashboard tile title for how it works guide",
     "maxLength": 28
   },
-  "dashTileFaqs": "FAQ's",
+  "dashTileFaqs": "Perguntas Frequentes",
   "@dashTileFaqs": {
     "description": "Dashboard tile title for frequently asked questions",
     "maxLength": 22
   },
-  "dashTileProfile": "View Your Profile",
+  "dashTileProfile": "Ver Seu Perfil",
   "@dashTileProfile": {
     "description": "Dashboard tile title/CTA for viewing profile",
     "maxLength": 22
   },
-  "dashTileCreateAccount": "Create New Account",
+  "dashTileCreateAccount": "Criar Nova Conta",
   "@dashTileCreateAccount": {
     "description": "Dashboard tile title/CTA for creating account (admin only)",
     "maxLength": 22
   },
-  "recruitT01FirstTouch": "Hey {prospectName}, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
+  "dashKpiTitle": "Estatísticas Atuais da Equipe",
+  "@dashKpiTitle": {
+    "description": "Title for KPI stats section on dashboard",
+    "maxLength": 36
+  },
+  "dashKpiRefreshTooltip": "Atualizar estatísticas",
+  "@dashKpiRefreshTooltip": {
+    "description": "Tooltip for refresh button on team stats"
+  },
+  "dashTileJoinOpportunity": "Participe da Oportunidade!",
+  "@dashTileJoinOpportunity": {
+    "description": "Dashboard tile CTA for joining business opportunity",
+    "maxLength": 28
+  },
+  "dashSubscriptionTrial": "Iniciar Assinatura\n({daysLeft} dias restantes no teste)",
+  "@dashSubscriptionTrial": {
+    "description": "Subscription tile text during trial period",
+    "placeholders": {
+      "daysLeft": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "dashSubscriptionExpired": "Renovar Sua Assinatura\nTeste grátis de 30 dias expirou.",
+  "@dashSubscriptionExpired": {
+    "description": "Subscription tile text when trial has expired"
+  },
+  "dashSubscriptionCancelled": "Você Cancelou Sua Assinatura\nReative Sua Assinatura Agora",
+  "@dashSubscriptionCancelled": {
+    "description": "Subscription tile text when user cancelled subscription"
+  },
+  "dashSubscriptionManage": "Gerenciar Assinatura",
+  "@dashSubscriptionManage": {
+    "description": "Button text to manage subscription settings",
+    "maxLength": 28
+  },
+  "networkTitle": "Sua Equipe Global",
+  "@networkTitle": {
+    "description": "Network screen title in app bar",
+    "maxLength": 32
+  },
+  "networkLabelDirectSponsors": "Patrocinadores Diretos",
+  "@networkLabelDirectSponsors": {
+    "description": "Label for direct sponsors count in network screen",
+    "maxLength": 28
+  },
+  "networkLabelTotalTeam": "Equipe Total",
+  "@networkLabelTotalTeam": {
+    "description": "Label for total team count in network screen",
+    "maxLength": 28
+  },
+  "networkLabelNewMembers": "Novos Membros",
+  "@networkLabelNewMembers": {
+    "description": "Label for new members count in network screen",
+    "maxLength": 28
+  },
+  "networkSearchHint": "Buscar membros da equipe...",
+  "@networkSearchHint": {
+    "description": "Placeholder text for network search field"
+  },
+  "networkRefreshTooltip": "Forçar atualização",
+  "@networkRefreshTooltip": {
+    "description": "Tooltip for force refresh button in network screen"
+  },
+  "networkFilterSelectReport": "Ver Relatório da Equipe",
+  "@networkFilterSelectReport": {
+    "description": "Default dropdown text prompting user to select a report filter",
+    "maxLength": 28
+  },
+  "networkFilterAllMembers": "Todos os Membros",
+  "@networkFilterAllMembers": {
+    "description": "Filter option to show all team members",
+    "maxLength": 28
+  },
+  "networkFilterDirectSponsors": "Patrocinadores Diretos",
+  "@networkFilterDirectSponsors": {
+    "description": "Filter option to show only direct sponsors",
+    "maxLength": 28
+  },
+  "networkFilterNewMembers": "Novos Membros - Hoje",
+  "@networkFilterNewMembers": {
+    "description": "Filter option to show new members who joined today",
+    "maxLength": 28
+  },
+  "networkFilterNewMembersYesterday": "Novos Membros - Ontem",
+  "@networkFilterNewMembersYesterday": {
+    "description": "Filter option to show new members who joined yesterday",
+    "maxLength": 32
+  },
+  "networkFilterQualified": "Membros Qualificados",
+  "@networkFilterQualified": {
+    "description": "Filter option to show members who meet eligibility criteria",
+    "maxLength": 28
+  },
+  "networkFilterJoined": "Entrou",
+  "@networkFilterJoined": {
+    "description": "Label prefix for member join date",
+    "maxLength": 14
+  },
+  "networkFilterAllMembersWithCount": "Todos os Membros ({count})",
+  "@networkFilterAllMembersWithCount": {
+    "description": "Filter option showing all members with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "301"
+      }
+    }
+  },
+  "networkFilterDirectSponsorsWithCount": "Patrocinadores Diretos ({count})",
+  "@networkFilterDirectSponsorsWithCount": {
+    "description": "Filter option showing direct sponsors with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "networkFilterNewMembersWithCount": "Novos Membros - Hoje ({count})",
+  "@networkFilterNewMembersWithCount": {
+    "description": "Filter option showing new members today with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "networkFilterNewMembersYesterdayWithCount": "Novos Membros - Ontem ({count})",
+  "@networkFilterNewMembersYesterdayWithCount": {
+    "description": "Filter option showing new members yesterday with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "networkFilterQualifiedWithCount": "Membros Qualificados ({count})",
+  "@networkFilterQualifiedWithCount": {
+    "description": "Filter option showing qualified members with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "11"
+      }
+    }
+  },
+  "networkFilterJoinedWithCount": "Entrou em {business} ({count})",
+  "@networkFilterJoinedWithCount": {
+    "description": "Filter option showing members who joined business with count",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "Demo Company"
+      },
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "networkMessageSelectReport": "Selecione um relatório no menu acima ou use a barra de busca para visualizar e gerenciar sua equipe.",
+  "@networkMessageSelectReport": {
+    "description": "Help message shown when no filter is selected"
+  },
+  "networkMessageNoSearchResults": "Mostrando resultados de busca de Todos os Membros. Nenhum membro corresponde à sua busca.",
+  "@networkMessageNoSearchResults": {
+    "description": "Message shown when search returns no results"
+  },
+  "networkMessageNoMembers": "Nenhum membro encontrado para este filtro.",
+  "@networkMessageNoMembers": {
+    "description": "Message shown when selected filter has no members"
+  },
+  "networkSearchingContext": "Buscando em: Todos os Membros",
+  "@networkSearchingContext": {
+    "description": "Context label showing which dataset is being searched"
+  },
+  "networkSearchingContextInfo": "Mostrando resultados de busca de Todos os Membros",
+  "@networkSearchingContextInfo": {
+    "description": "Info message about search context"
+  },
+  "networkPaginationInfo": "Mostrando {showing} de {total} membros",
+  "@networkPaginationInfo": {
+    "description": "Pagination status showing current count vs total",
+    "placeholders": {
+      "showing": {
+        "type": "int",
+        "example": "50"
+      },
+      "total": {
+        "type": "int",
+        "example": "150"
+      }
+    }
+  },
+  "networkLevelLabel": "Nível {level}",
+  "@networkLevelLabel": {
+    "description": "Label showing member's network level",
+    "maxLength": 14,
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "networkMembersCount": "{count, plural, one {# Membro} other {# Membros}}",
+  "@networkMembersCount": {
+    "description": "Count of members with proper pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "networkLoadingMore": "Carregando mais membros...",
+  "@networkLoadingMore": {
+    "description": "Loading indicator when fetching additional members"
+  },
+  "networkLoadMoreButton": "Carregar Mais Membros ({remaining} restantes)",
+  "@networkLoadMoreButton": {
+    "description": "Button to load more members with count remaining",
+    "placeholders": {
+      "remaining": {
+        "type": "int",
+        "example": "100"
+      }
+    }
+  },
+  "networkAllMembersLoaded": "Todos os {count} membros carregados",
+  "@networkAllMembersLoaded": {
+    "description": "Message when all members have been loaded",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "150"
+      }
+    }
+  },
+  "networkMemberJoined": "Entrou em {date}",
+  "@networkMemberJoined": {
+    "description": "Label showing when member joined",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 15, 2025"
+      }
+    }
+  },
+  "networkAnalyticsPerformance": "Desempenho da Rede",
+  "@networkAnalyticsPerformance": {
+    "description": "Title for network performance analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsGeographic": "Distribuição Geográfica",
+  "@networkAnalyticsGeographic": {
+    "description": "Title for geographic distribution analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsLevels": "Distribuição por Nível",
+  "@networkAnalyticsLevels": {
+    "description": "Title for level distribution analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsChartPlaceholder": "Gráfico de Desempenho\n(Implementação do gráfico seria aqui)",
+  "@networkAnalyticsChartPlaceholder": {
+    "description": "Placeholder text for analytics chart area"
+  },
+  "networkLevelBadge": "Nível {level}",
+  "@networkLevelBadge": {
+    "description": "Badge showing member level in analytics",
+    "maxLength": 14,
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "networkLevelMembersCount": "{count} membros",
+  "@networkLevelMembersCount": {
+    "description": "Count of members at specific level",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "settingsTitle": "Configurações",
+  "@settingsTitle": {
+    "description": "Settings screen title in app bar",
+    "maxLength": 32
+  },
+  "settingsTitleOrganization": "Configurações da Organização",
+  "@settingsTitleOrganization": {
+    "description": "Section title for organization settings",
+    "maxLength": 36
+  },
+  "settingsWelcomeMessage": "Bem-vindo, {name}!\n\nVamos configurar a base da sua oportunidade de negócio.",
+  "@settingsWelcomeMessage": {
+    "description": "Welcome message on settings screen for new admin users",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Stephen"
+      }
+    }
+  },
+  "settingsLabelOrganizationName": "Nome da Sua Organização",
+  "@settingsLabelOrganizationName": {
+    "description": "Label for organization name input field"
+  },
+  "settingsLabelConfirmOrganizationName": "Confirmar Nome da Organização",
+  "@settingsLabelConfirmOrganizationName": {
+    "description": "Label for organization name confirmation field"
+  },
+  "settingsDialogImportantTitle": "Muito Importante!",
+  "@settingsDialogImportantTitle": {
+    "description": "Title for important information dialog",
+    "maxLength": 32
+  },
+  "settingsDialogReferralImportance": "Você deve inserir o link de indicação exato que recebeu do seu patrocinador {organization}.",
+  "@settingsDialogReferralImportance": {
+    "description": "Important message about entering correct referral link",
+    "placeholders": {
+      "organization": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "settingsDialogButtonUnderstand": "Entendi",
+  "@settingsDialogButtonUnderstand": {
+    "description": "Button to acknowledge important dialog",
+    "maxLength": 22
+  },
+  "settingsLabelReferralLink": "Seu Link de Indicação",
+  "@settingsLabelReferralLink": {
+    "description": "Label for referral link input field"
+  },
+  "settingsLabelConfirmReferralLink": "Confirmar URL do Link de Indicação",
+  "@settingsLabelConfirmReferralLink": {
+    "description": "Label for referral link confirmation field"
+  },
+  "settingsLabelCountries": "Países Disponíveis",
+  "@settingsLabelCountries": {
+    "description": "Label for countries selection section"
+  },
+  "settingsImportantLabel": "Importante:",
+  "@settingsImportantLabel": {
+    "description": "Label prefix for important information",
+    "maxLength": 14
+  },
+  "settingsCountriesInstruction": "Selecione apenas os países onde sua oportunidade está disponível atualmente.",
+  "@settingsCountriesInstruction": {
+    "description": "Instruction text for country selection"
+  },
+  "settingsButtonAddCountry": "Adicionar um País",
+  "@settingsButtonAddCountry": {
+    "description": "Button to add country to selection",
+    "maxLength": 22
+  },
+  "settingsButtonSave": "Salvar Configurações",
+  "@settingsButtonSave": {
+    "description": "Button to save settings changes",
+    "maxLength": 22
+  },
+  "settingsDisplayOrganization": "Sua Organização",
+  "@settingsDisplayOrganization": {
+    "description": "Label for displaying saved organization name"
+  },
+  "settingsDisplayReferralLink": "Seu Link de Indicação",
+  "@settingsDisplayReferralLink": {
+    "description": "Label for displaying saved referral link"
+  },
+  "settingsDisplayCountries": "Países Disponíveis Selecionados",
+  "@settingsDisplayCountries": {
+    "description": "Label for displaying selected countries list"
+  },
+  "settingsNoCountries": "Nenhum país selecionado.",
+  "@settingsNoCountries": {
+    "description": "Message when no countries have been selected"
+  },
+  "settingsFeederSystemTitle": "Sistema de Rede de Alimentação",
+  "@settingsFeederSystemTitle": {
+    "description": "Title for network feeder system section",
+    "maxLength": 32
+  },
+  "settingsFeederSystemDescription": "Este é seu motor de crescimento automatizado. Quando membros entram no Team Build Pro através do seu link, mas ainda não se qualificaram para sua oportunidade de negócio, eles são colocados na sua rede de alimentação. No momento em que você atender aos requisitos de elegibilidade abaixo, esses membros são transferidos automaticamente para sua equipe da oportunidade de negócio. É um sistema poderoso que recompensa sua dedicação - quanto maior sua rede de alimentação crescer, mais forte será seu lançamento quando você se qualificar.",
+  "@settingsFeederSystemDescription": {
+    "description": "Detailed explanation of the network feeder system"
+  },
+  "settingsEligibilityTitle": "Requisitos Mínimos de Elegibilidade",
+  "@settingsEligibilityTitle": {
+    "description": "Title for eligibility requirements section",
+    "maxLength": 36
+  },
+  "settingsEligibilityDirectSponsors": "Patrocinadores Diretos",
+  "@settingsEligibilityDirectSponsors": {
+    "description": "Label for minimum direct sponsors requirement",
+    "maxLength": 28
+  },
+  "settingsEligibilityTotalTeam": "Total de Membros",
+  "@settingsEligibilityTotalTeam": {
+    "description": "Label for minimum total team members requirement",
+    "maxLength": 28
+  },
+  "settingsPrivacyLegalTitle": "Privacidade e Legal",
+  "@settingsPrivacyLegalTitle": {
+    "description": "Section title for privacy and legal links",
+    "maxLength": 32
+  },
+  "settingsPrivacyPolicy": "Política de Privacidade",
+  "@settingsPrivacyPolicy": {
+    "description": "Label for privacy policy link",
+    "maxLength": 28
+  },
+  "settingsPrivacyPolicySubtitle": "Veja nossas práticas de privacidade e tratamento de dados",
+  "@settingsPrivacyPolicySubtitle": {
+    "description": "Subtitle explaining privacy policy link"
+  },
+  "settingsTermsOfService": "Termos de Serviço",
+  "@settingsTermsOfService": {
+    "description": "Label for terms of service link",
+    "maxLength": 28
+  },
+  "settingsTermsOfServiceSubtitle": "Veja os termos e condições da plataforma",
+  "@settingsTermsOfServiceSubtitle": {
+    "description": "Subtitle explaining terms of service link"
+  },
+  "profileTitle": "Perfil",
+  "@profileTitle": {
+    "description": "Profile screen title in app bar",
+    "maxLength": 32
+  },
+  "profileLabelCity": "Cidade",
+  "@profileLabelCity": {
+    "description": "Label for city field in profile",
+    "maxLength": 14
+  },
+  "profileLabelState": "Estado",
+  "@profileLabelState": {
+    "description": "Label for state/province field in profile",
+    "maxLength": 14
+  },
+  "profileLabelCountry": "País",
+  "@profileLabelCountry": {
+    "description": "Label for country field in profile",
+    "maxLength": 14
+  },
+  "profileLabelJoined": "Entrou",
+  "@profileLabelJoined": {
+    "description": "Label for join date in profile",
+    "maxLength": 14
+  },
+  "profileLabelSponsor": "Seu Patrocinador",
+  "@profileLabelSponsor": {
+    "description": "Label for sponsor name in profile",
+    "maxLength": 28
+  },
+  "profileLabelTeamLeader": "Líder de Equipe",
+  "@profileLabelTeamLeader": {
+    "description": "Label for team leader designation in profile",
+    "maxLength": 28
+  },
+  "profileButtonEdit": "Editar Perfil",
+  "@profileButtonEdit": {
+    "description": "Button to edit profile information",
+    "maxLength": 22
+  },
+  "profileButtonSignOut": "Sair",
+  "@profileButtonSignOut": {
+    "description": "Button to sign out of account",
+    "maxLength": 22
+  },
+  "profileSigningOut": "Saindo...",
+  "@profileSigningOut": {
+    "description": "Loading message during sign out process"
+  },
+  "profileButtonTerms": "Termos de Serviço",
+  "@profileButtonTerms": {
+    "description": "Button to view terms of service",
+    "maxLength": 28
+  },
+  "profileButtonPrivacy": "Política de Privacidade",
+  "@profileButtonPrivacy": {
+    "description": "Button to view privacy policy",
+    "maxLength": 28
+  },
+  "profileButtonDeleteAccount": "Excluir Conta",
+  "@profileButtonDeleteAccount": {
+    "description": "Button to delete user account",
+    "maxLength": 22
+  },
+  "profileDemoAccountTitle": "Informações da Conta Demo",
+  "@profileDemoAccountTitle": {
+    "description": "Dialog title for demo account protection message",
+    "maxLength": 36
+  },
+  "profileDemoAccountMessage": "Esta é uma conta demo para testes e não pode ser excluída.",
+  "@profileDemoAccountMessage": {
+    "description": "Message explaining demo account cannot be deleted"
+  },
+  "profileDemoAccountSubtext": "Contas demo são fornecidas para demonstrar os recursos e funcionalidades do app. Se você precisa criar uma conta real, faça o cadastro com suas informações pessoais.",
+  "@profileDemoAccountSubtext": {
+    "description": "Additional information about demo accounts"
+  },
+  "profileDemoAccountButton": "Entendi",
+  "@profileDemoAccountButton": {
+    "description": "Button to acknowledge demo account information",
+    "maxLength": 22
+  },
+  "profileAdminProtectionTitle": "Proteção de Conta de Administrador",
+  "@profileAdminProtectionTitle": {
+    "description": "Dialog title for admin account protection message",
+    "maxLength": 36
+  },
+  "profileAdminProtectionMessage": "Contas de administrador com membros de equipe ativos não podem ser excluídas através do app. Esta proteção garante que os dados e relacionamentos da sua equipe permaneçam intactos.",
+  "@profileAdminProtectionMessage": {
+    "description": "Message explaining admin account deletion restrictions"
+  },
+  "profileAdminTeamSize": "Sua Equipe: {directCount} Patrocinadores Diretos",
+  "@profileAdminTeamSize": {
+    "description": "Label showing admin's team size",
+    "placeholders": {
+      "directCount": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "profileAdminProtectionInstructions": "Para excluir sua conta de administrador, entre em contato com nossa equipe de suporte em legal@teambuildpro.com. Trabalharemos com você para garantir uma transição suave para os membros da sua equipe.",
+  "@profileAdminProtectionInstructions": {
+    "description": "Instructions for admin account deletion"
+  },
+  "profileAdminProtectionContact": "Contato: legal@teambuildpro.com",
+  "@profileAdminProtectionContact": {
+    "description": "Contact information for admin account support"
+  },
+  "messageCenterTitle": "Central de Mensagens",
+  "@messageCenterTitle": {
+    "description": "Message center screen title in app bar",
+    "maxLength": 32
+  },
+  "messageCenterSearchHint": "Buscar mensagens...",
+  "@messageCenterSearchHint": {
+    "description": "Placeholder for message search field"
+  },
+  "messageCenterFilterAll": "Todas",
+  "@messageCenterFilterAll": {
+    "description": "Filter to show all message threads",
+    "maxLength": 14
+  },
+  "messageCenterFilterUnread": "Não lidas",
+  "@messageCenterFilterUnread": {
+    "description": "Filter to show unread message threads",
+    "maxLength": 14
+  },
+  "messageCenterFilterTeam": "Equipe",
+  "@messageCenterFilterTeam": {
+    "description": "Filter to show team message threads",
+    "maxLength": 14
+  },
+  "messageCenterNewThread": "Nova Mensagem",
+  "@messageCenterNewThread": {
+    "description": "Button to start new message thread",
+    "maxLength": 22
+  },
+  "messageCenterEmptyState": "Nenhuma mensagem ainda. Inicie uma conversa com os membros da sua equipe!",
+  "@messageCenterEmptyState": {
+    "description": "Empty state message when no messages exist"
+  },
+  "messageCenterUnreadBadge": "{count} nova(s)",
+  "@messageCenterUnreadBadge": {
+    "description": "Badge showing unread message count",
+    "maxLength": 14,
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "messageCenterLastMessage": "Última mensagem há {time}",
+  "@messageCenterLastMessage": {
+    "description": "Label showing time of last message",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "2h ago"
+      }
+    }
+  },
+  "messageCenterErrorLoading": "Erro ao carregar mensagens",
+  "@messageCenterErrorLoading": {
+    "description": "Error message when messages fail to load"
+  },
+  "notificationsTitle": "Notificações",
+  "@notificationsTitle": {
+    "description": "Notifications screen title in app bar",
+    "maxLength": 32
+  },
+  "notificationsFilterAll": "Todas",
+  "@notificationsFilterAll": {
+    "description": "Filter to show all notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterUnread": "Não lidas",
+  "@notificationsFilterUnread": {
+    "description": "Filter to show unread notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterMilestones": "Marcos",
+  "@notificationsFilterMilestones": {
+    "description": "Filter to show milestone notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterTeam": "Equipe",
+  "@notificationsFilterTeam": {
+    "description": "Filter to show team notifications",
+    "maxLength": 14
+  },
+  "notificationsMarkAllRead": "Marcar Todas Lidas",
+  "@notificationsMarkAllRead": {
+    "description": "Button to mark all notifications as read",
+    "maxLength": 22
+  },
+  "notificationsClearAll": "Limpar Todas",
+  "@notificationsClearAll": {
+    "description": "Button to clear all notifications",
+    "maxLength": 22
+  },
+  "notificationsEmptyState": "Nenhuma notificação ainda. Avisaremos sobre atualizações importantes da equipe!",
+  "@notificationsEmptyState": {
+    "description": "Empty state message when no notifications exist"
+  },
+  "notificationsTimeNow": "Agora",
+  "@notificationsTimeNow": {
+    "description": "Time label for very recent notifications",
+    "maxLength": 14
+  },
+  "notificationsTimeMinutes": "há {minutes}m",
+  "@notificationsTimeMinutes": {
+    "description": "Time label for notifications from minutes ago",
+    "maxLength": 14,
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "notificationsTimeHours": "há {hours}h",
+  "@notificationsTimeHours": {
+    "description": "Time label for notifications from hours ago",
+    "maxLength": 14,
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "notificationsTimeDays": "há {days}d",
+  "@notificationsTimeDays": {
+    "description": "Time label for notifications from days ago",
+    "maxLength": 14,
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "notificationsTimeYears": "há {years}a",
+  "@notificationsTimeYears": {
+    "description": "Time label for notifications from years ago",
+    "maxLength": 14,
+    "placeholders": {
+      "years": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "gettingStartedTitle": "Primeiros Passos",
+  "@gettingStartedTitle": {
+    "description": "Getting started guide screen title",
+    "maxLength": 32
+  },
+  "gettingStartedWelcome": "Bem-vindo ao Team Build Pro!",
+  "@gettingStartedWelcome": {
+    "description": "Welcome heading in getting started guide",
+    "maxLength": 36
+  },
+  "gettingStartedIntro": "Vamos preparar você para o sucesso. Este guia rápido apresentará os recursos essenciais para começar a construir sua equipe.",
+  "@gettingStartedIntro": {
+    "description": "Introduction text for getting started guide"
+  },
+  "gettingStartedStep1Title": "Faça sua lista",
+  "@gettingStartedStep1Title": {
+    "description": "Title for step 1 in getting started",
+    "maxLength": 32
+  },
+  "gettingStartedStep2Title": "Compartilhe com sua rede",
+  "@gettingStartedStep2Title": {
+    "description": "Title for step 2 in getting started",
+    "maxLength": 32
+  },
+  "gettingStartedStep3Title": "Dê boas-vindas aos seus novos membros da equipe",
+  "@gettingStartedStep3Title": {
+    "description": "Title for step 3 in getting started",
+    "maxLength": 32
+  },
+  "gettingStartedStep3Description": "Quando você receber uma notificação de novo membro da equipe, faça um acompanhamento imediato para dar boas-vindas à sua equipe. As primeiras impressões importam!",
+  "@gettingStartedStep3Description": {
+    "description": "Description for tracking progress step"
+  },
+  "gettingStartedStep4Title": "Engaje Sua Equipe",
+  "@gettingStartedStep4Title": {
+    "description": "Title for step 4 in getting started",
+    "maxLength": 32
+  },
+  "gettingStartedStep4Description": "Use a central de mensagens para se comunicar com sua equipe e fornecer suporte.",
+  "@gettingStartedStep4Description": {
+    "description": "Description for team engagement step"
+  },
+  "gettingStartedButtonStart": "Começar",
+  "@gettingStartedButtonStart": {
+    "description": "Button to begin using the app after guide",
+    "maxLength": 22
+  },
+  "gettingStartedButtonNext": "Próximo",
+  "@gettingStartedButtonNext": {
+    "description": "Button to advance to next step in guide",
+    "maxLength": 14
+  },
+  "gettingStartedButtonBack": "Voltar",
+  "@gettingStartedButtonBack": {
+    "description": "Button to return to previous step in guide",
+    "maxLength": 14
+  },
+  "gettingStartedButtonSkip": "Pular",
+  "@gettingStartedButtonSkip": {
+    "description": "Button to skip getting started guide",
+    "maxLength": 14
+  },
+  "gettingStartedButtonFinish": "Concluir",
+  "@gettingStartedButtonFinish": {
+    "description": "Button to finish getting started guide",
+    "maxLength": 14
+  },
+  "welcomeTitle": "Boas-vindas",
+  "@welcomeTitle": {
+    "description": "Welcome screen title",
+    "maxLength": 32
+  },
+  "welcomeHeadline": "Construa Sua Equipe.\nCresça Seu Negócio.",
+  "@welcomeHeadline": {
+    "description": "Main headline on welcome screen"
+  },
+  "welcomeSubheadline": "A plataforma profissional para construção de equipes e crescimento de rede.",
+  "@welcomeSubheadline": {
+    "description": "Subheadline explaining app purpose"
+  },
+  "welcomeButtonSignIn": "Entrar",
+  "@welcomeButtonSignIn": {
+    "description": "Button to navigate to sign in screen",
+    "maxLength": 22
+  },
+  "welcomeButtonSignUp": "Criar Conta",
+  "@welcomeButtonSignUp": {
+    "description": "Button to navigate to sign up screen",
+    "maxLength": 22
+  },
+  "welcomeFeature1Title": "Rastreamento Inteligente",
+  "@welcomeFeature1Title": {
+    "description": "Title for feature 1 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature1Description": "Monitore o crescimento da sua equipe em tempo real com análises poderosas.",
+  "@welcomeFeature1Description": {
+    "description": "Description for feature 1"
+  },
+  "welcomeFeature2Title": "Crescimento Automatizado",
+  "@welcomeFeature2Title": {
+    "description": "Title for feature 2 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature2Description": "Sistema de rede de alimentação transfere automaticamente membros qualificados para sua equipe.",
+  "@welcomeFeature2Description": {
+    "description": "Description for feature 2"
+  },
+  "welcomeFeature3Title": "Mensagens Seguras",
+  "@welcomeFeature3Title": {
+    "description": "Title for feature 3 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature3Description": "Comunique-se com segurança com sua equipe através de mensagens criptografadas.",
+  "@welcomeFeature3Description": {
+    "description": "Description for feature 3"
+  },
+  "welcomeButtonContinue": "Continuar",
+  "@welcomeButtonContinue": {
+    "description": "Button to continue from welcome screen",
+    "maxLength": 14
+  },
+  "addLinkTitle": "Adicionar link",
+  "@addLinkTitle": {
+    "description": "Screen title for adding business opportunity link",
+    "maxLength": 32
+  },
+  "addLinkDescription": "Adicione seu link de oportunidade de negócio para começar a construir sua equipe.",
+  "@addLinkDescription": {
+    "description": "Instruction text for add link screen"
+  },
+  "addLinkLabelUrl": "URL da Oportunidade de Negócio",
+  "@addLinkLabelUrl": {
+    "description": "Label for business URL input field"
+  },
+  "addLinkHintUrl": "Digite a URL completa da sua página de oportunidade de negócio",
+  "@addLinkHintUrl": {
+    "description": "Placeholder for business URL input"
+  },
+  "addLinkUrlRequired": "Por favor, digite uma URL",
+  "@addLinkUrlRequired": {
+    "description": "Validation error when URL field is empty"
+  },
+  "addLinkUrlInvalid": "Por favor, digite uma URL válida",
+  "@addLinkUrlInvalid": {
+    "description": "Validation error when URL format is invalid"
+  },
+  "addLinkButtonSave": "Salvar Link",
+  "@addLinkButtonSave": {
+    "description": "Button to save business link",
+    "maxLength": 22
+  },
+  "addLinkButtonTest": "Testar Link",
+  "@addLinkButtonTest": {
+    "description": "Button to test if link works",
+    "maxLength": 22
+  },
+  "addLinkSuccessMessage": "Link de negócio salvo com sucesso!",
+  "@addLinkSuccessMessage": {
+    "description": "Success message after saving link"
+  },
+  "addLinkErrorMessage": "Erro ao salvar link. Por favor, tente novamente.",
+  "@addLinkErrorMessage": {
+    "description": "Error message when save fails"
+  },
+  "businessTitle": "Oportunidade de Negócio",
+  "@businessTitle": {
+    "description": "Business opportunity screen title",
+    "maxLength": 32
+  },
+  "businessLoadingMessage": "Carregando detalhes da oportunidade...",
+  "@businessLoadingMessage": {
+    "description": "Loading message while fetching business details"
+  },
+  "businessErrorMessage": "Não foi possível carregar detalhes da oportunidade",
+  "@businessErrorMessage": {
+    "description": "Error message when loading fails"
+  },
+  "businessButtonJoin": "Participar Agora",
+  "@businessButtonJoin": {
+    "description": "Button to join business opportunity",
+    "maxLength": 22
+  },
+  "businessButtonLearnMore": "Saiba Mais",
+  "@businessButtonLearnMore": {
+    "description": "Button to learn more about opportunity",
+    "maxLength": 22
+  },
+  "businessButtonContact": "Contatar Patrocinador",
+  "@businessButtonContact": {
+    "description": "Button to contact business sponsor",
+    "maxLength": 22
+  },
+  "changePasswordTitle": "Alterar Senha",
+  "@changePasswordTitle": {
+    "description": "Change password screen title",
+    "maxLength": 32
+  },
+  "changePasswordLabelCurrent": "Senha Atual",
+  "@changePasswordLabelCurrent": {
+    "description": "Label for current password field"
+  },
+  "changePasswordHintCurrent": "Digite sua senha atual",
+  "@changePasswordHintCurrent": {
+    "description": "Placeholder for current password field"
+  },
+  "changePasswordCurrentRequired": "Por favor, digite sua senha atual",
+  "@changePasswordCurrentRequired": {
+    "description": "Validation error when current password is empty"
+  },
+  "changePasswordLabelNew": "Nova Senha",
+  "@changePasswordLabelNew": {
+    "description": "Label for new password field"
+  },
+  "changePasswordHintNew": "Digite sua nova senha",
+  "@changePasswordHintNew": {
+    "description": "Placeholder for new password field"
+  },
+  "changePasswordNewRequired": "Por favor, digite uma nova senha",
+  "@changePasswordNewRequired": {
+    "description": "Validation error when new password is empty"
+  },
+  "changePasswordLabelConfirm": "Confirmar Nova Senha",
+  "@changePasswordLabelConfirm": {
+    "description": "Label for confirm new password field"
+  },
+  "changePasswordHintConfirm": "Digite sua nova senha novamente",
+  "@changePasswordHintConfirm": {
+    "description": "Placeholder for confirm password field"
+  },
+  "changePasswordConfirmRequired": "Por favor, confirme sua nova senha",
+  "@changePasswordConfirmRequired": {
+    "description": "Validation error when confirm password is empty"
+  },
+  "changePasswordMismatch": "As novas senhas não coincidem",
+  "@changePasswordMismatch": {
+    "description": "Validation error when passwords don't match"
+  },
+  "changePasswordButtonUpdate": "Atualizar Senha",
+  "@changePasswordButtonUpdate": {
+    "description": "Button to update password",
+    "maxLength": 22
+  },
+  "changePasswordSuccessMessage": "Senha atualizada com sucesso!",
+  "@changePasswordSuccessMessage": {
+    "description": "Success message after password change"
+  },
+  "changePasswordErrorMessage": "Erro ao atualizar senha. Por favor, tente novamente.",
+  "@changePasswordErrorMessage": {
+    "description": "Error message when password change fails"
+  },
+  "chatTitle": "Chat",
+  "@chatTitle": {
+    "description": "Chat screen title",
+    "maxLength": 32
+  },
+  "chatInputHint": "Digite uma mensagem...",
+  "@chatInputHint": {
+    "description": "Placeholder for chat message input"
+  },
+  "chatButtonSend": "Enviar",
+  "@chatButtonSend": {
+    "description": "Button to send chat message",
+    "maxLength": 14
+  },
+  "chatEmptyState": "Nenhuma mensagem ainda. Inicie a conversa!",
+  "@chatEmptyState": {
+    "description": "Empty state when chat has no messages"
+  },
+  "chatMessageDeleted": "Esta mensagem foi excluída",
+  "@chatMessageDeleted": {
+    "description": "Placeholder for deleted message"
+  },
+  "chatMessageEdited": "editada",
+  "@chatMessageEdited": {
+    "description": "Label showing message was edited",
+    "maxLength": 14
+  },
+  "chatTypingIndicator": "{name} está digitando...",
+  "@chatTypingIndicator": {
+    "description": "Indicator showing someone is typing",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Stephen"
+      }
+    }
+  },
+  "chatErrorSending": "Erro ao enviar mensagem",
+  "@chatErrorSending": {
+    "description": "Error message when chat message fails to send"
+  },
+  "chatbotTitle": "Coach de IA",
+  "@chatbotTitle": {
+    "description": "AI chatbot screen title",
+    "maxLength": 32
+  },
+  "chatbotWelcome": "Oi! Sou seu coach de IA. Como posso ajudá-lo a expandir sua equipe hoje?",
+  "@chatbotWelcome": {
+    "description": "Welcome message from AI chatbot"
+  },
+  "chatbotInputHint": "Pergunte-me qualquer coisa sobre construção de equipe...",
+  "@chatbotInputHint": {
+    "description": "Placeholder for chatbot input field"
+  },
+  "chatbotSuggestion1": "Como recrutar de forma mais eficaz?",
+  "@chatbotSuggestion1": {
+    "description": "Suggested question 1 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotSuggestion2": "Quais são os requisitos de elegibilidade?",
+  "@chatbotSuggestion2": {
+    "description": "Suggested question 2 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotSuggestion3": "Como funciona o sistema de alimentação?",
+  "@chatbotSuggestion3": {
+    "description": "Suggested question 3 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotThinking": "Pensando...",
+  "@chatbotThinking": {
+    "description": "Loading indicator while chatbot generates response"
+  },
+  "chatbotPlaceholder": "Digite sua pergunta...",
+  "@chatbotPlaceholder": {
+    "description": "Placeholder for chatbot message input"
+  },
+  "companyTitle": "Informações da Empresa",
+  "@companyTitle": {
+    "description": "Company information screen title",
+    "maxLength": 32
+  },
+  "companyAboutHeading": "Sobre o Team Build Pro",
+  "@companyAboutHeading": {
+    "description": "Heading for about section",
+    "maxLength": 32
+  },
+  "companyAboutText": "Team Build Pro é uma plataforma SaaS profissional projetada para construção de equipes e crescimento de rede. Fornecemos as ferramentas e tecnologia para ajudá-lo a construir e gerenciar sua equipe profissional de forma eficaz.",
+  "@companyAboutText": {
+    "description": "About company description text"
+  },
+  "companyVersionLabel": "Versão do App",
+  "@companyVersionLabel": {
+    "description": "Label for app version information",
+    "maxLength": 22
+  },
+  "companyContactHeading": "Fale Conosco",
+  "@companyContactHeading": {
+    "description": "Heading for contact section",
+    "maxLength": 22
+  },
+  "companyButtonVisit": "Visitar Site",
+  "@companyButtonVisit": {
+    "description": "Button to visit company website",
+    "maxLength": 22
+  },
+  "deleteAccountTitle": "Excluir Conta",
+  "@deleteAccountTitle": {
+    "description": "Delete account screen title",
+    "maxLength": 32
+  },
+  "deleteAccountWarning": "Atenção: Esta ação não pode ser desfeita!",
+  "@deleteAccountWarning": {
+    "description": "Warning message about permanent deletion",
+    "maxLength": 42
+  },
+  "deleteAccountDescription": "Excluir sua conta removerá permanentemente todos os seus dados, incluindo seu perfil, informações da equipe e histórico de mensagens. Esta ação é irreversível.",
+  "@deleteAccountDescription": {
+    "description": "Detailed description of account deletion consequences"
+  },
+  "deleteAccountConfirmPrompt": "Para confirmar a exclusão, digite EXCLUIR abaixo:",
+  "@deleteAccountConfirmPrompt": {
+    "description": "Prompt for confirmation text input"
+  },
+  "deleteAccountConfirmHint": "Digite seu endereço de e-mail",
+  "@deleteAccountConfirmHint": {
+    "description": "Placeholder for delete confirmation input"
+  },
+  "deleteAccountConfirmMismatch": "Por favor, digite EXCLUIR exatamente como mostrado",
+  "@deleteAccountConfirmMismatch": {
+    "description": "Error when confirmation text doesn't match"
+  },
+  "deleteAccountButtonDelete": "Excluir conta",
+  "@deleteAccountButtonDelete": {
+    "description": "Button to confirm account deletion",
+    "maxLength": 22
+  },
+  "deleteAccountButtonCancel": "Cancelar",
+  "@deleteAccountButtonCancel": {
+    "description": "Button to cancel deletion",
+    "maxLength": 14
+  },
+  "deleteAccountSuccessMessage": "Sua conta foi excluída",
+  "@deleteAccountSuccessMessage": {
+    "description": "Success message after deletion"
+  },
+  "deleteAccountErrorMessage": "Erro ao excluir conta. Entre em contato com o suporte.",
+  "@deleteAccountErrorMessage": {
+    "description": "Error message when deletion fails"
+  },
+  "editProfileTitle": "Editar Perfil",
+  "@editProfileTitle": {
+    "description": "Edit profile screen title",
+    "maxLength": 32
+  },
+  "editProfileLabelFirstName": "Nome",
+  "@editProfileLabelFirstName": {
+    "description": "Label for first name field"
+  },
+  "editProfileLabelLastName": "Sobrenome",
+  "@editProfileLabelLastName": {
+    "description": "Label for last name field"
+  },
+  "editProfileLabelEmail": "Email",
+  "@editProfileLabelEmail": {
+    "description": "Label for email field"
+  },
+  "editProfileLabelPhone": "Número de Telefone",
+  "@editProfileLabelPhone": {
+    "description": "Label for phone number field"
+  },
+  "editProfileLabelCity": "Cidade",
+  "@editProfileLabelCity": {
+    "description": "Label for city field"
+  },
+  "editProfileLabelState": "Estado/Província",
+  "@editProfileLabelState": {
+    "description": "Label for state/province field"
+  },
+  "editProfileLabelCountry": "País",
+  "@editProfileLabelCountry": {
+    "description": "Label for country field"
+  },
+  "editProfileLabelBio": "Biografia",
+  "@editProfileLabelBio": {
+    "description": "Label for bio/about field"
+  },
+  "editProfileHintBio": "Conte à sua equipe sobre você...",
+  "@editProfileHintBio": {
+    "description": "Placeholder for bio field"
+  },
+  "editProfileButtonSave": "Salvar Alterações",
+  "@editProfileButtonSave": {
+    "description": "Button to save profile changes",
+    "maxLength": 22
+  },
+  "editProfileButtonCancel": "Cancelar",
+  "@editProfileButtonCancel": {
+    "description": "Button to cancel editing",
+    "maxLength": 14
+  },
+  "editProfileButtonChangePhoto": "Alterar Foto",
+  "@editProfileButtonChangePhoto": {
+    "description": "Button to change profile photo",
+    "maxLength": 22
+  },
+  "editProfileSuccessMessage": "Perfil atualizado com sucesso!",
+  "@editProfileSuccessMessage": {
+    "description": "Success message after saving profile"
+  },
+  "editProfileErrorMessage": "Erro ao atualizar perfil. Por favor, tente novamente.",
+  "@editProfileErrorMessage": {
+    "description": "Error message when profile save fails"
+  },
+  "eligibilityTitle": "Status de Elegibilidade",
+  "@eligibilityTitle": {
+    "description": "Eligibility screen title",
+    "maxLength": 32
+  },
+  "eligibilityCurrentStatus": "Status Atual",
+  "@eligibilityCurrentStatus": {
+    "description": "Section heading for current eligibility status",
+    "maxLength": 28
+  },
+  "eligibilityStatusQualified": "Qualificado!",
+  "@eligibilityStatusQualified": {
+    "description": "Status label when user is qualified",
+    "maxLength": 14
+  },
+  "eligibilityStatusNotQualified": "Ainda Não Qualificado",
+  "@eligibilityStatusNotQualified": {
+    "description": "Status label when user is not qualified",
+    "maxLength": 22
+  },
+  "eligibilityRequirementsHeading": "Requisitos",
+  "@eligibilityRequirementsHeading": {
+    "description": "Section heading for eligibility requirements",
+    "maxLength": 28
+  },
+  "eligibilityDirectSponsorsLabel": "Patrocinadores Diretos",
+  "@eligibilityDirectSponsorsLabel": {
+    "description": "Label for direct sponsors requirement",
+    "maxLength": 28
+  },
+  "eligibilityDirectSponsorsProgress": "{current} de {required} necessários",
+  "@eligibilityDirectSponsorsProgress": {
+    "description": "Progress text for direct sponsors",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "required": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "eligibilityTotalTeamLabel": "Total de Membros da Equipe",
+  "@eligibilityTotalTeamLabel": {
+    "description": "Label for total team requirement",
+    "maxLength": 28
+  },
+  "eligibilityTotalTeamProgress": "{current} de {required} necessários",
+  "@eligibilityTotalTeamProgress": {
+    "description": "Progress text for total team",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "15"
+      },
+      "required": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "eligibilityProgressBar": "Progresso: {percent}%",
+  "@eligibilityProgressBar": {
+    "description": "Overall progress percentage",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "example": "60"
+      }
+    }
+  },
+  "eligibilityNextSteps": "Próximos Passos",
+  "@eligibilityNextSteps": {
+    "description": "Section heading for next steps",
+    "maxLength": 22
+  },
+  "eligibilityNextStepsDescription": "Continue compartilhando seu link de indicação para expandir sua equipe e atender aos requisitos!",
+  "@eligibilityNextStepsDescription": {
+    "description": "Encouragement text for next steps"
+  },
+  "eligibilityButtonContinue": "Continuar",
+  "@eligibilityButtonContinue": {
+    "description": "Button to continue from eligibility screen",
+    "maxLength": 14
+  },
+  "shareTitle": "Compartilhar",
+  "@shareTitle": {
+    "description": "Share screen title",
+    "maxLength": 32
+  },
+  "shareYourLinkHeading": "Seu Link de Indicação",
+  "@shareYourLinkHeading": {
+    "description": "Heading for referral link section",
+    "maxLength": 28
+  },
+  "shareButtonCopyLink": "Copiar Link",
+  "@shareButtonCopyLink": {
+    "description": "Button to copy referral link",
+    "maxLength": 22
+  },
+  "shareLinkCopied": "Link copiado para a área de transferência!",
+  "@shareLinkCopied": {
+    "description": "Success message when link is copied"
+  },
+  "shareButtonSms": "Compartilhar por SMS",
+  "@shareButtonSms": {
+    "description": "Button to share via SMS",
+    "maxLength": 22
+  },
+  "shareButtonEmail": "Compartilhar por Email",
+  "@shareButtonEmail": {
+    "description": "Button to share via email",
+    "maxLength": 22
+  },
+  "shareButtonWhatsApp": "Compartilhar por WhatsApp",
+  "@shareButtonWhatsApp": {
+    "description": "Button to share via WhatsApp",
+    "maxLength": 22
+  },
+  "shareButtonMore": "Mais Opções",
+  "@shareButtonMore": {
+    "description": "Button to show more sharing options",
+    "maxLength": 22
+  },
+  "shareMessageTemplate": "Oi! Estou construindo minha equipe com Team Build Pro. Junte-se a mim: {link}",
+  "@shareMessageTemplate": {
+    "description": "Default message template for sharing",
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://tbp.app/join/abc123"
+      }
+    }
+  },
+  "shareStatsHeading": "Seu Impacto ao Compartilhar",
+  "@shareStatsHeading": {
+    "description": "Heading for sharing statistics",
+    "maxLength": 32
+  },
+  "shareStatsViews": "Visualizações do Link",
+  "@shareStatsViews": {
+    "description": "Label for link view count",
+    "maxLength": 22
+  },
+  "shareStatsSignups": "Cadastros",
+  "@shareStatsSignups": {
+    "description": "Label for signup count from link",
+    "maxLength": 22
+  },
+  "shareStatsConversion": "Taxa de Conversão",
+  "@shareStatsConversion": {
+    "description": "Label for conversion rate percentage",
+    "maxLength": 22
+  },
+  "shareSuccessMessage": "Compartilhado com sucesso!",
+  "@shareSuccessMessage": {
+    "description": "Success message after sharing"
+  },
+  "memberDetailTitle": "Detalhes do Membro",
+  "@memberDetailTitle": {
+    "description": "Member detail screen title",
+    "maxLength": 32
+  },
+  "memberDetailLabelName": "Nome",
+  "@memberDetailLabelName": {
+    "description": "Label for member name",
+    "maxLength": 14
+  },
+  "memberDetailLabelEmail": "Email",
+  "@memberDetailLabelEmail": {
+    "description": "Label for member email",
+    "maxLength": 14
+  },
+  "memberDetailLabelPhone": "Telefone",
+  "@memberDetailLabelPhone": {
+    "description": "Label for member phone",
+    "maxLength": 14
+  },
+  "memberDetailLabelLocation": "Localização",
+  "@memberDetailLabelLocation": {
+    "description": "Label for member location",
+    "maxLength": 14
+  },
+  "memberDetailLabelJoined": "Entrou",
+  "@memberDetailLabelJoined": {
+    "description": "Label for member join date",
+    "maxLength": 14
+  },
+  "memberDetailLabelSponsor": "Patrocinador",
+  "@memberDetailLabelSponsor": {
+    "description": "Label for member's sponsor",
+    "maxLength": 14
+  },
+  "memberDetailLabelLevel": "Nível",
+  "@memberDetailLabelLevel": {
+    "description": "Label for member's network level",
+    "maxLength": 14
+  },
+  "memberDetailTeamStats": "Estatísticas da Equipe",
+  "@memberDetailTeamStats": {
+    "description": "Section heading for team stats",
+    "maxLength": 28
+  },
+  "memberDetailDirectSponsors": "Patrocinadores Diretos: {count}",
+  "@memberDetailDirectSponsors": {
+    "description": "Label showing direct sponsor count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "memberDetailTotalTeam": "Equipe Total: {count}",
+  "@memberDetailTotalTeam": {
+    "description": "Label showing total team count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "memberDetailButtonMessage": "Enviar Mensagem",
+  "@memberDetailButtonMessage": {
+    "description": "Button to message team member",
+    "maxLength": 22
+  },
+  "memberDetailButtonViewTeam": "Ver Equipe Deles",
+  "@memberDetailButtonViewTeam": {
+    "description": "Button to view member's team",
+    "maxLength": 22
+  },
+  "memberDetailErrorLoading": "Erro ao carregar detalhes do membro",
+  "@memberDetailErrorLoading": {
+    "description": "Error message when member details fail to load"
+  },
+  "messageThreadTitle": "Mensagens",
+  "@messageThreadTitle": {
+    "description": "Message thread screen title",
+    "maxLength": 32
+  },
+  "messageThreadInputHint": "Digite sua mensagem...",
+  "@messageThreadInputHint": {
+    "description": "Placeholder for message input field"
+  },
+  "messageThreadButtonSend": "Enviar",
+  "@messageThreadButtonSend": {
+    "description": "Button to send message",
+    "maxLength": 14
+  },
+  "messageThreadEmptyState": "Nenhuma mensagem ainda. Inicie a conversa!",
+  "@messageThreadEmptyState": {
+    "description": "Empty state when thread has no messages"
+  },
+  "messageThreadDelivered": "Entregue",
+  "@messageThreadDelivered": {
+    "description": "Status label for delivered message",
+    "maxLength": 14
+  },
+  "messageThreadRead": "Lida",
+  "@messageThreadRead": {
+    "description": "Status label for read message",
+    "maxLength": 14
+  },
+  "messageThreadSending": "Enviando...",
+  "@messageThreadSending": {
+    "description": "Status label while message is sending"
+  },
+  "messageThreadFailed": "Falha ao enviar",
+  "@messageThreadFailed": {
+    "description": "Status label when message fails to send"
+  },
+  "messageThreadErrorSending": "Erro ao enviar mensagem",
+  "@messageThreadErrorSending": {
+    "description": "Error message when message fails to send"
+  },
+  "loginTitle": "Entrar",
+  "@loginTitle": {
+    "description": "Login screen title",
+    "maxLength": 32
+  },
+  "loginButtonGoogle": "Continuar com Google",
+  "@loginButtonGoogle": {
+    "description": "Button to sign in with Google",
+    "maxLength": 28
+  },
+  "loginButtonApple": "Continuar com Apple",
+  "@loginButtonApple": {
+    "description": "Button to sign in with Apple",
+    "maxLength": 28
+  },
+  "loginDivider": "ou",
+  "@loginDivider": {
+    "description": "Divider text between social login and email login",
+    "maxLength": 8
+  },
+  "loginForgotPassword": "Esqueceu a Senha?",
+  "@loginForgotPassword": {
+    "description": "Link to password reset flow",
+    "maxLength": 22
+  },
+  "loginResetPasswordTitle": "Redefinir Senha",
+  "@loginResetPasswordTitle": {
+    "description": "Title for password reset dialog",
+    "maxLength": 32
+  },
+  "loginResetPasswordDescription": "Digite seu endereço de email e enviaremos um link para redefinir sua senha.",
+  "@loginResetPasswordDescription": {
+    "description": "Instruction text for password reset"
+  },
+  "loginResetPasswordButton": "Enviar Link",
+  "@loginResetPasswordButton": {
+    "description": "Button to send password reset email",
+    "maxLength": 22
+  },
+  "loginResetPasswordSuccess": "Email de redefinição enviado! Verifique sua caixa de entrada.",
+  "@loginResetPasswordSuccess": {
+    "description": "Success message after sending reset email"
+  },
+  "loginResetPasswordError": "Erro ao enviar email. Por favor, tente novamente.",
+  "@loginResetPasswordError": {
+    "description": "Error message when reset email fails"
+  },
+  "commonButtonCancel": "Cancelar",
+  "@commonButtonCancel": {
+    "description": "Generic cancel button label",
+    "maxLength": 14
+  },
+  "commonButtonSave": "Salvar",
+  "@commonButtonSave": {
+    "description": "Generic save button label",
+    "maxLength": 14
+  },
+  "commonButtonDelete": "Excluir",
+  "@commonButtonDelete": {
+    "description": "Generic delete button label",
+    "maxLength": 14
+  },
+  "commonButtonEdit": "Editar",
+  "@commonButtonEdit": {
+    "description": "Generic edit button label",
+    "maxLength": 14
+  },
+  "commonButtonClose": "Fechar",
+  "@commonButtonClose": {
+    "description": "Generic close button label",
+    "maxLength": 14
+  },
+  "commonButtonOk": "OK",
+  "@commonButtonOk": {
+    "description": "Generic OK button label",
+    "maxLength": 8
+  },
+  "commonButtonYes": "Sim",
+  "@commonButtonYes": {
+    "description": "Generic yes button label",
+    "maxLength": 8
+  },
+  "commonButtonNo": "Não",
+  "@commonButtonNo": {
+    "description": "Generic no button label",
+    "maxLength": 8
+  },
+  "commonLoadingMessage": "Carregando...",
+  "@commonLoadingMessage": {
+    "description": "Generic loading message"
+  },
+  "commonErrorMessage": "Algo deu errado. Por favor, tente novamente.",
+  "@commonErrorMessage": {
+    "description": "Generic error message"
+  },
+  "commonSuccessMessage": "Sucesso!",
+  "@commonSuccessMessage": {
+    "description": "Generic success message",
+    "maxLength": 22
+  },
+  "commonNoDataMessage": "Nenhum dado disponível",
+  "@commonNoDataMessage": {
+    "description": "Generic message when no data exists"
+  },
+  "commonRetryButton": "Tentar Novamente",
+  "@commonRetryButton": {
+    "description": "Button to retry failed action",
+    "maxLength": 14
+  },
+  "commonRefreshButton": "Atualizar",
+  "@commonRefreshButton": {
+    "description": "Button to refresh data",
+    "maxLength": 14
+  },
+  "commonNoResultsFound": "Nenhum resultado encontrado",
+  "@commonNoResultsFound": {
+    "description": "Generic message when search or filter returns no results"
+  },
+  "recruitT01FirstTouch": "Oi {prospectName}, é o {senderFirst}. Estou usando um app para ajudar amigos a começar com {companyName}. Dá uma olhada? {shortLink}",
   "@recruitT01FirstTouch": {
     "description": "Initial outreach message with prospect name",
     "cap": {
@@ -401,7 +1954,7 @@
       }
     }
   },
-  "recruitT01FirstTouchNoName": "Hey, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
+  "recruitT01FirstTouchNoName": "Oi, é o {senderFirst}. Estou usando um app para ajudar amigos a começar com {companyName}. Dá uma olhada? {shortLink}",
   "@recruitT01FirstTouchNoName": {
     "description": "Initial outreach message without prospect name (fallback)",
     "cap": {
@@ -422,9 +1975,9 @@
       }
     }
   },
-  "recruitT02FollowUpWarm": "Hi {prospectName}! Following up on {companyName}. I saw great results this week. Have time for a quick chat? {shortLink}",
+  "recruitT02FollowUpWarm": "Oi {prospectName}! Fazendo um follow-up sobre {companyName}. Vi ótimos resultados essa semana. Tem tempo para um papo rápido? {shortLink}",
   "@recruitT02FollowUpWarm": {
-    "description": "Warm follow-up message after initial contact",
+    "description": "Warm follow-up message after initial interest",
     "cap": {
       "sms": 140
     },
@@ -443,9 +1996,9 @@
       }
     }
   },
-  "recruitT03DeadlineNudge": "{prospectName}, spots are filling up for our {companyName} launch. Want me to save you one? {shortLink}",
+  "recruitT03DeadlineNudge": "{prospectName}, as vagas estão se preenchendo para nosso lançamento com {companyName}. Quer que eu reserve uma para você? {shortLink}",
   "@recruitT03DeadlineNudge": {
-    "description": "Urgency-based message about limited availability",
+    "description": "Time-sensitive reminder about limited availability",
     "cap": {
       "sms": 140
     },
@@ -464,7 +2017,7 @@
       }
     }
   },
-  "recruitT04TeamNeeded": "{remaining, plural, =0 {You're day-one ready.} one {You're # person away from a strong start.} other {You're # people away from a strong start.}}",
+  "recruitT04TeamNeeded": "{remaining, plural, =0 {Você está pronto para começar.} one {Você está a # pessoa de um começo forte.} other {Você está a # pessoas de um começo forte.}}",
   "@recruitT04TeamNeeded": {
     "description": "Team building progress message with plural logic",
     "cap": {
@@ -477,9 +2030,9 @@
       }
     }
   },
-  "recruitT05MilestoneReached": "🎉 {prospectName}, you hit your first milestone with {companyName}! Your team is growing. Keep it up!",
+  "recruitT05MilestoneReached": "🎉 {prospectName}, você alcançou seu primeiro marco com {companyName}! Sua equipe está crescendo. Continue assim!",
   "@recruitT05MilestoneReached": {
-    "description": "Celebration message for reaching first milestone",
+    "description": "Celebration message for reaching a milestone",
     "cap": {
       "sms": 140
     },
@@ -494,7 +2047,7 @@
       }
     }
   },
-  "recruitT06WelcomeOnboard": "Welcome, {prospectName}! I'm {senderFirst} and here to help. Let's get started: {inviteLink}",
+  "recruitT06WelcomeOnboard": "Bem-vindo, {prospectName}! Sou o {senderFirst} e estou aqui para ajudar. Vamos começar: {inviteLink}",
   "@recruitT06WelcomeOnboard": {
     "description": "Welcome message for new team member",
     "cap": {
@@ -511,13 +2064,13 @@
       },
       "inviteLink": {
         "type": "String",
-        "example": "teambuildpro.com/join/abc123xyz"
+        "example": "https://tbp.app/join/abc123"
       }
     }
   },
-  "recruitT07WeeklyCheckIn": "Hey {prospectName}, quick check-in on {companyName}. How are things going? Any questions I can help with?",
+  "recruitT07WeeklyCheckIn": "Oi {prospectName}, check-in rápido sobre {companyName}. Como estão as coisas? Alguma dúvida que eu possa ajudar?",
   "@recruitT07WeeklyCheckIn": {
-    "description": "Weekly check-in message with open-ended question",
+    "description": "Regular weekly check-in message",
     "cap": {
       "sms": 140
     },
@@ -532,7 +2085,7 @@
       }
     }
   },
-  "recruitT08Deadline": "We kick off in {days, plural, one {# day} other {# days}}. Want me to hold your spot? {shortLink}",
+  "recruitT08Deadline": "Começamos em {days, plural, one {# dia} other {# dias}}. Quer que eu reserve sua vaga? {shortLink}",
   "@recruitT08Deadline": {
     "description": "Countdown to start date with days remaining",
     "cap": {
@@ -549,9 +2102,9 @@
       }
     }
   },
-  "recruitT09ResourceShare": "{prospectName}, I found this helpful for {companyName}. Thought you'd want to see it: {inviteLink}",
+  "recruitT09ResourceShare": "{prospectName}, achei isso útil para {companyName}. Achei que você ia querer ver: {inviteLink}",
   "@recruitT09ResourceShare": {
-    "description": "Message sharing helpful resource or content",
+    "description": "Sharing a helpful resource or tool",
     "cap": {
       "sms": 140
     },
@@ -566,11 +2119,11 @@
       },
       "inviteLink": {
         "type": "String",
-        "example": "teambuildpro.com/join/abc123xyz"
+        "example": "https://tbp.app/join/abc123"
       }
     }
   },
-  "recruitT10InviteReminder": "Hi {prospectName}, you still have an invite waiting for {companyName}. Ready to join? {shortLink}",
+  "recruitT10InviteReminder": "Oi {prospectName}, você ainda tem um convite esperando para {companyName}. Pronto para entrar? {shortLink}",
   "@recruitT10InviteReminder": {
     "description": "Reminder about pending invitation",
     "cap": {
@@ -591,9 +2144,9 @@
       }
     }
   },
-  "recruitT11TeamGrowth": "Great news, {prospectName}! Your {companyName} team grew this week. You're making real progress!",
+  "recruitT11TeamGrowth": "Ótimas notícias, {prospectName}! Sua equipe {companyName} cresceu essa semana. Você está fazendo um progresso real!",
   "@recruitT11TeamGrowth": {
-    "description": "Positive update about team growth",
+    "description": "Team growth update and encouragement",
     "cap": {
       "sms": 140
     },
@@ -608,9 +2161,9 @@
       }
     }
   },
-  "recruitT12Encouragement": "{prospectName}, building with {companyName} takes time. You're doing great. Keep going!",
+  "recruitT12Encouragement": "{prospectName}, construir com {companyName} leva tempo. Você está indo muito bem. Continue!",
   "@recruitT12Encouragement": {
-    "description": "Encouragement message for long-term motivation",
+    "description": "Motivational encouragement message",
     "cap": {
       "sms": 140
     },
@@ -625,9 +2178,9 @@
       }
     }
   },
-  "recruitT13TrainingInvite": "Hey {prospectName}, we have a {companyName} training session coming up. Want to join? {inviteLink}",
+  "recruitT13TrainingInvite": "Oi {prospectName}, temos uma sessão de treinamento de {companyName} chegando. Quer participar? {inviteLink}",
   "@recruitT13TrainingInvite": {
-    "description": "Invitation to upcoming training or event",
+    "description": "Invitation to training or event",
     "cap": {
       "sms": 140
     },
@@ -642,13 +2195,13 @@
       },
       "inviteLink": {
         "type": "String",
-        "example": "teambuildpro.com/join/abc123xyz"
+        "example": "https://tbp.app/join/abc123"
       }
     }
   },
-  "recruitT14QuickWin": "Nice work, {prospectName}! That was a solid win with {companyName}. Let's keep the momentum going!",
+  "recruitT14QuickWin": "Bom trabalho, {prospectName}! Foi uma vitória sólida com {companyName}. Vamos manter o ritmo!",
   "@recruitT14QuickWin": {
-    "description": "Celebration of small achievement",
+    "description": "Quick win celebration message",
     "cap": {
       "sms": 140
     },
@@ -663,9 +2216,9 @@
       }
     }
   },
-  "recruitT15SupportOffer": "Hey {prospectName}, I'm here if you need help with {companyName}. Just reach out anytime.",
+  "recruitT15SupportOffer": "Oi {prospectName}, estou aqui se você precisar de ajuda com {companyName}. É só me chamar quando quiser.",
   "@recruitT15SupportOffer": {
-    "description": "Offer of ongoing support and availability",
+    "description": "Offering help and support",
     "cap": {
       "sms": 140
     },
@@ -680,9 +2233,9 @@
       }
     }
   },
-  "recruitT16Gratitude": "Thanks for being part of our {companyName} team, {prospectName}. Your energy makes a difference!",
+  "recruitT16Gratitude": "Obrigado por fazer parte da nossa equipe {companyName}, {prospectName}. Sua energia faz diferença!",
   "@recruitT16Gratitude": {
-    "description": "Expression of gratitude and appreciation",
+    "description": "Thank you and appreciation message",
     "cap": {
       "sms": 140
     },
@@ -697,14 +2250,14 @@
       }
     }
   },
-  "notifMilestoneDirectTitle": "🎉 Amazing Progress!",
+  "notifMilestoneDirectTitle": "🎉 Progresso Incrível!",
   "@notifMilestoneDirectTitle": {
     "description": "Push notification title when user reaches direct sponsor milestone",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifMilestoneDirectBody": "Congratulations, {firstName}! You've reached {directCount} direct sponsors! Just {remaining} more team {remaining, plural, one {member} other {members}} needed to unlock your {bizName} invitation. Keep building!",
+  "notifMilestoneDirectBody": "Parabéns, {firstName}! Você alcançou {directCount} patrocinadores diretos! Só mais {remaining} {remaining, plural, one {membro} other {membros}} da equipe para desbloquear seu convite {bizName}. Continue construindo!",
   "@notifMilestoneDirectBody": {
     "description": "Push notification body for direct sponsor milestone",
     "cap": {
@@ -729,14 +2282,14 @@
       }
     }
   },
-  "notifMilestoneTeamTitle": "🚀 Incredible Growth!",
+  "notifMilestoneTeamTitle": "🚀 Crescimento Incrível!",
   "@notifMilestoneTeamTitle": {
     "description": "Push notification title when user reaches team size milestone",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifMilestoneTeamBody": "Amazing progress, {firstName}! You've built a team of {teamCount}! Just {remaining} more direct {remaining, plural, one {sponsor} other {sponsors}} needed to qualify for {bizName}. You're so close!",
+  "notifMilestoneTeamBody": "Progresso incrível, {firstName}! Você construiu uma equipe de {teamCount}! Só mais {remaining} {remaining, plural, one {patrocinador direto} other {patrocinadores diretos}} para se qualificar para {bizName}. Você está tão perto!",
   "@notifMilestoneTeamBody": {
     "description": "Push notification body for team size milestone",
     "cap": {
@@ -761,14 +2314,14 @@
       }
     }
   },
-  "notifSubActiveTitle": "✅ Subscription Active",
+  "notifSubActiveTitle": "✅ Assinatura Ativa",
   "@notifSubActiveTitle": {
     "description": "Push notification title when subscription is activated",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubActiveBody": "Your subscription is now active until {expiryDate}.",
+  "notifSubActiveBody": "Sua assinatura está ativa até {expiryDate}.",
   "@notifSubActiveBody": {
     "description": "Push notification body for active subscription",
     "cap": {
@@ -781,14 +2334,14 @@
       }
     }
   },
-  "notifSubCancelledTitle": "⚠️ Subscription Cancelled",
+  "notifSubCancelledTitle": "⚠️ Assinatura Cancelada",
   "@notifSubCancelledTitle": {
     "description": "Push notification title when subscription is cancelled",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubCancelledBody": "Your subscription has been cancelled but remains active until {expiryDate}.",
+  "notifSubCancelledBody": "Sua assinatura foi cancelada, mas permanece ativa até {expiryDate}.",
   "@notifSubCancelledBody": {
     "description": "Push notification body for cancelled subscription",
     "cap": {
@@ -801,28 +2354,28 @@
       }
     }
   },
-  "notifSubExpiredTitle": "❌ Subscription Expired",
+  "notifSubExpiredTitle": "❌ Assinatura Expirada",
   "@notifSubExpiredTitle": {
     "description": "Push notification title when subscription expires",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubExpiredBody": "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+  "notifSubExpiredBody": "Sua assinatura expirou. Renove agora para continuar construindo sua equipe e acessando todas as ferramentas de recrutamento.",
   "@notifSubExpiredBody": {
     "description": "Push notification body for expired subscription",
     "cap": {
       "pushBody": 140
     }
   },
-  "notifSubExpiringSoonTitle": "⏰ Subscription Expiring Soon",
+  "notifSubExpiringSoonTitle": "⏰ Assinatura Expirando em Breve",
   "@notifSubExpiringSoonTitle": {
     "description": "Push notification title when subscription is expiring soon",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubExpiringSoonBody": "Your subscription expires on {expiryDate}. Renew now to avoid interruption.",
+  "notifSubExpiringSoonBody": "Sua assinatura expira em {expiryDate}. Renove agora para evitar interrupção.",
   "@notifSubExpiringSoonBody": {
     "description": "Push notification body for expiring subscription",
     "cap": {
@@ -835,35 +2388,35 @@
       }
     }
   },
-  "notifSubPausedTitle": "⏸️ Subscription Paused",
+  "notifSubPausedTitle": "⏸️ Assinatura Pausada",
   "@notifSubPausedTitle": {
     "description": "Push notification title when subscription is paused",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubPausedBody": "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
+  "notifSubPausedBody": "Sua assinatura foi pausada. Retome na Play Store para restaurar o acesso a todos os recursos.",
   "@notifSubPausedBody": {
     "description": "Push notification body for paused subscription",
     "cap": {
       "pushBody": 140
     }
   },
-  "notifSubPaymentIssueTitle": "⚠️ Payment Issue",
+  "notifSubPaymentIssueTitle": "⚠️ Problema no Pagamento",
   "@notifSubPaymentIssueTitle": {
     "description": "Push notification title when there's a payment problem",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifSubPaymentIssueBody": "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
+  "notifSubPaymentIssueBody": "Sua assinatura está suspensa devido a um problema no pagamento. Por favor, atualize seu método de pagamento na Play Store.",
   "@notifSubPaymentIssueBody": {
     "description": "Push notification body for payment issue",
     "cap": {
       "pushBody": 140
     }
   },
-  "notifNewMessageTitle": "New Message from {senderName}",
+  "notifNewMessageTitle": "Nova Mensagem de {senderName}",
   "@notifNewMessageTitle": {
     "description": "Push notification title for new chat message",
     "cap": {
@@ -876,14 +2429,14 @@
       }
     }
   },
-  "notifTeamActivityTitle": "👀 Team Member Activity",
+  "notifTeamActivityTitle": "👀 Atividade de Membro da Equipe",
   "@notifTeamActivityTitle": {
     "description": "Push notification title when team member visits business page",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifTeamActivityBody": "{visitorName} visited the business opportunity page!",
+  "notifTeamActivityBody": "{visitorName} visitou a página da oportunidade de negócio!",
   "@notifTeamActivityBody": {
     "description": "Push notification body for team member activity",
     "cap": {
@@ -896,45 +2449,45 @@
       }
     }
   },
-  "notifLaunchSentTitle": "Launch Campaign Sent",
+  "notifLaunchSentTitle": "Campanha de Lançamento Enviada",
   "@notifLaunchSentTitle": {
     "description": "Confirmation that launch campaign was sent successfully",
     "cap": {
       "pushTitle": 65
     }
   },
-  "notifLaunchSentBody": "Your launch campaign has been successfully sent to your network.",
+  "notifLaunchSentBody": "Sua campanha de lançamento foi enviada com sucesso para sua rede.",
   "@notifLaunchSentBody": {
     "description": "Body for launch campaign confirmation notification",
     "cap": {
       "pushBody": 140
     }
   },
-  "emptyNotifications": "No notifications yet.",
+  "emptyNotifications": "Nenhuma notificação ainda.",
   "@emptyNotifications": {
     "description": "Empty state when user has no notifications"
   },
-  "emptyMessageContent": "No message content.",
+  "emptyMessageContent": "Sem conteúdo de mensagem.",
   "@emptyMessageContent": {
     "description": "Fallback when notification has no message body"
   },
-  "emptyNotificationTitle": "No Title",
+  "emptyNotificationTitle": "Sem Título",
   "@emptyNotificationTitle": {
     "description": "Fallback when notification has no title"
   },
-  "emptyMessageThreads": "No message threads found.",
+  "emptyMessageThreads": "Nenhuma conversa encontrada.",
   "@emptyMessageThreads": {
     "description": "Empty state when user has no message conversations"
   },
-  "emptyTeamMember": "Team member not found.",
+  "emptyTeamMember": "Membro da equipe não encontrado.",
   "@emptyTeamMember": {
     "description": "Error state when team member profile doesn't exist"
   },
-  "errorLoadingNotifications": "Error loading notifications",
+  "errorLoadingNotifications": "Erro ao carregar notificações",
   "@errorLoadingNotifications": {
     "description": "Error state when notifications fail to load"
   },
-  "errorGeneric": "Error: {error}",
+  "errorGeneric": "Erro: {error}",
   "@errorGeneric": {
     "description": "Generic error message with error details",
     "placeholders": {
@@ -943,5 +2496,727 @@
         "example": "Network connection failed"
       }
     }
+  },
+  "authSignupErrorFirstName": "O primeiro nome não pode estar vazio",
+  "authSignupErrorLastName": "O sobrenome não pode estar vazio",
+  "addLinkHeading": "Adicione seu link de\n{business}",
+  "addLinkImportantLabel": "INFORMAÇÕES IMPORTANTES",
+  "addLinkDisclaimer": "Você está atualizando sua conta do Team Build Pro para rastrear referências para {business}. Esta é uma entidade comercial separada e independente que NÃO é de propriedade, operada ou afiliada ao Team Build Pro.",
+  "addLinkGrowthTitle": "Desbloqueando seu motor de crescimento",
+  "addLinkInstructionBullet1": "Seu link de referência será armazenado no seu perfil do Team Build Pro apenas para fins de rastreamento.",
+  "addLinkInstructionBullet2": "Quando seus membros da equipe qualificarem e se juntarem à oportunidade {business}, eles serão automaticamente colocados em sua equipe oficial",
+  "addLinkInstructionBullet3": "Este link só pode ser definido uma vez, portanto, verifique se está correto antes de salvar.",
+  "addLinkWarning": "O Team Build Pro é apenas uma plataforma de rastreamento de referências. Não endossamos nem garantimos nenhuma oportunidade de negócio.",
+  "addLinkFinalStepTitle": "Etapa final: Vincule sua conta",
+  "addLinkFinalStepSubtitle": "Isso garante que seus novos membros da equipe sejam automaticamente colocados em sua organização {business}.",
+  "addLinkFieldInstruction": "Digite seu link de referência {business} abaixo. Ele será usado para rastrear referências de sua equipe.",
+  "addLinkMustBeginWith": "Deve começar com:\n{baseUrl}",
+  "addLinkFieldLabel": "Digite seu link de referência",
+  "addLinkFieldHelper": "Deve começar com {baseUrl}\nIsso não pode ser alterado depois de definido",
+  "addLinkFieldError": "Por favor, digite seu link de referência {business}.",
+  "addLinkConfirmFieldLabel": "Confirmar URL do link de referência",
+  "addLinkConfirmFieldError": "Por favor, confirme seu link de referência.",
+  "addLinkPreviewLabel": "Visualização do link de referência:",
+  "addLinkSaving": "Validando e salvando...",
+  "addLinkDialogImportantTitle": "Muito importante!",
+  "addLinkDialogImportantMessage": "Você deve inserir o link de referência exato que recebeu de {business}. Isso garantirá que os membros de sua equipe que se juntarem a {business} sejam automaticamente colocados em sua equipe {business}.",
+  "addLinkDialogImportantButton": "Eu entendo",
+  "addLinkDialogDuplicateTitle": "Link de referência já em uso",
+  "addLinkDialogDuplicateMessage": "O link de referência {business} que você inseriu já está sendo usado por outro membro do Team Build Pro.",
+  "addLinkDialogDuplicateInfo": "Você deve usar um link de referência diferente para continuar.",
+  "addLinkDialogDuplicateButton": "Tentar link diferente",
+  "businessHeroTitle": "Parabéns!\nVocê está qualificado!",
+  "businessHeroMessage": "Seu trabalho árduo e construção de equipe valeram a pena. Agora você está elegível para se juntar à oportunidade {business}.",
+  "businessDisclaimerTitle": "Aviso de isenção de responsabilidade",
+  "businessDisclaimerMessage": "O crescimento de sua equipe desbloqueou o acesso a {business}. Esta oportunidade opera como um negócio independente e não tem afiliação com a plataforma Team Build Pro.",
+  "businessDisclaimerInfo": "O aplicativo Team Build Pro simplesmente facilita o acesso a {business} através de seu patrocinador de upline. Ele não endossa nem garante nenhum resultado específico desta oportunidade.",
+  "businessSponsorTitle": "Seu contato de referência",
+  "businessSponsorMessage": "Se você escolher explorar {business}, seu contato de referência será {sponsor}. Esta pessoa é membro de sua equipe upline que já se juntou a {business}.",
+  "businessInstructionsTitle": "Como se juntar a {business}",
+  "businessInstructions": "1. Copie o link de referência abaixo\n2. Abra seu navegador da web\n3. Cole o link e complete o registro em {business}\n4. Retorne aqui para adicionar seu link de referência {business}",
+  "businessNoUrlMessage": "URL de registro não disponível. Entre em contato com seu patrocinador.",
+  "businessUrlLabel": "Link de referência do seu patrocinador:",
+  "businessUrlCopyTooltip": "Copiar URL",
+  "businessUrlCopiedMessage": "URL de registro copiada para a área de transferência!",
+  "businessUrlCopyError": "Falha ao copiar URL: {error}",
+  "businessFollowUpTitle": "Etapa final: Vincule sua conta",
+  "businessFollowUpMessage": "Depois de explorar {business}, você deve retornar aqui e adicionar seu novo link de referência {business} ao seu perfil do Team Build Pro. Isso garante que suas conexões de equipe sejam rastreadas corretamente.",
+  "businessCompleteButton1": "Registro completo",
+  "businessCompleteButton2": "Adicionar meu link de referência",
+  "businessConfirmDialogTitle": "Antes de continuar",
+  "businessConfirmDialogMessage": "Este é o próximo passo em sua jornada. Depois de se juntar a {business} através do link de seu patrocinador, você deve retornar aqui para adicionar seu novo link de referência {business} ao seu perfil. Esta é uma etapa crítica para garantir que seus novos membros da equipe sejam colocados corretamente.",
+  "businessConfirmDialogButton": "Eu entendo",
+  "businessVisitRequiredTitle": "Visita necessária primeiro",
+  "businessVisitRequiredMessage": "Antes de atualizar seu perfil, você deve primeiro usar o botão 'Copiar link de registro' nesta página para visitar {business} e completar seu registro.",
+  "businessVisitRequiredButton": "OK",
+  "gettingStartedHeading": "Começando com o Team Build Pro",
+  "gettingStartedSubheading": "Siga estes passos simples para começar a construir sua equipe",
+  "gettingStartedStep1Description": "Crie uma lista de prospects de recrutamento e membros atuais da equipe {business} com quem você deseja compartilhar o Team Build Pro. Pense em quem poderia se beneficiar desta ferramenta para acelerar a construção de sua equipe.",
+  "gettingStartedStep2Description": "Use o recurso Compartilhar para enviar rapidamente e facilmente mensagens de texto e e-mails direcionados para seus prospects de recrutamento e membros da equipe {business}.",
+  "gettingStartedStep2Button": "Abrir compartilhar",
+  "gettingStartedProTipTitle": "Dica profissional",
+  "gettingStartedProTipMessage": "O acompanhamento consistente e o engajamento são fundamentais para construir uma equipe forte e ativa.",
+  "eligibilityHeroTitleQualified": "PARABÉNS!\nVocê está qualificado!",
+  "eligibilityHeroTitleNotQualified": "Construa seu impulso",
+  "eligibilityHeroMessageQualified": "Trabalho incrível! Você construiu sua equipe fundamental e desbloqueou a oportunidade {business}. Continue crescendo sua rede para ajudar outros a alcançar o mesmo sucesso.",
+  "eligibilityHeroMessageNotQualified": "Você está no caminho! Cada profissional com quem você se conecta constrói impulso para seu futuro lançamento na oportunidade {business}. Continue compartilhando para alcançar seus objetivos!",
+  "eligibilityHeroButton": "Estratégias de crescimento comprovadas",
+  "eligibilityThresholdsTitle": "LIMIARES DE QUALIFICAÇÃO",
+  "eligibilityLabelDirectSponsors": "Patrocinadores diretos",
+  "eligibilityLabelTotalTeam": "Total de membros da equipe",
+  "eligibilityCurrentCountsTitle": "SUAS CONTAGENS ATUAIS DA EQUIPE",
+  "eligibilityCurrentDirectSponsors": "Patrocinadores diretos",
+  "eligibilityCurrentTotalTeam": "Total de membros da equipe",
+  "eligibilityProcessTitle": "O PROCESSO",
+  "eligibilityProcessStep1Title": "CONVIDAR - Construa sua fundação",
+  "eligibilityProcessStep1Description": "Conecte-se com profissionais com ideias semelhantes abertos a explorar {business}.",
+  "eligibilityProcessStep2Title": "CULTIVAR - Crie impulso",
+  "eligibilityProcessStep2Description": "Promova relacionamentos autênticos à medida que sua equipe cresce, criando uma equipe próspera de profissionais que se apoiam mutuamente no sucesso.",
+  "eligibilityProcessStep3Title": "PARCERIA - Lance com sucesso",
+  "eligibilityProcessStep3Description": "Os membros da equipe recebem um convite para se juntar a {business} ao atingir metas de crescimento importantes.",
+  "shareHeading": "Sistema de referência poderoso",
+  "shareSubheading": "Compartilhe seus links de referência para pré-construir uma nova equipe com prospects de recrutamento ou expandir sua equipe existente.",
+  "shareStrategiesTitle": "Estratégias de crescimento comprovadas",
+  "shareProspectTitle": "Novos prospects de recrutamento",
+  "shareProspectSubtitle": "Convide prospects de recrutamento para começar com vantagem.",
+  "shareProspectDescription": "Convide prospects de recrutamento para pré-construir sua equipe {business} com este aplicativo. Eles podem criar um impulso poderoso antes de se juntarem oficialmente a {business}, garantindo sucesso desde o primeiro dia.",
+  "sharePartnerTitle": "Parceiros de negócios atuais",
+  "sharePartnerSubtitle": "Ótimo para sua equipe {business} existente",
+  "sharePartnerDescription": "Capacite seus parceiros {business} existentes com a mesma ferramenta que você usa. Isso promove a duplicação e ajuda a acelerar o crescimento em toda a sua organização {business}.",
+  "shareSelectMessageLabel": "Selecionar mensagem para enviar",
+  "shareButtonShare": "Compartilhar",
+  "shareLinkCopiedMessage": "Link copiado para a área de transferência!",
+  "shareProTipsTitle": "Dicas profissionais para o sucesso",
+  "shareProTip1": "💬 Personalize sua mensagem ao compartilhar",
+  "shareProTip2": "📱 Compartilhe consistentemente em todas as plataformas sociais",
+  "shareProTip3": "🤝 Faça acompanhamento com prospects que demonstrarem interesse",
+  "shareProTip4": "📈 Rastreie seus resultados e ajuste sua abordagem",
+  "shareProTip5": "🎯 Use ambas as estratégias para máximo potencial de crescimento",
+  "shareDemoTitle": "Modo de demonstração",
+  "shareDemoMessage": "Compartilhamento desabilitado durante o modo de demonstração.",
+  "shareDemoButton": "Eu entendo",
+  "memberDetailButtonSendMessage": "Enviar mensagem",
+  "memberDetailLabelDirectSponsors": "Patrocinadores diretos",
+  "memberDetailLabelJoinedNetwork": "Entrou na rede",
+  "memberDetailLabelJoinedOrganization": "Entrou na organização",
+  "memberDetailLabelQualified": "Qualificado",
+  "memberDetailLabelQualifiedDate": "Data de qualificação",
+  "memberDetailLabelTeamLeader": "Líder da equipe",
+  "memberDetailLabelTotalTeam": "Equipe total",
+  "memberDetailNotYet": "Ainda não",
+  "memberDetailNotYetJoined": "Ainda não entrou",
+  "memberDetailEligibilityTitle": "Requisitos de elegibilidade",
+  "memberDetailEligibilityDirectSponsors": "Patrocinadores diretos",
+  "memberDetailEligibilityTotalTeam": "Equipe total",
+  "memberDetailEligibilityMessage": "Os membros da equipe que atenderem a esses requisitos são automaticamente convidados a se juntar a {organization}.",
+  "memberDetailEligibilityWaived": "Dispensado",
+  "messageThreadHeading": "Centro de mensagens",
+  "messageThreadEmptyMessage": "Comece a conversa!",
+  "messageThreadUrlWarningTitle": "Aviso de link externo",
+  "messageThreadUrlWarningMessage": "Esta mensagem contém um link externo. Tenha cuidado ao clicar em links de fontes desconhecidas.",
+  "messageThreadUrlWarningButton": "Entendido",
+  "chatbotAssistantTitle": "Assistente de IA",
+  "chatbotAssistantSubtitle": "Pergunte-me qualquer coisa sobre o Team Build Pro",
+  "chatbotClearTooltip": "Limpar conversa",
+  "chatbotSignInRequired": "Por favor, faça login para usar o Assistente de IA",
+  "companyHeading": "Detalhes da empresa",
+  "companyLabelName": "Nome da empresa",
+  "companyLabelReferralLink": "Meu link de referência da empresa",
+  "companyLinkedTitle": "Conta vinculada!",
+  "companyLinkedMessage": "Ótimas notícias! À medida que seus membros da equipe ganham impulso e se qualificam, eles receberão um convite para se juntar à sua organização {business}.",
+  "companyNotAvailable": "Não disponível",
+  "deleteAccountHeading": "Exclusão de conta",
+  "deleteAccountSubheading": "Lamentamos vê-lo partir. Por favor, revise as informações abaixo cuidadosamente.",
+  "deleteAccountWarningTitle": "EXCLUSÃO PERMANENTE DE CONTA",
+  "deleteAccountWarningMessage": "Esta ação não pode ser desfeita. Quando você excluir sua conta:",
+  "deleteAccountWarning1": "Seus dados pessoais serão excluídos permanentemente",
+  "deleteAccountWarning2": "Você perderá o acesso a todos os recursos premium",
+  "deleteAccountWarning3": "Sua conta não pode ser recuperada ou reativada",
+  "deleteAccountWarning4": "Seus relacionamentos de rede serão preservados para continuidade dos negócios",
+  "deleteAccountWarning5": "Você será desconectado imediatamente de todos os dispositivos",
+  "deleteAccountInfoTitle": "Informações da conta",
+  "deleteAccountConfirmTitle": "Confirmação necessária",
+  "deleteAccountConfirmLabel": "Para confirmar a exclusão, digite seu endereço de e-mail:",
+  "deleteAccountCheckbox1": "Eu entendo que esta ação é permanente e não pode ser desfeita",
+  "deleteAccountCheckbox2": "Eu entendo que perderei o acesso a todos os dados e recursos premium",
+  "deleteAccountCheckbox3": "Eu reconheço que meus relacionamentos de rede serão preservados para operações comerciais",
+  "deleteAccountDeleting": "Excluindo...",
+  "deleteAccountHelpTitle": "Precisa de ajuda?",
+  "deleteAccountHelpMessage": "Se você estiver enfrentando problemas com o aplicativo, entre em contato com nossa equipe de suporte antes de excluir sua conta.",
+  "deleteAccountHelpButton": "Contatar suporte",
+  "deleteAccountDemoTitle": "Proteção de conta de demonstração",
+  "deleteAccountDemoMessage": "Esta é uma conta de demonstração protegida e não pode ser excluída.\n\nAs contas de demonstração são mantidas para revisão de aplicativos e fins de demonstração.\n\nSe você estiver testando o aplicativo, crie uma nova conta para testar os recursos de exclusão de conta.",
+  "deleteAccountDemoButton": "OK",
+  "editProfileHeading": "Editar perfil",
+  "editProfileHeadingFirstTime": "Complete seu perfil",
+  "editProfileInstructionsFirstTime": "Por favor, complete seu perfil para começar",
+  "editProfileBusinessQuestion": "Você é atualmente um ",
+  "editProfileBusinessQuestionSuffix": " representante?",
+  "editProfileYes": "Sim",
+  "editProfileNo": "Não",
+  "editProfileDialogImportantTitle": "Muito importante!",
+  "editProfileDialogImportantMessage": "Você deve inserir o link de referência exato que recebeu de seu patrocinador {business}.",
+  "editProfileDialogImportantButton": "Eu entendo",
+  "editProfileReferralLinkField": "Digite seu link de referência",
+  "editProfileReferralLinkLabel": "Seu link de referência",
+  "editProfileReferralLinkHelper": "Digite o link de referência de seu patrocinador {business}",
+  "editProfileConfirmReferralLink": "Confirmar link de referência",
+  "editProfileSelectCountry": "Selecione seu país",
+  "editProfileSelectState": "Selecione seu estado/província",
+  "editProfileSelectStateDisabled": "Primeiro selecione um país",
+  "editProfileErrorCity": "Por favor, digite sua cidade",
+  "editProfileErrorState": "Por favor, selecione seu estado/província",
+  "editProfileErrorCountry": "Por favor, selecione seu país",
+  "editProfilePhotoError": "Erro ao carregar foto. Por favor, tente novamente.",
+  "editProfileDeletionTitle": "Excluir conta",
+  "editProfileDeletionMessage": "Excluir permanentemente sua conta e todos os dados associados.",
+  "editProfileDeletionSubtext": "Esta ação não pode ser desfeita",
+  "editProfileDeletionButton": "Concluir exclusão",
+  "loginLabelEmail": "E-mail",
+  "loginLabelPassword": "Senha",
+  "loginValidatorEmail": "Por favor, insira seu e-mail",
+  "loginValidatorPassword": "Por favor, insira sua senha",
+  "loginButtonLogin": "Entrar",
+  "loginButtonBiometric": "Entrar com biometria",
+  "loginDividerOr": "ou",
+  "loginNoAccount": "Não tem uma conta? ",
+  "loginCreateAccount": "Criar conta",
+  "loginPrivacyPolicy": "Política de privacidade",
+  "loginTermsOfService": "Termos de serviço",
+  "welcomeGreeting": "Bem-vindo, {firstName}!",
+  "welcomeMessageAdmin": "Pronto para liderar a revolução das redes profissionais? Complete seu perfil de administrador e configure sua equipe. Após completar seu perfil, você terá acesso à plataforma completa do Team Build Pro.",
+  "welcomeMessageUser": "Pronto para transformar sua rede profissional? Complete seu perfil para desbloquear todo o poder do Team Build Pro.",
+  "welcomeButtonJoin": "Junte-se à revolução",
+  "changePasswordHeading": "Alterar senha",
+  "changePasswordTodoMessage": "TODO: Implementar formulário de alteração de senha aqui.",
+  "chatPlaceholder": "A interface de chat vai aqui.",
+  "quickPromptsWelcomeTitle": "Bem-vindo ao seu Coach de IA!",
+  "quickPromptsWelcomeDescription": "Estou aqui para ajudar você a ter sucesso com o Team Build Pro. Posso responder perguntas sobre o app, estratégias de construção de equipe e guiá-lo através dos recursos.",
+  "quickPromptsDisclaimerMessage": "O Coach de IA pode cometer erros. Verifique informações importantes.",
+  "quickPromptsQuestionHeader": "Como posso ajudar você?",
+  "quickPromptsQuestionSubheader": "Toque em qualquer pergunta abaixo para começar, ou digite sua própria pergunta.",
+  "quickPromptsProTipLabel": "Dica Pro",
+  "quickPromptsProTipText": "Seja específico com suas perguntas. Por exemplo: \"Tenho 2 patrocinadores diretos, no que devo focar a seguir?\"",
+  "chatbotPrompt1": "Como funciona a qualificação?",
+  "chatbotPrompt2": "Qual é a diferença entre isso e um MLM?",
+  "chatbotPrompt3": "Como convido pessoas para minha equipe?",
+  "chatbotPrompt4": "Mostre-me a análise da minha equipe",
+  "chatbotPrompt5": "No que devo focar a seguir?",
+  "chatbotPrompt6": "Como cancelo minha assinatura?",
+  "chatbotPrompt7": "Por que a maioria das pessoas falha nas vendas diretas?",
+  "chatbotPrompt8": "O que acontece depois que eu me qualificar?",
+  "messageCenterSponsorLabel": "Seu Patrocinador",
+  "messageCenterTeamLeaderLabel": "Líder da Equipe",
+  "messageCenterSupportTeamTitle": "Sua Equipe de Suporte",
+  "messageCenterSupportTeamSubtitle": "Toque para iniciar uma conversa",
+  "shareProspectPastStrugglesTitle": "Abordando Lutas Passadas",
+  "shareProspectPastStrugglesDescription": "Perfeito para prospectos que tentaram antes e tiveram dificuldades",
+  "shareProspectPastStrugglesSubject": "Uma Forma Mais Inteligente de Começar Desta Vez",
+  "shareProspectPastStrugglesMessage": "Se tentativas passadas deixaram você parado no zero sem impulso, aqui está um caminho mais inteligente.\n\nO Coach de IA do Team Build Pro ajuda você a pré-construir sua equipe de {business} antes mesmo de se juntar.\n\nEle escreve suas mensagens, agenda seus acompanhamentos e rastreia quem está interessado - para que você não comece do zero desta vez. Você lança com pessoas já esperando por você.\n\nA IA guia você em cada passo. Você não estará sozinho.\n\nVeja como funciona: {link}\n\nVocê merece uma chance real desta vez.",
+  "shareProspectNotSalespersonTitle": "Para Não Vendedores",
+  "shareProspectNotSalespersonDescription": "Ótimo para pessoas que não se veem como \"vendedores\"",
+  "shareProspectNotSalespersonSubject": "Você Não Precisa Ser um \"Vendedor\"",
+  "shareProspectNotSalespersonMessage": "Não é um \"vendedor natural\"? Tudo bem. Você tem um Coach de IA.\n\nO Team Build Pro ajuda você a pré-construir sua equipe de {business} com IA que escreve suas mensagens, agenda seus acompanhamentos e rastreia o interesse de todos.\n\nÉ como ter um assistente de recrutamento que nunca dorme. Você foca nos relacionamentos. A IA cuida do resto.\n\nComece a construir antes mesmo de se juntar: {link}\n\nVocê não precisa de uma \"personalidade de vendas\". Você precisa de ferramentas inteligentes. Agora você as tem.",
+  "shareProspectHopeAfterDisappointmentTitle": "Esperança Após a Decepção",
+  "shareProspectHopeAfterDisappointmentDescription": "Ideal para prospectos queimados por oportunidades anteriores",
+  "shareProspectHopeAfterDisappointmentSubject": "Uma Forma Mais Inteligente de Começar Desta Vez",
+  "shareProspectHopeAfterDisappointmentMessage": "Já foi queimado antes? Prometeram o mundo e então deixaram você começando do zero?\n\nDesta vez é diferente. O Coach de IA do Team Build Pro ajuda você a pré-construir sua equipe de {business} antes de se juntar.\n\nEle escreve suas mensagens de recrutamento, agenda seus acompanhamentos, rastreia quem está interessado e aconselha você nos próximos passos. Você ganha impulso real antes do Dia 1.\n\nSem exageros. Sem promessas vazias. Apenas ferramentas alimentadas por IA que funcionam.\n\nVeja como: {link}\n\nVocê merece um sistema que realmente te prepara para vencer.",
+  "shareProspectGeneralInvitationTitle": "Convite Geral",
+  "shareProspectGeneralInvitationDescription": "Uma mensagem versátil para qualquer situação de prospecto",
+  "shareProspectGeneralInvitationSubject": "Construa Antes de Se Juntar - Guiado por IA",
+  "shareProspectGeneralInvitationMessage": "Você está convidado a experimentar uma forma mais inteligente de começar.\n\nCom o Team Build Pro, um Coach de IA ajuda você a pré-construir sua equipe de {business} antes de se juntar oficialmente.\n\nVeja como ajuda:\n- Escreve mensagens personalizadas\n- Agenda acompanhamentos automaticamente\n- Rastreia impulso e próximos passos\n\nAssim, o Dia 1 não é um começo frio - é um começo em movimento.\n\nDê uma olhada: {link}",
+  "shareProspectSocialAnxietyTitle": "Evitando Conversas Constrangedoras",
+  "shareProspectSocialAnxietyDescription": "Perfeito para introvertidos ou aqueles desconfortáveis com recrutamento cara a cara",
+  "shareProspectSocialAnxietySubject": "Construa Sua Equipe Sem Conversas Constrangedoras",
+  "shareProspectSocialAnxietyMessage": "Desconfortável em abordar amigos e familiares? Você não precisa.\n\nO Team Build Pro permite que você construa sua rede de {business} online primeiro - onde se sente confortável.\n\nO Coach de IA escreve suas mensagens, sugere quem contatar e rastreia as respostas. Você constrói relacionamentos no seu próprio ritmo, sem pressão.\n\nSem ligações frias. Sem pitches constrangedores. Apenas conexões genuínas guiadas por IA.\n\nComece a construir nos seus termos: {link}\n\nFinalmente, uma forma de crescer sua rede que se sente natural para você.",
+  "shareProspectTimeConstrainedTitle": "Para Profissionais Ocupados",
+  "shareProspectTimeConstrainedDescription": "Ideal para prospectos fazendo malabarismos com trabalho, família e outros compromissos",
+  "shareProspectTimeConstrainedSubject": "Construa Sua Equipe nas Brechas",
+  "shareProspectTimeConstrainedMessage": "Não pode dedicar horas em tempo integral? Você não precisa.\n\nO Team Build Pro funciona em torno da sua agenda. Construa sua equipe de {business} durante o café da manhã, pausas para almoço ou tempo livre à noite.\n\nA IA cuida do trabalho pesado:\n- Agenda seus acompanhamentos automaticamente\n- Lembra você quando é hora de entrar em contato\n- Rastreia tudo para que você nunca perca impulso\n\nTrabalhe 15 minutos aqui, 20 minutos ali. A IA faz cada minuto contar.\n\nVeja como se encaixa na sua vida: {link}\n\nConstrua um negócio real sem sacrificar todo o resto.",
+  "shareProspectFinancialRiskAverseTitle": "Medo de Perder Dinheiro",
+  "shareProspectFinancialRiskAverseDescription": "Ótimo para prospectos preocupados com risco financeiro",
+  "shareProspectFinancialRiskAverseSubject": "Veja Resultados Antes de Investir Muito",
+  "shareProspectFinancialRiskAverseMessage": "Preocupado em perder dinheiro? Inteligente.\n\nCom o Team Build Pro, você pode pré-construir sua equipe de {business} e ver resultados reais antes de investir muito.\n\nComece grátis. Teste o sistema. Rastreie seu progresso real em tempo real. Apenas $4.99/mês quando estiver pronto para convidar seus primeiros prospectos.\n\nSem funis de leads caros. Sem sistemas complexos. Apenas ferramentas alimentadas por IA que ajudam você a construir relacionamentos reais e impulso real.\n\nVeja a prova primeiro: {link}\n\nVocê merece ver o que é possível antes de arriscar qualquer coisa.",
+  "shareProspectSkepticalRealistTitle": "Me Mostre Prova",
+  "shareProspectSkepticalRealistDescription": "Perfeito para prospectos queimados por falsas promessas",
+  "shareProspectSkepticalRealistSubject": "Sem Exageros. Apenas Rastreie Seu Progresso Real",
+  "shareProspectSkepticalRealistMessage": "Cansado de promessas vazias e exageros?\n\nO Team Build Pro mostra métricas reais. Sem enrolação. Sem exagero.\n\nSeu painel rastreia:\n- Quantas pessoas você contatou\n- Quem respondeu e quem está interessado\n- Seu impulso real em direção à qualificação (4 diretos + 20 totais)\n- Os próximos passos que a IA recomenda\n\nVocê saberá exatamente onde está antes de se juntar a {business}. Sem surpresas. Sem falsas esperanças. Apenas dados.\n\nVeja a transparência: {link}\n\nFinalmente, um sistema que mostra a verdade.",
+  "sharePartnerWarmMarketExhaustedTitle": "Mercado Quente Esgotado",
+  "sharePartnerWarmMarketExhaustedDescription": "Para parceiros que esgotaram amigos e familiares",
+  "sharePartnerWarmMarketExhaustedSubject": "Dê à Sua Equipe um Companheiro de Recrutamento de IA",
+  "sharePartnerWarmMarketExhaustedMessage": "Esgotou seu mercado quente? Cansado de leads que somem?\n\nDê à sua equipe de {business} um companheiro de recrutamento de IA.\n\nO Team Build Pro escreve as mensagens de recrutamento da sua equipe, agenda os acompanhamentos, rastreia o interesse dos prospectos e orienta cada conversa.\n\nSeus prospectos pré-constroem suas equipes antes de se juntar - para que eles lancem com impulso, não do zero.\n\nMelhor parte? Sua equipe inteira obtém a mesma vantagem de IA. Verdadeira duplicação em escala.\n\nVeja como: {link}\n\nPare de perseguir. Comece a treinar com IA.",
+  "sharePartnerExpensiveSystemFatigueTitle": "Fadiga de Sistema e Despesa",
+  "sharePartnerExpensiveSystemFatigueDescription": "Para parceiros esgotados de métodos de recrutamento caros",
+  "sharePartnerExpensiveSystemFatigueSubject": "O Sistema de Recrutamento de IA Dentro do Team Build Pro",
+  "sharePartnerExpensiveSystemFatigueMessage": "Cansado de pagar por leads, funis e sistemas que não duplicam?\n\nO Team Build Pro tem recrutamento de IA integrado - sem custo extra, sem configuração complexa.\n\nEle escreve mensagens de recrutamento, agenda acompanhamentos, rastreia engajamento e orienta toda sua equipe de {business} em cada conversa.\n\nSeus prospectos pré-constroem suas equipes antes de se juntar. Sua equipe duplica as mesmas ferramentas de IA. Todos ganham.\n\nUm sistema simples. Resultados reais.\n\nConfira: {link}\n\nPare de pagar demais. Comece a usar IA.",
+  "sharePartnerDuplicationStruggleTitle": "Desafios de Duplicação",
+  "sharePartnerDuplicationStruggleDescription": "Para líderes lutando para fazer sua equipe duplicar",
+  "sharePartnerDuplicationStruggleSubject": "Duplicação Alimentada por IA para Toda a Sua Equipe",
+  "sharePartnerDuplicationStruggleMessage": "Sua equipe luta para duplicar seu sucesso de recrutamento? Não mais.\n\nO Team Build Pro dá a cada pessoa na sua equipe de {business} o mesmo coach de recrutamento de IA.\n\nEle escreve suas mensagens. Agenda seus acompanhamentos. Rastreia seus prospectos. Orienta seus próximos passos.\n\nRecém-chegado ou líder veterano - todos obtêm a mesma vantagem de IA. Verdadeira duplicação do sistema.\n\nSeus prospectos pré-constroem equipes antes de se juntar. Sua equipe cresce mais rápido usando ferramentas de IA idênticas.\n\nVeja funcionar: {link}\n\nFinalmente, um sistema que toda sua equipe pode duplicar.",
+  "sharePartnerGeneralTeamToolTitle": "Ferramenta Geral de Equipe",
+  "sharePartnerGeneralTeamToolDescription": "Uma mensagem versátil para qualquer situação de parceiro",
+  "sharePartnerGeneralTeamToolSubject": "A Vantagem de Recrutamento de IA para Sua Equipe",
+  "sharePartnerGeneralTeamToolMessage": "Quer dar à sua equipe de {business} uma vantagem competitiva real?\n\nO Team Build Pro tem recrutamento de IA integrado. Ele ajuda toda a sua equipe:\n\n- Escrever mensagens de recrutamento personalizadas\n- Agendar acompanhamentos automaticamente\n- Rastrear engajamento de prospectos\n- Orientar cada conversa\n\nSeus prospectos pré-constroem suas equipes antes de se juntar. Sua equipe duplica as mesmas ferramentas de IA. Todos crescem mais rápido.\n\nConfira: {link}\n\nEsta é a vantagem de IA que sua equipe precisa.",
+  "sharePartnerRetentionCrisisTitle": "Problema de Abandono da Equipe",
+  "sharePartnerRetentionCrisisDescription": "Para líderes frustrados por membros da equipe desistindo cedo",
+  "sharePartnerRetentionCrisisSubject": "Pare de Perder Sua Equipe no Primeiro Ano",
+  "sharePartnerRetentionCrisisMessage": "Vendo sua equipe de {business} desistir antes de ter sucesso?\n\n75% desistem no primeiro ano. Geralmente porque se sentem perdidos, sem apoio ou sobrecarregados.\n\nO Team Build Pro muda isso. Cada pessoa na sua equipe recebe um Coach de IA que:\n- Orienta através de cada conversa de recrutamento\n- Rastreia seu progresso e celebra vitórias\n- Lembra o que fazer a seguir\n- Mantém o impulso quando a motivação cai\n\nEles nunca estão sozinhos. Sempre sabem seu próximo passo. Permanecem engajados por mais tempo.\n\nDê à sua equipe o apoio que precisam: {link}\n\nPare de vê-los desistir. Comece a vê-los ter sucesso.",
+  "sharePartnerSkillGapTeamTitle": "Membros da Equipe Sem Vendas",
+  "sharePartnerSkillGapTeamDescription": "Perfeito para equipes onde a maioria carece de experiência em vendas",
+  "sharePartnerSkillGapTeamSubject": "Sua Equipe Sem Vendas Pode Vencer com IA",
+  "sharePartnerSkillGapTeamMessage": "A maioria da sua equipe de {business} não são vendedores naturais. Esse tem sido o problema.\n\nO Team Build Pro resolve isso. O Coach de IA transforma pessoas sem vendas em recrutadores confiantes ao:\n- Escrever suas mensagens de recrutamento para eles\n- Sugerir exatamente quem contatar a seguir\n- Orientá-los através de cada conversa\n- Rastrear progresso para que vejam impulso real\n\nSeus introvertidos, seus part-timers, suas pessoas \"não sou bom em vendas\" - todos obtêm a mesma vantagem de IA.\n\nFinalmente, todos podem duplicar seu sucesso.\n\nVeja como: {link}\n\nVocê não precisa de uma equipe de vendedores. Você precisa de uma equipe com IA.",
+  "sharePartnerRecruitmentFatigueTitle": "Cansado de Recrutamento Constante",
+  "sharePartnerRecruitmentFatigueDescription": "Para parceiros exaustos do ciclo interminável de recrutamento",
+  "sharePartnerRecruitmentFatigueSubject": "Automatize o Trabalho. Mantenha o Crescimento.",
+  "sharePartnerRecruitmentFatigueMessage": "Esgotado de recrutamento constante? Os acompanhamentos intermináveis? O rastreamento manual?\n\nA IA do Team Build Pro cuida do trabalho para que você não precise.\n\nPara toda sua equipe de {business}, a IA:\n- Agenda acompanhamentos automaticamente\n- Rastreia cada prospecto e seu status\n- Lembra sua equipe quando entrar em contato\n- Orienta sobre o que dizer a seguir\n\nVocê permanece focado em atividades de alto valor. Sua equipe permanece produtiva sem se esgotar.\n\nA IA nunca se cansa. Seu impulso nunca para.\n\nExperimente: {link}\n\nCrescimento sustentável sem o esgotamento.",
+  "sharePartnerAvailabilityGapTitle": "Não Pode Estar Lá 24/7",
+  "sharePartnerAvailabilityGapDescription": "Ideal para líderes que não podem estar constantemente disponíveis para sua equipe",
+  "sharePartnerAvailabilityGapSubject": "Sua Equipe Cresce Mesmo Quando Você Não Está Lá",
+  "sharePartnerAvailabilityGapMessage": "Sua equipe de {business} precisa de você. Mas você não pode estar disponível 24/7.\n\nO Team Build Pro dá à sua equipe um Coach de IA que está sempre ativo. Enquanto você dorme, trabalha no seu emprego diurno ou passa tempo com a família, a IA:\n- Orienta sua equipe através de conversas de recrutamento\n- Responde suas perguntas \"o que faço agora?\"\n- Rastreia seu progresso e os mantém motivados\n- Garante que nada caia pelas rachaduras\n\nSua equipe cresce mesmo quando você está offline. Sem gargalos. Sem atrasos.\n\nExperimente: {link}\n\nEsteja em todos os lugares sem estar em todos os lugares.",
+  "homepageDemoCredentialsNotAvailable": "Credenciais de demonstração não disponíveis",
+  "homepageDemoLoginFailed": "Login de demonstração falhou: {error}",
+  "homepageDemoLoginFailedGeneric": "Login de demonstração falhou. Por favor, tente novamente.",
+  "homepageHeroJumpstart": "IMPULSIONE SEU SUCESSO",
+  "homepageHeroGrow": "CRESÇA E GERENCIE SUA EQUIPE",
+  "homepageHeroProven": "SISTEMA COMPROVADO DE CONSTRUÇÃO DE EQUIPE",
+  "homepageHeroBuildFoundation": "Construa Sua Fundação",
+  "homepageHeroBeforeDayOne": "Antes do Dia Um",
+  "homepageHeroEmpowerTeam": "Empodere Sua Equipe",
+  "homepageHeroAccelerate": "Acelere o ",
+  "homepageHeroGrowth": "Crescimento",
+  "homepageLoading": "Carregando...",
+  "homepageMessageTitlePersonal": "Uma Mensagem Pessoal\nDe {sponsorName}",
+  "homepageMessageTitleGeneric": "Uma Mensagem Do\nTeam Build Pro",
+  "homepageMessageBodyNewProspect1": "Estou muito feliz que você esteja aqui para ter uma vantagem inicial na construção da sua equipe de ",
+  "homepageMessageBodyNewProspect2": ". O próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias! Assim que estiver registrado, entrarei em contato pessoalmente dentro do app para dizer olá e ajudá-lo a começar.\n\nAnsioso para nos conectarmos!",
+  "homepageMessageBodyRefPartner1": "Estou usando o app Team Build Pro para acelerar o crescimento da minha equipe de ",
+  "homepageMessageBodyRefPartner2": " e renda! Recomendo muito para você também.\n\nO próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias! Assim que estiver registrado, entrarei em contato pessoalmente dentro do app para dizer olá e ajudá-lo a começar.\n\nAnsioso para nos conectarmos!",
+  "homepageMessageBodyGeneric": "Team Build Pro é o app definitivo para profissionais de vendas diretas gerenciarem e escalarem suas equipes existentes com impulso imparável e crescimento exponencial.\n\nO próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias!",
+  "homepageButtonCreateAccount": "Criar Conta",
+  "homepageButtonAlreadyHaveAccount": "Já Tenho uma Conta",
+  "homepageDemoModeActive": "Modo Demo Ativo",
+  "homepageDemoPreLoaded": "Conta Demo Pré-Carregada",
+  "homepageDemoWelcome": "Bem-vindo à Demo do Team Build Pro",
+  "homepageDemoDescription": "Esta é uma conta de demonstração totalmente funcional pré-carregada com dados de equipe realistas. Explore todos os recursos e veja como o Team Build Pro pode transformar seu negócio de vendas diretas!",
+  "homepageDemoCredentialsLabel": "Credenciais de Acesso:",
+  "homepageDemoEmail": "E-mail: {email}",
+  "homepageDemoPassword": "Senha: {password}",
+  "homepageDemoLoggingIn": "Entrando...",
+  "homepageDemoStartDemo": "Iniciar Demo!",
+  "homepageTrust100Secure": "100% Seguro",
+  "homepageTrust30DayFree": "30 Dias Grátis",
+  "homepageTrust24Support": "Suporte 24/7",
+  "homepageFooterTerms": "Termos de Serviço",
+  "homepageFooterPrivacy": "Política de Privacidade",
+  "authLoginAccountRequiredTitle": "Conta Necessária",
+  "authLoginAccountRequiredMessage": "Parece que você precisa criar uma conta primeiro. Gostaria de se registrar agora?",
+  "authLoginCancelButton": "Cancelar",
+  "authLoginRegisterButton": "Registrar",
+  "authLoginAppBarTitle": "Entrar",
+  "authLoginSubtitle": "Entre para continuar construindo sua equipe",
+  "authLoginOrContinueWith": "ou continuar com",
+  "authLoginForgotPassword": "Esqueceu a Senha?",
+  "authLoginContinueWithGoogle": "Continuar com Google",
+  "authLoginContinueWithApple": "Continuar com Apple",
+  "authLoginBiometricButton": "Entrar com biométrica",
+  "authLoginResetPasswordTitle": "Redefinir Senha",
+  "authLoginCheckEmailTitle": "Verifique Seu E-mail",
+  "authLoginResetEmailSent": "Enviamos um link para redefinir sua senha para:",
+  "authLoginResetInstructions": "Por favor, verifique sua caixa de entrada e siga as instruções para redefinir sua senha.",
+  "authLoginResetPrompt": "Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.",
+  "authLoginResetEmailLabel": "E-mail",
+  "authLoginResetEmailHint": "Digite seu endereço de e-mail",
+  "authLoginResetEmailRequired": "Por favor, digite seu e-mail",
+  "authLoginResetEmailInvalid": "Por favor, digite um e-mail válido",
+  "authLoginDoneButton": "Pronto",
+  "authLoginSendResetLink": "Enviar Link de Redefinição",
+  "authSignupInvalidInviteLinkMessage": "Isso não parece um link de convite. Por favor, cole o link completo que você recebeu.",
+  "authSignupNewReferralDialogTitle": "Novo Código de Indicação Detectado",
+  "authSignupNewReferralDialogMessage": "Um novo código de indicação foi detectado:",
+  "authSignupNewReferralNewCode": "Novo código: {code}",
+  "authSignupNewReferralNewSource": "Fonte: {source}",
+  "authSignupNewReferralCurrentCode": "Código atual: {code}",
+  "authSignupNewReferralCurrentSource": "Fonte atual: {source}",
+  "authSignupNewReferralPrompt": "Gostaria de atualizar seu código de indicação?",
+  "authSignupKeepCurrentButton": "Manter Atual",
+  "authSignupUseNewCodeButton": "Usar Novo Código",
+  "authSignupAppBarTitle": "TEAM BUILD PRO",
+  "authSignupLoginButton": "Entrar",
+  "authSignupConfirmSponsorButton": "Toque para confirmar seu patrocinador",
+  "authSignupNoSponsorFound": "Desculpe, nenhum patrocinador encontrado",
+  "authSignupPageTitle": "Registro de Conta",
+  "authSignupInviteLinkButton": "Tenho um link de convite",
+  "authSignupInviteLinkInstructions": "Se alguém lhe enviou um link de convite, você pode colá-lo aqui.",
+  "authSignupPasteInviteLinkButton": "Colar link de convite",
+  "authSignupInvitedBy": "Convidado por: {sponsorName}",
+  "authSignupReferralCodeDebug": "Código: {code} (fonte: {source})",
+  "authSignupAppleButton": "Cadastrar-se com Apple",
+  "authSignupGoogleButton": "Cadastrar-se com Google",
+  "authSignupOrEmailDivider": "ou cadastrar-se com e-mail",
+  "authSignupLoginSectionTitle": "Crie Seu Login",
+  "authSignupPrivacyAssurance": "🔒 Seu e-mail nunca será compartilhado com ninguém",
+  "authSignupRequiredForAccount": "🔒 Necessário para criação de conta",
+  "settingsAuthRequired": "Autenticação necessária.",
+  "settingsUserNotFound": "Perfil de usuário não encontrado.",
+  "settingsAccessDenied": "Acesso Negado: Função de administrador necessária.",
+  "settingsLoadFailed": "Falha ao carregar configurações: {error}",
+  "settingsBusinessNameInvalid": "O nome do negócio só pode conter letras, números e pontuação comum.",
+  "settingsReferralLinkInvalid": "Por favor, digite um link de indicação válido (ex., https://example.com).",
+  "settingsOrgNameMismatch": "Os campos de Nome da Organização devem corresponder para confirmação.",
+  "settingsReferralLinkMismatch": "Os campos de Link de Indicação devem corresponder para confirmação.",
+  "settingsUserNotAuthenticated": "Usuário não autenticado.",
+  "settingsUpgradeRequiredTitle": "Atualização Necessária",
+  "settingsUpgradeRequiredMessage": "Atualize sua assinatura de Administrador para salvar essas alterações.",
+  "settingsCancelButton": "Cancelar",
+  "settingsUpgradeButton": "Atualizar Agora",
+  "settingsSavedSuccess": "Configurações salvas com sucesso.",
+  "settingsSaveFailed": "Falha ao salvar configurações: {error}",
+  "settingsRequired": "Obrigatório",
+  "settingsNotSet": "Não Definido",
+  "profileUpdateBiometricFailed": "A autenticação biométrica falhou. Por favor, tente novamente.",
+  "profileUpdatePasswordRequired": "Senha necessária para habilitar login biométrico",
+  "profileUpdateEmailNotFound": "E-mail do usuário não encontrado",
+  "profileUpdateBiometricEnabled": "✅ Login biométrico habilitado com sucesso",
+  "profileUpdatePasswordIncorrect": "Senha incorreta. Por favor, tente novamente.",
+  "profileUpdateBiometricError": "Erro ao habilitar biométrica: {error}",
+  "profileUpdateBiometricDisabled": "Login biométrico desabilitado",
+  "profileUpdateConfirmPasswordTitle": "Confirmar Senha",
+  "profileUpdateConfirmPasswordMessage": "Para armazenar com segurança suas credenciais para o login biométrico, por favor digite sua senha.",
+  "profileUpdatePasswordLabel": "Senha",
+  "profileUpdateCancelButton": "Cancelar",
+  "profileUpdateConfirmButton": "Confirmar",
+  "profileUpdateDisableBiometricTitle": "Desabilitar Login Biométrico",
+  "profileUpdateDisableBiometricMessage": "Tem certeza de que deseja desabilitar o login biométrico? Você precisará usar seu e-mail e senha para entrar.",
+  "profileUpdateDisableButton": "Desabilitar",
+  "profileUpdatePictureRequired": "Por favor, envie sua foto de perfil.",
+  "profileUpdateImageNotProvided": "A imagem não foi fornecida.",
+  "profileUpdateSuccess": "Perfil atualizado com sucesso!",
+  "profileUpdateError": "Erro ao atualizar perfil: {error}",
+  "profileUpdateDemoModeTitle": "Modo Demo",
+  "profileUpdateDemoModeMessage": "Edição de perfil desabilitada no modo demo.",
+  "profileUpdateDemoUnderstandButton": "Entendi",
+  "profileUpdateScreenTitle": "Atualizar Perfil",
+  "profileUpdateNoEmail": "Sem e-mail",
+  "profileUpdateSelectCountry": "Selecionar País",
+  "profileUpdateCountryLabel": "País",
+  "profileUpdateCountryRequired": "Por favor, selecione um país",
+  "profileUpdateSelectState": "Selecionar Estado/Província",
+  "profileUpdateSelectCountryFirst": "Selecione um país primeiro",
+  "profileUpdateStateLabel": "Estado/Província",
+  "profileUpdateStateRequired": "Por favor, selecione um estado/província",
+  "profileUpdateCityLabel": "Cidade",
+  "profileUpdateCityRequired": "Por favor, digite uma cidade",
+  "profileUpdateSecurityHeader": "Configurações de Segurança",
+  "profileUpdateBiometricToggle": "Habilitar Login Biométrico",
+  "profileUpdateBiometricChecking": "Verificando compatibilidade do dispositivo...",
+  "profileUpdateBiometricDescription": "Use impressão digital ou reconhecimento facial para entrar",
+  "profileUpdateBiometricNotAvailable": "Não disponível neste dispositivo",
+  "profileUpdateSaveButton": "Salvar Alterações",
+  "profileEditDeletionSuccess": "Exclusão de conta concluída. Obrigado por usar o Team Build Pro.",
+  "profileEditDeletionError": "Erro ao concluir exclusão de conta: {error}",
+  "profileEditUrlInvalid": "Por favor, digite uma URL válida (ex., https://example.com)",
+  "profileEditHttpsRequired": "O link de indicação deve usar HTTPS (não HTTP) por segurança",
+  "profileEditUrlFormatInvalid": "Formato de URL inválido. Por favor, verifique seu link de indicação.",
+  "profileEditUnableToVerify": "Não foi possível verificar o link de indicação",
+  "profileEditDomainRequired": "Por favor, digite um link válido com um domínio apropriado",
+  "profileEditNoLocalhost": "Por favor, digite um link de indicação de negócio válido\n(não localhost ou endereço IP)",
+  "profileEditDomainWithTld": "Por favor, digite um link válido com um domínio apropriado\n(ex., company.com)",
+  "profileEditBaseUrlRequired": "O link de indicação deve começar com:\n{baseUrl}",
+  "profileEditNotHomepage": "Por favor, digite seu link de indicação único,\nnão apenas a página inicial",
+  "profileEditInvalidFormat": "Formato de link inválido",
+  "profileEditReferralRequired": "Por favor, digite seu link de indicação",
+  "profileEditConfirmReferral": "Por favor, confirme seu link de indicação",
+  "profileEditCompleteLink": "Por favor, digite um link completo começando com\nhttp:// ou https://",
+  "profileEditValidReferralRequired": "Por favor, digite um link de indicação válido (ex., https://example.com).",
+  "profileEditReferralMismatch": "Os campos de Link de Indicação devem corresponder para confirmação.",
+  "profileEditInvalidLinkTitle": "Link de Indicação Inválido",
+  "profileEditInvalidLinkMessage": "O link de indicação de {businessName} não pôde ser verificado. O link pode estar incorreto, inativo ou temporariamente indisponível.",
+  "profileEditContactSponsor": "Por favor, verifique o link e tente novamente, ou entre em contato com seu patrocinador para obter o link de indicação correto.",
+  "profileEditTryAgainButton": "Tentar Novamente",
+  "profileEditReferralHint": "ex., {baseUrl}seu_nome_de_usuario_aqui",
+  "profileEditRequiredForRep": "Obrigatório quando você é representante",
+  "adminProfilePictureRequired": "Por favor, selecione uma foto de perfil",
+  "adminProfileCountryRequired": "Por favor, selecione um país",
+  "adminProfileStateRequired": "Por favor, selecione um estado/província",
+  "adminProfileCityRequired": "Por favor, digite sua cidade",
+  "adminProfileSetupTitle": "🛠️ Configurando seu perfil de negócios...",
+  "adminProfileSetupDescription": "Preparando as informações do seu negócio",
+  "adminProfileUserNotAuthenticated": "Usuário não autenticado",
+  "adminProfileUploadFailed": "Falha ao enviar imagem",
+  "adminProfileSaveSuccess": "Informações de perfil salvas com sucesso!",
+  "adminProfileSaveError": "Erro: {error}",
+  "adminProfileScreenTitle": "Perfil de Administrador",
+  "adminProfileSetupHeader": "Configuração de Perfil",
+  "adminProfileNoEmail": "Sem e-mail",
+  "adminProfileCountryLabel": "País",
+  "adminProfileStateLabel": "Estado/Província",
+  "adminProfileCityLabel": "Cidade",
+  "adminProfileNextButton": "Próximo - Informações do Negócio",
+  "subscriptionAppBarTitle": "Team Build Pro",
+  "subscriptionPremiumHeader": "Recursos Premium:",
+  "subscriptionStatusActive": "Assinatura Ativa",
+  "subscriptionStatusActiveSubtitle": "Você tem acesso completo a todos os recursos premium",
+  "subscriptionStatusPaused": "Assinatura Pausada",
+  "subscriptionStatusPausedSubtitle": "Sua assinatura está pausada. Retome para restaurar o acesso.",
+  "subscriptionStatusPaymentIssue": "Problema de Pagamento",
+  "subscriptionStatusPaymentIssueSubtitle": "Atualize o método de pagamento para restaurar o acesso",
+  "subscriptionStatusTrialActive": "Teste Grátis Ativo",
+  "subscriptionStatusTrialDaysRemaining": "{days} dias restantes no seu teste",
+  "subscriptionStatusCancelled": "Assinatura Cancelada",
+  "subscriptionStatusCancelledSubtitle": "O acesso continua até a data de vencimento",
+  "subscriptionStatusExpired": "Assinatura Expirada",
+  "subscriptionStatusExpiredSubtitle": "Atualize para restaurar recursos premium",
+  "subscriptionFeature1": "Envie seu link de indicação único de {businessName}",
+  "subscriptionFeature2": "Coaching de IA personalizado para recrutamento e construção de equipes",
+  "subscriptionFeature3": "Desbloqueie mensagens para usuários na sua equipe",
+  "subscriptionFeature4": "Garanta que os membros da equipe se juntem sob VOCÊ em {businessName}",
+  "subscriptionFeature5": "Análises e insights avançados",
+  "subscriptionActivatedSuccess": "✅ Assinatura ativada com sucesso!",
+  "subscriptionNotActiveTitle": "Assinatura Não Ativa",
+  "subscriptionNotActiveMessage": "Compra iniciada, mas ainda não ativa. Tente novamente.",
+  "subscriptionNotAvailableTitle": "Assinatura Não Disponível",
+  "subscriptionNotAvailableMessageIOS": "As compras no aplicativo não estão disponíveis atualmente no seu dispositivo. Isso pode ser devido a restrições definidas pela sua organização ou administrador do dispositivo.\n\nPor favor, verifique suas configurações de Tempo de Uso ou entre em contato com seu departamento de TI se estiver usando um dispositivo gerenciado.\n\nAlternativamente, você pode assinar através do nosso site.",
+  "subscriptionNotAvailableMessageAndroid": "As compras no aplicativo não estão disponíveis atualmente no seu dispositivo. Isso pode ser devido a restrições ou problemas de rede.\n\nPor favor, tente novamente mais tarde ou entre em contato com o suporte se o problema persistir.",
+  "subscriptionNotAvailableMessageDefault": "As compras no aplicativo não estão disponíveis atualmente. Por favor, tente novamente mais tarde.",
+  "subscriptionOkButton": "OK",
+  "subscriptionRestoredSuccess": "✅ Assinatura restaurada com sucesso!",
+  "subscriptionNoPreviousFound": "Nenhuma assinatura anterior encontrada para restaurar.",
+  "subscriptionSubscribeButton": "Assinar Agora - $4.99/mês",
+  "subscriptionRestoreButton": "Restaurar Assinatura Anterior",
+  "subscriptionLegalNotice": "Ao assinar, você concorda com nossos Termos de Serviço e Política de Privacidade.",
+  "subscriptionTermsLink": "Termos de Serviço",
+  "subscriptionSeparator": " | ",
+  "subscriptionPrivacyLink": "Política de Privacidade",
+  "subscriptionAutoRenewNotice": "A assinatura renova automaticamente, a menos que seja cancelada pelo menos 24 horas antes do final do período atual. {managementText}",
+  "subscriptionManageIOS": "Você pode gerenciar sua assinatura nas configurações da sua conta Apple ID.",
+  "subscriptionManageAndroid": "Você pode gerenciar sua assinatura na Google Play Store.",
+  "subscriptionManageDefault": "Você pode gerenciar sua assinatura na loja de aplicativos do seu dispositivo.",
+  "subscriptionPlatformAppStore": "App Store",
+  "subscriptionPlatformPlayStore": "Google Play Store",
+  "subscriptionPlatformGeneric": "loja de aplicativos",
+  "subscriptionDefaultBizOpp": "sua oportunidade",
+  "termsScreenTitle": "Termos de Serviço",
+  "termsHeaderTitle": "Termos de Serviço",
+  "termsSubtitle": "Acordo de Plataforma de Redes Profissionais",
+  "termsLastUpdated": "Última Atualização: {date}",
+  "termsFooterBadgeTitle": "Conforme App Store da Apple",
+  "termsFooterBadgeDescription": "Estes Termos de Serviço atendem a todas as diretrizes e requisitos da App Store da Apple para aplicativos de plataforma.",
+  "termsDisclaimerTitle": "PLATAFORMA DE NETWORKING PROFISSIONAL",
+  "termsDisclaimerSubtitle": "Visão Geral do Serviço",
+  "privacyScreenTitle": "Política de Privacidade",
+  "privacyHeaderTitle": "Política de Privacidade",
+  "privacyLastUpdated": "Última Atualização: {date}",
+  "privacyEmailSubject": "subject=Consulta sobre Política de Privacidade",
+  "privacyEmailError": "Não foi possível abrir o cliente de e-mail. Por favor, entre em contato com {email}",
+  "privacyMattersTitle": "Sua Privacidade Importa",
+  "privacyMattersDescription": "Estamos comprometidos em proteger suas informações pessoais e seu direito à privacidade. Esta política explica como coletamos, usamos e protegemos seus dados.",
+  "privacyAppleComplianceTitle": "Conformidade de Privacidade da Apple",
+  "privacyAppleComplianceDescription": "Este aplicativo segue as diretrizes de privacidade da Apple e os requisitos da App Store. Somos transparentes sobre a coleta de dados e damos a você controle sobre suas informações.",
+  "privacyContactHeading": "Entre em Contato",
+  "privacyContactSubheading": "Dúvidas sobre esta Política de Privacidade?",
+  "privacyContactDetails": "Team Build Pro\nOficial de Privacidade\nResposta em 48 horas",
+  "privacyCopyright": "© {year} Team Build Pro. Todos os direitos reservados.",
+  "privacyFooterDisclaimer": "Esta Política de Privacidade é efetiva a partir da data listada acima e se aplica a todos os usuários do aplicativo móvel Team Build Pro.",
+  "howItWorksScreenTitle": "Como Funciona",
+  "howItWorksHeaderTitle": "Como Funciona",
+  "howItWorksHeroSubtitle": "Transforme seu recrutamento com um pipeline de equipe pré-qualificado.",
+  "howItWorksFeaturedOpportunity": "Oportunidade em Destaque",
+  "howItWorksPipelineSystem": "SISTEMA DE PIPELINE",
+  "howItWorksStep1Title": "Estabeleça Sua Fundação",
+  "howItWorksStep1Description": "Personalize sua conta Team Build Pro com os detalhes da sua oportunidade e conecte seu link de indicação - transformando o app em seu pipeline de recrutamento pessoal.",
+  "howItWorksStep2Title": "Construa de Forma Inteligente, Não Difícil",
+  "howItWorksStep2Description": "Use coaching impulsionado por IA para redigir mensagens, agendar follow-ups e rastrear interesse. Construa relacionamentos com prospects antes mesmo deles entrarem na sua oportunidade de negócio.",
+  "howItWorksStep3Title": "Qualificação Automática",
+  "howItWorksStep3Description": "À medida que os prospects constroem suas próprias equipes dentro do app, eles automaticamente atingem marcos de qualificação (4 patrocinadores diretos + 20 equipe total) - provando seu comprometimento antes de entrar.",
+  "howItWorksStep4Title": "Crescimento Rápido",
+  "howItWorksStep4Description": "Seus prospects pré-qualificados lançam com momentum, equipes já estabelecidas e capacidade comprovada de recrutar. Isso cria um motor de crescimento autossustentável.",
+  "howItWorksKeyTargetsTitle": " METAS CHAVE DE CRESCIMENTO",
+  "howItWorksDirectSponsors": "Patrocinadores Diretos",
+  "howItWorksTotalTeam": "Membros Totais da Equipe",
+  "howItWorksCtaHeading": "Expanda Sua Rede",
+  "howItWorksCtaDescription": "Expanda sua Rede para impulsionar o crescimento da organização!",
+  "howItWorksCtaButton": "Estratégias de Crescimento Comprovadas",
+  "howItWorksDefaultBizOpp": "sua oportunidade",
+  "termsDisclaimerContent": "• Team Build Pro é uma plataforma de networking baseada em assinatura\n• Os usuários pagam uma taxa de assinatura mensal para acesso a ferramentas de networking\n• A plataforma fornece gerenciamento de relacionamentos e recursos de conexão de negócios\n• Todas as oportunidades de negócios são fornecidas por terceiros independentes\n\nTeam Build Pro opera como uma plataforma de networking e não garante resultados comerciais.",
+  "termsSection1Title": "1. ACEITAÇÃO DOS TERMOS",
+  "termsSection1Content": "Ao baixar, instalar, acessar ou usar o aplicativo móvel Team Build Pro (\"Aplicativo\"), você concorda em estar vinculado a estes Termos de Serviço (\"Termos\"). Se você não concordar com estes Termos, não use o Aplicativo.\n\nEstes Termos constituem um acordo legalmente vinculativo entre você e Team Build Pro em relação ao seu uso do nosso serviço de plataforma de networking profissional.",
+  "termsSection2Title": "2. DESCRIÇÃO DO SERVIÇO",
+  "termsSection2Content": "Team Build Pro é uma plataforma de networking profissional baseada em assinatura que fornece:\n\n• Ferramentas de gerenciamento de relacionamentos de contatos\n• Recursos de construção de equipe e networking\n• Ferramentas de comunicação e colaboração\n• Informações sobre oportunidades de negócios de provedores terceiros\n• Coaching e orientação impulsionada por IA\n\nISENÇÕES IMPORTANTES:\n• Team Build Pro é um serviço de plataforma de networking, não uma oportunidade de negócio\n• Os usuários pagam uma taxa de assinatura mensal pelo acesso à plataforma\n• Não garantimos nenhum resultado comercial ou renda\n• Todas as oportunidades de negócios são fornecidas por terceiros independentes\n• O sucesso depende inteiramente do esforço individual e das condições do mercado",
+  "termsSection3Title": "3. ASSINATURA E PAGAMENTO",
+  "termsSection3Content": "ACESSO E TAXAS:\n• O Aplicativo opera em uma base de assinatura\n• As taxas de assinatura mensal são cobradas através da sua conta Apple ID\n• A assinatura renova automaticamente a menos que seja cancelada\n• Os preços são mostrados no Aplicativo e podem variar por região\n\nCICLO DE COBRANÇA:\n• Você será cobrado na confirmação da compra\n• Sua assinatura renova automaticamente a cada mês\n• As cobranças ocorrem 24 horas antes do final do período atual\n• Você pode gerenciar assinaturas nas Configurações da Conta Apple ID\n\nCANCELAMENTO:\n• Cancele a qualquer momento através das Configurações da Conta Apple ID\n• O cancelamento entra em vigor no final do período de cobrança atual\n• Sem reembolsos por meses parciais\n• O acesso continua até o final do período pago",
+  "termsSection4Title": "4. TESTE GRATUITO (SE APLICÁVEL)",
+  "termsSection4Content": "TERMOS DO TESTE:\n• Alguns planos de assinatura podem incluir um período de teste gratuito\n• A duração do teste será claramente exibida antes da inscrição\n• Você pode cancelar durante o teste para evitar cobranças\n• Se você não cancelar, será cobrado a taxa de assinatura\n\nCONVERSÃO PARA PAGO:\n• Os testes convertem para assinaturas pagas automaticamente\n• As cobranças começam imediatamente após o término do teste\n• O preço de assinatura mostrado na inscrição se aplica\n• Cancele antes do término do teste para evitar cobranças",
+  "termsSection5Title": "5. TERMOS DE COMPRA IN-APP DA APPLE",
+  "termsSection5Content": "Todas as assinaturas são processadas através do sistema de Compra In-App da Apple e estão sujeitas aos Termos de Serviço e políticas da Apple.\n\nPAPEL DA APPLE:\n• O pagamento é cobrado na sua conta Apple ID\n• Assinaturas gerenciadas através das Configurações da Conta Apple ID\n• Solicitações de reembolso tratadas pela Apple de acordo com suas políticas\n• Os termos do EULA padrão da Apple se aplicam, a menos que especificado de outra forma\n\nSUAS RESPONSABILIDADES:\n• Manter informações de pagamento precisas no Apple ID\n• Monitorar o status da assinatura na sua conta Apple\n• Contatar o Suporte da Apple para problemas de cobrança\n• Revisar os termos da Apple em: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  "termsSection6Title": "6. CONTAS DE USUÁRIO E REGISTRO",
+  "termsSection6Content": "CRIAÇÃO DE CONTA:\n• Você deve criar uma conta para usar o Aplicativo\n• Fornecer informações precisas, atuais e completas\n• Você é responsável por manter a confidencialidade da conta\n• Você deve ter pelo menos 18 anos para criar uma conta\n\nSEGURANÇA DA CONTA:\n• Mantenha sua senha segura e confidencial\n• Notifique-nos imediatamente de acesso não autorizado\n• Você é responsável por toda atividade sob sua conta\n• Não compartilhe sua conta com outros\n\nTERMINAÇÃO DA CONTA:\n• Podemos suspender ou terminar contas que violem estes Termos\n• Você pode excluir sua conta a qualquer momento através do Aplicativo\n• A terminação não afeta a cobrança de assinatura a menos que seja cancelada\n• Reservamo-nos o direito de recusar serviço a qualquer pessoa",
+  "termsSection7Title": "7. CONDUTA PROIBIDA",
+  "termsSection7Content": "Você concorda em NÃO:\n\n• Usar o Aplicativo para qualquer propósito ilegal\n• Violar qualquer lei ou regulamento aplicável\n• Infringir direitos de propriedade intelectual\n• Transmitir código prejudicial, vírus ou malware\n• Assediar, abusar ou prejudicar outros usuários\n• Fazer-se passar por outros ou fornecer informações falsas\n• Tentar obter acesso não autorizado ao Aplicativo\n• Interferir com a funcionalidade ou segurança do Aplicativo\n• Usar sistemas automatizados para acessar o Aplicativo sem permissão\n• Coletar informações de usuários sem consentimento\n• Participar de qualquer atividade que interrompa o Aplicativo\n• Usar o Aplicativo para promover esquemas ilegais ou fraudes",
+  "termsSection8Title": "8. PROPRIEDADE INTELECTUAL",
+  "termsSection8Content": "PROPRIEDADE:\n• Team Build Pro possui todos os direitos do Aplicativo e seu conteúdo\n• Isso inclui software, design, texto, gráficos e logotipos\n• Nossas marcas comerciais e branding são protegidos\n• Você recebe apenas uma licença limitada para usar o Aplicativo\n\nSUA LICENÇA:\n• Nós concedemos a você uma licença limitada, não exclusiva e intransferível\n• Você pode usar o Aplicativo para fins pessoais e não comerciais\n• Esta licença não inclui revenda ou uso comercial\n• A licença termina quando sua assinatura termina\n\nCONTEÚDO DO USUÁRIO:\n• Você mantém a propriedade do conteúdo que cria no Aplicativo\n• Você nos concede uma licença para usar seu conteúdo para fornecer serviços\n• Você declara que tem direitos sobre qualquer conteúdo que enviar\n• Podemos remover conteúdo que viole estes Termos",
+  "termsSection9Title": "9. PRIVACIDADE E DADOS",
+  "termsSection9Content": "COLETA E USO DE DADOS:\n• Coletamos e usamos dados conforme descrito em nossa Política de Privacidade\n• Revise nossa Política de Privacidade em: https://info.teambuildpro.com/privacy-policy.html\n• Ao usar o Aplicativo, você consente com nossas práticas de dados\n• Implementamos medidas de segurança para proteger seus dados\n\nSEUS DIREITOS DE PRIVACIDADE:\n• Você tem direitos em relação aos seus dados pessoais\n• Você pode solicitar acesso aos seus dados\n• Você pode solicitar a exclusão de sua conta e dados\n• Entre em contato conosco em support@teambuildpro.com para solicitações de privacidade\n\nSEGURANÇA DE DADOS:\n• Usamos medidas de segurança padrão da indústria\n• No entanto, nenhum sistema é completamente seguro\n• Você usa o Aplicativo por sua própria conta e risco\n• Relate problemas de segurança para support@teambuildpro.com",
+  "termsSection10Title": "10. SERVIÇOS E CONTEÚDO DE TERCEIROS",
+  "termsSection10Content": "OPORTUNIDADES DE NEGÓCIOS:\n• O Aplicativo pode exibir informações sobre oportunidades de negócios de terceiros\n• Essas oportunidades são fornecidas por empresas independentes\n• Team Build Pro não é afiliado a essas oportunidades\n• Não endossamos nem garantimos nenhuma oportunidade de terceiros\n• Pesquise oportunidades independentemente antes de participar\n\nLINKS DE TERCEIROS:\n• O Aplicativo pode conter links para sites de terceiros\n• Não somos responsáveis por conteúdo ou práticas de terceiros\n• Sites de terceiros têm seus próprios termos e políticas de privacidade\n• Acesse conteúdo de terceiros por sua própria conta e risco\n\nINTEGRAÇÕES:\n• O Aplicativo pode se integrar com serviços de terceiros\n• Seu uso de serviços integrados está sujeito aos termos deles\n• Não somos responsáveis pelo desempenho de serviços de terceiros\n• As integrações podem ser modificadas ou descontinuadas a qualquer momento",
+  "termsSection11Title": "11. ISENÇÕES",
+  "termsSection11Content": "SEM OPORTUNIDADE DE NEGÓCIO:\n• Team Build Pro é apenas um serviço de plataforma de networking\n• Não oferecemos nem garantimos nenhuma oportunidade de negócio\n• Não garantimos renda, ganhos ou sucesso\n• Qualquer informação de oportunidade de negócio vem de terceiros\n\nSERVIÇO FORNECIDO \"COMO ESTÁ\":\n• O Aplicativo é fornecido \"como está\" e \"conforme disponível\"\n• Não fazemos garantias sobre a confiabilidade ou disponibilidade do Aplicativo\n• Não garantimos serviço sem erros ou ininterrupto\n• Podemos modificar ou descontinuar recursos a qualquer momento\n\nSEM ACONSELHAMENTO PROFISSIONAL:\n• O Aplicativo não fornece aconselhamento legal, financeiro ou tributário\n• O coaching de IA é apenas para fins informativos\n• Consulte profissionais qualificados para decisões importantes\n• Não somos responsáveis por decisões baseadas no conteúdo do Aplicativo\n\nISENÇÃO DE RESULTADOS:\n• Os resultados individuais variam e não são garantidos\n• O sucesso depende do esforço individual e das circunstâncias\n• O desempenho passado não indica resultados futuros\n• Não fazemos representações sobre resultados potenciais",
+  "termsSection12Title": "12. LIMITAÇÃO DE RESPONSABILIDADE",
+  "termsSection12Content": "NA MÁXIMA EXTENSÃO PERMITIDA POR LEI:\n\nNÃO SOMOS RESPONSÁVEIS POR:\n• Quaisquer danos indiretos, incidentais ou consequenciais\n• Perda de lucros, receita, dados ou oportunidades de negócios\n• Interrupções de serviço ou erros\n• Acesso não autorizado à sua conta ou dados\n• Ações ou conteúdo de terceiros\n• Quaisquer danos que excedam o valor que você nos pagou nos últimos 12 meses\n\nLIMITE DE RESPONSABILIDADE:\n• Nossa responsabilidade total é limitada às taxas de assinatura pagas nos últimos 12 meses\n• Isso se aplica independentemente da teoria legal de responsabilidade\n• Algumas jurisdições não permitem essas limitações\n• Nesses casos, a responsabilidade é limitada ao mínimo exigido por lei\n\nRESPONSABILIDADE DO USUÁRIO:\n• Você é responsável pelo seu uso do Aplicativo\n• Você é responsável por decisões baseadas no conteúdo do Aplicativo\n• Você assume todos os riscos associados ao uso do Aplicativo\n• Você concorda em avaliar oportunidades de negócios independentemente",
+  "termsSection13Title": "13. INDENIZAÇÃO",
+  "termsSection13Content": "Você concorda em indenizar, defender e isentar Team Build Pro, seus oficiais, diretores, funcionários e agentes de quaisquer reclamações, danos, perdas, responsabilidades e despesas (incluindo honorários legais) decorrentes de:\n\n• Seu uso do Aplicativo\n• Sua violação destes Termos\n• Sua violação de quaisquer direitos de terceiros\n• Seu conteúdo ou informações publicadas no Aplicativo\n• Sua participação em qualquer oportunidade de negócio\n• Sua violação de leis ou regulamentos aplicáveis\n\nEsta obrigação de indenização sobrevive à terminação destes Termos e do seu uso do Aplicativo.",
+  "termsSection14Title": "14. RESOLUÇÃO DE DISPUTAS",
+  "termsSection14Content": "LEI APLICÁVEL:\n• Estes Termos são regidos pelas leis do Estado de Utah, USA\n• A lei federal se aplica quando aplicável\n• Você consente com a jurisdição nos tribunais de Utah\n\nRESOLUÇÃO INFORMAL:\n• Entre em contato conosco primeiro para resolver disputas informalmente\n• Email: support@teambuildpro.com\n• Tentaremos resolver problemas de boa fé\n• A maioria das preocupações pode ser abordada através de comunicação\n\nARBITRAGEM (SE NECESSÁRIO):\n• Disputas podem estar sujeitas a arbitragem vinculante\n• Arbitragem conduzida sob as regras da American Arbitration Association\n• Arbitragem individual apenas - sem ações coletivas\n• Localização da arbitragem: Utah, USA\n\nEXCEÇÕES:\n• Qualquer parte pode buscar medidas cautelares em tribunal\n• Disputas de propriedade intelectual podem ser litigadas\n• O tribunal de pequenas causas permanece disponível para reclamações qualificadas",
+  "termsSection15Title": "15. MUDANÇAS NOS TERMOS",
+  "termsSection15Content": "MODIFICAÇÕES:\n• Podemos atualizar estes Termos a qualquer momento\n• As mudanças entram em vigor mediante publicação no Aplicativo\n• O uso continuado constitui aceitação das mudanças\n• Mudanças materiais serão comunicadas por e-mail ou notificação do Aplicativo\n\nSUAS OPÇÕES:\n• Revise os Termos periodicamente para mudanças\n• Se você discordar das mudanças, pare de usar o Aplicativo\n• Cancele sua assinatura se não aceitar os novos Termos\n• Entre em contato com support@teambuildpro.com com perguntas\n\nDATA EFETIVA:\n• Versão atual efetiva a partir da data de publicação\n• Versões anteriores são substituídas\n• Mantemos registros das versões dos Termos",
+  "termsSection16Title": "16. DISPOSIÇÕES GERAIS",
+  "termsSection16Content": "ACORDO COMPLETO:\n• Estes Termos constituem o acordo completo entre você e Team Build Pro\n• Eles substituem todos os acordos ou entendimentos anteriores\n• Os termos do EULA da Apple também se aplicam a compras da App Store\n\nSEPARABILIDADE:\n• Se alguma disposição for considerada inválida, o restante permanece em vigor\n• Disposições inválidas serão modificadas para serem executáveis\n• Os Termos permanecem vinculativos mesmo com disposições inválidas\n\nSEM RENÚNCIA:\n• Nossa falha em fazer cumprir qualquer direito não renuncia a esse direito\n• Renúncia de uma violação não renuncia a violações futuras\n• Todos os direitos e recursos são cumulativos\n\nATRIBUIÇÃO:\n• Você não pode atribuir estes Termos sem nosso consentimento\n• Podemos atribuir nossos direitos e obrigações\n• Os Termos vinculam sucessores e cessionários permitidos\n\nINFORMAÇÕES DE CONTATO:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nPolítica de Privacidade: https://info.teambuildpro.com/privacy-policy.html\n\nÚltima Atualização: Janeiro 2025",
+  "privacySection1Title": "1. INFORMAÇÕES QUE COLETAMOS",
+  "privacySection1Content": "INFORMAÇÕES DA CONTA:\n• Nome e endereço de e-mail\n• Número de telefone (opcional)\n• Informações de perfil que você fornece\n• Credenciais de autenticação\n\nDADOS DE USO:\n• Interações com o aplicativo e recursos usados\n• Informações do dispositivo (modelo, versão do SO)\n• Dados de desempenho e falhas\n• Dados de análise (anonimizados quando possível)\n\nCONTEÚDO QUE VOCÊ CRIA:\n• Mensagens e comunicações\n• Informações de contato que você adiciona\n• Notas e dados de relacionamento\n• Arquivos e mídia que você envia\n\nDADOS DE LOCALIZAÇÃO:\n• Não coletamos dados de localização precisa\n• A localização geral pode ser derivada do endereço IP\n• Você pode gerenciar permissões de localização nas configurações do dispositivo",
+  "privacySection2Title": "2. COMO USAMOS SUAS INFORMAÇÕES",
+  "privacySection2Content": "Usamos as informações coletadas para:\n\nFORNECER SERVIÇOS:\n• Criar e gerenciar sua conta\n• Habilitar recursos e funcionalidade do Aplicativo\n• Processar seus pagamentos de assinatura\n• Fornecer suporte ao cliente\n• Enviar notificações relacionadas ao serviço\n\nMELHORAR NOSSO APLICATIVO:\n• Analisar padrões de uso e tendências\n• Corrigir bugs e melhorar o desempenho\n• Desenvolver novos recursos\n• Realizar pesquisas e análises\n\nCOMUNICAÇÕES:\n• Enviar atualizações importantes do serviço\n• Responder às suas consultas\n• Fornecer suporte técnico\n• Enviar marketing opcional (você pode cancelar)\n\nCONFORMIDADE LEGAL:\n• Cumprir obrigações legais\n• Fazer cumprir nossos Termos de Serviço\n• Proteger direitos e segurança\n• Prevenir fraude e abuso",
+  "privacySection3Title": "3. COMO COMPARTILHAMOS SUAS INFORMAÇÕES",
+  "privacySection3Content": "Compartilhamos informações apenas nestas circunstâncias limitadas:\n\nFORNECEDORES DE SERVIÇOS:\n• Hospedagem em nuvem (Firebase/Google Cloud)\n• Processamento de pagamentos (Apple)\n• Serviços de análise\n• Ferramentas de suporte ao cliente\n• Esses provedores são contratualmente obrigados a proteger seus dados\n\nREQUISITOS LEGAIS:\n• Quando exigido por lei ou processo legal\n• Para proteger direitos, propriedade ou segurança\n• Em conexão com processos legais\n• Para prevenir fraude ou atividade ilegal\n\nTRANSFERÊNCIAS COMERCIAIS:\n• Em conexão com fusão, aquisição ou venda de ativos\n• Seus dados podem ser transferidos para entidade sucessora\n• Você será notificado de qualquer transferência\n\nCOM SEU CONSENTIMENTO:\n• Quando você autoriza explicitamente o compartilhamento\n• Para propósitos que você aprova\n\nNÓS NÃO:\n• Vendemos suas informações pessoais\n• Compartilhamos dados para marketing de terceiros\n• Fornecemos dados para corretores de dados",
+  "privacySection4Title": "4. SEGURANÇA DE DADOS",
+  "privacySection4Content": "MEDIDAS DE SEGURANÇA:\n• Criptografia padrão da indústria em trânsito e em repouso\n• Sistemas de autenticação seguros\n• Avaliações de segurança regulares\n• Controles de acesso e monitoramento\n• Centros de dados seguros (Google Cloud/Firebase)\n\nSUAS RESPONSABILIDADES:\n• Mantenha sua senha confidencial\n• Use recursos de segurança do dispositivo (senha, biometria)\n• Relate atividade suspeita imediatamente\n• Mantenha seu dispositivo e aplicativo atualizados\n\nLIMITAÇÕES:\n• Nenhum sistema é 100% seguro\n• Você usa o Aplicativo por sua própria conta e risco\n• Não podemos garantir segurança absoluta\n• Relate problemas de segurança para: support@teambuildpro.com",
+  "privacySection5Title": "5. SEUS DIREITOS DE PRIVACIDADE",
+  "privacySection5Content": "Você tem os seguintes direitos em relação aos seus dados:\n\nACESSO E PORTABILIDADE:\n• Solicitar uma cópia de seus dados pessoais\n• Exportar seus dados em formato portátil\n• Revisar quais informações temos sobre você\n\nCORREÇÃO:\n• Atualizar informações imprecisas\n• Modificar os detalhes do seu perfil\n• Corrigir erros na sua conta\n\nEXCLUSÃO:\n• Solicitar exclusão de sua conta e dados\n• Usar o recurso \"Excluir Conta\" no Aplicativo\n• Alguns dados podem ser retidos para conformidade legal\n• A exclusão é permanente e não pode ser desfeita\n\nOPTAR POR NÃO PARTICIPAR:\n• Cancelar assinatura de e-mails de marketing\n• Desabilitar notificações push nas configurações do dispositivo\n• Limitar a coleta de dados de análise\n\nPARA EXERCER DIREITOS:\n• Use as configurações do aplicativo quando disponível\n• Email: support@teambuildpro.com\n• Responderemos dentro de 30 dias\n• Pode ser necessária verificação de identidade",
+  "privacySection6Title": "6. RETENÇÃO DE DADOS",
+  "privacySection6Content": "QUANTO TEMPO MANTEMOS OS DADOS:\n\nCONTAS ATIVAS:\n• Dados retidos enquanto sua conta estiver ativa\n• Necessário para fornecer serviço contínuo\n• Você pode excluir dados ou conta a qualquer momento\n\nCONTAS EXCLUÍDAS:\n• A maioria dos dados excluída dentro de 30 dias\n• Alguns dados retidos para conformidade legal\n• Sistemas de backup purgados dentro de 90 dias\n• Registros financeiros mantidos conforme requisitos legais\n\nRETENÇÃO LEGAL:\n• Registros de transações: 7 anos (lei tributária)\n• Disputas legais: até resolução + estatuto de limitações\n• Prevenção de fraude: conforme exigido legalmente\n• Análises agregadas: indefinidamente (anonimizadas)\n\nSEU CONTROLE:\n• Solicitar exclusão a qualquer momento\n• Exportar dados antes da exclusão da conta\n• A exclusão é permanente e irreversível",
+  "privacySection7Title": "7. PRIVACIDADE DE CRIANÇAS",
+  "privacySection7Content": "RESTRIÇÃO DE IDADE:\n• O Aplicativo não é destinado a usuários menores de 18 anos\n• Não coletamos dados de menores conscientemente\n• Você deve ter 18+ para criar uma conta\n\nSE FICARMOS SABENDO DE USUÁRIOS MENORES DE IDADE:\n• Excluiremos suas contas imediatamente\n• Excluiremos todos os dados associados\n• Tomaremos medidas para prevenir acesso futuro de menores\n\nDIREITOS PARENTAIS:\n• Os pais podem solicitar exclusão de dados de menores\n• Contato: support@teambuildpro.com\n• Forneça prova de relacionamento parental\n• Agiremos prontamente em solicitações verificadas",
+  "privacySection8Title": "8. MUDANÇAS NA POLÍTICA DE PRIVACIDADE",
+  "privacySection8Content": "ATUALIZAÇÕES:\n• Podemos atualizar esta Política de Privacidade periodicamente\n• Mudanças publicadas no Aplicativo e em nosso site\n• Mudanças materiais comunicadas por e-mail ou notificação\n• O uso continuado significa aceitação das mudanças\n\nSUAS OPÇÕES:\n• Revise esta política regularmente\n• Entre em contato conosco com perguntas: support@teambuildpro.com\n• Pare de usar o Aplicativo se discordar das mudanças\n• Exclua sua conta se não aceitar as atualizações\n\nDATA EFETIVA:\n• Versão atual: Janeiro 2025\n• Última Atualização: Janeiro 2025\n• Versões anteriores são substituídas\n\nINFORMAÇÕES DE CONTATO:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nTermos de Serviço: https://info.teambuildpro.com/terms-of-service.html",
+  "subscriptionScreenTitle": "Team Build Pro",
+  "@subscriptionScreenTitle": {
+    "description": "Title of the subscription screen"
+  },
+  "subscriptionSuccessMessage": "✅ Assinatura ativada com sucesso!",
+  "@subscriptionSuccessMessage": {
+    "description": "Success message when subscription is activated"
+  },
+  "@subscriptionNotActiveTitle": {
+    "description": "Dialog title when subscription purchase is not yet active"
+  },
+  "@subscriptionNotActiveMessage": {
+    "description": "Dialog message when subscription purchase is not yet active"
+  },
+  "@subscriptionNotAvailableTitle": {
+    "description": "Dialog title when in-app purchase is not available"
+  },
+  "subscriptionRestoreSuccess": "✅ Assinatura restaurada com sucesso!",
+  "@subscriptionRestoreSuccess": {
+    "description": "Success message when subscription is restored"
+  },
+  "subscriptionRestoreNone": "Nenhuma assinatura anterior encontrada para restaurar.",
+  "@subscriptionRestoreNone": {
+    "description": "Message when no previous subscription can be restored"
+  },
+  "@subscriptionStatusActive": {
+    "description": "Status card title for active subscription"
+  },
+  "@subscriptionStatusActiveSubtitle": {
+    "description": "Status card subtitle for active subscription"
+  },
+  "@subscriptionStatusPaused": {
+    "description": "Status card title for paused subscription"
+  },
+  "@subscriptionStatusPausedSubtitle": {
+    "description": "Status card subtitle for paused subscription"
+  },
+  "@subscriptionStatusPaymentIssue": {
+    "description": "Status card title for payment issue"
+  },
+  "@subscriptionStatusPaymentIssueSubtitle": {
+    "description": "Status card subtitle for payment issue"
+  },
+  "subscriptionStatusTrial": "Teste Gratuito Ativo",
+  "@subscriptionStatusTrial": {
+    "description": "Status card title for trial subscription"
+  },
+  "subscriptionStatusTrialSubtitle": "{days} dias restantes no seu teste",
+  "@subscriptionStatusTrialSubtitle": {
+    "description": "Status card subtitle for trial subscription",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@subscriptionStatusCancelled": {
+    "description": "Status card title for cancelled subscription"
+  },
+  "@subscriptionStatusCancelledSubtitle": {
+    "description": "Status card subtitle for cancelled subscription"
+  },
+  "@subscriptionStatusExpired": {
+    "description": "Status card title for expired subscription"
+  },
+  "@subscriptionStatusExpiredSubtitle": {
+    "description": "Status card subtitle for expired subscription"
+  },
+  "subscriptionPremiumFeaturesHeader": "Recursos Premium:",
+  "@subscriptionPremiumFeaturesHeader": {
+    "description": "Header for premium features list"
+  },
+  "subscriptionFeatureReferralLink": "Envie seu link de indicação exclusivo de {bizOpp}",
+  "@subscriptionFeatureReferralLink": {
+    "description": "Premium feature: referral link submission",
+    "placeholders": {
+      "bizOpp": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionFeatureAiCoaching": "Treinamento de IA personalizado para recrutamento e construção de equipes",
+  "@subscriptionFeatureAiCoaching": {
+    "description": "Premium feature: AI coaching"
+  },
+  "subscriptionFeatureMessaging": "Desbloqueie mensagens para usuários da sua equipe",
+  "@subscriptionFeatureMessaging": {
+    "description": "Premium feature: messaging capability"
+  },
+  "subscriptionFeatureEnsureTeam": "Garanta que os membros da equipe entrem sob VOCÊ em {bizOpp}",
+  "@subscriptionFeatureEnsureTeam": {
+    "description": "Premium feature: team placement guarantee",
+    "placeholders": {
+      "bizOpp": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionFeatureAnalytics": "Análises avançadas e insights",
+  "@subscriptionFeatureAnalytics": {
+    "description": "Premium feature: analytics"
+  },
+  "@subscriptionSubscribeButton": {
+    "description": "Subscribe button text"
+  },
+  "@subscriptionRestoreButton": {
+    "description": "Restore subscription button text"
+  },
+  "@subscriptionLegalNotice": {
+    "description": "Legal notice about terms and privacy"
+  },
+  "@subscriptionTermsLink": {
+    "description": "Link text for Terms of Service"
+  },
+  "@subscriptionPrivacyLink": {
+    "description": "Link text for Privacy Policy"
+  },
+  "@subscriptionAutoRenewNotice": {
+    "description": "Auto-renewal notice with platform-specific management text",
+    "placeholders": {
+      "managementText": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionManagementApple": "Você pode gerenciar sua assinatura nas configurações da sua conta Apple ID.",
+  "@subscriptionManagementApple": {
+    "description": "iOS subscription management instructions"
+  },
+  "subscriptionManagementGoogle": "Você pode gerenciar sua assinatura na Google Play Store.",
+  "@subscriptionManagementGoogle": {
+    "description": "Android subscription management instructions"
   }
 }

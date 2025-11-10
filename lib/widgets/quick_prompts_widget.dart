@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/app_colors.dart';
+import '../l10n/app_localizations.dart';
 
 class QuickPromptsWidget extends StatelessWidget {
   final List<String> prompts;
@@ -36,7 +37,7 @@ class QuickPromptsWidget extends StatelessWidget {
                     Icon(Icons.smart_toy, color: AppColors.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      'Welcome to your AI Coach!',
+                      AppLocalizations.of(context)?.quickPromptsWelcomeTitle ?? 'Welcome to your AI Coach!',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -47,7 +48,7 @@ class QuickPromptsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'I\'m here to help you succeed with Team Build Pro. I can answer questions about the app, team building strategies, and guide you through features.',
+                  AppLocalizations.of(context)?.quickPromptsWelcomeDescription ?? 'I\'m here to help you succeed with Team Build Pro. I can answer questions about the app, team building strategies, and guide you through features.',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -70,7 +71,7 @@ class QuickPromptsWidget extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'AI Coach can make mistakes. Check important info.',
+                          AppLocalizations.of(context)?.quickPromptsDisclaimerMessage ?? 'AI Coach can make mistakes. Check important info.',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade700,
@@ -88,18 +89,18 @@ class QuickPromptsWidget extends StatelessWidget {
           const SizedBox(height: 24),
           
           // Quick start prompts header
-          const Text(
-            'What can I help you with?',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)?.quickPromptsQuestionHeader ?? 'What can I help you with?',
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          
+
           const SizedBox(height: 4),
-          
+
           Text(
-            'Tap any question below to get started, or type your own question.',
+            AppLocalizations.of(context)?.quickPromptsQuestionSubheader ?? 'Tap any question below to get started, or type your own question.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey.shade600,
@@ -128,12 +129,12 @@ class QuickPromptsWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Pro Tip',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      Text(
+                        AppLocalizations.of(context)?.quickPromptsProTipLabel ?? 'Pro Tip',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       Text(
-                        'Be specific with your questions. For example: "I have 2 direct sponsors, what should I focus on next?"',
+                        AppLocalizations.of(context)?.quickPromptsProTipText ?? 'Be specific with your questions. For example: "I have 2 direct sponsors, what should I focus on next?"',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade700,

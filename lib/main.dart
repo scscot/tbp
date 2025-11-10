@@ -233,25 +233,34 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             Locale('en'),
             Locale('es'),
             Locale('pt'),
-            Locale('tl'),
+            Locale('de'),
             Locale('en', 'XA'), // Pseudo-locale for i18n testing
           ],
           localeResolutionCallback: (deviceLocale, supportedLocales) {
-            if (deviceLocale == null) return const Locale('en');
+            debugPrint('🌍 LOCALE: Device locale: $deviceLocale (language: ${deviceLocale?.languageCode}, country: ${deviceLocale?.countryCode})');
+            debugPrint('🌍 LOCALE: Supported locales: ${supportedLocales.map((l) => '${l.languageCode}_${l.countryCode}').join(', ')}');
+
+            if (deviceLocale == null) {
+              debugPrint('🌍 LOCALE: Device locale is null, defaulting to English');
+              return const Locale('en');
+            }
 
             for (var supportedLocale in supportedLocales) {
               if (supportedLocale.languageCode == deviceLocale.languageCode &&
                   supportedLocale.countryCode == deviceLocale.countryCode) {
+                debugPrint('🌍 LOCALE: Exact match found: ${supportedLocale.languageCode}_${supportedLocale.countryCode}');
                 return supportedLocale;
               }
             }
 
             for (var supportedLocale in supportedLocales) {
               if (supportedLocale.languageCode == deviceLocale.languageCode) {
+                debugPrint('🌍 LOCALE: Language-only match found: ${supportedLocale.languageCode}');
                 return supportedLocale;
               }
             }
 
+            debugPrint('🌍 LOCALE: No match found, defaulting to English');
             return const Locale('en');
           },
           locale: const String.fromEnvironment('PSEUDO_LOCALE') == 'true'

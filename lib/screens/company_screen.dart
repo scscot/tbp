@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/header_widgets.dart';
 import '../services/admin_settings_service.dart';
+import '../widgets/localized_text.dart';
 
 class CompanyScreen extends StatefulWidget {
   final String appId;
@@ -116,7 +117,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: const AppScreenBar(title: 'Company Details'),
+      appBar: AppScreenBar(title: context.l10n?.companyTitle ?? 'Company Details'),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -126,11 +127,11 @@ class _CompanyScreenState extends State<CompanyScreen> {
                 children: [
                   // --- MODIFICATION: Refreshed UI for a more premium feel ---
                   const SizedBox(height: 20),
-                  const Center(
+                  Center(
                     child: Text(
-                      'Company Details',
+                      context.l10n?.companyHeading ?? 'Company Details',
                       style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -144,14 +145,14 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       child: Column(
                         children: [
                           _buildInfoRow(
-                            title: 'Company Name',
-                            content: bizOpp ?? 'Not available',
+                            title: context.l10n?.companyLabelName ?? 'Company Name',
+                            content: bizOpp ?? (context.l10n?.companyNotAvailable ?? 'Not available'),
                             icon: Icons.business,
                           ),
                           const Divider(height: 24),
                           _buildInfoRow(
-                            title: 'My Company Referral Link',
-                            content: bizOppRefUrl ?? 'Not available',
+                            title: context.l10n?.companyLabelReferralLink ?? 'My Company Referral Link',
+                            content: bizOppRefUrl ?? (context.l10n?.companyNotAvailable ?? 'Not available'),
                             icon: Icons.link,
                           ),
                           /* const Divider(height: 24),
@@ -177,7 +178,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                     child: Column(
                       children: [
                         Text(
-                          "Account Linked!",
+                          context.l10n?.companyLinkedTitle ?? "Account Linked!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 15,
@@ -188,7 +189,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                             height:
                                 8), // Add some spacing between the two lines
                         Text(
-                          "Great news! As your team members gain momentum and qualify, they will receive an invitation to join your $bizOpp organization.",
+                          context.l10n?.companyLinkedMessage(bizOpp ?? 'organization') ?? "Great news! As your team members gain momentum and qualify, they will receive an invitation to join your ${bizOpp ?? 'organization'} organization.",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 15,

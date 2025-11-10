@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../services/notification_service.dart';
 import '../services/fcm_service.dart';
 import '../main.dart';
@@ -192,7 +193,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppScreenBar(title: 'Notifications', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.notificationsTitle ?? 'Notifications', appId: widget.appId),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -205,12 +206,12 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                 }
                 if (snapshot.hasError) {
                   debugPrint('🔔 NOTIFICATIONS: StreamBuilder error: ${snapshot.error}');
-                  return const Center(
-                      child: Text('Error loading notifications'));
+                  return Center(
+                      child: Text(context.l10n?.errorLoadingNotifications ?? 'Error loading notifications'));
                 }
                 final docs = snapshot.data ?? [];
                 if (docs.isEmpty) {
-                  return const Center(child: Text('No notifications yet.'));
+                  return Center(child: Text(context.l10n?.emptyNotifications ?? 'No notifications yet.'));
                 }
 
                 return ListView.separated(
@@ -248,7 +249,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                           size: 28,
                         ),
                         title: Text(
-                          data['title'] ?? 'No Title',
+                          data['title'] ?? (context.l10n?.emptyNotificationTitle ?? 'No Title'),
                           style: TextStyle(
                             fontWeight:
                                 isRead ? FontWeight.normal : FontWeight.bold,
@@ -262,7 +263,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                             Text(
                                 data['body'] ??
                                     data['message'] ??
-                                    'No message content.',
+                                    (context.l10n?.emptyMessageContent ?? 'No message content.'),
                                 style: const TextStyle(fontSize: 13)),
                             const SizedBox(height: 6),
                             Text(

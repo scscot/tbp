@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: privacyEmail,
-      query: 'subject=Privacy Policy Inquiry',
+      query: context.l10n?.privacyEmailSubject ?? 'subject=Privacy Policy Inquiry',
     );
 
     if (await canLaunchUrl(emailUri)) {
@@ -51,7 +52,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Could not open email client. Please contact $privacyEmail'),
+                context.l10n?.privacyEmailError(privacyEmail) ?? 'Could not open email client. Please contact $privacyEmail'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -174,7 +175,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Privacy Policy'),
+      appBar: AppScreenBar(title: context.l10n?.privacyScreenTitle ?? 'Privacy Policy'),
       backgroundColor: AppColors.backgroundSecondary,
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -199,9 +200,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                     color: AppColors.textInverse,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Privacy Policy',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.privacyHeaderTitle ?? 'Privacy Policy',
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w900,
                       color: AppColors.textInverse,
@@ -211,7 +212,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Last Updated: $lastUpdated',
+                    context.l10n?.privacyLastUpdated(lastUpdated) ?? 'Last Updated: $lastUpdated',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textInverse.withValues(alpha: 0.9),
@@ -226,9 +227,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
             // Important Notice
             _buildHighlightBox(
-              title: 'Your Privacy Matters',
+              title: context.l10n?.privacyMattersTitle ?? 'Your Privacy Matters',
               content:
-                  'Team Build Pro is committed to protecting your privacy and personal information. This policy explains how we collect, use, and safeguard your data as part of our professional networking platform, in compliance with Apple App Store guidelines and applicable privacy laws.',
+                  context.l10n?.privacyMattersDescription ?? 'We are committed to protecting your personal information and your right to privacy. This policy explains how we collect, use, and safeguard your data.',
               icon: Icons.shield_outlined,
               backgroundColor: AppColors.successBackground,
               borderColor: AppColors.success,
@@ -236,9 +237,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
             // Information We Collect
             _buildSection(
-              title: '1. Information We Collect',
+              title: context.l10n?.privacySection1Title ?? '1. Information We Collect',
               icon: Icons.info_outline,
-              content: '''We collect the following types of information:
+              content: context.l10n?.privacySection1Content ?? '''We collect the following types of information:
 
 Personal Information:
 • Name (first and last name)
@@ -264,9 +265,9 @@ Communication Data:
 
             // How We Use Your Information
             _buildSection(
-              title: '2. How We Use Your Information',
+              title: context.l10n?.privacySection2Title ?? '2. How We Use Your Information',
               icon: Icons.settings_outlined,
-              content: '''We use your information for the following purposes:
+              content: context.l10n?.privacySection2Content ?? '''We use your information for the following purposes:
 
 Service Provision:
 • Create and manage your networking account
@@ -287,10 +288,9 @@ Legal Compliance:
 
             // Information Sharing
             _buildSection(
-              title: '3. Information Sharing and Disclosure',
+              title: context.l10n?.privacySection3Title ?? '3. Information Sharing and Disclosure',
               icon: Icons.share_outlined,
-              content:
-                  '''We do not sell your personal information. We may share information in these limited circumstances:
+              content: context.l10n?.privacySection3Content ?? '''We do not sell your personal information. We may share information in these limited circumstances:
 
 Within Your Network:
 • Your name and profile photo are visible to your team members
@@ -311,9 +311,9 @@ We never share your email address or personal contact information with other use
 
             // Data Security
             _buildSection(
-              title: '4. Data Security',
+              title: context.l10n?.privacySection4Title ?? '4. Data Security',
               icon: Icons.security_outlined,
-              content: '''We implement industry-standard security measures:
+              content: context.l10n?.privacySection4Content ?? '''We implement industry-standard security measures:
 
 Technical Safeguards:
 • Encryption of data in transit and at rest
@@ -333,10 +333,9 @@ Data Retention:
 
             // Your Rights and Choices
             _buildSection(
-              title: '5. Your Rights and Choices',
+              title: context.l10n?.privacySection5Title ?? '5. Your Rights and Choices',
               icon: Icons.account_circle_outlined,
-              content:
-                  '''You have the following rights regarding your personal information:
+              content: context.l10n?.privacySection5Content ?? '''You have the following rights regarding your personal information:
 
 Access and Control:
 • View and update your profile information
@@ -363,9 +362,9 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
 
             // Apple-Specific Privacy
             _buildHighlightBox(
-              title: 'Apple Privacy Compliance',
+              title: context.l10n?.privacyAppleComplianceTitle ?? 'Apple Privacy Compliance',
               content:
-                  'This professional networking app complies with Apple\'s App Store privacy requirements. We use Apple\'s In-App Purchase system for subscriptions and do not collect payment information directly. All data collection is transparent and with your consent.',
+                  context.l10n?.privacyAppleComplianceDescription ?? 'This Privacy Policy meets all Apple App Store privacy requirements and data handling guidelines.',
               icon: Icons.apple,
               backgroundColor: AppColors.backgroundTertiary,
               borderColor: AppColors.textSecondary,
@@ -373,10 +372,9 @@ To exercise these rights, contact us at $privacyEmail or use the in-app settings
 
             // Children's Privacy
             _buildSection(
-              title: '6. Children\'s Privacy',
+              title: context.l10n?.privacySection6Title ?? '6. Children\'s Privacy',
               icon: Icons.child_care_outlined,
-              content:
-                  '''Team Build Pro is intended for a general audience and is not directed to children under the age of 18. We do not knowingly collect personal information from children under 18.
+              content: context.l10n?.privacySection6Content ?? '''Team Build Pro is intended for a general audience and is not directed to children under the age of 18. We do not knowingly collect personal information from children under 18.
 
 If we discover that we have collected information from a child under 18:
 • We will delete the information immediately
@@ -388,10 +386,9 @@ Parents who believe their child has provided information to us should contact $p
 
             // International Users
             _buildSection(
-              title: '7. International Data Transfers',
+              title: context.l10n?.privacySection7Title ?? '7. International Data Transfers',
               icon: Icons.public_outlined,
-              content:
-                  '''Team Build Pro is available globally. Your information may be transferred to and processed in:
+              content: context.l10n?.privacySection7Content ?? '''Team Build Pro is available globally. Your information may be transferred to and processed in:
 
 • United States (Firebase/Google servers)
 • Other countries where our service providers operate
@@ -406,10 +403,9 @@ All transfers comply with applicable data protection laws including GDPR and CCP
 
             // Updates to Policy
             _buildSection(
-              title: '8. Changes to This Privacy Policy',
+              title: context.l10n?.privacySection8Title ?? '8. Changes to This Privacy Policy',
               icon: Icons.update_outlined,
-              content:
-                  '''We may update this Privacy Policy from time to time. When we make changes:
+              content: context.l10n?.privacySection8Content ?? '''We may update this Privacy Policy from time to time. When we make changes:
 
 • We will notify you through the app
 • We will update the "Last Updated" date
@@ -436,18 +432,18 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                     color: AppColors.textInverse,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Contact Us',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.privacyContactHeading ?? 'Contact Us',
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                       color: AppColors.textInverse,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Questions about this Privacy Policy?',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.privacyContactSubheading ?? 'Questions about this Privacy Policy?',
+                    style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textInverse,
                       fontWeight: FontWeight.w500,
@@ -479,7 +475,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Team Build Pro\nPrivacy Officer\nResponse within 48 hours',
+                    context.l10n?.privacyContactDetails ?? 'Team Build Pro\nPrivacy Officer\nResponse within 48 hours',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textInverse.withValues(alpha: 0.9),
@@ -504,7 +500,7 @@ Continued use of the app after changes constitutes acceptance of the updated pol
               child: Column(
                 children: [
                   Text(
-                    '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
+                    context.l10n?.privacyCopyright(DateTime.now().year.toString()) ?? '© ${DateTime.now().year} Team Build Pro. All rights reserved.',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -513,9 +509,9 @@ Continued use of the app after changes constitutes acceptance of the updated pol
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'This Privacy Policy is effective as of the date listed above and applies to all users of the Team Build Pro mobile application.',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.privacyFooterDisclaimer ?? 'This Privacy Policy is effective as of the date listed above and applies to all users of the Team Build Pro mobile application.',
+                    style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textTertiary,
                       fontWeight: FontWeight.w400,

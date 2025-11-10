@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final String appId;
@@ -22,7 +23,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Change Password'),
+      appBar: AppScreenBar(title: context.l10n?.changePasswordTitle ?? 'Change Password'),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -30,11 +31,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Change Password',
+                context.l10n?.changePasswordHeading ?? 'Change Password',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 20),
-              const Text('TODO: Implement change password form here.'),
+              Text(context.l10n?.changePasswordTodoMessage ?? 'TODO: Implement change password form here.'),
               // Add form fields for changing password
             ],
           ),

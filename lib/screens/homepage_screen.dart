@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/session_manager.dart';
 import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import 'login_screen_enhanced.dart';
 import 'new_registration_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -122,8 +123,8 @@ class _HomepageScreenState extends State<HomepageScreen>
   Future<void> _performDemoLogin() async {
     if (_demoEmail == null || _demoPassword == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Demo credentials not available'),
+        SnackBar(
+          content: Text(context.l10n?.homepageDemoCredentialsNotAvailable ?? 'Demo credentials not available'),
           backgroundColor: Colors.red,
         ),
       );
@@ -152,7 +153,7 @@ class _HomepageScreenState extends State<HomepageScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Demo login failed: ${e.message}'),
+            content: Text(context.l10n?.homepageDemoLoginFailed(e.message ?? 'Unknown error') ?? 'Demo login failed: ${e.message}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -161,8 +162,8 @@ class _HomepageScreenState extends State<HomepageScreen>
       debugPrint('❌ DEMO LOGIN: Unexpected error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Demo login failed. Please try again.'),
+          SnackBar(
+            content: Text(context.l10n?.homepageDemoLoginFailedGeneric ?? 'Demo login failed. Please try again.'),
             backgroundColor: Colors.red,
           ),
         );
@@ -333,11 +334,11 @@ class _HomepageScreenState extends State<HomepageScreen>
   Widget _buildHeroSection() {
     final heroTitle = (_sponsorName ?? '').isNotEmpty
         ? (widget.queryType == 'new'
-            ? 'JUMPSTART YOUR SUCCESS'
+            ? (context.l10n?.homepageHeroJumpstart ?? 'JUMPSTART YOUR SUCCESS')
             : (widget.queryType == 'ref'
-                ? 'GROW AND MANAGE YOUR TEAM'
-                : 'PROVEN TEAM BUILDING SYSTEM'))
-        : 'PROVEN TEAM BUILDING SYSTEM';
+                ? (context.l10n?.homepageHeroGrow ?? 'GROW AND MANAGE YOUR TEAM')
+                : (context.l10n?.homepageHeroProven ?? 'PROVEN TEAM BUILDING SYSTEM')))
+        : (context.l10n?.homepageHeroProven ?? 'PROVEN TEAM BUILDING SYSTEM');
 
     return Column(
       children: [
@@ -405,9 +406,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                               ],
                             ),
                             children: [
-                              const TextSpan(text: 'Build Your Foundation\n'),
+                              TextSpan(text: '${context.l10n?.homepageHeroBuildFoundation ?? 'Build Your Foundation'}\n'),
                               TextSpan(
-                                text: 'Before Day One',
+                                text: context.l10n?.homepageHeroBeforeDayOne ?? 'Before Day One',
                                 style: TextStyle(
                                   color: Color(0xFFfbbf24),
                                   fontWeight: FontWeight.w900,
@@ -431,7 +432,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                         return FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'Empower Your Team',
+                            context.l10n?.homepageHeroEmpowerTeam ?? 'Empower Your Team',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: fontSize,
@@ -475,14 +476,14 @@ class _HomepageScreenState extends State<HomepageScreen>
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Accelerate ',
+                                  text: context.l10n?.homepageHeroAccelerate ?? 'Accelerate ',
                                   style: TextStyle(
                                     color: Color(0xFFfbbf24),
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'Growth',
+                                  text: context.l10n?.homepageHeroGrowth ?? 'Growth',
                                   style: TextStyle(
                                     color: Color(0xFFfbbf24),
                                     fontWeight: FontWeight.w900,
@@ -504,10 +505,10 @@ class _HomepageScreenState extends State<HomepageScreen>
 
   Widget _buildMessageCard() {
     final messageTitle = _isLoading
-        ? 'Loading...'
+        ? (context.l10n?.homepageLoading ?? 'Loading...')
         : (_sponsorName ?? '').isNotEmpty
-            ? 'A Personal Message\nFrom $_sponsorName'
-            : 'A Message From\nTeam Build Pro';
+            ? (context.l10n?.homepageMessageTitlePersonal(_sponsorName!) ?? 'A Personal Message\nFrom $_sponsorName')
+            : (context.l10n?.homepageMessageTitleGeneric ?? 'A Message From\nTeam Build Pro');
 
     final messageBody = TextSpan(
       style: TextStyle(
@@ -518,40 +519,40 @@ class _HomepageScreenState extends State<HomepageScreen>
       children: (_sponsorName ?? '').isNotEmpty
           ? (widget.queryType == 'new'
               ? <InlineSpan>[
-                  const TextSpan(
+                  TextSpan(
                       text:
-                          'I\'m so glad you\'re here to get a head start on building your '),
+                          context.l10n?.homepageMessageBodyNewProspect1 ?? 'I\'m so glad you\'re here to get a head start on building your '),
                   TextSpan(
                     text: _bizOpp,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(
+                  TextSpan(
                       text:
-                          '  team. The next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                          context.l10n?.homepageMessageBodyNewProspect2 ?? '  team. The next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                 ]
               : (widget.queryType == 'ref'
                   ? <InlineSpan>[
-                      const TextSpan(
+                      TextSpan(
                           text:
-                              'I\'m using the Team Build Pro app to accelerate the growth of my '),
+                              context.l10n?.homepageMessageBodyRefPartner1 ?? 'I\'m using the Team Build Pro app to accelerate the growth of my '),
                       TextSpan(
                         text: _bizOpp,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      const TextSpan(
+                      TextSpan(
                           text:
-                              ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
+                              context.l10n?.homepageMessageBodyRefPartner2 ?? ' team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you\'re registered, I\'ll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!'),
                     ]
                   : <InlineSpan>[
-                      const TextSpan(
+                      TextSpan(
                         text:
-                            'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
+                            context.l10n?.homepageMessageBodyGeneric ?? 'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
                       ),
                     ]))
           : <InlineSpan>[
-              const TextSpan(
+              TextSpan(
                 text:
-                    'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
+                    context.l10n?.homepageMessageBodyGeneric ?? 'Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!',
               ),
             ],
     );
@@ -695,9 +696,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                 size: 20,
               ),
             ),
-            label: const Text(
-              'Create Account',
-              style: TextStyle(
+            label: Text(
+              context.l10n?.homepageButtonCreateAccount ?? 'Create Account',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
@@ -755,9 +756,9 @@ class _HomepageScreenState extends State<HomepageScreen>
                 size: 18,
               ),
             ),
-            label: const Text(
-              'I Already Have an Account',
-              style: TextStyle(
+            label: Text(
+              context.l10n?.homepageButtonAlreadyHaveAccount ?? 'I Already Have an Account',
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
@@ -825,7 +826,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Demo Mode Active',
+                      context.l10n?.homepageDemoModeActive ?? 'Demo Mode Active',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -833,7 +834,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
                     Text(
-                      'Pre-Loaded Demo Account',
+                      context.l10n?.homepageDemoPreLoaded ?? 'Pre-Loaded Demo Account',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.orange.shade600,
@@ -862,7 +863,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome to Team Build Pro Demo',
+                  context.l10n?.homepageDemoWelcome ?? 'Welcome to Team Build Pro Demo',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -871,7 +872,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'This is a fully functional demo account pre-loaded with realistic team data. Explore all features and see how Team Build Pro can transform your direct sales business!',
+                  context.l10n?.homepageDemoDescription ?? 'This is a fully functional demo account pre-loaded with realistic team data. Explore all features and see how Team Build Pro can transform your direct sales business!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -889,7 +890,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Access Credentials:',
+                        context.l10n?.homepageDemoCredentialsLabel ?? 'Access Credentials:',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -898,7 +899,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Email: ${_demoEmail ?? 'Loading...'}',
+                        context.l10n?.homepageDemoEmail(_demoEmail ?? (context.l10n?.homepageLoading ?? 'Loading...')) ?? 'Email: ${_demoEmail ?? 'Loading...'}',
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: 'monospace',
@@ -906,7 +907,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                         ),
                       ),
                       Text(
-                        'Password: ${_demoPassword != null ? '••••••••••' : 'Loading...'}',
+                        context.l10n?.homepageDemoPassword(_demoPassword != null ? '••••••••••' : (context.l10n?.homepageLoading ?? 'Loading...')) ?? 'Password: ${_demoPassword != null ? '••••••••••' : 'Loading...'}',
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: 'monospace',
@@ -960,7 +961,7 @@ class _HomepageScreenState extends State<HomepageScreen>
                       ),
                     ),
               label: Text(
-                _isDemoLoading ? 'Logging In...' : 'Start Demo!',
+                _isDemoLoading ? (context.l10n?.homepageDemoLoggingIn ?? 'Logging In...') : (context.l10n?.homepageDemoStartDemo ?? 'Start Demo!'),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -996,19 +997,19 @@ class _HomepageScreenState extends State<HomepageScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildTrustItem(Icons.security, '100% Secure'),
+          _buildTrustItem(Icons.security, context.l10n?.homepageTrust100Secure ?? '100% Secure'),
           Container(
             width: 1,
             height: 20,
             color: Colors.white.withValues(alpha: 0.3),
           ),
-          _buildTrustItem(Icons.timer, '30-Day Free'),
+          _buildTrustItem(Icons.timer, context.l10n?.homepageTrust30DayFree ?? '30-Day Free'),
           Container(
             width: 1,
             height: 20,
             color: Colors.white.withValues(alpha: 0.3),
           ),
-          _buildTrustItem(Icons.support_agent, '24/7 Support'),
+          _buildTrustItem(Icons.support_agent, context.l10n?.homepageTrust24Support ?? '24/7 Support'),
         ],
       ),
     );
@@ -1058,7 +1059,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
             child: Text(
-              'Terms of Service',
+              context.l10n?.homepageFooterTerms ?? 'Terms of Service',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
                 fontSize: 14,
@@ -1080,7 +1081,7 @@ class _HomepageScreenState extends State<HomepageScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
             child: Text(
-              'Privacy Policy',
+              context.l10n?.homepageFooterPrivacy ?? 'Privacy Policy',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
                 fontSize: 14,

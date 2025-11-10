@@ -5,6 +5,7 @@ import '../config/app_colors.dart';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import 'share_screen.dart';
+import '../widgets/localized_text.dart';
 
 class GettingStartedScreen extends StatefulWidget {
   final String appId;
@@ -85,7 +86,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppScreenBar(
-        title: 'Getting Started',
+        title: context.l10n?.gettingStartedTitle ?? 'Getting Started',
         appId: widget.appId,
       ),
       body: FadeTransition(
@@ -96,7 +97,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
                       Text(
-                        'Getting Started with Team Build Pro',
+                        context.l10n?.gettingStartedHeading ?? 'Getting Started with Team Build Pro',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -105,7 +106,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Follow these simple steps to start building your team',
+                        context.l10n?.gettingStartedSubheading ?? 'Follow these simple steps to start building your team',
                         style: TextStyle(
                           fontSize: 16,
                           color: AppColors.textSecondary,
@@ -116,9 +117,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                       // Step 1
                       _buildStepCard(
                         stepNumber: 1,
-                        title: 'Make Your List',
+                        title: context.l10n?.gettingStartedStep1Title ?? 'Make Your List',
                         description:
-                            'Create a list of recruiting prospects and current $_bizOppName team members you want to share Team Build Pro with. Think about who could benefit from this tool to accelerate their team building.',
+                            context.l10n?.gettingStartedStep1Description(_bizOppName) ?? 'Create a list of recruiting prospects and current $_bizOppName team members you want to share Team Build Pro with. Think about who could benefit from this tool to accelerate their team building.',
                         color: AppColors.primary,
                       ),
                       const SizedBox(height: 20),
@@ -126,9 +127,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                       // Step 2
                       _buildStepCard(
                         stepNumber: 2,
-                        title: 'Share with Your Network',
+                        title: context.l10n?.gettingStartedStep2Title ?? 'Share with Your Network',
                         description:
-                            'Use the Share feature to quickly and easily send targeted text messages and emails to your recruiting prospects and $_bizOppName team members.',
+                            context.l10n?.gettingStartedStep2Description(_bizOppName) ?? 'Use the Share feature to quickly and easily send targeted text messages and emails to your recruiting prospects and $_bizOppName team members.',
                         color: AppColors.secondary,
                         actionButton: ElevatedButton.icon(
                           onPressed: () {
@@ -141,7 +142,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                             );
                           },
                           icon: const Icon(Icons.share),
-                          label: const Text('Open Share'),
+                          label: Text(context.l10n?.gettingStartedStep2Button ?? 'Open Share'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.secondary,
                             foregroundColor: Colors.white,
@@ -160,9 +161,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                       // Step 3
                       _buildStepCard(
                         stepNumber: 3,
-                        title: 'Welcome Your New Team Members',
+                        title: context.l10n?.gettingStartedStep3Title ?? 'Welcome Your New Team Members',
                         description:
-                            'When you receive a new team member notification, follow up immediately to welcome them to your team. First impressions matter!',
+                            context.l10n?.gettingStartedStep3Description ?? 'When you receive a new team member notification, follow up immediately to welcome them to your team. First impressions matter!',
                         color: AppColors.opportunityPrimary,
                       ),
                       const SizedBox(height: 32),
@@ -191,7 +192,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Pro Tip',
+                                    context.l10n?.gettingStartedProTipTitle ?? 'Pro Tip',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -200,7 +201,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen>
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'Consistent follow-up and engagement are key to building a strong, active team.',
+                                    context.l10n?.gettingStartedProTipMessage ?? 'Consistent follow-up and engagement are key to building a strong, active team.',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppColors.textSecondary,

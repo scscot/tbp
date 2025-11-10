@@ -22,6 +22,7 @@ import 'dart:async';
 import '../services/biometric_service.dart';
 import '../services/session_manager.dart';
 import '../main.dart';
+import '../widgets/localized_text.dart';
 
 class LoginScreen extends StatefulWidget {
   final String appId;
@@ -528,7 +529,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                'Login',
+                context.l10n?.loginTitle ?? 'Login',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
@@ -539,19 +540,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
+                      decoration: InputDecoration(labelText: context.l10n?.loginLabelEmail ?? 'Email'),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter your email'
+                          ? (context.l10n?.loginValidatorEmail ?? 'Please enter your email')
                           : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(labelText: 'Password'),
+                      decoration: InputDecoration(labelText: context.l10n?.loginLabelPassword ?? 'Password'),
                       obscureText: true,
                       validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter your password'
+                          ? (context.l10n?.loginValidatorPassword ?? 'Please enter your password')
                           : null,
                     ),
                   ],
@@ -568,14 +569,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 3))
-                      : const Text('Login'),
+                      : Text(context.l10n?.loginButtonLogin ?? 'Login'),
                 ),
               ),
               const SizedBox(height: 16),
               if (_biometricAvailable && _biometricEnabled && _hasStoredUser) ...[
                 ElevatedButton.icon(
                   icon: const Icon(Icons.fingerprint, size: 24),
-                  label: Text('Sign in with ${_storedEmail ?? 'Biometric'}'),
+                  label: Text(context.l10n?.loginButtonBiometric ?? 'Sign in with ${_storedEmail ?? 'Biometric'}'),
                   onPressed: _isLoading ? null : _showBiometricLogin,
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -583,14 +584,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Row(
+                Row(
                   children: [
-                    Expanded(child: Divider()),
+                    const Expanded(child: Divider()),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('or', style: TextStyle(color: Colors.grey)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(context.l10n?.loginDividerOr ?? 'or', style: const TextStyle(color: Colors.grey)),
                     ),
-                    Expanded(child: Divider()),
+                    const Expanded(child: Divider()),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -599,7 +600,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton.icon(
                   icon: const FaIcon(FontAwesomeIcons.apple,
                       color: Colors.white, size: 20),
-                  label: const Text('Sign in with Apple'),
+                  label: Text(context.l10n?.loginButtonApple ?? 'Sign in with Apple'),
                   onPressed: _isLoading
                       ? null
                       : () => _signInWithSocial(_getAppleCredential),
@@ -613,7 +614,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (_isGoogleSignInAvailable) ...[
                 ElevatedButton.icon(
                   icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                  label: const Text('Sign in with Google'),
+                  label: Text(context.l10n?.loginButtonGoogle ?? 'Sign in with Google'),
                   onPressed: _isLoading
                       ? null
                       : () => _signInWithSocial(_getGoogleCredential),
@@ -625,9 +626,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account? ",
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.loginNoAccount ?? "Don't have an account? ",
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),
@@ -665,9 +666,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       }
                     },
-                    child: const Text(
-                      'Create Account',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n?.loginCreateAccount ?? 'Create Account',
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.underline,
@@ -677,7 +678,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Privacy Policy Footer
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -692,9 +693,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                    child: const Text(
-                      'Privacy Policy',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n?.loginPrivacyPolicy ?? 'Privacy Policy',
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
                         decoration: TextDecoration.underline,
@@ -715,9 +716,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                    child: const Text(
-                      'Terms of Service',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n?.loginTermsOfService ?? 'Terms of Service',
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
                         decoration: TextDecoration.underline,

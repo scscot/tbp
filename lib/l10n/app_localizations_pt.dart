@@ -12,46 +12,46 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appTitle => 'Team Build Pro';
 
   @override
-  String get authLoginHeaderTitle => 'Welcome back';
+  String get authLoginHeaderTitle => 'Bem-vindo de volta';
 
   @override
   String get authLoginLabelEmail => 'Email';
 
   @override
-  String get authLoginHintEmail => 'Enter your email address';
+  String get authLoginHintEmail => 'Digite seu endereço de email';
 
   @override
-  String get authLoginEmailRequired => 'Please enter your email';
+  String get authLoginEmailRequired => 'Por favor, digite seu email';
 
   @override
-  String get authLoginEmailInvalid => 'Please enter a valid email';
+  String get authLoginEmailInvalid => 'Por favor, digite um email válido';
 
   @override
-  String get authLoginLabelPassword => 'Password';
+  String get authLoginLabelPassword => 'Senha';
 
   @override
-  String get authLoginHintPassword => 'Enter your password';
+  String get authLoginHintPassword => 'Digite sua senha';
 
   @override
-  String get authLoginPasswordRequired => 'Please enter your password';
+  String get authLoginPasswordRequired => 'Por favor, digite sua senha';
 
   @override
   String authLoginPasswordTooShort(int min) {
-    return 'Password must be at least $min characters';
+    return 'A senha deve ter pelo menos $min caracteres';
   }
 
   @override
-  String get authLoginButtonSignIn => 'Sign In';
+  String get authLoginButtonSignIn => 'Entrar';
 
   @override
-  String get authLoginNoAccountPrompt => 'Don\'t have an account?';
+  String get authLoginNoAccountPrompt => 'Não tem uma conta?';
 
   @override
-  String get authLoginLinkSignUp => 'Sign Up';
+  String get authLoginLinkSignUp => 'Cadastre-se';
 
   @override
   String authLoginBiometric(String method) {
-    return 'Sign in with $method';
+    return 'Entrar com $method';
   }
 
   @override
@@ -61,233 +61,238 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authLoginBiometricMethodTouch => 'Touch ID';
 
   @override
-  String get authLoginBiometricMethodGeneric => 'Biometrics';
+  String get authLoginBiometricMethodGeneric => 'Biometria';
 
   @override
-  String get authSignupHeaderTitle => 'Create your account';
+  String get authSignupHeaderTitle => 'Crie sua conta';
 
   @override
-  String get authSignupLabelFirstName => 'First Name';
+  String get authSignupLabelFirstName => 'Nome';
 
   @override
-  String get authSignupHintFirstName => 'Enter your first name';
+  String get authSignupHintFirstName => 'Digite seu nome';
 
   @override
-  String get authSignupFirstNameRequired => 'Please enter your first name';
+  String get authSignupFirstNameRequired => 'Por favor, digite seu nome';
 
   @override
-  String get authSignupLabelLastName => 'Last Name';
+  String get authSignupLabelLastName => 'Sobrenome';
 
   @override
-  String get authSignupHintLastName => 'Enter your last name';
+  String get authSignupHintLastName => 'Digite seu sobrenome';
 
   @override
-  String get authSignupLastNameRequired => 'Please enter your last name';
+  String get authSignupLastNameRequired => 'Por favor, digite seu sobrenome';
 
   @override
   String get authSignupLabelEmail => 'Email';
 
   @override
-  String get authSignupHintEmail => 'Enter your email address';
+  String get authSignupHintEmail => 'Digite seu endereço de email';
 
   @override
-  String get authSignupEmailRequired => 'Please enter your email';
+  String get authSignupEmailRequired => 'Por favor, digite seu email';
 
   @override
-  String get authSignupEmailInvalid => 'Please enter a valid email';
+  String get authSignupEmailInvalid => 'Por favor, digite um email válido';
 
   @override
-  String get authSignupLabelPassword => 'Password';
+  String get authSignupLabelPassword => 'Senha';
 
   @override
-  String get authSignupHintPassword => 'Create a password';
+  String get authSignupHintPassword => 'Crie uma senha';
 
   @override
-  String get authSignupPasswordRequired => 'Please enter a password';
+  String get authSignupPasswordRequired => 'Por favor, digite uma senha';
 
   @override
   String authSignupPasswordTooShort(int min) {
-    return 'Password must be at least $min characters';
+    return 'A senha deve ter pelo menos $min caracteres';
   }
 
   @override
-  String get authSignupLabelConfirmPassword => 'Confirm Password';
+  String get authSignupLabelConfirmPassword => 'Confirmar Senha';
 
   @override
-  String get authSignupHintConfirmPassword => 'Re-enter your password';
+  String get authSignupHintConfirmPassword => 'Digite sua senha novamente';
 
   @override
   String get authSignupConfirmPasswordRequired =>
-      'Please confirm your password';
+      'Por favor, confirme sua senha';
 
   @override
-  String get authSignupPasswordMismatch => 'Passwords don\'t match';
+  String get authSignupPasswordMismatch => 'As senhas não coincidem';
 
   @override
-  String get authSignupLabelReferralCode => 'Referral Code (Optional)';
+  String get authSignupLabelReferralCode => 'Código de Indicação (Opcional)';
 
   @override
-  String get authSignupHintReferralCode => 'Enter invite code if you have one';
+  String get authSignupHintReferralCode =>
+      'Digite o código de convite se você tiver um';
 
   @override
-  String get authSignupButtonPasteCode => 'Paste';
+  String get authSignupButtonPasteCode => 'Colar';
 
   @override
   String get authSignupTosConsent =>
-      'By continuing, you agree to the Terms of Service and Privacy Policy';
+      'Ao continuar, você concorda com os Termos de Serviço e Política de Privacidade';
 
   @override
-  String get authSignupTermsShort => 'Terms of Service';
+  String get authSignupTermsShort => 'Termos de Serviço';
 
   @override
-  String get authSignupPrivacyShort => 'Privacy Policy';
+  String get authSignupPrivacyShort => 'Política de Privacidade';
 
   @override
-  String get authSignupTosRequired => 'You must accept the terms to continue';
+  String get authSignupTosRequired =>
+      'Você deve aceitar os termos para continuar';
 
   @override
-  String get authSignupButtonCreateAccount => 'Create Account';
+  String get authSignupButtonCreateAccount => 'Criar Conta';
 
   @override
-  String get authSignupHaveAccountPrompt => 'Already have an account?';
+  String get authSignupHaveAccountPrompt => 'Já tem uma conta?';
 
   @override
-  String get authSignupLinkSignIn => 'Sign In';
+  String get authSignupLinkSignIn => 'Entrar';
 
   @override
-  String get authPasswordShow => 'Show password';
+  String get authPasswordShow => 'Mostrar senha';
 
   @override
-  String get authPasswordHide => 'Hide password';
+  String get authPasswordHide => 'Ocultar senha';
 
   @override
   String get authErrorInvalidEmail =>
-      'That email isn\'t valid. Please check and try again.';
+      'Esse email não é válido. Por favor, verifique e tente novamente.';
 
   @override
   String get authErrorUserDisabled =>
-      'This account has been disabled. Please contact support.';
+      'Esta conta foi desativada. Por favor, entre em contato com o suporte.';
 
   @override
-  String get authErrorUserNotFound => 'No account found with that email.';
+  String get authErrorUserNotFound =>
+      'Nenhuma conta encontrada com esse email.';
 
   @override
-  String get authErrorWrongPassword => 'Incorrect password. Please try again.';
+  String get authErrorWrongPassword =>
+      'Senha incorreta. Por favor, tente novamente.';
 
   @override
-  String get authErrorEmailInUse =>
-      'An account with that email already exists.';
+  String get authErrorEmailInUse => 'Já existe uma conta com esse email.';
 
   @override
-  String get authErrorWeakPassword => 'Please choose a stronger password.';
+  String get authErrorWeakPassword =>
+      'Por favor, escolha uma senha mais forte.';
 
   @override
   String get authErrorNetworkError =>
-      'Network error. Please check your connection.';
+      'Erro de rede. Por favor, verifique sua conexão.';
 
   @override
-  String get authErrorTooMany => 'Too many attempts. Please wait a moment.';
+  String get authErrorTooMany =>
+      'Muitas tentativas. Por favor, aguarde um momento.';
 
   @override
   String get authErrorInvalidCredential =>
-      'Those details don\'t match our records.';
+      'Esses dados não correspondem aos nossos registros.';
 
   @override
-  String get authErrorUnknown => 'An error occurred. Please try again.';
+  String get authErrorUnknown => 'Ocorreu um erro. Por favor, tente novamente.';
 
   @override
-  String get navHome => 'Home';
+  String get navHome => 'Início';
 
   @override
-  String get navTeam => 'Team';
+  String get navTeam => 'Equipe';
 
   @override
-  String get navShare => 'Share';
+  String get navShare => 'Compartilhar';
 
   @override
-  String get navMessages => 'Messages';
+  String get navMessages => 'Mensagens';
 
   @override
-  String get navNotices => 'Notices';
+  String get navNotices => 'Avisos';
 
   @override
-  String get navProfile => 'Profile';
+  String get navProfile => 'Perfil';
 
   @override
-  String get dashTitle => 'Control Center';
+  String get dashTitle => 'Centro de Controle';
 
   @override
-  String get dashKpiDirectSponsors => 'Direct Sponsors';
+  String get dashKpiDirectSponsors => 'Patrocinadores Diretos';
 
   @override
-  String get dashKpiTotalTeam => 'Total Team Members';
+  String get dashKpiTotalTeam => 'Total de Membros da Equipe';
 
   @override
-  String get dashStatsRefreshed => 'Team stats refreshed';
+  String get dashStatsRefreshed => 'Estatísticas da equipe atualizadas';
 
   @override
   String dashStatsError(String error) {
-    return 'Error refreshing stats: $error';
+    return 'Erro ao atualizar estatísticas: $error';
   }
 
   @override
-  String get dashTileGettingStarted => 'Getting Started';
+  String get dashTileGettingStarted => 'Primeiros Passos';
 
   @override
-  String get dashTileOpportunity => 'Opportunity Details';
+  String get dashTileOpportunity => 'Detalhes da Oportunidade';
 
   @override
-  String get dashTileEligibility => 'Your Eligibility Status';
+  String get dashTileEligibility => 'Seu Status de Elegibilidade';
 
   @override
-  String get dashTileGrowTeam => 'Grow Your Team';
+  String get dashTileGrowTeam => 'Expanda Sua Equipe';
 
   @override
-  String get dashTileViewTeam => 'View Your Team';
+  String get dashTileViewTeam => 'Ver Sua Equipe';
 
   @override
-  String get dashTileAiCoach => 'Your AI Coach';
+  String get dashTileAiCoach => 'Seu Coach de IA';
 
   @override
-  String get dashTileMessageCenter => 'Message Center';
+  String get dashTileMessageCenter => 'Central de Mensagens';
 
   @override
-  String get dashTileNotifications => 'Notifications';
+  String get dashTileNotifications => 'Notificações';
 
   @override
-  String get dashTileHowItWorks => 'How It Works';
+  String get dashTileHowItWorks => 'Como Funciona';
 
   @override
-  String get dashTileFaqs => 'FAQ\'s';
+  String get dashTileFaqs => 'Perguntas Frequentes';
 
   @override
-  String get dashTileProfile => 'View Your Profile';
+  String get dashTileProfile => 'Ver Seu Perfil';
 
   @override
-  String get dashTileCreateAccount => 'Create New Account';
+  String get dashTileCreateAccount => 'Criar Nova Conta';
 
   @override
   String recruitT01FirstTouch(String prospectName, String senderFirst,
       String companyName, String shortLink) {
-    return 'Hey $prospectName, it\'s $senderFirst. I\'m using an app to help friends launch with $companyName. Quick look? $shortLink';
+    return 'Oi $prospectName, é o $senderFirst. Estou usando um app para ajudar amigos a começar com $companyName. Dá uma olhada? $shortLink';
   }
 
   @override
   String recruitT01FirstTouchNoName(
       String senderFirst, String companyName, String shortLink) {
-    return 'Hey, it\'s $senderFirst. I\'m using an app to help friends launch with $companyName. Quick look? $shortLink';
+    return 'Oi, é o $senderFirst. Estou usando um app para ajudar amigos a começar com $companyName. Dá uma olhada? $shortLink';
   }
 
   @override
   String recruitT02FollowUpWarm(
       String prospectName, String companyName, String shortLink) {
-    return 'Hi $prospectName! Following up on $companyName. I saw great results this week. Have time for a quick chat? $shortLink';
+    return 'Oi $prospectName! Fazendo um follow-up sobre $companyName. Vi ótimos resultados essa semana. Tem tempo para um papo rápido? $shortLink';
   }
 
   @override
   String recruitT03DeadlineNudge(
       String prospectName, String companyName, String shortLink) {
-    return '$prospectName, spots are filling up for our $companyName launch. Want me to save you one? $shortLink';
+    return '$prospectName, as vagas estão se preenchendo para nosso lançamento com $companyName. Quer que eu reserve uma para você? $shortLink';
   }
 
   @override
@@ -295,27 +300,27 @@ class AppLocalizationsPt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       remaining,
       locale: localeName,
-      other: 'You\'re # people away from a strong start.',
-      one: 'You\'re # person away from a strong start.',
-      zero: 'You\'re day-one ready.',
+      other: 'Você está a # pessoas de um começo forte.',
+      one: 'Você está a # pessoa de um começo forte.',
+      zero: 'Você está pronto para começar.',
     );
     return '$_temp0';
   }
 
   @override
   String recruitT05MilestoneReached(String prospectName, String companyName) {
-    return '🎉 $prospectName, you hit your first milestone with $companyName! Your team is growing. Keep it up!';
+    return '🎉 $prospectName, você alcançou seu primeiro marco com $companyName! Sua equipe está crescendo. Continue assim!';
   }
 
   @override
   String recruitT06WelcomeOnboard(
       String prospectName, String senderFirst, String inviteLink) {
-    return 'Welcome, $prospectName! I\'m $senderFirst and here to help. Let\'s get started: $inviteLink';
+    return 'Bem-vindo, $prospectName! Sou o $senderFirst e estou aqui para ajudar. Vamos começar: $inviteLink';
   }
 
   @override
   String recruitT07WeeklyCheckIn(String prospectName, String companyName) {
-    return 'Hey $prospectName, quick check-in on $companyName. How are things going? Any questions I can help with?';
+    return 'Oi $prospectName, check-in rápido sobre $companyName. Como estão as coisas? Alguma dúvida que eu possa ajudar?';
   }
 
   @override
@@ -323,57 +328,57 @@ class AppLocalizationsPt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '# days',
-      one: '# day',
+      other: '# dias',
+      one: '# dia',
     );
-    return 'We kick off in $_temp0. Want me to hold your spot? $shortLink';
+    return 'Começamos em $_temp0. Quer que eu reserve sua vaga? $shortLink';
   }
 
   @override
   String recruitT09ResourceShare(
       String prospectName, String companyName, String inviteLink) {
-    return '$prospectName, I found this helpful for $companyName. Thought you\'d want to see it: $inviteLink';
+    return '$prospectName, achei isso útil para $companyName. Achei que você ia querer ver: $inviteLink';
   }
 
   @override
   String recruitT10InviteReminder(
       String prospectName, String companyName, String shortLink) {
-    return 'Hi $prospectName, you still have an invite waiting for $companyName. Ready to join? $shortLink';
+    return 'Oi $prospectName, você ainda tem um convite esperando para $companyName. Pronto para entrar? $shortLink';
   }
 
   @override
   String recruitT11TeamGrowth(String prospectName, String companyName) {
-    return 'Great news, $prospectName! Your $companyName team grew this week. You\'re making real progress!';
+    return 'Ótimas notícias, $prospectName! Sua equipe $companyName cresceu essa semana. Você está fazendo um progresso real!';
   }
 
   @override
   String recruitT12Encouragement(String prospectName, String companyName) {
-    return '$prospectName, building with $companyName takes time. You\'re doing great. Keep going!';
+    return '$prospectName, construir com $companyName leva tempo. Você está indo muito bem. Continue!';
   }
 
   @override
   String recruitT13TrainingInvite(
       String prospectName, String companyName, String inviteLink) {
-    return 'Hey $prospectName, we have a $companyName training session coming up. Want to join? $inviteLink';
+    return 'Oi $prospectName, temos uma sessão de treinamento de $companyName chegando. Quer participar? $inviteLink';
   }
 
   @override
   String recruitT14QuickWin(String prospectName, String companyName) {
-    return 'Nice work, $prospectName! That was a solid win with $companyName. Let\'s keep the momentum going!';
+    return 'Bom trabalho, $prospectName! Foi uma vitória sólida com $companyName. Vamos manter o ritmo!';
   }
 
   @override
   String recruitT15SupportOffer(String prospectName, String companyName) {
-    return 'Hey $prospectName, I\'m here if you need help with $companyName. Just reach out anytime.';
+    return 'Oi $prospectName, estou aqui se você precisar de ajuda com $companyName. É só me chamar quando quiser.';
   }
 
   @override
   String recruitT16Gratitude(String prospectName, String companyName) {
-    return 'Thanks for being part of our $companyName team, $prospectName. Your energy makes a difference!';
+    return 'Obrigado por fazer parte da nossa equipe $companyName, $prospectName. Sua energia faz diferença!';
   }
 
   @override
-  String get notifMilestoneDirectTitle => '🎉 Amazing Progress!';
+  String get notifMilestoneDirectTitle => '🎉 Progresso Incrível!';
 
   @override
   String notifMilestoneDirectBody(
@@ -381,14 +386,14 @@ class AppLocalizationsPt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       remaining,
       locale: localeName,
-      other: 'members',
-      one: 'member',
+      other: 'membros',
+      one: 'membro',
     );
-    return 'Congratulations, $firstName! You\'ve reached $directCount direct sponsors! Just $remaining more team $_temp0 needed to unlock your $bizName invitation. Keep building!';
+    return 'Parabéns, $firstName! Você alcançou $directCount patrocinadores diretos! Só mais $remaining $_temp0 da equipe para desbloquear seu convite $bizName. Continue construindo!';
   }
 
   @override
-  String get notifMilestoneTeamTitle => '🚀 Incredible Growth!';
+  String get notifMilestoneTeamTitle => '🚀 Crescimento Incrível!';
 
   @override
   String notifMilestoneTeamBody(
@@ -396,97 +401,3269 @@ class AppLocalizationsPt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       remaining,
       locale: localeName,
-      other: 'sponsors',
-      one: 'sponsor',
+      other: 'patrocinadores diretos',
+      one: 'patrocinador direto',
     );
-    return 'Amazing progress, $firstName! You\'ve built a team of $teamCount! Just $remaining more direct $_temp0 needed to qualify for $bizName. You\'re so close!';
+    return 'Progresso incrível, $firstName! Você construiu uma equipe de $teamCount! Só mais $remaining $_temp0 para se qualificar para $bizName. Você está tão perto!';
   }
 
   @override
-  String get notifSubActiveTitle => '✅ Subscription Active';
+  String get notifSubActiveTitle => '✅ Assinatura Ativa';
 
   @override
   String notifSubActiveBody(String expiryDate) {
-    return 'Your subscription is now active until $expiryDate.';
+    return 'Sua assinatura está ativa até $expiryDate.';
   }
 
   @override
-  String get notifSubCancelledTitle => '⚠️ Subscription Cancelled';
+  String get notifSubCancelledTitle => '⚠️ Assinatura Cancelada';
 
   @override
   String notifSubCancelledBody(String expiryDate) {
-    return 'Your subscription has been cancelled but remains active until $expiryDate.';
+    return 'Sua assinatura foi cancelada, mas permanece ativa até $expiryDate.';
   }
 
   @override
-  String get notifSubExpiredTitle => '❌ Subscription Expired';
+  String get notifSubExpiredTitle => '❌ Assinatura Expirada';
 
   @override
   String get notifSubExpiredBody =>
-      'Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.';
+      'Sua assinatura expirou. Renove agora para continuar construindo sua equipe e acessando todas as ferramentas de recrutamento.';
 
   @override
-  String get notifSubExpiringSoonTitle => '⏰ Subscription Expiring Soon';
+  String get notifSubExpiringSoonTitle => '⏰ Assinatura Expirando em Breve';
 
   @override
   String notifSubExpiringSoonBody(String expiryDate) {
-    return 'Your subscription expires on $expiryDate. Renew now to avoid interruption.';
+    return 'Sua assinatura expira em $expiryDate. Renove agora para evitar interrupção.';
   }
 
   @override
-  String get notifSubPausedTitle => '⏸️ Subscription Paused';
+  String get notifSubPausedTitle => '⏸️ Assinatura Pausada';
 
   @override
   String get notifSubPausedBody =>
-      'Your subscription has been paused. Resume in the Play Store to restore access to all features.';
+      'Sua assinatura foi pausada. Retome na Play Store para restaurar o acesso a todos os recursos.';
 
   @override
-  String get notifSubPaymentIssueTitle => '⚠️ Payment Issue';
+  String get notifSubPaymentIssueTitle => '⚠️ Problema no Pagamento';
 
   @override
   String get notifSubPaymentIssueBody =>
-      'Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.';
+      'Sua assinatura está suspensa devido a um problema no pagamento. Por favor, atualize seu método de pagamento na Play Store.';
 
   @override
   String notifNewMessageTitle(String senderName) {
-    return 'New Message from $senderName';
+    return 'Nova Mensagem de $senderName';
   }
 
   @override
-  String get notifTeamActivityTitle => '👀 Team Member Activity';
+  String get notifTeamActivityTitle => '👀 Atividade de Membro da Equipe';
 
   @override
   String notifTeamActivityBody(String visitorName) {
-    return '$visitorName visited the business opportunity page!';
+    return '$visitorName visitou a página da oportunidade de negócio!';
   }
 
   @override
-  String get notifLaunchSentTitle => 'Launch Campaign Sent';
+  String get notifLaunchSentTitle => 'Campanha de Lançamento Enviada';
 
   @override
   String get notifLaunchSentBody =>
-      'Your launch campaign has been successfully sent to your network.';
+      'Sua campanha de lançamento foi enviada com sucesso para sua rede.';
 
   @override
-  String get emptyNotifications => 'No notifications yet.';
+  String get emptyNotifications => 'Nenhuma notificação ainda.';
 
   @override
-  String get emptyMessageContent => 'No message content.';
+  String get emptyMessageContent => 'Sem conteúdo de mensagem.';
 
   @override
-  String get emptyNotificationTitle => 'No Title';
+  String get emptyNotificationTitle => 'Sem Título';
 
   @override
-  String get emptyMessageThreads => 'No message threads found.';
+  String get emptyMessageThreads => 'Nenhuma conversa encontrada.';
 
   @override
-  String get emptyTeamMember => 'Team member not found.';
+  String get emptyTeamMember => 'Membro da equipe não encontrado.';
 
   @override
-  String get errorLoadingNotifications => 'Error loading notifications';
+  String get errorLoadingNotifications => 'Erro ao carregar notificações';
 
   @override
   String errorGeneric(String error) {
-    return 'Error: $error';
+    return 'Erro: $error';
   }
+
+  @override
+  String get dashKpiTitle => 'Estatísticas Atuais da Equipe';
+
+  @override
+  String get dashKpiRefreshTooltip => 'Atualizar estatísticas';
+
+  @override
+  String get dashTileJoinOpportunity => 'Participe da Oportunidade!';
+
+  @override
+  String dashSubscriptionTrial(int daysLeft) {
+    return 'Iniciar Assinatura\n($daysLeft dias restantes no teste)';
+  }
+
+  @override
+  String get dashSubscriptionExpired =>
+      'Renovar Sua Assinatura\nTeste grátis de 30 dias expirou.';
+
+  @override
+  String get dashSubscriptionCancelled =>
+      'Você Cancelou Sua Assinatura\nReative Sua Assinatura Agora';
+
+  @override
+  String get dashSubscriptionManage => 'Gerenciar Assinatura';
+
+  @override
+  String get networkTitle => 'Sua Equipe Global';
+
+  @override
+  String get networkLabelDirectSponsors => 'Patrocinadores Diretos';
+
+  @override
+  String get networkLabelTotalTeam => 'Equipe Total';
+
+  @override
+  String get networkLabelNewMembers => 'Novos Membros';
+
+  @override
+  String get networkSearchHint => 'Buscar membros da equipe...';
+
+  @override
+  String get networkRefreshTooltip => 'Forçar atualização';
+
+  @override
+  String get networkFilterSelectReport => 'Ver Relatório da Equipe';
+
+  @override
+  String get networkFilterAllMembers => 'Todos os Membros';
+
+  @override
+  String get networkFilterDirectSponsors => 'Patrocinadores Diretos';
+
+  @override
+  String get networkFilterNewMembers => 'Novos Membros - Hoje';
+
+  @override
+  String get networkFilterNewMembersYesterday => 'Novos Membros - Ontem';
+
+  @override
+  String get networkFilterQualified => 'Membros Qualificados';
+
+  @override
+  String get networkFilterJoined => 'Entrou';
+
+  @override
+  String networkFilterAllMembersWithCount(int count) {
+    return 'Todos os Membros ($count)';
+  }
+
+  @override
+  String networkFilterDirectSponsorsWithCount(int count) {
+    return 'Patrocinadores Diretos ($count)';
+  }
+
+  @override
+  String networkFilterNewMembersWithCount(int count) {
+    return 'Novos Membros - Hoje ($count)';
+  }
+
+  @override
+  String networkFilterNewMembersYesterdayWithCount(int count) {
+    return 'Novos Membros - Ontem ($count)';
+  }
+
+  @override
+  String networkFilterQualifiedWithCount(int count) {
+    return 'Membros Qualificados ($count)';
+  }
+
+  @override
+  String networkFilterJoinedWithCount(String business, int count) {
+    return 'Entrou em $business ($count)';
+  }
+
+  @override
+  String get networkMessageSelectReport =>
+      'Selecione um relatório no menu acima ou use a barra de busca para visualizar e gerenciar sua equipe.';
+
+  @override
+  String get networkMessageNoSearchResults =>
+      'Mostrando resultados de busca de Todos os Membros. Nenhum membro corresponde à sua busca.';
+
+  @override
+  String get networkMessageNoMembers =>
+      'Nenhum membro encontrado para este filtro.';
+
+  @override
+  String get networkSearchingContext => 'Buscando em: Todos os Membros';
+
+  @override
+  String get networkSearchingContextInfo =>
+      'Mostrando resultados de busca de Todos os Membros';
+
+  @override
+  String networkPaginationInfo(int showing, int total) {
+    return 'Mostrando $showing de $total membros';
+  }
+
+  @override
+  String networkLevelLabel(int level) {
+    return 'Nível $level';
+  }
+
+  @override
+  String networkMembersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '# Membros',
+      one: '# Membro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get networkLoadingMore => 'Carregando mais membros...';
+
+  @override
+  String networkLoadMoreButton(int remaining) {
+    return 'Carregar Mais Membros ($remaining restantes)';
+  }
+
+  @override
+  String networkAllMembersLoaded(int count) {
+    return 'Todos os $count membros carregados';
+  }
+
+  @override
+  String networkMemberJoined(String date) {
+    return 'Entrou em $date';
+  }
+
+  @override
+  String get networkAnalyticsPerformance => 'Desempenho da Rede';
+
+  @override
+  String get networkAnalyticsGeographic => 'Distribuição Geográfica';
+
+  @override
+  String get networkAnalyticsLevels => 'Distribuição por Nível';
+
+  @override
+  String get networkAnalyticsChartPlaceholder =>
+      'Gráfico de Desempenho\n(Implementação do gráfico seria aqui)';
+
+  @override
+  String networkLevelBadge(int level) {
+    return 'Nível $level';
+  }
+
+  @override
+  String networkLevelMembersCount(int count) {
+    return '$count membros';
+  }
+
+  @override
+  String get settingsTitle => 'Configurações';
+
+  @override
+  String get settingsTitleOrganization => 'Configurações da Organização';
+
+  @override
+  String settingsWelcomeMessage(String name) {
+    return 'Bem-vindo, $name!\n\nVamos configurar a base da sua oportunidade de negócio.';
+  }
+
+  @override
+  String get settingsLabelOrganizationName => 'Nome da Sua Organização';
+
+  @override
+  String get settingsLabelConfirmOrganizationName =>
+      'Confirmar Nome da Organização';
+
+  @override
+  String get settingsDialogImportantTitle => 'Muito Importante!';
+
+  @override
+  String settingsDialogReferralImportance(String organization) {
+    return 'Você deve inserir o link de indicação exato que recebeu do seu patrocinador $organization.';
+  }
+
+  @override
+  String get settingsDialogButtonUnderstand => 'Entendi';
+
+  @override
+  String get settingsLabelReferralLink => 'Seu Link de Indicação';
+
+  @override
+  String get settingsLabelConfirmReferralLink =>
+      'Confirmar URL do Link de Indicação';
+
+  @override
+  String get settingsLabelCountries => 'Países Disponíveis';
+
+  @override
+  String get settingsImportantLabel => 'Importante:';
+
+  @override
+  String get settingsCountriesInstruction =>
+      'Selecione apenas os países onde sua oportunidade está disponível atualmente.';
+
+  @override
+  String get settingsButtonAddCountry => 'Adicionar um País';
+
+  @override
+  String get settingsButtonSave => 'Salvar Configurações';
+
+  @override
+  String get settingsDisplayOrganization => 'Sua Organização';
+
+  @override
+  String get settingsDisplayReferralLink => 'Seu Link de Indicação';
+
+  @override
+  String get settingsDisplayCountries => 'Países Disponíveis Selecionados';
+
+  @override
+  String get settingsNoCountries => 'Nenhum país selecionado.';
+
+  @override
+  String get settingsFeederSystemTitle => 'Sistema de Rede de Alimentação';
+
+  @override
+  String get settingsFeederSystemDescription =>
+      'Este é seu motor de crescimento automatizado. Quando membros entram no Team Build Pro através do seu link, mas ainda não se qualificaram para sua oportunidade de negócio, eles são colocados na sua rede de alimentação. No momento em que você atender aos requisitos de elegibilidade abaixo, esses membros são transferidos automaticamente para sua equipe da oportunidade de negócio. É um sistema poderoso que recompensa sua dedicação - quanto maior sua rede de alimentação crescer, mais forte será seu lançamento quando você se qualificar.';
+
+  @override
+  String get settingsEligibilityTitle => 'Requisitos Mínimos de Elegibilidade';
+
+  @override
+  String get settingsEligibilityDirectSponsors => 'Patrocinadores Diretos';
+
+  @override
+  String get settingsEligibilityTotalTeam => 'Total de Membros';
+
+  @override
+  String get settingsPrivacyLegalTitle => 'Privacidade e Legal';
+
+  @override
+  String get settingsPrivacyPolicy => 'Política de Privacidade';
+
+  @override
+  String get settingsPrivacyPolicySubtitle =>
+      'Veja nossas práticas de privacidade e tratamento de dados';
+
+  @override
+  String get settingsTermsOfService => 'Termos de Serviço';
+
+  @override
+  String get settingsTermsOfServiceSubtitle =>
+      'Veja os termos e condições da plataforma';
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileLabelCity => 'Cidade';
+
+  @override
+  String get profileLabelState => 'Estado';
+
+  @override
+  String get profileLabelCountry => 'País';
+
+  @override
+  String get profileLabelJoined => 'Entrou';
+
+  @override
+  String get profileLabelSponsor => 'Seu Patrocinador';
+
+  @override
+  String get profileLabelTeamLeader => 'Líder de Equipe';
+
+  @override
+  String get profileButtonEdit => 'Editar Perfil';
+
+  @override
+  String get profileButtonSignOut => 'Sair';
+
+  @override
+  String get profileSigningOut => 'Saindo...';
+
+  @override
+  String get profileButtonTerms => 'Termos de Serviço';
+
+  @override
+  String get profileButtonPrivacy => 'Política de Privacidade';
+
+  @override
+  String get profileButtonDeleteAccount => 'Excluir Conta';
+
+  @override
+  String get profileDemoAccountTitle => 'Informações da Conta Demo';
+
+  @override
+  String get profileDemoAccountMessage =>
+      'Esta é uma conta demo para testes e não pode ser excluída.';
+
+  @override
+  String get profileDemoAccountSubtext =>
+      'Contas demo são fornecidas para demonstrar os recursos e funcionalidades do app. Se você precisa criar uma conta real, faça o cadastro com suas informações pessoais.';
+
+  @override
+  String get profileDemoAccountButton => 'Entendi';
+
+  @override
+  String get profileAdminProtectionTitle =>
+      'Proteção de Conta de Administrador';
+
+  @override
+  String get profileAdminProtectionMessage =>
+      'Contas de administrador com membros de equipe ativos não podem ser excluídas através do app. Esta proteção garante que os dados e relacionamentos da sua equipe permaneçam intactos.';
+
+  @override
+  String profileAdminTeamSize(int directCount) {
+    return 'Sua Equipe: $directCount Patrocinadores Diretos';
+  }
+
+  @override
+  String get profileAdminProtectionInstructions =>
+      'Para excluir sua conta de administrador, entre em contato com nossa equipe de suporte em legal@teambuildpro.com. Trabalharemos com você para garantir uma transição suave para os membros da sua equipe.';
+
+  @override
+  String get profileAdminProtectionContact => 'Contato: legal@teambuildpro.com';
+
+  @override
+  String get messageCenterTitle => 'Central de Mensagens';
+
+  @override
+  String get messageCenterSearchHint => 'Buscar mensagens...';
+
+  @override
+  String get messageCenterFilterAll => 'Todas';
+
+  @override
+  String get messageCenterFilterUnread => 'Não lidas';
+
+  @override
+  String get messageCenterFilterTeam => 'Equipe';
+
+  @override
+  String get messageCenterNewThread => 'Nova Mensagem';
+
+  @override
+  String get messageCenterEmptyState =>
+      'Nenhuma mensagem ainda. Inicie uma conversa com os membros da sua equipe!';
+
+  @override
+  String get messageCenterNotLoggedIn => 'Please log in to see messages.';
+
+  @override
+  String get messageCenterSponsorLabel => 'Seu Patrocinador';
+
+  @override
+  String get messageCenterTeamLeaderLabel => 'Líder da Equipe';
+
+  @override
+  String get messageCenterSupportTeamTitle => 'Sua Equipe de Suporte';
+
+  @override
+  String get messageCenterSupportTeamSubtitle =>
+      'Toque para iniciar uma conversa';
+
+  @override
+  String get messageCenterError => 'Error loading messages';
+
+  @override
+  String get messageCenterLoadingChat => 'Loading chat...';
+
+  @override
+  String get messageCenterErrorLoadingUser => 'Error loading user details';
+
+  @override
+  String get messageCenterUnknownUser => 'Unknown User';
+
+  @override
+  String messageCenterUnreadBadge(int count) {
+    return '$count nova(s)';
+  }
+
+  @override
+  String messageCenterLastMessage(String time) {
+    return 'Última mensagem há $time';
+  }
+
+  @override
+  String get notificationsTitle => 'Notificações';
+
+  @override
+  String get notificationsFilterAll => 'Todas';
+
+  @override
+  String get notificationsFilterUnread => 'Não lidas';
+
+  @override
+  String get notificationsFilterMilestones => 'Marcos';
+
+  @override
+  String get notificationsFilterTeam => 'Equipe';
+
+  @override
+  String get notificationsMarkAllRead => 'Marcar Todas Lidas';
+
+  @override
+  String get notificationsClearAll => 'Limpar Todas';
+
+  @override
+  String get notificationsEmptyState =>
+      'Nenhuma notificação ainda. Avisaremos sobre atualizações importantes da equipe!';
+
+  @override
+  String get notificationsTimeNow => 'Agora';
+
+  @override
+  String notificationsTimeMinutes(int minutes) {
+    return 'há ${minutes}m';
+  }
+
+  @override
+  String notificationsTimeHours(int hours) {
+    return 'há ${hours}h';
+  }
+
+  @override
+  String notificationsTimeDays(int days) {
+    return 'há ${days}d';
+  }
+
+  @override
+  String get gettingStartedTitle => 'Primeiros Passos';
+
+  @override
+  String get gettingStartedWelcome => 'Bem-vindo ao Team Build Pro!';
+
+  @override
+  String get gettingStartedIntro =>
+      'Vamos preparar você para o sucesso. Este guia rápido apresentará os recursos essenciais para começar a construir sua equipe.';
+
+  @override
+  String get gettingStartedStep1Title => 'Faça sua lista';
+
+  @override
+  String get gettingStartedStep2Title => 'Compartilhe com sua rede';
+
+  @override
+  String get gettingStartedStep3Title =>
+      'Dê boas-vindas aos seus novos membros da equipe';
+
+  @override
+  String get gettingStartedStep3Description =>
+      'Quando você receber uma notificação de novo membro da equipe, faça um acompanhamento imediato para dar boas-vindas à sua equipe. As primeiras impressões importam!';
+
+  @override
+  String get gettingStartedStep4Title => 'Engaje Sua Equipe';
+
+  @override
+  String get gettingStartedStep4Description =>
+      'Use a central de mensagens para se comunicar com sua equipe e fornecer suporte.';
+
+  @override
+  String get gettingStartedButtonStart => 'Começar';
+
+  @override
+  String get gettingStartedButtonNext => 'Próximo';
+
+  @override
+  String get gettingStartedButtonBack => 'Voltar';
+
+  @override
+  String get gettingStartedButtonSkip => 'Pular';
+
+  @override
+  String get welcomeTitle => 'Boas-vindas';
+
+  @override
+  String get welcomeHeadline => 'Construa Sua Equipe.\nCresça Seu Negócio.';
+
+  @override
+  String get welcomeSubheadline =>
+      'A plataforma profissional para construção de equipes e crescimento de rede.';
+
+  @override
+  String get welcomeButtonSignIn => 'Entrar';
+
+  @override
+  String get welcomeButtonSignUp => 'Criar Conta';
+
+  @override
+  String get welcomeFeature1Title => 'Rastreamento Inteligente';
+
+  @override
+  String get welcomeFeature1Description =>
+      'Monitore o crescimento da sua equipe em tempo real com análises poderosas.';
+
+  @override
+  String get welcomeFeature2Title => 'Crescimento Automatizado';
+
+  @override
+  String get welcomeFeature2Description =>
+      'Sistema de rede de alimentação transfere automaticamente membros qualificados para sua equipe.';
+
+  @override
+  String get welcomeFeature3Title => 'Mensagens Seguras';
+
+  @override
+  String get welcomeFeature3Description =>
+      'Comunique-se com segurança com sua equipe através de mensagens criptografadas.';
+
+  @override
+  String get addLinkTitle => 'Adicionar link';
+
+  @override
+  String get addLinkDescription =>
+      'Adicione seu link de oportunidade de negócio para começar a construir sua equipe.';
+
+  @override
+  String get addLinkLabelUrl => 'URL da Oportunidade de Negócio';
+
+  @override
+  String get addLinkHintUrl =>
+      'Digite a URL completa da sua página de oportunidade de negócio';
+
+  @override
+  String get addLinkUrlRequired => 'Por favor, digite uma URL';
+
+  @override
+  String get addLinkUrlInvalid => 'Por favor, digite uma URL válida';
+
+  @override
+  String get addLinkButtonSave => 'Salvar Link';
+
+  @override
+  String get addLinkButtonTest => 'Testar Link';
+
+  @override
+  String get addLinkSuccessMessage => 'Link de negócio salvo com sucesso!';
+
+  @override
+  String get addLinkErrorMessage =>
+      'Erro ao salvar link. Por favor, tente novamente.';
+
+  @override
+  String get businessTitle => 'Oportunidade de Negócio';
+
+  @override
+  String get businessLoadingMessage => 'Carregando detalhes da oportunidade...';
+
+  @override
+  String get businessErrorMessage =>
+      'Não foi possível carregar detalhes da oportunidade';
+
+  @override
+  String get businessButtonJoin => 'Participar Agora';
+
+  @override
+  String get businessButtonLearnMore => 'Saiba Mais';
+
+  @override
+  String get businessButtonContact => 'Contatar Patrocinador';
+
+  @override
+  String get changePasswordTitle => 'Alterar Senha';
+
+  @override
+  String get changePasswordLabelCurrent => 'Senha Atual';
+
+  @override
+  String get changePasswordHintCurrent => 'Digite sua senha atual';
+
+  @override
+  String get changePasswordCurrentRequired =>
+      'Por favor, digite sua senha atual';
+
+  @override
+  String get changePasswordLabelNew => 'Nova Senha';
+
+  @override
+  String get changePasswordHintNew => 'Digite sua nova senha';
+
+  @override
+  String get changePasswordNewRequired => 'Por favor, digite uma nova senha';
+
+  @override
+  String get changePasswordLabelConfirm => 'Confirmar Nova Senha';
+
+  @override
+  String get changePasswordHintConfirm => 'Digite sua nova senha novamente';
+
+  @override
+  String get changePasswordConfirmRequired =>
+      'Por favor, confirme sua nova senha';
+
+  @override
+  String get changePasswordMismatch => 'As novas senhas não coincidem';
+
+  @override
+  String get changePasswordButtonUpdate => 'Atualizar Senha';
+
+  @override
+  String get changePasswordSuccessMessage => 'Senha atualizada com sucesso!';
+
+  @override
+  String get changePasswordErrorMessage =>
+      'Erro ao atualizar senha. Por favor, tente novamente.';
+
+  @override
+  String get chatTitle => 'Chat';
+
+  @override
+  String get chatInputHint => 'Digite uma mensagem...';
+
+  @override
+  String get chatButtonSend => 'Enviar';
+
+  @override
+  String get chatEmptyState => 'Nenhuma mensagem ainda. Inicie a conversa!';
+
+  @override
+  String get chatMessageDeleted => 'Esta mensagem foi excluída';
+
+  @override
+  String get chatMessageEdited => 'editada';
+
+  @override
+  String chatTypingIndicator(String name) {
+    return '$name está digitando...';
+  }
+
+  @override
+  String get chatbotTitle => 'Coach de IA';
+
+  @override
+  String get chatbotWelcome =>
+      'Oi! Sou seu coach de IA. Como posso ajudá-lo a expandir sua equipe hoje?';
+
+  @override
+  String get chatbotInputHint =>
+      'Pergunte-me qualquer coisa sobre construção de equipe...';
+
+  @override
+  String get chatbotSuggestion1 => 'Como recrutar de forma mais eficaz?';
+
+  @override
+  String get chatbotSuggestion2 => 'Quais são os requisitos de elegibilidade?';
+
+  @override
+  String get chatbotSuggestion3 => 'Como funciona o sistema de alimentação?';
+
+  @override
+  String get chatbotThinking => 'Pensando...';
+
+  @override
+  String get companyTitle => 'Informações da Empresa';
+
+  @override
+  String get companyAboutHeading => 'Sobre o Team Build Pro';
+
+  @override
+  String get companyAboutText =>
+      'Team Build Pro é uma plataforma SaaS profissional projetada para construção de equipes e crescimento de rede. Fornecemos as ferramentas e tecnologia para ajudá-lo a construir e gerenciar sua equipe profissional de forma eficaz.';
+
+  @override
+  String get companyVersionLabel => 'Versão do App';
+
+  @override
+  String get companyContactHeading => 'Fale Conosco';
+
+  @override
+  String get companyContactEmail => 'support@teambuildpro.com';
+
+  @override
+  String get companyContactWebsite => 'www.teambuildpro.com';
+
+  @override
+  String get deleteAccountTitle => 'Excluir Conta';
+
+  @override
+  String get deleteAccountWarning =>
+      'Atenção: Esta ação não pode ser desfeita!';
+
+  @override
+  String get deleteAccountDescription =>
+      'Excluir sua conta removerá permanentemente todos os seus dados, incluindo seu perfil, informações da equipe e histórico de mensagens. Esta ação é irreversível.';
+
+  @override
+  String get deleteAccountConfirmPrompt =>
+      'Para confirmar a exclusão, digite EXCLUIR abaixo:';
+
+  @override
+  String get deleteAccountConfirmHint => 'Digite seu endereço de e-mail';
+
+  @override
+  String get deleteAccountConfirmMismatch =>
+      'Por favor, digite EXCLUIR exatamente como mostrado';
+
+  @override
+  String get deleteAccountButtonDelete => 'Excluir conta';
+
+  @override
+  String get deleteAccountButtonCancel => 'Cancelar';
+
+  @override
+  String get deleteAccountSuccessMessage => 'Sua conta foi excluída';
+
+  @override
+  String get deleteAccountErrorMessage =>
+      'Erro ao excluir conta. Entre em contato com o suporte.';
+
+  @override
+  String get editProfileTitle => 'Editar Perfil';
+
+  @override
+  String get editProfileLabelFirstName => 'Nome';
+
+  @override
+  String get editProfileLabelLastName => 'Sobrenome';
+
+  @override
+  String get editProfileLabelEmail => 'Email';
+
+  @override
+  String get editProfileLabelPhone => 'Número de Telefone';
+
+  @override
+  String get editProfileLabelCity => 'Cidade';
+
+  @override
+  String get editProfileLabelState => 'Estado/Província';
+
+  @override
+  String get editProfileLabelCountry => 'País';
+
+  @override
+  String get editProfileLabelBio => 'Biografia';
+
+  @override
+  String get editProfileHintBio => 'Conte à sua equipe sobre você...';
+
+  @override
+  String get editProfileButtonSave => 'Salvar Alterações';
+
+  @override
+  String get editProfileButtonCancel => 'Cancelar';
+
+  @override
+  String get editProfileButtonChangePhoto => 'Alterar Foto';
+
+  @override
+  String get editProfileSuccessMessage => 'Perfil atualizado com sucesso!';
+
+  @override
+  String get editProfileErrorMessage =>
+      'Erro ao atualizar perfil. Por favor, tente novamente.';
+
+  @override
+  String get eligibilityTitle => 'Status de Elegibilidade';
+
+  @override
+  String get eligibilityCurrentStatus => 'Status Atual';
+
+  @override
+  String get eligibilityStatusQualified => 'Qualificado!';
+
+  @override
+  String get eligibilityStatusNotQualified => 'Ainda Não Qualificado';
+
+  @override
+  String get eligibilityRequirementsHeading => 'Requisitos';
+
+  @override
+  String get eligibilityDirectSponsorsLabel => 'Patrocinadores Diretos';
+
+  @override
+  String eligibilityDirectSponsorsProgress(int current, int required) {
+    return '$current de $required necessários';
+  }
+
+  @override
+  String get eligibilityTotalTeamLabel => 'Total de Membros da Equipe';
+
+  @override
+  String eligibilityTotalTeamProgress(int current, int required) {
+    return '$current de $required necessários';
+  }
+
+  @override
+  String eligibilityProgressBar(int percent) {
+    return 'Progresso: $percent%';
+  }
+
+  @override
+  String get eligibilityNextSteps => 'Próximos Passos';
+
+  @override
+  String get eligibilityNextStepsDescription =>
+      'Continue compartilhando seu link de indicação para expandir sua equipe e atender aos requisitos!';
+
+  @override
+  String get shareTitle => 'Compartilhar';
+
+  @override
+  String get shareYourLinkHeading => 'Seu Link de Indicação';
+
+  @override
+  String get shareButtonCopyLink => 'Copiar Link';
+
+  @override
+  String get shareLinkCopied => 'Link copiado para a área de transferência!';
+
+  @override
+  String get shareButtonSms => 'Compartilhar por SMS';
+
+  @override
+  String get shareButtonEmail => 'Compartilhar por Email';
+
+  @override
+  String get shareButtonWhatsApp => 'Compartilhar por WhatsApp';
+
+  @override
+  String get shareButtonMore => 'Mais Opções';
+
+  @override
+  String shareMessageTemplate(String link) {
+    return 'Oi! Estou construindo minha equipe com Team Build Pro. Junte-se a mim: $link';
+  }
+
+  @override
+  String get shareStatsHeading => 'Seu Impacto ao Compartilhar';
+
+  @override
+  String get shareStatsViews => 'Visualizações do Link';
+
+  @override
+  String get shareStatsSignups => 'Cadastros';
+
+  @override
+  String get shareStatsConversion => 'Taxa de Conversão';
+
+  @override
+  String get memberDetailTitle => 'Detalhes do Membro';
+
+  @override
+  String get memberDetailLabelName => 'Nome';
+
+  @override
+  String get memberDetailLabelEmail => 'Email';
+
+  @override
+  String get memberDetailLabelPhone => 'Telefone';
+
+  @override
+  String get memberDetailLabelLocation => 'Localização';
+
+  @override
+  String get memberDetailLabelJoined => 'Entrou';
+
+  @override
+  String get memberDetailLabelSponsor => 'Patrocinador';
+
+  @override
+  String get memberDetailLabelLevel => 'Nível';
+
+  @override
+  String get memberDetailTeamStats => 'Estatísticas da Equipe';
+
+  @override
+  String memberDetailDirectSponsors(int count) {
+    return 'Patrocinadores Diretos: $count';
+  }
+
+  @override
+  String memberDetailTotalTeam(int count) {
+    return 'Equipe Total: $count';
+  }
+
+  @override
+  String get memberDetailButtonMessage => 'Enviar Mensagem';
+
+  @override
+  String get memberDetailButtonViewTeam => 'Ver Equipe Deles';
+
+  @override
+  String get messageThreadTitle => 'Mensagens';
+
+  @override
+  String get messageThreadInputHint => 'Digite sua mensagem...';
+
+  @override
+  String get messageThreadButtonSend => 'Enviar';
+
+  @override
+  String get messageThreadEmptyState =>
+      'Nenhuma mensagem ainda. Inicie a conversa!';
+
+  @override
+  String get messageThreadDelivered => 'Entregue';
+
+  @override
+  String get messageThreadRead => 'Lida';
+
+  @override
+  String get messageThreadSending => 'Enviando...';
+
+  @override
+  String get messageThreadFailed => 'Falha ao enviar';
+
+  @override
+  String get loginTitle => 'Entrar';
+
+  @override
+  String get loginButtonGoogle => 'Continuar com Google';
+
+  @override
+  String get loginButtonApple => 'Continuar com Apple';
+
+  @override
+  String get loginDivider => 'ou';
+
+  @override
+  String get loginForgotPassword => 'Esqueceu a Senha?';
+
+  @override
+  String get loginResetPasswordTitle => 'Redefinir Senha';
+
+  @override
+  String get loginResetPasswordDescription =>
+      'Digite seu endereço de email e enviaremos um link para redefinir sua senha.';
+
+  @override
+  String get loginResetPasswordButton => 'Enviar Link';
+
+  @override
+  String get loginResetPasswordSuccess =>
+      'Email de redefinição enviado! Verifique sua caixa de entrada.';
+
+  @override
+  String get loginResetPasswordError =>
+      'Erro ao enviar email. Por favor, tente novamente.';
+
+  @override
+  String get commonButtonCancel => 'Cancelar';
+
+  @override
+  String get commonButtonSave => 'Salvar';
+
+  @override
+  String get commonButtonDelete => 'Excluir';
+
+  @override
+  String get commonButtonEdit => 'Editar';
+
+  @override
+  String get commonButtonClose => 'Fechar';
+
+  @override
+  String get commonButtonOk => 'OK';
+
+  @override
+  String get commonButtonYes => 'Sim';
+
+  @override
+  String get commonButtonNo => 'Não';
+
+  @override
+  String get commonLoadingMessage => 'Carregando...';
+
+  @override
+  String get commonErrorMessage =>
+      'Algo deu errado. Por favor, tente novamente.';
+
+  @override
+  String get commonSuccessMessage => 'Sucesso!';
+
+  @override
+  String get commonNoDataMessage => 'Nenhum dado disponível';
+
+  @override
+  String get commonRetryButton => 'Tentar Novamente';
+
+  @override
+  String get commonRefreshButton => 'Atualizar';
+
+  @override
+  String get authSignupErrorFirstName => 'O primeiro nome não pode estar vazio';
+
+  @override
+  String get authSignupErrorLastName => 'O sobrenome não pode estar vazio';
+
+  @override
+  String addLinkHeading(String business) {
+    return 'Adicione seu link de\n$business';
+  }
+
+  @override
+  String get addLinkImportantLabel => 'INFORMAÇÕES IMPORTANTES';
+
+  @override
+  String addLinkDisclaimer(String business) {
+    return 'Você está atualizando sua conta do Team Build Pro para rastrear referências para $business. Esta é uma entidade comercial separada e independente que NÃO é de propriedade, operada ou afiliada ao Team Build Pro.';
+  }
+
+  @override
+  String get addLinkGrowthTitle => 'Desbloqueando seu motor de crescimento';
+
+  @override
+  String get addLinkInstructionBullet1 =>
+      'Seu link de referência será armazenado no seu perfil do Team Build Pro apenas para fins de rastreamento.';
+
+  @override
+  String addLinkInstructionBullet2(String business) {
+    return 'Quando seus membros da equipe qualificarem e se juntarem à oportunidade $business, eles serão automaticamente colocados em sua equipe oficial';
+  }
+
+  @override
+  String get addLinkInstructionBullet3 =>
+      'Este link só pode ser definido uma vez, portanto, verifique se está correto antes de salvar.';
+
+  @override
+  String get addLinkWarning =>
+      'O Team Build Pro é apenas uma plataforma de rastreamento de referências. Não endossamos nem garantimos nenhuma oportunidade de negócio.';
+
+  @override
+  String get addLinkFinalStepTitle => 'Etapa final: Vincule sua conta';
+
+  @override
+  String addLinkFinalStepSubtitle(String business) {
+    return 'Isso garante que seus novos membros da equipe sejam automaticamente colocados em sua organização $business.';
+  }
+
+  @override
+  String addLinkFieldInstruction(String business) {
+    return 'Digite seu link de referência $business abaixo. Ele será usado para rastrear referências de sua equipe.';
+  }
+
+  @override
+  String addLinkMustBeginWith(String baseUrl) {
+    return 'Deve começar com:\n$baseUrl';
+  }
+
+  @override
+  String get addLinkFieldLabel => 'Digite seu link de referência';
+
+  @override
+  String addLinkFieldHelper(String baseUrl) {
+    return 'Deve começar com $baseUrl\nIsso não pode ser alterado depois de definido';
+  }
+
+  @override
+  String addLinkFieldError(String business) {
+    return 'Por favor, digite seu link de referência $business.';
+  }
+
+  @override
+  String get addLinkConfirmFieldLabel => 'Confirmar URL do link de referência';
+
+  @override
+  String get addLinkConfirmFieldError =>
+      'Por favor, confirme seu link de referência.';
+
+  @override
+  String get addLinkPreviewLabel => 'Visualização do link de referência:';
+
+  @override
+  String get addLinkSaving => 'Validando e salvando...';
+
+  @override
+  String get addLinkDialogImportantTitle => 'Muito importante!';
+
+  @override
+  String addLinkDialogImportantMessage(String business) {
+    return 'Você deve inserir o link de referência exato que recebeu de $business. Isso garantirá que os membros de sua equipe que se juntarem a $business sejam automaticamente colocados em sua equipe $business.';
+  }
+
+  @override
+  String get addLinkDialogImportantButton => 'Eu entendo';
+
+  @override
+  String get addLinkDialogDuplicateTitle => 'Link de referência já em uso';
+
+  @override
+  String addLinkDialogDuplicateMessage(String business) {
+    return 'O link de referência $business que você inseriu já está sendo usado por outro membro do Team Build Pro.';
+  }
+
+  @override
+  String get addLinkDialogDuplicateInfo =>
+      'Você deve usar um link de referência diferente para continuar.';
+
+  @override
+  String get addLinkDialogDuplicateButton => 'Tentar link diferente';
+
+  @override
+  String get businessHeroTitle => 'Parabéns!\nVocê está qualificado!';
+
+  @override
+  String businessHeroMessage(String business) {
+    return 'Seu trabalho árduo e construção de equipe valeram a pena. Agora você está elegível para se juntar à oportunidade $business.';
+  }
+
+  @override
+  String get businessDisclaimerTitle => 'Aviso de isenção de responsabilidade';
+
+  @override
+  String businessDisclaimerMessage(String business) {
+    return 'O crescimento de sua equipe desbloqueou o acesso a $business. Esta oportunidade opera como um negócio independente e não tem afiliação com a plataforma Team Build Pro.';
+  }
+
+  @override
+  String businessDisclaimerInfo(String business) {
+    return 'O aplicativo Team Build Pro simplesmente facilita o acesso a $business através de seu patrocinador de upline. Ele não endossa nem garante nenhum resultado específico desta oportunidade.';
+  }
+
+  @override
+  String get businessSponsorTitle => 'Seu contato de referência';
+
+  @override
+  String businessSponsorMessage(String business, String sponsor) {
+    return 'Se você escolher explorar $business, seu contato de referência será $sponsor. Esta pessoa é membro de sua equipe upline que já se juntou a $business.';
+  }
+
+  @override
+  String businessInstructionsTitle(String business) {
+    return 'Como se juntar a $business';
+  }
+
+  @override
+  String businessInstructions(String business) {
+    return '1. Copie o link de referência abaixo\n2. Abra seu navegador da web\n3. Cole o link e complete o registro em $business\n4. Retorne aqui para adicionar seu link de referência $business';
+  }
+
+  @override
+  String get businessNoUrlMessage =>
+      'URL de registro não disponível. Entre em contato com seu patrocinador.';
+
+  @override
+  String get businessUrlLabel => 'Link de referência do seu patrocinador:';
+
+  @override
+  String get businessUrlCopyTooltip => 'Copiar URL';
+
+  @override
+  String get businessUrlCopiedMessage =>
+      'URL de registro copiada para a área de transferência!';
+
+  @override
+  String businessUrlCopyError(String error) {
+    return 'Falha ao copiar URL: $error';
+  }
+
+  @override
+  String get businessFollowUpTitle => 'Etapa final: Vincule sua conta';
+
+  @override
+  String businessFollowUpMessage(String business) {
+    return 'Depois de explorar $business, você deve retornar aqui e adicionar seu novo link de referência $business ao seu perfil do Team Build Pro. Isso garante que suas conexões de equipe sejam rastreadas corretamente.';
+  }
+
+  @override
+  String get businessCompleteButton1 => 'Registro completo';
+
+  @override
+  String get businessCompleteButton2 => 'Adicionar meu link de referência';
+
+  @override
+  String get businessConfirmDialogTitle => 'Antes de continuar';
+
+  @override
+  String businessConfirmDialogMessage(String business) {
+    return 'Este é o próximo passo em sua jornada. Depois de se juntar a $business através do link de seu patrocinador, você deve retornar aqui para adicionar seu novo link de referência $business ao seu perfil. Esta é uma etapa crítica para garantir que seus novos membros da equipe sejam colocados corretamente.';
+  }
+
+  @override
+  String get businessConfirmDialogButton => 'Eu entendo';
+
+  @override
+  String get businessVisitRequiredTitle => 'Visita necessária primeiro';
+
+  @override
+  String businessVisitRequiredMessage(String business) {
+    return 'Antes de atualizar seu perfil, você deve primeiro usar o botão \'Copiar link de registro\' nesta página para visitar $business e completar seu registro.';
+  }
+
+  @override
+  String get businessVisitRequiredButton => 'OK';
+
+  @override
+  String get gettingStartedHeading => 'Começando com o Team Build Pro';
+
+  @override
+  String get gettingStartedSubheading =>
+      'Siga estes passos simples para começar a construir sua equipe';
+
+  @override
+  String gettingStartedStep1Description(String business) {
+    return 'Crie uma lista de prospects de recrutamento e membros atuais da equipe $business com quem você deseja compartilhar o Team Build Pro. Pense em quem poderia se beneficiar desta ferramenta para acelerar a construção de sua equipe.';
+  }
+
+  @override
+  String gettingStartedStep2Description(String business) {
+    return 'Use o recurso Compartilhar para enviar rapidamente e facilmente mensagens de texto e e-mails direcionados para seus prospects de recrutamento e membros da equipe $business.';
+  }
+
+  @override
+  String get gettingStartedStep2Button => 'Abrir compartilhar';
+
+  @override
+  String get gettingStartedProTipTitle => 'Dica profissional';
+
+  @override
+  String get gettingStartedProTipMessage =>
+      'O acompanhamento consistente e o engajamento são fundamentais para construir uma equipe forte e ativa.';
+
+  @override
+  String get eligibilityHeroTitleQualified =>
+      'PARABÉNS!\nVocê está qualificado!';
+
+  @override
+  String get eligibilityHeroTitleNotQualified => 'Construa seu impulso';
+
+  @override
+  String eligibilityHeroMessageQualified(String business) {
+    return 'Trabalho incrível! Você construiu sua equipe fundamental e desbloqueou a oportunidade $business. Continue crescendo sua rede para ajudar outros a alcançar o mesmo sucesso.';
+  }
+
+  @override
+  String eligibilityHeroMessageNotQualified(String business) {
+    return 'Você está no caminho! Cada profissional com quem você se conecta constrói impulso para seu futuro lançamento na oportunidade $business. Continue compartilhando para alcançar seus objetivos!';
+  }
+
+  @override
+  String get eligibilityHeroButton => 'Estratégias de crescimento comprovadas';
+
+  @override
+  String get eligibilityThresholdsTitle => 'LIMIARES DE QUALIFICAÇÃO';
+
+  @override
+  String get eligibilityLabelDirectSponsors => 'Patrocinadores diretos';
+
+  @override
+  String get eligibilityLabelTotalTeam => 'Total de membros da equipe';
+
+  @override
+  String get eligibilityCurrentCountsTitle => 'SUAS CONTAGENS ATUAIS DA EQUIPE';
+
+  @override
+  String get eligibilityCurrentDirectSponsors => 'Patrocinadores diretos';
+
+  @override
+  String get eligibilityCurrentTotalTeam => 'Total de membros da equipe';
+
+  @override
+  String get eligibilityProcessTitle => 'O PROCESSO';
+
+  @override
+  String get eligibilityProcessStep1Title => 'CONVIDAR - Construa sua fundação';
+
+  @override
+  String eligibilityProcessStep1Description(String business) {
+    return 'Conecte-se com profissionais com ideias semelhantes abertos a explorar $business.';
+  }
+
+  @override
+  String get eligibilityProcessStep2Title => 'CULTIVAR - Crie impulso';
+
+  @override
+  String get eligibilityProcessStep2Description =>
+      'Promova relacionamentos autênticos à medida que sua equipe cresce, criando uma equipe próspera de profissionais que se apoiam mutuamente no sucesso.';
+
+  @override
+  String get eligibilityProcessStep3Title => 'PARCERIA - Lance com sucesso';
+
+  @override
+  String eligibilityProcessStep3Description(String business) {
+    return 'Os membros da equipe recebem um convite para se juntar a $business ao atingir metas de crescimento importantes.';
+  }
+
+  @override
+  String get shareHeading => 'Sistema de referência poderoso';
+
+  @override
+  String get shareSubheading =>
+      'Compartilhe seus links de referência para pré-construir uma nova equipe com prospects de recrutamento ou expandir sua equipe existente.';
+
+  @override
+  String get shareStrategiesTitle => 'Estratégias de crescimento comprovadas';
+
+  @override
+  String get shareProspectTitle => 'Novos prospects de recrutamento';
+
+  @override
+  String get shareProspectSubtitle =>
+      'Convide prospects de recrutamento para começar com vantagem.';
+
+  @override
+  String shareProspectDescription(String business) {
+    return 'Convide prospects de recrutamento para pré-construir sua equipe $business com este aplicativo. Eles podem criar um impulso poderoso antes de se juntarem oficialmente a $business, garantindo sucesso desde o primeiro dia.';
+  }
+
+  @override
+  String get sharePartnerTitle => 'Parceiros de negócios atuais';
+
+  @override
+  String sharePartnerSubtitle(String business) {
+    return 'Ótimo para sua equipe $business existente';
+  }
+
+  @override
+  String sharePartnerDescription(String business) {
+    return 'Capacite seus parceiros $business existentes com a mesma ferramenta que você usa. Isso promove a duplicação e ajuda a acelerar o crescimento em toda a sua organização $business.';
+  }
+
+  @override
+  String get shareSelectMessageLabel => 'Selecionar mensagem para enviar';
+
+  @override
+  String get shareButtonShare => 'Compartilhar';
+
+  @override
+  String get shareLinkCopiedMessage =>
+      'Link copiado para a área de transferência!';
+
+  @override
+  String get shareProTipsTitle => 'Dicas profissionais para o sucesso';
+
+  @override
+  String get shareProTip1 => '💬 Personalize sua mensagem ao compartilhar';
+
+  @override
+  String get shareProTip2 =>
+      '📱 Compartilhe consistentemente em todas as plataformas sociais';
+
+  @override
+  String get shareProTip3 =>
+      '🤝 Faça acompanhamento com prospects que demonstrarem interesse';
+
+  @override
+  String get shareProTip4 =>
+      '📈 Rastreie seus resultados e ajuste sua abordagem';
+
+  @override
+  String get shareProTip5 =>
+      '🎯 Use ambas as estratégias para máximo potencial de crescimento';
+
+  @override
+  String get shareDemoTitle => 'Modo de demonstração';
+
+  @override
+  String get shareDemoMessage =>
+      'Compartilhamento desabilitado durante o modo de demonstração.';
+
+  @override
+  String get shareDemoButton => 'Eu entendo';
+
+  @override
+  String get memberDetailButtonSendMessage => 'Enviar mensagem';
+
+  @override
+  String get memberDetailLabelDirectSponsors => 'Patrocinadores diretos';
+
+  @override
+  String get memberDetailLabelJoinedNetwork => 'Entrou na rede';
+
+  @override
+  String get memberDetailLabelJoinedOrganization => 'Entrou na organização';
+
+  @override
+  String get memberDetailLabelQualified => 'Qualificado';
+
+  @override
+  String get memberDetailLabelQualifiedDate => 'Data de qualificação';
+
+  @override
+  String get memberDetailLabelTeamLeader => 'Líder da equipe';
+
+  @override
+  String get memberDetailLabelTotalTeam => 'Equipe total';
+
+  @override
+  String get memberDetailNotYet => 'Ainda não';
+
+  @override
+  String get memberDetailNotYetJoined => 'Ainda não entrou';
+
+  @override
+  String get memberDetailEligibilityTitle => 'Requisitos de elegibilidade';
+
+  @override
+  String get memberDetailEligibilityDirectSponsors => 'Patrocinadores diretos';
+
+  @override
+  String get memberDetailEligibilityTotalTeam => 'Equipe total';
+
+  @override
+  String memberDetailEligibilityMessage(String organization) {
+    return 'Os membros da equipe que atenderem a esses requisitos são automaticamente convidados a se juntar a $organization.';
+  }
+
+  @override
+  String get memberDetailEligibilityWaived => 'Dispensado';
+
+  @override
+  String get messageThreadHeading => 'Centro de mensagens';
+
+  @override
+  String get messageThreadEmptyMessage => 'Comece a conversa!';
+
+  @override
+  String get messageThreadUrlWarningTitle => 'Aviso de link externo';
+
+  @override
+  String get messageThreadUrlWarningMessage =>
+      'Esta mensagem contém um link externo. Tenha cuidado ao clicar em links de fontes desconhecidas.';
+
+  @override
+  String get messageThreadUrlWarningButton => 'Entendido';
+
+  @override
+  String get chatbotAssistantTitle => 'Assistente de IA';
+
+  @override
+  String get chatbotAssistantSubtitle =>
+      'Pergunte-me qualquer coisa sobre o Team Build Pro';
+
+  @override
+  String get chatbotClearTooltip => 'Limpar conversa';
+
+  @override
+  String get chatbotSignInRequired =>
+      'Por favor, faça login para usar o Assistente de IA';
+
+  @override
+  String get companyHeading => 'Detalhes da empresa';
+
+  @override
+  String get companyLabelName => 'Nome da empresa';
+
+  @override
+  String get companyLabelReferralLink => 'Meu link de referência da empresa';
+
+  @override
+  String get companyLinkedTitle => 'Conta vinculada!';
+
+  @override
+  String companyLinkedMessage(String business) {
+    return 'Ótimas notícias! À medida que seus membros da equipe ganham impulso e se qualificam, eles receberão um convite para se juntar à sua organização $business.';
+  }
+
+  @override
+  String get companyNotAvailable => 'Não disponível';
+
+  @override
+  String get deleteAccountHeading => 'Exclusão de conta';
+
+  @override
+  String get deleteAccountSubheading =>
+      'Lamentamos vê-lo partir. Por favor, revise as informações abaixo cuidadosamente.';
+
+  @override
+  String get deleteAccountWarningTitle => 'EXCLUSÃO PERMANENTE DE CONTA';
+
+  @override
+  String get deleteAccountWarningMessage =>
+      'Esta ação não pode ser desfeita. Quando você excluir sua conta:';
+
+  @override
+  String get deleteAccountWarning1 =>
+      'Seus dados pessoais serão excluídos permanentemente';
+
+  @override
+  String get deleteAccountWarning2 =>
+      'Você perderá o acesso a todos os recursos premium';
+
+  @override
+  String get deleteAccountWarning3 =>
+      'Sua conta não pode ser recuperada ou reativada';
+
+  @override
+  String get deleteAccountWarning4 =>
+      'Seus relacionamentos de rede serão preservados para continuidade dos negócios';
+
+  @override
+  String get deleteAccountWarning5 =>
+      'Você será desconectado imediatamente de todos os dispositivos';
+
+  @override
+  String get deleteAccountInfoTitle => 'Informações da conta';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Confirmação necessária';
+
+  @override
+  String get deleteAccountConfirmLabel =>
+      'Para confirmar a exclusão, digite seu endereço de e-mail:';
+
+  @override
+  String get deleteAccountCheckbox1 =>
+      'Eu entendo que esta ação é permanente e não pode ser desfeita';
+
+  @override
+  String get deleteAccountCheckbox2 =>
+      'Eu entendo que perderei o acesso a todos os dados e recursos premium';
+
+  @override
+  String get deleteAccountCheckbox3 =>
+      'Eu reconheço que meus relacionamentos de rede serão preservados para operações comerciais';
+
+  @override
+  String get deleteAccountDeleting => 'Excluindo...';
+
+  @override
+  String get deleteAccountHelpTitle => 'Precisa de ajuda?';
+
+  @override
+  String get deleteAccountHelpMessage =>
+      'Se você estiver enfrentando problemas com o aplicativo, entre em contato com nossa equipe de suporte antes de excluir sua conta.';
+
+  @override
+  String get deleteAccountHelpButton => 'Contatar suporte';
+
+  @override
+  String get deleteAccountDemoTitle => 'Proteção de conta de demonstração';
+
+  @override
+  String get deleteAccountDemoMessage =>
+      'Esta é uma conta de demonstração protegida e não pode ser excluída.\n\nAs contas de demonstração são mantidas para revisão de aplicativos e fins de demonstração.\n\nSe você estiver testando o aplicativo, crie uma nova conta para testar os recursos de exclusão de conta.';
+
+  @override
+  String get deleteAccountDemoButton => 'OK';
+
+  @override
+  String get editProfileHeading => 'Editar perfil';
+
+  @override
+  String get editProfileHeadingFirstTime => 'Complete seu perfil';
+
+  @override
+  String get editProfileInstructionsFirstTime =>
+      'Por favor, complete seu perfil para começar';
+
+  @override
+  String get editProfileBusinessQuestion => 'Você é atualmente um ';
+
+  @override
+  String get editProfileBusinessQuestionSuffix => ' representante?';
+
+  @override
+  String get editProfileYes => 'Sim';
+
+  @override
+  String get editProfileNo => 'Não';
+
+  @override
+  String get editProfileDialogImportantTitle => 'Muito importante!';
+
+  @override
+  String editProfileDialogImportantMessage(String business) {
+    return 'Você deve inserir o link de referência exato que recebeu de seu patrocinador $business.';
+  }
+
+  @override
+  String get editProfileDialogImportantButton => 'Eu entendo';
+
+  @override
+  String get editProfileReferralLinkField => 'Digite seu link de referência';
+
+  @override
+  String get editProfileReferralLinkLabel => 'Seu link de referência';
+
+  @override
+  String editProfileReferralLinkHelper(String business) {
+    return 'Digite o link de referência de seu patrocinador $business';
+  }
+
+  @override
+  String get editProfileConfirmReferralLink => 'Confirmar link de referência';
+
+  @override
+  String get editProfileSelectCountry => 'Selecione seu país';
+
+  @override
+  String get editProfileSelectState => 'Selecione seu estado/província';
+
+  @override
+  String get editProfileSelectStateDisabled => 'Primeiro selecione um país';
+
+  @override
+  String get editProfileErrorCity => 'Por favor, digite sua cidade';
+
+  @override
+  String get editProfileErrorState =>
+      'Por favor, selecione seu estado/província';
+
+  @override
+  String get editProfileErrorCountry => 'Por favor, selecione seu país';
+
+  @override
+  String get editProfilePhotoError =>
+      'Erro ao carregar foto. Por favor, tente novamente.';
+
+  @override
+  String get editProfileDeletionTitle => 'Excluir conta';
+
+  @override
+  String get editProfileDeletionMessage =>
+      'Excluir permanentemente sua conta e todos os dados associados.';
+
+  @override
+  String get editProfileDeletionSubtext => 'Esta ação não pode ser desfeita';
+
+  @override
+  String get editProfileDeletionButton => 'Concluir exclusão';
+
+  @override
+  String get loginLabelEmail => 'E-mail';
+
+  @override
+  String get loginLabelPassword => 'Senha';
+
+  @override
+  String get loginValidatorEmail => 'Por favor, insira seu e-mail';
+
+  @override
+  String get loginValidatorPassword => 'Por favor, insira sua senha';
+
+  @override
+  String get loginButtonLogin => 'Entrar';
+
+  @override
+  String get loginButtonBiometric => 'Entrar com biometria';
+
+  @override
+  String get loginDividerOr => 'ou';
+
+  @override
+  String get loginNoAccount => 'Não tem uma conta? ';
+
+  @override
+  String get loginCreateAccount => 'Criar conta';
+
+  @override
+  String get loginPrivacyPolicy => 'Política de privacidade';
+
+  @override
+  String get loginTermsOfService => 'Termos de serviço';
+
+  @override
+  String welcomeGreeting(String firstName) {
+    return 'Bem-vindo, $firstName!';
+  }
+
+  @override
+  String get welcomeMessageAdmin =>
+      'Pronto para liderar a revolução das redes profissionais? Complete seu perfil de administrador e configure sua equipe. Após completar seu perfil, você terá acesso à plataforma completa do Team Build Pro.';
+
+  @override
+  String get welcomeMessageUser =>
+      'Pronto para transformar sua rede profissional? Complete seu perfil para desbloquear todo o poder do Team Build Pro.';
+
+  @override
+  String get welcomeButtonJoin => 'Junte-se à revolução';
+
+  @override
+  String get changePasswordHeading => 'Alterar senha';
+
+  @override
+  String get changePasswordTodoMessage =>
+      'TODO: Implementar formulário de alteração de senha aqui.';
+
+  @override
+  String get chatPlaceholder => 'A interface de chat vai aqui.';
+
+  @override
+  String get quickPromptsWelcomeTitle => 'Bem-vindo ao seu Coach de IA!';
+
+  @override
+  String get quickPromptsWelcomeDescription =>
+      'Estou aqui para ajudar você a ter sucesso com o Team Build Pro. Posso responder perguntas sobre o app, estratégias de construção de equipe e guiá-lo através dos recursos.';
+
+  @override
+  String get quickPromptsDisclaimerMessage =>
+      'O Coach de IA pode cometer erros. Verifique informações importantes.';
+
+  @override
+  String get quickPromptsQuestionHeader => 'Como posso ajudar você?';
+
+  @override
+  String get quickPromptsQuestionSubheader =>
+      'Toque em qualquer pergunta abaixo para começar, ou digite sua própria pergunta.';
+
+  @override
+  String get quickPromptsProTipLabel => 'Dica Pro';
+
+  @override
+  String get quickPromptsProTipText =>
+      'Seja específico com suas perguntas. Por exemplo: \"Tenho 2 patrocinadores diretos, no que devo focar a seguir?\"';
+
+  @override
+  String get chatbotPrompt1 => 'Como funciona a qualificação?';
+
+  @override
+  String get chatbotPrompt2 => 'Qual é a diferença entre isso e um MLM?';
+
+  @override
+  String get chatbotPrompt3 => 'Como convido pessoas para minha equipe?';
+
+  @override
+  String get chatbotPrompt4 => 'Mostre-me a análise da minha equipe';
+
+  @override
+  String get chatbotPrompt5 => 'No que devo focar a seguir?';
+
+  @override
+  String get chatbotPrompt6 => 'Como cancelo minha assinatura?';
+
+  @override
+  String get chatbotPrompt7 =>
+      'Por que a maioria das pessoas falha nas vendas diretas?';
+
+  @override
+  String get chatbotPrompt8 => 'O que acontece depois que eu me qualificar?';
+
+  @override
+  String get shareProspectPastStrugglesTitle => 'Abordando Lutas Passadas';
+
+  @override
+  String get shareProspectPastStrugglesDescription =>
+      'Perfeito para prospectos que tentaram antes e tiveram dificuldades';
+
+  @override
+  String get shareProspectPastStrugglesSubject =>
+      'Uma Forma Mais Inteligente de Começar Desta Vez';
+
+  @override
+  String shareProspectPastStrugglesMessage(Object business, Object link) {
+    return 'Se tentativas passadas deixaram você parado no zero sem impulso, aqui está um caminho mais inteligente.\n\nO Coach de IA do Team Build Pro ajuda você a pré-construir sua equipe de $business antes mesmo de se juntar.\n\nEle escreve suas mensagens, agenda seus acompanhamentos e rastreia quem está interessado - para que você não comece do zero desta vez. Você lança com pessoas já esperando por você.\n\nA IA guia você em cada passo. Você não estará sozinho.\n\nVeja como funciona: $link\n\nVocê merece uma chance real desta vez.';
+  }
+
+  @override
+  String get shareProspectNotSalespersonTitle => 'Para Não Vendedores';
+
+  @override
+  String get shareProspectNotSalespersonDescription =>
+      'Ótimo para pessoas que não se veem como \"vendedores\"';
+
+  @override
+  String get shareProspectNotSalespersonSubject =>
+      'Você Não Precisa Ser um \"Vendedor\"';
+
+  @override
+  String shareProspectNotSalespersonMessage(Object business, Object link) {
+    return 'Não é um \"vendedor natural\"? Tudo bem. Você tem um Coach de IA.\n\nO Team Build Pro ajuda você a pré-construir sua equipe de $business com IA que escreve suas mensagens, agenda seus acompanhamentos e rastreia o interesse de todos.\n\nÉ como ter um assistente de recrutamento que nunca dorme. Você foca nos relacionamentos. A IA cuida do resto.\n\nComece a construir antes mesmo de se juntar: $link\n\nVocê não precisa de uma \"personalidade de vendas\". Você precisa de ferramentas inteligentes. Agora você as tem.';
+  }
+
+  @override
+  String get shareProspectHopeAfterDisappointmentTitle =>
+      'Esperança Após a Decepção';
+
+  @override
+  String get shareProspectHopeAfterDisappointmentDescription =>
+      'Ideal para prospectos queimados por oportunidades anteriores';
+
+  @override
+  String get shareProspectHopeAfterDisappointmentSubject =>
+      'Uma Forma Mais Inteligente de Começar Desta Vez';
+
+  @override
+  String shareProspectHopeAfterDisappointmentMessage(
+      Object business, Object link) {
+    return 'Já foi queimado antes? Prometeram o mundo e então deixaram você começando do zero?\n\nDesta vez é diferente. O Coach de IA do Team Build Pro ajuda você a pré-construir sua equipe de $business antes de se juntar.\n\nEle escreve suas mensagens de recrutamento, agenda seus acompanhamentos, rastreia quem está interessado e aconselha você nos próximos passos. Você ganha impulso real antes do Dia 1.\n\nSem exageros. Sem promessas vazias. Apenas ferramentas alimentadas por IA que funcionam.\n\nVeja como: $link\n\nVocê merece um sistema que realmente te prepara para vencer.';
+  }
+
+  @override
+  String get shareProspectGeneralInvitationTitle => 'Convite Geral';
+
+  @override
+  String get shareProspectGeneralInvitationDescription =>
+      'Uma mensagem versátil para qualquer situação de prospecto';
+
+  @override
+  String get shareProspectGeneralInvitationSubject =>
+      'Construa Antes de Se Juntar - Guiado por IA';
+
+  @override
+  String shareProspectGeneralInvitationMessage(Object business, Object link) {
+    return 'Você está convidado a experimentar uma forma mais inteligente de começar.\n\nCom o Team Build Pro, um Coach de IA ajuda você a pré-construir sua equipe de $business antes de se juntar oficialmente.\n\nVeja como ajuda:\n- Escreve mensagens personalizadas\n- Agenda acompanhamentos automaticamente\n- Rastreia impulso e próximos passos\n\nAssim, o Dia 1 não é um começo frio - é um começo em movimento.\n\nDê uma olhada: $link';
+  }
+
+  @override
+  String get shareProspectSocialAnxietyTitle =>
+      'Evitando Conversas Constrangedoras';
+
+  @override
+  String get shareProspectSocialAnxietyDescription =>
+      'Perfeito para introvertidos ou aqueles desconfortáveis com recrutamento cara a cara';
+
+  @override
+  String get shareProspectSocialAnxietySubject =>
+      'Construa Sua Equipe Sem Conversas Constrangedoras';
+
+  @override
+  String shareProspectSocialAnxietyMessage(Object business, Object link) {
+    return 'Desconfortável em abordar amigos e familiares? Você não precisa.\n\nO Team Build Pro permite que você construa sua rede de $business online primeiro - onde se sente confortável.\n\nO Coach de IA escreve suas mensagens, sugere quem contatar e rastreia as respostas. Você constrói relacionamentos no seu próprio ritmo, sem pressão.\n\nSem ligações frias. Sem pitches constrangedores. Apenas conexões genuínas guiadas por IA.\n\nComece a construir nos seus termos: $link\n\nFinalmente, uma forma de crescer sua rede que se sente natural para você.';
+  }
+
+  @override
+  String get shareProspectTimeConstrainedTitle => 'Para Profissionais Ocupados';
+
+  @override
+  String get shareProspectTimeConstrainedDescription =>
+      'Ideal para prospectos fazendo malabarismos com trabalho, família e outros compromissos';
+
+  @override
+  String get shareProspectTimeConstrainedSubject =>
+      'Construa Sua Equipe nas Brechas';
+
+  @override
+  String shareProspectTimeConstrainedMessage(Object business, Object link) {
+    return 'Não pode dedicar horas em tempo integral? Você não precisa.\n\nO Team Build Pro funciona em torno da sua agenda. Construa sua equipe de $business durante o café da manhã, pausas para almoço ou tempo livre à noite.\n\nA IA cuida do trabalho pesado:\n- Agenda seus acompanhamentos automaticamente\n- Lembra você quando é hora de entrar em contato\n- Rastreia tudo para que você nunca perca impulso\n\nTrabalhe 15 minutos aqui, 20 minutos ali. A IA faz cada minuto contar.\n\nVeja como se encaixa na sua vida: $link\n\nConstrua um negócio real sem sacrificar todo o resto.';
+  }
+
+  @override
+  String get shareProspectFinancialRiskAverseTitle => 'Medo de Perder Dinheiro';
+
+  @override
+  String get shareProspectFinancialRiskAverseDescription =>
+      'Ótimo para prospectos preocupados com risco financeiro';
+
+  @override
+  String get shareProspectFinancialRiskAverseSubject =>
+      'Veja Resultados Antes de Investir Muito';
+
+  @override
+  String shareProspectFinancialRiskAverseMessage(Object business, Object link) {
+    return 'Preocupado em perder dinheiro? Inteligente.\n\nCom o Team Build Pro, você pode pré-construir sua equipe de $business e ver resultados reais antes de investir muito.\n\nComece grátis. Teste o sistema. Rastreie seu progresso real em tempo real. Apenas \$4.99/mês quando estiver pronto para convidar seus primeiros prospectos.\n\nSem funis de leads caros. Sem sistemas complexos. Apenas ferramentas alimentadas por IA que ajudam você a construir relacionamentos reais e impulso real.\n\nVeja a prova primeiro: $link\n\nVocê merece ver o que é possível antes de arriscar qualquer coisa.';
+  }
+
+  @override
+  String get shareProspectSkepticalRealistTitle => 'Me Mostre Prova';
+
+  @override
+  String get shareProspectSkepticalRealistDescription =>
+      'Perfeito para prospectos queimados por falsas promessas';
+
+  @override
+  String get shareProspectSkepticalRealistSubject =>
+      'Sem Exageros. Apenas Rastreie Seu Progresso Real';
+
+  @override
+  String shareProspectSkepticalRealistMessage(Object business, Object link) {
+    return 'Cansado de promessas vazias e exageros?\n\nO Team Build Pro mostra métricas reais. Sem enrolação. Sem exagero.\n\nSeu painel rastreia:\n- Quantas pessoas você contatou\n- Quem respondeu e quem está interessado\n- Seu impulso real em direção à qualificação (4 diretos + 20 totais)\n- Os próximos passos que a IA recomenda\n\nVocê saberá exatamente onde está antes de se juntar a $business. Sem surpresas. Sem falsas esperanças. Apenas dados.\n\nVeja a transparência: $link\n\nFinalmente, um sistema que mostra a verdade.';
+  }
+
+  @override
+  String get sharePartnerWarmMarketExhaustedTitle => 'Mercado Quente Esgotado';
+
+  @override
+  String get sharePartnerWarmMarketExhaustedDescription =>
+      'Para parceiros que esgotaram amigos e familiares';
+
+  @override
+  String get sharePartnerWarmMarketExhaustedSubject =>
+      'Dê à Sua Equipe um Companheiro de Recrutamento de IA';
+
+  @override
+  String sharePartnerWarmMarketExhaustedMessage(Object business, Object link) {
+    return 'Esgotou seu mercado quente? Cansado de leads que somem?\n\nDê à sua equipe de $business um companheiro de recrutamento de IA.\n\nO Team Build Pro escreve as mensagens de recrutamento da sua equipe, agenda os acompanhamentos, rastreia o interesse dos prospectos e orienta cada conversa.\n\nSeus prospectos pré-constroem suas equipes antes de se juntar - para que eles lancem com impulso, não do zero.\n\nMelhor parte? Sua equipe inteira obtém a mesma vantagem de IA. Verdadeira duplicação em escala.\n\nVeja como: $link\n\nPare de perseguir. Comece a treinar com IA.';
+  }
+
+  @override
+  String get sharePartnerExpensiveSystemFatigueTitle =>
+      'Fadiga de Sistema e Despesa';
+
+  @override
+  String get sharePartnerExpensiveSystemFatigueDescription =>
+      'Para parceiros esgotados de métodos de recrutamento caros';
+
+  @override
+  String get sharePartnerExpensiveSystemFatigueSubject =>
+      'O Sistema de Recrutamento de IA Dentro do Team Build Pro';
+
+  @override
+  String sharePartnerExpensiveSystemFatigueMessage(
+      Object business, Object link) {
+    return 'Cansado de pagar por leads, funis e sistemas que não duplicam?\n\nO Team Build Pro tem recrutamento de IA integrado - sem custo extra, sem configuração complexa.\n\nEle escreve mensagens de recrutamento, agenda acompanhamentos, rastreia engajamento e orienta toda sua equipe de $business em cada conversa.\n\nSeus prospectos pré-constroem suas equipes antes de se juntar. Sua equipe duplica as mesmas ferramentas de IA. Todos ganham.\n\nUm sistema simples. Resultados reais.\n\nConfira: $link\n\nPare de pagar demais. Comece a usar IA.';
+  }
+
+  @override
+  String get sharePartnerDuplicationStruggleTitle => 'Desafios de Duplicação';
+
+  @override
+  String get sharePartnerDuplicationStruggleDescription =>
+      'Para líderes lutando para fazer sua equipe duplicar';
+
+  @override
+  String get sharePartnerDuplicationStruggleSubject =>
+      'Duplicação Alimentada por IA para Toda a Sua Equipe';
+
+  @override
+  String sharePartnerDuplicationStruggleMessage(Object business, Object link) {
+    return 'Sua equipe luta para duplicar seu sucesso de recrutamento? Não mais.\n\nO Team Build Pro dá a cada pessoa na sua equipe de $business o mesmo coach de recrutamento de IA.\n\nEle escreve suas mensagens. Agenda seus acompanhamentos. Rastreia seus prospectos. Orienta seus próximos passos.\n\nRecém-chegado ou líder veterano - todos obtêm a mesma vantagem de IA. Verdadeira duplicação do sistema.\n\nSeus prospectos pré-constroem equipes antes de se juntar. Sua equipe cresce mais rápido usando ferramentas de IA idênticas.\n\nVeja funcionar: $link\n\nFinalmente, um sistema que toda sua equipe pode duplicar.';
+  }
+
+  @override
+  String get sharePartnerGeneralTeamToolTitle => 'Ferramenta Geral de Equipe';
+
+  @override
+  String get sharePartnerGeneralTeamToolDescription =>
+      'Uma mensagem versátil para qualquer situação de parceiro';
+
+  @override
+  String get sharePartnerGeneralTeamToolSubject =>
+      'A Vantagem de Recrutamento de IA para Sua Equipe';
+
+  @override
+  String sharePartnerGeneralTeamToolMessage(Object business, Object link) {
+    return 'Quer dar à sua equipe de $business uma vantagem competitiva real?\n\nO Team Build Pro tem recrutamento de IA integrado. Ele ajuda toda a sua equipe:\n\n- Escrever mensagens de recrutamento personalizadas\n- Agendar acompanhamentos automaticamente\n- Rastrear engajamento de prospectos\n- Orientar cada conversa\n\nSeus prospectos pré-constroem suas equipes antes de se juntar. Sua equipe duplica as mesmas ferramentas de IA. Todos crescem mais rápido.\n\nConfira: $link\n\nEsta é a vantagem de IA que sua equipe precisa.';
+  }
+
+  @override
+  String get sharePartnerRetentionCrisisTitle =>
+      'Problema de Abandono da Equipe';
+
+  @override
+  String get sharePartnerRetentionCrisisDescription =>
+      'Para líderes frustrados por membros da equipe desistindo cedo';
+
+  @override
+  String get sharePartnerRetentionCrisisSubject =>
+      'Pare de Perder Sua Equipe no Primeiro Ano';
+
+  @override
+  String sharePartnerRetentionCrisisMessage(Object business, Object link) {
+    return 'Vendo sua equipe de $business desistir antes de ter sucesso?\n\n75% desistem no primeiro ano. Geralmente porque se sentem perdidos, sem apoio ou sobrecarregados.\n\nO Team Build Pro muda isso. Cada pessoa na sua equipe recebe um Coach de IA que:\n- Orienta através de cada conversa de recrutamento\n- Rastreia seu progresso e celebra vitórias\n- Lembra o que fazer a seguir\n- Mantém o impulso quando a motivação cai\n\nEles nunca estão sozinhos. Sempre sabem seu próximo passo. Permanecem engajados por mais tempo.\n\nDê à sua equipe o apoio que precisam: $link\n\nPare de vê-los desistir. Comece a vê-los ter sucesso.';
+  }
+
+  @override
+  String get sharePartnerSkillGapTeamTitle => 'Membros da Equipe Sem Vendas';
+
+  @override
+  String get sharePartnerSkillGapTeamDescription =>
+      'Perfeito para equipes onde a maioria carece de experiência em vendas';
+
+  @override
+  String get sharePartnerSkillGapTeamSubject =>
+      'Sua Equipe Sem Vendas Pode Vencer com IA';
+
+  @override
+  String sharePartnerSkillGapTeamMessage(Object business, Object link) {
+    return 'A maioria da sua equipe de $business não são vendedores naturais. Esse tem sido o problema.\n\nO Team Build Pro resolve isso. O Coach de IA transforma pessoas sem vendas em recrutadores confiantes ao:\n- Escrever suas mensagens de recrutamento para eles\n- Sugerir exatamente quem contatar a seguir\n- Orientá-los através de cada conversa\n- Rastrear progresso para que vejam impulso real\n\nSeus introvertidos, seus part-timers, suas pessoas \"não sou bom em vendas\" - todos obtêm a mesma vantagem de IA.\n\nFinalmente, todos podem duplicar seu sucesso.\n\nVeja como: $link\n\nVocê não precisa de uma equipe de vendedores. Você precisa de uma equipe com IA.';
+  }
+
+  @override
+  String get sharePartnerRecruitmentFatigueTitle =>
+      'Cansado de Recrutamento Constante';
+
+  @override
+  String get sharePartnerRecruitmentFatigueDescription =>
+      'Para parceiros exaustos do ciclo interminável de recrutamento';
+
+  @override
+  String get sharePartnerRecruitmentFatigueSubject =>
+      'Automatize o Trabalho. Mantenha o Crescimento.';
+
+  @override
+  String sharePartnerRecruitmentFatigueMessage(Object business, Object link) {
+    return 'Esgotado de recrutamento constante? Os acompanhamentos intermináveis? O rastreamento manual?\n\nA IA do Team Build Pro cuida do trabalho para que você não precise.\n\nPara toda sua equipe de $business, a IA:\n- Agenda acompanhamentos automaticamente\n- Rastreia cada prospecto e seu status\n- Lembra sua equipe quando entrar em contato\n- Orienta sobre o que dizer a seguir\n\nVocê permanece focado em atividades de alto valor. Sua equipe permanece produtiva sem se esgotar.\n\nA IA nunca se cansa. Seu impulso nunca para.\n\nExperimente: $link\n\nCrescimento sustentável sem o esgotamento.';
+  }
+
+  @override
+  String get sharePartnerAvailabilityGapTitle => 'Não Pode Estar Lá 24/7';
+
+  @override
+  String get sharePartnerAvailabilityGapDescription =>
+      'Ideal para líderes que não podem estar constantemente disponíveis para sua equipe';
+
+  @override
+  String get sharePartnerAvailabilityGapSubject =>
+      'Sua Equipe Cresce Mesmo Quando Você Não Está Lá';
+
+  @override
+  String sharePartnerAvailabilityGapMessage(Object business, Object link) {
+    return 'Sua equipe de $business precisa de você. Mas você não pode estar disponível 24/7.\n\nO Team Build Pro dá à sua equipe um Coach de IA que está sempre ativo. Enquanto você dorme, trabalha no seu emprego diurno ou passa tempo com a família, a IA:\n- Orienta sua equipe através de conversas de recrutamento\n- Responde suas perguntas \"o que faço agora?\"\n- Rastreia seu progresso e os mantém motivados\n- Garante que nada caia pelas rachaduras\n\nSua equipe cresce mesmo quando você está offline. Sem gargalos. Sem atrasos.\n\nExperimente: $link\n\nEsteja em todos os lugares sem estar em todos os lugares.';
+  }
+
+  @override
+  String get homepageDemoCredentialsNotAvailable =>
+      'Credenciais de demonstração não disponíveis';
+
+  @override
+  String homepageDemoLoginFailed(Object error) {
+    return 'Login de demonstração falhou: $error';
+  }
+
+  @override
+  String get homepageDemoLoginFailedGeneric =>
+      'Login de demonstração falhou. Por favor, tente novamente.';
+
+  @override
+  String get homepageHeroJumpstart => 'IMPULSIONE SEU SUCESSO';
+
+  @override
+  String get homepageHeroGrow => 'CRESÇA E GERENCIE SUA EQUIPE';
+
+  @override
+  String get homepageHeroProven => 'SISTEMA COMPROVADO DE CONSTRUÇÃO DE EQUIPE';
+
+  @override
+  String get homepageHeroBuildFoundation => 'Construa Sua Fundação';
+
+  @override
+  String get homepageHeroBeforeDayOne => 'Antes do Dia Um';
+
+  @override
+  String get homepageHeroEmpowerTeam => 'Empodere Sua Equipe';
+
+  @override
+  String get homepageHeroAccelerate => 'Acelere o ';
+
+  @override
+  String get homepageHeroGrowth => 'Crescimento';
+
+  @override
+  String get homepageLoading => 'Carregando...';
+
+  @override
+  String homepageMessageTitlePersonal(Object sponsorName) {
+    return 'Uma Mensagem Pessoal\nDe $sponsorName';
+  }
+
+  @override
+  String get homepageMessageTitleGeneric => 'Uma Mensagem Do\nTeam Build Pro';
+
+  @override
+  String get homepageMessageBodyNewProspect1 =>
+      'Estou muito feliz que você esteja aqui para ter uma vantagem inicial na construção da sua equipe de ';
+
+  @override
+  String get homepageMessageBodyNewProspect2 =>
+      '. O próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias! Assim que estiver registrado, entrarei em contato pessoalmente dentro do app para dizer olá e ajudá-lo a começar.\n\nAnsioso para nos conectarmos!';
+
+  @override
+  String get homepageMessageBodyRefPartner1 =>
+      'Estou usando o app Team Build Pro para acelerar o crescimento da minha equipe de ';
+
+  @override
+  String get homepageMessageBodyRefPartner2 =>
+      ' e renda! Recomendo muito para você também.\n\nO próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias! Assim que estiver registrado, entrarei em contato pessoalmente dentro do app para dizer olá e ajudá-lo a começar.\n\nAnsioso para nos conectarmos!';
+
+  @override
+  String get homepageMessageBodyGeneric =>
+      'Team Build Pro é o app definitivo para profissionais de vendas diretas gerenciarem e escalarem suas equipes existentes com impulso imparável e crescimento exponencial.\n\nO próximo passo é fácil—basta criar sua conta abaixo e começar a desfrutar de sua avaliação gratuita de 30 dias!';
+
+  @override
+  String get homepageButtonCreateAccount => 'Criar Conta';
+
+  @override
+  String get homepageButtonAlreadyHaveAccount => 'Já Tenho uma Conta';
+
+  @override
+  String get homepageDemoModeActive => 'Modo Demo Ativo';
+
+  @override
+  String get homepageDemoPreLoaded => 'Conta Demo Pré-Carregada';
+
+  @override
+  String get homepageDemoWelcome => 'Bem-vindo à Demo do Team Build Pro';
+
+  @override
+  String get homepageDemoDescription =>
+      'Esta é uma conta de demonstração totalmente funcional pré-carregada com dados de equipe realistas. Explore todos os recursos e veja como o Team Build Pro pode transformar seu negócio de vendas diretas!';
+
+  @override
+  String get homepageDemoCredentialsLabel => 'Credenciais de Acesso:';
+
+  @override
+  String homepageDemoEmail(Object email) {
+    return 'E-mail: $email';
+  }
+
+  @override
+  String homepageDemoPassword(Object password) {
+    return 'Senha: $password';
+  }
+
+  @override
+  String get homepageDemoLoggingIn => 'Entrando...';
+
+  @override
+  String get homepageDemoStartDemo => 'Iniciar Demo!';
+
+  @override
+  String get homepageTrust100Secure => '100% Seguro';
+
+  @override
+  String get homepageTrust30DayFree => '30 Dias Grátis';
+
+  @override
+  String get homepageTrust24Support => 'Suporte 24/7';
+
+  @override
+  String get homepageFooterTerms => 'Termos de Serviço';
+
+  @override
+  String get homepageFooterPrivacy => 'Política de Privacidade';
+
+  @override
+  String get authLoginAccountRequiredTitle => 'Conta Necessária';
+
+  @override
+  String get authLoginAccountRequiredMessage =>
+      'Parece que você precisa criar uma conta primeiro. Gostaria de se registrar agora?';
+
+  @override
+  String get authLoginCancelButton => 'Cancelar';
+
+  @override
+  String get authLoginRegisterButton => 'Registrar';
+
+  @override
+  String get authLoginAppBarTitle => 'Entrar';
+
+  @override
+  String get authLoginSubtitle => 'Entre para continuar construindo sua equipe';
+
+  @override
+  String get authLoginOrContinueWith => 'ou continuar com';
+
+  @override
+  String get authLoginForgotPassword => 'Esqueceu a Senha?';
+
+  @override
+  String get authLoginContinueWithGoogle => 'Continuar com Google';
+
+  @override
+  String get authLoginContinueWithApple => 'Continuar com Apple';
+
+  @override
+  String get authLoginBiometricButton => 'Entrar com biométrica';
+
+  @override
+  String get authLoginResetPasswordTitle => 'Redefinir Senha';
+
+  @override
+  String get authLoginCheckEmailTitle => 'Verifique Seu E-mail';
+
+  @override
+  String get authLoginResetEmailSent =>
+      'Enviamos um link para redefinir sua senha para:';
+
+  @override
+  String get authLoginResetInstructions =>
+      'Por favor, verifique sua caixa de entrada e siga as instruções para redefinir sua senha.';
+
+  @override
+  String get authLoginResetPrompt =>
+      'Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.';
+
+  @override
+  String get authLoginResetEmailLabel => 'E-mail';
+
+  @override
+  String get authLoginResetEmailHint => 'Digite seu endereço de e-mail';
+
+  @override
+  String get authLoginResetEmailRequired => 'Por favor, digite seu e-mail';
+
+  @override
+  String get authLoginResetEmailInvalid => 'Por favor, digite um e-mail válido';
+
+  @override
+  String get authLoginDoneButton => 'Pronto';
+
+  @override
+  String get authLoginSendResetLink => 'Enviar Link de Redefinição';
+
+  @override
+  String get authSignupInvalidInviteLinkMessage =>
+      'Isso não parece um link de convite. Por favor, cole o link completo que você recebeu.';
+
+  @override
+  String get authSignupNewReferralDialogTitle =>
+      'Novo Código de Indicação Detectado';
+
+  @override
+  String get authSignupNewReferralDialogMessage =>
+      'Um novo código de indicação foi detectado:';
+
+  @override
+  String authSignupNewReferralNewCode(Object code) {
+    return 'Novo código: $code';
+  }
+
+  @override
+  String authSignupNewReferralNewSource(Object source) {
+    return 'Fonte: $source';
+  }
+
+  @override
+  String authSignupNewReferralCurrentCode(Object code) {
+    return 'Código atual: $code';
+  }
+
+  @override
+  String authSignupNewReferralCurrentSource(Object source) {
+    return 'Fonte atual: $source';
+  }
+
+  @override
+  String get authSignupNewReferralPrompt =>
+      'Gostaria de atualizar seu código de indicação?';
+
+  @override
+  String get authSignupKeepCurrentButton => 'Manter Atual';
+
+  @override
+  String get authSignupUseNewCodeButton => 'Usar Novo Código';
+
+  @override
+  String get authSignupAppBarTitle => 'TEAM BUILD PRO';
+
+  @override
+  String get authSignupLoginButton => 'Entrar';
+
+  @override
+  String get authSignupConfirmSponsorButton =>
+      'Toque para confirmar seu patrocinador';
+
+  @override
+  String get authSignupNoSponsorFound =>
+      'Desculpe, nenhum patrocinador encontrado';
+
+  @override
+  String get authSignupPageTitle => 'Registro de Conta';
+
+  @override
+  String get authSignupInviteLinkButton => 'Tenho um link de convite';
+
+  @override
+  String get authSignupInviteLinkInstructions =>
+      'Se alguém lhe enviou um link de convite, você pode colá-lo aqui.';
+
+  @override
+  String get authSignupPasteInviteLinkButton => 'Colar link de convite';
+
+  @override
+  String authSignupInvitedBy(Object sponsorName) {
+    return 'Convidado por: $sponsorName';
+  }
+
+  @override
+  String authSignupReferralCodeDebug(Object code, Object source) {
+    return 'Código: $code (fonte: $source)';
+  }
+
+  @override
+  String get authSignupAppleButton => 'Cadastrar-se com Apple';
+
+  @override
+  String get authSignupGoogleButton => 'Cadastrar-se com Google';
+
+  @override
+  String get authSignupOrEmailDivider => 'ou cadastrar-se com e-mail';
+
+  @override
+  String get authSignupLoginSectionTitle => 'Crie Seu Login';
+
+  @override
+  String get authSignupPrivacyAssurance =>
+      '🔒 Seu e-mail nunca será compartilhado com ninguém';
+
+  @override
+  String get authSignupRequiredForAccount =>
+      '🔒 Necessário para criação de conta';
+
+  @override
+  String get settingsAuthRequired => 'Autenticação necessária.';
+
+  @override
+  String get settingsUserNotFound => 'Perfil de usuário não encontrado.';
+
+  @override
+  String get settingsAccessDenied =>
+      'Acesso Negado: Função de administrador necessária.';
+
+  @override
+  String settingsLoadFailed(Object error) {
+    return 'Falha ao carregar configurações: $error';
+  }
+
+  @override
+  String get settingsBusinessNameInvalid =>
+      'O nome do negócio só pode conter letras, números e pontuação comum.';
+
+  @override
+  String get settingsReferralLinkInvalid =>
+      'Por favor, digite um link de indicação válido (ex., https://example.com).';
+
+  @override
+  String get settingsOrgNameMismatch =>
+      'Os campos de Nome da Organização devem corresponder para confirmação.';
+
+  @override
+  String get settingsReferralLinkMismatch =>
+      'Os campos de Link de Indicação devem corresponder para confirmação.';
+
+  @override
+  String get settingsUserNotAuthenticated => 'Usuário não autenticado.';
+
+  @override
+  String get settingsUpgradeRequiredTitle => 'Atualização Necessária';
+
+  @override
+  String get settingsUpgradeRequiredMessage =>
+      'Atualize sua assinatura de Administrador para salvar essas alterações.';
+
+  @override
+  String get settingsCancelButton => 'Cancelar';
+
+  @override
+  String get settingsUpgradeButton => 'Atualizar Agora';
+
+  @override
+  String get settingsSavedSuccess => 'Configurações salvas com sucesso.';
+
+  @override
+  String settingsSaveFailed(Object error) {
+    return 'Falha ao salvar configurações: $error';
+  }
+
+  @override
+  String get settingsRequired => 'Obrigatório';
+
+  @override
+  String get settingsNotSet => 'Não Definido';
+
+  @override
+  String get profileUpdateBiometricFailed =>
+      'A autenticação biométrica falhou. Por favor, tente novamente.';
+
+  @override
+  String get profileUpdatePasswordRequired =>
+      'Senha necessária para habilitar login biométrico';
+
+  @override
+  String get profileUpdateEmailNotFound => 'E-mail do usuário não encontrado';
+
+  @override
+  String get profileUpdateBiometricEnabled =>
+      '✅ Login biométrico habilitado com sucesso';
+
+  @override
+  String get profileUpdatePasswordIncorrect =>
+      'Senha incorreta. Por favor, tente novamente.';
+
+  @override
+  String profileUpdateBiometricError(Object error) {
+    return 'Erro ao habilitar biométrica: $error';
+  }
+
+  @override
+  String get profileUpdateBiometricDisabled => 'Login biométrico desabilitado';
+
+  @override
+  String get profileUpdateConfirmPasswordTitle => 'Confirmar Senha';
+
+  @override
+  String get profileUpdateConfirmPasswordMessage =>
+      'Para armazenar com segurança suas credenciais para o login biométrico, por favor digite sua senha.';
+
+  @override
+  String get profileUpdatePasswordLabel => 'Senha';
+
+  @override
+  String get profileUpdateCancelButton => 'Cancelar';
+
+  @override
+  String get profileUpdateConfirmButton => 'Confirmar';
+
+  @override
+  String get profileUpdateDisableBiometricTitle =>
+      'Desabilitar Login Biométrico';
+
+  @override
+  String get profileUpdateDisableBiometricMessage =>
+      'Tem certeza de que deseja desabilitar o login biométrico? Você precisará usar seu e-mail e senha para entrar.';
+
+  @override
+  String get profileUpdateDisableButton => 'Desabilitar';
+
+  @override
+  String get profileUpdatePictureRequired =>
+      'Por favor, envie sua foto de perfil.';
+
+  @override
+  String get profileUpdateImageNotProvided => 'A imagem não foi fornecida.';
+
+  @override
+  String get profileUpdateSuccess => 'Perfil atualizado com sucesso!';
+
+  @override
+  String profileUpdateError(Object error) {
+    return 'Erro ao atualizar perfil: $error';
+  }
+
+  @override
+  String get profileUpdateDemoModeTitle => 'Modo Demo';
+
+  @override
+  String get profileUpdateDemoModeMessage =>
+      'Edição de perfil desabilitada no modo demo.';
+
+  @override
+  String get profileUpdateDemoUnderstandButton => 'Entendi';
+
+  @override
+  String get profileUpdateScreenTitle => 'Atualizar Perfil';
+
+  @override
+  String get profileUpdateNoEmail => 'Sem e-mail';
+
+  @override
+  String get profileUpdateSelectCountry => 'Selecionar País';
+
+  @override
+  String get profileUpdateCountryLabel => 'País';
+
+  @override
+  String get profileUpdateCountryRequired => 'Por favor, selecione um país';
+
+  @override
+  String get profileUpdateSelectState => 'Selecionar Estado/Província';
+
+  @override
+  String get profileUpdateSelectCountryFirst => 'Selecione um país primeiro';
+
+  @override
+  String get profileUpdateStateLabel => 'Estado/Província';
+
+  @override
+  String get profileUpdateStateRequired =>
+      'Por favor, selecione um estado/província';
+
+  @override
+  String get profileUpdateCityLabel => 'Cidade';
+
+  @override
+  String get profileUpdateCityRequired => 'Por favor, digite uma cidade';
+
+  @override
+  String get profileUpdateSecurityHeader => 'Configurações de Segurança';
+
+  @override
+  String get profileUpdateBiometricToggle => 'Habilitar Login Biométrico';
+
+  @override
+  String get profileUpdateBiometricChecking =>
+      'Verificando compatibilidade do dispositivo...';
+
+  @override
+  String get profileUpdateBiometricDescription =>
+      'Use impressão digital ou reconhecimento facial para entrar';
+
+  @override
+  String get profileUpdateBiometricNotAvailable =>
+      'Não disponível neste dispositivo';
+
+  @override
+  String get profileUpdateSaveButton => 'Salvar Alterações';
+
+  @override
+  String get profileEditDeletionSuccess =>
+      'Exclusão de conta concluída. Obrigado por usar o Team Build Pro.';
+
+  @override
+  String profileEditDeletionError(Object error) {
+    return 'Erro ao concluir exclusão de conta: $error';
+  }
+
+  @override
+  String get profileEditUrlInvalid =>
+      'Por favor, digite uma URL válida (ex., https://example.com)';
+
+  @override
+  String get profileEditHttpsRequired =>
+      'O link de indicação deve usar HTTPS (não HTTP) por segurança';
+
+  @override
+  String get profileEditUrlFormatInvalid =>
+      'Formato de URL inválido. Por favor, verifique seu link de indicação.';
+
+  @override
+  String get profileEditUnableToVerify =>
+      'Não foi possível verificar o link de indicação';
+
+  @override
+  String get profileEditDomainRequired =>
+      'Por favor, digite um link válido com um domínio apropriado';
+
+  @override
+  String get profileEditNoLocalhost =>
+      'Por favor, digite um link de indicação de negócio válido\n(não localhost ou endereço IP)';
+
+  @override
+  String get profileEditDomainWithTld =>
+      'Por favor, digite um link válido com um domínio apropriado\n(ex., company.com)';
+
+  @override
+  String profileEditBaseUrlRequired(Object baseUrl) {
+    return 'O link de indicação deve começar com:\n$baseUrl';
+  }
+
+  @override
+  String get profileEditNotHomepage =>
+      'Por favor, digite seu link de indicação único,\nnão apenas a página inicial';
+
+  @override
+  String get profileEditInvalidFormat => 'Formato de link inválido';
+
+  @override
+  String get profileEditReferralRequired =>
+      'Por favor, digite seu link de indicação';
+
+  @override
+  String get profileEditConfirmReferral =>
+      'Por favor, confirme seu link de indicação';
+
+  @override
+  String get profileEditCompleteLink =>
+      'Por favor, digite um link completo começando com\nhttp:// ou https://';
+
+  @override
+  String get profileEditValidReferralRequired =>
+      'Por favor, digite um link de indicação válido (ex., https://example.com).';
+
+  @override
+  String get profileEditReferralMismatch =>
+      'Os campos de Link de Indicação devem corresponder para confirmação.';
+
+  @override
+  String get profileEditInvalidLinkTitle => 'Link de Indicação Inválido';
+
+  @override
+  String profileEditInvalidLinkMessage(Object businessName) {
+    return 'O link de indicação de $businessName não pôde ser verificado. O link pode estar incorreto, inativo ou temporariamente indisponível.';
+  }
+
+  @override
+  String get profileEditContactSponsor =>
+      'Por favor, verifique o link e tente novamente, ou entre em contato com seu patrocinador para obter o link de indicação correto.';
+
+  @override
+  String get profileEditTryAgainButton => 'Tentar Novamente';
+
+  @override
+  String profileEditReferralHint(Object baseUrl) {
+    return 'ex., ${baseUrl}seu_nome_de_usuario_aqui';
+  }
+
+  @override
+  String get profileEditRequiredForRep =>
+      'Obrigatório quando você é representante';
+
+  @override
+  String get adminProfilePictureRequired =>
+      'Por favor, selecione uma foto de perfil';
+
+  @override
+  String get adminProfileCountryRequired => 'Por favor, selecione um país';
+
+  @override
+  String get adminProfileStateRequired =>
+      'Por favor, selecione um estado/província';
+
+  @override
+  String get adminProfileCityRequired => 'Por favor, digite sua cidade';
+
+  @override
+  String get adminProfileSetupTitle =>
+      '🛠️ Configurando seu perfil de negócios...';
+
+  @override
+  String get adminProfileSetupDescription =>
+      'Preparando as informações do seu negócio';
+
+  @override
+  String get adminProfileUserNotAuthenticated => 'Usuário não autenticado';
+
+  @override
+  String get adminProfileUploadFailed => 'Falha ao enviar imagem';
+
+  @override
+  String get adminProfileSaveSuccess =>
+      'Informações de perfil salvas com sucesso!';
+
+  @override
+  String adminProfileSaveError(Object error) {
+    return 'Erro: $error';
+  }
+
+  @override
+  String get adminProfileScreenTitle => 'Perfil de Administrador';
+
+  @override
+  String get adminProfileSetupHeader => 'Configuração de Perfil';
+
+  @override
+  String get adminProfileNoEmail => 'Sem e-mail';
+
+  @override
+  String get adminProfileCountryLabel => 'País';
+
+  @override
+  String get adminProfileStateLabel => 'Estado/Província';
+
+  @override
+  String get adminProfileCityLabel => 'Cidade';
+
+  @override
+  String get adminProfileNextButton => 'Próximo - Informações do Negócio';
+
+  @override
+  String get subscriptionAppBarTitle => 'Team Build Pro';
+
+  @override
+  String get subscriptionPremiumHeader => 'Recursos Premium:';
+
+  @override
+  String get subscriptionStatusActive => 'Assinatura Ativa';
+
+  @override
+  String get subscriptionStatusActiveSubtitle =>
+      'Você tem acesso completo a todos os recursos premium';
+
+  @override
+  String get subscriptionStatusPaused => 'Assinatura Pausada';
+
+  @override
+  String get subscriptionStatusPausedSubtitle =>
+      'Sua assinatura está pausada. Retome para restaurar o acesso.';
+
+  @override
+  String get subscriptionStatusPaymentIssue => 'Problema de Pagamento';
+
+  @override
+  String get subscriptionStatusPaymentIssueSubtitle =>
+      'Atualize o método de pagamento para restaurar o acesso';
+
+  @override
+  String get subscriptionStatusTrialActive => 'Teste Grátis Ativo';
+
+  @override
+  String subscriptionStatusTrialDaysRemaining(Object days) {
+    return '$days dias restantes no seu teste';
+  }
+
+  @override
+  String get subscriptionStatusCancelled => 'Assinatura Cancelada';
+
+  @override
+  String get subscriptionStatusCancelledSubtitle =>
+      'O acesso continua até a data de vencimento';
+
+  @override
+  String get subscriptionStatusExpired => 'Assinatura Expirada';
+
+  @override
+  String get subscriptionStatusExpiredSubtitle =>
+      'Atualize para restaurar recursos premium';
+
+  @override
+  String subscriptionFeature1(Object businessName) {
+    return 'Envie seu link de indicação único de $businessName';
+  }
+
+  @override
+  String get subscriptionFeature2 =>
+      'Coaching de IA personalizado para recrutamento e construção de equipes';
+
+  @override
+  String get subscriptionFeature3 =>
+      'Desbloqueie mensagens para usuários na sua equipe';
+
+  @override
+  String subscriptionFeature4(Object businessName) {
+    return 'Garanta que os membros da equipe se juntem sob VOCÊ em $businessName';
+  }
+
+  @override
+  String get subscriptionFeature5 => 'Análises e insights avançados';
+
+  @override
+  String get subscriptionActivatedSuccess =>
+      '✅ Assinatura ativada com sucesso!';
+
+  @override
+  String get subscriptionNotActiveTitle => 'Assinatura Não Ativa';
+
+  @override
+  String get subscriptionNotActiveMessage =>
+      'Compra iniciada, mas ainda não ativa. Tente novamente.';
+
+  @override
+  String get subscriptionNotAvailableTitle => 'Assinatura Não Disponível';
+
+  @override
+  String get subscriptionNotAvailableMessageIOS =>
+      'As compras no aplicativo não estão disponíveis atualmente no seu dispositivo. Isso pode ser devido a restrições definidas pela sua organização ou administrador do dispositivo.\n\nPor favor, verifique suas configurações de Tempo de Uso ou entre em contato com seu departamento de TI se estiver usando um dispositivo gerenciado.\n\nAlternativamente, você pode assinar através do nosso site.';
+
+  @override
+  String get subscriptionNotAvailableMessageAndroid =>
+      'As compras no aplicativo não estão disponíveis atualmente no seu dispositivo. Isso pode ser devido a restrições ou problemas de rede.\n\nPor favor, tente novamente mais tarde ou entre em contato com o suporte se o problema persistir.';
+
+  @override
+  String get subscriptionNotAvailableMessageDefault =>
+      'As compras no aplicativo não estão disponíveis atualmente. Por favor, tente novamente mais tarde.';
+
+  @override
+  String get subscriptionOkButton => 'OK';
+
+  @override
+  String get subscriptionRestoredSuccess =>
+      '✅ Assinatura restaurada com sucesso!';
+
+  @override
+  String get subscriptionNoPreviousFound =>
+      'Nenhuma assinatura anterior encontrada para restaurar.';
+
+  @override
+  String get subscriptionSubscribeButton => 'Assinar Agora - \$4.99/mês';
+
+  @override
+  String get subscriptionRestoreButton => 'Restaurar Assinatura Anterior';
+
+  @override
+  String get subscriptionLegalNotice =>
+      'Ao assinar, você concorda com nossos Termos de Serviço e Política de Privacidade.';
+
+  @override
+  String get subscriptionTermsLink => 'Termos de Serviço';
+
+  @override
+  String get subscriptionSeparator => ' | ';
+
+  @override
+  String get subscriptionPrivacyLink => 'Política de Privacidade';
+
+  @override
+  String subscriptionAutoRenewNotice(String managementText) {
+    return 'A assinatura renova automaticamente, a menos que seja cancelada pelo menos 24 horas antes do final do período atual. $managementText';
+  }
+
+  @override
+  String get subscriptionManageIOS =>
+      'Você pode gerenciar sua assinatura nas configurações da sua conta Apple ID.';
+
+  @override
+  String get subscriptionManageAndroid =>
+      'Você pode gerenciar sua assinatura na Google Play Store.';
+
+  @override
+  String get subscriptionManageDefault =>
+      'Você pode gerenciar sua assinatura na loja de aplicativos do seu dispositivo.';
+
+  @override
+  String get subscriptionPlatformAppStore => 'App Store';
+
+  @override
+  String get subscriptionPlatformPlayStore => 'Google Play Store';
+
+  @override
+  String get subscriptionPlatformGeneric => 'loja de aplicativos';
+
+  @override
+  String get subscriptionDefaultBizOpp => 'sua oportunidade';
+
+  @override
+  String get termsScreenTitle => 'Termos de Serviço';
+
+  @override
+  String get termsHeaderTitle => 'Termos de Serviço';
+
+  @override
+  String get termsSubtitle => 'Acordo de Plataforma de Redes Profissionais';
+
+  @override
+  String termsLastUpdated(Object date) {
+    return 'Última Atualização: $date';
+  }
+
+  @override
+  String get termsFooterBadgeTitle => 'Conforme App Store da Apple';
+
+  @override
+  String get termsFooterBadgeDescription =>
+      'Estes Termos de Serviço atendem a todas as diretrizes e requisitos da App Store da Apple para aplicativos de plataforma.';
+
+  @override
+  String get termsDisclaimerTitle => 'PLATAFORMA DE NETWORKING PROFISSIONAL';
+
+  @override
+  String get termsDisclaimerSubtitle => 'Visão Geral do Serviço';
+
+  @override
+  String get privacyScreenTitle => 'Política de Privacidade';
+
+  @override
+  String get privacyHeaderTitle => 'Política de Privacidade';
+
+  @override
+  String privacyLastUpdated(Object date) {
+    return 'Última Atualização: $date';
+  }
+
+  @override
+  String get privacyEmailSubject =>
+      'subject=Consulta sobre Política de Privacidade';
+
+  @override
+  String privacyEmailError(Object email) {
+    return 'Não foi possível abrir o cliente de e-mail. Por favor, entre em contato com $email';
+  }
+
+  @override
+  String get privacyMattersTitle => 'Sua Privacidade Importa';
+
+  @override
+  String get privacyMattersDescription =>
+      'Estamos comprometidos em proteger suas informações pessoais e seu direito à privacidade. Esta política explica como coletamos, usamos e protegemos seus dados.';
+
+  @override
+  String get privacyAppleComplianceTitle =>
+      'Conformidade de Privacidade da Apple';
+
+  @override
+  String get privacyAppleComplianceDescription =>
+      'Este aplicativo segue as diretrizes de privacidade da Apple e os requisitos da App Store. Somos transparentes sobre a coleta de dados e damos a você controle sobre suas informações.';
+
+  @override
+  String get privacyContactHeading => 'Entre em Contato';
+
+  @override
+  String get privacyContactSubheading =>
+      'Dúvidas sobre esta Política de Privacidade?';
+
+  @override
+  String get privacyContactDetails =>
+      'Team Build Pro\nOficial de Privacidade\nResposta em 48 horas';
+
+  @override
+  String privacyCopyright(Object year) {
+    return '© $year Team Build Pro. Todos os direitos reservados.';
+  }
+
+  @override
+  String get privacyFooterDisclaimer =>
+      'Esta Política de Privacidade é efetiva a partir da data listada acima e se aplica a todos os usuários do aplicativo móvel Team Build Pro.';
+
+  @override
+  String get howItWorksScreenTitle => 'Como Funciona';
+
+  @override
+  String get howItWorksHeaderTitle => 'Como Funciona';
+
+  @override
+  String get howItWorksHeroSubtitle =>
+      'Transforme seu recrutamento com um pipeline de equipe pré-qualificado.';
+
+  @override
+  String get howItWorksFeaturedOpportunity => 'Oportunidade em Destaque';
+
+  @override
+  String get howItWorksPipelineSystem => 'SISTEMA DE PIPELINE';
+
+  @override
+  String get howItWorksStep1Title => 'Estabeleça Sua Fundação';
+
+  @override
+  String howItWorksStep1Description(Object business) {
+    return 'Personalize sua conta Team Build Pro com os detalhes da sua oportunidade e conecte seu link de indicação - transformando o app em seu pipeline de recrutamento pessoal.';
+  }
+
+  @override
+  String get howItWorksStep2Title =>
+      'Construa de Forma Inteligente, Não Difícil';
+
+  @override
+  String get howItWorksStep2Description =>
+      'Use coaching impulsionado por IA para redigir mensagens, agendar follow-ups e rastrear interesse. Construa relacionamentos com prospects antes mesmo deles entrarem na sua oportunidade de negócio.';
+
+  @override
+  String get howItWorksStep3Title => 'Qualificação Automática';
+
+  @override
+  String howItWorksStep3Description(Object business) {
+    return 'À medida que os prospects constroem suas próprias equipes dentro do app, eles automaticamente atingem marcos de qualificação (4 patrocinadores diretos + 20 equipe total) - provando seu comprometimento antes de entrar.';
+  }
+
+  @override
+  String get howItWorksStep4Title => 'Crescimento Rápido';
+
+  @override
+  String get howItWorksStep4Description =>
+      'Seus prospects pré-qualificados lançam com momentum, equipes já estabelecidas e capacidade comprovada de recrutar. Isso cria um motor de crescimento autossustentável.';
+
+  @override
+  String get howItWorksKeyTargetsTitle => ' METAS CHAVE DE CRESCIMENTO';
+
+  @override
+  String get howItWorksDirectSponsors => 'Patrocinadores Diretos';
+
+  @override
+  String get howItWorksTotalTeam => 'Membros Totais da Equipe';
+
+  @override
+  String get howItWorksCtaHeading => 'Expanda Sua Rede';
+
+  @override
+  String get howItWorksCtaDescription =>
+      'Expanda sua Rede para impulsionar o crescimento da organização!';
+
+  @override
+  String get howItWorksCtaButton => 'Estratégias de Crescimento Comprovadas';
+
+  @override
+  String get howItWorksDefaultBizOpp => 'sua oportunidade';
+
+  @override
+  String get termsDisclaimerContent =>
+      '• Team Build Pro é uma plataforma de networking baseada em assinatura\n• Os usuários pagam uma taxa de assinatura mensal para acesso a ferramentas de networking\n• A plataforma fornece gerenciamento de relacionamentos e recursos de conexão de negócios\n• Todas as oportunidades de negócios são fornecidas por terceiros independentes\n\nTeam Build Pro opera como uma plataforma de networking e não garante resultados comerciais.';
+
+  @override
+  String get termsSection1Title => '1. ACEITAÇÃO DOS TERMOS';
+
+  @override
+  String get termsSection1Content =>
+      'Ao baixar, instalar, acessar ou usar o aplicativo móvel Team Build Pro (\"Aplicativo\"), você concorda em estar vinculado a estes Termos de Serviço (\"Termos\"). Se você não concordar com estes Termos, não use o Aplicativo.\n\nEstes Termos constituem um acordo legalmente vinculativo entre você e Team Build Pro em relação ao seu uso do nosso serviço de plataforma de networking profissional.';
+
+  @override
+  String get termsSection2Title => '2. DESCRIÇÃO DO SERVIÇO';
+
+  @override
+  String get termsSection2Content =>
+      'Team Build Pro é uma plataforma de networking profissional baseada em assinatura que fornece:\n\n• Ferramentas de gerenciamento de relacionamentos de contatos\n• Recursos de construção de equipe e networking\n• Ferramentas de comunicação e colaboração\n• Informações sobre oportunidades de negócios de provedores terceiros\n• Coaching e orientação impulsionada por IA\n\nISENÇÕES IMPORTANTES:\n• Team Build Pro é um serviço de plataforma de networking, não uma oportunidade de negócio\n• Os usuários pagam uma taxa de assinatura mensal pelo acesso à plataforma\n• Não garantimos nenhum resultado comercial ou renda\n• Todas as oportunidades de negócios são fornecidas por terceiros independentes\n• O sucesso depende inteiramente do esforço individual e das condições do mercado';
+
+  @override
+  String get termsSection3Title => '3. ASSINATURA E PAGAMENTO';
+
+  @override
+  String get termsSection3Content =>
+      'ACESSO E TAXAS:\n• O Aplicativo opera em uma base de assinatura\n• As taxas de assinatura mensal são cobradas através da sua conta Apple ID\n• A assinatura renova automaticamente a menos que seja cancelada\n• Os preços são mostrados no Aplicativo e podem variar por região\n\nCICLO DE COBRANÇA:\n• Você será cobrado na confirmação da compra\n• Sua assinatura renova automaticamente a cada mês\n• As cobranças ocorrem 24 horas antes do final do período atual\n• Você pode gerenciar assinaturas nas Configurações da Conta Apple ID\n\nCANCELAMENTO:\n• Cancele a qualquer momento através das Configurações da Conta Apple ID\n• O cancelamento entra em vigor no final do período de cobrança atual\n• Sem reembolsos por meses parciais\n• O acesso continua até o final do período pago';
+
+  @override
+  String get termsSection4Title => '4. TESTE GRATUITO (SE APLICÁVEL)';
+
+  @override
+  String get termsSection4Content =>
+      'TERMOS DO TESTE:\n• Alguns planos de assinatura podem incluir um período de teste gratuito\n• A duração do teste será claramente exibida antes da inscrição\n• Você pode cancelar durante o teste para evitar cobranças\n• Se você não cancelar, será cobrado a taxa de assinatura\n\nCONVERSÃO PARA PAGO:\n• Os testes convertem para assinaturas pagas automaticamente\n• As cobranças começam imediatamente após o término do teste\n• O preço de assinatura mostrado na inscrição se aplica\n• Cancele antes do término do teste para evitar cobranças';
+
+  @override
+  String get termsSection5Title => '5. TERMOS DE COMPRA IN-APP DA APPLE';
+
+  @override
+  String get termsSection5Content =>
+      'Todas as assinaturas são processadas através do sistema de Compra In-App da Apple e estão sujeitas aos Termos de Serviço e políticas da Apple.\n\nPAPEL DA APPLE:\n• O pagamento é cobrado na sua conta Apple ID\n• Assinaturas gerenciadas através das Configurações da Conta Apple ID\n• Solicitações de reembolso tratadas pela Apple de acordo com suas políticas\n• Os termos do EULA padrão da Apple se aplicam, a menos que especificado de outra forma\n\nSUAS RESPONSABILIDADES:\n• Manter informações de pagamento precisas no Apple ID\n• Monitorar o status da assinatura na sua conta Apple\n• Contatar o Suporte da Apple para problemas de cobrança\n• Revisar os termos da Apple em: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
+
+  @override
+  String get termsSection6Title => '6. CONTAS DE USUÁRIO E REGISTRO';
+
+  @override
+  String get termsSection6Content =>
+      'CRIAÇÃO DE CONTA:\n• Você deve criar uma conta para usar o Aplicativo\n• Fornecer informações precisas, atuais e completas\n• Você é responsável por manter a confidencialidade da conta\n• Você deve ter pelo menos 18 anos para criar uma conta\n\nSEGURANÇA DA CONTA:\n• Mantenha sua senha segura e confidencial\n• Notifique-nos imediatamente de acesso não autorizado\n• Você é responsável por toda atividade sob sua conta\n• Não compartilhe sua conta com outros\n\nTERMINAÇÃO DA CONTA:\n• Podemos suspender ou terminar contas que violem estes Termos\n• Você pode excluir sua conta a qualquer momento através do Aplicativo\n• A terminação não afeta a cobrança de assinatura a menos que seja cancelada\n• Reservamo-nos o direito de recusar serviço a qualquer pessoa';
+
+  @override
+  String get termsSection7Title => '7. CONDUTA PROIBIDA';
+
+  @override
+  String get termsSection7Content =>
+      'Você concorda em NÃO:\n\n• Usar o Aplicativo para qualquer propósito ilegal\n• Violar qualquer lei ou regulamento aplicável\n• Infringir direitos de propriedade intelectual\n• Transmitir código prejudicial, vírus ou malware\n• Assediar, abusar ou prejudicar outros usuários\n• Fazer-se passar por outros ou fornecer informações falsas\n• Tentar obter acesso não autorizado ao Aplicativo\n• Interferir com a funcionalidade ou segurança do Aplicativo\n• Usar sistemas automatizados para acessar o Aplicativo sem permissão\n• Coletar informações de usuários sem consentimento\n• Participar de qualquer atividade que interrompa o Aplicativo\n• Usar o Aplicativo para promover esquemas ilegais ou fraudes';
+
+  @override
+  String get termsSection8Title => '8. PROPRIEDADE INTELECTUAL';
+
+  @override
+  String get termsSection8Content =>
+      'PROPRIEDADE:\n• Team Build Pro possui todos os direitos do Aplicativo e seu conteúdo\n• Isso inclui software, design, texto, gráficos e logotipos\n• Nossas marcas comerciais e branding são protegidos\n• Você recebe apenas uma licença limitada para usar o Aplicativo\n\nSUA LICENÇA:\n• Nós concedemos a você uma licença limitada, não exclusiva e intransferível\n• Você pode usar o Aplicativo para fins pessoais e não comerciais\n• Esta licença não inclui revenda ou uso comercial\n• A licença termina quando sua assinatura termina\n\nCONTEÚDO DO USUÁRIO:\n• Você mantém a propriedade do conteúdo que cria no Aplicativo\n• Você nos concede uma licença para usar seu conteúdo para fornecer serviços\n• Você declara que tem direitos sobre qualquer conteúdo que enviar\n• Podemos remover conteúdo que viole estes Termos';
+
+  @override
+  String get termsSection9Title => '9. PRIVACIDADE E DADOS';
+
+  @override
+  String get termsSection9Content =>
+      'COLETA E USO DE DADOS:\n• Coletamos e usamos dados conforme descrito em nossa Política de Privacidade\n• Revise nossa Política de Privacidade em: https://info.teambuildpro.com/privacy-policy.html\n• Ao usar o Aplicativo, você consente com nossas práticas de dados\n• Implementamos medidas de segurança para proteger seus dados\n\nSEUS DIREITOS DE PRIVACIDADE:\n• Você tem direitos em relação aos seus dados pessoais\n• Você pode solicitar acesso aos seus dados\n• Você pode solicitar a exclusão de sua conta e dados\n• Entre em contato conosco em support@teambuildpro.com para solicitações de privacidade\n\nSEGURANÇA DE DADOS:\n• Usamos medidas de segurança padrão da indústria\n• No entanto, nenhum sistema é completamente seguro\n• Você usa o Aplicativo por sua própria conta e risco\n• Relate problemas de segurança para support@teambuildpro.com';
+
+  @override
+  String get termsSection10Title => '10. SERVIÇOS E CONTEÚDO DE TERCEIROS';
+
+  @override
+  String get termsSection10Content =>
+      'OPORTUNIDADES DE NEGÓCIOS:\n• O Aplicativo pode exibir informações sobre oportunidades de negócios de terceiros\n• Essas oportunidades são fornecidas por empresas independentes\n• Team Build Pro não é afiliado a essas oportunidades\n• Não endossamos nem garantimos nenhuma oportunidade de terceiros\n• Pesquise oportunidades independentemente antes de participar\n\nLINKS DE TERCEIROS:\n• O Aplicativo pode conter links para sites de terceiros\n• Não somos responsáveis por conteúdo ou práticas de terceiros\n• Sites de terceiros têm seus próprios termos e políticas de privacidade\n• Acesse conteúdo de terceiros por sua própria conta e risco\n\nINTEGRAÇÕES:\n• O Aplicativo pode se integrar com serviços de terceiros\n• Seu uso de serviços integrados está sujeito aos termos deles\n• Não somos responsáveis pelo desempenho de serviços de terceiros\n• As integrações podem ser modificadas ou descontinuadas a qualquer momento';
+
+  @override
+  String get termsSection11Title => '11. ISENÇÕES';
+
+  @override
+  String get termsSection11Content =>
+      'SEM OPORTUNIDADE DE NEGÓCIO:\n• Team Build Pro é apenas um serviço de plataforma de networking\n• Não oferecemos nem garantimos nenhuma oportunidade de negócio\n• Não garantimos renda, ganhos ou sucesso\n• Qualquer informação de oportunidade de negócio vem de terceiros\n\nSERVIÇO FORNECIDO \"COMO ESTÁ\":\n• O Aplicativo é fornecido \"como está\" e \"conforme disponível\"\n• Não fazemos garantias sobre a confiabilidade ou disponibilidade do Aplicativo\n• Não garantimos serviço sem erros ou ininterrupto\n• Podemos modificar ou descontinuar recursos a qualquer momento\n\nSEM ACONSELHAMENTO PROFISSIONAL:\n• O Aplicativo não fornece aconselhamento legal, financeiro ou tributário\n• O coaching de IA é apenas para fins informativos\n• Consulte profissionais qualificados para decisões importantes\n• Não somos responsáveis por decisões baseadas no conteúdo do Aplicativo\n\nISENÇÃO DE RESULTADOS:\n• Os resultados individuais variam e não são garantidos\n• O sucesso depende do esforço individual e das circunstâncias\n• O desempenho passado não indica resultados futuros\n• Não fazemos representações sobre resultados potenciais';
+
+  @override
+  String get termsSection12Title => '12. LIMITAÇÃO DE RESPONSABILIDADE';
+
+  @override
+  String get termsSection12Content =>
+      'NA MÁXIMA EXTENSÃO PERMITIDA POR LEI:\n\nNÃO SOMOS RESPONSÁVEIS POR:\n• Quaisquer danos indiretos, incidentais ou consequenciais\n• Perda de lucros, receita, dados ou oportunidades de negócios\n• Interrupções de serviço ou erros\n• Acesso não autorizado à sua conta ou dados\n• Ações ou conteúdo de terceiros\n• Quaisquer danos que excedam o valor que você nos pagou nos últimos 12 meses\n\nLIMITE DE RESPONSABILIDADE:\n• Nossa responsabilidade total é limitada às taxas de assinatura pagas nos últimos 12 meses\n• Isso se aplica independentemente da teoria legal de responsabilidade\n• Algumas jurisdições não permitem essas limitações\n• Nesses casos, a responsabilidade é limitada ao mínimo exigido por lei\n\nRESPONSABILIDADE DO USUÁRIO:\n• Você é responsável pelo seu uso do Aplicativo\n• Você é responsável por decisões baseadas no conteúdo do Aplicativo\n• Você assume todos os riscos associados ao uso do Aplicativo\n• Você concorda em avaliar oportunidades de negócios independentemente';
+
+  @override
+  String get termsSection13Title => '13. INDENIZAÇÃO';
+
+  @override
+  String get termsSection13Content =>
+      'Você concorda em indenizar, defender e isentar Team Build Pro, seus oficiais, diretores, funcionários e agentes de quaisquer reclamações, danos, perdas, responsabilidades e despesas (incluindo honorários legais) decorrentes de:\n\n• Seu uso do Aplicativo\n• Sua violação destes Termos\n• Sua violação de quaisquer direitos de terceiros\n• Seu conteúdo ou informações publicadas no Aplicativo\n• Sua participação em qualquer oportunidade de negócio\n• Sua violação de leis ou regulamentos aplicáveis\n\nEsta obrigação de indenização sobrevive à terminação destes Termos e do seu uso do Aplicativo.';
+
+  @override
+  String get termsSection14Title => '14. RESOLUÇÃO DE DISPUTAS';
+
+  @override
+  String get termsSection14Content =>
+      'LEI APLICÁVEL:\n• Estes Termos são regidos pelas leis do Estado de Utah, USA\n• A lei federal se aplica quando aplicável\n• Você consente com a jurisdição nos tribunais de Utah\n\nRESOLUÇÃO INFORMAL:\n• Entre em contato conosco primeiro para resolver disputas informalmente\n• Email: support@teambuildpro.com\n• Tentaremos resolver problemas de boa fé\n• A maioria das preocupações pode ser abordada através de comunicação\n\nARBITRAGEM (SE NECESSÁRIO):\n• Disputas podem estar sujeitas a arbitragem vinculante\n• Arbitragem conduzida sob as regras da American Arbitration Association\n• Arbitragem individual apenas - sem ações coletivas\n• Localização da arbitragem: Utah, USA\n\nEXCEÇÕES:\n• Qualquer parte pode buscar medidas cautelares em tribunal\n• Disputas de propriedade intelectual podem ser litigadas\n• O tribunal de pequenas causas permanece disponível para reclamações qualificadas';
+
+  @override
+  String get termsSection15Title => '15. MUDANÇAS NOS TERMOS';
+
+  @override
+  String get termsSection15Content =>
+      'MODIFICAÇÕES:\n• Podemos atualizar estes Termos a qualquer momento\n• As mudanças entram em vigor mediante publicação no Aplicativo\n• O uso continuado constitui aceitação das mudanças\n• Mudanças materiais serão comunicadas por e-mail ou notificação do Aplicativo\n\nSUAS OPÇÕES:\n• Revise os Termos periodicamente para mudanças\n• Se você discordar das mudanças, pare de usar o Aplicativo\n• Cancele sua assinatura se não aceitar os novos Termos\n• Entre em contato com support@teambuildpro.com com perguntas\n\nDATA EFETIVA:\n• Versão atual efetiva a partir da data de publicação\n• Versões anteriores são substituídas\n• Mantemos registros das versões dos Termos';
+
+  @override
+  String get termsSection16Title => '16. DISPOSIÇÕES GERAIS';
+
+  @override
+  String get termsSection16Content =>
+      'ACORDO COMPLETO:\n• Estes Termos constituem o acordo completo entre você e Team Build Pro\n• Eles substituem todos os acordos ou entendimentos anteriores\n• Os termos do EULA da Apple também se aplicam a compras da App Store\n\nSEPARABILIDADE:\n• Se alguma disposição for considerada inválida, o restante permanece em vigor\n• Disposições inválidas serão modificadas para serem executáveis\n• Os Termos permanecem vinculativos mesmo com disposições inválidas\n\nSEM RENÚNCIA:\n• Nossa falha em fazer cumprir qualquer direito não renuncia a esse direito\n• Renúncia de uma violação não renuncia a violações futuras\n• Todos os direitos e recursos são cumulativos\n\nATRIBUIÇÃO:\n• Você não pode atribuir estes Termos sem nosso consentimento\n• Podemos atribuir nossos direitos e obrigações\n• Os Termos vinculam sucessores e cessionários permitidos\n\nINFORMAÇÕES DE CONTATO:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nPolítica de Privacidade: https://info.teambuildpro.com/privacy-policy.html\n\nÚltima Atualização: Janeiro 2025';
+
+  @override
+  String get privacySection1Title => '1. INFORMAÇÕES QUE COLETAMOS';
+
+  @override
+  String get privacySection1Content =>
+      'INFORMAÇÕES DA CONTA:\n• Nome e endereço de e-mail\n• Número de telefone (opcional)\n• Informações de perfil que você fornece\n• Credenciais de autenticação\n\nDADOS DE USO:\n• Interações com o aplicativo e recursos usados\n• Informações do dispositivo (modelo, versão do SO)\n• Dados de desempenho e falhas\n• Dados de análise (anonimizados quando possível)\n\nCONTEÚDO QUE VOCÊ CRIA:\n• Mensagens e comunicações\n• Informações de contato que você adiciona\n• Notas e dados de relacionamento\n• Arquivos e mídia que você envia\n\nDADOS DE LOCALIZAÇÃO:\n• Não coletamos dados de localização precisa\n• A localização geral pode ser derivada do endereço IP\n• Você pode gerenciar permissões de localização nas configurações do dispositivo';
+
+  @override
+  String get privacySection2Title => '2. COMO USAMOS SUAS INFORMAÇÕES';
+
+  @override
+  String get privacySection2Content =>
+      'Usamos as informações coletadas para:\n\nFORNECER SERVIÇOS:\n• Criar e gerenciar sua conta\n• Habilitar recursos e funcionalidade do Aplicativo\n• Processar seus pagamentos de assinatura\n• Fornecer suporte ao cliente\n• Enviar notificações relacionadas ao serviço\n\nMELHORAR NOSSO APLICATIVO:\n• Analisar padrões de uso e tendências\n• Corrigir bugs e melhorar o desempenho\n• Desenvolver novos recursos\n• Realizar pesquisas e análises\n\nCOMUNICAÇÕES:\n• Enviar atualizações importantes do serviço\n• Responder às suas consultas\n• Fornecer suporte técnico\n• Enviar marketing opcional (você pode cancelar)\n\nCONFORMIDADE LEGAL:\n• Cumprir obrigações legais\n• Fazer cumprir nossos Termos de Serviço\n• Proteger direitos e segurança\n• Prevenir fraude e abuso';
+
+  @override
+  String get privacySection3Title => '3. COMO COMPARTILHAMOS SUAS INFORMAÇÕES';
+
+  @override
+  String get privacySection3Content =>
+      'Compartilhamos informações apenas nestas circunstâncias limitadas:\n\nFORNECEDORES DE SERVIÇOS:\n• Hospedagem em nuvem (Firebase/Google Cloud)\n• Processamento de pagamentos (Apple)\n• Serviços de análise\n• Ferramentas de suporte ao cliente\n• Esses provedores são contratualmente obrigados a proteger seus dados\n\nREQUISITOS LEGAIS:\n• Quando exigido por lei ou processo legal\n• Para proteger direitos, propriedade ou segurança\n• Em conexão com processos legais\n• Para prevenir fraude ou atividade ilegal\n\nTRANSFERÊNCIAS COMERCIAIS:\n• Em conexão com fusão, aquisição ou venda de ativos\n• Seus dados podem ser transferidos para entidade sucessora\n• Você será notificado de qualquer transferência\n\nCOM SEU CONSENTIMENTO:\n• Quando você autoriza explicitamente o compartilhamento\n• Para propósitos que você aprova\n\nNÓS NÃO:\n• Vendemos suas informações pessoais\n• Compartilhamos dados para marketing de terceiros\n• Fornecemos dados para corretores de dados';
+
+  @override
+  String get privacySection4Title => '4. SEGURANÇA DE DADOS';
+
+  @override
+  String get privacySection4Content =>
+      'MEDIDAS DE SEGURANÇA:\n• Criptografia padrão da indústria em trânsito e em repouso\n• Sistemas de autenticação seguros\n• Avaliações de segurança regulares\n• Controles de acesso e monitoramento\n• Centros de dados seguros (Google Cloud/Firebase)\n\nSUAS RESPONSABILIDADES:\n• Mantenha sua senha confidencial\n• Use recursos de segurança do dispositivo (senha, biometria)\n• Relate atividade suspeita imediatamente\n• Mantenha seu dispositivo e aplicativo atualizados\n\nLIMITAÇÕES:\n• Nenhum sistema é 100% seguro\n• Você usa o Aplicativo por sua própria conta e risco\n• Não podemos garantir segurança absoluta\n• Relate problemas de segurança para: support@teambuildpro.com';
+
+  @override
+  String get privacySection5Title => '5. SEUS DIREITOS DE PRIVACIDADE';
+
+  @override
+  String get privacySection5Content =>
+      'Você tem os seguintes direitos em relação aos seus dados:\n\nACESSO E PORTABILIDADE:\n• Solicitar uma cópia de seus dados pessoais\n• Exportar seus dados em formato portátil\n• Revisar quais informações temos sobre você\n\nCORREÇÃO:\n• Atualizar informações imprecisas\n• Modificar os detalhes do seu perfil\n• Corrigir erros na sua conta\n\nEXCLUSÃO:\n• Solicitar exclusão de sua conta e dados\n• Usar o recurso \"Excluir Conta\" no Aplicativo\n• Alguns dados podem ser retidos para conformidade legal\n• A exclusão é permanente e não pode ser desfeita\n\nOPTAR POR NÃO PARTICIPAR:\n• Cancelar assinatura de e-mails de marketing\n• Desabilitar notificações push nas configurações do dispositivo\n• Limitar a coleta de dados de análise\n\nPARA EXERCER DIREITOS:\n• Use as configurações do aplicativo quando disponível\n• Email: support@teambuildpro.com\n• Responderemos dentro de 30 dias\n• Pode ser necessária verificação de identidade';
+
+  @override
+  String get privacySection6Title => '6. RETENÇÃO DE DADOS';
+
+  @override
+  String get privacySection6Content =>
+      'QUANTO TEMPO MANTEMOS OS DADOS:\n\nCONTAS ATIVAS:\n• Dados retidos enquanto sua conta estiver ativa\n• Necessário para fornecer serviço contínuo\n• Você pode excluir dados ou conta a qualquer momento\n\nCONTAS EXCLUÍDAS:\n• A maioria dos dados excluída dentro de 30 dias\n• Alguns dados retidos para conformidade legal\n• Sistemas de backup purgados dentro de 90 dias\n• Registros financeiros mantidos conforme requisitos legais\n\nRETENÇÃO LEGAL:\n• Registros de transações: 7 anos (lei tributária)\n• Disputas legais: até resolução + estatuto de limitações\n• Prevenção de fraude: conforme exigido legalmente\n• Análises agregadas: indefinidamente (anonimizadas)\n\nSEU CONTROLE:\n• Solicitar exclusão a qualquer momento\n• Exportar dados antes da exclusão da conta\n• A exclusão é permanente e irreversível';
+
+  @override
+  String get privacySection7Title => '7. PRIVACIDADE DE CRIANÇAS';
+
+  @override
+  String get privacySection7Content =>
+      'RESTRIÇÃO DE IDADE:\n• O Aplicativo não é destinado a usuários menores de 18 anos\n• Não coletamos dados de menores conscientemente\n• Você deve ter 18+ para criar uma conta\n\nSE FICARMOS SABENDO DE USUÁRIOS MENORES DE IDADE:\n• Excluiremos suas contas imediatamente\n• Excluiremos todos os dados associados\n• Tomaremos medidas para prevenir acesso futuro de menores\n\nDIREITOS PARENTAIS:\n• Os pais podem solicitar exclusão de dados de menores\n• Contato: support@teambuildpro.com\n• Forneça prova de relacionamento parental\n• Agiremos prontamente em solicitações verificadas';
+
+  @override
+  String get privacySection8Title => '8. MUDANÇAS NA POLÍTICA DE PRIVACIDADE';
+
+  @override
+  String get privacySection8Content =>
+      'ATUALIZAÇÕES:\n• Podemos atualizar esta Política de Privacidade periodicamente\n• Mudanças publicadas no Aplicativo e em nosso site\n• Mudanças materiais comunicadas por e-mail ou notificação\n• O uso continuado significa aceitação das mudanças\n\nSUAS OPÇÕES:\n• Revise esta política regularmente\n• Entre em contato conosco com perguntas: support@teambuildpro.com\n• Pare de usar o Aplicativo se discordar das mudanças\n• Exclua sua conta se não aceitar as atualizações\n\nDATA EFETIVA:\n• Versão atual: Janeiro 2025\n• Última Atualização: Janeiro 2025\n• Versões anteriores são substituídas\n\nINFORMAÇÕES DE CONTATO:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nTermos de Serviço: https://info.teambuildpro.com/terms-of-service.html';
+
+  @override
+  String get subscriptionScreenTitle => 'Team Build Pro';
+
+  @override
+  String get subscriptionSuccessMessage => '✅ Assinatura ativada com sucesso!';
+
+  @override
+  String get subscriptionRestoreSuccess =>
+      '✅ Assinatura restaurada com sucesso!';
+
+  @override
+  String get subscriptionRestoreNone =>
+      'Nenhuma assinatura anterior encontrada para restaurar.';
+
+  @override
+  String get subscriptionStatusTrial => 'Teste Gratuito Ativo';
+
+  @override
+  String subscriptionStatusTrialSubtitle(int days) {
+    return '$days dias restantes no seu teste';
+  }
+
+  @override
+  String get subscriptionPremiumFeaturesHeader => 'Recursos Premium:';
+
+  @override
+  String subscriptionFeatureReferralLink(String bizOpp) {
+    return 'Envie seu link de indicação exclusivo de $bizOpp';
+  }
+
+  @override
+  String get subscriptionFeatureAiCoaching =>
+      'Treinamento de IA personalizado para recrutamento e construção de equipes';
+
+  @override
+  String get subscriptionFeatureMessaging =>
+      'Desbloqueie mensagens para usuários da sua equipe';
+
+  @override
+  String subscriptionFeatureEnsureTeam(String bizOpp) {
+    return 'Garanta que os membros da equipe entrem sob VOCÊ em $bizOpp';
+  }
+
+  @override
+  String get subscriptionFeatureAnalytics => 'Análises avançadas e insights';
+
+  @override
+  String get subscriptionManagementApple =>
+      'Você pode gerenciar sua assinatura nas configurações da sua conta Apple ID.';
+
+  @override
+  String get subscriptionManagementGoogle =>
+      'Você pode gerenciar sua assinatura na Google Play Store.';
 }

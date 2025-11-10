@@ -17,6 +17,7 @@ import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
 import '../services/subscription_navigation_guard.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -234,25 +235,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.blue, size: 24),
-              SizedBox(width: 12),
-              Text('Demo Account Information'),
+              const Icon(Icons.info_outline, color: Colors.blue, size: 24),
+              const SizedBox(width: 12),
+              Text(context.l10n?.profileDemoAccountTitle ?? 'Demo Account Information'),
             ],
           ),
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'This is a demo account for testing purposes and cannot be deleted.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                context.l10n?.profileDemoAccountMessage ?? 'This is a demo account for testing purposes and cannot be deleted.',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(
-                'Demo accounts are provided to showcase the app\'s features and functionality for review purposes.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                context.l10n?.profileDemoAccountSubtext ?? 'Demo accounts are provided to showcase the app\'s features and functionality for review purposes.',
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],
           ),
@@ -266,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              child: const Text('I Understand'),
+              child: Text(context.l10n?.profileDemoAccountButton ?? 'I Understand'),
             ),
           ],
         );
@@ -298,14 +299,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.business_center, color: Colors.amber, size: 24),
-              SizedBox(width: 12),
+              const Icon(Icons.business_center, color: Colors.amber, size: 24),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Admin Account Protection',
-                  style: TextStyle(fontSize: 18),
+                  context.l10n?.profileAdminProtectionTitle ?? 'Admin Account Protection',
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             ],
@@ -315,9 +316,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Administrator accounts with active team members cannot be deleted as this would disrupt business operations.',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                Text(
+                  context.l10n?.profileAdminProtectionMessage ?? 'Administrator accounts with active team members cannot be deleted as this would disrupt business operations.',
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 16),
                 Container(
@@ -335,7 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Your Team: $teamSize Direct Sponsors',
+                          context.l10n?.profileAdminTeamSize(teamSize) ?? 'Your Team: $teamSize Direct Sponsors',
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -343,14 +344,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'To delete your admin account, please contact our support team to arrange proper account transfer procedures that protect your team members.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                Text(
+                  context.l10n?.profileAdminProtectionInstructions ?? 'To delete your admin account, please contact our support team to arrange proper account transfer procedures that protect your team members.',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Contact: legal@teambuildpro.com',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
+                Text(
+                  context.l10n?.profileAdminProtectionContact ?? 'Contact: legal@teambuildpro.com',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
                 ),
               ],
             ),
@@ -370,9 +371,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
-                  'I Understand',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                child: Text(
+                  context.l10n?.profileDemoAccountButton ?? 'I Understand',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -404,7 +405,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Profile'),
+      appBar: AppScreenBar(title: context.l10n?.profileTitle ?? 'Profile'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -441,23 +442,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildInfoRow('City', currentUser.city ?? 'N/A'),
-                    _buildInfoRow('State', currentUser.state ?? 'N/A'),
-                    _buildInfoRow('Country', currentUser.country ?? 'N/A'),
+                    _buildInfoRow(context.l10n?.profileLabelCity ?? 'City', currentUser.city ?? 'N/A'),
+                    _buildInfoRow(context.l10n?.profileLabelState ?? 'State', currentUser.state ?? 'N/A'),
+                    _buildInfoRow(context.l10n?.profileLabelCountry ?? 'Country', currentUser.country ?? 'N/A'),
                     if (currentUser.createdAt != null)
-                      _buildInfoRow('Joined',
+                      _buildInfoRow(context.l10n?.profileLabelJoined ?? 'Joined',
                           DateFormat.yMMMd().format(currentUser.createdAt!)),
                     if (currentUser.role != 'admin') ...[
                       if (_sponsorName != null && _sponsorUid != null)
                         _buildClickableInfoRow(
-                            'Your Sponsor', _sponsorName!, _sponsorUid!),
+                            context.l10n?.profileLabelSponsor ?? 'Your Sponsor', _sponsorName!, _sponsorUid!),
                       if (_teamLeaderName != null &&
                           _teamLeaderName!.isNotEmpty &&
                           _teamLeaderUid != null &&
                           _teamLeaderUid!.isNotEmpty &&
                           _teamLeaderUid != _sponsorUid)
                         _buildClickableInfoRow(
-                            'Team Leader', _teamLeaderName!, _teamLeaderUid!),
+                            context.l10n?.profileLabelTeamLeader ?? 'Team Leader', _teamLeaderName!, _teamLeaderUid!),
                     ],
                   ],
                 ),
@@ -487,7 +488,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           }
                         });
                       },
-                      child: const Text('Edit Profile'),
+                      child: Text(context.l10n?.profileButtonEdit ?? 'Edit Profile'),
                     ),
                     const SizedBox(height: 16),
                     // --- Sign Out button (patched) ---
@@ -498,16 +499,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final messenger = ScaffoldMessenger.maybeOf(context);
                         messenger?.hideCurrentSnackBar();
                         messenger?.showSnackBar(
-                          const SnackBar(
-                            content: Text('Signing out...'),
-                            duration: Duration(milliseconds: 600),
+                          SnackBar(
+                            content: Text(context.l10n?.profileSigningOut ?? 'Signing out...'),
+                            duration: const Duration(milliseconds: 600),
                           ),
                         );
 
                         await _performSignOut();
                       },
                       icon: const Icon(Icons.logout),
-                      label: const Text('Sign Out'),
+                      label: Text(context.l10n?.profileButtonSignOut ?? 'Sign Out'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
                         foregroundColor: Colors.white,
@@ -527,7 +528,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                       icon: const Icon(Icons.description),
-                      label: const Text('Terms of Service'),
+                      label: Text(context.l10n?.profileButtonTerms ?? 'Terms of Service'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade600,
                         foregroundColor: Colors.white,
@@ -547,7 +548,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                       icon: const Icon(Icons.privacy_tip),
-                      label: const Text('Privacy Policy'),
+                      label: Text(context.l10n?.profileButtonPrivacy ?? 'Privacy Policy'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade600,
                         foregroundColor: Colors.white,
@@ -576,7 +577,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       },
                       icon: const Icon(Icons.delete_forever, size: 18),
-                      label: const Text('Delete Account'),
+                      label: Text(context.l10n?.profileButtonDeleteAccount ?? 'Delete Account'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.red.shade600,
                         side: BorderSide(color: Colors.red.shade600),

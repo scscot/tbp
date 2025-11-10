@@ -10,6 +10,7 @@ import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
 import '../services/biometric_service.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../data/states_by_country.dart';
 import 'dashboard_screen.dart';
 
@@ -132,8 +133,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
         if (!authenticated) {
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Biometric authentication failed. Please try again.'),
+            SnackBar(
+              content: Text(context.l10n?.profileUpdateBiometricFailed ?? 'Biometric authentication failed. Please try again.'),
               backgroundColor: Colors.orange,
             ),
           );
@@ -144,8 +145,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         final password = await _showPasswordDialog();
         if (password == null || password.isEmpty) {
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Password required to enable biometric login'),
+            SnackBar(
+              content: Text(context.l10n?.profileUpdatePasswordRequired ?? 'Password required to enable biometric login'),
               backgroundColor: Colors.orange,
             ),
           );
@@ -156,8 +157,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         final email = widget.user.email;
         if (email == null) {
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('User email not found'),
+            SnackBar(
+              content: Text(context.l10n?.profileUpdateEmailNotFound ?? 'User email not found'),
               backgroundColor: Colors.red,
             ),
           );
@@ -182,16 +183,16 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
           setState(() => _biometricEnabled = true);
 
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('✅ Biometric login enabled successfully'),
+            SnackBar(
+              content: Text(context.l10n?.profileUpdateBiometricEnabled ?? '✅ Biometric login enabled successfully'),
               backgroundColor: Colors.green,
             ),
           );
         } on FirebaseAuthException catch (e) {
           debugPrint('Password verification failed: ${e.code}');
           scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Incorrect password. Please try again.'),
+            SnackBar(
+              content: Text(context.l10n?.profileUpdatePasswordIncorrect ?? 'Incorrect password. Please try again.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -200,7 +201,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         debugPrint('Biometric enable error: $e');
         scaffoldMessenger.showSnackBar(
           SnackBar(
-            content: Text('Error enabling biometric: $e'),
+            content: Text(context.l10n?.profileUpdateBiometricError(e) ?? 'Error enabling biometric: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -213,8 +214,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         setState(() => _biometricEnabled = false);
 
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('Biometric login disabled'),
+          SnackBar(
+            content: Text(context.l10n?.profileUpdateBiometricDisabled ?? 'Biometric login disabled'),
             backgroundColor: Colors.blue,
           ),
         );
@@ -230,24 +231,24 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Password'),
+          title: Text(context.l10n?.profileUpdateConfirmPasswordTitle ?? 'Confirm Password'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'To securely store your credentials for biometric login, please enter your password.',
-                style: TextStyle(fontSize: 14),
+              Text(
+                context.l10n?.profileUpdateConfirmPasswordMessage ?? 'To securely store your credentials for biometric login, please enter your password.',
+                style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: passwordController,
                 obscureText: true,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  labelText: context.l10n?.profileUpdatePasswordLabel ?? 'Password',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 onSubmitted: (value) => Navigator.of(context).pop(value),
               ),
@@ -256,14 +257,14 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancel'),
+              child: Text(context.l10n?.profileUpdateCancelButton ?? 'Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(passwordController.text),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.blue,
               ),
-              child: const Text('Confirm'),
+              child: Text(context.l10n?.profileUpdateConfirmButton ?? 'Confirm'),
             ),
           ],
         );
@@ -276,22 +277,21 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Disable Biometric Login'),
-          content: const Text(
-            'Are you sure you want to disable biometric login? '
-            'You will need to use your email and password to sign in.',
+          title: Text(context.l10n?.profileUpdateDisableBiometricTitle ?? 'Disable Biometric Login'),
+          content: Text(
+            context.l10n?.profileUpdateDisableBiometricMessage ?? 'Are you sure you want to disable biometric login? You will need to use your email and password to sign in.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n?.profileUpdateCancelButton ?? 'Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text('Disable'),
+              child: Text(context.l10n?.profileUpdateDisableButton ?? 'Disable'),
             ),
           ],
         );
@@ -315,7 +315,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // The image is only mandatory during the first time setup.
     if (widget.isFirstTimeSetup && _imageFile == null) {
       setState(() {
-        _imageErrorText = 'Please upload your profile pic.';
+        _imageErrorText = context.l10n?.profileUpdatePictureRequired ?? 'Please upload your profile pic.';
       });
       isImageValid = false;
     } else {
@@ -341,7 +341,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         }
 
         if (photoUrl == null || photoUrl.isEmpty) {
-          throw Exception('Image was not provided.');
+          throw Exception(context.l10n?.profileUpdateImageNotProvided ?? 'Image was not provided.');
         }
 
         final updatedData = {
@@ -376,8 +376,8 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-              content: Text('Profile updated successfully!'),
+          SnackBar(
+              content: Text(context.l10n?.profileUpdateSuccess ?? 'Profile updated successfully!'),
               backgroundColor: Colors.green),
         );
 
@@ -393,7 +393,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(
           SnackBar(
-              content: Text('Error updating profile: $e'),
+              content: Text(context.l10n?.profileUpdateError(e) ?? 'Error updating profile: $e'),
               backgroundColor: Colors.red),
         );
       } finally {
@@ -410,14 +410,14 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Demo Mode'),
-          content: const Text('Profile editing disabled in demo mode.'),
+          title: Text(context.l10n?.profileUpdateDemoModeTitle ?? 'Demo Mode'),
+          content: Text(context.l10n?.profileUpdateDemoModeMessage ?? 'Profile editing disabled in demo mode.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('I Understand'),
+              child: Text(context.l10n?.profileUpdateDemoUnderstandButton ?? 'I Understand'),
             ),
           ],
         );
@@ -428,7 +428,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Update Profile'),
+      appBar: AppScreenBar(title: context.l10n?.profileUpdateScreenTitle ?? 'Update Profile'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -487,7 +487,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    widget.user.email ?? 'No email',
+                    widget.user.email ?? (context.l10n?.profileUpdateNoEmail ?? 'No email'),
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -522,7 +522,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     value: _selectedCountry,
-                    hint: const Text('Select Country'),
+                    hint: Text(context.l10n?.profileUpdateSelectCountry ?? 'Select Country'),
                     isExpanded: true,
                     items: statesByCountry.keys
                         .map((country) => DropdownMenuItem(
@@ -540,22 +540,22 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         _selectedState = null;
                       });
                     },
-                    decoration: const InputDecoration(
-                      labelText: 'Country',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.profileUpdateCountryLabel ?? 'Country',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value == null ? 'Please select a country' : null,
+                        value == null ? (context.l10n?.profileUpdateCountryRequired ?? 'Please select a country') : null,
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value: _selectedState,
-                    hint: const Text('Select State/Province'),
+                    hint: Text(context.l10n?.profileUpdateSelectState ?? 'Select State/Province'),
                     isExpanded: true,
                     disabledHint: _selectedCountry == null
-                        ? const Text('Select a country first')
+                        ? Text(context.l10n?.profileUpdateSelectCountryFirst ?? 'Select a country first')
                         : null,
                     items: statesForSelectedCountry
                         .map((state) => DropdownMenuItem(
@@ -574,26 +574,26 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               _selectedState = newValue;
                             });
                           },
-                    decoration: const InputDecoration(
-                      labelText: 'State/Province',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.profileUpdateStateLabel ?? 'State/Province',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value == null ? 'Please select a state/province' : null,
+                        value == null ? (context.l10n?.profileUpdateStateRequired ?? 'Please select a state/province') : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _cityController,
-                    decoration: const InputDecoration(
-                      labelText: 'City',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.profileUpdateCityLabel ?? 'City',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Please enter a city' : null,
+                        value!.isEmpty ? (context.l10n?.profileUpdateCityRequired ?? 'Please enter a city') : null,
                   ),
 
                   const SizedBox(height: 24),
@@ -610,7 +610,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Security Settings',
+                        context.l10n?.profileUpdateSecurityHeader ?? 'Security Settings',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -632,13 +632,13 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         horizontal: 16,
                         vertical: 4,
                       ),
-                      title: const Text('Enable Biometric Login'),
+                      title: Text(context.l10n?.profileUpdateBiometricToggle ?? 'Enable Biometric Login'),
                       subtitle: _checkingBiometric
-                          ? const Text('Checking device compatibility...')
+                          ? Text(context.l10n?.profileUpdateBiometricChecking ?? 'Checking device compatibility...')
                           : Text(
                               _biometricAvailable
-                                  ? 'Use fingerprint or face recognition to login'
-                                  : 'Not available on this device',
+                                  ? (context.l10n?.profileUpdateBiometricDescription ?? 'Use fingerprint or face recognition to login')
+                                  : (context.l10n?.profileUpdateBiometricNotAvailable ?? 'Not available on this device'),
                             ),
                       value: _biometricEnabled && _biometricAvailable,
                       onChanged: _biometricAvailable && !_checkingBiometric
@@ -677,7 +677,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 color: Colors.white,
                                 strokeWidth: 3,
                               ))
-                          : const Text('Save Changes'),
+                          : Text(context.l10n?.profileUpdateSaveButton ?? 'Save Changes'),
                     ),
                   ),
                 ],

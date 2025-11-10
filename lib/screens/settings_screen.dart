@@ -6,6 +6,7 @@ import '../config/app_constants.dart';
 import '../models/user_model.dart';
 import '../services/subscription_service.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 
@@ -346,7 +347,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Settings'),
+      appBar: AppScreenBar(title: context.l10n?.settingsTitle ?? 'Settings'),
       backgroundColor: Colors.white,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -365,22 +366,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
-                'Organization Settings',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                context.l10n?.settingsTitleOrganization ?? 'Organization Settings',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 16),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text:
-                        "Welcome $_adminFirstName!\n\nLet's set up the foundation for your team's success. Please complete these settings carefully, as they will define the opportunity for your entire network and cannot be changed once saved.",
-                  ),
-                ],
-              ),
+            Text(
+              context.l10n?.settingsWelcomeMessage(_adminFirstName ?? '') ?? "Welcome $_adminFirstName!\n\nLet's set up the foundation for your team's success. Please complete these settings carefully, as they will define the opportunity for your entire network and cannot be changed once saved.",
             ),
             const SizedBox(height: 10),
             const Divider(
@@ -394,7 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               maxLines: null,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'Your Organization Name',
+                labelText: context.l10n?.settingsLabelOrganizationName ?? 'Your Organization Name',
                 filled: _isBizLocked,
                 fillColor: _isBizLocked ? Colors.grey[200] : null,
               ),
@@ -404,8 +398,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if (!_isBizLocked)
               TextFormField(
                 controller: _bizNameConfirmController,
-                decoration: const InputDecoration(
-                    labelText: 'Confirm Organization Name'),
+                decoration: InputDecoration(
+                    labelText: context.l10n?.settingsLabelConfirmOrganizationName ?? 'Confirm Organization Name'),
                 validator: (value) => value!.isEmpty ? 'Required' : null,
               ),
             const SizedBox(height: 16),
@@ -416,16 +410,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        builder: (BuildContext dialogContext) => AlertDialog(
-                          title: const Text(
-                            'Very Important!',
-                            style: TextStyle(
+                        builder: (BuildContext dialogContext) {
+                          final orgName = _bizNameController.text.trim().isEmpty ? 'organization' : _bizNameController.text.trim();
+                          return AlertDialog(
+                          title: Text(
+                            context.l10n?.settingsDialogImportantTitle ?? 'Very Important!',
+                            style: const TextStyle(
                                 color: Colors.red, fontWeight: FontWeight.bold),
                           ),
-                          content: const Text(
-                              'You must enter the exact referral link you received from your company. '
-                              'This will ensure your team members that join your opportunity '
-                              'are automatically placed in your opportunity team.'),
+                          content: Text(
+                              context.l10n?.settingsDialogReferralImportance(orgName) ?? 'You must enter the exact referral link you received from your $orgName. This will ensure your team members that join your opportunity are automatically placed in your opportunity team.'),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -436,10 +430,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Navigator.of(context).pop();
                                 }
                               },
-                              child: const Text('I Understand'),
+                              child: Text(context.l10n?.settingsDialogButtonUnderstand ?? 'I Understand'),
                             ),
                           ],
-                        ),
+                        );
+                        },
                       );
                     },
               child: AbsorbPointer(
@@ -452,7 +447,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       maxLines: null,
                       keyboardType: TextInputType.url,
                       decoration: InputDecoration(
-                        labelText: 'Your Referral Link',
+                        labelText: context.l10n?.settingsLabelReferralLink ?? 'Your Referral Link',
                         filled: _isBizLocked,
                         fillColor: _isBizLocked ? Colors.grey[200] : null,
                       ),
@@ -463,8 +458,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     if (!_isBizLocked)
                       TextFormField(
                         controller: _refLinkConfirmController,
-                        decoration: const InputDecoration(
-                          labelText: 'Confirm Referral Link URL',
+                        decoration: InputDecoration(
+                          labelText: context.l10n?.settingsLabelConfirmReferralLink ?? 'Confirm Referral Link URL',
                         ),
                         validator: (value) =>
                             value!.isEmpty ? 'Required' : null,
@@ -474,20 +469,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text('Available Countries',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(context.l10n?.settingsLabelCountries ?? 'Available Countries',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(
-                    text: 'Important:',
-                    style: TextStyle(
+                  TextSpan(
+                    text: context.l10n?.settingsImportantLabel ?? 'Important:',
+                    style: const TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.red),
                   ),
-                  const TextSpan(
+                  TextSpan(
                     text:
-                        ' Only select the countries where your opportunity is currently available.',
+                        ' ${context.l10n?.settingsCountriesInstruction ?? 'Only select the countries where your opportunity is currently available.'}',
                   ),
                 ],
               ),
@@ -518,7 +513,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 8),
             ElevatedButton.icon(
               icon: const Icon(Icons.add),
-              label: const Text("Add a Country"),
+              label: Text(context.l10n?.settingsButtonAddCountry ?? "Add a Country"),
               onPressed: _openCountryPicker,
             ),
             const SizedBox(height: 24),
@@ -527,7 +522,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Save Settings'),
+                  child: Text(context.l10n?.settingsButtonSave ?? 'Save Settings'),
                 ),
               ),
             ),
@@ -539,10 +534,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Center(
+          Center(
             child: Text(
-              'Organization Settings',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              context.l10n?.settingsTitleOrganization ?? 'Organization Settings',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 24),
@@ -554,7 +549,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.business, color: Colors.blue),
-                  title: const Text('Your Organization'),
+                  title: Text(context.l10n?.settingsDisplayOrganization ?? 'Your Organization'),
                   subtitle: Text(
                     _bizOpp ?? 'Not Set',
                     style: const TextStyle(fontSize: 16, color: Colors.black87),
@@ -563,7 +558,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const Divider(height: 1, indent: 16, endIndent: 16),
                 ListTile(
                   leading: const Icon(Icons.link, color: Colors.blue),
-                  title: const Text('Your Referral Link'),
+                  title: Text(context.l10n?.settingsDisplayReferralLink ?? 'Your Referral Link'),
                   subtitle: SelectableText(
                     _bizRefUrl ?? 'Not Set',
                     style: const TextStyle(fontSize: 14, color: Colors.black54),
@@ -573,8 +568,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          const Text('Selected Available Countries',
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(context.l10n?.settingsDisplayCountries ?? 'Selected Available Countries',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           if (_selectedCountries.isNotEmpty)
             Column(
@@ -604,42 +599,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }).toList(),
             )
           else
-            const Text('No countries selected.',
-                style: TextStyle(fontSize: 16, color: Colors.grey)),
+            Text(context.l10n?.settingsNoCountries ?? 'No countries selected.',
+                style: const TextStyle(fontSize: 16, color: Colors.grey)),
           const SizedBox(height: 10),
-          const Text(
-            'Network Feeder System',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Text(
+            context.l10n?.settingsFeederSystemTitle ?? 'Network Feeder System',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 20),
           // FIXED: Wrapped the Text.rich widget in a Row and Expanded
           Row(
             children: [
               Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      const TextSpan(
-                          text:
-                              "This is your automated growth engine. When your team members build momentum and meet the eligibility requirements, they are invited to join "),
-                      TextSpan(
-                        text: _bizOpp ?? 'organization',
-                        style: const TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w500),
-                      ),
-                      const TextSpan(
-                          text:
-                              ", with their pre-built network ready to follow."),
-                    ],
-                  ),
+                child: Text(
+                  context.l10n?.settingsFeederSystemDescription ?? "This is your automated growth engine. When members join Team Build Pro through your link but haven't yet qualified for your business opportunity, they're placed in your feeder network. The moment you meet the eligibility requirements below, these members automatically transfer to your business opportunity team. It's a powerful system that rewards your dedication - the bigger your feeder network grows, the stronger your launch will be when you qualify.",
                 ),
               ),
             ],
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Minimum Eligibility Requirements',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Text(
+            context.l10n?.settingsEligibilityTitle ?? 'Minimum Eligibility Requirements',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Row(
@@ -647,13 +628,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _buildMetricCard(
                 icon: Icons.people,
                 value: AppConstants.projectWideDirectSponsorMin.toString(),
-                label: 'Direct Sponsors',
+                label: context.l10n?.settingsEligibilityDirectSponsors ?? 'Direct Sponsors',
               ),
               const SizedBox(width: 16),
               _buildMetricCard(
                 icon: Icons.groups,
                 value: AppConstants.projectWideTotalTeamMin.toString(),
-                label: 'Total MembersMembers',
+                label: context.l10n?.settingsEligibilityTotalTeam ?? 'Total Members',
               ),
             ],
           ),
@@ -662,9 +643,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Privacy Policy Section
           const Divider(thickness: 1),
           const SizedBox(height: 16),
-          const Text(
-            'Privacy & Legal',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Text(
+            context.l10n?.settingsPrivacyLegalTitle ?? 'Privacy & Legal',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Card(
@@ -673,9 +654,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               leading: const Icon(Icons.privacy_tip, color: Colors.blue),
-              title: const Text('Privacy Policy'),
+              title: Text(context.l10n?.settingsPrivacyPolicy ?? 'Privacy Policy'),
               subtitle:
-                  const Text('View our privacy practices and data handling'),
+                  Text(context.l10n?.settingsPrivacyPolicySubtitle ?? 'View our privacy practices and data handling'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.push(
@@ -695,8 +676,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               leading: const Icon(Icons.gavel, color: Colors.blue),
-              title: const Text('Terms of Service'),
-              subtitle: const Text('View our platform terms and conditions'),
+              title: Text(context.l10n?.settingsTermsOfService ?? 'Terms of Service'),
+              subtitle: Text(context.l10n?.settingsTermsOfServiceSubtitle ?? 'View our platform terms and conditions'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.push(

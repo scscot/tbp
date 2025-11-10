@@ -6,6 +6,7 @@ import '../services/chatbot_service.dart';
 import '../models/chat_message.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/quick_prompts_widget.dart';
+import '../widgets/localized_text.dart';
 
 class ChatBotScreen extends StatefulWidget {
   final void Function(int)? onTabSelected;
@@ -71,7 +72,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     if (currentUser == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please sign in to use the AI Assistant')),
+          SnackBar(content: Text(context.l10n?.chatbotSignInRequired ?? 'Please sign in to use the AI Assistant')),
         );
       }
       return;
@@ -140,11 +141,11 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.smart_toy, size: 24),
-            SizedBox(width: 8),
-            Text('AI Coach'),
+            const Icon(Icons.smart_toy, size: 24),
+            const SizedBox(width: 8),
+            Text(context.l10n?.chatbotTitle ?? 'AI Coach'),
           ],
         ),
         backgroundColor: AppColors.primary,
@@ -159,7 +160,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 _showQuickPrompts = true;
               });
             },
-            tooltip: 'Clear conversation',
+            tooltip: context.l10n?.chatbotClearTooltip ?? 'Clear conversation',
           ),
         ],
       ),
@@ -190,17 +191,17 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             child: const Icon(Icons.smart_toy, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'AI Assistant',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  context.l10n?.chatbotAssistantTitle ?? 'AI Assistant',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 Text(
-                  'Ask me anything about Team Build Pro',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  context.l10n?.chatbotAssistantSubtitle ?? 'Ask me anything about Team Build Pro',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
@@ -211,8 +212,20 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   }
 
   Widget _buildQuickPromptsView() {
+    // Use localized prompts with fallbacks
+    final prompts = [
+      context.l10n?.chatbotPrompt1 ?? "How does qualification work?",
+      context.l10n?.chatbotPrompt2 ?? "What's the difference between this and an MLM?",
+      context.l10n?.chatbotPrompt3 ?? "How do I invite people to my team?",
+      context.l10n?.chatbotPrompt4 ?? "Show me my team analytics",
+      context.l10n?.chatbotPrompt5 ?? "What should I focus on next?",
+      context.l10n?.chatbotPrompt6 ?? "How do I cancel my subscription?",
+      context.l10n?.chatbotPrompt7 ?? "Why do most people fail at direct sales?",
+      context.l10n?.chatbotPrompt8 ?? "What happens after I qualify?",
+    ];
+
     return QuickPromptsWidget(
-      prompts: _chatService.getQuickStartPrompts(),
+      prompts: prompts,
       onPromptSelected: _handleQuickPrompt,
     );
   }
@@ -257,7 +270,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
-                hintText: 'Ask me anything...',
+                hintText: context.l10n?.chatbotInputHint ?? 'Ask me anything...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide(color: Colors.grey.shade300),

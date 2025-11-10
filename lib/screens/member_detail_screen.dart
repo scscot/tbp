@@ -14,6 +14,7 @@ import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import 'message_thread_screen.dart';
 import 'view_profile_screen.dart';
+import '../widgets/localized_text.dart';
 
 class MemberDetailScreen extends StatefulWidget {
   final String userId;
@@ -181,11 +182,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     // final bool isCurrentUserAnAdmin = authUser?.role == 'admin';
 
     return Scaffold(
-      appBar: AppScreenBar(title: 'Member Details', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.memberDetailTitle ?? 'Member Details', appId: widget.appId),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
-              ? const Center(child: Text('Team member not found.'))
+              ? Center(child: Text(context.l10n?.emptyTeamMember ?? 'Team member not found.'))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -236,45 +237,47 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildInfoRow('City', _user!.city ?? 'N/A'),
-                              _buildInfoRow('State', _user!.state ?? 'N/A'),
-                              _buildInfoRow('Country', _user!.country ?? 'N/A'),
+                              _buildInfoRow(context.l10n?.profileLabelCity ?? 'City', _user!.city ?? 'N/A'),
+                              _buildInfoRow(context.l10n?.profileLabelState ?? 'State', _user!.state ?? 'N/A'),
+                              _buildInfoRow(context.l10n?.profileLabelCountry ?? 'Country', _user!.country ?? 'N/A'),
                               // Hide these rows if the profile being viewed has role == admin
                               if (_user!.role != 'admin') ...[
                                 _buildInfoRow(
-                                    'Joined Network',
+                                    context.l10n?.memberDetailLabelJoinedNetwork ?? 'Joined Network',
                                     DateFormat.yMMMd()
                                         .format(_user!.createdAt!)),
-                                _buildInfoRow('Direct Sponsors',
+                                _buildInfoRow(context.l10n?.memberDetailLabelDirectSponsors ?? 'Direct Sponsors',
                                     _user!.directSponsorCount.toString()),
-                                _buildInfoRow('Total Team',
+                                _buildInfoRow(context.l10n?.memberDetailLabelTotalTeam ?? 'Total Team',
                                     _user!.totalTeamCount.toString()),
                                 if (_user!.currentPartner == true)
-                                  _buildQualifiedInfoRow('Qualified', 'Yes')
+                                  _buildQualifiedInfoRow(context.l10n?.memberDetailLabelQualified ?? 'Qualified', 'Yes')
                                 else ...[
                                   if (_user!.qualifiedDate != null)
                                     _buildQualifiedInfoRow(
-                                        'Qualified',
+                                        context.l10n?.memberDetailLabelQualifiedDate ?? 'Qualified',
                                         DateFormat.yMMMd()
                                             .format(_user!.qualifiedDate!))
                                   else
                                     _buildQualifiedInfoRow(
-                                        'Qualified', 'Not Yet'),
+                                        context.l10n?.memberDetailLabelQualified ?? 'Qualified', context.l10n?.memberDetailNotYet ?? 'Not Yet'),
                                   if (_user!.bizJoinDate != null)
                                     _buildInfoRow(
-                                        'Joined ${_bizOpp ?? 'organization'}',
+                                        (context.l10n?.memberDetailLabelJoinedOrganization ?? 'Joined [organization]')
+                                            .replaceAll('[organization]', _bizOpp ?? 'organization'),
                                         DateFormat.yMMMd()
                                             .format(_user!.bizJoinDate!))
                                   else
                                     _buildInfoRow(
-                                        'Joined ${_bizOpp ?? 'organization'}',
-                                        'Not Yet'),
+                                        (context.l10n?.memberDetailLabelJoinedOrganization ?? 'Joined [organization]')
+                                            .replaceAll('[organization]', _bizOpp ?? 'organization'),
+                                        context.l10n?.memberDetailNotYetJoined ?? 'Not Yet'),
                                 ],
                                 if (_sponsorName != null)
                                   // If current user is the sponsor, show as plain text, otherwise as clickable link
                                   _currentUserId == _sponsorUid
-                                      ? _buildInfoRow('Sponsor', _sponsorName!)
-                                      : _buildClickableInfoRow('Sponsor',
+                                      ? _buildInfoRow(context.l10n?.memberDetailLabelSponsor ?? 'Sponsor', _sponsorName!)
+                                      : _buildClickableInfoRow(context.l10n?.memberDetailLabelSponsor ?? 'Sponsor',
                                           _sponsorName!, _sponsorUid!),
                                 if (_teamLeaderName != null &&
                                     _teamLeaderName!.isNotEmpty &&
@@ -283,8 +286,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                                     _user!.referredBy != _teamLeaderUid)
                                   _currentUserId == _teamLeaderUid
                                       ? _buildInfoRow(
-                                          'Team Leader', _teamLeaderName!)
-                                      : _buildClickableInfoRow('Team Leader',
+                                          context.l10n?.memberDetailLabelTeamLeader ?? 'Team Leader', _teamLeaderName!)
+                                      : _buildClickableInfoRow(context.l10n?.memberDetailLabelTeamLeader ?? 'Team Leader',
                                           _teamLeaderName!, _teamLeaderUid!),
                               ],
                             ],
@@ -297,7 +300,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                           child: ElevatedButton.icon(
                             onPressed: _handleSendMessage,
                             icon: const Icon(Icons.message),
-                            label: const Text('Send Message'),
+                            label: Text(context.l10n?.memberDetailButtonSendMessage ?? 'Send Message'),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 24.0, vertical: 12.0),
@@ -418,7 +421,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'ELIGIBILITY REQUIREMENTS',
+                          context.l10n?.memberDetailEligibilityTitle ?? 'ELIGIBILITY REQUIREMENTS',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -442,21 +445,23 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         icon: Icons.people,
                         value:
                             AppConstants.projectWideDirectSponsorMin.toString(),
-                        label: 'Direct Sponsors',
+                        label: context.l10n?.memberDetailEligibilityDirectSponsors ?? 'Direct Sponsors',
                       ),
                       const SizedBox(width: 16),
                       _buildMetricCard(
                         icon: Icons.groups,
                         value: AppConstants.projectWideTotalTeamMin.toString(),
-                        label: 'Total MembersMembers',
+                        label: context.l10n?.memberDetailEligibilityTotalTeam ?? 'Total Members',
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   Text(
                     _user!.currentPartner == true
-                        ? 'Eligibility requirements are waived for individuals who joined the ${_bizOpp ?? 'organization'} prior to joining the Network.'
-                        : 'Team members who meet these requirements are automatically invited to join the ${_bizOpp ?? 'organization'}.',
+                        ? (context.l10n?.memberDetailEligibilityWaived ?? 'Eligibility requirements are waived for individuals who joined the [organization] prior to joining the Network.')
+                            .toString().replaceAll('[organization]', _bizOpp ?? 'organization')
+                        : (context.l10n?.memberDetailEligibilityMessage ?? 'Team members who meet these requirements are automatically invited to join the [organization].')
+                            .toString().replaceAll('[organization]', _bizOpp ?? 'organization'),
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

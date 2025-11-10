@@ -13,6 +13,7 @@ import '../services/network_service.dart';
 import '../services/subscription_navigation_guard.dart';
 import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
 
 enum ViewMode { grid, list, analytics }
@@ -613,7 +614,7 @@ class _NetworkScreenState extends State<NetworkScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppScreenBar(title: 'Your Global Team', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.networkTitle ?? 'Your Global Team', appId: widget.appId),
       body: Column(
         children: [
           _buildAnalyticsCards(),
@@ -639,7 +640,7 @@ class _NetworkScreenState extends State<NetworkScreen>
         children: [
           Expanded(
             child: _buildAnalyticsCard(
-              'Direct Sponsors',
+              context.l10n?.networkLabelDirectSponsors ?? 'Direct Sponsors',
               _analytics['directSponsors']?.toString() ?? '0',
               Icons.person_add,
               AppColors.growthPrimary,
@@ -654,7 +655,7 @@ class _NetworkScreenState extends State<NetworkScreen>
           const SizedBox(width: 8),
           Expanded(
             child: _buildAnalyticsCard(
-              'Total Team',
+              context.l10n?.networkLabelTotalTeam ?? 'Total Team',
               _analytics['totalMembers']?.toString() ?? '0',
               Icons.people,
               AppColors.teamPrimary,
@@ -669,7 +670,7 @@ class _NetworkScreenState extends State<NetworkScreen>
           const SizedBox(width: 8),
           Expanded(
             child: _buildAnalyticsCard(
-              'New Members',
+              context.l10n?.networkLabelNewMembers ?? 'New Members',
               _analytics['newMembers']?.toString() ?? '0',
               Icons.trending_up,
               AppColors.opportunityPrimary,
@@ -743,7 +744,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search team members...',
+                    hintText: context.l10n?.networkSearchHint ?? 'Search team members...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -768,7 +769,7 @@ class _NetworkScreenState extends State<NetworkScreen>
               IconButton(
                 onPressed: _refreshData,
                 icon: const Icon(Icons.refresh),
-                tooltip: 'Force refresh data',
+                tooltip: context.l10n?.networkRefreshTooltip ?? 'Force refresh data',
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   foregroundColor: AppColors.primary,
@@ -826,19 +827,19 @@ class _NetworkScreenState extends State<NetworkScreen>
 
     switch (filter) {
       case FilterBy.selectReport:
-        return 'View Team Report';
+        return context.l10n?.networkFilterSelectReport ?? 'View Team Report';
       case FilterBy.allMembers:
-        return 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
+        return context.l10n?.networkFilterAllMembersWithCount(_analytics['totalMembers'] ?? _allMembers.length) ?? 'All Members (${_analytics['totalMembers'] ?? _allMembers.length})';
       case FilterBy.directSponsors:
-        return 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
+        return context.l10n?.networkFilterDirectSponsorsWithCount(_analytics['directSponsors'] ?? 0) ?? 'Direct Sponsors (${_analytics['directSponsors'] ?? 0})';
       case FilterBy.newMembers:
-        return 'New Members - Today (${_analytics['newMembers'] ?? 0})';
+        return context.l10n?.networkFilterNewMembersWithCount(_analytics['newMembers'] ?? 0) ?? 'New Members - Today (${_analytics['newMembers'] ?? 0})';
       case FilterBy.newMembersYesterday:
-        return 'New Members - Yesterday (${_analytics['newMembersYesterday'] ?? 0})';
+        return context.l10n?.networkFilterNewMembersYesterdayWithCount(_analytics['newMembersYesterday'] ?? 0) ?? 'New Members - Yesterday (${_analytics['newMembersYesterday'] ?? 0})';
       case FilterBy.qualifiedMembers:
-        return 'Qualified Members (${_analytics['qualified'] ?? 0})';
+        return context.l10n?.networkFilterQualifiedWithCount(_analytics['qualified'] ?? 0) ?? 'Qualified Members (${_analytics['qualified'] ?? 0})';
       case FilterBy.joinedMembers:
-        return 'Joined $_bizOppName (${_analytics['withOpportunity'] ?? 0})';
+        return context.l10n?.networkFilterJoinedWithCount(_bizOppName, _analytics['withOpportunity'] ?? 0) ?? 'Joined $_bizOppName (${_analytics['withOpportunity'] ?? 0})';
     }
   }
 
@@ -925,14 +926,14 @@ class _NetworkScreenState extends State<NetworkScreen>
     if (_membersByLevel.isEmpty) {
       String message;
       if (_filterBy == FilterBy.selectReport && _searchQuery.isEmpty) {
-        message =
+        message = context.l10n?.networkMessageSelectReport ??
             'Select a report from the dropdown above or use the search bar to view and manage your team.';
       } else if (_searchQuery.isNotEmpty) {
         message = _filterBy == FilterBy.selectReport
-            ? 'Showing search results from All Members. No members match your search.'
-            : 'No members match your search.';
+            ? (context.l10n?.networkMessageNoSearchResults ?? 'Showing search results from All Members. No members match your search.')
+            : (context.l10n?.networkMessageNoSearchResults ?? 'No members match your search.');
       } else {
-        message = 'No members found for this filter.';
+        message = context.l10n?.networkMessageNoMembers ?? 'No members found for this filter.';
       }
 
       return Center(
@@ -958,7 +959,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
-                    'Searching in: All Members',
+                    context.l10n?.networkSearchingContext ?? 'Searching in: All Members',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.primary,
@@ -997,7 +998,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Showing search results from All Members',
+                      context.l10n?.networkSearchingContextInfo ?? 'Showing search results from All Members',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.primary,
@@ -1030,7 +1031,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Showing ${_allMembers.length} of $_totalNetworkSize members',
+                      context.l10n?.networkPaginationInfo(_allMembers.length, _totalNetworkSize) ?? 'Showing ${_allMembers.length} of $_totalNetworkSize members',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -1072,13 +1073,13 @@ class _NetworkScreenState extends State<NetworkScreen>
                         children: [
                           Expanded(
                             child: Text(
-                              'Level $level',
+                              context.l10n?.networkLevelLabel(level) ?? 'Level $level',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
                           Text(
-                            '${users.length} Members',
+                            context.l10n?.networkMembersCount(users.length) ?? '${users.length} Members',
                             style: const TextStyle(
                                 color: AppColors.textSecondary, fontSize: 14),
                           ),
@@ -1123,10 +1124,10 @@ class _NetworkScreenState extends State<NetworkScreen>
                   ),
                 ),
                 child: _isLoadingMore
-                    ? const Row(
+                    ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
@@ -1135,12 +1136,12 @@ class _NetworkScreenState extends State<NetworkScreen>
                                   AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           ),
-                          SizedBox(width: 8),
-                          Text('Loading more members...'),
+                          const SizedBox(width: 8),
+                          Text(context.l10n?.networkLoadingMore ?? 'Loading more members...'),
                         ],
                       )
                     : Text(
-                        'Load More Members (${_totalNetworkSize - _allMembers.length} remaining)'),
+                        context.l10n?.networkLoadMoreButton(_totalNetworkSize - _allMembers.length) ?? 'Load More Members (${_totalNetworkSize - _allMembers.length} remaining)'),
               ),
             ),
           ],
@@ -1167,7 +1168,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'All ${_allMembers.length} members loaded',
+                    context.l10n?.networkAllMembersLoaded(_allMembers.length) ?? 'All ${_allMembers.length} members loaded',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.green,
@@ -1226,7 +1227,7 @@ class _NetworkScreenState extends State<NetworkScreen>
                     if (member.createdAt != null) ...[
                       const SizedBox(height: 4),
                       Text(
-                        'Joined ${DateFormat('MMM d, yyyy').format(member.createdAt!)}',
+                        context.l10n?.networkMemberJoined(DateFormat('MMM d, yyyy').format(member.createdAt!)) ?? 'Joined ${DateFormat('MMM d, yyyy').format(member.createdAt!)}',
                         style: const TextStyle(
                             color: AppColors.textTertiary, fontSize: 12),
                       ),
@@ -1247,23 +1248,23 @@ class _NetworkScreenState extends State<NetworkScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Network Performance',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Text(
+            context.l10n?.networkAnalyticsPerformance ?? 'Network Performance',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildPerformanceChart(),
           const SizedBox(height: 24),
-          const Text(
-            'Geographic Distribution',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Text(
+            context.l10n?.networkAnalyticsGeographic ?? 'Geographic Distribution',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildGeographicBreakdown(),
           const SizedBox(height: 24),
-          const Text(
-            'Level Distribution',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Text(
+            context.l10n?.networkAnalyticsLevels ?? 'Level Distribution',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildLevelBreakdown(),
@@ -1281,11 +1282,11 @@ class _NetworkScreenState extends State<NetworkScreen>
         borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.mediumShadow,
       ),
-      child: const Center(
+      child: Center(
         child: Text(
-          'Performance Chart\n(Chart implementation would go here)',
+          context.l10n?.networkAnalyticsChartPlaceholder ?? 'Performance Chart\n(Chart implementation would go here)',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.textSecondary),
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
       ),
     );
@@ -1369,12 +1370,12 @@ class _NetworkScreenState extends State<NetworkScreen>
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Level ${entry.key}',
+                    context.l10n?.networkLevelBadge(entry.key) ?? 'Level ${entry.key}',
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
                 Text(
-                  '${entry.value.length} members',
+                  context.l10n?.networkLevelMembersCount(entry.value.length) ?? '${entry.value.length} members',
                   style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ],

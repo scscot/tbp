@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
 import '../main.dart';
 import 'homepage_screen.dart';
@@ -80,21 +81,19 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               children: [
                 Icon(Icons.info_outline, color: AppColors.info, size: 24),
                 const SizedBox(width: 12),
-                const Expanded(
-                  child: Text('Demo Account Protection', style: TextStyle(fontSize: 18)),
+                Expanded(
+                  child: Text(context.l10n?.deleteAccountDemoTitle ?? 'Demo Account Protection', style: const TextStyle(fontSize: 18)),
                 ),
               ],
             ),
-            content: const Text(
-              'This is a protected demo account and cannot be deleted.\n\n'
-              'Demo accounts are maintained for app review and demonstration purposes.\n\n'
-              'If you are testing the app, please create a new account for testing account deletion features.',
-              style: TextStyle(fontSize: 14, height: 1.5),
+            content: Text(
+              context.l10n?.deleteAccountDemoMessage ?? 'This is a protected demo account and cannot be deleted.\n\nDemo accounts are maintained for app review and demonstration purposes.\n\nIf you are testing the app, please create a new account for testing account deletion features.',
+              style: const TextStyle(fontSize: 14, height: 1.5),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
+                child: Text(context.l10n?.deleteAccountDemoButton ?? 'OK'),
               ),
             ],
           ),
@@ -151,10 +150,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       if (currentContext != null) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(currentContext).showSnackBar(
-          const SnackBar(
-            content: Text('Account successfully deleted. Thank you for using Team Build Pro.'),
+          SnackBar(
+            content: Text(context.l10n?.deleteAccountSuccessMessage ?? 'Account successfully deleted. Thank you for using Team Build Pro.'),
             backgroundColor: AppColors.success,
-            duration: Duration(seconds: 5),
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -249,10 +248,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             children: [
               Icon(Icons.warning, color: AppColors.error, size: 24),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'PERMANENT ACCOUNT DELETION',
-                  style: TextStyle(
+                  context.l10n?.deleteAccountWarningTitle ?? 'PERMANENT ACCOUNT DELETION',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: AppColors.error,
@@ -263,20 +262,20 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
-            'This action cannot be undone. When you delete your account:',
-            style: TextStyle(
+          Text(
+            context.l10n?.deleteAccountWarningMessage ?? 'This action cannot be undone. When you delete your account:',
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
-          _buildWarningItem('Your personal data will be permanently deleted'),
-          _buildWarningItem('You will lose access to all premium features'),
-          _buildWarningItem('Your account cannot be recovered or reactivated'),
-          _buildWarningItem('Your network relationships will be preserved for business continuity'),
-          _buildWarningItem('You will be immediately signed out of all devices'),
+          _buildWarningItem(context.l10n?.deleteAccountWarning1 ?? 'Your personal data will be permanently deleted'),
+          _buildWarningItem(context.l10n?.deleteAccountWarning2 ?? 'You will lose access to all premium features'),
+          _buildWarningItem(context.l10n?.deleteAccountWarning3 ?? 'Your account cannot be recovered or reactivated'),
+          _buildWarningItem(context.l10n?.deleteAccountWarning4 ?? 'Your network relationships will be preserved for business continuity'),
+          _buildWarningItem(context.l10n?.deleteAccountWarning5 ?? 'You will be immediately signed out of all devices'),
         ],
       ),
     );
@@ -321,9 +320,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           onChanged: (value) {
             setState(() => _confirmationChecked = value ?? false);
           },
-          title: const Text(
-            'I understand this action is permanent and cannot be undone',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          title: Text(
+            context.l10n?.deleteAccountCheckbox1 ?? 'I understand this action is permanent and cannot be undone',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           activeColor: AppColors.error,
           dense: true,
@@ -333,9 +332,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           onChanged: (value) {
             setState(() => _understandConsequences = value ?? false);
           },
-          title: const Text(
-            'I understand I will lose access to all data and premium features',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          title: Text(
+            context.l10n?.deleteAccountCheckbox2 ?? 'I understand I will lose access to all data and premium features',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           activeColor: AppColors.error,
           dense: true,
@@ -345,9 +344,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           onChanged: (value) {
             setState(() => _acknowledgeNetworkImpact = value ?? false);
           },
-          title: const Text(
-            'I acknowledge my network relationships will be preserved for business operations',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          title: Text(
+            context.l10n?.deleteAccountCheckbox3 ?? 'I acknowledge my network relationships will be preserved for business operations',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           activeColor: AppColors.error,
           dense: true,
@@ -360,9 +359,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'To confirm deletion, please type your email address:',
-          style: TextStyle(
+        Text(
+          context.l10n?.deleteAccountConfirmLabel ?? 'To confirm deletion, please type your email address:',
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
@@ -381,13 +380,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         TextField(
           controller: _confirmationController,
           decoration: InputDecoration(
-            hintText: 'Enter your email address',
+            hintText: context.l10n?.deleteAccountConfirmHint ?? 'Enter your email address',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.error, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
           ),
           style: const TextStyle(fontSize: 14),
@@ -416,25 +415,25 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     }
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Delete Account'),
+      appBar: AppScreenBar(title: context.l10n?.deleteAccountTitle ?? 'Delete Account'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            const Text(
-              'Account Deletion',
-              style: TextStyle(
+            Text(
+              context.l10n?.deleteAccountHeading ?? 'Account Deletion',
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'We\'re sorry to see you go. Please review the information below carefully.',
-              style: TextStyle(
+            Text(
+              context.l10n?.deleteAccountSubheading ?? 'We\'re sorry to see you go. Please review the information below carefully.',
+              style: const TextStyle(
                 fontSize: 16,
                 color: AppColors.textSecondary,
               ),
@@ -456,9 +455,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Account Information',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.deleteAccountInfoTitle ?? 'Account Information',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
@@ -484,9 +483,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             const SizedBox(height: 24),
 
             // Confirmation checks
-            const Text(
-              'Confirmation Required',
-              style: TextStyle(
+            Text(
+              context.l10n?.deleteAccountConfirmTitle ?? 'Confirmation Required',
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -509,7 +508,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n?.deleteAccountButtonCancel ?? 'Cancel'),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -524,10 +523,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: _isDeleting
-                        ? const Row(
+                        ? Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
@@ -535,11 +534,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Text('Deleting...'),
+                              const SizedBox(width: 8),
+                              Text(context.l10n?.deleteAccountDeleting ?? 'Deleting...'),
                             ],
                           )
-                        : const Text('Delete Account'),
+                        : Text(context.l10n?.deleteAccountButtonDelete ?? 'Delete Account'),
                   ),
                 ),
               ],
@@ -558,18 +557,18 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 children: [
                   Icon(Icons.support_agent, color: AppColors.info, size: 24),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Need Help?',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.deleteAccountHelpTitle ?? 'Need Help?',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'If you\'re experiencing issues with the app, please contact our support team before deleting your account.',
-                    style: TextStyle(
+                  Text(
+                    context.l10n?.deleteAccountHelpMessage ?? 'If you\'re experiencing issues with the app, please contact our support team before deleting your account.',
+                    style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
                     ),
@@ -579,7 +578,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   ElevatedButton.icon(
                     onPressed: _launchSupportEmail,
                     icon: const Icon(Icons.email, size: 16),
-                    label: const Text('Contact Support'),
+                    label: Text(context.l10n?.deleteAccountHelpButton ?? 'Contact Support'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.info,
                       foregroundColor: Colors.white,

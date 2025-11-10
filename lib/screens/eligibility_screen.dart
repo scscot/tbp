@@ -6,6 +6,7 @@ import '../config/app_constants.dart';
 import '../config/app_colors.dart';
 import '../services/admin_settings_service.dart';
 import 'share_screen.dart';
+import '../widgets/localized_text.dart';
 
 class EligibilityScreen extends StatefulWidget {
   final String appId;
@@ -102,10 +103,9 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            // REVISED TITLE LOGIC
             _isQualified
-                ? 'CONGRATULATIONS\nYou\'re Qualified!'
-                : 'Build Your Momentum',
+                ? (context.l10n?.eligibilityHeroTitleQualified ?? 'CONGRATULATIONS\nYou\'re Qualified!')
+                : (context.l10n?.eligibilityHeroTitleNotQualified ?? 'Build Your Momentum'),
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -115,10 +115,9 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            // REVISED MESSAGE LOGIC
             _isQualified
-                ? 'Incredible work! You\'ve built your foundational team and unlocked the $_bizOpp opportunity. Continue growing your network to help others achieve the same success.'
-                : 'You\'re on your way! Every professional you connect with builds momentum for your future launch in the $_bizOpp opportunity. Keep sharing to reach your goals!',
+                ? (context.l10n?.eligibilityHeroMessageQualified ?? 'Incredible work! You\'ve built your foundational team and unlocked the $_bizOpp opportunity. Continue growing your network to help others achieve the same success.').toString()
+                : (context.l10n?.eligibilityHeroMessageNotQualified ?? 'You\'re on your way! Every professional you connect with builds momentum for your future launch in the $_bizOpp opportunity. Keep sharing to reach your goals!').toString(),
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withValues(alpha: 0.9),
@@ -145,9 +144,9 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
               ),
               elevation: 4,
             ),
-            child: const Text(
-              'Proven Growth Strategies',
-              style: TextStyle(
+            child: Text(
+              context.l10n?.eligibilityHeroButton ?? 'Proven Growth Strategies',
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -260,13 +259,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: const AppScreenBar(title: 'Eligibility Status'),
+        appBar: AppScreenBar(title: context.l10n?.eligibilityTitle ?? 'Eligibility Status'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Eligibility Status'),
+      appBar: AppScreenBar(title: context.l10n?.eligibilityTitle ?? 'Eligibility Status'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -285,7 +284,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'QUALIFICATION THRESHOLDS',
+                      context.l10n?.eligibilityThresholdsTitle ?? 'QUALIFICATION THRESHOLDS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -300,14 +299,14 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin
                               .toString(),
-                          label: 'Direct Sponsors',
+                          label: context.l10n?.eligibilityLabelDirectSponsors ?? 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team Members',
+                          label: context.l10n?.eligibilityLabelTotalTeam ?? 'Total Team Members',
                         ),
                       ],
                     ),
@@ -325,7 +324,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'YOUR CURRENT TEAM COUNTS',
+                      context.l10n?.eligibilityCurrentCountsTitle ?? 'YOUR CURRENT TEAM COUNTS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -339,13 +338,13 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         _buildMetricCard(
                           icon: Icons.connect_without_contact,
                           value: _currentDirectCount.toString(),
-                          label: 'Direct Sponsors',
+                          label: context.l10n?.eligibilityCurrentDirectSponsors ?? 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
                           value: _currentTotalCount.toString(),
-                          label: 'Total Team Members',
+                          label: context.l10n?.eligibilityCurrentTotalTeam ?? 'Total Team Members',
                         ),
                       ],
                     ),
@@ -379,7 +378,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         ),
                         const SizedBox(width: 16),
                         Text(
-                          'THE PROCESS',
+                          context.l10n?.eligibilityProcessTitle ?? 'THE PROCESS',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -391,23 +390,23 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'INVITE - Build Your Foundation',
+                      title: context.l10n?.eligibilityProcessStep1Title ?? 'INVITE - Build Your Foundation',
                       description:
-                          'Connect with like-minded professionals open to exploring $_bizOpp .',
+                          (context.l10n?.eligibilityProcessStep1Description ?? 'Connect with like-minded professionals open to exploring $_bizOpp .').toString(),
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'CULTIVATE - Create Momentum',
+                      title: context.l10n?.eligibilityProcessStep2Title ?? 'CULTIVATE - Create Momentum',
                       description:
-                          'Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other\'s success.',
+                          context.l10n?.eligibilityProcessStep2Description ?? 'Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other\'s success.',
                       icon: Icons.psychology,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'PARTNER - Launch with Success',
+                      title: context.l10n?.eligibilityProcessStep3Title ?? 'PARTNER - Launch with Success',
                       description:
-                          'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
+                          (context.l10n?.eligibilityProcessStep3Description ?? 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.').toString(),
                       icon: Icons.handshake,
                     ),
                   ],

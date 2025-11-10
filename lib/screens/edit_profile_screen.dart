@@ -17,6 +17,7 @@ import '../widgets/header_widgets.dart';
 import '../data/states_by_country.dart';
 import '../widgets/navigation_shell.dart';
 import '../widgets/account_setup_modal.dart';
+import '../widgets/localized_text.dart';
 import '../main.dart';
 import 'homepage_screen.dart';
 import 'package:provider/provider.dart';
@@ -386,10 +387,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                 size: 24,
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Account Deletion Incomplete',
-                  style: TextStyle(
+                  context.l10n?.editProfileDeletionTitle ?? 'Account Deletion Incomplete',
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.orange,
@@ -398,18 +399,18 @@ class EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ],
           ),
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Your account deletion was not completed properly. Your personal data has been removed but your authentication session is still active.',
-                style: TextStyle(fontSize: 16, height: 1.4),
+                context.l10n?.editProfileDeletionMessage ?? 'Your account deletion was not completed properly. Your personal data has been removed but your authentication session is still active.',
+                style: const TextStyle(fontSize: 16, height: 1.4),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
-                'We will now complete the account deletion process.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                context.l10n?.editProfileDeletionSubtext ?? 'We will now complete the account deletion process.',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -428,7 +429,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Complete Deletion'),
+              child: Text(context.l10n?.editProfileDeletionButton ?? 'Complete Deletion'),
             ),
           ],
         );
@@ -580,7 +581,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     // The image is only mandatory during the first time setup.
     if (widget.isFirstTimeSetup && _imageFile == null) {
       setState(() {
-        _imageErrorText = 'Please upload your profile pic.';
+        _imageErrorText = context.l10n?.editProfilePhotoError ?? 'Please upload your profile pic.';
       });
       isImageValid = false;
     } else {
@@ -714,8 +715,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         }
 
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-              content: Text('Profile updated successfully!'),
+          SnackBar(
+              content: Text(context.l10n?.editProfileSuccessMessage ?? 'Profile updated successfully!'),
               backgroundColor: Colors.green),
         );
 
@@ -737,7 +738,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
         scaffoldMessenger.showSnackBar(
           SnackBar(
-              content: Text('Error updating profile: $e'),
+              content: Text(context.l10n?.editProfileErrorMessage ?? 'Error updating profile: $e'),
               backgroundColor: Colors.red),
         );
       } finally {
@@ -751,22 +752,22 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Edit Profile', actions: []),
+      appBar: AppScreenBar(title: context.l10n?.editProfileTitle ?? 'Edit Profile', actions: const []),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
             Text(
               widget.isFirstTimeSetup
-                  ? 'Complete Your Profile'
-                  : 'Edit Profile',
+                  ? (context.l10n?.editProfileHeadingFirstTime ?? 'Complete Your Profile')
+                  : (context.l10n?.editProfileHeading ?? 'Edit Profile'),
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
             if (widget.isFirstTimeSetup) ...[
               const SizedBox(height: 8),
-              const Text(
-                'Please upload a photo and confirm your details to get started.',
+              Text(
+                context.l10n?.editProfileInstructionsFirstTime ?? 'Please upload a photo and confirm your details to get started.',
                 textAlign: TextAlign.center,
               )
             ],
@@ -827,31 +828,31 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'First Name',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.authSignupLabelFirstName ?? 'First Name',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'First name cannot be empty' : null,
+                        value!.isEmpty ? (context.l10n?.authSignupErrorFirstName ?? 'First name cannot be empty') : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Name',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.authSignupLabelLastName ?? 'Last Name',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Last name cannot be empty' : null,
+                        value!.isEmpty ? (context.l10n?.authSignupErrorLastName ?? 'Last name cannot be empty') : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedCountry,
-                    hint: const Text('Select Country'),
+                    hint: Text(context.l10n?.editProfileSelectCountry ?? 'Select Country'),
                     isExpanded: true,
                     items: statesByCountry.keys
                         .map((country) => DropdownMenuItem(
@@ -869,22 +870,22 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                         _selectedState = null;
                       });
                     },
-                    decoration: const InputDecoration(
-                      labelText: 'Country',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.editProfileLabelCountry ?? 'Country',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value == null ? 'Please select a country' : null,
+                        value == null ? (context.l10n?.editProfileErrorCountry ?? 'Please select a country') : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedState,
-                    hint: const Text('Select State/Province'),
+                    hint: Text(context.l10n?.editProfileSelectState ?? 'Select State/Province'),
                     isExpanded: true,
                     disabledHint: _selectedCountry == null
-                        ? const Text('Select a country first')
+                        ? Text(context.l10n?.editProfileSelectStateDisabled ?? 'Select a country first')
                         : null,
                     items: statesForSelectedCountry
                         .map((state) => DropdownMenuItem(
@@ -903,26 +904,26 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               _selectedState = newValue;
                             });
                           },
-                    decoration: const InputDecoration(
-                      labelText: 'State/Province',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.editProfileLabelState ?? 'State/Province',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value == null ? 'Please select a state/province' : null,
+                        value == null ? (context.l10n?.editProfileErrorState ?? 'Please select a state/province') : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _cityController,
-                    decoration: const InputDecoration(
-                      labelText: 'City',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: context.l10n?.editProfileLabelCity ?? 'City',
+                      border: const OutlineInputBorder(),
                       contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Please enter a city' : null,
+                        value!.isEmpty ? (context.l10n?.editProfileErrorCity ?? 'Please enter a city') : null,
                   ),
                   const SizedBox(height: 16),
 
@@ -934,12 +935,12 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           fontWeight: FontWeight.w500,
                           color: Colors.black),
                       children: [
-                        const TextSpan(text: 'Are you currently a '),
+                        TextSpan(text: context.l10n?.editProfileBusinessQuestion ?? 'Are you currently a '),
                         TextSpan(
                           text: _bizOppName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const TextSpan(text: ' representative?'),
+                        TextSpan(text: context.l10n?.editProfileBusinessQuestionSuffix ?? ' representative?'),
                       ],
                     ),
                   ),
@@ -948,7 +949,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       Expanded(
                         child: RadioListTile<bool>(
-                          title: const Text('Yes'),
+                          title: Text(context.l10n?.editProfileYes ?? 'Yes'),
                           value: true,
                           groupValue: _isBizOppRepresentative,
                           onChanged: (value) {
@@ -964,7 +965,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       Expanded(
                         child: RadioListTile<bool>(
-                          title: const Text('No'),
+                          title: Text(context.l10n?.editProfileNo ?? 'No'),
                           value: false,
                           groupValue: _isBizOppRepresentative,
                           onChanged: (value) {
@@ -986,40 +987,20 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     const SizedBox(height: 16),
                     const Divider(color: Colors.blue, thickness: 1),
                     const SizedBox(height: 16),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue.shade700,
-                        ),
-                        children: [
-                          const TextSpan(text: 'Your '),
-                          TextSpan(
-                            text: _bizOppName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const TextSpan(text: ' Referral Link'),
-                        ],
+                    Text(
+                      '${context.l10n?.editProfileReferralLinkLabel ?? 'Your'} $_bizOppName ${context.l10n?.editProfileReferralLinkLabel ?? 'Referral Link'}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue.shade700,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                        children: [
-                          const TextSpan(text: 'Please enter your '),
-                          TextSpan(
-                            text: _bizOppName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const TextSpan(
-                              text:
-                                  ' referral link. This will be used to track referrals from your team.'),
-                        ],
+                    Text(
+                      '${context.l10n?.editProfileReferralLinkHelper ?? 'Please enter your'} $_bizOppName ${context.l10n?.editProfileReferralLinkHelper ?? 'referral link. This will be used to track referrals from your team.'}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -1027,10 +1008,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       key: _bizOppRefUrlKey,
                       controller: _bizOppRefUrlController,
                       decoration: InputDecoration(
-                        labelText: 'Enter Your Referral Link',
+                        labelText: context.l10n?.editProfileReferralLinkField ?? 'Enter Your Referral Link',
                         helperText: _baseUrl != null
-                            ? 'Must start with $_baseUrl\nThis cannot be changed once set'
-                            : 'This cannot be changed once set',
+                            ? '${(context.l10n?.editProfileReferralLinkHelper ?? 'Must start with').toString()} $_baseUrl\n${(context.l10n?.editProfileReferralLinkHelper ?? 'This cannot be changed once set').toString()}'
+                            : (context.l10n?.editProfileReferralLinkHelper ?? 'This cannot be changed once set').toString(),
                         hintText: _baseUrl != null
                             ? 'e.g., ${_baseUrl}your_username_here'
                             : null,
@@ -1090,44 +1071,16 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             context: context,
                             barrierDismissible: true,
                             builder: (BuildContext dialogContext) => AlertDialog(
-                              title: const Text(
-                                'Very Important!',
-                                style: TextStyle(
+                              title: Text(
+                                context.l10n?.editProfileDialogImportantTitle ?? 'Very Important!',
+                                style: const TextStyle(
                                     color: Colors.red,
                                     fontWeight: FontWeight.bold),
                               ),
-                              content: RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                  children: [
-                                    const TextSpan(
-                                        text:
-                                            'You must enter the exact referral link you received from '),
-                                    TextSpan(
-                                      text: _bizOppName,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const TextSpan(
-                                        text:
-                                            '. This will ensure your team members that join '),
-                                    TextSpan(
-                                      text: _bizOppName,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const TextSpan(
-                                        text:
-                                            ' are automatically placed in your '),
-                                    TextSpan(
-                                      text: _bizOppName,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const TextSpan(text: ' team.'),
-                                  ],
-                                ),
+                              content: Text(
+                                (context.l10n?.editProfileDialogImportantMessage ?? 'You must enter the exact referral link you received from $_bizOppName. This will ensure your team members that join $_bizOppName are automatically placed in your $_bizOppName team.').toString(),
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black),
                               ),
                               actions: [
                                 TextButton(
@@ -1139,7 +1092,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                       Navigator.of(context).pop();
                                     }
                                   },
-                                  child: const Text('I Understand'),
+                                  child: Text(context.l10n?.editProfileDialogImportantButton ?? 'I Understand'),
                                 ),
                               ],
                             ),
@@ -1151,11 +1104,11 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     TextFormField(
                       key: _bizOppRefUrlConfirmKey,
                       controller: _bizOppRefUrlConfirmController,
-                      decoration: const InputDecoration(
-                        labelText: 'Confirm Referral Link',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n?.editProfileConfirmReferralLink ?? 'Confirm Referral Link',
+                        border: const OutlineInputBorder(),
                         contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       validator: (value) => _isBizOppRepresentative &&
                               (value == null || value.isEmpty)
@@ -1176,7 +1129,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                               color: Colors.white,
                               strokeWidth: 3,
                             ))
-                        : const Text('Save Changes'),
+                        : Text(context.l10n?.editProfileButtonSave ?? 'Save Changes'),
                   ),
                 ],
               ),

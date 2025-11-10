@@ -8,6 +8,7 @@ import '../services/subscription_navigation_guard.dart';
 import 'message_thread_screen.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
+import '../widgets/localized_text.dart';
 
 class MessageCenterScreen extends StatefulWidget {
   final String appId;
@@ -239,7 +240,7 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
         Expanded(
           child: _buildContactCard(
             _sponsor!,
-            'Your Sponsor',
+            context.l10n?.messageCenterSponsorLabel ?? 'Your Sponsor',
             ''
           ),
         ),
@@ -251,7 +252,7 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
         Expanded(
           child: _buildContactCard(
             _teamLeader!,
-            'Team Leader',
+            context.l10n?.messageCenterTeamLeaderLabel ?? 'Team Leader',
             ''
           ),
         ),
@@ -270,16 +271,16 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Your Support Team',
-                style: TextStyle(
+              Text(
+                context.l10n?.messageCenterSupportTeamTitle ?? 'Your Support Team',
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Tap to start a conversation',
+                context.l10n?.messageCenterSupportTeamSubtitle ?? 'Tap to start a conversation',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -306,9 +307,9 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppScreenBar(title: 'Messages', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.messageCenterTitle ?? 'Messages', appId: widget.appId),
       body: _currentUserId == null
-          ? const Center(child: Text('Please log in to see messages.'))
+          ? Center(child: Text(context.l10n?.messageCenterNotLoggedIn ?? 'Please log in to see messages.'))
           : Column(
               children: [
                 _buildContactsSection(),
@@ -317,14 +318,14 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                     stream: _threadsStream,
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(child: Text(context.l10n?.messageCenterError ?? 'Error: ${snapshot.error}'));
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                            child: Text('No message threads found.'));
+                        return Center(
+                            child: Text(context.l10n?.emptyMessageThreads ?? 'No message threads found.'));
                       }
                       final threads = snapshot.data!.docs;
                       return ListView.builder(
@@ -348,18 +349,18 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                               // First, handle the loading state explicitly.
                               if (userSnapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const ListTile(
-                                  leading: CircleAvatar(),
-                                  title: Text('Loading chat...'),
+                                return ListTile(
+                                  leading: const CircleAvatar(),
+                                  title: Text(context.l10n?.messageCenterLoadingChat ?? 'Loading chat...'),
                                 );
                               }
 
                               // Then, handle any errors from the future.
                               if (userSnapshot.hasError) {
-                                return const ListTile(
+                                return ListTile(
                                   leading:
-                                      CircleAvatar(child: Icon(Icons.error)),
-                                  title: Text('Error loading user details'),
+                                      const CircleAvatar(child: Icon(Icons.error)),
+                                  title: Text(context.l10n?.messageCenterErrorLoadingUser ?? 'Error loading user details'),
                                 );
                               }
 
@@ -367,7 +368,7 @@ class _MessageCenterScreenState extends State<MessageCenterScreen> {
                               final otherUser = userSnapshot.data;
                               final otherUserName = otherUser != null
                                   ? '${otherUser.firstName} ${otherUser.lastName}'
-                                  : 'Unknown User';
+                                  : context.l10n?.messageCenterUnknownUser ?? 'Unknown User';
                               final otherUserPhotoUrl = otherUser
                                   ?.photoUrl; // Safely get the photo URL
 

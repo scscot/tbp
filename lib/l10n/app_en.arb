@@ -1,52 +1,42 @@
 {
   "@@locale": "en",
-
   "appTitle": "Team Build Pro",
   "@appTitle": {
     "description": "Application title"
   },
-
   "authLoginHeaderTitle": "Welcome back",
   "@authLoginHeaderTitle": {
     "description": "Main header on login screen - sentence case",
     "maxLength": 36
   },
-
   "authLoginLabelEmail": "Email",
   "@authLoginLabelEmail": {
     "description": "Email input field label"
   },
-
   "authLoginHintEmail": "Enter your email address",
   "@authLoginHintEmail": {
     "description": "Email input field placeholder"
   },
-
   "authLoginEmailRequired": "Please enter your email",
   "@authLoginEmailRequired": {
     "description": "Validation error when email field is empty"
   },
-
   "authLoginEmailInvalid": "Please enter a valid email",
   "@authLoginEmailInvalid": {
     "description": "Validation error when email format is invalid"
   },
-
   "authLoginLabelPassword": "Password",
   "@authLoginLabelPassword": {
     "description": "Password input field label"
   },
-
   "authLoginHintPassword": "Enter your password",
   "@authLoginHintPassword": {
     "description": "Password input field placeholder"
   },
-
   "authLoginPasswordRequired": "Please enter your password",
   "@authLoginPasswordRequired": {
     "description": "Validation error when password field is empty"
   },
-
   "authLoginPasswordTooShort": "Password must be at least {min} characters",
   "@authLoginPasswordTooShort": {
     "description": "Validation error when password is too short",
@@ -57,24 +47,20 @@
       }
     }
   },
-
   "authLoginButtonSignIn": "Sign In",
   "@authLoginButtonSignIn": {
     "description": "Sign in button label - title case",
     "maxLength": 22
   },
-
   "authLoginNoAccountPrompt": "Don't have an account?",
   "@authLoginNoAccountPrompt": {
     "description": "Text shown before sign up link"
   },
-
   "authLoginLinkSignUp": "Sign Up",
   "@authLoginLinkSignUp": {
     "description": "Link to navigate to sign up screen",
     "maxLength": 22
   },
-
   "authLoginBiometric": "Sign in with {method}",
   "@authLoginBiometric": {
     "description": "Biometric authentication button label with method placeholder",
@@ -86,93 +72,75 @@
       }
     }
   },
-
   "authLoginBiometricMethodFace": "Face ID",
   "@authLoginBiometricMethodFace": {
     "description": "Face ID biometric method name (iOS)"
   },
-
   "authLoginBiometricMethodTouch": "Touch ID",
   "@authLoginBiometricMethodTouch": {
     "description": "Touch ID biometric method name (iOS)"
   },
-
   "authLoginBiometricMethodGeneric": "Biometrics",
   "@authLoginBiometricMethodGeneric": {
     "description": "Generic biometric method name (Android/fallback)"
   },
-
   "authSignupHeaderTitle": "Create your account",
   "@authSignupHeaderTitle": {
     "description": "Main header on signup screen - sentence case",
     "maxLength": 36
   },
-
   "authSignupLabelFirstName": "First Name",
   "@authSignupLabelFirstName": {
     "description": "First name input field label"
   },
-
   "authSignupHintFirstName": "Enter your first name",
   "@authSignupHintFirstName": {
     "description": "First name input field placeholder"
   },
-
   "authSignupFirstNameRequired": "Please enter your first name",
   "@authSignupFirstNameRequired": {
     "description": "Validation error when first name field is empty"
   },
-
   "authSignupLabelLastName": "Last Name",
   "@authSignupLabelLastName": {
     "description": "Last name input field label"
   },
-
   "authSignupHintLastName": "Enter your last name",
   "@authSignupHintLastName": {
     "description": "Last name input field placeholder"
   },
-
   "authSignupLastNameRequired": "Please enter your last name",
   "@authSignupLastNameRequired": {
     "description": "Validation error when last name field is empty"
   },
-
   "authSignupLabelEmail": "Email",
   "@authSignupLabelEmail": {
     "description": "Email input field label"
   },
-
   "authSignupHintEmail": "Enter your email address",
   "@authSignupHintEmail": {
     "description": "Email input field placeholder"
   },
-
   "authSignupEmailRequired": "Please enter your email",
   "@authSignupEmailRequired": {
     "description": "Validation error when email field is empty"
   },
-
   "authSignupEmailInvalid": "Please enter a valid email",
   "@authSignupEmailInvalid": {
     "description": "Validation error when email format is invalid"
   },
-
   "authSignupLabelPassword": "Password",
   "@authSignupLabelPassword": {
     "description": "Password input field label"
   },
-
   "authSignupHintPassword": "Create a password",
   "@authSignupHintPassword": {
     "description": "Password input field placeholder"
   },
-
   "authSignupPasswordRequired": "Please enter a password",
   "@authSignupPasswordRequired": {
     "description": "Validation error when password field is empty"
   },
-
   "authSignupPasswordTooShort": "Password must be at least {min} characters",
   "@authSignupPasswordTooShort": {
     "description": "Validation error when password is too short",
@@ -183,199 +151,162 @@
       }
     }
   },
-
   "authSignupLabelConfirmPassword": "Confirm Password",
   "@authSignupLabelConfirmPassword": {
     "description": "Confirm password input field label"
   },
-
   "authSignupHintConfirmPassword": "Re-enter your password",
   "@authSignupHintConfirmPassword": {
     "description": "Confirm password input field placeholder"
   },
-
   "authSignupConfirmPasswordRequired": "Please confirm your password",
   "@authSignupConfirmPasswordRequired": {
     "description": "Validation error when confirm password field is empty"
   },
-
   "authSignupPasswordMismatch": "Passwords don't match",
   "@authSignupPasswordMismatch": {
     "description": "Validation error when password and confirm password don't match"
   },
-
   "authSignupLabelReferralCode": "Referral Code (Optional)",
   "@authSignupLabelReferralCode": {
     "description": "Referral code input field label"
   },
-
   "authSignupHintReferralCode": "Enter invite code if you have one",
   "@authSignupHintReferralCode": {
     "description": "Referral code input field placeholder"
   },
-
   "authSignupButtonPasteCode": "Paste",
   "@authSignupButtonPasteCode": {
     "description": "Paste referral code from clipboard button",
     "maxLength": 22
   },
-
   "authSignupTosConsent": "By continuing, you agree to the Terms of Service and Privacy Policy",
   "@authSignupTosConsent": {
     "description": "Terms and privacy consent text. Will be enhanced with tappable links in Phase 1C"
   },
-
   "authSignupTermsShort": "Terms of Service",
   "@authSignupTermsShort": {
     "description": "Short label for terms of service link"
   },
-
   "authSignupPrivacyShort": "Privacy Policy",
   "@authSignupPrivacyShort": {
     "description": "Short label for privacy policy link"
   },
-
   "authSignupTosRequired": "You must accept the terms to continue",
   "@authSignupTosRequired": {
     "description": "Validation error when user hasn't accepted terms"
   },
-
   "authSignupButtonCreateAccount": "Create Account",
   "@authSignupButtonCreateAccount": {
     "description": "Create account button label - title case",
     "maxLength": 22
   },
-
   "authSignupHaveAccountPrompt": "Already have an account?",
   "@authSignupHaveAccountPrompt": {
     "description": "Text shown before sign in link"
   },
-
   "authSignupLinkSignIn": "Sign In",
   "@authSignupLinkSignIn": {
     "description": "Link to navigate to sign in screen",
     "maxLength": 22
   },
-
   "authPasswordShow": "Show password",
   "@authPasswordShow": {
     "description": "Accessibility label for show password icon button"
   },
-
   "authPasswordHide": "Hide password",
   "@authPasswordHide": {
     "description": "Accessibility label for hide password icon button"
   },
-
   "authErrorInvalidEmail": "That email isn't valid. Please check and try again.",
   "@authErrorInvalidEmail": {
     "description": "Error message for invalid email from Firebase auth"
   },
-
   "authErrorUserDisabled": "This account has been disabled. Please contact support.",
   "@authErrorUserDisabled": {
     "description": "Error message when user account is disabled"
   },
-
   "authErrorUserNotFound": "No account found with that email.",
   "@authErrorUserNotFound": {
     "description": "Error message when user doesn't exist"
   },
-
   "authErrorWrongPassword": "Incorrect password. Please try again.",
   "@authErrorWrongPassword": {
     "description": "Error message for wrong password"
   },
-
   "authErrorEmailInUse": "An account with that email already exists.",
   "@authErrorEmailInUse": {
     "description": "Error message when email is already registered"
   },
-
   "authErrorWeakPassword": "Please choose a stronger password.",
   "@authErrorWeakPassword": {
     "description": "Error message for weak password"
   },
-
   "authErrorNetworkError": "Network error. Please check your connection.",
   "@authErrorNetworkError": {
     "description": "Error message for network failures"
   },
-
   "authErrorTooMany": "Too many attempts. Please wait a moment.",
   "@authErrorTooMany": {
     "description": "Error message for too many failed attempts"
   },
-
   "authErrorInvalidCredential": "Those details don't match our records.",
   "@authErrorInvalidCredential": {
     "description": "Error message for invalid credentials"
   },
-
   "authErrorUnknown": "An error occurred. Please try again.",
   "@authErrorUnknown": {
     "description": "Generic error message for unknown errors"
   },
-
   "navHome": "Home",
   "@navHome": {
     "description": "Bottom navigation tab label for home/dashboard",
     "maxLength": 14
   },
-
   "navTeam": "Team",
   "@navTeam": {
     "description": "Bottom navigation tab label for team/network",
     "maxLength": 14
   },
-
   "navShare": "Share",
   "@navShare": {
     "description": "Bottom navigation tab label for sharing",
     "maxLength": 14
   },
-
   "navMessages": "Messages",
   "@navMessages": {
     "description": "Bottom navigation tab label for messages",
     "maxLength": 14
   },
-
   "navNotices": "Notices",
   "@navNotices": {
     "description": "Bottom navigation tab label for notifications",
     "maxLength": 14
   },
-
   "navProfile": "Profile",
   "@navProfile": {
     "description": "Bottom navigation tab label for profile",
     "maxLength": 14
   },
-
   "dashTitle": "Control Center",
   "@dashTitle": {
     "description": "Dashboard screen title in app bar",
     "maxLength": 32
   },
-
   "dashKpiDirectSponsors": "Direct Sponsors",
   "@dashKpiDirectSponsors": {
     "description": "Label for direct sponsors count KPI",
     "maxLength": 28
   },
-
   "dashKpiTotalTeam": "Total Team Members",
   "@dashKpiTotalTeam": {
     "description": "Label for total team members count KPI",
     "maxLength": 28
   },
-
   "dashStatsRefreshed": "Team stats refreshed",
   "@dashStatsRefreshed": {
     "description": "Success message after refreshing team statistics"
   },
-
   "dashStatsError": "Error refreshing stats: {error}",
   "@dashStatsError": {
     "description": "Error message when statistics refresh fails",
@@ -386,79 +317,66 @@
       }
     }
   },
-
   "dashTileGettingStarted": "Getting Started",
   "@dashTileGettingStarted": {
     "description": "Dashboard tile title for getting started guide",
     "maxLength": 28
   },
-
   "dashTileOpportunity": "Opportunity Details",
   "@dashTileOpportunity": {
     "description": "Dashboard tile title for business opportunity details",
     "maxLength": 28
   },
-
   "dashTileEligibility": "Your Eligibility Status",
   "@dashTileEligibility": {
     "description": "Dashboard tile title for eligibility status",
     "maxLength": 32
   },
-
   "dashTileGrowTeam": "Grow Your Team",
   "@dashTileGrowTeam": {
     "description": "Dashboard tile title/CTA for growing team",
     "maxLength": 22
   },
-
   "dashTileViewTeam": "View Your Team",
   "@dashTileViewTeam": {
     "description": "Dashboard tile title/CTA for viewing team",
     "maxLength": 22
   },
-
   "dashTileAiCoach": "Your AI Coach",
   "@dashTileAiCoach": {
     "description": "Dashboard tile title for AI coaching assistant",
     "maxLength": 28
   },
-
   "dashTileMessageCenter": "Message Center",
   "@dashTileMessageCenter": {
     "description": "Dashboard tile title for message center",
     "maxLength": 28
   },
-
   "dashTileNotifications": "Notifications",
   "@dashTileNotifications": {
     "description": "Dashboard tile title for notifications",
     "maxLength": 28
   },
-
   "dashTileHowItWorks": "How It Works",
   "@dashTileHowItWorks": {
     "description": "Dashboard tile title for how it works guide",
     "maxLength": 28
   },
-
   "dashTileFaqs": "FAQ's",
   "@dashTileFaqs": {
     "description": "Dashboard tile title for frequently asked questions",
     "maxLength": 22
   },
-
   "dashTileProfile": "View Your Profile",
   "@dashTileProfile": {
     "description": "Dashboard tile title/CTA for viewing profile",
     "maxLength": 22
   },
-
   "dashTileCreateAccount": "Create New Account",
   "@dashTileCreateAccount": {
     "description": "Dashboard tile title/CTA for creating account (admin only)",
     "maxLength": 22
   },
-
   "recruitT01FirstTouch": "Hey {prospectName}, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
   "@recruitT01FirstTouch": {
     "description": "Initial outreach message with prospect name",
@@ -484,7 +402,6 @@
       }
     }
   },
-
   "recruitT01FirstTouchNoName": "Hey, it's {senderFirst}. I'm using an app to help friends launch with {companyName}. Quick look? {shortLink}",
   "@recruitT01FirstTouchNoName": {
     "description": "Initial outreach message without prospect name (fallback)",
@@ -506,7 +423,6 @@
       }
     }
   },
-
   "recruitT02FollowUpWarm": "Hi {prospectName}! Following up on {companyName}. I saw great results this week. Have time for a quick chat? {shortLink}",
   "@recruitT02FollowUpWarm": {
     "description": "Warm follow-up message after initial interest",
@@ -528,7 +444,6 @@
       }
     }
   },
-
   "recruitT03DeadlineNudge": "{prospectName}, spots are filling up for our {companyName} launch. Want me to save you one? {shortLink}",
   "@recruitT03DeadlineNudge": {
     "description": "Time-sensitive reminder about limited availability",
@@ -550,7 +465,6 @@
       }
     }
   },
-
   "recruitT04TeamNeeded": "{remaining, plural, =0 {You're day-one ready.} one {You're # person away from a strong start.} other {You're # people away from a strong start.}}",
   "@recruitT04TeamNeeded": {
     "description": "Team building progress message with plural logic",
@@ -564,7 +478,6 @@
       }
     }
   },
-
   "recruitT05MilestoneReached": "🎉 {prospectName}, you hit your first milestone with {companyName}! Your team is growing. Keep it up!",
   "@recruitT05MilestoneReached": {
     "description": "Celebration message for reaching a milestone",
@@ -582,7 +495,6 @@
       }
     }
   },
-
   "recruitT06WelcomeOnboard": "Welcome, {prospectName}! I'm {senderFirst} and here to help. Let's get started: {inviteLink}",
   "@recruitT06WelcomeOnboard": {
     "description": "Welcome message for new team member",
@@ -604,7 +516,6 @@
       }
     }
   },
-
   "recruitT07WeeklyCheckIn": "Hey {prospectName}, quick check-in on {companyName}. How are things going? Any questions I can help with?",
   "@recruitT07WeeklyCheckIn": {
     "description": "Regular weekly check-in message",
@@ -622,7 +533,6 @@
       }
     }
   },
-
   "recruitT08Deadline": "We kick off in {days, plural, one {# day} other {# days}}. Want me to hold your spot? {shortLink}",
   "@recruitT08Deadline": {
     "description": "Countdown to start date with days remaining",
@@ -640,7 +550,6 @@
       }
     }
   },
-
   "recruitT09ResourceShare": "{prospectName}, I found this helpful for {companyName}. Thought you'd want to see it: {inviteLink}",
   "@recruitT09ResourceShare": {
     "description": "Sharing a helpful resource or tool",
@@ -662,7 +571,6 @@
       }
     }
   },
-
   "recruitT10InviteReminder": "Hi {prospectName}, you still have an invite waiting for {companyName}. Ready to join? {shortLink}",
   "@recruitT10InviteReminder": {
     "description": "Reminder about pending invitation",
@@ -684,7 +592,6 @@
       }
     }
   },
-
   "recruitT11TeamGrowth": "Great news, {prospectName}! Your {companyName} team grew this week. You're making real progress!",
   "@recruitT11TeamGrowth": {
     "description": "Team growth update and encouragement",
@@ -702,7 +609,6 @@
       }
     }
   },
-
   "recruitT12Encouragement": "{prospectName}, building with {companyName} takes time. You're doing great. Keep going!",
   "@recruitT12Encouragement": {
     "description": "Motivational encouragement message",
@@ -720,7 +626,6 @@
       }
     }
   },
-
   "recruitT13TrainingInvite": "Hey {prospectName}, we have a {companyName} training session coming up. Want to join? {inviteLink}",
   "@recruitT13TrainingInvite": {
     "description": "Invitation to training or event",
@@ -742,7 +647,6 @@
       }
     }
   },
-
   "recruitT14QuickWin": "Nice work, {prospectName}! That was a solid win with {companyName}. Let's keep the momentum going!",
   "@recruitT14QuickWin": {
     "description": "Quick win celebration message",
@@ -760,7 +664,6 @@
       }
     }
   },
-
   "recruitT15SupportOffer": "Hey {prospectName}, I'm here if you need help with {companyName}. Just reach out anytime.",
   "@recruitT15SupportOffer": {
     "description": "Offering help and support",
@@ -778,7 +681,6 @@
       }
     }
   },
-
   "recruitT16Gratitude": "Thanks for being part of our {companyName} team, {prospectName}. Your energy makes a difference!",
   "@recruitT16Gratitude": {
     "description": "Thank you and appreciation message",
@@ -796,7 +698,6 @@
       }
     }
   },
-
   "notifMilestoneDirectTitle": "🎉 Amazing Progress!",
   "@notifMilestoneDirectTitle": {
     "description": "Push notification title when user reaches direct sponsor milestone",
@@ -804,7 +705,6 @@
       "pushTitle": 65
     }
   },
-
   "notifMilestoneDirectBody": "Congratulations, {firstName}! You've reached {directCount} direct sponsors! Just {remaining} more team {remaining, plural, one {member} other {members}} needed to unlock your {bizName} invitation. Keep building!",
   "@notifMilestoneDirectBody": {
     "description": "Push notification body for direct sponsor milestone",
@@ -830,7 +730,6 @@
       }
     }
   },
-
   "notifMilestoneTeamTitle": "🚀 Incredible Growth!",
   "@notifMilestoneTeamTitle": {
     "description": "Push notification title when user reaches team size milestone",
@@ -838,7 +737,6 @@
       "pushTitle": 65
     }
   },
-
   "notifMilestoneTeamBody": "Amazing progress, {firstName}! You've built a team of {teamCount}! Just {remaining} more direct {remaining, plural, one {sponsor} other {sponsors}} needed to qualify for {bizName}. You're so close!",
   "@notifMilestoneTeamBody": {
     "description": "Push notification body for team size milestone",
@@ -864,7 +762,6 @@
       }
     }
   },
-
   "notifSubActiveTitle": "✅ Subscription Active",
   "@notifSubActiveTitle": {
     "description": "Push notification title when subscription is activated",
@@ -872,7 +769,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubActiveBody": "Your subscription is now active until {expiryDate}.",
   "@notifSubActiveBody": {
     "description": "Push notification body for active subscription",
@@ -886,7 +782,6 @@
       }
     }
   },
-
   "notifSubCancelledTitle": "⚠️ Subscription Cancelled",
   "@notifSubCancelledTitle": {
     "description": "Push notification title when subscription is cancelled",
@@ -894,7 +789,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubCancelledBody": "Your subscription has been cancelled but remains active until {expiryDate}.",
   "@notifSubCancelledBody": {
     "description": "Push notification body for cancelled subscription",
@@ -908,7 +802,6 @@
       }
     }
   },
-
   "notifSubExpiredTitle": "❌ Subscription Expired",
   "@notifSubExpiredTitle": {
     "description": "Push notification title when subscription expires",
@@ -916,7 +809,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubExpiredBody": "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
   "@notifSubExpiredBody": {
     "description": "Push notification body for expired subscription",
@@ -924,7 +816,6 @@
       "pushBody": 140
     }
   },
-
   "notifSubExpiringSoonTitle": "⏰ Subscription Expiring Soon",
   "@notifSubExpiringSoonTitle": {
     "description": "Push notification title when subscription is expiring soon",
@@ -932,7 +823,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubExpiringSoonBody": "Your subscription expires on {expiryDate}. Renew now to avoid interruption.",
   "@notifSubExpiringSoonBody": {
     "description": "Push notification body for expiring subscription",
@@ -946,7 +836,6 @@
       }
     }
   },
-
   "notifSubPausedTitle": "⏸️ Subscription Paused",
   "@notifSubPausedTitle": {
     "description": "Push notification title when subscription is paused",
@@ -954,7 +843,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubPausedBody": "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
   "@notifSubPausedBody": {
     "description": "Push notification body for paused subscription",
@@ -962,7 +850,6 @@
       "pushBody": 140
     }
   },
-
   "notifSubPaymentIssueTitle": "⚠️ Payment Issue",
   "@notifSubPaymentIssueTitle": {
     "description": "Push notification title when there's a payment problem",
@@ -970,7 +857,6 @@
       "pushTitle": 65
     }
   },
-
   "notifSubPaymentIssueBody": "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
   "@notifSubPaymentIssueBody": {
     "description": "Push notification body for payment issue",
@@ -978,7 +864,6 @@
       "pushBody": 140
     }
   },
-
   "notifNewMessageTitle": "New Message from {senderName}",
   "@notifNewMessageTitle": {
     "description": "Push notification title for new chat message",
@@ -992,7 +877,6 @@
       }
     }
   },
-
   "notifTeamActivityTitle": "👀 Team Member Activity",
   "@notifTeamActivityTitle": {
     "description": "Push notification title when team member visits business page",
@@ -1000,7 +884,6 @@
       "pushTitle": 65
     }
   },
-
   "notifTeamActivityBody": "{visitorName} visited the business opportunity page!",
   "@notifTeamActivityBody": {
     "description": "Push notification body for team member activity",
@@ -1014,7 +897,6 @@
       }
     }
   },
-
   "notifLaunchSentTitle": "Launch Campaign Sent",
   "@notifLaunchSentTitle": {
     "description": "Confirmation that launch campaign was sent successfully",
@@ -1022,7 +904,6 @@
       "pushTitle": 65
     }
   },
-
   "notifLaunchSentBody": "Your launch campaign has been successfully sent to your network.",
   "@notifLaunchSentBody": {
     "description": "Body for launch campaign confirmation notification",
@@ -1030,37 +911,30 @@
       "pushBody": 140
     }
   },
-
   "emptyNotifications": "No notifications yet.",
   "@emptyNotifications": {
     "description": "Empty state when user has no notifications"
   },
-
   "emptyMessageContent": "No message content.",
   "@emptyMessageContent": {
     "description": "Fallback when notification has no message body"
   },
-
   "emptyNotificationTitle": "No Title",
   "@emptyNotificationTitle": {
     "description": "Fallback when notification has no title"
   },
-
   "emptyMessageThreads": "No message threads found.",
   "@emptyMessageThreads": {
     "description": "Empty state when user has no message conversations"
   },
-
   "emptyTeamMember": "Team member not found.",
   "@emptyTeamMember": {
     "description": "Error state when team member profile doesn't exist"
   },
-
   "errorLoadingNotifications": "Error loading notifications",
   "@errorLoadingNotifications": {
     "description": "Error state when notifications fail to load"
   },
-
   "errorGeneric": "Error: {error}",
   "@errorGeneric": {
     "description": "Generic error message with error details",
@@ -1070,5 +944,3327 @@
         "example": "Network connection failed"
       }
     }
+  },
+  "dashKpiTitle": "Your Current Team Stats",
+  "@dashKpiTitle": {
+    "description": "Title for KPI stats section on dashboard",
+    "maxLength": 36
+  },
+  "dashKpiRefreshTooltip": "Refresh team stats",
+  "@dashKpiRefreshTooltip": {
+    "description": "Tooltip for refresh button on team stats"
+  },
+  "dashTileJoinOpportunity": "Join Opportunity!",
+  "@dashTileJoinOpportunity": {
+    "description": "Dashboard tile CTA for joining business opportunity",
+    "maxLength": 28
+  },
+  "dashSubscriptionTrial": "Start Subscription\n({daysLeft} days left in trial)",
+  "@dashSubscriptionTrial": {
+    "description": "Subscription tile text during trial period",
+    "placeholders": {
+      "daysLeft": {
+        "type": "int",
+        "example": "7"
+      }
+    }
+  },
+  "dashSubscriptionExpired": "Renew Your Subscription\n30-day Free trial expired.",
+  "@dashSubscriptionExpired": {
+    "description": "Subscription tile text when trial has expired"
+  },
+  "dashSubscriptionCancelled": "You Cancelled Your Subscription\nReactivate Your Subscription Now",
+  "@dashSubscriptionCancelled": {
+    "description": "Subscription tile text when user cancelled subscription"
+  },
+  "dashSubscriptionManage": "Manage Subscription",
+  "@dashSubscriptionManage": {
+    "description": "Button text to manage subscription settings",
+    "maxLength": 28
+  },
+  "networkTitle": "Your Global Team",
+  "@networkTitle": {
+    "description": "Network screen title in app bar",
+    "maxLength": 32
+  },
+  "networkLabelDirectSponsors": "Direct Sponsors",
+  "@networkLabelDirectSponsors": {
+    "description": "Label for direct sponsors count in network screen",
+    "maxLength": 28
+  },
+  "networkLabelTotalTeam": "Total Team",
+  "@networkLabelTotalTeam": {
+    "description": "Label for total team count in network screen",
+    "maxLength": 28
+  },
+  "networkLabelNewMembers": "New Members",
+  "@networkLabelNewMembers": {
+    "description": "Label for new members count in network screen",
+    "maxLength": 28
+  },
+  "networkSearchHint": "Search team members...",
+  "@networkSearchHint": {
+    "description": "Placeholder text for network search field"
+  },
+  "networkRefreshTooltip": "Force refresh data",
+  "@networkRefreshTooltip": {
+    "description": "Tooltip for force refresh button in network screen"
+  },
+  "networkFilterSelectReport": "View Team Report",
+  "@networkFilterSelectReport": {
+    "description": "Default dropdown text prompting user to select a report filter",
+    "maxLength": 28
+  },
+  "networkFilterAllMembers": "All Members",
+  "@networkFilterAllMembers": {
+    "description": "Filter option to show all team members",
+    "maxLength": 28
+  },
+  "networkFilterDirectSponsors": "Direct Sponsors",
+  "@networkFilterDirectSponsors": {
+    "description": "Filter option to show only direct sponsors",
+    "maxLength": 28
+  },
+  "networkFilterNewMembers": "New Members - Today",
+  "@networkFilterNewMembers": {
+    "description": "Filter option to show new members who joined today",
+    "maxLength": 28
+  },
+  "networkFilterNewMembersYesterday": "New Members - Yesterday",
+  "@networkFilterNewMembersYesterday": {
+    "description": "Filter option to show new members who joined yesterday",
+    "maxLength": 32
+  },
+  "networkFilterQualified": "Qualified Members",
+  "@networkFilterQualified": {
+    "description": "Filter option to show members who meet eligibility criteria",
+    "maxLength": 28
+  },
+  "networkFilterJoined": "Joined",
+  "@networkFilterJoined": {
+    "description": "Label prefix for member join date",
+    "maxLength": 14
+  },
+  "networkFilterAllMembersWithCount": "All Members ({count})",
+  "@networkFilterAllMembersWithCount": {
+    "description": "Filter option showing all members with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "301"
+      }
+    }
+  },
+  "networkFilterDirectSponsorsWithCount": "Direct Sponsors ({count})",
+  "@networkFilterDirectSponsorsWithCount": {
+    "description": "Filter option showing direct sponsors with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "networkFilterNewMembersWithCount": "New Members - Today ({count})",
+  "@networkFilterNewMembersWithCount": {
+    "description": "Filter option showing new members today with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "networkFilterNewMembersYesterdayWithCount": "New Members - Yesterday ({count})",
+  "@networkFilterNewMembersYesterdayWithCount": {
+    "description": "Filter option showing new members yesterday with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "networkFilterQualifiedWithCount": "Qualified Members ({count})",
+  "@networkFilterQualifiedWithCount": {
+    "description": "Filter option showing qualified members with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "11"
+      }
+    }
+  },
+  "networkFilterJoinedWithCount": "Joined {business} ({count})",
+  "@networkFilterJoinedWithCount": {
+    "description": "Filter option showing members who joined business with count",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "Demo Company"
+      },
+      "count": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "networkMessageSelectReport": "Select a report from the dropdown above or use the search bar to view and manage your team.",
+  "@networkMessageSelectReport": {
+    "description": "Help message shown when no filter is selected"
+  },
+  "networkMessageNoSearchResults": "Showing search results from All Members. No members match your search.",
+  "@networkMessageNoSearchResults": {
+    "description": "Message shown when search returns no results"
+  },
+  "networkMessageNoMembers": "No members found for this filter.",
+  "@networkMessageNoMembers": {
+    "description": "Message shown when selected filter has no members"
+  },
+  "networkSearchingContext": "Searching in: All Members",
+  "@networkSearchingContext": {
+    "description": "Context label showing which dataset is being searched"
+  },
+  "networkSearchingContextInfo": "Showing search results from All Members",
+  "@networkSearchingContextInfo": {
+    "description": "Info message about search context"
+  },
+  "networkPaginationInfo": "Showing {showing} of {total} members",
+  "@networkPaginationInfo": {
+    "description": "Pagination status showing current count vs total",
+    "placeholders": {
+      "showing": {
+        "type": "int",
+        "example": "50"
+      },
+      "total": {
+        "type": "int",
+        "example": "150"
+      }
+    }
+  },
+  "networkLevelLabel": "Level {level}",
+  "@networkLevelLabel": {
+    "description": "Label showing member's network level",
+    "maxLength": 14,
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "networkMembersCount": "{count, plural, one {# Member} other {# Members}}",
+  "@networkMembersCount": {
+    "description": "Count of members with proper pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "networkLoadingMore": "Loading more members...",
+  "@networkLoadingMore": {
+    "description": "Loading indicator when fetching additional members"
+  },
+  "networkLoadMoreButton": "Load More Members ({remaining} remaining)",
+  "@networkLoadMoreButton": {
+    "description": "Button to load more members with count remaining",
+    "placeholders": {
+      "remaining": {
+        "type": "int",
+        "example": "100"
+      }
+    }
+  },
+  "networkAllMembersLoaded": "All {count} members loaded",
+  "@networkAllMembersLoaded": {
+    "description": "Message when all members have been loaded",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "150"
+      }
+    }
+  },
+  "networkMemberJoined": "Joined {date}",
+  "@networkMemberJoined": {
+    "description": "Label showing when member joined",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 15, 2025"
+      }
+    }
+  },
+  "networkAnalyticsPerformance": "Network Performance",
+  "@networkAnalyticsPerformance": {
+    "description": "Title for network performance analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsGeographic": "Geographic Distribution",
+  "@networkAnalyticsGeographic": {
+    "description": "Title for geographic distribution analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsLevels": "Level Distribution",
+  "@networkAnalyticsLevels": {
+    "description": "Title for level distribution analytics section",
+    "maxLength": 32
+  },
+  "networkAnalyticsChartPlaceholder": "Performance Chart\n(Chart implementation would go here)",
+  "@networkAnalyticsChartPlaceholder": {
+    "description": "Placeholder text for analytics chart area"
+  },
+  "networkLevelBadge": "Level {level}",
+  "@networkLevelBadge": {
+    "description": "Badge showing member level in analytics",
+    "maxLength": 14,
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "networkLevelMembersCount": "{count} members",
+  "@networkLevelMembersCount": {
+    "description": "Count of members at specific level",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Settings screen title in app bar",
+    "maxLength": 32
+  },
+  "settingsTitleOrganization": "Organization Settings",
+  "@settingsTitleOrganization": {
+    "description": "Section title for organization settings",
+    "maxLength": 36
+  },
+  "settingsWelcomeMessage": "Welcome {name}!\n\nLet's set up the foundation for your business opportunity.",
+  "@settingsWelcomeMessage": {
+    "description": "Welcome message on settings screen for new admin users",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Stephen"
+      }
+    }
+  },
+  "settingsLabelOrganizationName": "Your Organization Name",
+  "@settingsLabelOrganizationName": {
+    "description": "Label for organization name input field"
+  },
+  "settingsLabelConfirmOrganizationName": "Confirm Organization Name",
+  "@settingsLabelConfirmOrganizationName": {
+    "description": "Label for organization name confirmation field"
+  },
+  "settingsDialogImportantTitle": "Very Important!",
+  "@settingsDialogImportantTitle": {
+    "description": "Title for important information dialog",
+    "maxLength": 32
+  },
+  "settingsDialogReferralImportance": "You must enter the exact referral link you received from your {organization} sponsor.",
+  "@settingsDialogReferralImportance": {
+    "description": "Important message about entering correct referral link",
+    "placeholders": {
+      "organization": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "settingsDialogButtonUnderstand": "I Understand",
+  "@settingsDialogButtonUnderstand": {
+    "description": "Button to acknowledge important dialog",
+    "maxLength": 22
+  },
+  "settingsLabelReferralLink": "Your Referral Link",
+  "@settingsLabelReferralLink": {
+    "description": "Label for referral link input field"
+  },
+  "settingsLabelConfirmReferralLink": "Confirm Referral Link URL",
+  "@settingsLabelConfirmReferralLink": {
+    "description": "Label for referral link confirmation field"
+  },
+  "settingsLabelCountries": "Available Countries",
+  "@settingsLabelCountries": {
+    "description": "Label for countries selection section"
+  },
+  "settingsImportantLabel": "Important:",
+  "@settingsImportantLabel": {
+    "description": "Label prefix for important information",
+    "maxLength": 14
+  },
+  "settingsCountriesInstruction": "Only select the countries where your opportunity is currently available.",
+  "@settingsCountriesInstruction": {
+    "description": "Instruction text for country selection"
+  },
+  "settingsButtonAddCountry": "Add a Country",
+  "@settingsButtonAddCountry": {
+    "description": "Button to add country to selection",
+    "maxLength": 22
+  },
+  "settingsButtonSave": "Save Settings",
+  "@settingsButtonSave": {
+    "description": "Button to save settings changes",
+    "maxLength": 22
+  },
+  "settingsDisplayOrganization": "Your Organization",
+  "@settingsDisplayOrganization": {
+    "description": "Label for displaying saved organization name"
+  },
+  "settingsDisplayReferralLink": "Your Referral Link",
+  "@settingsDisplayReferralLink": {
+    "description": "Label for displaying saved referral link"
+  },
+  "settingsDisplayCountries": "Selected Available Countries",
+  "@settingsDisplayCountries": {
+    "description": "Label for displaying selected countries list"
+  },
+  "settingsNoCountries": "No countries selected.",
+  "@settingsNoCountries": {
+    "description": "Message when no countries have been selected"
+  },
+  "settingsFeederSystemTitle": "Network Feeder System",
+  "@settingsFeederSystemTitle": {
+    "description": "Title for network feeder system section",
+    "maxLength": 32
+  },
+  "settingsFeederSystemDescription": "This is your automated growth engine. When members join Team Build Pro through your link but haven't yet qualified for your business opportunity, they're placed in your feeder network. The moment you meet the eligibility requirements below, these members automatically transfer to your business opportunity team. It's a powerful system that rewards your dedication - the bigger your feeder network grows, the stronger your launch will be when you qualify.",
+  "@settingsFeederSystemDescription": {
+    "description": "Detailed explanation of the network feeder system"
+  },
+  "settingsEligibilityTitle": "Minimum Eligibility Requirements",
+  "@settingsEligibilityTitle": {
+    "description": "Title for eligibility requirements section",
+    "maxLength": 36
+  },
+  "settingsEligibilityDirectSponsors": "Direct Sponsors",
+  "@settingsEligibilityDirectSponsors": {
+    "description": "Label for minimum direct sponsors requirement",
+    "maxLength": 28
+  },
+  "settingsEligibilityTotalTeam": "Total Members",
+  "@settingsEligibilityTotalTeam": {
+    "description": "Label for minimum total team members requirement",
+    "maxLength": 28
+  },
+  "settingsPrivacyLegalTitle": "Privacy & Legal",
+  "@settingsPrivacyLegalTitle": {
+    "description": "Section title for privacy and legal links",
+    "maxLength": 32
+  },
+  "settingsPrivacyPolicy": "Privacy Policy",
+  "@settingsPrivacyPolicy": {
+    "description": "Label for privacy policy link",
+    "maxLength": 28
+  },
+  "settingsPrivacyPolicySubtitle": "View our privacy practices and data handling",
+  "@settingsPrivacyPolicySubtitle": {
+    "description": "Subtitle explaining privacy policy link"
+  },
+  "settingsTermsOfService": "Terms of Service",
+  "@settingsTermsOfService": {
+    "description": "Label for terms of service link",
+    "maxLength": 28
+  },
+  "settingsTermsOfServiceSubtitle": "View our platform terms and conditions",
+  "@settingsTermsOfServiceSubtitle": {
+    "description": "Subtitle explaining terms of service link"
+  },
+  "profileTitle": "Profile",
+  "@profileTitle": {
+    "description": "Profile screen title in app bar",
+    "maxLength": 32
+  },
+  "profileLabelCity": "City",
+  "@profileLabelCity": {
+    "description": "Label for city field in profile",
+    "maxLength": 14
+  },
+  "profileLabelState": "State",
+  "@profileLabelState": {
+    "description": "Label for state/province field in profile",
+    "maxLength": 14
+  },
+  "profileLabelCountry": "Country",
+  "@profileLabelCountry": {
+    "description": "Label for country field in profile",
+    "maxLength": 14
+  },
+  "profileLabelJoined": "Joined",
+  "@profileLabelJoined": {
+    "description": "Label for join date in profile",
+    "maxLength": 14
+  },
+  "profileLabelSponsor": "Your Sponsor",
+  "@profileLabelSponsor": {
+    "description": "Label for sponsor name in profile",
+    "maxLength": 28
+  },
+  "profileLabelTeamLeader": "Team Leader",
+  "@profileLabelTeamLeader": {
+    "description": "Label for team leader designation in profile",
+    "maxLength": 28
+  },
+  "profileButtonEdit": "Edit Profile",
+  "@profileButtonEdit": {
+    "description": "Button to edit profile information",
+    "maxLength": 22
+  },
+  "profileButtonSignOut": "Sign Out",
+  "@profileButtonSignOut": {
+    "description": "Button to sign out of account",
+    "maxLength": 22
+  },
+  "profileSigningOut": "Signing out...",
+  "@profileSigningOut": {
+    "description": "Loading message during sign out process"
+  },
+  "profileButtonTerms": "Terms of Service",
+  "@profileButtonTerms": {
+    "description": "Button to view terms of service",
+    "maxLength": 28
+  },
+  "profileButtonPrivacy": "Privacy Policy",
+  "@profileButtonPrivacy": {
+    "description": "Button to view privacy policy",
+    "maxLength": 28
+  },
+  "profileButtonDeleteAccount": "Delete Account",
+  "@profileButtonDeleteAccount": {
+    "description": "Button to delete user account",
+    "maxLength": 22
+  },
+  "profileDemoAccountTitle": "Demo Account Information",
+  "@profileDemoAccountTitle": {
+    "description": "Dialog title for demo account protection message",
+    "maxLength": 36
+  },
+  "profileDemoAccountMessage": "This is a demo account for testing purposes and cannot be deleted.",
+  "@profileDemoAccountMessage": {
+    "description": "Message explaining demo account cannot be deleted"
+  },
+  "profileDemoAccountSubtext": "Demo accounts are provided to showcase the app's features and functionality. If you need to create a real account, please sign up with your personal information.",
+  "@profileDemoAccountSubtext": {
+    "description": "Additional information about demo accounts"
+  },
+  "profileDemoAccountButton": "I Understand",
+  "@profileDemoAccountButton": {
+    "description": "Button to acknowledge demo account information",
+    "maxLength": 22
+  },
+  "profileAdminProtectionTitle": "Admin Account Protection",
+  "@profileAdminProtectionTitle": {
+    "description": "Dialog title for admin account protection message",
+    "maxLength": 36
+  },
+  "profileAdminProtectionMessage": "Administrator accounts with active team members cannot be deleted through the app. This protection ensures your team's data and relationships remain intact.",
+  "@profileAdminProtectionMessage": {
+    "description": "Message explaining admin account deletion restrictions"
+  },
+  "profileAdminTeamSize": "Your Team: {directCount} Direct Sponsors",
+  "@profileAdminTeamSize": {
+    "description": "Label showing admin's team size",
+    "placeholders": {
+      "directCount": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+  "profileAdminProtectionInstructions": "To delete your admin account, please contact our support team at legal@teambuildpro.com. We'll work with you to ensure a smooth transition for your team members.",
+  "@profileAdminProtectionInstructions": {
+    "description": "Instructions for admin account deletion"
+  },
+  "profileAdminProtectionContact": "Contact: legal@teambuildpro.com",
+  "@profileAdminProtectionContact": {
+    "description": "Contact information for admin account support"
+  },
+  "messageCenterTitle": "Message Center",
+  "@messageCenterTitle": {
+    "description": "Message center screen title in app bar",
+    "maxLength": 32
+  },
+  "messageCenterSearchHint": "Search messages...",
+  "@messageCenterSearchHint": {
+    "description": "Placeholder for message search field"
+  },
+  "messageCenterFilterAll": "All",
+  "@messageCenterFilterAll": {
+    "description": "Filter to show all message threads",
+    "maxLength": 14
+  },
+  "messageCenterFilterUnread": "Unread",
+  "@messageCenterFilterUnread": {
+    "description": "Filter to show unread message threads",
+    "maxLength": 14
+  },
+  "messageCenterFilterTeam": "Team",
+  "@messageCenterFilterTeam": {
+    "description": "Filter to show team message threads",
+    "maxLength": 14
+  },
+  "messageCenterNewThread": "New Message",
+  "@messageCenterNewThread": {
+    "description": "Button to start new message thread",
+    "maxLength": 22
+  },
+  "messageCenterEmptyState": "No messages yet. Start a conversation with your team members!",
+  "@messageCenterEmptyState": {
+    "description": "Empty state message when no messages exist"
+  },
+  "messageCenterNotLoggedIn": "Please log in to see messages.",
+  "@messageCenterNotLoggedIn": {
+    "description": "Message shown when user is not logged in"
+  },
+  "messageCenterSponsorLabel": "Your Sponsor",
+  "@messageCenterSponsorLabel": {
+    "description": "Label for sponsor contact card",
+    "maxLength": 28
+  },
+  "messageCenterTeamLeaderLabel": "Team Leader",
+  "@messageCenterTeamLeaderLabel": {
+    "description": "Label for team leader contact card",
+    "maxLength": 28
+  },
+  "messageCenterSupportTeamTitle": "Your Support Team",
+  "@messageCenterSupportTeamTitle": {
+    "description": "Title for support team contacts section",
+    "maxLength": 32
+  },
+  "messageCenterSupportTeamSubtitle": "Tap to start a conversation",
+  "@messageCenterSupportTeamSubtitle": {
+    "description": "Subtitle for support team contacts section"
+  },
+  "messageCenterError": "Error loading messages",
+  "@messageCenterError": {
+    "description": "Error message when messages fail to load"
+  },
+  "messageCenterLoadingChat": "Loading chat...",
+  "@messageCenterLoadingChat": {
+    "description": "Loading message while chat is being loaded"
+  },
+  "messageCenterErrorLoadingUser": "Error loading user details",
+  "@messageCenterErrorLoadingUser": {
+    "description": "Error message when user details fail to load"
+  },
+  "messageCenterUnknownUser": "Unknown User",
+  "@messageCenterUnknownUser": {
+    "description": "Fallback display name when user info is unavailable"
+  },
+  "messageCenterUnreadBadge": "{count} new",
+  "@messageCenterUnreadBadge": {
+    "description": "Badge showing unread message count",
+    "maxLength": 14,
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "messageCenterLastMessage": "Last message {time}",
+  "@messageCenterLastMessage": {
+    "description": "Label showing time of last message",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "2h ago"
+      }
+    }
+  },
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "Notifications screen title in app bar",
+    "maxLength": 32
+  },
+  "notificationsFilterAll": "All",
+  "@notificationsFilterAll": {
+    "description": "Filter to show all notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterUnread": "Unread",
+  "@notificationsFilterUnread": {
+    "description": "Filter to show unread notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterMilestones": "Milestones",
+  "@notificationsFilterMilestones": {
+    "description": "Filter to show milestone notifications",
+    "maxLength": 14
+  },
+  "notificationsFilterTeam": "Team",
+  "@notificationsFilterTeam": {
+    "description": "Filter to show team notifications",
+    "maxLength": 14
+  },
+  "notificationsMarkAllRead": "Mark All Read",
+  "@notificationsMarkAllRead": {
+    "description": "Button to mark all notifications as read",
+    "maxLength": 22
+  },
+  "notificationsClearAll": "Clear All",
+  "@notificationsClearAll": {
+    "description": "Button to clear all notifications",
+    "maxLength": 22
+  },
+  "notificationsEmptyState": "No notifications yet. We'll notify you of important team updates!",
+  "@notificationsEmptyState": {
+    "description": "Empty state message when no notifications exist"
+  },
+  "notificationsTimeNow": "Just now",
+  "@notificationsTimeNow": {
+    "description": "Time label for very recent notifications",
+    "maxLength": 14
+  },
+  "notificationsTimeMinutes": "{minutes}m ago",
+  "@notificationsTimeMinutes": {
+    "description": "Time label for notifications from minutes ago",
+    "maxLength": 14,
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "notificationsTimeHours": "{hours}h ago",
+  "@notificationsTimeHours": {
+    "description": "Time label for notifications from hours ago",
+    "maxLength": 14,
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "notificationsTimeDays": "{days}d ago",
+  "@notificationsTimeDays": {
+    "description": "Time label for notifications from days ago",
+    "maxLength": 14,
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "gettingStartedTitle": "Getting Started",
+  "@gettingStartedTitle": {
+    "description": "Getting started guide screen title",
+    "maxLength": 32
+  },
+  "gettingStartedWelcome": "Welcome to Team Build Pro!",
+  "@gettingStartedWelcome": {
+    "description": "Welcome heading in getting started guide",
+    "maxLength": 36
+  },
+  "gettingStartedIntro": "Let's get you set up for success. This quick guide will walk you through the essential features to start building your team.",
+  "@gettingStartedIntro": {
+    "description": "Introduction text for getting started guide"
+  },
+  "gettingStartedStep1Title": "Make Your List",
+  "@gettingStartedStep1Title": {
+    "description": "Title for step 1",
+    "maxLength": 22
+  },
+  "gettingStartedStep2Title": "Share with Your Network",
+  "@gettingStartedStep2Title": {
+    "description": "Title for step 2",
+    "maxLength": 28
+  },
+  "gettingStartedStep3Title": "Welcome Your New Team Members",
+  "@gettingStartedStep3Title": {
+    "description": "Title for step 3",
+    "maxLength": 36
+  },
+  "gettingStartedStep3Description": "When you receive a new team member notification, follow up immediately to welcome them to your team. First impressions matter!",
+  "@gettingStartedStep3Description": {
+    "description": "Description for step 3"
+  },
+  "gettingStartedStep4Title": "Engage Your Team",
+  "@gettingStartedStep4Title": {
+    "description": "Title for step 4 in getting started",
+    "maxLength": 32
+  },
+  "gettingStartedStep4Description": "Use the message center to communicate with your team and provide support.",
+  "@gettingStartedStep4Description": {
+    "description": "Description for team engagement step"
+  },
+  "gettingStartedButtonStart": "Get Started",
+  "@gettingStartedButtonStart": {
+    "description": "Button to begin using the app after guide",
+    "maxLength": 22
+  },
+  "gettingStartedButtonNext": "Next",
+  "@gettingStartedButtonNext": {
+    "description": "Button to advance to next step in guide",
+    "maxLength": 14
+  },
+  "gettingStartedButtonBack": "Back",
+  "@gettingStartedButtonBack": {
+    "description": "Button to return to previous step in guide",
+    "maxLength": 14
+  },
+  "gettingStartedButtonSkip": "Skip",
+  "@gettingStartedButtonSkip": {
+    "description": "Button to skip getting started guide",
+    "maxLength": 14
+  },
+  "welcomeTitle": "Welcome",
+  "@welcomeTitle": {
+    "description": "Welcome screen title",
+    "maxLength": 32
+  },
+  "welcomeHeadline": "Build Your Team.\nGrow Your Business.",
+  "@welcomeHeadline": {
+    "description": "Main headline on welcome screen"
+  },
+  "welcomeSubheadline": "The professional platform for team building and network growth.",
+  "@welcomeSubheadline": {
+    "description": "Subheadline explaining app purpose"
+  },
+  "welcomeButtonSignIn": "Sign In",
+  "@welcomeButtonSignIn": {
+    "description": "Button to navigate to sign in screen",
+    "maxLength": 22
+  },
+  "welcomeButtonSignUp": "Create Account",
+  "@welcomeButtonSignUp": {
+    "description": "Button to navigate to sign up screen",
+    "maxLength": 22
+  },
+  "welcomeFeature1Title": "Smart Team Tracking",
+  "@welcomeFeature1Title": {
+    "description": "Title for feature 1 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature1Description": "Monitor your team growth in real-time with powerful analytics.",
+  "@welcomeFeature1Description": {
+    "description": "Description for feature 1"
+  },
+  "welcomeFeature2Title": "Automated Growth",
+  "@welcomeFeature2Title": {
+    "description": "Title for feature 2 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature2Description": "Network feeder system automatically transfers qualified members to your team.",
+  "@welcomeFeature2Description": {
+    "description": "Description for feature 2"
+  },
+  "welcomeFeature3Title": "Secure Messaging",
+  "@welcomeFeature3Title": {
+    "description": "Title for feature 3 highlight",
+    "maxLength": 28
+  },
+  "welcomeFeature3Description": "Communicate securely with your team through encrypted messaging.",
+  "@welcomeFeature3Description": {
+    "description": "Description for feature 3"
+  },
+  "addLinkTitle": "Add Link",
+  "@addLinkTitle": {
+    "description": "Add business link screen title",
+    "maxLength": 32
+  },
+  "addLinkDescription": "Add your business opportunity link to start building your team.",
+  "@addLinkDescription": {
+    "description": "Instruction text for add link screen"
+  },
+  "addLinkLabelUrl": "Business Opportunity URL",
+  "@addLinkLabelUrl": {
+    "description": "Label for business URL input field"
+  },
+  "addLinkHintUrl": "Enter the full URL to your business opportunity page",
+  "@addLinkHintUrl": {
+    "description": "Placeholder for business URL input"
+  },
+  "addLinkUrlRequired": "Please enter a URL",
+  "@addLinkUrlRequired": {
+    "description": "Validation error when URL field is empty"
+  },
+  "addLinkUrlInvalid": "Please enter a valid URL",
+  "@addLinkUrlInvalid": {
+    "description": "Validation error when URL format is invalid"
+  },
+  "addLinkButtonSave": "Save Link",
+  "@addLinkButtonSave": {
+    "description": "Button to save business link",
+    "maxLength": 22
+  },
+  "addLinkButtonTest": "Test Link",
+  "@addLinkButtonTest": {
+    "description": "Button to test if link works",
+    "maxLength": 22
+  },
+  "addLinkSuccessMessage": "Business link saved successfully!",
+  "@addLinkSuccessMessage": {
+    "description": "Success message after saving link"
+  },
+  "addLinkErrorMessage": "Error saving link. Please try again.",
+  "@addLinkErrorMessage": {
+    "description": "Error message when save fails"
+  },
+  "businessTitle": "Business Opportunity",
+  "@businessTitle": {
+    "description": "Business opportunity screen title",
+    "maxLength": 32
+  },
+  "businessLoadingMessage": "Loading opportunity details...",
+  "@businessLoadingMessage": {
+    "description": "Loading message while fetching business details"
+  },
+  "businessErrorMessage": "Unable to load opportunity details",
+  "@businessErrorMessage": {
+    "description": "Error message when loading fails"
+  },
+  "businessButtonJoin": "Join Now",
+  "@businessButtonJoin": {
+    "description": "Button to join business opportunity",
+    "maxLength": 22
+  },
+  "businessButtonLearnMore": "Learn More",
+  "@businessButtonLearnMore": {
+    "description": "Button to learn more about opportunity",
+    "maxLength": 22
+  },
+  "businessButtonContact": "Contact Sponsor",
+  "@businessButtonContact": {
+    "description": "Button to contact business sponsor",
+    "maxLength": 22
+  },
+  "changePasswordTitle": "Change Password",
+  "@changePasswordTitle": {
+    "description": "Change password screen title",
+    "maxLength": 32
+  },
+  "changePasswordLabelCurrent": "Current Password",
+  "@changePasswordLabelCurrent": {
+    "description": "Label for current password field"
+  },
+  "changePasswordHintCurrent": "Enter your current password",
+  "@changePasswordHintCurrent": {
+    "description": "Placeholder for current password field"
+  },
+  "changePasswordCurrentRequired": "Please enter your current password",
+  "@changePasswordCurrentRequired": {
+    "description": "Validation error when current password is empty"
+  },
+  "changePasswordLabelNew": "New Password",
+  "@changePasswordLabelNew": {
+    "description": "Label for new password field"
+  },
+  "changePasswordHintNew": "Enter your new password",
+  "@changePasswordHintNew": {
+    "description": "Placeholder for new password field"
+  },
+  "changePasswordNewRequired": "Please enter a new password",
+  "@changePasswordNewRequired": {
+    "description": "Validation error when new password is empty"
+  },
+  "changePasswordLabelConfirm": "Confirm New Password",
+  "@changePasswordLabelConfirm": {
+    "description": "Label for confirm new password field"
+  },
+  "changePasswordHintConfirm": "Re-enter your new password",
+  "@changePasswordHintConfirm": {
+    "description": "Placeholder for confirm password field"
+  },
+  "changePasswordConfirmRequired": "Please confirm your new password",
+  "@changePasswordConfirmRequired": {
+    "description": "Validation error when confirm password is empty"
+  },
+  "changePasswordMismatch": "New passwords don't match",
+  "@changePasswordMismatch": {
+    "description": "Validation error when passwords don't match"
+  },
+  "changePasswordButtonUpdate": "Update Password",
+  "@changePasswordButtonUpdate": {
+    "description": "Button to update password",
+    "maxLength": 22
+  },
+  "changePasswordSuccessMessage": "Password updated successfully!",
+  "@changePasswordSuccessMessage": {
+    "description": "Success message after password change"
+  },
+  "changePasswordErrorMessage": "Error updating password. Please try again.",
+  "@changePasswordErrorMessage": {
+    "description": "Error message when password change fails"
+  },
+  "chatTitle": "Chat",
+  "@chatTitle": {
+    "description": "Chat screen title",
+    "maxLength": 32
+  },
+  "chatInputHint": "Type a message...",
+  "@chatInputHint": {
+    "description": "Placeholder for chat message input"
+  },
+  "chatButtonSend": "Send",
+  "@chatButtonSend": {
+    "description": "Button to send chat message",
+    "maxLength": 14
+  },
+  "chatEmptyState": "No messages yet. Start the conversation!",
+  "@chatEmptyState": {
+    "description": "Empty state when chat has no messages"
+  },
+  "chatMessageDeleted": "This message was deleted",
+  "@chatMessageDeleted": {
+    "description": "Placeholder for deleted message"
+  },
+  "chatMessageEdited": "edited",
+  "@chatMessageEdited": {
+    "description": "Label showing message was edited",
+    "maxLength": 14
+  },
+  "chatTypingIndicator": "{name} is typing...",
+  "@chatTypingIndicator": {
+    "description": "Indicator showing someone is typing",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Stephen"
+      }
+    }
+  },
+  "chatbotTitle": "AI Coach",
+  "@chatbotTitle": {
+    "description": "AI chatbot screen title",
+    "maxLength": 32
+  },
+  "chatbotWelcome": "Hi! I'm your AI coach. How can I help you grow your team today?",
+  "@chatbotWelcome": {
+    "description": "Welcome message from AI chatbot"
+  },
+  "chatbotInputHint": "Ask me anything about team building...",
+  "@chatbotInputHint": {
+    "description": "Placeholder for chatbot input field"
+  },
+  "chatbotSuggestion1": "How do I recruit more effectively?",
+  "@chatbotSuggestion1": {
+    "description": "Suggested question 1 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotSuggestion2": "What are the eligibility requirements?",
+  "@chatbotSuggestion2": {
+    "description": "Suggested question 2 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotSuggestion3": "How does the feeder system work?",
+  "@chatbotSuggestion3": {
+    "description": "Suggested question 3 for chatbot",
+    "maxLength": 42
+  },
+  "chatbotThinking": "Thinking...",
+  "@chatbotThinking": {
+    "description": "Loading indicator while chatbot generates response"
+  },
+  "companyTitle": "Company Information",
+  "@companyTitle": {
+    "description": "Company information screen title",
+    "maxLength": 32
+  },
+  "companyAboutHeading": "About Team Build Pro",
+  "@companyAboutHeading": {
+    "description": "Heading for about section",
+    "maxLength": 32
+  },
+  "companyAboutText": "Team Build Pro is a professional SaaS platform designed for team building and network growth. We provide the tools and technology to help you build and manage your professional team effectively.",
+  "@companyAboutText": {
+    "description": "About company description text"
+  },
+  "companyVersionLabel": "App Version",
+  "@companyVersionLabel": {
+    "description": "Label for app version information",
+    "maxLength": 22
+  },
+  "companyContactHeading": "Contact Us",
+  "@companyContactHeading": {
+    "description": "Heading for contact section",
+    "maxLength": 22
+  },
+  "companyContactEmail": "support@teambuildpro.com",
+  "@companyContactEmail": {
+    "description": "Support email address"
+  },
+  "companyContactWebsite": "www.teambuildpro.com",
+  "@companyContactWebsite": {
+    "description": "Company website URL"
+  },
+  "deleteAccountTitle": "Delete Account",
+  "@deleteAccountTitle": {
+    "description": "Delete account screen title",
+    "maxLength": 32
+  },
+  "deleteAccountWarning": "Warning: This action cannot be undone!",
+  "@deleteAccountWarning": {
+    "description": "Warning message about permanent deletion",
+    "maxLength": 42
+  },
+  "deleteAccountDescription": "Deleting your account will permanently remove all your data, including your profile, team information, and message history. This action is irreversible.",
+  "@deleteAccountDescription": {
+    "description": "Detailed description of account deletion consequences"
+  },
+  "deleteAccountConfirmPrompt": "To confirm deletion, please type DELETE below:",
+  "@deleteAccountConfirmPrompt": {
+    "description": "Prompt for confirmation text input"
+  },
+  "deleteAccountConfirmHint": "Enter your email address",
+  "@deleteAccountConfirmHint": {
+    "description": "Hint for confirmation input",
+    "maxLength": 28
+  },
+  "deleteAccountConfirmMismatch": "Please type DELETE exactly as shown",
+  "@deleteAccountConfirmMismatch": {
+    "description": "Error when confirmation text doesn't match"
+  },
+  "deleteAccountButtonDelete": "Delete Account",
+  "@deleteAccountButtonDelete": {
+    "description": "Button to delete account",
+    "maxLength": 22
+  },
+  "deleteAccountButtonCancel": "Cancel",
+  "@deleteAccountButtonCancel": {
+    "description": "Button to cancel deletion",
+    "maxLength": 14
+  },
+  "deleteAccountSuccessMessage": "Your account has been deleted",
+  "@deleteAccountSuccessMessage": {
+    "description": "Success message after deletion"
+  },
+  "deleteAccountErrorMessage": "Error deleting account. Please contact support.",
+  "@deleteAccountErrorMessage": {
+    "description": "Error message when deletion fails"
+  },
+  "editProfileTitle": "Edit Profile",
+  "@editProfileTitle": {
+    "description": "Edit profile screen title",
+    "maxLength": 32
+  },
+  "editProfileLabelFirstName": "First Name",
+  "@editProfileLabelFirstName": {
+    "description": "Label for first name field"
+  },
+  "editProfileLabelLastName": "Last Name",
+  "@editProfileLabelLastName": {
+    "description": "Label for last name field"
+  },
+  "editProfileLabelEmail": "Email",
+  "@editProfileLabelEmail": {
+    "description": "Label for email field"
+  },
+  "editProfileLabelPhone": "Phone Number",
+  "@editProfileLabelPhone": {
+    "description": "Label for phone number field"
+  },
+  "editProfileLabelCity": "City",
+  "@editProfileLabelCity": {
+    "description": "Label for city field"
+  },
+  "editProfileLabelState": "State/Province",
+  "@editProfileLabelState": {
+    "description": "Label for state/province field"
+  },
+  "editProfileLabelCountry": "Country",
+  "@editProfileLabelCountry": {
+    "description": "Label for country field"
+  },
+  "editProfileLabelBio": "Bio",
+  "@editProfileLabelBio": {
+    "description": "Label for bio/about field"
+  },
+  "editProfileHintBio": "Tell your team about yourself...",
+  "@editProfileHintBio": {
+    "description": "Placeholder for bio field"
+  },
+  "editProfileButtonSave": "Save Changes",
+  "@editProfileButtonSave": {
+    "description": "Button to save profile changes",
+    "maxLength": 22
+  },
+  "editProfileButtonCancel": "Cancel",
+  "@editProfileButtonCancel": {
+    "description": "Button to cancel editing",
+    "maxLength": 14
+  },
+  "editProfileButtonChangePhoto": "Change Photo",
+  "@editProfileButtonChangePhoto": {
+    "description": "Button to change profile photo",
+    "maxLength": 22
+  },
+  "editProfileSuccessMessage": "Profile updated successfully!",
+  "@editProfileSuccessMessage": {
+    "description": "Success message after saving profile"
+  },
+  "editProfileErrorMessage": "Error updating profile. Please try again.",
+  "@editProfileErrorMessage": {
+    "description": "Error message when profile save fails"
+  },
+  "eligibilityTitle": "Eligibility Status",
+  "@eligibilityTitle": {
+    "description": "Eligibility screen title",
+    "maxLength": 32
+  },
+  "eligibilityCurrentStatus": "Current Status",
+  "@eligibilityCurrentStatus": {
+    "description": "Section heading for current eligibility status",
+    "maxLength": 28
+  },
+  "eligibilityStatusQualified": "Qualified!",
+  "@eligibilityStatusQualified": {
+    "description": "Status label when user is qualified",
+    "maxLength": 14
+  },
+  "eligibilityStatusNotQualified": "Not Yet Qualified",
+  "@eligibilityStatusNotQualified": {
+    "description": "Status label when user is not qualified",
+    "maxLength": 22
+  },
+  "eligibilityRequirementsHeading": "Requirements",
+  "@eligibilityRequirementsHeading": {
+    "description": "Section heading for eligibility requirements",
+    "maxLength": 28
+  },
+  "eligibilityDirectSponsorsLabel": "Direct Sponsors",
+  "@eligibilityDirectSponsorsLabel": {
+    "description": "Label for direct sponsors requirement",
+    "maxLength": 28
+  },
+  "eligibilityDirectSponsorsProgress": "{current} of {required} required",
+  "@eligibilityDirectSponsorsProgress": {
+    "description": "Progress text for direct sponsors",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "required": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "eligibilityTotalTeamLabel": "Total Team Members",
+  "@eligibilityTotalTeamLabel": {
+    "description": "Label for total team requirement",
+    "maxLength": 28
+  },
+  "eligibilityTotalTeamProgress": "{current} of {required} required",
+  "@eligibilityTotalTeamProgress": {
+    "description": "Progress text for total team",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "15"
+      },
+      "required": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "eligibilityProgressBar": "Progress: {percent}%",
+  "@eligibilityProgressBar": {
+    "description": "Overall progress percentage",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "example": "60"
+      }
+    }
+  },
+  "eligibilityNextSteps": "Next Steps",
+  "@eligibilityNextSteps": {
+    "description": "Section heading for next steps",
+    "maxLength": 22
+  },
+  "eligibilityNextStepsDescription": "Keep sharing your referral link to grow your team and meet the requirements!",
+  "@eligibilityNextStepsDescription": {
+    "description": "Encouragement text for next steps"
+  },
+  "shareTitle": "Share",
+  "@shareTitle": {
+    "description": "Share screen title",
+    "maxLength": 32
+  },
+  "shareYourLinkHeading": "Your Referral Link",
+  "@shareYourLinkHeading": {
+    "description": "Heading for referral link section",
+    "maxLength": 28
+  },
+  "shareButtonCopyLink": "Copy Link",
+  "@shareButtonCopyLink": {
+    "description": "Button to copy referral link",
+    "maxLength": 22
+  },
+  "shareLinkCopied": "Link copied to clipboard!",
+  "@shareLinkCopied": {
+    "description": "Success message when link is copied"
+  },
+  "shareButtonSms": "Share via SMS",
+  "@shareButtonSms": {
+    "description": "Button to share via SMS",
+    "maxLength": 22
+  },
+  "shareButtonEmail": "Share via Email",
+  "@shareButtonEmail": {
+    "description": "Button to share via email",
+    "maxLength": 22
+  },
+  "shareButtonWhatsApp": "Share via WhatsApp",
+  "@shareButtonWhatsApp": {
+    "description": "Button to share via WhatsApp",
+    "maxLength": 22
+  },
+  "shareButtonMore": "More Options",
+  "@shareButtonMore": {
+    "description": "Button to show more sharing options",
+    "maxLength": 22
+  },
+  "shareMessageTemplate": "Hey! I'm building my team with Team Build Pro. Join me: {link}",
+  "@shareMessageTemplate": {
+    "description": "Default message template for sharing",
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://tbp.app/join/abc123"
+      }
+    }
+  },
+  "shareStatsHeading": "Your Sharing Impact",
+  "@shareStatsHeading": {
+    "description": "Heading for sharing statistics",
+    "maxLength": 32
+  },
+  "shareStatsViews": "Link Views",
+  "@shareStatsViews": {
+    "description": "Label for link view count",
+    "maxLength": 22
+  },
+  "shareStatsSignups": "Signups",
+  "@shareStatsSignups": {
+    "description": "Label for signup count from link",
+    "maxLength": 22
+  },
+  "shareStatsConversion": "Conversion Rate",
+  "@shareStatsConversion": {
+    "description": "Label for conversion rate percentage",
+    "maxLength": 22
+  },
+  "memberDetailTitle": "Member Details",
+  "@memberDetailTitle": {
+    "description": "Member detail screen title",
+    "maxLength": 32
+  },
+  "memberDetailLabelName": "Name",
+  "@memberDetailLabelName": {
+    "description": "Label for member name",
+    "maxLength": 14
+  },
+  "memberDetailLabelEmail": "Email",
+  "@memberDetailLabelEmail": {
+    "description": "Label for member email",
+    "maxLength": 14
+  },
+  "memberDetailLabelPhone": "Phone",
+  "@memberDetailLabelPhone": {
+    "description": "Label for member phone",
+    "maxLength": 14
+  },
+  "memberDetailLabelLocation": "Location",
+  "@memberDetailLabelLocation": {
+    "description": "Label for member location",
+    "maxLength": 14
+  },
+  "memberDetailLabelJoined": "Joined",
+  "@memberDetailLabelJoined": {
+    "description": "Label for member join date",
+    "maxLength": 14
+  },
+  "memberDetailLabelSponsor": "Sponsor",
+  "@memberDetailLabelSponsor": {
+    "description": "Label for member's sponsor",
+    "maxLength": 14
+  },
+  "memberDetailLabelLevel": "Level",
+  "@memberDetailLabelLevel": {
+    "description": "Label for member's network level",
+    "maxLength": 14
+  },
+  "memberDetailTeamStats": "Team Statistics",
+  "@memberDetailTeamStats": {
+    "description": "Section heading for team stats",
+    "maxLength": 28
+  },
+  "memberDetailDirectSponsors": "Direct Sponsors: {count}",
+  "@memberDetailDirectSponsors": {
+    "description": "Label showing direct sponsor count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "memberDetailTotalTeam": "Total Team: {count}",
+  "@memberDetailTotalTeam": {
+    "description": "Label showing total team count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "25"
+      }
+    }
+  },
+  "memberDetailButtonMessage": "Send Message",
+  "@memberDetailButtonMessage": {
+    "description": "Button to message team member",
+    "maxLength": 22
+  },
+  "memberDetailButtonViewTeam": "View Their Team",
+  "@memberDetailButtonViewTeam": {
+    "description": "Button to view member's team",
+    "maxLength": 22
+  },
+  "messageThreadTitle": "Messages",
+  "@messageThreadTitle": {
+    "description": "Message thread screen title",
+    "maxLength": 32
+  },
+  "messageThreadInputHint": "Type your message...",
+  "@messageThreadInputHint": {
+    "description": "Placeholder for message input field"
+  },
+  "messageThreadButtonSend": "Send",
+  "@messageThreadButtonSend": {
+    "description": "Button to send message",
+    "maxLength": 14
+  },
+  "messageThreadEmptyState": "No messages yet. Start the conversation!",
+  "@messageThreadEmptyState": {
+    "description": "Empty state when thread has no messages"
+  },
+  "messageThreadDelivered": "Delivered",
+  "@messageThreadDelivered": {
+    "description": "Status label for delivered message",
+    "maxLength": 14
+  },
+  "messageThreadRead": "Read",
+  "@messageThreadRead": {
+    "description": "Status label for read message",
+    "maxLength": 14
+  },
+  "messageThreadSending": "Sending...",
+  "@messageThreadSending": {
+    "description": "Status label while message is sending"
+  },
+  "messageThreadFailed": "Failed to send",
+  "@messageThreadFailed": {
+    "description": "Status label when message fails to send"
+  },
+  "loginTitle": "Sign In",
+  "@loginTitle": {
+    "description": "Login screen title",
+    "maxLength": 32
+  },
+  "loginButtonGoogle": "Continue with Google",
+  "@loginButtonGoogle": {
+    "description": "Button to sign in with Google",
+    "maxLength": 28
+  },
+  "loginButtonApple": "Continue with Apple",
+  "@loginButtonApple": {
+    "description": "Button to sign in with Apple",
+    "maxLength": 28
+  },
+  "loginDivider": "or",
+  "@loginDivider": {
+    "description": "Divider text between social login and email login",
+    "maxLength": 8
+  },
+  "loginForgotPassword": "Forgot Password?",
+  "@loginForgotPassword": {
+    "description": "Link to password reset flow",
+    "maxLength": 22
+  },
+  "loginResetPasswordTitle": "Reset Password",
+  "@loginResetPasswordTitle": {
+    "description": "Title for password reset dialog",
+    "maxLength": 32
+  },
+  "loginResetPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+  "@loginResetPasswordDescription": {
+    "description": "Instruction text for password reset"
+  },
+  "loginResetPasswordButton": "Send Reset Link",
+  "@loginResetPasswordButton": {
+    "description": "Button to send password reset email",
+    "maxLength": 22
+  },
+  "loginResetPasswordSuccess": "Password reset email sent! Check your inbox.",
+  "@loginResetPasswordSuccess": {
+    "description": "Success message after sending reset email"
+  },
+  "loginResetPasswordError": "Error sending reset email. Please try again.",
+  "@loginResetPasswordError": {
+    "description": "Error message when reset email fails"
+  },
+  "commonButtonCancel": "Cancel",
+  "@commonButtonCancel": {
+    "description": "Generic cancel button label",
+    "maxLength": 14
+  },
+  "commonButtonSave": "Save",
+  "@commonButtonSave": {
+    "description": "Generic save button label",
+    "maxLength": 14
+  },
+  "commonButtonDelete": "Delete",
+  "@commonButtonDelete": {
+    "description": "Generic delete button label",
+    "maxLength": 14
+  },
+  "commonButtonEdit": "Edit",
+  "@commonButtonEdit": {
+    "description": "Generic edit button label",
+    "maxLength": 14
+  },
+  "commonButtonClose": "Close",
+  "@commonButtonClose": {
+    "description": "Generic close button label",
+    "maxLength": 14
+  },
+  "commonButtonOk": "OK",
+  "@commonButtonOk": {
+    "description": "Generic OK button label",
+    "maxLength": 8
+  },
+  "commonButtonYes": "Yes",
+  "@commonButtonYes": {
+    "description": "Generic yes button label",
+    "maxLength": 8
+  },
+  "commonButtonNo": "No",
+  "@commonButtonNo": {
+    "description": "Generic no button label",
+    "maxLength": 8
+  },
+  "commonLoadingMessage": "Loading...",
+  "@commonLoadingMessage": {
+    "description": "Generic loading message"
+  },
+  "commonErrorMessage": "Something went wrong. Please try again.",
+  "@commonErrorMessage": {
+    "description": "Generic error message"
+  },
+  "commonSuccessMessage": "Success!",
+  "@commonSuccessMessage": {
+    "description": "Generic success message",
+    "maxLength": 22
+  },
+  "commonNoDataMessage": "No data available",
+  "@commonNoDataMessage": {
+    "description": "Generic message when no data exists"
+  },
+  "commonRetryButton": "Retry",
+  "@commonRetryButton": {
+    "description": "Button to retry failed action",
+    "maxLength": 14
+  },
+  "commonRefreshButton": "Refresh",
+  "@commonRefreshButton": {
+    "description": "Button to refresh data",
+    "maxLength": 14
+  },
+  "authSignupErrorFirstName": "First name cannot be empty",
+  "@authSignupErrorFirstName": {
+    "description": "Error when first name field is empty"
+  },
+  "authSignupErrorLastName": "Last name cannot be empty",
+  "@authSignupErrorLastName": {
+    "description": "Error when last name field is empty"
+  },
+  "addLinkHeading": "Add Your\n{business} Link",
+  "@addLinkHeading": {
+    "description": "Hero heading for add link screen",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkImportantLabel": "IMPORTANT INFORMATION",
+  "@addLinkImportantLabel": {
+    "description": "Label for important information section",
+    "maxLength": 28
+  },
+  "addLinkDisclaimer": "You are updating your Team Build Pro account to track referrals to {business}. This is a separate, independent business entity that is NOT owned, operated, or affiliated with Team Build Pro.",
+  "@addLinkDisclaimer": {
+    "description": "Disclaimer text for add link screen",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkGrowthTitle": "Unlocking Your Growth Engine",
+  "@addLinkGrowthTitle": {
+    "description": "Title for growth instruction section",
+    "maxLength": 36
+  },
+  "addLinkInstructionBullet1": "Your referral link will be stored in your Team Build Pro profile for tracking purposes only.",
+  "@addLinkInstructionBullet1": {
+    "description": "First instruction bullet point"
+  },
+  "addLinkInstructionBullet2": "When your team members qualify and join the {business} opportunity, they will automatically be placed in your official team",
+  "@addLinkInstructionBullet2": {
+    "description": "Second instruction bullet point",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkInstructionBullet3": "This link can only be set once, so please verify it's correct before saving.",
+  "@addLinkInstructionBullet3": {
+    "description": "Third instruction bullet point"
+  },
+  "addLinkWarning": "Team Build Pro is a referral tracking platform only. We do not endorse or guarantee any business opportunities.",
+  "@addLinkWarning": {
+    "description": "Warning message about platform nature"
+  },
+  "addLinkFinalStepTitle": "Final Step: Link Your Account",
+  "@addLinkFinalStepTitle": {
+    "description": "Title for final step section",
+    "maxLength": 36
+  },
+  "addLinkFinalStepSubtitle": "This ensures your new team members are automatically placed in your {business} organization.",
+  "@addLinkFinalStepSubtitle": {
+    "description": "Subtitle for final step section",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkFieldInstruction": "Enter your {business} referral link below. This will be used to track referrals from your team.",
+  "@addLinkFieldInstruction": {
+    "description": "Instruction for link field",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkMustBeginWith": "Must begin with:\n{baseUrl}",
+  "@addLinkMustBeginWith": {
+    "description": "Message showing required URL prefix",
+    "placeholders": {
+      "baseUrl": {
+        "type": "String",
+        "example": "https://example.com"
+      }
+    }
+  },
+  "addLinkFieldLabel": "Enter Your Referral Link",
+  "@addLinkFieldLabel": {
+    "description": "Label for referral link input field",
+    "maxLength": 28
+  },
+  "addLinkFieldHelper": "Must start with {baseUrl}\nThis cannot be changed once set",
+  "@addLinkFieldHelper": {
+    "description": "Helper text for link field",
+    "placeholders": {
+      "baseUrl": {
+        "type": "String",
+        "example": "https://example.com"
+      }
+    }
+  },
+  "addLinkFieldError": "Please enter your {business} referral link.",
+  "@addLinkFieldError": {
+    "description": "Error when link field is empty",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkConfirmFieldLabel": "Confirm Referral Link URL",
+  "@addLinkConfirmFieldLabel": {
+    "description": "Label for confirmation field",
+    "maxLength": 32
+  },
+  "addLinkConfirmFieldError": "Please confirm your referral link.",
+  "@addLinkConfirmFieldError": {
+    "description": "Error when confirmation field is empty"
+  },
+  "addLinkPreviewLabel": "Referral Link Preview:",
+  "@addLinkPreviewLabel": {
+    "description": "Label for link preview section",
+    "maxLength": 28
+  },
+  "addLinkSaving": "Validating & Saving...",
+  "@addLinkSaving": {
+    "description": "Message while saving link",
+    "maxLength": 28
+  },
+  "addLinkDialogImportantTitle": "Very Important!",
+  "@addLinkDialogImportantTitle": {
+    "description": "Title for important dialog",
+    "maxLength": 22
+  },
+  "addLinkDialogImportantMessage": "You must enter the exact referral link you received from {business}. This will ensure your team members that join {business} are automatically placed in your {business} team.",
+  "@addLinkDialogImportantMessage": {
+    "description": "Important dialog message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkDialogImportantButton": "I Understand",
+  "@addLinkDialogImportantButton": {
+    "description": "Button to acknowledge dialog",
+    "maxLength": 22
+  },
+  "addLinkDialogDuplicateTitle": "Referral Link Already in Use",
+  "@addLinkDialogDuplicateTitle": {
+    "description": "Title for duplicate link dialog",
+    "maxLength": 36
+  },
+  "addLinkDialogDuplicateMessage": "The {business} referral link you entered is already in use by another Team Build Pro member.",
+  "@addLinkDialogDuplicateMessage": {
+    "description": "Message for duplicate link",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "addLinkDialogDuplicateInfo": "You must use a different referral link to continue.",
+  "@addLinkDialogDuplicateInfo": {
+    "description": "Info about duplicate link requirement"
+  },
+  "addLinkDialogDuplicateButton": "Try Different Link",
+  "@addLinkDialogDuplicateButton": {
+    "description": "Button to retry with different link",
+    "maxLength": 28
+  },
+  "businessHeroTitle": "Congratulations\nYou're Qualified!",
+  "@businessHeroTitle": {
+    "description": "Hero title on business screen",
+    "maxLength": 32
+  },
+  "businessHeroMessage": "Your hard work and team-building have paid off. You are now eligible to join the {business} opportunity.",
+  "@businessHeroMessage": {
+    "description": "Hero message on business screen",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessDisclaimerTitle": "Disclaimer Notice",
+  "@businessDisclaimerTitle": {
+    "description": "Title for disclaimer section",
+    "maxLength": 22
+  },
+  "businessDisclaimerMessage": "Your team growth has unlocked access to {business}. This opportunity operates as an independent business and has no affiliation with the Team Build Pro platform.",
+  "@businessDisclaimerMessage": {
+    "description": "Disclaimer message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessDisclaimerInfo": "The Team Build Pro App simply facilitates access to {business} via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.",
+  "@businessDisclaimerInfo": {
+    "description": "Additional disclaimer info",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessSponsorTitle": "Your Referral Contact",
+  "@businessSponsorTitle": {
+    "description": "Title for sponsor section",
+    "maxLength": 28
+  },
+  "businessSponsorMessage": "If you choose to explore {business}, your referral contact will be {sponsor}. This person is a member of your upline team who has already joined {business}.",
+  "@businessSponsorMessage": {
+    "description": "Sponsor message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      },
+      "sponsor": {
+        "type": "String",
+        "example": "John Doe"
+      }
+    }
+  },
+  "businessInstructionsTitle": "How to Join {business}",
+  "@businessInstructionsTitle": {
+    "description": "Title for instructions section",
+    "maxLength": 32,
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessInstructions": "1. Copy the referral link below\n2. Open your web browser\n3. Paste the link and complete the {business} registration\n4. Return here to add your {business} referral link",
+  "@businessInstructions": {
+    "description": "Step-by-step instructions",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessNoUrlMessage": "Registration URL not available. Please contact your sponsor.",
+  "@businessNoUrlMessage": {
+    "description": "Message when URL is not available"
+  },
+  "businessUrlLabel": "Your Sponsors Referral Link:",
+  "@businessUrlLabel": {
+    "description": "Label for sponsor's URL",
+    "maxLength": 32
+  },
+  "businessUrlCopyTooltip": "Copy URL",
+  "@businessUrlCopyTooltip": {
+    "description": "Tooltip for copy button",
+    "maxLength": 14
+  },
+  "businessUrlCopiedMessage": "Registration URL copied to clipboard!",
+  "@businessUrlCopiedMessage": {
+    "description": "Success message after copying URL"
+  },
+  "businessUrlCopyError": "Failed to copy URL: {error}",
+  "@businessUrlCopyError": {
+    "description": "Error message when copy fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "businessFollowUpTitle": "Final Step: Link Your Account",
+  "@businessFollowUpTitle": {
+    "description": "Title for follow-up section",
+    "maxLength": 36
+  },
+  "businessFollowUpMessage": "After exploring {business}, you must return here and add your new {business} referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
+  "@businessFollowUpMessage": {
+    "description": "Follow-up message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessCompleteButton1": "Registration Complete",
+  "@businessCompleteButton1": {
+    "description": "First line of completion button",
+    "maxLength": 28
+  },
+  "businessCompleteButton2": "Add My Referral Link",
+  "@businessCompleteButton2": {
+    "description": "Second line of completion button",
+    "maxLength": 28
+  },
+  "businessConfirmDialogTitle": "Before You Continue",
+  "@businessConfirmDialogTitle": {
+    "description": "Title for confirmation dialog",
+    "maxLength": 28
+  },
+  "businessConfirmDialogMessage": "This is the next step in your journey. After joining {business} through your sponsor's link, you must return here to add your new {business} referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
+  "@businessConfirmDialogMessage": {
+    "description": "Confirmation dialog message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessConfirmDialogButton": "I Understand",
+  "@businessConfirmDialogButton": {
+    "description": "Button to acknowledge confirmation",
+    "maxLength": 22
+  },
+  "businessVisitRequiredTitle": "Visit Required First",
+  "@businessVisitRequiredTitle": {
+    "description": "Title for visit required dialog",
+    "maxLength": 28
+  },
+  "businessVisitRequiredMessage": "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit {business} and complete your registration.",
+  "@businessVisitRequiredMessage": {
+    "description": "Visit required message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "businessVisitRequiredButton": "OK",
+  "@businessVisitRequiredButton": {
+    "description": "Button to acknowledge visit required",
+    "maxLength": 8
+  },
+  "gettingStartedHeading": "Getting Started with Team Build Pro",
+  "@gettingStartedHeading": {
+    "description": "Main heading for getting started screen",
+    "maxLength": 42
+  },
+  "gettingStartedSubheading": "Follow these simple steps to start building your team",
+  "@gettingStartedSubheading": {
+    "description": "Subheading for getting started screen"
+  },
+  "gettingStartedStep1Description": "Create a list of recruiting prospects and current {business} team members you want to share Team Build Pro with. Think about who could benefit from this tool to accelerate their team building.",
+  "@gettingStartedStep1Description": {
+    "description": "Description for step 1",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "gettingStartedStep2Description": "Use the Share feature to quickly and easily send targeted text messages and emails to your recruiting prospects and {business} team members.",
+  "@gettingStartedStep2Description": {
+    "description": "Description for step 2",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "gettingStartedStep2Button": "Open Share",
+  "@gettingStartedStep2Button": {
+    "description": "Button to open share screen",
+    "maxLength": 14
+  },
+  "gettingStartedProTipTitle": "Pro Tip",
+  "@gettingStartedProTipTitle": {
+    "description": "Title for pro tip section",
+    "maxLength": 14
+  },
+  "gettingStartedProTipMessage": "Consistent follow-up and engagement are key to building a strong, active team.",
+  "@gettingStartedProTipMessage": {
+    "description": "Pro tip message"
+  },
+  "eligibilityHeroTitleQualified": "CONGRATULATIONS\nYou're Qualified!",
+  "@eligibilityHeroTitleQualified": {
+    "description": "Hero title when qualified",
+    "maxLength": 28
+  },
+  "eligibilityHeroTitleNotQualified": "Build Your Momentum",
+  "@eligibilityHeroTitleNotQualified": {
+    "description": "Hero title when not qualified",
+    "maxLength": 28
+  },
+  "eligibilityHeroMessageQualified": "Incredible work! You've built your foundational team and unlocked the {business} opportunity. Continue growing your network to help others achieve the same success.",
+  "@eligibilityHeroMessageQualified": {
+    "description": "Hero message when qualified",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "eligibilityHeroMessageNotQualified": "You're on your way! Every professional you connect with builds momentum for your future launch in the {business} opportunity. Keep sharing to reach your goals!",
+  "@eligibilityHeroMessageNotQualified": {
+    "description": "Hero message when not qualified",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "eligibilityHeroButton": "Proven Growth Strategies",
+  "@eligibilityHeroButton": {
+    "description": "Hero button text",
+    "maxLength": 28
+  },
+  "eligibilityThresholdsTitle": "QUALIFICATION THRESHOLDS",
+  "@eligibilityThresholdsTitle": {
+    "description": "Title for thresholds section",
+    "maxLength": 32
+  },
+  "eligibilityLabelDirectSponsors": "Direct Sponsors",
+  "@eligibilityLabelDirectSponsors": {
+    "description": "Label for direct sponsors metric",
+    "maxLength": 22
+  },
+  "eligibilityLabelTotalTeam": "Total Team Members",
+  "@eligibilityLabelTotalTeam": {
+    "description": "Label for total team metric",
+    "maxLength": 28
+  },
+  "eligibilityCurrentCountsTitle": "YOUR CURRENT TEAM COUNTS",
+  "@eligibilityCurrentCountsTitle": {
+    "description": "Title for current counts section",
+    "maxLength": 32
+  },
+  "eligibilityCurrentDirectSponsors": "Direct Sponsors",
+  "@eligibilityCurrentDirectSponsors": {
+    "description": "Current direct sponsors label",
+    "maxLength": 22
+  },
+  "eligibilityCurrentTotalTeam": "Total Team Members",
+  "@eligibilityCurrentTotalTeam": {
+    "description": "Current total team label",
+    "maxLength": 28
+  },
+  "eligibilityProcessTitle": "THE PROCESS",
+  "@eligibilityProcessTitle": {
+    "description": "Title for process section",
+    "maxLength": 14
+  },
+  "eligibilityProcessStep1Title": "INVITE - Build Your Foundation",
+  "@eligibilityProcessStep1Title": {
+    "description": "Title for process step 1",
+    "maxLength": 36
+  },
+  "eligibilityProcessStep1Description": "Connect with like-minded professionals open to exploring {business}.",
+  "@eligibilityProcessStep1Description": {
+    "description": "Description for process step 1",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "eligibilityProcessStep2Title": "CULTIVATE - Create Momentum",
+  "@eligibilityProcessStep2Title": {
+    "description": "Title for process step 2",
+    "maxLength": 36
+  },
+  "eligibilityProcessStep2Description": "Foster authentic relationships as your team grows, creating a thriving team of professionals who support each other's success.",
+  "@eligibilityProcessStep2Description": {
+    "description": "Description for process step 2"
+  },
+  "eligibilityProcessStep3Title": "PARTNER - Launch with Success",
+  "@eligibilityProcessStep3Title": {
+    "description": "Title for process step 3",
+    "maxLength": 36
+  },
+  "eligibilityProcessStep3Description": "Team members receive an invitation to join {business} upon achieving key growth targets.",
+  "@eligibilityProcessStep3Description": {
+    "description": "Description for process step 3",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "shareHeading": "Powerful Referral System",
+  "@shareHeading": {
+    "description": "Main heading for share screen",
+    "maxLength": 32
+  },
+  "shareSubheading": "Share your referral links to pre-build a new team with recruiting prospects or expand your existing team.",
+  "@shareSubheading": {
+    "description": "Subheading for share screen"
+  },
+  "shareStrategiesTitle": "Proven Growth Strategies",
+  "@shareStrategiesTitle": {
+    "description": "Title for strategies section",
+    "maxLength": 28
+  },
+  "shareProspectTitle": "New Recruiting Prospects",
+  "@shareProspectTitle": {
+    "description": "Title for prospect strategy",
+    "maxLength": 32
+  },
+  "shareProspectSubtitle": "Invite recruiting prospects to get a head start.",
+  "@shareProspectSubtitle": {
+    "description": "Subtitle for prospect strategy"
+  },
+  "shareProspectDescription": "Invite recruiting prospects to pre-build their {business} team with this app. They can create powerful momentum before officially joining {business}, ensuring success from day one.",
+  "@shareProspectDescription": {
+    "description": "Description for prospect strategy",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "sharePartnerTitle": "Current Business Partners",
+  "@sharePartnerTitle": {
+    "description": "Title for partner strategy",
+    "maxLength": 32
+  },
+  "sharePartnerSubtitle": "Great for your existing {business} team",
+  "@sharePartnerSubtitle": {
+    "description": "Subtitle for partner strategy",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "sharePartnerDescription": "Empower your existing {business} partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire {business} organization.",
+  "@sharePartnerDescription": {
+    "description": "Description for partner strategy",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "shareSelectMessageLabel": "Select Message To Send",
+  "@shareSelectMessageLabel": {
+    "description": "Label for message selection",
+    "maxLength": 28
+  },
+  "shareButtonShare": "Share",
+  "@shareButtonShare": {
+    "description": "Button to share message",
+    "maxLength": 14
+  },
+  "shareLinkCopiedMessage": "Link copied to clipboard!",
+  "@shareLinkCopiedMessage": {
+    "description": "Success message after copying link"
+  },
+  "shareProTipsTitle": "Pro Tips for Success",
+  "@shareProTipsTitle": {
+    "description": "Title for pro tips section",
+    "maxLength": 28
+  },
+  "shareProTip1": "💬 Personalize your message when sharing",
+  "@shareProTip1": {
+    "description": "Pro tip 1"
+  },
+  "shareProTip2": "📱 Share consistently across all social platforms",
+  "@shareProTip2": {
+    "description": "Pro tip 2"
+  },
+  "shareProTip3": "🤝 Follow up with prospects who show interest",
+  "@shareProTip3": {
+    "description": "Pro tip 3"
+  },
+  "shareProTip4": "📈 Track your results and adjust your approach",
+  "@shareProTip4": {
+    "description": "Pro tip 4"
+  },
+  "shareProTip5": "🎯 Use both strategies for maximum growth potential",
+  "@shareProTip5": {
+    "description": "Pro tip 5"
+  },
+  "shareDemoTitle": "Demo Mode",
+  "@shareDemoTitle": {
+    "description": "Title for demo mode dialog",
+    "maxLength": 14
+  },
+  "shareDemoMessage": "Sharing disabled during demo mode.",
+  "@shareDemoMessage": {
+    "description": "Message for demo mode"
+  },
+  "shareDemoButton": "I Understand",
+  "@shareDemoButton": {
+    "description": "Button to acknowledge demo mode",
+    "maxLength": 22
+  },
+  "memberDetailButtonSendMessage": "Send Message",
+  "@memberDetailButtonSendMessage": {
+    "description": "Button to send message to member",
+    "maxLength": 22
+  },
+  "memberDetailLabelDirectSponsors": "Direct Sponsors",
+  "@memberDetailLabelDirectSponsors": {
+    "description": "Label for direct sponsors on detail screen",
+    "maxLength": 22
+  },
+  "memberDetailLabelJoinedNetwork": "Joined Network",
+  "@memberDetailLabelJoinedNetwork": {
+    "description": "Label for network join date",
+    "maxLength": 22
+  },
+  "memberDetailLabelJoinedOrganization": "Joined Organization",
+  "@memberDetailLabelJoinedOrganization": {
+    "description": "Label for organization join date",
+    "maxLength": 28
+  },
+  "memberDetailLabelQualified": "Qualified",
+  "@memberDetailLabelQualified": {
+    "description": "Label for qualified status",
+    "maxLength": 14
+  },
+  "memberDetailLabelQualifiedDate": "Qualified Date",
+  "@memberDetailLabelQualifiedDate": {
+    "description": "Label for qualification date",
+    "maxLength": 22
+  },
+  "memberDetailLabelTeamLeader": "Team Leader",
+  "@memberDetailLabelTeamLeader": {
+    "description": "Label for team leader",
+    "maxLength": 14
+  },
+  "memberDetailLabelTotalTeam": "Total Team",
+  "@memberDetailLabelTotalTeam": {
+    "description": "Label for total team count",
+    "maxLength": 14
+  },
+  "memberDetailNotYet": "Not Yet",
+  "@memberDetailNotYet": {
+    "description": "Status when not qualified",
+    "maxLength": 14
+  },
+  "memberDetailNotYetJoined": "Not Yet Joined",
+  "@memberDetailNotYetJoined": {
+    "description": "Status when not joined",
+    "maxLength": 22
+  },
+  "memberDetailEligibilityTitle": "Eligibility Requirements",
+  "@memberDetailEligibilityTitle": {
+    "description": "Title for eligibility section",
+    "maxLength": 28
+  },
+  "memberDetailEligibilityDirectSponsors": "Direct Sponsors",
+  "@memberDetailEligibilityDirectSponsors": {
+    "description": "Label for eligibility direct sponsors",
+    "maxLength": 22
+  },
+  "memberDetailEligibilityTotalTeam": "Total Team",
+  "@memberDetailEligibilityTotalTeam": {
+    "description": "Label for eligibility total team",
+    "maxLength": 14
+  },
+  "memberDetailEligibilityMessage": "Team members who meet these requirements are automatically invited to join the {organization}.",
+  "@memberDetailEligibilityMessage": {
+    "description": "Eligibility explanation message",
+    "placeholders": {
+      "organization": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "memberDetailEligibilityWaived": "Waived",
+  "@memberDetailEligibilityWaived": {
+    "description": "Status when eligibility is waived",
+    "maxLength": 14
+  },
+  "messageThreadHeading": "Message Center",
+  "@messageThreadHeading": {
+    "description": "Heading for message thread screen",
+    "maxLength": 22
+  },
+  "messageThreadEmptyMessage": "Start the conversation!",
+  "@messageThreadEmptyMessage": {
+    "description": "Empty state message for thread"
+  },
+  "messageThreadUrlWarningTitle": "External Link Warning",
+  "@messageThreadUrlWarningTitle": {
+    "description": "Title for URL warning dialog",
+    "maxLength": 28
+  },
+  "messageThreadUrlWarningMessage": "This message contains an external link. Be cautious when clicking links from unknown sources.",
+  "@messageThreadUrlWarningMessage": {
+    "description": "Warning message about URLs"
+  },
+  "messageThreadUrlWarningButton": "Understood",
+  "@messageThreadUrlWarningButton": {
+    "description": "Button to acknowledge warning",
+    "maxLength": 14
+  },
+  "chatbotAssistantTitle": "AI Assistant",
+  "@chatbotAssistantTitle": {
+    "description": "Title for AI assistant",
+    "maxLength": 14
+  },
+  "chatbotAssistantSubtitle": "Ask me anything about Team Build Pro",
+  "@chatbotAssistantSubtitle": {
+    "description": "Subtitle for AI assistant"
+  },
+  "chatbotClearTooltip": "Clear conversation",
+  "@chatbotClearTooltip": {
+    "description": "Tooltip for clear button",
+    "maxLength": 22
+  },
+  "chatbotSignInRequired": "Please sign in to use the AI Assistant",
+  "@chatbotSignInRequired": {
+    "description": "Message when not signed in"
+  },
+  "companyHeading": "Company Details",
+  "@companyHeading": {
+    "description": "Heading for company screen",
+    "maxLength": 22
+  },
+  "companyLabelName": "Company Name",
+  "@companyLabelName": {
+    "description": "Label for company name",
+    "maxLength": 14
+  },
+  "companyLabelReferralLink": "My Company Referral Link",
+  "@companyLabelReferralLink": {
+    "description": "Label for referral link",
+    "maxLength": 32
+  },
+  "companyLinkedTitle": "Account Linked!",
+  "@companyLinkedTitle": {
+    "description": "Title when account is linked",
+    "maxLength": 22
+  },
+  "companyLinkedMessage": "Great news! As your team members gain momentum and qualify, they will receive an invitation to join your {business} organization.",
+  "@companyLinkedMessage": {
+    "description": "Message when account is linked",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "companyNotAvailable": "Not available",
+  "@companyNotAvailable": {
+    "description": "Status when data not available",
+    "maxLength": 14
+  },
+  "deleteAccountHeading": "Account Deletion",
+  "@deleteAccountHeading": {
+    "description": "Main heading for delete account screen",
+    "maxLength": 22
+  },
+  "deleteAccountSubheading": "We're sorry to see you go. Please review the information below carefully.",
+  "@deleteAccountSubheading": {
+    "description": "Subheading for delete account screen"
+  },
+  "deleteAccountWarningTitle": "PERMANENT ACCOUNT DELETION",
+  "@deleteAccountWarningTitle": {
+    "description": "Title for warning section",
+    "maxLength": 32
+  },
+  "deleteAccountWarningMessage": "This action cannot be undone. When you delete your account:",
+  "@deleteAccountWarningMessage": {
+    "description": "Warning message introduction"
+  },
+  "deleteAccountWarning1": "Your personal data will be permanently deleted",
+  "@deleteAccountWarning1": {
+    "description": "First warning point"
+  },
+  "deleteAccountWarning2": "You will lose access to all premium features",
+  "@deleteAccountWarning2": {
+    "description": "Second warning point"
+  },
+  "deleteAccountWarning3": "Your account cannot be recovered or reactivated",
+  "@deleteAccountWarning3": {
+    "description": "Third warning point"
+  },
+  "deleteAccountWarning4": "Your network relationships will be preserved for business continuity",
+  "@deleteAccountWarning4": {
+    "description": "Fourth warning point"
+  },
+  "deleteAccountWarning5": "You will be immediately signed out of all devices",
+  "@deleteAccountWarning5": {
+    "description": "Fifth warning point"
+  },
+  "deleteAccountInfoTitle": "Account Information",
+  "@deleteAccountInfoTitle": {
+    "description": "Title for account info section",
+    "maxLength": 28
+  },
+  "deleteAccountConfirmTitle": "Confirmation Required",
+  "@deleteAccountConfirmTitle": {
+    "description": "Title for confirmation section",
+    "maxLength": 28
+  },
+  "deleteAccountConfirmLabel": "To confirm deletion, please type your email address:",
+  "@deleteAccountConfirmLabel": {
+    "description": "Label for confirmation input"
+  },
+  "deleteAccountCheckbox1": "I understand this action is permanent and cannot be undone",
+  "@deleteAccountCheckbox1": {
+    "description": "First confirmation checkbox"
+  },
+  "deleteAccountCheckbox2": "I understand I will lose access to all data and premium features",
+  "@deleteAccountCheckbox2": {
+    "description": "Second confirmation checkbox"
+  },
+  "deleteAccountCheckbox3": "I acknowledge my network relationships will be preserved for business operations",
+  "@deleteAccountCheckbox3": {
+    "description": "Third confirmation checkbox"
+  },
+  "deleteAccountDeleting": "Deleting...",
+  "@deleteAccountDeleting": {
+    "description": "Message while deleting",
+    "maxLength": 14
+  },
+  "deleteAccountHelpTitle": "Need Help?",
+  "@deleteAccountHelpTitle": {
+    "description": "Title for help section",
+    "maxLength": 14
+  },
+  "deleteAccountHelpMessage": "If you're experiencing issues with the app, please contact our support team before deleting your account.",
+  "@deleteAccountHelpMessage": {
+    "description": "Help message"
+  },
+  "deleteAccountHelpButton": "Contact Support",
+  "@deleteAccountHelpButton": {
+    "description": "Button to contact support",
+    "maxLength": 22
+  },
+  "deleteAccountDemoTitle": "Demo Account Protection",
+  "@deleteAccountDemoTitle": {
+    "description": "Title for demo account dialog",
+    "maxLength": 28
+  },
+  "deleteAccountDemoMessage": "This is a protected demo account and cannot be deleted.\n\nDemo accounts are maintained for app review and demonstration purposes.\n\nIf you are testing the app, please create a new account for testing account deletion features.",
+  "@deleteAccountDemoMessage": {
+    "description": "Message for demo account protection"
+  },
+  "deleteAccountDemoButton": "OK",
+  "@deleteAccountDemoButton": {
+    "description": "Button to acknowledge demo protection",
+    "maxLength": 8
+  },
+  "editProfileHeading": "Edit Profile",
+  "@editProfileHeading": {
+    "description": "Main heading for edit profile screen",
+    "maxLength": 14
+  },
+  "editProfileHeadingFirstTime": "Complete Your Profile",
+  "@editProfileHeadingFirstTime": {
+    "description": "Heading for first-time profile setup",
+    "maxLength": 28
+  },
+  "editProfileInstructionsFirstTime": "Please complete your profile to get started",
+  "@editProfileInstructionsFirstTime": {
+    "description": "Instructions for first-time setup"
+  },
+  "editProfileBusinessQuestion": "Are you currently a ",
+  "@editProfileBusinessQuestion": {
+    "description": "First part of business question"
+  },
+  "editProfileBusinessQuestionSuffix": " representative?",
+  "@editProfileBusinessQuestionSuffix": {
+    "description": "Second part of business question"
+  },
+  "editProfileYes": "Yes",
+  "@editProfileYes": {
+    "description": "Yes option",
+    "maxLength": 8
+  },
+  "editProfileNo": "No",
+  "@editProfileNo": {
+    "description": "No option",
+    "maxLength": 8
+  },
+  "editProfileDialogImportantTitle": "Very Important!",
+  "@editProfileDialogImportantTitle": {
+    "description": "Title for important dialog",
+    "maxLength": 22
+  },
+  "editProfileDialogImportantMessage": "You must enter the exact referral link you received from your {business} sponsor.",
+  "@editProfileDialogImportantMessage": {
+    "description": "Important dialog message",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "editProfileDialogImportantButton": "I Understand",
+  "@editProfileDialogImportantButton": {
+    "description": "Button to acknowledge dialog",
+    "maxLength": 22
+  },
+  "editProfileReferralLinkField": "Enter Your Referral Link",
+  "@editProfileReferralLinkField": {
+    "description": "Label for referral link field",
+    "maxLength": 28
+  },
+  "editProfileReferralLinkLabel": "Your Referral Link",
+  "@editProfileReferralLinkLabel": {
+    "description": "Label for referral link",
+    "maxLength": 22
+  },
+  "editProfileReferralLinkHelper": "Enter the referral link from your {business} sponsor",
+  "@editProfileReferralLinkHelper": {
+    "description": "Helper text for referral link",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "editProfileConfirmReferralLink": "Confirm Referral Link",
+  "@editProfileConfirmReferralLink": {
+    "description": "Label for confirmation field",
+    "maxLength": 28
+  },
+  "editProfileSelectCountry": "Select Your Country",
+  "@editProfileSelectCountry": {
+    "description": "Label for country selector",
+    "maxLength": 22
+  },
+  "editProfileSelectState": "Select Your State/Province",
+  "@editProfileSelectState": {
+    "description": "Label for state selector",
+    "maxLength": 32
+  },
+  "editProfileSelectStateDisabled": "First select a country",
+  "@editProfileSelectStateDisabled": {
+    "description": "Message when state selector is disabled",
+    "maxLength": 28
+  },
+  "editProfileErrorCity": "Please enter your city",
+  "@editProfileErrorCity": {
+    "description": "Error when city is empty"
+  },
+  "editProfileErrorState": "Please select your state/province",
+  "@editProfileErrorState": {
+    "description": "Error when state is not selected"
+  },
+  "editProfileErrorCountry": "Please select your country",
+  "@editProfileErrorCountry": {
+    "description": "Error when country is not selected"
+  },
+  "editProfilePhotoError": "Error uploading photo. Please try again.",
+  "@editProfilePhotoError": {
+    "description": "Error message for photo upload failure"
+  },
+  "editProfileDeletionTitle": "Delete Account",
+  "@editProfileDeletionTitle": {
+    "description": "Title for deletion section",
+    "maxLength": 22
+  },
+  "editProfileDeletionMessage": "Permanently delete your account and all associated data.",
+  "@editProfileDeletionMessage": {
+    "description": "Message for deletion section"
+  },
+  "editProfileDeletionSubtext": "This action cannot be undone",
+  "@editProfileDeletionSubtext": {
+    "description": "Warning subtext for deletion"
+  },
+  "editProfileDeletionButton": "Complete Deletion",
+  "@editProfileDeletionButton": {
+    "description": "Button to proceed with deletion",
+    "maxLength": 22
+  },
+  "loginLabelEmail": "Email",
+  "@loginLabelEmail": {
+    "description": "Label for email input field on login screen",
+    "maxLength": 20
+  },
+  "loginLabelPassword": "Password",
+  "@loginLabelPassword": {
+    "description": "Label for password input field on login screen",
+    "maxLength": 20
+  },
+  "loginValidatorEmail": "Please enter your email",
+  "@loginValidatorEmail": {
+    "description": "Validation error when email field is empty"
+  },
+  "loginValidatorPassword": "Please enter your password",
+  "@loginValidatorPassword": {
+    "description": "Validation error when password field is empty"
+  },
+  "loginButtonLogin": "Login",
+  "@loginButtonLogin": {
+    "description": "Button text for main login action",
+    "maxLength": 20
+  },
+  "loginButtonBiometric": "Sign in with Biometric",
+  "@loginButtonBiometric": {
+    "description": "Button text for biometric authentication login",
+    "maxLength": 30
+  },
+  "loginDividerOr": "or",
+  "@loginDividerOr": {
+    "description": "Divider text between login options",
+    "maxLength": 10
+  },
+  "loginNoAccount": "Don't have an account? ",
+  "@loginNoAccount": {
+    "description": "Text prompting user to create account",
+    "maxLength": 30
+  },
+  "loginCreateAccount": "Create Account",
+  "@loginCreateAccount": {
+    "description": "Link text to navigate to account creation",
+    "maxLength": 20
+  },
+  "loginPrivacyPolicy": "Privacy Policy",
+  "@loginPrivacyPolicy": {
+    "description": "Link text for privacy policy",
+    "maxLength": 20
+  },
+  "loginTermsOfService": "Terms of Service",
+  "@loginTermsOfService": {
+    "description": "Link text for terms of service",
+    "maxLength": 20
+  },
+  "welcomeGreeting": "Welcome, {firstName}!",
+  "@welcomeGreeting": {
+    "description": "Greeting message on welcome screen with user's first name",
+    "placeholders": {
+      "firstName": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "welcomeMessageAdmin": "Ready to lead the professional networking revolution? Complete your admin profile and set up your team. After completing your profile you will have access to the full Team Build Pro platform.",
+  "@welcomeMessageAdmin": {
+    "description": "Welcome message for admin users"
+  },
+  "welcomeMessageUser": "Ready to transform your professional network? Complete your profile to unlock the full power of Team Build Pro.",
+  "@welcomeMessageUser": {
+    "description": "Welcome message for regular users"
+  },
+  "welcomeButtonJoin": "Join the Revolution",
+  "@welcomeButtonJoin": {
+    "description": "Button text to proceed from welcome screen",
+    "maxLength": 25
+  },
+  "changePasswordHeading": "Change Password",
+  "@changePasswordHeading": {
+    "description": "Heading for change password screen",
+    "maxLength": 25
+  },
+  "changePasswordTodoMessage": "TODO: Implement change password form here.",
+  "@changePasswordTodoMessage": {
+    "description": "Placeholder message for change password implementation"
+  },
+  "chatPlaceholder": "Chat interface goes here.",
+  "@chatPlaceholder": {
+    "description": "Placeholder message for chat screen implementation"
+  },
+  "quickPromptsWelcomeTitle": "Welcome to your AI Coach!",
+  "@quickPromptsWelcomeTitle": {
+    "description": "Title for AI Coach welcome message",
+    "maxLength": 35
+  },
+  "quickPromptsWelcomeDescription": "I'm here to help you succeed with Team Build Pro. I can answer questions about the app, team building strategies, and guide you through features.",
+  "@quickPromptsWelcomeDescription": {
+    "description": "Description explaining AI Coach capabilities"
+  },
+  "quickPromptsDisclaimerMessage": "AI Coach can make mistakes. Check important info.",
+  "@quickPromptsDisclaimerMessage": {
+    "description": "Disclaimer message for AI Coach reliability",
+    "maxLength": 60
+  },
+  "quickPromptsQuestionHeader": "What can I help you with?",
+  "@quickPromptsQuestionHeader": {
+    "description": "Header asking user what they need help with",
+    "maxLength": 35
+  },
+  "quickPromptsQuestionSubheader": "Tap any question below to get started, or type your own question.",
+  "@quickPromptsQuestionSubheader": {
+    "description": "Subheader instructing user how to interact with prompts",
+    "maxLength": 75
+  },
+  "quickPromptsProTipLabel": "Pro Tip",
+  "@quickPromptsProTipLabel": {
+    "description": "Label for pro tip section",
+    "maxLength": 15
+  },
+  "quickPromptsProTipText": "Be specific with your questions. For example: \"I have 2 direct sponsors, what should I focus on next?\"",
+  "@quickPromptsProTipText": {
+    "description": "Pro tip text with example question"
+  },
+  "chatbotPrompt1": "How does qualification work?",
+  "@chatbotPrompt1": {
+    "description": "AI Coach quick prompt #1",
+    "maxLength": 50
+  },
+  "chatbotPrompt2": "What's the difference between this and an MLM?",
+  "@chatbotPrompt2": {
+    "description": "AI Coach quick prompt #2",
+    "maxLength": 60
+  },
+  "chatbotPrompt3": "How do I invite people to my team?",
+  "@chatbotPrompt3": {
+    "description": "AI Coach quick prompt #3",
+    "maxLength": 50
+  },
+  "chatbotPrompt4": "Show me my team analytics",
+  "@chatbotPrompt4": {
+    "description": "AI Coach quick prompt #4",
+    "maxLength": 50
+  },
+  "chatbotPrompt5": "What should I focus on next?",
+  "@chatbotPrompt5": {
+    "description": "AI Coach quick prompt #5",
+    "maxLength": 50
+  },
+  "chatbotPrompt6": "How do I cancel my subscription?",
+  "@chatbotPrompt6": {
+    "description": "AI Coach quick prompt #6",
+    "maxLength": 50
+  },
+  "chatbotPrompt7": "Why do most people fail at direct sales?",
+  "@chatbotPrompt7": {
+    "description": "AI Coach quick prompt #7",
+    "maxLength": 60
+  },
+  "chatbotPrompt8": "What happens after I qualify?",
+  "@chatbotPrompt8": {
+    "description": "AI Coach quick prompt #8",
+    "maxLength": 50
+  },
+  "shareProspectPastStrugglesTitle": "Addressing Past Struggles",
+  "shareProspectPastStrugglesDescription": "Perfect for prospects who have tried before and struggled",
+  "shareProspectPastStrugglesSubject": "A Smarter Way to Start This Time",
+  "shareProspectPastStrugglesMessage": "If past attempts left you stuck at zero with no momentum, here's a smarter path.\n\nTeam Build Pro's AI Coach helps you pre-build your {business} team before you even join.\n\nIt drafts your messages, times your follow-ups, and tracks who's interested - so you don't start from scratch this time. You launch with people already waiting for you.\n\nThe AI walks you through every step. You won't be alone.\n\nSee how it works: {link}\n\nYou deserve a real shot this time.",
+  "shareProspectNotSalespersonTitle": "For Non-Sales Minded",
+  "shareProspectNotSalespersonDescription": "Great for people who don't see themselves as \"salespeople\"",
+  "shareProspectNotSalespersonSubject": "You Don't Have to Be a \"Salesperson\"",
+  "shareProspectNotSalespersonMessage": "Not a \"natural salesperson\"? That's okay. You have an AI Coach.\n\nTeam Build Pro helps you pre-build your {business} team with AI that drafts your messages, schedules your follow-ups, and tracks everyone's interest.\n\nIt's like having a recruiting assistant who never sleeps. You focus on relationships. The AI handles the rest.\n\nStart building before you even join: {link}\n\nYou don't need a \"sales personality.\" You need smart tools. Now you have them.",
+  "shareProspectHopeAfterDisappointmentTitle": "Hope After Disappointment",
+  "shareProspectHopeAfterDisappointmentDescription": "Ideal for prospects burned by previous opportunities",
+  "shareProspectHopeAfterDisappointmentSubject": "A Smarter Way to Start This Time",
+  "shareProspectHopeAfterDisappointmentMessage": "Been burned before? Promised the world, then left starting from zero?\n\nThis time is different. Team Build Pro's AI Coach helps you pre-build your {business} team before you join.\n\nIt drafts your recruiting messages, times your follow-ups, tracks who's interested, and coaches you on next steps. You gain real momentum before Day 1.\n\nNo hype. No empty promises. Just AI-powered tools that work.\n\nSee how: {link}\n\nYou deserve a system that actually sets you up to win.",
+  "shareProspectGeneralInvitationTitle": "General Invitation",
+  "shareProspectGeneralInvitationDescription": "A versatile message for any prospect situation",
+  "shareProspectGeneralInvitationSubject": "Build Before You Join - Guided by AI",
+  "shareProspectGeneralInvitationMessage": "You're invited to try a smarter way to start.\n\nWith Team Build Pro, an AI Coach helps you pre-build your {business} team before you officially join.\n\nHere's how it helps:\n- Drafts personalized messages\n- Schedules follow-ups automatically\n- Tracks momentum and next steps\n\nSo Day 1 isn't a cold start - it's a running start.\n\nTake a look: {link}",
+  "shareProspectSocialAnxietyTitle": "Avoiding Awkward Conversations",
+  "shareProspectSocialAnxietyDescription": "Perfect for introverts or those uncomfortable with face-to-face recruiting",
+  "shareProspectSocialAnxietySubject": "Build Your Team Without Awkward Conversations",
+  "shareProspectSocialAnxietyMessage": "Uncomfortable approaching friends and family? You don't have to.\n\nTeam Build Pro lets you build your {business} network online first - where it feels comfortable.\n\nThe AI Coach drafts your messages, suggests who to contact, and tracks responses. You build relationships at your own pace, without pressure.\n\nNo cold calls. No awkward pitches. Just genuine connections guided by AI.\n\nStart building on your terms: {link}\n\nFinally, a way to grow your network that feels natural to you.",
+  "shareProspectTimeConstrainedTitle": "For Busy Professionals",
+  "shareProspectTimeConstrainedDescription": "Ideal for prospects juggling job, family, and other commitments",
+  "shareProspectTimeConstrainedSubject": "Build Your Team in the Gaps",
+  "shareProspectTimeConstrainedMessage": "Can't dedicate full-time hours? You don't need to.\n\nTeam Build Pro works around your schedule. Build your {business} team during morning coffee, lunch breaks, or evening downtime.\n\nThe AI handles the heavy lifting:\n- Schedules your follow-ups automatically\n- Reminds you when it's time to reach out\n- Tracks everything so you never lose momentum\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSee how it fits your life: {link}\n\nBuild a real business without sacrificing everything else.",
+  "shareProspectFinancialRiskAverseTitle": "Afraid of Losing Money",
+  "shareProspectFinancialRiskAverseDescription": "Great for prospects worried about financial risk",
+  "shareProspectFinancialRiskAverseSubject": "See Results Before Investing Heavily",
+  "shareProspectFinancialRiskAverseMessage": "Worried about losing money? Smart.\n\nWith Team Build Pro, you can pre-build your {business} team and see real results before investing heavily.\n\nStart for free. Test the system. Track your actual progress in real-time. Only $4.99/month once you're ready to invite your first prospects.\n\nNo expensive lead funnels. No complex systems. Just AI-powered tools that help you build real relationships and real momentum.\n\nSee proof first: {link}\n\nYou deserve to see what's possible before risking anything.",
+  "shareProspectSkepticalRealistTitle": "Show Me Proof",
+  "shareProspectSkepticalRealistDescription": "Perfect for prospects burned by false promises",
+  "shareProspectSkepticalRealistSubject": "No Hype. Just Track Your Real Progress",
+  "shareProspectSkepticalRealistMessage": "Tired of empty promises and hype?\n\nTeam Build Pro shows you real metrics. No fluff. No exaggeration.\n\nYour dashboard tracks:\n- How many people you've contacted\n- Who's responded and who's interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI recommends\n\nYou'll know exactly where you stand before joining {business}. No surprises. No false hope. Just data.\n\nSee the transparency: {link}\n\nFinally, a system that shows you the truth.",
+  "sharePartnerWarmMarketExhaustedTitle": "Warm Market Exhausted",
+  "sharePartnerWarmMarketExhaustedDescription": "For partners who've tapped out friends and family",
+  "sharePartnerWarmMarketExhaustedSubject": "Give Your Team an AI Recruiting Companion",
+  "sharePartnerWarmMarketExhaustedMessage": "Tapped out your warm market? Tired of leads that ghost you?\n\nGive your {business} team an AI recruiting companion instead.\n\nTeam Build Pro drafts your team's recruiting messages, times their follow-ups, tracks prospect interest, and coaches every conversation.\n\nYour prospects pre-build their teams before joining - so they launch with momentum, not from zero.\n\nBest part? Your entire team gets the same AI advantage. True duplication at scale.\n\nSee how: {link}\n\nStop chasing. Start coaching with AI.",
+  "sharePartnerExpensiveSystemFatigueTitle": "System Fatigue & Expense",
+  "sharePartnerExpensiveSystemFatigueDescription": "For partners burned out on expensive recruiting methods",
+  "sharePartnerExpensiveSystemFatigueSubject": "The AI Recruiting System Inside Team Build Pro",
+  "sharePartnerExpensiveSystemFatigueMessage": "Sick of paying for leads, funnels, and systems that don't duplicate?\n\nTeam Build Pro has AI recruiting built right in - no extra cost, no complex setup.\n\nIt drafts recruiting messages, schedules follow-ups, tracks engagement, and coaches your entire {business} team through every conversation.\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nCheck it out: {link}\n\nStop overpaying. Start using AI.",
+  "sharePartnerDuplicationStruggleTitle": "Duplication Challenges",
+  "sharePartnerDuplicationStruggleDescription": "For leaders struggling to get their team to duplicate",
+  "sharePartnerDuplicationStruggleSubject": "AI-Powered Duplication for Your Entire Team",
+  "sharePartnerDuplicationStruggleMessage": "Your team struggles to duplicate your recruiting success? Not anymore.\n\nTeam Build Pro gives every person on your {business} team the same AI recruiting coach.\n\nIt drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\nNew recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\nYour prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\nSee it work: {link}\n\nFinally, a system your entire team can duplicate.",
+  "sharePartnerGeneralTeamToolTitle": "General Team Tool",
+  "sharePartnerGeneralTeamToolDescription": "A versatile message for any partner situation",
+  "sharePartnerGeneralTeamToolSubject": "The AI Recruiting Advantage for Your Team",
+  "sharePartnerGeneralTeamToolMessage": "Want to give your {business} team a real competitive edge?\n\nTeam Build Pro has AI recruiting built in. It helps your entire team:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement\n- Coach every conversation\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\nCheck it out: {link}\n\nThis is the AI advantage your team needs.",
+  "sharePartnerRetentionCrisisTitle": "Team Dropout Problem",
+  "sharePartnerRetentionCrisisDescription": "For leaders frustrated by team members quitting early",
+  "sharePartnerRetentionCrisisSubject": "Stop Losing Your Team in the First Year",
+  "sharePartnerRetentionCrisisMessage": "Watching your {business} team quit before they succeed?\n\n75% drop out in their first year. Usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey're never alone. They always know their next step. They stay engaged longer.\n\nGive your team the support they need: {link}\n\nStop watching them quit. Start watching them succeed.",
+  "sharePartnerSkillGapTeamTitle": "Non-Sales Team Members",
+  "sharePartnerSkillGapTeamDescription": "Perfect for teams where most people lack sales experience",
+  "sharePartnerSkillGapTeamSubject": "Your Non-Sales Team Can Win with AI",
+  "sharePartnerSkillGapTeamMessage": "Most of your {business} team aren't natural salespeople. That's been the problem.\n\nTeam Build Pro solves it. The AI Coach turns non-sales people into confident recruiters by:\n- Drafting their recruiting messages for them\n- Suggesting exactly who to contact next\n- Coaching them through every conversation\n- Tracking progress so they see real momentum\n\nYour introverts, your part-timers, your \"I'm not good at sales\" people - they all get the same AI advantage.\n\nFinally, everyone can duplicate your success.\n\nSee how: {link}\n\nYou don't need a team of salespeople. You need a team with AI.",
+  "sharePartnerRecruitmentFatigueTitle": "Tired of Constant Recruiting",
+  "sharePartnerRecruitmentFatigueDescription": "For partners exhausted from the endless recruiting cycle",
+  "sharePartnerRecruitmentFatigueSubject": "Automate the Grind. Keep the Growth.",
+  "sharePartnerRecruitmentFatigueMessage": "Burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro's AI handles the grind so you don't have to.\n\nFor your entire {business} team, the AI:\n- Schedules follow-ups automatically\n- Tracks every prospect and their status\n- Reminds your team when to reach out\n- Coaches them on what to say next\n\nYou stay focused on high-value activities. Your team stays productive without burning out.\n\nThe AI never gets tired. Your momentum never stops.\n\nTry it: {link}\n\nSustainable growth without the burnout.",
+  "sharePartnerAvailabilityGapTitle": "Can't Be There 24/7",
+  "sharePartnerAvailabilityGapDescription": "Ideal for leaders who can't be constantly available to their team",
+  "sharePartnerAvailabilityGapSubject": "Your Team Grows Even When You're Not There",
+  "sharePartnerAvailabilityGapMessage": "Your {business} team needs you. But you can't be available 24/7.\n\nTeam Build Pro gives your team an AI Coach that's always on. While you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their \"what do I do next?\" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\nYour team grows even when you're offline. No bottlenecks. No delays.\n\nTry it: {link}\n\nBe everywhere without being everywhere.",
+  "homepageDemoCredentialsNotAvailable": "Demo credentials not available",
+  "homepageDemoLoginFailed": "Demo login failed: {error}",
+  "homepageDemoLoginFailedGeneric": "Demo login failed. Please try again.",
+  "homepageHeroJumpstart": "JUMPSTART YOUR SUCCESS",
+  "homepageHeroGrow": "GROW AND MANAGE YOUR TEAM",
+  "homepageHeroProven": "PROVEN TEAM BUILDING SYSTEM",
+  "homepageHeroBuildFoundation": "Build Your Foundation",
+  "homepageHeroBeforeDayOne": "Before Day One",
+  "homepageHeroEmpowerTeam": "Empower Your Team",
+  "homepageHeroAccelerate": "Accelerate ",
+  "homepageHeroGrowth": "Growth",
+  "homepageLoading": "Loading...",
+  "homepageMessageTitlePersonal": "A Personal Message\nFrom {sponsorName}",
+  "homepageMessageTitleGeneric": "A Message From\nTeam Build Pro",
+  "homepageMessageBodyNewProspect1": "I'm so glad you're here to get a head start on building your ",
+  "homepageMessageBodyNewProspect2": " team. The next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you're registered, I'll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!",
+  "homepageMessageBodyRefPartner1": "I'm using the Team Build Pro app to accelerate the growth of my ",
+  "homepageMessageBodyRefPartner2": " team and income! I highly recommend it for you as well.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial! Once you're registered, I'll personally reach out inside the app to say hello and help you get started.\n\nLooking forward to connecting!",
+  "homepageMessageBodyGeneric": "Team Build Pro is the ultimate app for direct sales professionals to manage and scale their existing teams with unstoppable momentum and exponential growth.\n\nThe next step is easy—just create your account below and begin enjoying your 30-day free trial!",
+  "homepageButtonCreateAccount": "Create Account",
+  "homepageButtonAlreadyHaveAccount": "I Already Have an Account",
+  "homepageDemoModeActive": "Demo Mode Active",
+  "homepageDemoPreLoaded": "Pre-Loaded Demo Account",
+  "homepageDemoWelcome": "Welcome to Team Build Pro Demo",
+  "homepageDemoDescription": "This is a fully functional demo account pre-loaded with realistic team data. Explore all features and see how Team Build Pro can transform your direct sales business!",
+  "homepageDemoCredentialsLabel": "Access Credentials:",
+  "homepageDemoEmail": "Email: {email}",
+  "homepageDemoPassword": "Password: {password}",
+  "homepageDemoLoggingIn": "Logging In...",
+  "homepageDemoStartDemo": "Start Demo!",
+  "homepageTrust100Secure": "100% Secure",
+  "homepageTrust30DayFree": "30-Day Free",
+  "homepageTrust24Support": "24/7 Support",
+  "homepageFooterTerms": "Terms of Service",
+  "homepageFooterPrivacy": "Privacy Policy",
+  "authLoginAccountRequiredTitle": "Account Required",
+  "authLoginAccountRequiredMessage": "It looks like you need to create an account first. Would you like to register now?",
+  "authLoginCancelButton": "Cancel",
+  "authLoginRegisterButton": "Register",
+  "authLoginAppBarTitle": "Sign In",
+  "authLoginSubtitle": "Sign in to continue building your team",
+  "authLoginOrContinueWith": "or continue with",
+  "authLoginForgotPassword": "Forgot Password?",
+  "authLoginContinueWithGoogle": "Continue with Google",
+  "authLoginContinueWithApple": "Continue with Apple",
+  "authLoginBiometricButton": "Sign in with biometric",
+  "authLoginResetPasswordTitle": "Reset Password",
+  "authLoginCheckEmailTitle": "Check Your Email",
+  "authLoginResetEmailSent": "We've sent a password reset link to:",
+  "authLoginResetInstructions": "Please check your inbox and follow the instructions to reset your password.",
+  "authLoginResetPrompt": "Enter your email address and we'll send you a link to reset your password.",
+  "authLoginResetEmailLabel": "Email",
+  "authLoginResetEmailHint": "Enter your email address",
+  "authLoginResetEmailRequired": "Please enter your email",
+  "authLoginResetEmailInvalid": "Please enter a valid email",
+  "authLoginDoneButton": "Done",
+  "authLoginSendResetLink": "Send Reset Link",
+  "authSignupInvalidInviteLinkMessage": "That doesn't look like an invite link. Please paste the full link you received.",
+  "authSignupNewReferralDialogTitle": "New Referral Code Detected",
+  "authSignupNewReferralDialogMessage": "A new referral code has been detected:",
+  "authSignupNewReferralNewCode": "New code: {code}",
+  "@authSignupNewReferralNewCode": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "authSignupNewReferralNewSource": "Source: {source}",
+  "@authSignupNewReferralNewSource": {
+    "placeholders": {
+      "source": {}
+    }
+  },
+  "authSignupNewReferralCurrentCode": "Current code: {code}",
+  "@authSignupNewReferralCurrentCode": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+  "authSignupNewReferralCurrentSource": "Current source: {source}",
+  "@authSignupNewReferralCurrentSource": {
+    "placeholders": {
+      "source": {}
+    }
+  },
+  "authSignupNewReferralPrompt": "Would you like to update your referral code?",
+  "authSignupKeepCurrentButton": "Keep Current",
+  "authSignupUseNewCodeButton": "Use New Code",
+  "authSignupAppBarTitle": "TEAM BUILD PRO",
+  "authSignupLoginButton": "Log In",
+  "authSignupConfirmSponsorButton": "Tap to confirm your sponsor",
+  "authSignupNoSponsorFound": "Sorry, no sponsor found",
+  "authSignupPageTitle": "Account Registration",
+  "authSignupInviteLinkButton": "I have an invite link",
+  "authSignupInviteLinkInstructions": "If someone sent you an invite link, you can paste it here.",
+  "authSignupPasteInviteLinkButton": "Paste invite link",
+  "authSignupInvitedBy": "Invited by: {sponsorName}",
+  "@authSignupInvitedBy": {
+    "placeholders": {
+      "sponsorName": {}
+    }
+  },
+  "authSignupReferralCodeDebug": "Code: {code} (source: {source})",
+  "@authSignupReferralCodeDebug": {
+    "placeholders": {
+      "code": {},
+      "source": {}
+    }
+  },
+  "authSignupAppleButton": "Sign up with Apple",
+  "authSignupGoogleButton": "Sign up with Google",
+  "authSignupOrEmailDivider": "or sign up with email",
+  "authSignupLoginSectionTitle": "Create Your Login",
+  "authSignupPrivacyAssurance": "🔒 Your email will never be shared with anyone",
+  "authSignupRequiredForAccount": "🔒 Required for account creation",
+  "settingsAuthRequired": "Authentication required.",
+  "settingsUserNotFound": "User profile not found.",
+  "settingsAccessDenied": "Access Denied: Admin role required.",
+  "settingsLoadFailed": "Failed to load settings: {error}",
+  "@settingsLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "settingsBusinessNameInvalid": "Business name can only contain letters, numbers, and common punctuation.",
+  "settingsReferralLinkInvalid": "Please enter a valid referral link (e.g., https://example.com).",
+  "settingsOrgNameMismatch": "Organization Name fields must match for confirmation.",
+  "settingsReferralLinkMismatch": "Referral Link fields must match for confirmation.",
+  "settingsUserNotAuthenticated": "User not authenticated.",
+  "settingsUpgradeRequiredTitle": "Upgrade Required",
+  "settingsUpgradeRequiredMessage": "Upgrade your Admin subscription to save these changes.",
+  "settingsCancelButton": "Cancel",
+  "settingsUpgradeButton": "Upgrade Now",
+  "settingsSavedSuccess": "Settings saved successfully.",
+  "settingsSaveFailed": "Failed to save settings: {error}",
+  "@settingsSaveFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "settingsRequired": "Required",
+  "settingsNotSet": "Not Set",
+  "profileUpdateBiometricFailed": "Biometric authentication failed. Please try again.",
+  "profileUpdatePasswordRequired": "Password required to enable biometric login",
+  "profileUpdateEmailNotFound": "User email not found",
+  "profileUpdateBiometricEnabled": "✅ Biometric login enabled successfully",
+  "profileUpdatePasswordIncorrect": "Incorrect password. Please try again.",
+  "profileUpdateBiometricError": "Error enabling biometric: {error}",
+  "@profileUpdateBiometricError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileUpdateBiometricDisabled": "Biometric login disabled",
+  "profileUpdateConfirmPasswordTitle": "Confirm Password",
+  "profileUpdateConfirmPasswordMessage": "To securely store your credentials for biometric login, please enter your password.",
+  "profileUpdatePasswordLabel": "Password",
+  "profileUpdateCancelButton": "Cancel",
+  "profileUpdateConfirmButton": "Confirm",
+  "profileUpdateDisableBiometricTitle": "Disable Biometric Login",
+  "profileUpdateDisableBiometricMessage": "Are you sure you want to disable biometric login? You will need to use your email and password to sign in.",
+  "profileUpdateDisableButton": "Disable",
+  "profileUpdatePictureRequired": "Please upload your profile pic.",
+  "profileUpdateImageNotProvided": "Image was not provided.",
+  "profileUpdateSuccess": "Profile updated successfully!",
+  "profileUpdateError": "Error updating profile: {error}",
+  "@profileUpdateError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileUpdateDemoModeTitle": "Demo Mode",
+  "profileUpdateDemoModeMessage": "Profile editing disabled in demo mode.",
+  "profileUpdateDemoUnderstandButton": "I Understand",
+  "profileUpdateScreenTitle": "Update Profile",
+  "profileUpdateNoEmail": "No email",
+  "profileUpdateSelectCountry": "Select Country",
+  "profileUpdateCountryLabel": "Country",
+  "profileUpdateCountryRequired": "Please select a country",
+  "profileUpdateSelectState": "Select State/Province",
+  "profileUpdateSelectCountryFirst": "Select a country first",
+  "profileUpdateStateLabel": "State/Province",
+  "profileUpdateStateRequired": "Please select a state/province",
+  "profileUpdateCityLabel": "City",
+  "profileUpdateCityRequired": "Please enter a city",
+  "profileUpdateSecurityHeader": "Security Settings",
+  "profileUpdateBiometricToggle": "Enable Biometric Login",
+  "profileUpdateBiometricChecking": "Checking device compatibility...",
+  "profileUpdateBiometricDescription": "Use fingerprint or face recognition to login",
+  "profileUpdateBiometricNotAvailable": "Not available on this device",
+  "profileUpdateSaveButton": "Save Changes",
+  "profileEditDeletionSuccess": "Account deletion completed. Thank you for using Team Build Pro.",
+  "profileEditDeletionError": "Error completing account deletion: {error}",
+  "@profileEditDeletionError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileEditUrlInvalid": "Please enter a valid URL (e.g., https://example.com)",
+  "profileEditHttpsRequired": "Referral link must use HTTPS (not HTTP) for security",
+  "profileEditUrlFormatInvalid": "Invalid URL format. Please check your referral link.",
+  "profileEditUnableToVerify": "Unable to verify referral link",
+  "profileEditDomainRequired": "Please enter a valid link with a proper domain",
+  "profileEditNoLocalhost": "Please enter a valid business referral link\n(not localhost or IP address)",
+  "profileEditDomainWithTld": "Please enter a valid link with a proper domain\n(e.g., company.com)",
+  "profileEditBaseUrlRequired": "Referral link must begin with:\n{baseUrl}",
+  "@profileEditBaseUrlRequired": {
+    "placeholders": {
+      "baseUrl": {}
+    }
+  },
+  "profileEditNotHomepage": "Please enter your unique referral link,\nnot just the homepage",
+  "profileEditInvalidFormat": "Invalid link format",
+  "profileEditReferralRequired": "Please enter your referral link",
+  "profileEditConfirmReferral": "Please confirm your referral link",
+  "profileEditCompleteLink": "Please enter a complete link starting with\nhttp:// or https://",
+  "profileEditValidReferralRequired": "Please enter a valid referral link (e.g., https://example.com).",
+  "profileEditReferralMismatch": "Referral Link fields must match for confirmation.",
+  "profileEditInvalidLinkTitle": "Invalid Referral Link",
+  "profileEditInvalidLinkMessage": "The {businessName} referral link could not be verified. The link may be incorrect, inactive, or temporarily unavailable.",
+  "@profileEditInvalidLinkMessage": {
+    "placeholders": {
+      "businessName": {}
+    }
+  },
+  "profileEditContactSponsor": "Please check the link and try again, or contact your sponsor for the correct referral link.",
+  "profileEditTryAgainButton": "Try Again",
+  "profileEditReferralHint": "e.g., {baseUrl}your_username_here",
+  "@profileEditReferralHint": {
+    "placeholders": {
+      "baseUrl": {}
+    }
+  },
+  "profileEditRequiredForRep": "Required when you are a representative",
+  "adminProfilePictureRequired": "Please select a profile picture",
+  "adminProfileCountryRequired": "Please select a country",
+  "adminProfileStateRequired": "Please select a state/province",
+  "adminProfileCityRequired": "Please enter your city",
+  "adminProfileSetupTitle": "🛠️ Setting up your business profile...",
+  "adminProfileSetupDescription": "Getting your business information ready",
+  "adminProfileUserNotAuthenticated": "User not authenticated",
+  "adminProfileUploadFailed": "Failed to upload image",
+  "adminProfileSaveSuccess": "Profile information saved successfully!",
+  "adminProfileSaveError": "Error: {error}",
+  "@adminProfileSaveError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "adminProfileScreenTitle": "Admin Profile",
+  "adminProfileSetupHeader": "Profile Setup",
+  "adminProfileNoEmail": "No email",
+  "adminProfileCountryLabel": "Country",
+  "adminProfileStateLabel": "State/Province",
+  "adminProfileCityLabel": "City",
+  "adminProfileNextButton": "Next - Business Information",
+  "subscriptionAppBarTitle": "Team Build Pro",
+  "subscriptionPremiumHeader": "Premium Features:",
+  "subscriptionStatusActive": "Active Subscription",
+  "subscriptionStatusActiveSubtitle": "You have full access to all premium features",
+  "subscriptionStatusPaused": "Subscription Paused",
+  "subscriptionStatusPausedSubtitle": "Your subscription is paused. Resume to restore access.",
+  "subscriptionStatusPaymentIssue": "Payment Issue",
+  "subscriptionStatusPaymentIssueSubtitle": "Update payment method to restore access",
+  "subscriptionStatusTrialActive": "Free Trial Active",
+  "subscriptionStatusTrialDaysRemaining": "{days} days remaining in your trial",
+  "@subscriptionStatusTrialDaysRemaining": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "subscriptionStatusCancelled": "Subscription Cancelled",
+  "subscriptionStatusCancelledSubtitle": "Access continues until expiry date",
+  "subscriptionStatusExpired": "Subscription Expired",
+  "subscriptionStatusExpiredSubtitle": "Upgrade to restore premium features",
+  "subscriptionFeature1": "Submit your unique {businessName} referral link",
+  "@subscriptionFeature1": {
+    "placeholders": {
+      "businessName": {}
+    }
+  },
+  "subscriptionFeature2": "Custom AI Coaching for recruiting and team building",
+  "subscriptionFeature3": "Unlock messaging to users on your team",
+  "subscriptionFeature4": "Ensure team members join under YOU in {businessName}",
+  "@subscriptionFeature4": {
+    "placeholders": {
+      "businessName": {}
+    }
+  },
+  "subscriptionFeature5": "Advanced analytics and insights",
+  "subscriptionActivatedSuccess": "✅ Subscription activated successfully!",
+  "subscriptionNotActiveTitle": "Subscription Not Active",
+  "subscriptionNotActiveMessage": "Purchase started but not active yet. Try again.",
+  "subscriptionNotAvailableTitle": "Subscription Not Available",
+  "subscriptionNotAvailableMessageIOS": "In-app purchases are currently unavailable on your device. This may be due to restrictions set by your organization or device administrator.\n\nPlease check your Screen Time settings or contact your IT department if you're using a managed device.\n\nAlternatively, you can subscribe through our website.",
+  "subscriptionNotAvailableMessageAndroid": "In-app purchases are currently unavailable on your device. This may be due to restrictions or network issues.\n\nPlease try again later or contact support if the problem persists.",
+  "subscriptionNotAvailableMessageDefault": "In-app purchases are currently unavailable. Please try again later.",
+  "subscriptionOkButton": "OK",
+  "subscriptionRestoredSuccess": "✅ Subscription restored successfully!",
+  "subscriptionNoPreviousFound": "No previous subscription found to restore.",
+  "subscriptionSubscribeButton": "Subscribe Now - $4.99/month",
+  "subscriptionRestoreButton": "Restore Previous Subscription",
+  "subscriptionLegalNotice": "By subscribing, you agree to our Terms of Service and Privacy Policy.",
+  "subscriptionTermsLink": "Terms of Service",
+  "subscriptionSeparator": " | ",
+  "subscriptionPrivacyLink": "Privacy Policy",
+  "subscriptionAutoRenewNotice": "Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. {managementText}",
+  "@subscriptionAutoRenewNotice": {
+    "description": "Auto-renewal notice with platform-specific management text",
+    "placeholders": {
+      "managementText": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionManageIOS": "You can manage your subscription in your Apple ID account settings.",
+  "subscriptionManageAndroid": "You can manage your subscription in the Google Play Store.",
+  "subscriptionManageDefault": "You can manage your subscription in your device's app store.",
+  "subscriptionPlatformAppStore": "App Store",
+  "subscriptionPlatformPlayStore": "Google Play Store",
+  "subscriptionPlatformGeneric": "app store",
+  "subscriptionDefaultBizOpp": "your opportunity",
+  "termsScreenTitle": "Terms of Service",
+  "termsHeaderTitle": "Terms of Service",
+  "termsSubtitle": "Professional Networking Platform Agreement",
+  "termsLastUpdated": "Last Updated: {date}",
+  "@termsLastUpdated": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "termsFooterBadgeTitle": "Apple Store Compliant",
+  "termsFooterBadgeDescription": "These Terms of Service meet all Apple App Store guidelines and requirements for platform applications.",
+  "termsDisclaimerTitle": "PROFESSIONAL NETWORKING PLATFORM",
+  "termsDisclaimerSubtitle": "Service Overview",
+  "privacyScreenTitle": "Privacy Policy",
+  "privacyHeaderTitle": "Privacy Policy",
+  "privacyLastUpdated": "Last Updated: {date}",
+  "@privacyLastUpdated": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "privacyEmailSubject": "subject=Privacy Policy Inquiry",
+  "privacyEmailError": "Could not open email client. Please contact {email}",
+  "@privacyEmailError": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "privacyMattersTitle": "Your Privacy Matters",
+  "privacyMattersDescription": "We are committed to protecting your personal information and your right to privacy. This policy explains how we collect, use, and safeguard your data.",
+  "privacyAppleComplianceTitle": "Apple Privacy Compliance",
+  "privacyAppleComplianceDescription": "This app follows Apple's privacy guidelines and App Store requirements. We are transparent about data collection and give you control over your information.",
+  "privacyContactHeading": "Contact Us",
+  "privacyContactSubheading": "Questions about this Privacy Policy?",
+  "privacyContactDetails": "Team Build Pro\nPrivacy Officer\nResponse within 48 hours",
+  "privacyCopyright": "© {year} Team Build Pro. All rights reserved.",
+  "@privacyCopyright": {
+    "placeholders": {
+      "year": {}
+    }
+  },
+  "privacyFooterDisclaimer": "This Privacy Policy is effective as of the date listed above and applies to all users of the Team Build Pro mobile application.",
+  "howItWorksScreenTitle": "How It Works",
+  "howItWorksHeaderTitle": "How It Works",
+  "howItWorksHeroSubtitle": "Transform your recruiting with a pre-qualified team pipeline.",
+  "howItWorksFeaturedOpportunity": "Featured Opportunity",
+  "howItWorksPipelineSystem": "PIPELINE SYSTEM",
+  "howItWorksStep1Title": "Set Your Foundation",
+  "howItWorksStep1Description": "Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.",
+  "howItWorksStep2Title": "Build Smart, Not Hard",
+  "howItWorksStep2Description": "Use AI-powered coaching to draft messages, schedule follow-ups, and track interest. Build relationships with prospects before they even join your business opportunity.",
+  "howItWorksStep3Title": "Automatic Qualification",
+  "howItWorksStep3Description": "As prospects build their own teams within the app, they automatically hit qualification milestones (4 direct sponsors + 20 total team) - proving their commitment before joining.",
+  "howItWorksStep4Title": "Rapid Growth",
+  "howItWorksStep4Description": "Your pre-qualified prospects launch with momentum, teams already in place, and proven ability to recruit. This creates a self-sustaining growth engine.",
+  "howItWorksKeyTargetsTitle": " KEY GROWTH TARGETS",
+  "howItWorksDirectSponsors": "Direct Sponsors",
+  "howItWorksTotalTeam": "Total Team Members",
+  "howItWorksCtaHeading": "Grow Your Network",
+  "howItWorksCtaDescription": "Expand your Network to drive organization growth!",
+  "howItWorksCtaButton": "Proven Growth Strategies",
+  "howItWorksDefaultBizOpp": "your opportunity",
+  "termsDisclaimerContent": "• Team Build Pro is a subscription-based networking platform\n• Users pay a monthly subscription fee for access to networking tools\n• The platform provides relationship management and business connection features\n• All business opportunities are provided by independent third parties\n\nTeam Build Pro operates as a networking platform and does not guarantee business outcomes.",
+  "termsSection1Title": "1. ACCEPTANCE OF TERMS",
+  "termsSection1Content": "By downloading, installing, accessing, or using the Team Build Pro mobile application (\"App\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, do not use the App.\n\nThese Terms constitute a legally binding agreement between you and Team Build Pro regarding your use of our professional networking platform service.",
+  "termsSection2Title": "2. SERVICE DESCRIPTION",
+  "termsSection2Content": "Team Build Pro is a subscription-based professional networking platform that provides:\n\n• Contact relationship management tools\n• Team building and networking features\n• Communication and collaboration tools\n• Business opportunity information from third-party providers\n• AI-powered coaching and guidance\n\nIMPORTANT DISCLAIMERS:\n• Team Build Pro is a networking platform service, not a business opportunity\n• Users pay a monthly subscription fee for platform access\n• We do not guarantee any business results or income\n• All business opportunities are provided by independent third parties\n• Success depends entirely on individual effort and market conditions",
+  "termsSection3Title": "3. SUBSCRIPTION AND PAYMENT",
+  "termsSection3Content": "ACCESS AND FEES:\n• The App operates on a subscription basis\n• Monthly subscription fees are charged through your Apple ID account\n• Subscription automatically renews unless cancelled\n• Prices are shown in the App and may vary by region\n\nBILLING CYCLE:\n• You will be charged at confirmation of purchase\n• Your subscription automatically renews each month\n• Charges occur 24 hours before the end of the current period\n• You can manage subscriptions in your Apple ID Account Settings\n\nCANCELLATION:\n• Cancel anytime through Apple ID Account Settings\n• Cancellation takes effect at the end of the current billing period\n• No refunds for partial months\n• Access continues until the end of the paid period",
+  "termsSection4Title": "4. FREE TRIAL (IF APPLICABLE)",
+  "termsSection4Content": "TRIAL TERMS:\n• Some subscription plans may include a free trial period\n• Trial duration will be clearly displayed before signup\n• You may cancel during the trial to avoid charges\n• If you don't cancel, you'll be charged the subscription fee\n\nCONVERSION TO PAID:\n• Trials convert to paid subscriptions automatically\n• Charges begin immediately after trial ends\n• The subscription price shown at signup applies\n• Cancel before trial ends to avoid charges",
+  "termsSection5Title": "5. APPLE IN-APP PURCHASE TERMS",
+  "termsSection5Content": "All subscriptions are processed through Apple's In-App Purchase system and are subject to Apple's Terms of Service and policies.\n\nAPPLE'S ROLE:\n• Payment is charged to your Apple ID account\n• Subscriptions managed through Apple ID Account Settings\n• Refund requests handled by Apple according to their policies\n• Apple's Standard EULA terms apply unless otherwise specified\n\nYOUR RESPONSIBILITIES:\n• Maintain accurate Apple ID payment information\n• Monitor subscription status in your Apple account\n• Contact Apple Support for billing issues\n• Review Apple's terms at: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  "termsSection6Title": "6. USER ACCOUNTS AND REGISTRATION",
+  "termsSection6Content": "ACCOUNT CREATION:\n• You must create an account to use the App\n• Provide accurate, current, and complete information\n• You are responsible for maintaining account confidentiality\n• You must be at least 18 years old to create an account\n\nACCOUNT SECURITY:\n• Keep your password secure and confidential\n• Notify us immediately of unauthorized access\n• You are responsible for all activity under your account\n• Do not share your account with others\n\nACCOUNT TERMINATION:\n• We may suspend or terminate accounts that violate these Terms\n• You may delete your account at any time through the App\n• Termination does not affect subscription billing unless cancelled\n• We reserve the right to refuse service to anyone",
+  "termsSection7Title": "7. PROHIBITED CONDUCT",
+  "termsSection7Content": "You agree NOT to:\n\n• Use the App for any illegal purpose\n• Violate any applicable laws or regulations\n• Infringe on intellectual property rights\n• Transmit harmful code, viruses, or malware\n• Harass, abuse, or harm other users\n• Impersonate others or provide false information\n• Attempt to gain unauthorized access to the App\n• Interfere with App functionality or security\n• Use automated systems to access the App without permission\n• Collect user information without consent\n• Engage in any activity that disrupts the App\n• Use the App to promote illegal schemes or scams",
+  "termsSection8Title": "8. INTELLECTUAL PROPERTY",
+  "termsSection8Content": "OWNERSHIP:\n• Team Build Pro owns all rights to the App and its content\n• This includes software, design, text, graphics, and logos\n• Our trademarks and branding are protected\n• You receive only a limited license to use the App\n\nYOUR LICENSE:\n• We grant you a limited, non-exclusive, non-transferable license\n• You may use the App for personal, non-commercial purposes\n• This license does not include resale or commercial use\n• The license terminates when your subscription ends\n\nUSER CONTENT:\n• You retain ownership of content you create in the App\n• You grant us a license to use your content to provide services\n• You represent that you have rights to any content you upload\n• We may remove content that violates these Terms",
+  "termsSection9Title": "9. PRIVACY AND DATA",
+  "termsSection9Content": "DATA COLLECTION AND USE:\n• We collect and use data as described in our Privacy Policy\n• Review our Privacy Policy at: https://info.teambuildpro.com/privacy-policy.html\n• By using the App, you consent to our data practices\n• We implement security measures to protect your data\n\nYOUR PRIVACY RIGHTS:\n• You have rights regarding your personal data\n• You may request access to your data\n• You may request deletion of your account and data\n• Contact us at support@teambuildpro.com for privacy requests\n\nDATA SECURITY:\n• We use industry-standard security measures\n• However, no system is completely secure\n• You use the App at your own risk\n• Report security concerns to support@teambuildpro.com",
+  "termsSection10Title": "10. THIRD-PARTY SERVICES AND CONTENT",
+  "termsSection10Content": "BUSINESS OPPORTUNITIES:\n• The App may display information about third-party business opportunities\n• These opportunities are provided by independent companies\n• Team Build Pro is not affiliated with these opportunities\n• We do not endorse or guarantee any third-party opportunity\n• Research opportunities independently before participating\n\nTHIRD-PARTY LINKS:\n• The App may contain links to third-party websites\n• We are not responsible for third-party content or practices\n• Third-party sites have their own terms and privacy policies\n• Access third-party content at your own risk\n\nINTEGRATIONS:\n• The App may integrate with third-party services\n• Your use of integrated services is subject to their terms\n• We are not responsible for third-party service performance\n• Integrations may be modified or discontinued at any time",
+  "termsSection11Title": "11. DISCLAIMERS",
+  "termsSection11Content": "NO BUSINESS OPPORTUNITY:\n• Team Build Pro is a networking platform service only\n• We do not offer or guarantee any business opportunity\n• We do not guarantee income, earnings, or success\n• Any business opportunity information comes from third parties\n\nSERVICE PROVIDED \"AS IS\":\n• The App is provided \"as is\" and \"as available\"\n• We make no warranties about App reliability or availability\n• We do not guarantee error-free or uninterrupted service\n• We may modify or discontinue features at any time\n\nNO PROFESSIONAL ADVICE:\n• The App does not provide legal, financial, or tax advice\n• AI coaching is for informational purposes only\n• Consult qualified professionals for important decisions\n• We are not responsible for decisions based on App content\n\nRESULTS DISCLAIMER:\n• Individual results vary and are not guaranteed\n• Success depends on individual effort and circumstances\n• Past performance does not indicate future results\n• We make no representations about potential outcomes",
+  "termsSection12Title": "12. LIMITATION OF LIABILITY",
+  "termsSection12Content": "TO THE MAXIMUM EXTENT PERMITTED BY LAW:\n\nWE ARE NOT LIABLE FOR:\n• Any indirect, incidental, or consequential damages\n• Loss of profits, revenue, data, or business opportunities\n• Service interruptions or errors\n• Unauthorized access to your account or data\n• Third-party actions or content\n• Any damages exceeding the amount you paid us in the past 12 months\n\nCAP ON LIABILITY:\n• Our total liability is limited to subscription fees paid in the past 12 months\n• This applies regardless of the legal theory of liability\n• Some jurisdictions don't allow these limitations\n• In those cases, liability is limited to the minimum required by law\n\nUSER RESPONSIBILITY:\n• You are responsible for your use of the App\n• You are responsible for decisions based on App content\n• You assume all risks associated with App use\n• You agree to evaluate business opportunities independently",
+  "termsSection13Title": "13. INDEMNIFICATION",
+  "termsSection13Content": "You agree to indemnify, defend, and hold harmless Team Build Pro, its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:\n\n• Your use of the App\n• Your violation of these Terms\n• Your violation of any rights of others\n• Your content or information posted in the App\n• Your participation in any business opportunity\n• Your violation of applicable laws or regulations\n\nThis indemnification obligation survives termination of these Terms and your use of the App.",
+  "termsSection14Title": "14. DISPUTE RESOLUTION",
+  "termsSection14Content": "GOVERNING LAW:\n• These Terms are governed by the laws of the State of Utah, USA\n• Federal law applies where applicable\n• You consent to jurisdiction in Utah courts\n\nINFORMAL RESOLUTION:\n• Contact us first to resolve disputes informally\n• Email: support@teambuildpro.com\n• We will attempt to resolve issues in good faith\n• Most concerns can be addressed through communication\n\nARBITRATION (IF REQUIRED):\n• Disputes may be subject to binding arbitration\n• Arbitration conducted under American Arbitration Association rules\n• Individual arbitration only - no class actions\n• Arbitration location: Utah, USA\n\nEXCEPTIONS:\n• Either party may seek injunctive relief in court\n• Intellectual property disputes may be litigated\n• Small claims court remains available for qualifying claims",
+  "termsSection15Title": "15. CHANGES TO TERMS",
+  "termsSection15Content": "MODIFICATIONS:\n• We may update these Terms at any time\n• Changes effective upon posting in the App\n• Continued use constitutes acceptance of changes\n• Material changes will be communicated via email or App notification\n\nYOUR OPTIONS:\n• Review Terms periodically for changes\n• If you disagree with changes, stop using the App\n• Cancel your subscription if you don't accept new Terms\n• Contact support@teambuildpro.com with questions\n\nEFFECTIVE DATE:\n• Current version effective as of posting date\n• Previous versions are superseded\n• We maintain records of Terms versions",
+  "termsSection16Title": "16. GENERAL PROVISIONS",
+  "termsSection16Content": "ENTIRE AGREEMENT:\n• These Terms constitute the entire agreement between you and Team Build Pro\n• They supersede all prior agreements or understandings\n• Apple's EULA terms also apply to App Store purchases\n\nSEVERABILITY:\n• If any provision is found invalid, the rest remains in effect\n• Invalid provisions will be modified to be enforceable\n• The Terms remain binding even with invalid provisions\n\nNO WAIVER:\n• Our failure to enforce any right doesn't waive that right\n• Waiver of one breach doesn't waive future breaches\n• All rights and remedies are cumulative\n\nASSIGNMENT:\n• You may not assign these Terms without our consent\n• We may assign our rights and obligations\n• Terms bind permitted successors and assigns\n\nCONTACT INFORMATION:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nPrivacy Policy: https://info.teambuildpro.com/privacy-policy.html\n\nLast Updated: January 2025",
+  "privacySection1Title": "1. INFORMATION WE COLLECT",
+  "privacySection1Content": "ACCOUNT INFORMATION:\n• Name and email address\n• Phone number (optional)\n• Profile information you provide\n• Authentication credentials\n\nUSAGE DATA:\n• App interactions and features used\n• Device information (model, OS version)\n• Performance and crash data\n• Analytics data (anonymized where possible)\n\nCONTENT YOU CREATE:\n• Messages and communications\n• Contact information you add\n• Notes and relationship data\n• Files and media you upload\n\nLOCATION DATA:\n• We do not collect precise location data\n• General location may be derived from IP address\n• You can manage location permissions in device settings",
+  "privacySection2Title": "2. HOW WE USE YOUR INFORMATION",
+  "privacySection2Content": "We use collected information to:\n\nPROVIDE SERVICES:\n• Create and manage your account\n• Enable App features and functionality\n• Process your subscription payments\n• Provide customer support\n• Send service-related notifications\n\nIMPROVE OUR APP:\n• Analyze usage patterns and trends\n• Fix bugs and improve performance\n• Develop new features\n• Conduct research and analytics\n\nCOMMUNICATIONS:\n• Send important service updates\n• Respond to your inquiries\n• Provide technical support\n• Send optional marketing (you can opt out)\n\nLEGAL COMPLIANCE:\n• Comply with legal obligations\n• Enforce our Terms of Service\n• Protect rights and safety\n• Prevent fraud and abuse",
+  "privacySection3Title": "3. HOW WE SHARE YOUR INFORMATION",
+  "privacySection3Content": "We share information only in these limited circumstances:\n\nSERVICE PROVIDERS:\n• Cloud hosting (Firebase/Google Cloud)\n• Payment processing (Apple)\n• Analytics services\n• Customer support tools\n• These providers are contractually obligated to protect your data\n\nLEGAL REQUIREMENTS:\n• When required by law or legal process\n• To protect rights, property, or safety\n• In connection with legal proceedings\n• To prevent fraud or illegal activity\n\nBUSINESS TRANSFERS:\n• In connection with merger, acquisition, or sale of assets\n• Your data may transfer to successor entity\n• You will be notified of any such transfer\n\nWITH YOUR CONSENT:\n• When you explicitly authorize sharing\n• For purposes you approve\n\nWE DO NOT:\n• Sell your personal information\n• Share data for third-party marketing\n• Provide data to data brokers",
+  "privacySection4Title": "4. DATA SECURITY",
+  "privacySection4Content": "SECURITY MEASURES:\n• Industry-standard encryption in transit and at rest\n• Secure authentication systems\n• Regular security assessments\n• Access controls and monitoring\n• Secure data centers (Google Cloud/Firebase)\n\nYOUR RESPONSIBILITIES:\n• Keep your password confidential\n• Use device security features (passcode, biometrics)\n• Report suspicious activity immediately\n• Keep your device and app updated\n\nLIMITATIONS:\n• No system is 100% secure\n• You use the App at your own risk\n• We cannot guarantee absolute security\n• Report security concerns to: support@teambuildpro.com",
+  "privacySection5Title": "5. YOUR PRIVACY RIGHTS",
+  "privacySection5Content": "You have the following rights regarding your data:\n\nACCESS AND PORTABILITY:\n• Request a copy of your personal data\n• Export your data in a portable format\n• Review what information we have about you\n\nCORRECTION:\n• Update inaccurate information\n• Modify your profile details\n• Correct errors in your account\n\nDELETION:\n• Request deletion of your account and data\n• Use the \"Delete Account\" feature in the App\n• Some data may be retained for legal compliance\n• Deletion is permanent and cannot be undone\n\nOPT-OUT:\n• Unsubscribe from marketing emails\n• Disable push notifications in device settings\n• Limit analytics data collection\n\nTO EXERCISE RIGHTS:\n• Use in-app settings where available\n• Email: support@teambuildpro.com\n• We will respond within 30 days\n• Identity verification may be required",
+  "privacySection6Title": "6. DATA RETENTION",
+  "privacySection6Content": "HOW LONG WE KEEP DATA:\n\nACTIVE ACCOUNTS:\n• Data retained while your account is active\n• Necessary to provide ongoing service\n• You can delete data or account anytime\n\nDELETED ACCOUNTS:\n• Most data deleted within 30 days\n• Some data retained for legal compliance\n• Backup systems purged within 90 days\n• Financial records kept per legal requirements\n\nLEGAL RETENTION:\n• Transaction records: 7 years (tax law)\n• Legal disputes: until resolution + statute of limitations\n• Fraud prevention: as legally required\n• Aggregated analytics: indefinitely (anonymized)\n\nYOUR CONTROL:\n• Request deletion at any time\n• Export data before account deletion\n• Deletion is permanent and irreversible",
+  "privacySection7Title": "7. CHILDREN'S PRIVACY",
+  "privacySection7Content": "AGE RESTRICTION:\n• The App is not intended for users under 18\n• We do not knowingly collect data from minors\n• You must be 18+ to create an account\n\nIF WE LEARN OF UNDERAGE USERS:\n• We will promptly delete their accounts\n• We will delete all associated data\n• We will take steps to prevent future underage access\n\nPARENTAL RIGHTS:\n• Parents may request deletion of minor's data\n• Contact: support@teambuildpro.com\n• Provide proof of parental relationship\n• We will act promptly on verified requests",
+  "privacySection8Title": "8. CHANGES TO PRIVACY POLICY",
+  "privacySection8Content": "UPDATES:\n• We may update this Privacy Policy periodically\n• Changes posted in the App and on our website\n• Material changes communicated via email or notification\n• Continued use means acceptance of changes\n\nYOUR OPTIONS:\n• Review this policy regularly\n• Contact us with questions: support@teambuildpro.com\n• Stop using the App if you disagree with changes\n• Delete your account if you don't accept updates\n\nEFFECTIVE DATE:\n• Current version: January 2025\n• Last Updated: January 2025\n• Previous versions are superseded\n\nCONTACT INFORMATION:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nTerms of Service: https://info.teambuildpro.com/terms-of-service.html",
+  "subscriptionScreenTitle": "Team Build Pro",
+  "@subscriptionScreenTitle": {
+    "description": "Title of the subscription screen"
+  },
+  "subscriptionSuccessMessage": "✅ Subscription activated successfully!",
+  "@subscriptionSuccessMessage": {
+    "description": "Success message when subscription is activated"
+  },
+  "@subscriptionNotActiveTitle": {
+    "description": "Dialog title when subscription purchase is not yet active"
+  },
+  "@subscriptionNotActiveMessage": {
+    "description": "Dialog message when subscription purchase is not yet active"
+  },
+  "@subscriptionNotAvailableTitle": {
+    "description": "Dialog title when in-app purchase is not available"
+  },
+  "subscriptionRestoreSuccess": "✅ Subscription restored successfully!",
+  "@subscriptionRestoreSuccess": {
+    "description": "Success message when subscription is restored"
+  },
+  "subscriptionRestoreNone": "No previous subscription found to restore.",
+  "@subscriptionRestoreNone": {
+    "description": "Message when no previous subscription can be restored"
+  },
+  "@subscriptionStatusActive": {
+    "description": "Status card title for active subscription"
+  },
+  "@subscriptionStatusActiveSubtitle": {
+    "description": "Status card subtitle for active subscription"
+  },
+  "@subscriptionStatusPaused": {
+    "description": "Status card title for paused subscription"
+  },
+  "@subscriptionStatusPausedSubtitle": {
+    "description": "Status card subtitle for paused subscription"
+  },
+  "@subscriptionStatusPaymentIssue": {
+    "description": "Status card title for payment issue"
+  },
+  "@subscriptionStatusPaymentIssueSubtitle": {
+    "description": "Status card subtitle for payment issue"
+  },
+  "subscriptionStatusTrial": "Free Trial Active",
+  "@subscriptionStatusTrial": {
+    "description": "Status card title for trial subscription"
+  },
+  "subscriptionStatusTrialSubtitle": "{days} days remaining in your trial",
+  "@subscriptionStatusTrialSubtitle": {
+    "description": "Status card subtitle for trial subscription",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@subscriptionStatusCancelled": {
+    "description": "Status card title for cancelled subscription"
+  },
+  "@subscriptionStatusCancelledSubtitle": {
+    "description": "Status card subtitle for cancelled subscription"
+  },
+  "@subscriptionStatusExpired": {
+    "description": "Status card title for expired subscription"
+  },
+  "@subscriptionStatusExpiredSubtitle": {
+    "description": "Status card subtitle for expired subscription"
+  },
+  "subscriptionPremiumFeaturesHeader": "Premium Features:",
+  "@subscriptionPremiumFeaturesHeader": {
+    "description": "Header for premium features list"
+  },
+  "subscriptionFeatureReferralLink": "Submit your unique {bizOpp} referral link",
+  "@subscriptionFeatureReferralLink": {
+    "description": "Premium feature: referral link submission",
+    "placeholders": {
+      "bizOpp": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionFeatureAiCoaching": "Custom AI Coaching for recruiting and team building",
+  "@subscriptionFeatureAiCoaching": {
+    "description": "Premium feature: AI coaching"
+  },
+  "subscriptionFeatureMessaging": "Unlock messaging to users on your team",
+  "@subscriptionFeatureMessaging": {
+    "description": "Premium feature: messaging capability"
+  },
+  "subscriptionFeatureEnsureTeam": "Ensure team members join under YOU in {bizOpp}",
+  "@subscriptionFeatureEnsureTeam": {
+    "description": "Premium feature: team placement guarantee",
+    "placeholders": {
+      "bizOpp": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionFeatureAnalytics": "Advanced analytics and insights",
+  "@subscriptionFeatureAnalytics": {
+    "description": "Premium feature: analytics"
+  },
+  "@subscriptionSubscribeButton": {
+    "description": "Subscribe button text"
+  },
+  "@subscriptionRestoreButton": {
+    "description": "Restore subscription button text"
+  },
+  "@subscriptionLegalNotice": {
+    "description": "Legal notice about terms and privacy"
+  },
+  "@subscriptionTermsLink": {
+    "description": "Link text for Terms of Service"
+  },
+  "@subscriptionPrivacyLink": {
+    "description": "Link text for Privacy Policy"
+  },
+  "subscriptionManagementApple": "You can manage your subscription in your Apple ID account settings.",
+  "@subscriptionManagementApple": {
+    "description": "iOS subscription management instructions"
+  },
+  "subscriptionManagementGoogle": "You can manage your subscription in the Google Play Store.",
+  "@subscriptionManagementGoogle": {
+    "description": "Android subscription management instructions"
   }
 }

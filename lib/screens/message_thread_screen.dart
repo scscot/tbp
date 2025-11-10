@@ -8,6 +8,7 @@ import 'dart:async';
 
 import '../models/message_model.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 
 class MessageThreadScreen extends StatefulWidget {
   final String recipientId;
@@ -316,20 +317,20 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.blue),
-              SizedBox(width: 8),
-              Text('Links Not Permitted'),
+              const Icon(Icons.info_outline, color: Colors.blue),
+              const SizedBox(width: 8),
+              Text(context.l10n?.messageThreadUrlWarningTitle ?? 'Links Not Permitted'),
             ],
           ),
           content: Text(
-            'Links aren\'t allowed in messages to keep our team focused on ${_bizOpp ?? 'our business opportunity'}. Please share your message without any links.',
+            context.l10n?.messageThreadUrlWarningMessage ?? 'Links aren\'t allowed in messages to keep our team focused on ${_bizOpp ?? 'our business opportunity'}. Please share your message without any links.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Understood'),
+              child: Text(context.l10n?.messageThreadUrlWarningButton ?? 'Understood'),
             ),
           ],
         );
@@ -342,23 +343,23 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   Widget build(BuildContext context) {
     if (!_isThreadReady) {
       return Scaffold(
-        appBar: const AppScreenBar(title: 'Messages'),
+        appBar: AppScreenBar(title: context.l10n?.messageThreadTitle ?? 'Messages'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       appBar: AppScreenBar(
-        title: 'Messages',
+        title: context.l10n?.messageThreadTitle ?? 'Messages',
         appId: widget.appId,
       ),
       body: Column(
         children: [
           // --- MODIFICATION: Added CircleAvatar for the recipient's photo ---
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text('Message Center',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(context.l10n?.messageThreadHeading ?? 'Message Center',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 6),
           CircleAvatar(
@@ -398,7 +399,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('Start the conversation!'));
+                  return Center(child: Text(context.l10n?.messageThreadEmptyMessage ?? 'Start the conversation!'));
                 }
                 final messages = snapshot.data!.docs;
                 return ListView.builder(
@@ -482,7 +483,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                 controller: _controller,
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
-                  hintText: 'Type a message...',
+                  hintText: context.l10n?.messageThreadInputHint ?? 'Type a message...',
                   filled: true,
                   fillColor: Colors.grey.shade200,
                   contentPadding:

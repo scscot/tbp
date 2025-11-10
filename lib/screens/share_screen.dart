@@ -9,6 +9,7 @@ import 'dart:io';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
+import '../widgets/localized_text.dart';
 
 class ShareScreen extends StatefulWidget {
   final String appId;
@@ -245,112 +246,72 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
-  Map<String, Map<String, String>> _getProspectMessages() {
+  Map<String, Map<String, String>> _getProspectMessages(BuildContext context) {
     return {
       'past_struggles': {
-        'title': 'Addressing Past Struggles',
-        'description': 'Perfect for prospects who have tried before and struggled',
-        'subject': 'A Smarter Way to Start This Time',
-        'message': 'If past attempts left you stuck at zero with no momentum, here\'s a smarter path.\n\n'
-            'Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you even join.\n\n'
-            'It drafts your messages, times your follow-ups, and tracks who\'s interested - so you don\'t start from scratch this time. You launch with people already waiting for you.\n\n'
-            'The AI walks you through every step. You won\'t be alone.\n\n'
-            'See how it works: $_prospectReferralLink\n\n'
-            'You deserve a real shot this time.',
+        'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
+        'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
+        'subject': context.l10n?.shareProspectPastStrugglesSubject ?? 'A Smarter Way to Start This Time',
+        'message': (context.l10n?.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'If past attempts left you stuck at zero with no momentum, here\'s a smarter path.\n\nTeam Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you even join.\n\nIt drafts your messages, times your follow-ups, and tracks who\'s interested - so you don\'t start from scratch this time. You launch with people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: $_prospectReferralLink\n\nYou deserve a real shot this time.'),
       },
       'not_salesperson': {
-        'title': 'For Non-Sales Minded',
-        'description': 'Great for people who don\'t see themselves as "salespeople"',
-        'subject': 'You Don\'t Have to Be a "Salesperson"',
-        'message': 'Not a "natural salesperson"? That\'s okay. You have an AI Coach.\n\n'
-            'Team Build Pro helps you pre-build your $_bizOppName team with AI that drafts your messages, schedules your follow-ups, and tracks everyone\'s interest.\n\n'
-            'It\'s like having a recruiting assistant who never sleeps. You focus on relationships. The AI handles the rest.\n\n'
-            'Start building before you even join: $_prospectReferralLink\n\n'
-            'You don\'t need a "sales personality." You need smart tools. Now you have them.',
+        'title': context.l10n?.shareProspectNotSalespersonTitle ?? 'For Non-Sales Minded',
+        'description': context.l10n?.shareProspectNotSalespersonDescription ?? 'Great for people who don\'t see themselves as "salespeople"',
+        'subject': context.l10n?.shareProspectNotSalespersonSubject ?? 'You Don\'t Have to Be a "Salesperson"',
+        'message': (context.l10n?.shareProspectNotSalespersonMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Not a "natural salesperson"? That\'s okay. You have an AI Coach.\n\nTeam Build Pro helps you pre-build your $_bizOppName team with AI that drafts your messages, schedules your follow-ups, and tracks everyone\'s interest.\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on relationships. The AI handles the rest.\n\nStart building before you even join: $_prospectReferralLink\n\nYou don\'t need a "sales personality." You need smart tools. Now you have them.'),
       },
       'hope_after_disappointment': {
-        'title': 'Hope After Disappointment',
-        'description': 'Ideal for prospects burned by previous opportunities',
-        'subject': 'A Smarter Way to Start This Time',
-        'message': 'Been burned before? Promised the world, then left starting from zero?\n\n'
-            'This time is different. Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you join.\n\n'
-            'It drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches you on next steps. You gain real momentum before Day 1.\n\n'
-            'No hype. No empty promises. Just AI-powered tools that work.\n\n'
-            'See how: $_prospectReferralLink\n\n'
-            'You deserve a system that actually sets you up to win.',
+        'title': context.l10n?.shareProspectHopeAfterDisappointmentTitle ?? 'Hope After Disappointment',
+        'description': context.l10n?.shareProspectHopeAfterDisappointmentDescription ?? 'Ideal for prospects burned by previous opportunities',
+        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'A Smarter Way to Start This Time',
+        'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Been burned before? Promised the world, then left starting from zero?\n\nThis time is different. Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you join.\n\nIt drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches you on next steps. You gain real momentum before Day 1.\n\nNo hype. No empty promises. Just AI-powered tools that work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that actually sets you up to win.'),
       },
       'general_invitation': {
-        'title': 'General Invitation',
-        'description': 'A versatile message for any prospect situation',
-        'subject': 'Build Before You Join - Guided by AI',
-        'message': 'You\'re invited to try a smarter way to start.\n\n'
-            'With Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\n'
-            'Here\'s how it helps:\n'
-            '- Drafts personalized messages\n'
-            '- Schedules follow-ups automatically\n'
-            '- Tracks momentum and next steps\n\n'
-            'So Day 1 isn\'t a cold start - it\'s a running start.\n\n'
-            'Take a look: $_prospectReferralLink',
+        'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
+        'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
+        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Before You Join - Guided by AI',
+        'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'You\'re invited to try a smarter way to start.\n\nWith Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\nHere\'s how it helps:\n- Drafts personalized messages\n- Schedules follow-ups automatically\n- Tracks momentum and next steps\n\nSo Day 1 isn\'t a cold start - it\'s a running start.\n\nTake a look: $_prospectReferralLink'),
       },
       'social_anxiety': {
-        'title': 'Avoiding Awkward Conversations',
-        'description': 'Perfect for introverts or those uncomfortable with face-to-face recruiting',
-        'subject': 'Build Your Team Without Awkward Conversations',
-        'message': 'Uncomfortable approaching friends and family? You don\'t have to.\n\n'
-            'Team Build Pro lets you build your $_bizOppName network online first - where it feels comfortable.\n\n'
-            'The AI Coach drafts your messages, suggests who to contact, and tracks responses. You build relationships at your own pace, without pressure.\n\n'
-            'No cold calls. No awkward pitches. Just genuine connections guided by AI.\n\n'
-            'Start building on your terms: $_prospectReferralLink\n\n'
-            'Finally, a way to grow your network that feels natural to you.',
+        'title': context.l10n?.shareProspectSocialAnxietyTitle ?? 'Avoiding Awkward Conversations',
+        'description': context.l10n?.shareProspectSocialAnxietyDescription ?? 'Perfect for introverts or those uncomfortable with face-to-face recruiting',
+        'subject': context.l10n?.shareProspectSocialAnxietySubject ?? 'Build Your Team Without Awkward Conversations',
+        'message': (context.l10n?.shareProspectSocialAnxietyMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Uncomfortable approaching friends and family? You don\'t have to.\n\nTeam Build Pro lets you build your $_bizOppName network online first - where it feels comfortable.\n\nThe AI Coach drafts your messages, suggests who to contact, and tracks responses. You build relationships at your own pace, without pressure.\n\nNo cold calls. No awkward pitches. Just genuine connections guided by AI.\n\nStart building on your terms: $_prospectReferralLink\n\nFinally, a way to grow your network that feels natural to you.'),
       },
       'time_constrained': {
-        'title': 'For Busy Professionals',
-        'description': 'Ideal for prospects juggling job, family, and other commitments',
-        'subject': 'Build Your Team in the Gaps',
-        'message': 'Can\'t dedicate full-time hours? You don\'t need to.\n\n'
-            'Team Build Pro works around your schedule. Build your $_bizOppName team during morning coffee, lunch breaks, or evening downtime.\n\n'
-            'The AI handles the heavy lifting:\n'
-            '- Schedules your follow-ups automatically\n'
-            '- Reminds you when it\'s time to reach out\n'
-            '- Tracks everything so you never lose momentum\n\n'
-            'Work 15 minutes here, 20 minutes there. The AI makes every minute count.\n\n'
-            'See how it fits your life: $_prospectReferralLink\n\n'
-            'Build a real business without sacrificing everything else.',
+        'title': context.l10n?.shareProspectTimeConstrainedTitle ?? 'For Busy Professionals',
+        'description': context.l10n?.shareProspectTimeConstrainedDescription ?? 'Ideal for prospects juggling job, family, and other commitments',
+        'subject': context.l10n?.shareProspectTimeConstrainedSubject ?? 'Build Your Team in the Gaps',
+        'message': (context.l10n?.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro works around your schedule. Build your $_bizOppName team during morning coffee, lunch breaks, or evening downtime.\n\nThe AI handles the heavy lifting:\n- Schedules your follow-ups automatically\n- Reminds you when it\'s time to reach out\n- Tracks everything so you never lose momentum\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSee how it fits your life: $_prospectReferralLink\n\nBuild a real business without sacrificing everything else.'),
       },
       'financial_risk_averse': {
-        'title': 'Afraid of Losing Money',
-        'description': 'Great for prospects worried about financial risk',
-        'subject': 'See Results Before Investing Heavily',
-        'message': 'Worried about losing money? Smart.\n\n'
-            'With Team Build Pro, you can pre-build your $_bizOppName team and see real results before investing heavily.\n\n'
-            'Start for free. Test the system. Track your actual progress in real-time. Only \$4.99/month once you\'re ready to invite your first prospects.\n\n'
-            'No expensive lead funnels. No complex systems. Just AI-powered tools that help you build real relationships and real momentum.\n\n'
-            'See proof first: $_prospectReferralLink\n\n'
-            'You deserve to see what\'s possible before risking anything.',
+        'title': context.l10n?.shareProspectFinancialRiskAverseTitle ?? 'Afraid of Losing Money',
+        'description': context.l10n?.shareProspectFinancialRiskAverseDescription ?? 'Great for prospects worried about financial risk',
+        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject ?? 'See Results Before Investing Heavily',
+        'message': (context.l10n?.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Worried about losing money? Smart.\n\nWith Team Build Pro, you can pre-build your $_bizOppName team and see real results before investing heavily.\n\nStart for free. Test the system. Track your actual progress in real-time. Only \$4.99/month once you\'re ready to invite your first prospects.\n\nNo expensive lead funnels. No complex systems. Just AI-powered tools that help you build real relationships and real momentum.\n\nSee proof first: $_prospectReferralLink\n\nYou deserve to see what\'s possible before risking anything.'),
       },
       'skeptical_realist': {
-        'title': 'Show Me Proof',
-        'description': 'Perfect for prospects burned by false promises',
-        'subject': 'No Hype. Just Track Your Real Progress',
-        'message': 'Tired of empty promises and hype?\n\n'
-            'Team Build Pro shows you real metrics. No fluff. No exaggeration.\n\n'
-            'Your dashboard tracks:\n'
-            '- How many people you\'ve contacted\n'
-            '- Who\'s responded and who\'s interested\n'
-            '- Your actual momentum toward qualification (4 direct + 20 total)\n'
-            '- Next steps the AI recommends\n\n'
-            'You\'ll know exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\n'
-            'See the transparency: $_prospectReferralLink\n\n'
-            'Finally, a system that shows you the truth.',
+        'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',
+        'description': context.l10n?.shareProspectSkepticalRealistDescription ?? 'Perfect for prospects burned by false promises',
+        'subject': context.l10n?.shareProspectSkepticalRealistSubject ?? 'No Hype. Just Track Your Real Progress',
+        'message': (context.l10n?.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'Tired of empty promises and hype?\n\nTeam Build Pro shows you real metrics. No fluff. No exaggeration.\n\nYour dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI recommends\n\nYou\'ll know exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\nSee the transparency: $_prospectReferralLink\n\nFinally, a system that shows you the truth.'),
       },
     };
   }
 
-  void _shareProspectMessage(String messageKey) {
+  void _shareProspectMessage(BuildContext context, String messageKey) {
     if (kDebugMode) {
       debugPrint('🚀 SHARE_SCREEN: _shareProspectMessage called with key: $messageKey');
     }
-    
+
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
       if (kDebugMode) {
@@ -359,9 +320,9 @@ class _ShareScreenState extends State<ShareScreen>
       _showDemoModeDialog();
       return;
     }
-    
+
     if (_prospectReferralLink != null) {
-      final messages = _getProspectMessages();
+      final messages = _getProspectMessages(context);
       final selectedMessage = messages[messageKey];
       
       if (selectedMessage != null) {
@@ -388,127 +349,76 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
-  Map<String, Map<String, String>> _getPartnerMessages() {
+  Map<String, Map<String, String>> _getPartnerMessages(BuildContext context) {
     return {
       'warm_market_exhausted': {
-        'title': 'Warm Market Exhausted',
-        'description': 'For partners who\'ve tapped out friends and family',
-        'subject': 'Give Your Team an AI Recruiting Companion',
-        'message': 'Tapped out your warm market? Tired of leads that ghost you?\n\n'
-            'Give your $_bizOppName team an AI recruiting companion instead.\n\n'
-            'Team Build Pro drafts your team\'s recruiting messages, times their follow-ups, tracks prospect interest, and coaches every conversation.\n\n'
-            'Your prospects pre-build their teams before joining - so they launch with momentum, not from zero.\n\n'
-            'Best part? Your entire team gets the same AI advantage. True duplication at scale.\n\n'
-            'See how: $_partnerReferralLink\n\n'
-            'Stop chasing. Start coaching with AI.',
+        'title': context.l10n?.sharePartnerWarmMarketExhaustedTitle ?? 'Warm Market Exhausted',
+        'description': context.l10n?.sharePartnerWarmMarketExhaustedDescription ?? 'For partners who\'ve tapped out friends and family',
+        'subject': context.l10n?.sharePartnerWarmMarketExhaustedSubject ?? 'Give Your Team an AI Recruiting Companion',
+        'message': (context.l10n?.sharePartnerWarmMarketExhaustedMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Tapped out your warm market? Tired of leads that ghost you?\n\nGive your $_bizOppName team an AI recruiting companion instead.\n\nTeam Build Pro drafts your team\'s recruiting messages, times their follow-ups, tracks prospect interest, and coaches every conversation.\n\nYour prospects pre-build their teams before joining - so they launch with momentum, not from zero.\n\nBest part? Your entire team gets the same AI advantage. True duplication at scale.\n\nSee how: $_partnerReferralLink\n\nStop chasing. Start coaching with AI.'),
       },
       'expensive_system_fatigue': {
-        'title': 'System Fatigue & Expense',
-        'description': 'For partners burned out on expensive recruiting methods',
-        'subject': 'The AI Recruiting System Inside Team Build Pro',
-        'message': 'Sick of paying for leads, funnels, and systems that don\'t duplicate?\n\n'
-            'Team Build Pro has AI recruiting built right in - no extra cost, no complex setup.\n\n'
-            'It drafts recruiting messages, schedules follow-ups, tracks engagement, and coaches your entire $_bizOppName team through every conversation.\n\n'
-            'Your prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone wins.\n\n'
-            'One simple system. Real results.\n\n'
-            'Check it out: $_partnerReferralLink\n\n'
-            'Stop overpaying. Start using AI.',
+        'title': context.l10n?.sharePartnerExpensiveSystemFatigueTitle ?? 'System Fatigue & Expense',
+        'description': context.l10n?.sharePartnerExpensiveSystemFatigueDescription ?? 'For partners burned out on expensive recruiting methods',
+        'subject': context.l10n?.sharePartnerExpensiveSystemFatigueSubject ?? 'The AI Recruiting System Inside Team Build Pro',
+        'message': (context.l10n?.sharePartnerExpensiveSystemFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Sick of paying for leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro has AI recruiting built right in - no extra cost, no complex setup.\n\nIt drafts recruiting messages, schedules follow-ups, tracks engagement, and coaches your entire $_bizOppName team through every conversation.\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nCheck it out: $_partnerReferralLink\n\nStop overpaying. Start using AI.'),
       },
       'duplication_struggle': {
-        'title': 'Duplication Challenges',
-        'description': 'For leaders struggling to get their team to duplicate',
-        'subject': 'AI-Powered Duplication for Your Entire Team',
-        'message': 'Your team struggles to duplicate your recruiting success? Not anymore.\n\n'
-            'Team Build Pro gives every person on your $_bizOppName team the same AI recruiting coach.\n\n'
-            'It drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\n'
-            'New recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\n'
-            'Your prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\n'
-            'See it work: $_partnerReferralLink\n\n'
-            'Finally, a system your entire team can duplicate.',
+        'title': context.l10n?.sharePartnerDuplicationStruggleTitle ?? 'Duplication Challenges',
+        'description': context.l10n?.sharePartnerDuplicationStruggleDescription ?? 'For leaders struggling to get their team to duplicate',
+        'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'AI-Powered Duplication for Your Entire Team',
+        'message': (context.l10n?.sharePartnerDuplicationStruggleMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Your team struggles to duplicate your recruiting success? Not anymore.\n\nTeam Build Pro gives every person on your $_bizOppName team the same AI recruiting coach.\n\nIt drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\nNew recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\nYour prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\nSee it work: $_partnerReferralLink\n\nFinally, a system your entire team can duplicate.'),
       },
       'general_team_tool': {
-        'title': 'General Team Tool',
-        'description': 'A versatile message for any partner situation',
-        'subject': 'The AI Recruiting Advantage for Your Team',
-        'message': 'Want to give your $_bizOppName team a real competitive edge?\n\n'
-            'Team Build Pro has AI recruiting built in. It helps your entire team:\n\n'
-            '- Draft personalized recruiting messages\n'
-            '- Schedule follow-ups automatically\n'
-            '- Track prospect engagement\n'
-            '- Coach every conversation\n\n'
-            'Your prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\n'
-            'Check it out: $_partnerReferralLink\n\n'
-            'This is the AI advantage your team needs.',
+        'title': context.l10n?.sharePartnerGeneralTeamToolTitle ?? 'General Team Tool',
+        'description': context.l10n?.sharePartnerGeneralTeamToolDescription ?? 'A versatile message for any partner situation',
+        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your Team',
+        'message': (context.l10n?.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Want to give your $_bizOppName team a real competitive edge?\n\nTeam Build Pro has AI recruiting built in. It helps your entire team:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement\n- Coach every conversation\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\nCheck it out: $_partnerReferralLink\n\nThis is the AI advantage your team needs.'),
       },
       'retention_crisis': {
-        'title': 'Team Dropout Problem',
-        'description': 'For leaders frustrated by team members quitting early',
-        'subject': 'Stop Losing Your Team in the First Year',
-        'message': 'Watching your $_bizOppName team quit before they succeed?\n\n'
-            '75% drop out in their first year. Usually because they feel lost, unsupported, or overwhelmed.\n\n'
-            'Team Build Pro changes that. Every person on your team gets an AI Coach that:\n'
-            '- Guides them through every recruiting conversation\n'
-            '- Tracks their progress and celebrates wins\n'
-            '- Reminds them what to do next\n'
-            '- Keeps momentum going when motivation dips\n\n'
-            'They\'re never alone. They always know their next step. They stay engaged longer.\n\n'
-            'Give your team the support they need: $_partnerReferralLink\n\n'
-            'Stop watching them quit. Start watching them succeed.',
+        'title': context.l10n?.sharePartnerRetentionCrisisTitle ?? 'Team Dropout Problem',
+        'description': context.l10n?.sharePartnerRetentionCrisisDescription ?? 'For leaders frustrated by team members quitting early',
+        'subject': context.l10n?.sharePartnerRetentionCrisisSubject ?? 'Stop Losing Your Team in the First Year',
+        'message': (context.l10n?.sharePartnerRetentionCrisisMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Watching your $_bizOppName team quit before they succeed?\n\n75% drop out in their first year. Usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nGive your team the support they need: $_partnerReferralLink\n\nStop watching them quit. Start watching them succeed.'),
       },
       'skill_gap_team': {
-        'title': 'Non-Sales Team Members',
-        'description': 'Perfect for teams where most people lack sales experience',
-        'subject': 'Your Non-Sales Team Can Win with AI',
-        'message': 'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been the problem.\n\n'
-            'Team Build Pro solves it. The AI Coach turns non-sales people into confident recruiters by:\n'
-            '- Drafting their recruiting messages for them\n'
-            '- Suggesting exactly who to contact next\n'
-            '- Coaching them through every conversation\n'
-            '- Tracking progress so they see real momentum\n\n'
-            'Your introverts, your part-timers, your "I\'m not good at sales" people - they all get the same AI advantage.\n\n'
-            'Finally, everyone can duplicate your success.\n\n'
-            'See how: $_partnerReferralLink\n\n'
-            'You don\'t need a team of salespeople. You need a team with AI.',
+        'title': context.l10n?.sharePartnerSkillGapTeamTitle ?? 'Non-Sales Team Members',
+        'description': context.l10n?.sharePartnerSkillGapTeamDescription ?? 'Perfect for teams where most people lack sales experience',
+        'subject': context.l10n?.sharePartnerSkillGapTeamSubject ?? 'Your Non-Sales Team Can Win with AI',
+        'message': (context.l10n?.sharePartnerSkillGapTeamMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been the problem.\n\nTeam Build Pro solves it. The AI Coach turns non-sales people into confident recruiters by:\n- Drafting their recruiting messages for them\n- Suggesting exactly who to contact next\n- Coaching them through every conversation\n- Tracking progress so they see real momentum\n\nYour introverts, your part-timers, your "I\'m not good at sales" people - they all get the same AI advantage.\n\nFinally, everyone can duplicate your success.\n\nSee how: $_partnerReferralLink\n\nYou don\'t need a team of salespeople. You need a team with AI.'),
       },
       'recruitment_fatigue': {
-        'title': 'Tired of Constant Recruiting',
-        'description': 'For partners exhausted from the endless recruiting cycle',
-        'subject': 'Automate the Grind. Keep the Growth.',
-        'message': 'Burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\n'
-            'Team Build Pro\'s AI handles the grind so you don\'t have to.\n\n'
-            'For your entire $_bizOppName team, the AI:\n'
-            '- Schedules follow-ups automatically\n'
-            '- Tracks every prospect and their status\n'
-            '- Reminds your team when to reach out\n'
-            '- Coaches them on what to say next\n\n'
-            'You stay focused on high-value activities. Your team stays productive without burning out.\n\n'
-            'The AI never gets tired. Your momentum never stops.\n\n'
-            'Try it: $_partnerReferralLink\n\n'
-            'Sustainable growth without the burnout.',
+        'title': context.l10n?.sharePartnerRecruitmentFatigueTitle ?? 'Tired of Constant Recruiting',
+        'description': context.l10n?.sharePartnerRecruitmentFatigueDescription ?? 'For partners exhausted from the endless recruiting cycle',
+        'subject': context.l10n?.sharePartnerRecruitmentFatigueSubject ?? 'Automate the Grind. Keep the Growth.',
+        'message': (context.l10n?.sharePartnerRecruitmentFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind so you don\'t have to.\n\nFor your entire $_bizOppName team, the AI:\n- Schedules follow-ups automatically\n- Tracks every prospect and their status\n- Reminds your team when to reach out\n- Coaches them on what to say next\n\nYou stay focused on high-value activities. Your team stays productive without burning out.\n\nThe AI never gets tired. Your momentum never stops.\n\nTry it: $_partnerReferralLink\n\nSustainable growth without the burnout.'),
       },
       'availability_gap': {
-        'title': 'Can\'t Be There 24/7',
-        'description': 'Ideal for leaders who can\'t be constantly available to their team',
-        'subject': 'Your Team Grows Even When You\'re Not There',
-        'message': 'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\n'
-            'Team Build Pro gives your team an AI Coach that\'s always on. While you sleep, work your day job, or spend time with family, the AI:\n'
-            '- Guides your team through recruiting conversations\n'
-            '- Answers their "what do I do next?" questions\n'
-            '- Tracks their progress and keeps them motivated\n'
-            '- Ensures nothing falls through the cracks\n\n'
+        'title': context.l10n?.sharePartnerAvailabilityGapTitle ?? 'Can\'t Be There 24/7',
+        'description': context.l10n?.sharePartnerAvailabilityGapDescription ?? 'Ideal for leaders who can\'t be constantly available to their team',
+        'subject': context.l10n?.sharePartnerAvailabilityGapSubject ?? 'Your Team Grows Even When You\'re Not There',
+        'message': (context.l10n?.sharePartnerAvailabilityGapMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your team an AI Coach that\'s always on. While you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their "what do I do next?" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\n'
             'Your team gets the support they need, exactly when they need it.\n\n'
             'You stay focused on leadership. The AI handles daily coaching.\n\n'
             'See it work: $_partnerReferralLink\n\n'
-            'Finally, a team that grows without needing you every minute.',
+            'Finally, a team that grows without needing you every minute.'),
       },
     };
   }
 
-  void _sharePartnerMessage(String messageKey) {
+  void _sharePartnerMessage(BuildContext context, String messageKey) {
     if (kDebugMode) {
       debugPrint('🚀 SHARE_SCREEN: _sharePartnerMessage called with key: $messageKey');
     }
-    
+
     // Check if sharing is disabled via Remote Config
     if (!_isSharingEnabled()) {
       if (kDebugMode) {
@@ -517,9 +427,9 @@ class _ShareScreenState extends State<ShareScreen>
       _showDemoModeDialog();
       return;
     }
-    
+
     if (_partnerReferralLink != null) {
-      final messages = _getPartnerMessages();
+      final messages = _getPartnerMessages(context);
       final selectedMessage = messages[messageKey];
       
       if (selectedMessage != null) {
@@ -552,14 +462,14 @@ class _ShareScreenState extends State<ShareScreen>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Demo Mode'),
-          content: const Text('Sharing disabled during demo mode.'),
+          title: Text(context.l10n?.shareDemoTitle ?? 'Demo Mode'),
+          content: Text(context.l10n?.shareDemoMessage ?? 'Sharing disabled during demo mode.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('I Understand'),
+              child: Text(context.l10n?.shareDemoButton ?? 'I Understand'),
             ),
           ],
         );
@@ -578,11 +488,11 @@ class _ShareScreenState extends State<ShareScreen>
       Clipboard.setData(ClipboardData(text: link));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Referral link copied! 🎉'),
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 8),
+              Text(context.l10n?.shareLinkCopiedMessage ?? 'Referral link copied! 🎉'),
             ],
           ),
           backgroundColor: AppColors.success,
@@ -598,7 +508,7 @@ class _ShareScreenState extends State<ShareScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppScreenBar(title: 'Share', appId: widget.appId),
+      appBar: AppScreenBar(title: context.l10n?.shareTitle ?? 'Share', appId: widget.appId),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(
@@ -633,14 +543,16 @@ class _ShareScreenState extends State<ShareScreen>
         children: [
           const Icon(Icons.share_rounded, size: 40, color: Colors.white),
           const SizedBox(height: 16),
-          const Text('Powerful Referral System',
-              style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+          Text(
+            context.l10n?.shareHeading ?? 'Powerful Referral System',
+            style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
           const SizedBox(height: 8),
           Text(
-            'Share your referral links to pre-build a new team with recruiting prospects or expand your existing team.',
+            context.l10n?.shareSubheading ?? 'Share your referral links to pre-build a new team with recruiting prospects or expand your existing team.',
             style: TextStyle(
                 fontSize: 16, color: Colors.white.withValues(alpha: 0.9)),
             textAlign: TextAlign.center,
@@ -654,8 +566,10 @@ class _ShareScreenState extends State<ShareScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Proven Growth Strategies',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        Text(
+          context.l10n?.shareStrategiesTitle ?? 'Proven Growth Strategies',
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 16),
         _buildProspectStrategyCard(),
         const SizedBox(height: 16),
@@ -693,21 +607,27 @@ class _ShareScreenState extends State<ShareScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('New Recruiting Prospects',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text('Invite recruiting prospects to get a head start.',
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      context.l10n?.shareProspectTitle ?? 'New Recruiting Prospects',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      context.l10n?.shareProspectSubtitle ?? 'Invite recruiting prospects to get a head start.',
+                      style: TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text('Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
-              style: TextStyle(
-                  fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
+          Text(
+            context.l10n?.shareProspectDescription(_bizOppName) ?? 'Invite recruiting prospects to pre-build their $_bizOppName team with this app. They can create powerful momentum before officially joining $_bizOppName, ensuring success from day one.',
+            style: TextStyle(
+                fontSize: 14, color: AppColors.textSecondary, height: 1.4),
+          ),
           const SizedBox(height: 20),
           
           // Message Selection Toggle
@@ -730,7 +650,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Select Message To Send',
+                      context.l10n?.shareSelectMessageLabel ?? 'Select Message To Send',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
@@ -756,7 +676,7 @@ class _ShareScreenState extends State<ShareScreen>
                     margin: const EdgeInsets.only(top: 12),
                     child: Column(
                       children: [
-                        ..._getProspectMessages().entries.map((entry) {
+                        ..._getProspectMessages(context).entries.map((entry) {
                           return _buildMessageOption(
                             entry.key,
                             entry.value['title']!,
@@ -818,7 +738,7 @@ class _ShareScreenState extends State<ShareScreen>
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () => isPartner ? _sharePartnerMessage(messageKey) : _shareProspectMessage(messageKey),
+                  onPressed: () => isPartner ? _sharePartnerMessage(context, messageKey) : _shareProspectMessage(context, messageKey),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                     foregroundColor: Colors.white,
@@ -828,7 +748,7 @@ class _ShareScreenState extends State<ShareScreen>
                     ),
                   ),
                   icon: const Icon(Icons.share, size: 16),
-                  label: const Text('Share', style: TextStyle(fontSize: 13)),
+                  label: Text(context.l10n?.shareButtonShare ?? 'Share', style: const TextStyle(fontSize: 13)),
                 ),
               ),
               const SizedBox(width: 12),
@@ -847,7 +767,7 @@ class _ShareScreenState extends State<ShareScreen>
                     ),
                   ),
                   icon: const Icon(Icons.copy_rounded, size: 16),
-                  label: const Text('Copy Link', style: TextStyle(fontSize: 13)),
+                  label: Text(context.l10n?.shareButtonCopyLink ?? 'Copy Link', style: const TextStyle(fontSize: 13)),
                 ),
               ),
             ],
@@ -886,21 +806,27 @@ class _ShareScreenState extends State<ShareScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Current Business Partners',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text('Great for your existing $_bizOppName team',
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      context.l10n?.sharePartnerTitle ?? 'Current Business Partners',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      (context.l10n?.sharePartnerSubtitle ?? 'Great for your existing $_bizOppName team').toString(),
+                      style: TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text('Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
-              style: TextStyle(
-                  fontSize: 14, color: AppColors.textSecondary, height: 1.4)),
+          Text(
+            context.l10n?.sharePartnerDescription(_bizOppName) ?? 'Empower your existing $_bizOppName partners with the same tool you use. This promotes duplication and helps accelerate growth throughout your entire $_bizOppName organization.',
+            style: TextStyle(
+                fontSize: 14, color: AppColors.textSecondary, height: 1.4),
+          ),
           const SizedBox(height: 20),
           
           // Message Selection Toggle
@@ -923,7 +849,7 @@ class _ShareScreenState extends State<ShareScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Select Message To Send',
+                      context.l10n?.shareSelectMessageLabel ?? 'Select Message To Send',
                       style: TextStyle(
                         color: buttonColor,
                         fontWeight: FontWeight.w600,
@@ -949,7 +875,7 @@ class _ShareScreenState extends State<ShareScreen>
                     margin: const EdgeInsets.only(top: 12),
                     child: Column(
                       children: [
-                        ..._getPartnerMessages().entries.map((entry) {
+                        ..._getPartnerMessages(context).entries.map((entry) {
                           return _buildMessageOption(
                             entry.key,
                             entry.value['title']!,
@@ -985,17 +911,19 @@ class _ShareScreenState extends State<ShareScreen>
             children: [
               Icon(Icons.lightbulb_rounded, color: AppColors.warning, size: 24),
               const SizedBox(width: 12),
-              const Text('Pro Tips for Success',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                context.l10n?.shareProTipsTitle ?? 'Pro Tips for Success',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildTip('💬 Personalize your message when sharing'),
-          _buildTip('📱 Share consistently across all social platforms'),
-          _buildTip('🤝 Follow up with prospects who show interest'),
-          _buildTip('📈 Track your results and adjust your approach'),
+          _buildTip(context.l10n?.shareProTip1 ?? '💬 Personalize your message when sharing'),
+          _buildTip(context.l10n?.shareProTip2 ?? '📱 Share consistently across all social platforms'),
+          _buildTip(context.l10n?.shareProTip3 ?? '🤝 Follow up with prospects who show interest'),
+          _buildTip(context.l10n?.shareProTip4 ?? '📈 Track your results and adjust your approach'),
           if (_currentUser?.role == 'admin')
-            _buildTip('🎯 Use both strategies for maximum growth potential'),
+            _buildTip(context.l10n?.shareProTip5 ?? '🎯 Use both strategies for maximum growth potential'),
         ],
       ),
     );

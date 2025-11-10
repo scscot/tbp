@@ -56,6 +56,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool _isDemoMode = false;
   String? _demoEmail;
 
+  bool _hasTrackedView = false;
+
   @override
   void initState() {
     super.initState();
@@ -82,12 +84,6 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     // Check if user should be prompted for app review
     _checkReviewPrompt();
-
-    // Track dashboard view
-    FirebaseAnalytics.instance.logEvent(
-      name: DashboardAnalytics.dashView,
-      parameters: {'locale': Localizations.localeOf(context).toLanguageTag()},
-    );
   }
 
   Future<void> _checkReviewPrompt() async {
@@ -279,6 +275,18 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.didChangeDependencies();
     final user = Provider.of<UserModel?>(context);
 
+    // Track dashboard view (only once, after localization is available)
+    if (!_hasTrackedView) {
+      _hasTrackedView = true;
+      final locale = Localizations.localeOf(context);
+      final l10n = context.l10n;
+      debugPrint('🌍 DASHBOARD: Locale = $locale, l10n = ${l10n != null ? 'available' : 'NULL'}, dashTitle = ${l10n?.dashTitle}');
+      FirebaseAnalytics.instance.logEvent(
+        name: DashboardAnalytics.dashView,
+        parameters: {'locale': locale.toLanguageTag()},
+      );
+    }
+
     if (user != null) {
       _setupListeners(user.uid);
     } else {
@@ -418,7 +426,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Icon(Icons.analytics, color: AppColors.growthPrimary, size: 24),
               const SizedBox(width: 12),
               Text(
-                'Your Current Team Stats',
+                context.l10n?.dashKpiTitle ?? 'Your Current Team Stats',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -443,7 +451,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         color: AppColors.primary,
                         size: 20,
                       ),
-                tooltip: 'Refresh team stats',
+                tooltip: context.l10n?.dashKpiRefreshTooltip ?? 'Refresh team stats',
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   minimumSize: const Size(32, 32),
@@ -677,7 +685,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icons.list,
             title: user.bizOppRefUrl != null
                 ? (context.l10n?.dashTileOpportunity ?? 'Opportunity Details')
-                : 'Join Opportunity!',
+                : (context.l10n?.dashTileJoinOpportunity ?? 'Join Opportunity!'),
             color: AppColors.opportunityPrimary,
             onTap: () => widget.onTabSelected?.call(
               user.bizOppRefUrl != null ? 6 : 7,
@@ -806,22 +814,22 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (subscriptionStatus == 'trial') {
       // User is in trial period
       final daysLeft = user.trialDaysRemaining;
-      buttonText = 'Start Subscription\n($daysLeft days left in trial)';
+      buttonText = context.l10n?.dashSubscriptionTrial(daysLeft) ?? 'Start Subscription\n($daysLeft days left in trial)';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.deepPurple;
     } else if (subscriptionStatus == 'expired') {
       // Trial expired
-      buttonText = 'Renew Your Subscription\n30-day Free trial expired.';
+      buttonText = context.l10n?.dashSubscriptionExpired ?? 'Renew Your Subscription\n30-day Free trial expired.';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.red;
     } else if (subscriptionStatus == 'cancelled') {
       // User cancelled subscription
-      buttonText = 'You Cancelled Your Subscription\nReactivate Your Subscription Now';
+      buttonText = context.l10n?.dashSubscriptionCancelled ?? 'You Cancelled Your Subscription\nReactivate Your Subscription Now';
       buttonIcon = Icons.restart_alt;
       buttonColor = Colors.orange;
     } else {
       // Fallback (shouldn't reach here based on shouldShowSubscriptionCard logic)
-      buttonText = 'Manage Subscription';
+      buttonText = context.l10n?.dashSubscriptionManage ?? 'Manage Subscription';
       buttonIcon = Icons.diamond;
       buttonColor = Colors.grey;
     }

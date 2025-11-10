@@ -12,6 +12,7 @@ import '../services/business_opportunity_service.dart';
 import 'add_link_screen.dart';
 import 'member_detail_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
+import '../widgets/localized_text.dart';
 
 class BusinessScreen extends StatefulWidget {
   final String appId;
@@ -141,7 +142,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Before You Continue',
+                        context.l10n?.businessConfirmDialogTitle ?? 'Before You Continue',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -153,7 +154,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "This is the next step in your journey. After joining $bizOpp through your sponsor's link, you must return here to add your new $bizOpp referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
+                  (context.l10n?.businessConfirmDialogMessage ?? "This is the next step in your journey. After joining [business] through your sponsor's link, you must return here to add your new [business] referral link to your profile. This is a critical step to ensure your new team members are placed correctly.")
+                      .toString().replaceAll('[business]', bizOpp ?? 'business'),
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -172,9 +174,9 @@ class _BusinessScreenState extends State<BusinessScreen>
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text(
-                      'I Understand',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n?.businessConfirmDialogButton ?? 'I Understand',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -235,7 +237,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 Icon(Icons.check_circle, color: AppColors.textInverse),
                 const SizedBox(width: 12),
-                const Text('Registration URL copied to clipboard!'),
+                Text(context.l10n?.businessUrlCopiedMessage ?? 'Registration URL copied to clipboard!'),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -253,7 +255,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 Icon(Icons.error, color: AppColors.textInverse),
                 const SizedBox(width: 12),
-                Text('Failed to copy URL: $e'),
+                Text((context.l10n?.businessUrlCopyError ?? 'Failed to copy URL: [error]').toString().replaceAll('[error]', e.toString())),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -296,7 +298,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Visit Required First',
+                          context.l10n?.businessVisitRequiredTitle ?? 'Visit Required First',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -308,7 +310,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit $bizOpp and complete your registration.",
+                    (context.l10n?.businessVisitRequiredMessage ?? "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit [business] and complete your registration.")
+                        .toString().replaceAll('[business]', bizOpp ?? 'business'),
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
@@ -334,9 +337,9 @@ class _BusinessScreenState extends State<BusinessScreen>
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text(
-                        'OK',
-                        style: TextStyle(
+                      child: Text(
+                        context.l10n?.businessVisitRequiredButton ?? 'OK',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -376,7 +379,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            'Congratulations\nYou\'re Qualified!',
+            context.l10n?.businessHeroTitle ?? 'Congratulations\nYou\'re Qualified!',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -387,7 +390,8 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'Your hard work and team-building have paid off. You are now eligible to join the $bizOpp opportunity.',
+            (context.l10n?.businessHeroMessage ?? 'Your hard work and team-building have paid off. You are now eligible to join the [business] opportunity.')
+                .toString().replaceAll('[business]', bizOpp ?? 'business'),
             style: TextStyle(
               fontSize: 18,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -433,7 +437,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Disclaimer Notice',
+                  context.l10n?.businessDisclaimerTitle ?? 'Disclaimer Notice',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -445,33 +449,13 @@ class _BusinessScreenState extends State<BusinessScreen>
             ],
           ),
           const SizedBox(height: 16),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.textPrimary,
-                height: 1.5,
-              ),
-              children: [
-                const TextSpan(
-                  text: 'Your team growth has unlocked access to ',
-                ),
-                TextSpan(
-                  text: bizOpp,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(
-                  text: '. This opportunity operates as ',
-                ),
-                const TextSpan(
-                  text:
-                      'an independent business and has no affiliation with the Team Build Pro platform',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const TextSpan(text: '.'),
-              ],
+          Text(
+            (context.l10n?.businessDisclaimerMessage ?? 'Your team growth has unlocked access to [business]. This opportunity operates as an independent business and has no affiliation with the Team Build Pro platform.')
+                .toString().replaceAll('[business]', bizOpp ?? 'business'),
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.textPrimary,
+              height: 1.5,
             ),
           ),
           const SizedBox(height: 12),
@@ -488,7 +472,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'The Team Build Pro App simply facilitates access to $bizOpp via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.',
+                    (context.l10n?.businessDisclaimerInfo ?? 'The Team Build Pro App simply facilitates access to [business] via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.')
+                        .toString().replaceAll('[business]', bizOpp ?? 'business'),
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -532,7 +517,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               const SizedBox(width: 12),
               Text(
-                'Your Referral Contact',
+                context.l10n?.businessSponsorTitle ?? 'Your Referral Contact',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -551,8 +536,9 @@ class _BusinessScreenState extends State<BusinessScreen>
               ),
               children: [
                 TextSpan(
-                  text:
-                      'If you choose to explore $bizOpp, your referral contact will be ',
+                  text: (context.l10n?.businessSponsorMessage ?? 'If you choose to explore [business], your referral contact will be [sponsor]. This person is a member of your upline team who has already joined [business].')
+                      .toString().replaceAll('[business]', bizOpp ?? 'business')
+                      .split('[sponsor]')[0],
                 ),
                 if (sponsorName != null && sponsorUid != null)
                   WidgetSpan(
@@ -587,8 +573,11 @@ class _BusinessScreenState extends State<BusinessScreen>
                     ),
                   ),
                 TextSpan(
-                  text:
-                      '. This person is a member of your upline team who has already joined $bizOpp.',
+                  text: (context.l10n?.businessSponsorMessage ?? 'If you choose to explore [business], your referral contact will be [sponsor]. This person is a member of your upline team who has already joined [business].')
+                      .toString().replaceAll('[business]', bizOpp ?? 'business')
+                      .split('[sponsor]')
+                      .skip(1)
+                      .join('[sponsor]'),
                 ),
               ],
             ),
@@ -614,7 +603,8 @@ class _BusinessScreenState extends State<BusinessScreen>
               Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
               const SizedBox(width: 8),
               Text(
-                'How to Join $bizOpp',
+                (context.l10n?.businessInstructionsTitle ?? 'How to Join [business]')
+                    .toString().replaceAll('[business]', bizOpp ?? 'business'),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -625,10 +615,8 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            '1. Copy the referral link below\n'
-            '2. Open your web browser\n'
-            '3. Paste the link and complete the $bizOpp registration\n'
-            '4. Return here to add your $bizOpp referral link',
+            (context.l10n?.businessInstructions ?? '1. Copy the referral link below\n2. Open your web browser\n3. Paste the link and complete the [business] registration\n4. Return here to add your [business] referral link')
+                .toString().replaceAll('[business]', bizOpp ?? 'business'),
             style: TextStyle(
               fontSize: 14,
               color: Colors.blue.shade800,
@@ -655,7 +643,7 @@ class _BusinessScreenState extends State<BusinessScreen>
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Registration URL not available. Please contact your sponsor.',
+                context.l10n?.businessNoUrlMessage ?? 'Registration URL not available. Please contact your sponsor.',
                 style: TextStyle(
                   color: Colors.orange.shade800,
                   fontWeight: FontWeight.w500,
@@ -671,7 +659,7 @@ class _BusinessScreenState extends State<BusinessScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Sponsors Referral Link:',
+          context.l10n?.businessUrlLabel ?? 'Your Sponsors Referral Link:',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -702,7 +690,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               IconButton(
                 onPressed: _confirmAndCopyUrl,
                 icon: const Icon(Icons.copy),
-                tooltip: 'Copy URL',
+                tooltip: context.l10n?.businessUrlCopyTooltip ?? 'Copy URL',
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.blue.shade100,
                   foregroundColor: Colors.blue.shade700,
@@ -732,7 +720,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Final Step: Link Your Account',
+            context.l10n?.businessFollowUpTitle ?? 'Final Step: Link Your Account',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -742,7 +730,8 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            "After exploring $bizOpp, you must return here and add your new $bizOpp referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
+            (context.l10n?.businessFollowUpMessage ?? "After exploring [business], you must return here and add your new [business] referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.")
+                .toString().replaceAll('[business]', bizOpp ?? 'business'),
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -766,16 +755,16 @@ class _BusinessScreenState extends State<BusinessScreen>
               child: Column(
                 children: [
                   Text(
-                    "Registration Complete",
-                    style: TextStyle(
+                    context.l10n?.businessCompleteButton1 ?? "Registration Complete",
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Add My Referral Link",
-                    style: TextStyle(
+                    context.l10n?.businessCompleteButton2 ?? "Add My Referral Link",
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -795,14 +784,14 @@ class _BusinessScreenState extends State<BusinessScreen>
 
     if (user == null) {
       return Scaffold(
-        appBar: const AppScreenBar(title: 'Business'),
+        appBar: AppScreenBar(title: context.l10n?.businessTitle ?? 'Business'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
-      appBar: const AppScreenBar(title: 'Business'),
+      appBar: AppScreenBar(title: context.l10n?.businessTitle ?? 'Business'),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(

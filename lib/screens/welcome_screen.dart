@@ -4,6 +4,7 @@ import '../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'admin_edit_profile_screen.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final String appId;
@@ -22,15 +23,15 @@ class WelcomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Welcome, ${user.firstName ?? 'New User'}!',
+              context.l10n?.welcomeGreeting(user.firstName ?? 'New User') ?? 'Welcome, ${user.firstName ?? 'New User'}!',
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             Text(
               user.role == 'admin'
-                  ? 'Ready to lead the professional networking revolution? Complete your admin profile and set up your team. After completing your profile you will have access to the full Team Build Pro platform.'
-                  : 'Ready to transform your professional network? Complete your profile to unlock the full power of Team Build Pro.',
+                  ? (context.l10n?.welcomeMessageAdmin ?? 'Ready to lead the professional networking revolution? Complete your admin profile and set up your team. After completing your profile you will have access to the full Team Build Pro platform.')
+                  : (context.l10n?.welcomeMessageUser ?? 'Ready to transform your professional network? Complete your profile to unlock the full power of Team Build Pro.'),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),
@@ -66,7 +67,7 @@ class WelcomeScreen extends StatelessWidget {
                     horizontal: 28.0, vertical: 14.0),
                 textStyle: const TextStyle(fontSize: 16),
               ),
-              child: const Text('Join the Revolution'),
+              child: Text(context.l10n?.welcomeButtonJoin ?? 'Join the Revolution'),
             )
           ],
         ),

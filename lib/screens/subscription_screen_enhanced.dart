@@ -6,6 +6,7 @@ import '../services/admin_settings_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import '../screens/terms_of_service_screen.dart';
 import '../screens/privacy_policy_screen.dart';
 
@@ -119,8 +120,8 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
 
         if (mounted && isActive) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✅ Subscription activated successfully!'),
+            SnackBar(
+              content: Text(context.l10n?.subscriptionSuccessMessage ?? '✅ Subscription activated successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -130,9 +131,9 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
           if (mounted) {
             showDialog(
               context: context,
-              builder: (_) => const AlertDialog(
-                title: Text('Subscription Not Active'),
-                content: Text('Purchase started but not active yet. Try again.'),
+              builder: (_) => AlertDialog(
+                title: Text(context.l10n?.subscriptionNotActiveTitle ?? 'Subscription Not Active'),
+                content: Text(context.l10n?.subscriptionNotActiveMessage ?? 'Purchase started but not active yet. Try again.'),
               ),
             );
           }
@@ -144,7 +145,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
         showDialog(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: const Text('Subscription Not Available'),
+            title: Text(context.l10n?.subscriptionNotAvailableTitle ?? 'Subscription Not Available'),
             content: Text(
                 '${Platform.isIOS ? 'TestFlight' : 'Debug'} Info:\n'
                 'IAP Available: ${_iapService.available}\n'
@@ -179,8 +180,8 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
         setState(() => isPurchasing = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✅ Subscription restored successfully!'),
+            SnackBar(
+              content: Text(context.l10n?.subscriptionRestoreSuccess ?? '✅ Subscription restored successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -193,8 +194,8 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
         if (!mounted) return;
         setState(() => isPurchasing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No previous subscription found to restore.'),
+          SnackBar(
+            content: Text(context.l10n?.subscriptionRestoreNone ?? 'No previous subscription found to restore.'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -218,33 +219,34 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
 
     if (isActive && status == 'active') {
       cardColor = Colors.green.shade50;
-      statusText = 'Active Subscription';
-      subtitle = 'You have full access to all premium features';
+      statusText = context.l10n?.subscriptionStatusActive ?? 'Active Subscription';
+      subtitle = context.l10n?.subscriptionStatusActiveSubtitle ?? 'You have full access to all premium features';
       icon = Icons.check_circle;
     } else if (status == 'paused') {
       cardColor = Colors.amber.shade50;
-      statusText = 'Subscription Paused';
-      subtitle = 'Your subscription is paused. Resume to restore access.';
+      statusText = context.l10n?.subscriptionStatusPaused ?? 'Subscription Paused';
+      subtitle = context.l10n?.subscriptionStatusPausedSubtitle ?? 'Your subscription is paused. Resume to restore access.';
       icon = Icons.pause_circle;
     } else if (status == 'on_hold') {
       cardColor = Colors.orange.shade50;
-      statusText = 'Payment Issue';
-      subtitle = 'Update payment method to restore access';
+      statusText = context.l10n?.subscriptionStatusPaymentIssue ?? 'Payment Issue';
+      subtitle = context.l10n?.subscriptionStatusPaymentIssueSubtitle ?? 'Update payment method to restore access';
       icon = Icons.payment;
     } else if (isTrialValid) {
       cardColor = Colors.blue.shade50;
-      statusText = 'Free Trial Active';
-      subtitle = '$trialDaysRemaining days remaining in your trial';
+      statusText = context.l10n?.subscriptionStatusTrial ?? 'Free Trial Active';
+      final trialSubtitle = context.l10n?.subscriptionStatusTrialSubtitle ?? '{days} days remaining in your trial';
+      subtitle = trialSubtitle.toString().replaceAll('{days}', trialDaysRemaining.toString());
       icon = Icons.schedule;
     } else if (isInGracePeriod) {
       cardColor = Colors.orange.shade50;
-      statusText = 'Subscription Cancelled';
-      subtitle = 'Access continues until expiry date';
+      statusText = context.l10n?.subscriptionStatusCancelled ?? 'Subscription Cancelled';
+      subtitle = context.l10n?.subscriptionStatusCancelledSubtitle ?? 'Access continues until expiry date';
       icon = Icons.warning;
     } else {
       cardColor = Colors.red.shade50;
-      statusText = 'Subscription Expired';
-      subtitle = 'Upgrade to restore premium features';
+      statusText = context.l10n?.subscriptionStatusExpired ?? 'Subscription Expired';
+      subtitle = context.l10n?.subscriptionStatusExpiredSubtitle ?? 'Upgrade to restore premium features';
       icon = Icons.error;
     }
 
@@ -302,13 +304,13 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
   }
 
   // Platform-specific helper methods
-  String get _platformSubscriptionManagementText {
+  String _platformSubscriptionManagementText(BuildContext context) {
     if (Platform.isIOS) {
-      return 'You can manage your subscription in your Apple ID account settings.';
+      return context.l10n?.subscriptionManagementApple ?? 'You can manage your subscription in your Apple ID account settings.';
     } else if (Platform.isAndroid) {
-      return 'You can manage your subscription in the Google Play Store.';
+      return context.l10n?.subscriptionManagementGoogle ?? 'You can manage your subscription in the Google Play Store.';
     } else {
-      return 'You can manage your subscription in your device\'s app store.';
+      return context.l10n?.subscriptionManagementApple ?? 'You can manage your subscription in your device\'s app store.';
     }
   }
 
@@ -337,7 +339,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppScreenBar(
-        title: 'Team Build Pro',
+        title: context.l10n?.subscriptionScreenTitle ?? 'Team Build Pro',
         appId: widget.appId ?? 'subscription', // Use passed appId or fallback
       ),
       body: isLoading
@@ -352,18 +354,18 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                   const SizedBox(height: 24),
 
                   // Features Section
-                  const Text(
-                    'Premium Features:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    context.l10n?.subscriptionPremiumFeaturesHeader ?? 'Premium Features:',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
                   _buildFeatureItem(
-                      'Submit your unique ${_bizOpp ?? 'business opportunity'} referral link'),
-                  _buildFeatureItem('Custom AI Coaching for recruiting and team building'),
-                  _buildFeatureItem('Unlock messaging to users on your team'),
+                      (context.l10n?.subscriptionFeatureReferralLink ?? 'Submit your unique {bizOpp} referral link').toString().replaceAll('{bizOpp}', _bizOpp ?? 'business opportunity')),
+                  _buildFeatureItem(context.l10n?.subscriptionFeatureAiCoaching ?? 'Custom AI Coaching for recruiting and team building'),
+                  _buildFeatureItem(context.l10n?.subscriptionFeatureMessaging ?? 'Unlock messaging to users on your team'),
                   _buildFeatureItem(
-                      'Ensure team members join under YOU in ${_bizOpp ?? 'your business opportunity'}'),
-                  _buildFeatureItem('Advanced analytics and insights'),
+                      (context.l10n?.subscriptionFeatureEnsureTeam ?? 'Ensure team members join under YOU in {bizOpp}').toString().replaceAll('{bizOpp}', _bizOpp ?? 'your business opportunity')),
+                  _buildFeatureItem(context.l10n?.subscriptionFeatureAnalytics ?? 'Advanced analytics and insights'),
 
                   const SizedBox(height: 32),
 
@@ -384,7 +386,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] ==
                                         'trial'
-                                    ? 'Subscribe Now - \$4.99/month'
+                                    ? (context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$4.99/month')
                                     : _platformSubscriptionText,
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -402,7 +404,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                     width: double.infinity,
                     child: TextButton(
                       onPressed: isPurchasing ? null : _handleRestorePurchases,
-                      child: const Text('Restore Previous Subscription'),
+                      child: Text(context.l10n?.subscriptionRestoreButton ?? 'Restore Previous Subscription'),
                     ),
                   ),
 
@@ -418,7 +420,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                     child: Column(
                       children: [
                         Text(
-                          'By subscribing, you agree to our Terms of Service and Privacy Policy.',
+                          context.l10n?.subscriptionLegalNotice ?? 'By subscribing, you agree to our Terms of Service and Privacy Policy.',
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.grey.shade700,
@@ -445,9 +447,9 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                                 foregroundColor: Colors.blue.shade600,
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               ),
-                              child: const Text(
-                                'Terms of Service',
-                                style: TextStyle(
+                              child: Text(
+                                context.l10n?.subscriptionTermsLink ?? 'Terms of Service',
+                                style: const TextStyle(
                                   fontSize: 12,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -472,9 +474,9 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                                 foregroundColor: Colors.blue.shade600,
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               ),
-                              child: const Text(
-                                'Privacy Policy',
-                                style: TextStyle(
+                              child: Text(
+                                context.l10n?.subscriptionPrivacyLink ?? 'Privacy Policy',
+                                style: const TextStyle(
                                   fontSize: 12,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -484,7 +486,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. $_platformSubscriptionManagementText',
+                          (context.l10n?.subscriptionAutoRenewNotice ?? 'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. {managementText}').toString().replaceAll('{managementText}', _platformSubscriptionManagementText(context)),
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade600,
