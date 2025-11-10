@@ -52,7 +52,7 @@ async function testMultiLanguageNotifications(userId) {
         directCount: 4,
         remainingTeam: 16,
         pluralTeam: 's',
-        bizName: 'your business opportunity',
+        bizName: bizNameTranslations[userLang] || bizNameTranslations.en,
       }),
       route: '/dashboard',
     });
@@ -67,7 +67,7 @@ async function testMultiLanguageNotifications(userId) {
         teamCount: 20,
         remainingDirect: 1,
         pluralDirect: '',
-        bizName: 'your business opportunity',
+        bizName: bizNameTranslations[userLang] || bizNameTranslations.en,
       }),
       route: '/dashboard',
     });
@@ -145,7 +145,7 @@ async function testMultiLanguageNotifications(userId) {
       body: getNotificationText('teamActivityMessage', userLang, {
         firstName: 'John',
         lastName: 'Doe',
-        bizName: 'your business opportunity',
+        bizName: bizNameTranslations[userLang] || bizNameTranslations.en,
       }),
       route: '/network',
     });
@@ -155,6 +155,13 @@ async function testMultiLanguageNotifications(userId) {
       es: 'Spanish',
       pt: 'Portuguese',
       de: 'German',
+    };
+
+    const bizNameTranslations = {
+      en: 'your business opportunity',
+      es: 'tu oportunidad de negocio',
+      pt: 'sua oportunidade de negócio',
+      de: 'Ihre Geschäftsmöglichkeit',
     };
 
     console.log(`📱 Sending ${notifications.length} test notifications in ${languageNames[userLang] || userLang}...\n`);
