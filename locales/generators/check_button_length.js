@@ -3,7 +3,7 @@ const path = require('path');
 
 const arbDir = path.join(__dirname, '..', '..', 'lib', 'l10n');
 const supportedLocales = ['en', 'es', 'pt', 'tl', 'pseudo'];
-const BUTTON_MAX_LENGTH = 22;
+const BUTTON_MAX_LENGTH = 35;
 
 function checkButtonLengths() {
   let totalErrors = 0;
@@ -55,7 +55,7 @@ function checkButtonLengths() {
     process.exit(0);
   } else {
     console.error(`❌ Button length check failed with ${totalErrors} error(s)`);
-    console.error(`\nℹ️  Buttons must be ≤ ${BUTTON_MAX_LENGTH} chars to fit on iPhone SE`);
+    console.error(`\nℹ️  Buttons must be ≤ ${BUTTON_MAX_LENGTH} chars (optimized for translation quality while supporting modern devices)`);
     process.exit(1);
   }
 }

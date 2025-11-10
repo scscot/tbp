@@ -1266,7 +1266,7 @@
       "Loading indicator when fetching additional members"
     ]
   ],
-  "networkLoadMoreButton": "Carregar Mais Membros ({remaining} restantes)",
+  "networkLoadMoreButton": "Carregar Mais ({remaining})",
   "@networkLoadMoreButton": [
     [
       "description",
@@ -5552,7 +5552,7 @@
   "eligibilityHeroTitleNotQualified": "Construa seu impulso",
   "eligibilityHeroMessageQualified": "Trabalho incrível! Você construiu sua equipe fundamental e desbloqueou a oportunidade {business}. Continue crescendo sua rede para ajudar outros a alcançar o mesmo sucesso.",
   "eligibilityHeroMessageNotQualified": "Você está no caminho! Cada profissional com quem você se conecta constrói impulso para seu futuro lançamento na oportunidade {business}. Continue compartilhando para alcançar seus objetivos!",
-  "eligibilityHeroButton": "Estratégias de crescimento comprovadas",
+  "eligibilityHeroButton": "Estratégias de Crescimento Provadas",
   "eligibilityThresholdsTitle": "LIMIARES DE QUALIFICAÇÃO",
   "eligibilityLabelDirectSponsors": "Patrocinadores diretos",
   "eligibilityLabelTotalTeam": "Total de membros da equipe",
@@ -5834,7 +5834,7 @@
   "authSignupUseNewCodeButton": "Usar Novo Código",
   "authSignupAppBarTitle": "TEAM BUILD PRO",
   "authSignupLoginButton": "Entrar",
-  "authSignupConfirmSponsorButton": "Toque para confirmar seu patrocinador",
+  "authSignupConfirmSponsorButton": "Confirmar Patrocinador",
   "authSignupNoSponsorFound": "Desculpe, nenhum patrocinador encontrado",
   "authSignupPageTitle": "Registro de Conta",
   "authSignupInviteLinkButton": "Tenho um link de convite",
@@ -6027,7 +6027,7 @@
   "howItWorksTotalTeam": "Membros Totais da Equipe",
   "howItWorksCtaHeading": "Expanda Sua Rede",
   "howItWorksCtaDescription": "Expanda sua Rede para impulsionar o crescimento da organização!",
-  "howItWorksCtaButton": "Estratégias de Crescimento Comprovadas",
+  "howItWorksCtaButton": "Estratégias de Crescimento Provadas",
   "howItWorksDefaultBizOpp": "sua oportunidade",
   "termsDisclaimerContent": "• Team Build Pro é uma plataforma de networking baseada em assinatura\n• Os usuários pagam uma taxa de assinatura mensal para acesso a ferramentas de networking\n• A plataforma fornece gerenciamento de relacionamentos e recursos de conexão de negócios\n• Todas as oportunidades de negócios são fornecidas por terceiros independentes\n\nTeam Build Pro opera como uma plataforma de networking e não garante resultados comerciais.",
   "termsSection1Title": "1. ACEITAÇÃO DOS TERMOS",
