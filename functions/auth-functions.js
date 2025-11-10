@@ -21,6 +21,9 @@ const { getTimezoneFromLocation } = require("./timezone_mapping");
 // Import createNotification from notification-functions to avoid dependency cycle
 const { createNotification } = require('./notification-functions');
 
+// Import inferLanguageFromCountry for language detection fallback
+const { inferLanguageFromCountry } = require('./migrate_preferred_language');
+
 // Rate limiting cache for getUserByReferralCode
 const rateLimitCache = new Map();
 
@@ -157,7 +160,7 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
   logger.info(`Starting registerUser function for project ${process.env.GCLOUD_PROJECT}`);
   logger.info("Request data:", JSON.stringify(request.data, null, 2));
 
-  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city } = request.data;
+  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city, preferredLanguage } = request.data;
 
   // Validate required fields
   validateInput(request.data, {
@@ -307,6 +310,18 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
       hasPromptedForReview: false,
       reviewPromptedAt: null,
     };
+
+    let finalLanguage = 'en';
+    if (preferredLanguage && ['en', 'es', 'pt', 'de'].includes(preferredLanguage.toLowerCase())) {
+      finalLanguage = preferredLanguage.toLowerCase();
+      logger.info(`🌍 REGISTER: Using device language: ${finalLanguage}`);
+    } else if (country) {
+      finalLanguage = inferLanguageFromCountry(country);
+      logger.info(`🌍 REGISTER: Inferred language from country ${country}: ${finalLanguage}`);
+    } else {
+      logger.info(`🌍 REGISTER: Using default language: ${finalLanguage}`);
+    }
+    newUser.preferredLanguage = finalLanguage;
 
     logger.info("Checking early adopter eligibility...");
     const earlyAdopterRef = db.collection('settings').doc('earlyAdopter');

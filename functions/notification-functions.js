@@ -22,7 +22,7 @@ const {
   isTriggerMode,
 } = require('./shared/utilities');
 
-const { getNotificationText, normalizeLanguageCode } = require('./translations');
+const { getNotificationText } = require('./translations');
 
 // Additional Firebase setup
 const messaging = admin.messaging();
@@ -578,6 +578,14 @@ const updateUserSubscription = async (userId, status, expiryDate = null) => {
  */
 const createSubscriptionNotification = async (userId, status, expiryDate = null) => {
   try {
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      logger.warn(`User ${userId} not found for subscription notification`);
+      return;
+    }
+    const userData = userDoc.data();
+    const userLang = userData.preferredLanguage || 'en';
+
     let notificationContent = null;
 
     switch (status) {
@@ -585,8 +593,10 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
         if (expiryDate) {
           const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
           notificationContent = {
-            title: "✅ Subscription Active",
-            message: `Your subscription is now active until ${expiry.toLocaleDateString()}.`,
+            title: getNotificationText('subscriptionActiveTitle', userLang),
+            message: getNotificationText('subscriptionActiveMessage', userLang, {
+              expiryDate: expiry.toLocaleDateString(),
+            }),
             type: "subscription_active"
           };
         }
@@ -596,8 +606,10 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
         if (expiryDate) {
           const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
           notificationContent = {
-            title: "⚠️ Subscription Cancelled",
-            message: `Your subscription has been cancelled but remains active until ${expiry.toLocaleDateString()}.`,
+            title: getNotificationText('subscriptionCancelledTitle', userLang),
+            message: getNotificationText('subscriptionCancelledMessage', userLang, {
+              expiryDate: expiry.toLocaleDateString(),
+            }),
             type: "subscription_cancelled"
           };
         }
@@ -605,8 +617,8 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
 
       case 'expired':
         notificationContent = {
-          title: "❌ Subscription Expired",
-          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+          title: getNotificationText('subscriptionExpiredTitle', userLang),
+          message: getNotificationText('subscriptionExpiredMessage', userLang),
           type: "subscription_expired",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "renew" })
@@ -621,8 +633,10 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
           const formattedDate = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}`;
 
           notificationContent = {
-            title: "⏰ Subscription Expiring Soon",
-            message: `Your subscription expires on ${formattedDate}. Renew now to avoid interruption.`,
+            title: getNotificationText('subscriptionExpiringSoonTitle', userLang),
+            message: getNotificationText('subscriptionExpiringSoonMessage', userLang, {
+              expiryDate: formattedDate,
+            }),
             type: "subscription_expiring_soon",
             route: "/subscription",
             route_params: JSON.stringify({ "action": "renew" })
@@ -632,8 +646,8 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
 
       case 'paused':
         notificationContent = {
-          title: "⏸️ Subscription Paused",
-          message: "Your subscription has been paused. Resume in the Play Store to restore access to all features.",
+          title: getNotificationText('subscriptionPausedTitle', userLang),
+          message: getNotificationText('subscriptionPausedMessage', userLang),
           type: "subscription_paused",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "resume" })
@@ -642,8 +656,8 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
 
       case 'on_hold':
         notificationContent = {
-          title: "⚠️ Payment Issue",
-          message: "Your subscription is on hold due to a payment issue. Please update your payment method in the Play Store.",
+          title: getNotificationText('subscriptionPaymentIssueTitle', userLang),
+          message: getNotificationText('subscriptionPaymentIssueMessage', userLang),
           type: "subscription_on_hold",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "update_payment" })
@@ -679,6 +693,14 @@ const createSubscriptionNotification = async (userId, status, expiryDate = null)
  */
 const createSubscriptionNotificationV2 = async (userId, status, expiryDate = null, additionalInfo = {}) => {
   try {
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) {
+      logger.warn(`User ${userId} not found for subscription notification V2`);
+      return;
+    }
+    const userData = userDoc.data();
+    const userLang = userData.preferredLanguage || 'en';
+
     let notificationContent = null;
 
     switch (status) {
@@ -686,8 +708,10 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
         if (expiryDate) {
           const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
           notificationContent = {
-            title: "✅ Subscription Active",
-            message: `Your subscription is now active until ${expiry.toLocaleDateString()}.`,
+            title: getNotificationText('subscriptionActiveTitle', userLang),
+            message: getNotificationText('subscriptionActiveMessage', userLang, {
+              expiryDate: expiry.toLocaleDateString(),
+            }),
             type: "subscription_active",
             additionalInfo
           };
@@ -698,8 +722,10 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
         if (expiryDate) {
           const expiry = new Date(typeof expiryDate === 'string' ? parseInt(expiryDate) : expiryDate);
           notificationContent = {
-            title: "⚠️ Subscription Cancelled",
-            message: `Your subscription has been cancelled but remains active until ${expiry.toLocaleDateString()}.`,
+            title: getNotificationText('subscriptionCancelledTitle', userLang),
+            message: getNotificationText('subscriptionCancelledMessage', userLang, {
+              expiryDate: expiry.toLocaleDateString(),
+            }),
             type: "subscription_cancelled",
             additionalInfo
           };
@@ -708,8 +734,8 @@ const createSubscriptionNotificationV2 = async (userId, status, expiryDate = nul
 
       case 'expired':
         notificationContent = {
-          title: "❌ Subscription Expired",
-          message: "Your subscription has expired. Renew now to keep building your team and accessing all recruiting tools.",
+          title: getNotificationText('subscriptionExpiredTitle', userLang),
+          message: getNotificationText('subscriptionExpiredMessage', userLang),
           type: "subscription_expired",
           route: "/subscription",
           route_params: JSON.stringify({ "action": "renew" }),
@@ -837,11 +863,18 @@ const onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{messageId
     const senderPhotoUrl = senderData.photoUrl;
     const messageText = message.text || "You received a new message.";
 
-    const notificationPromises = recipients.map(recipientId => {
+    const notificationPromises = recipients.map(async recipientId => {
+      const recipientDoc = await db.collection("users").doc(recipientId).get();
+      const recipientLang = recipientDoc.exists && recipientDoc.data().preferredLanguage
+        ? recipientDoc.data().preferredLanguage
+        : 'en';
+
       return createNotification({
         userId: recipientId,
         type: 'chat_message',
-        title: `New Message from ${senderName}`,
+        title: getNotificationText('chatMessageTitle', recipientLang, {
+          senderName: senderName,
+        }),
         body: messageText,
         docFields: {
           chatId: threadId,
@@ -936,14 +969,24 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
       return { success: true, message: "Sponsor not found." };
     }
 
+    const sponsorData = sponsorDoc.data();
+    const sponsorLang = sponsorData.preferredLanguage || 'en';
+
     const visitingUserName = `${visitingUserData.firstName || ''} ${visitingUserData.lastName || ''}`.trim();
+    const firstName = visitingUserData.firstName || '';
+    const lastName = visitingUserData.lastName || '';
+    const bizName = visitingUserData.bizOpp || 'business opportunity';
 
     // Create notification for sponsor
     await createNotification({
       userId: sponsorId,
       type: 'biz_opp_visit',
-      title: '👀 Team Member Activity',
-      body: `${visitingUserName} visited the business opportunity page!`,
+      title: getNotificationText('teamActivityTitle', sponsorLang),
+      body: getNotificationText('teamActivityMessage', sponsorLang, {
+        firstName: firstName,
+        lastName: lastName,
+        bizName: bizName,
+      }),
       docFields: {
         visitingUserId,
         visitingUserName,
@@ -2083,7 +2126,7 @@ const testPushNotifications = onCall(
         console.log(`TEST NOTIF: Testing ${type}`, { traceId, uid });
 
         let notificationContent = null;
-        let notifId = `test_${type}_${uid}_${Date.now()}`;
+        const notifId = `test_${type}_${uid}_${Date.now()}`;
 
         switch (type) {
           case 'milestone_direct':

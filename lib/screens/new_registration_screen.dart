@@ -569,6 +569,18 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
               .httpsCallable('registerUser');
 
       // Prepare registration data
+      String deviceLanguage = 'en';
+      try {
+        final locale = Platform.localeName;
+        final languageCode = locale.split('_')[0].toLowerCase();
+        if (['en', 'es', 'pt', 'de'].contains(languageCode)) {
+          deviceLanguage = languageCode;
+        }
+        debugPrint('🌍 REGISTER: Device language detected: $deviceLanguage (from locale: $locale)');
+      } catch (e) {
+        debugPrint('⚠️ REGISTER: Could not detect device language, defaulting to English: $e');
+      }
+
       final registrationData = <String, dynamic>{
         'email': _emailController.text.trim(),
         'password': _passwordController.text,
@@ -577,6 +589,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'sponsorReferralCode': _initialReferralCode,
         'referralSource': _referralSource, // Track attribution source
         'role': _initialReferralCode == null ? 'admin' : 'user',
+        'preferredLanguage': deviceLanguage,
       };
 
       debugPrint(
