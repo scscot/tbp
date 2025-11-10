@@ -132,6 +132,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         );
 
         if (!authenticated) {
+          if (!mounted) return;
           scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(context.l10n?.profileUpdateBiometricFailed ?? 'Biometric authentication failed. Please try again.'),
@@ -143,6 +144,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
         // Request password to securely store credentials
         final password = await _showPasswordDialog();
+        if (!mounted) return;
         if (password == null || password.isEmpty) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
@@ -156,6 +158,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         // Verify password by attempting Firebase authentication
         final email = widget.user.email;
         if (email == null) {
+          if (!mounted) return;
           scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(context.l10n?.profileUpdateEmailNotFound ?? 'User email not found'),
@@ -180,6 +183,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
           // Enable biometric setting
           await BiometricService.setBiometricEnabled(true);
+          if (!mounted) return;
           setState(() => _biometricEnabled = true);
 
           scaffoldMessenger.showSnackBar(
@@ -190,6 +194,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
           );
         } on FirebaseAuthException catch (e) {
           debugPrint('Password verification failed: ${e.code}');
+          if (!mounted) return;
           scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(context.l10n?.profileUpdatePasswordIncorrect ?? 'Incorrect password. Please try again.'),
@@ -199,6 +204,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
         }
       } catch (e) {
         debugPrint('Biometric enable error: $e');
+        if (!mounted) return;
         scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text(context.l10n?.profileUpdateBiometricError(e) ?? 'Error enabling biometric: $e'),
@@ -209,8 +215,10 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
     } else {
       // Disabling biometric - show confirmation dialog
       final confirmed = await _showDisableBiometricDialog();
+      if (!mounted) return;
       if (confirmed) {
         await BiometricService.setBiometricEnabled(false);
+        if (!mounted) return;
         setState(() => _biometricEnabled = false);
 
         scaffoldMessenger.showSnackBar(
@@ -340,6 +348,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
           );
         }
 
+        if (!mounted) return;
         if (photoUrl == null || photoUrl.isEmpty) {
           throw Exception(context.l10n?.profileUpdateImageNotProvided ?? 'Image was not provided.');
         }
@@ -521,7 +530,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   // Location Information
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: _selectedCountry,
+                    initialValue: _selectedCountry,
                     hint: Text(context.l10n?.profileUpdateSelectCountry ?? 'Select Country'),
                     isExpanded: true,
                     items: statesByCountry.keys
@@ -551,7 +560,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: _selectedState,
+                    initialValue: _selectedState,
                     hint: Text(context.l10n?.profileUpdateSelectState ?? 'Select State/Province'),
                     isExpanded: true,
                     disabledHint: _selectedCountry == null

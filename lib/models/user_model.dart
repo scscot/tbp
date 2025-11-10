@@ -30,6 +30,8 @@ class UserModel {
   final DateTime? bizJoinDate;
   // --- MODIFICATION: Added field to track if user is a current business partner ---
   final bool currentPartner;
+  // --- MULTI-LANGUAGE: User's preferred language for push notifications ---
+  final String? preferredLanguage;
 
   // --- PHASE 1: Apple Store Subscription Fields ---
   final String subscriptionStatus; // 'trial', 'active', 'cancelled', 'expired', 'paused', 'on_hold'
@@ -70,6 +72,8 @@ class UserModel {
     this.bizJoinDate,
     // --- MODIFICATION: Added to constructor ---
     this.currentPartner = false,
+    // --- MULTI-LANGUAGE: User's preferred language ---
+    this.preferredLanguage,
     // --- PHASE 1: Apple Store Subscription Fields ---
     this.subscriptionStatus = 'trial',
     this.subscriptionExpiry,
@@ -159,6 +163,8 @@ class UserModel {
       currentPartner: map['currentPartner'] is bool
           ? map['currentPartner']
           : (map['currentPartner'] == 'true' ? true : false),
+      // --- MULTI-LANGUAGE: Parse preferredLanguage from the map ---
+      preferredLanguage: map['preferredLanguage'],
       // --- PHASE 1: Parse subscription fields from the map ---
       subscriptionStatus: map['subscriptionStatus'] ?? 'trial',
       subscriptionExpiry: parseDate(map['subscriptionExpiry']),
@@ -203,6 +209,8 @@ class UserModel {
           bizJoinDate != null ? Timestamp.fromDate(bizJoinDate!) : null,
       // --- MODIFICATION: Add currentPartner to Firestore format ---
       'currentPartner': currentPartner,
+      // --- MULTI-LANGUAGE: Add preferredLanguage to Firestore format ---
+      'preferredLanguage': preferredLanguage,
       // --- PHASE 1: Convert subscription fields to Firestore format ---
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry != null
@@ -248,6 +256,7 @@ class UserModel {
       'biz_visit_date': bizVisitDate?.toIso8601String(),
       'biz_join_date': bizJoinDate?.toIso8601String(),
       'currentPartner': currentPartner,
+      'preferredLanguage': preferredLanguage,
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry?.toIso8601String(),
       'trialStartDate': trialStartDate?.toIso8601String(),

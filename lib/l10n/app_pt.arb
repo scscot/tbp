@@ -1,2502 +1,5494 @@
 {
   "@@locale": "pt",
   "appTitle": "Team Build Pro",
-  "@appTitle": {
-    "description": "Application title"
-  },
+  "@appTitle": [
+    [
+      "description",
+      "Application title"
+    ]
+  ],
   "authLoginHeaderTitle": "Bem-vindo de volta",
-  "@authLoginHeaderTitle": {
-    "description": "Main header on login screen - sentence case",
-    "maxLength": 36
-  },
+  "@authLoginHeaderTitle": [
+    [
+      "description",
+      "Main header on login screen - sentence case"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "authLoginLabelEmail": "Email",
-  "@authLoginLabelEmail": {
-    "description": "Email input field label"
-  },
+  "@authLoginLabelEmail": [
+    [
+      "description",
+      "Email input field label"
+    ]
+  ],
   "authLoginHintEmail": "Digite seu endereço de email",
-  "@authLoginHintEmail": {
-    "description": "Email input field placeholder"
-  },
+  "@authLoginHintEmail": [
+    [
+      "description",
+      "Email input field placeholder"
+    ]
+  ],
   "authLoginEmailRequired": "Por favor, digite seu email",
-  "@authLoginEmailRequired": {
-    "description": "Validation error when email field is empty"
-  },
+  "@authLoginEmailRequired": [
+    [
+      "description",
+      "Validation error when email field is empty"
+    ]
+  ],
   "authLoginEmailInvalid": "Por favor, digite um email válido",
-  "@authLoginEmailInvalid": {
-    "description": "Validation error when email format is invalid"
-  },
+  "@authLoginEmailInvalid": [
+    [
+      "description",
+      "Validation error when email format is invalid"
+    ]
+  ],
   "authLoginLabelPassword": "Senha",
-  "@authLoginLabelPassword": {
-    "description": "Password input field label"
-  },
+  "@authLoginLabelPassword": [
+    [
+      "description",
+      "Password input field label"
+    ]
+  ],
   "authLoginHintPassword": "Digite sua senha",
-  "@authLoginHintPassword": {
-    "description": "Password input field placeholder"
-  },
+  "@authLoginHintPassword": [
+    [
+      "description",
+      "Password input field placeholder"
+    ]
+  ],
   "authLoginPasswordRequired": "Por favor, digite sua senha",
-  "@authLoginPasswordRequired": {
-    "description": "Validation error when password field is empty"
-  },
+  "@authLoginPasswordRequired": [
+    [
+      "description",
+      "Validation error when password field is empty"
+    ]
+  ],
   "authLoginPasswordTooShort": "A senha deve ter pelo menos {min} caracteres",
-  "@authLoginPasswordTooShort": {
-    "description": "Validation error when password is too short",
-    "placeholders": {
-      "min": {
-        "type": "int",
-        "example": "6"
-      }
-    }
-  },
+  "@authLoginPasswordTooShort": [
+    [
+      "description",
+      "Validation error when password is too short"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "min",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "6"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "authLoginButtonSignIn": "Entrar",
-  "@authLoginButtonSignIn": {
-    "description": "Sign in button label - title case",
-    "maxLength": 22
-  },
+  "@authLoginButtonSignIn": [
+    [
+      "description",
+      "Sign in button label - title case"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "authLoginNoAccountPrompt": "Não tem uma conta?",
-  "@authLoginNoAccountPrompt": {
-    "description": "Text shown before sign up link"
-  },
+  "@authLoginNoAccountPrompt": [
+    [
+      "description",
+      "Text shown before sign up link"
+    ]
+  ],
   "authLoginLinkSignUp": "Cadastre-se",
-  "@authLoginLinkSignUp": {
-    "description": "Link to navigate to sign up screen",
-    "maxLength": 22
-  },
+  "@authLoginLinkSignUp": [
+    [
+      "description",
+      "Link to navigate to sign up screen"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "authLoginBiometric": "Entrar com {method}",
-  "@authLoginBiometric": {
-    "description": "Biometric authentication button label with method placeholder",
-    "maxLength": 22,
-    "placeholders": {
-      "method": {
-        "type": "String",
-        "example": "Face ID"
-      }
-    }
-  },
+  "@authLoginBiometric": [
+    [
+      "description",
+      "Biometric authentication button label with method placeholder"
+    ],
+    [
+      "maxLength",
+      22
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "method",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Face ID"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "authLoginBiometricMethodFace": "Face ID",
-  "@authLoginBiometricMethodFace": {
-    "description": "Face ID biometric method name (iOS)"
-  },
+  "@authLoginBiometricMethodFace": [
+    [
+      "description",
+      "Face ID biometric method name (iOS)"
+    ]
+  ],
   "authLoginBiometricMethodTouch": "Touch ID",
-  "@authLoginBiometricMethodTouch": {
-    "description": "Touch ID biometric method name (iOS)"
-  },
+  "@authLoginBiometricMethodTouch": [
+    [
+      "description",
+      "Touch ID biometric method name (iOS)"
+    ]
+  ],
   "authLoginBiometricMethodGeneric": "Biometria",
-  "@authLoginBiometricMethodGeneric": {
-    "description": "Generic biometric method name (Android/fallback)"
-  },
+  "@authLoginBiometricMethodGeneric": [
+    [
+      "description",
+      "Generic biometric method name (Android/fallback)"
+    ]
+  ],
   "authSignupHeaderTitle": "Crie sua conta",
-  "@authSignupHeaderTitle": {
-    "description": "Main header on signup screen - sentence case",
-    "maxLength": 36
-  },
+  "@authSignupHeaderTitle": [
+    [
+      "description",
+      "Main header on signup screen - sentence case"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "authSignupLabelFirstName": "Nome",
-  "@authSignupLabelFirstName": {
-    "description": "First name input field label"
-  },
+  "@authSignupLabelFirstName": [
+    [
+      "description",
+      "First name input field label"
+    ]
+  ],
   "authSignupHintFirstName": "Digite seu nome",
-  "@authSignupHintFirstName": {
-    "description": "First name input field placeholder"
-  },
+  "@authSignupHintFirstName": [
+    [
+      "description",
+      "First name input field placeholder"
+    ]
+  ],
   "authSignupFirstNameRequired": "Por favor, digite seu nome",
-  "@authSignupFirstNameRequired": {
-    "description": "Validation error when first name field is empty"
-  },
+  "@authSignupFirstNameRequired": [
+    [
+      "description",
+      "Validation error when first name field is empty"
+    ]
+  ],
   "authSignupLabelLastName": "Sobrenome",
-  "@authSignupLabelLastName": {
-    "description": "Last name input field label"
-  },
+  "@authSignupLabelLastName": [
+    [
+      "description",
+      "Last name input field label"
+    ]
+  ],
   "authSignupHintLastName": "Digite seu sobrenome",
-  "@authSignupHintLastName": {
-    "description": "Last name input field placeholder"
-  },
+  "@authSignupHintLastName": [
+    [
+      "description",
+      "Last name input field placeholder"
+    ]
+  ],
   "authSignupLastNameRequired": "Por favor, digite seu sobrenome",
-  "@authSignupLastNameRequired": {
-    "description": "Validation error when last name field is empty"
-  },
+  "@authSignupLastNameRequired": [
+    [
+      "description",
+      "Validation error when last name field is empty"
+    ]
+  ],
   "authSignupLabelEmail": "Email",
-  "@authSignupLabelEmail": {
-    "description": "Email input field label"
-  },
+  "@authSignupLabelEmail": [
+    [
+      "description",
+      "Email input field label"
+    ]
+  ],
   "authSignupHintEmail": "Digite seu endereço de email",
-  "@authSignupHintEmail": {
-    "description": "Email input field placeholder"
-  },
+  "@authSignupHintEmail": [
+    [
+      "description",
+      "Email input field placeholder"
+    ]
+  ],
   "authSignupEmailRequired": "Por favor, digite seu email",
-  "@authSignupEmailRequired": {
-    "description": "Validation error when email field is empty"
-  },
+  "@authSignupEmailRequired": [
+    [
+      "description",
+      "Validation error when email field is empty"
+    ]
+  ],
   "authSignupEmailInvalid": "Por favor, digite um email válido",
-  "@authSignupEmailInvalid": {
-    "description": "Validation error when email format is invalid"
-  },
+  "@authSignupEmailInvalid": [
+    [
+      "description",
+      "Validation error when email format is invalid"
+    ]
+  ],
   "authSignupLabelPassword": "Senha",
-  "@authSignupLabelPassword": {
-    "description": "Password input field label"
-  },
+  "@authSignupLabelPassword": [
+    [
+      "description",
+      "Password input field label"
+    ]
+  ],
   "authSignupHintPassword": "Crie uma senha",
-  "@authSignupHintPassword": {
-    "description": "Password input field placeholder"
-  },
+  "@authSignupHintPassword": [
+    [
+      "description",
+      "Password input field placeholder"
+    ]
+  ],
   "authSignupPasswordRequired": "Por favor, digite uma senha",
-  "@authSignupPasswordRequired": {
-    "description": "Validation error when password field is empty"
-  },
+  "@authSignupPasswordRequired": [
+    [
+      "description",
+      "Validation error when password field is empty"
+    ]
+  ],
   "authSignupPasswordTooShort": "A senha deve ter pelo menos {min} caracteres",
-  "@authSignupPasswordTooShort": {
-    "description": "Validation error when password is too short",
-    "placeholders": {
-      "min": {
-        "type": "int",
-        "example": "6"
-      }
-    }
-  },
+  "@authSignupPasswordTooShort": [
+    [
+      "description",
+      "Validation error when password is too short"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "min",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "6"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "authSignupLabelConfirmPassword": "Confirmar Senha",
-  "@authSignupLabelConfirmPassword": {
-    "description": "Confirm password input field label"
-  },
+  "@authSignupLabelConfirmPassword": [
+    [
+      "description",
+      "Confirm password input field label"
+    ]
+  ],
   "authSignupHintConfirmPassword": "Digite sua senha novamente",
-  "@authSignupHintConfirmPassword": {
-    "description": "Confirm password input field placeholder"
-  },
+  "@authSignupHintConfirmPassword": [
+    [
+      "description",
+      "Confirm password input field placeholder"
+    ]
+  ],
   "authSignupConfirmPasswordRequired": "Por favor, confirme sua senha",
-  "@authSignupConfirmPasswordRequired": {
-    "description": "Validation error when confirm password field is empty"
-  },
+  "@authSignupConfirmPasswordRequired": [
+    [
+      "description",
+      "Validation error when confirm password field is empty"
+    ]
+  ],
   "authSignupPasswordMismatch": "As senhas não coincidem",
-  "@authSignupPasswordMismatch": {
-    "description": "Validation error when password and confirm password don't match"
-  },
+  "@authSignupPasswordMismatch": [
+    [
+      "description",
+      "Validation error when password and confirm password don't match"
+    ]
+  ],
   "authSignupLabelReferralCode": "Código de Indicação (Opcional)",
-  "@authSignupLabelReferralCode": {
-    "description": "Referral code input field label"
-  },
+  "@authSignupLabelReferralCode": [
+    [
+      "description",
+      "Referral code input field label"
+    ]
+  ],
   "authSignupHintReferralCode": "Digite o código de convite se você tiver um",
-  "@authSignupHintReferralCode": {
-    "description": "Referral code input field placeholder"
-  },
+  "@authSignupHintReferralCode": [
+    [
+      "description",
+      "Referral code input field placeholder"
+    ]
+  ],
   "authSignupButtonPasteCode": "Colar",
-  "@authSignupButtonPasteCode": {
-    "description": "Paste referral code from clipboard button",
-    "maxLength": 22
-  },
+  "@authSignupButtonPasteCode": [
+    [
+      "description",
+      "Paste referral code from clipboard button"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "authSignupTosConsent": "Ao continuar, você concorda com os Termos de Serviço e Política de Privacidade",
-  "@authSignupTosConsent": {
-    "description": "Terms and privacy consent text. Will be enhanced with tappable links in Phase 1C"
-  },
+  "@authSignupTosConsent": [
+    [
+      "description",
+      "Terms and privacy consent text. Will be enhanced with tappable links in Phase 1C"
+    ]
+  ],
   "authSignupTermsShort": "Termos de Serviço",
-  "@authSignupTermsShort": {
-    "description": "Short label for terms of service link"
-  },
+  "@authSignupTermsShort": [
+    [
+      "description",
+      "Short label for terms of service link"
+    ]
+  ],
   "authSignupPrivacyShort": "Política de Privacidade",
-  "@authSignupPrivacyShort": {
-    "description": "Short label for privacy policy link"
-  },
+  "@authSignupPrivacyShort": [
+    [
+      "description",
+      "Short label for privacy policy link"
+    ]
+  ],
   "authSignupTosRequired": "Você deve aceitar os termos para continuar",
-  "@authSignupTosRequired": {
-    "description": "Validation error when user hasn't accepted terms"
-  },
+  "@authSignupTosRequired": [
+    [
+      "description",
+      "Validation error when user hasn't accepted terms"
+    ]
+  ],
   "authSignupButtonCreateAccount": "Criar Conta",
-  "@authSignupButtonCreateAccount": {
-    "description": "Create account button label - title case",
-    "maxLength": 22
-  },
+  "@authSignupButtonCreateAccount": [
+    [
+      "description",
+      "Create account button label - title case"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "authSignupHaveAccountPrompt": "Já tem uma conta?",
-  "@authSignupHaveAccountPrompt": {
-    "description": "Text shown before sign in link"
-  },
+  "@authSignupHaveAccountPrompt": [
+    [
+      "description",
+      "Text shown before sign in link"
+    ]
+  ],
   "authSignupLinkSignIn": "Entrar",
-  "@authSignupLinkSignIn": {
-    "description": "Link to navigate to sign in screen",
-    "maxLength": 22
-  },
+  "@authSignupLinkSignIn": [
+    [
+      "description",
+      "Link to navigate to sign in screen"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "authPasswordShow": "Mostrar senha",
-  "@authPasswordShow": {
-    "description": "Accessibility label for show password icon button"
-  },
+  "@authPasswordShow": [
+    [
+      "description",
+      "Accessibility label for show password icon button"
+    ]
+  ],
   "authPasswordHide": "Ocultar senha",
-  "@authPasswordHide": {
-    "description": "Accessibility label for hide password icon button"
-  },
+  "@authPasswordHide": [
+    [
+      "description",
+      "Accessibility label for hide password icon button"
+    ]
+  ],
   "authErrorInvalidEmail": "Esse email não é válido. Por favor, verifique e tente novamente.",
-  "@authErrorInvalidEmail": {
-    "description": "Error message for invalid email from Firebase auth"
-  },
+  "@authErrorInvalidEmail": [
+    [
+      "description",
+      "Error message for invalid email from Firebase auth"
+    ]
+  ],
   "authErrorUserDisabled": "Esta conta foi desativada. Por favor, entre em contato com o suporte.",
-  "@authErrorUserDisabled": {
-    "description": "Error message when user account is disabled"
-  },
+  "@authErrorUserDisabled": [
+    [
+      "description",
+      "Error message when user account is disabled"
+    ]
+  ],
   "authErrorUserNotFound": "Nenhuma conta encontrada com esse email.",
-  "@authErrorUserNotFound": {
-    "description": "Error message when user doesn't exist"
-  },
+  "@authErrorUserNotFound": [
+    [
+      "description",
+      "Error message when user doesn't exist"
+    ]
+  ],
   "authErrorWrongPassword": "Senha incorreta. Por favor, tente novamente.",
-  "@authErrorWrongPassword": {
-    "description": "Error message for wrong password"
-  },
+  "@authErrorWrongPassword": [
+    [
+      "description",
+      "Error message for wrong password"
+    ]
+  ],
   "authErrorEmailInUse": "Já existe uma conta com esse email.",
-  "@authErrorEmailInUse": {
-    "description": "Error message when email is already registered"
-  },
+  "@authErrorEmailInUse": [
+    [
+      "description",
+      "Error message when email is already registered"
+    ]
+  ],
   "authErrorWeakPassword": "Por favor, escolha uma senha mais forte.",
-  "@authErrorWeakPassword": {
-    "description": "Error message for weak password"
-  },
+  "@authErrorWeakPassword": [
+    [
+      "description",
+      "Error message for weak password"
+    ]
+  ],
   "authErrorNetworkError": "Erro de rede. Por favor, verifique sua conexão.",
-  "@authErrorNetworkError": {
-    "description": "Error message for network failures"
-  },
+  "@authErrorNetworkError": [
+    [
+      "description",
+      "Error message for network failures"
+    ]
+  ],
   "authErrorTooMany": "Muitas tentativas. Por favor, aguarde um momento.",
-  "@authErrorTooMany": {
-    "description": "Error message for too many failed attempts"
-  },
+  "@authErrorTooMany": [
+    [
+      "description",
+      "Error message for too many failed attempts"
+    ]
+  ],
   "authErrorInvalidCredential": "Esses dados não correspondem aos nossos registros.",
-  "@authErrorInvalidCredential": {
-    "description": "Error message for invalid credentials"
-  },
+  "@authErrorInvalidCredential": [
+    [
+      "description",
+      "Error message for invalid credentials"
+    ]
+  ],
   "authErrorUnknown": "Ocorreu um erro. Por favor, tente novamente.",
-  "@authErrorUnknown": {
-    "description": "Generic error message for unknown errors"
-  },
+  "@authErrorUnknown": [
+    [
+      "description",
+      "Generic error message for unknown errors"
+    ]
+  ],
   "navHome": "Início",
-  "@navHome": {
-    "description": "Bottom navigation tab label for home/dashboard",
-    "maxLength": 14
-  },
+  "@navHome": [
+    [
+      "description",
+      "Bottom navigation tab label for home/dashboard"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "navTeam": "Equipe",
-  "@navTeam": {
-    "description": "Bottom navigation tab label for team/network",
-    "maxLength": 14
-  },
+  "@navTeam": [
+    [
+      "description",
+      "Bottom navigation tab label for team/network"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "navShare": "Compartilhar",
-  "@navShare": {
-    "description": "Bottom navigation tab label for sharing",
-    "maxLength": 14
-  },
+  "@navShare": [
+    [
+      "description",
+      "Bottom navigation tab label for sharing"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "navMessages": "Mensagens",
-  "@navMessages": {
-    "description": "Bottom navigation tab label for messages",
-    "maxLength": 14
-  },
+  "@navMessages": [
+    [
+      "description",
+      "Bottom navigation tab label for messages"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "navNotices": "Avisos",
-  "@navNotices": {
-    "description": "Bottom navigation tab label for notifications",
-    "maxLength": 14
-  },
+  "@navNotices": [
+    [
+      "description",
+      "Bottom navigation tab label for notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "navProfile": "Perfil",
-  "@navProfile": {
-    "description": "Bottom navigation tab label for profile",
-    "maxLength": 14
-  },
+  "@navProfile": [
+    [
+      "description",
+      "Bottom navigation tab label for profile"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "dashTitle": "Centro de Controle",
-  "@dashTitle": {
-    "description": "Dashboard screen title in app bar",
-    "maxLength": 32
-  },
+  "@dashTitle": [
+    [
+      "description",
+      "Dashboard screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "dashKpiDirectSponsors": "Patrocinadores Diretos",
-  "@dashKpiDirectSponsors": {
-    "description": "Label for direct sponsors count KPI",
-    "maxLength": 28
-  },
+  "@dashKpiDirectSponsors": [
+    [
+      "description",
+      "Label for direct sponsors count KPI"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashKpiTotalTeam": "Total de Membros da Equipe",
-  "@dashKpiTotalTeam": {
-    "description": "Label for total team members count KPI",
-    "maxLength": 28
-  },
+  "@dashKpiTotalTeam": [
+    [
+      "description",
+      "Label for total team members count KPI"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashStatsRefreshed": "Estatísticas da equipe atualizadas",
-  "@dashStatsRefreshed": {
-    "description": "Success message after refreshing team statistics"
-  },
+  "@dashStatsRefreshed": [
+    [
+      "description",
+      "Success message after refreshing team statistics"
+    ]
+  ],
   "dashStatsError": "Erro ao atualizar estatísticas: {error}",
-  "@dashStatsError": {
-    "description": "Error message when statistics refresh fails",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Network error"
-      }
-    }
-  },
+  "@dashStatsError": [
+    [
+      "description",
+      "Error message when statistics refresh fails"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "error",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Network error"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "dashTileGettingStarted": "Primeiros Passos",
-  "@dashTileGettingStarted": {
-    "description": "Dashboard tile title for getting started guide",
-    "maxLength": 28
-  },
+  "@dashTileGettingStarted": [
+    [
+      "description",
+      "Dashboard tile title for getting started guide"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileOpportunity": "Detalhes da Oportunidade",
-  "@dashTileOpportunity": {
-    "description": "Dashboard tile title for business opportunity details",
-    "maxLength": 28
-  },
+  "@dashTileOpportunity": [
+    [
+      "description",
+      "Dashboard tile title for business opportunity details"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileEligibility": "Seu Status de Elegibilidade",
-  "@dashTileEligibility": {
-    "description": "Dashboard tile title for eligibility status",
-    "maxLength": 32
-  },
+  "@dashTileEligibility": [
+    [
+      "description",
+      "Dashboard tile title for eligibility status"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "dashTileGrowTeam": "Expanda Sua Equipe",
-  "@dashTileGrowTeam": {
-    "description": "Dashboard tile title/CTA for growing team",
-    "maxLength": 22
-  },
+  "@dashTileGrowTeam": [
+    [
+      "description",
+      "Dashboard tile title/CTA for growing team"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "dashTileViewTeam": "Ver Sua Equipe",
-  "@dashTileViewTeam": {
-    "description": "Dashboard tile title/CTA for viewing team",
-    "maxLength": 22
-  },
+  "@dashTileViewTeam": [
+    [
+      "description",
+      "Dashboard tile title/CTA for viewing team"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "dashTileAiCoach": "Seu Coach de IA",
-  "@dashTileAiCoach": {
-    "description": "Dashboard tile title for AI coaching assistant",
-    "maxLength": 28
-  },
+  "@dashTileAiCoach": [
+    [
+      "description",
+      "Dashboard tile title for AI coaching assistant"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileMessageCenter": "Central de Mensagens",
-  "@dashTileMessageCenter": {
-    "description": "Dashboard tile title for message center",
-    "maxLength": 28
-  },
+  "@dashTileMessageCenter": [
+    [
+      "description",
+      "Dashboard tile title for message center"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileNotifications": "Notificações",
-  "@dashTileNotifications": {
-    "description": "Dashboard tile title for notifications",
-    "maxLength": 28
-  },
+  "@dashTileNotifications": [
+    [
+      "description",
+      "Dashboard tile title for notifications"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileHowItWorks": "Como Funciona",
-  "@dashTileHowItWorks": {
-    "description": "Dashboard tile title for how it works guide",
-    "maxLength": 28
-  },
+  "@dashTileHowItWorks": [
+    [
+      "description",
+      "Dashboard tile title for how it works guide"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashTileFaqs": "Perguntas Frequentes",
-  "@dashTileFaqs": {
-    "description": "Dashboard tile title for frequently asked questions",
-    "maxLength": 22
-  },
+  "@dashTileFaqs": [
+    [
+      "description",
+      "Dashboard tile title for frequently asked questions"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "dashTileProfile": "Ver Seu Perfil",
-  "@dashTileProfile": {
-    "description": "Dashboard tile title/CTA for viewing profile",
-    "maxLength": 22
-  },
+  "@dashTileProfile": [
+    [
+      "description",
+      "Dashboard tile title/CTA for viewing profile"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "dashTileCreateAccount": "Criar Nova Conta",
-  "@dashTileCreateAccount": {
-    "description": "Dashboard tile title/CTA for creating account (admin only)",
-    "maxLength": 22
-  },
+  "@dashTileCreateAccount": [
+    [
+      "description",
+      "Dashboard tile title/CTA for creating account (admin only)"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "dashKpiTitle": "Estatísticas Atuais da Equipe",
-  "@dashKpiTitle": {
-    "description": "Title for KPI stats section on dashboard",
-    "maxLength": 36
-  },
+  "@dashKpiTitle": [
+    [
+      "description",
+      "Title for KPI stats section on dashboard"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "dashKpiRefreshTooltip": "Atualizar estatísticas",
-  "@dashKpiRefreshTooltip": {
-    "description": "Tooltip for refresh button on team stats"
-  },
+  "@dashKpiRefreshTooltip": [
+    [
+      "description",
+      "Tooltip for refresh button on team stats"
+    ]
+  ],
   "dashTileJoinOpportunity": "Participe da Oportunidade!",
-  "@dashTileJoinOpportunity": {
-    "description": "Dashboard tile CTA for joining business opportunity",
-    "maxLength": 28
-  },
+  "@dashTileJoinOpportunity": [
+    [
+      "description",
+      "Dashboard tile CTA for joining business opportunity"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "dashSubscriptionTrial": "Iniciar Assinatura\n({daysLeft} dias restantes no teste)",
-  "@dashSubscriptionTrial": {
-    "description": "Subscription tile text during trial period",
-    "placeholders": {
-      "daysLeft": {
-        "type": "int",
-        "example": "7"
-      }
-    }
-  },
+  "@dashSubscriptionTrial": [
+    [
+      "description",
+      "Subscription tile text during trial period"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "daysLeft",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "7"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "dashSubscriptionExpired": "Renovar Sua Assinatura\nTeste grátis de 30 dias expirou.",
-  "@dashSubscriptionExpired": {
-    "description": "Subscription tile text when trial has expired"
-  },
+  "@dashSubscriptionExpired": [
+    [
+      "description",
+      "Subscription tile text when trial has expired"
+    ]
+  ],
   "dashSubscriptionCancelled": "Você Cancelou Sua Assinatura\nReative Sua Assinatura Agora",
-  "@dashSubscriptionCancelled": {
-    "description": "Subscription tile text when user cancelled subscription"
-  },
+  "@dashSubscriptionCancelled": [
+    [
+      "description",
+      "Subscription tile text when user cancelled subscription"
+    ]
+  ],
   "dashSubscriptionManage": "Gerenciar Assinatura",
-  "@dashSubscriptionManage": {
-    "description": "Button text to manage subscription settings",
-    "maxLength": 28
-  },
+  "@dashSubscriptionManage": [
+    [
+      "description",
+      "Button text to manage subscription settings"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkTitle": "Sua Equipe Global",
-  "@networkTitle": {
-    "description": "Network screen title in app bar",
-    "maxLength": 32
-  },
+  "@networkTitle": [
+    [
+      "description",
+      "Network screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "networkLabelDirectSponsors": "Patrocinadores Diretos",
-  "@networkLabelDirectSponsors": {
-    "description": "Label for direct sponsors count in network screen",
-    "maxLength": 28
-  },
+  "@networkLabelDirectSponsors": [
+    [
+      "description",
+      "Label for direct sponsors count in network screen"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkLabelTotalTeam": "Equipe Total",
-  "@networkLabelTotalTeam": {
-    "description": "Label for total team count in network screen",
-    "maxLength": 28
-  },
+  "@networkLabelTotalTeam": [
+    [
+      "description",
+      "Label for total team count in network screen"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkLabelNewMembers": "Novos Membros",
-  "@networkLabelNewMembers": {
-    "description": "Label for new members count in network screen",
-    "maxLength": 28
-  },
+  "@networkLabelNewMembers": [
+    [
+      "description",
+      "Label for new members count in network screen"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkSearchHint": "Buscar membros da equipe...",
-  "@networkSearchHint": {
-    "description": "Placeholder text for network search field"
-  },
+  "@networkSearchHint": [
+    [
+      "description",
+      "Placeholder text for network search field"
+    ]
+  ],
   "networkRefreshTooltip": "Forçar atualização",
-  "@networkRefreshTooltip": {
-    "description": "Tooltip for force refresh button in network screen"
-  },
+  "@networkRefreshTooltip": [
+    [
+      "description",
+      "Tooltip for force refresh button in network screen"
+    ]
+  ],
   "networkFilterSelectReport": "Ver Relatório da Equipe",
-  "@networkFilterSelectReport": {
-    "description": "Default dropdown text prompting user to select a report filter",
-    "maxLength": 28
-  },
+  "@networkFilterSelectReport": [
+    [
+      "description",
+      "Default dropdown text prompting user to select a report filter"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkFilterAllMembers": "Todos os Membros",
-  "@networkFilterAllMembers": {
-    "description": "Filter option to show all team members",
-    "maxLength": 28
-  },
+  "@networkFilterAllMembers": [
+    [
+      "description",
+      "Filter option to show all team members"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkFilterDirectSponsors": "Patrocinadores Diretos",
-  "@networkFilterDirectSponsors": {
-    "description": "Filter option to show only direct sponsors",
-    "maxLength": 28
-  },
+  "@networkFilterDirectSponsors": [
+    [
+      "description",
+      "Filter option to show only direct sponsors"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkFilterNewMembers": "Novos Membros - Hoje",
-  "@networkFilterNewMembers": {
-    "description": "Filter option to show new members who joined today",
-    "maxLength": 28
-  },
+  "@networkFilterNewMembers": [
+    [
+      "description",
+      "Filter option to show new members who joined today"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkFilterNewMembersYesterday": "Novos Membros - Ontem",
-  "@networkFilterNewMembersYesterday": {
-    "description": "Filter option to show new members who joined yesterday",
-    "maxLength": 32
-  },
+  "@networkFilterNewMembersYesterday": [
+    [
+      "description",
+      "Filter option to show new members who joined yesterday"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "networkFilterQualified": "Membros Qualificados",
-  "@networkFilterQualified": {
-    "description": "Filter option to show members who meet eligibility criteria",
-    "maxLength": 28
-  },
+  "@networkFilterQualified": [
+    [
+      "description",
+      "Filter option to show members who meet eligibility criteria"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "networkFilterJoined": "Entrou",
-  "@networkFilterJoined": {
-    "description": "Label prefix for member join date",
-    "maxLength": 14
-  },
+  "@networkFilterJoined": [
+    [
+      "description",
+      "Label prefix for member join date"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "networkFilterAllMembersWithCount": "Todos os Membros ({count})",
-  "@networkFilterAllMembersWithCount": {
-    "description": "Filter option showing all members with count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "301"
-      }
-    }
-  },
+  "@networkFilterAllMembersWithCount": [
+    [
+      "description",
+      "Filter option showing all members with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "301"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkFilterDirectSponsorsWithCount": "Patrocinadores Diretos ({count})",
-  "@networkFilterDirectSponsorsWithCount": {
-    "description": "Filter option showing direct sponsors with count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "8"
-      }
-    }
-  },
+  "@networkFilterDirectSponsorsWithCount": [
+    [
+      "description",
+      "Filter option showing direct sponsors with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "8"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkFilterNewMembersWithCount": "Novos Membros - Hoje ({count})",
-  "@networkFilterNewMembersWithCount": {
-    "description": "Filter option showing new members today with count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
+  "@networkFilterNewMembersWithCount": [
+    [
+      "description",
+      "Filter option showing new members today with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkFilterNewMembersYesterdayWithCount": "Novos Membros - Ontem ({count})",
-  "@networkFilterNewMembersYesterdayWithCount": {
-    "description": "Filter option showing new members yesterday with count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
+  "@networkFilterNewMembersYesterdayWithCount": [
+    [
+      "description",
+      "Filter option showing new members yesterday with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "5"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkFilterQualifiedWithCount": "Membros Qualificados ({count})",
-  "@networkFilterQualifiedWithCount": {
-    "description": "Filter option showing qualified members with count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "11"
-      }
-    }
-  },
+  "@networkFilterQualifiedWithCount": [
+    [
+      "description",
+      "Filter option showing qualified members with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "11"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkFilterJoinedWithCount": "Entrou em {business} ({count})",
-  "@networkFilterJoinedWithCount": {
-    "description": "Filter option showing members who joined business with count",
-    "placeholders": {
-      "business": {
-        "type": "String",
-        "example": "Demo Company"
-      },
-      "count": {
-        "type": "int",
-        "example": "15"
-      }
-    }
-  },
+  "@networkFilterJoinedWithCount": [
+    [
+      "description",
+      "Filter option showing members who joined business with count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "business",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Demo Company"
+            ]
+          ]
+        ],
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "15"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkMessageSelectReport": "Selecione um relatório no menu acima ou use a barra de busca para visualizar e gerenciar sua equipe.",
-  "@networkMessageSelectReport": {
-    "description": "Help message shown when no filter is selected"
-  },
+  "@networkMessageSelectReport": [
+    [
+      "description",
+      "Help message shown when no filter is selected"
+    ]
+  ],
   "networkMessageNoSearchResults": "Mostrando resultados de busca de Todos os Membros. Nenhum membro corresponde à sua busca.",
-  "@networkMessageNoSearchResults": {
-    "description": "Message shown when search returns no results"
-  },
+  "@networkMessageNoSearchResults": [
+    [
+      "description",
+      "Message shown when search returns no results"
+    ]
+  ],
   "networkMessageNoMembers": "Nenhum membro encontrado para este filtro.",
-  "@networkMessageNoMembers": {
-    "description": "Message shown when selected filter has no members"
-  },
+  "@networkMessageNoMembers": [
+    [
+      "description",
+      "Message shown when selected filter has no members"
+    ]
+  ],
   "networkSearchingContext": "Buscando em: Todos os Membros",
-  "@networkSearchingContext": {
-    "description": "Context label showing which dataset is being searched"
-  },
+  "@networkSearchingContext": [
+    [
+      "description",
+      "Context label showing which dataset is being searched"
+    ]
+  ],
   "networkSearchingContextInfo": "Mostrando resultados de busca de Todos os Membros",
-  "@networkSearchingContextInfo": {
-    "description": "Info message about search context"
-  },
+  "@networkSearchingContextInfo": [
+    [
+      "description",
+      "Info message about search context"
+    ]
+  ],
   "networkPaginationInfo": "Mostrando {showing} de {total} membros",
-  "@networkPaginationInfo": {
-    "description": "Pagination status showing current count vs total",
-    "placeholders": {
-      "showing": {
-        "type": "int",
-        "example": "50"
-      },
-      "total": {
-        "type": "int",
-        "example": "150"
-      }
-    }
-  },
+  "@networkPaginationInfo": [
+    [
+      "description",
+      "Pagination status showing current count vs total"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "showing",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "50"
+            ]
+          ]
+        ],
+        [
+          "total",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "150"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkLevelLabel": "Nível {level}",
-  "@networkLevelLabel": {
-    "description": "Label showing member's network level",
-    "maxLength": 14,
-    "placeholders": {
-      "level": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
+  "@networkLevelLabel": [
+    [
+      "description",
+      "Label showing member's network level"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "level",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "2"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkMembersCount": "{count, plural, one {# Membro} other {# Membros}}",
-  "@networkMembersCount": {
-    "description": "Count of members with proper pluralization",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
+  "@networkMembersCount": [
+    [
+      "description",
+      "Count of members with proper pluralization"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "5"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkLoadingMore": "Carregando mais membros...",
-  "@networkLoadingMore": {
-    "description": "Loading indicator when fetching additional members"
-  },
+  "@networkLoadingMore": [
+    [
+      "description",
+      "Loading indicator when fetching additional members"
+    ]
+  ],
   "networkLoadMoreButton": "Carregar Mais Membros ({remaining} restantes)",
-  "@networkLoadMoreButton": {
-    "description": "Button to load more members with count remaining",
-    "placeholders": {
-      "remaining": {
-        "type": "int",
-        "example": "100"
-      }
-    }
-  },
+  "@networkLoadMoreButton": [
+    [
+      "description",
+      "Button to load more members with count remaining"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "remaining",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "100"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkAllMembersLoaded": "Todos os {count} membros carregados",
-  "@networkAllMembersLoaded": {
-    "description": "Message when all members have been loaded",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "150"
-      }
-    }
-  },
+  "@networkAllMembersLoaded": [
+    [
+      "description",
+      "Message when all members have been loaded"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "150"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkMemberJoined": "Entrou em {date}",
-  "@networkMemberJoined": {
-    "description": "Label showing when member joined",
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "Jan 15, 2025"
-      }
-    }
-  },
+  "@networkMemberJoined": [
+    [
+      "description",
+      "Label showing when member joined"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Jan 15, 2025"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkAnalyticsPerformance": "Desempenho da Rede",
-  "@networkAnalyticsPerformance": {
-    "description": "Title for network performance analytics section",
-    "maxLength": 32
-  },
+  "@networkAnalyticsPerformance": [
+    [
+      "description",
+      "Title for network performance analytics section"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "networkAnalyticsGeographic": "Distribuição Geográfica",
-  "@networkAnalyticsGeographic": {
-    "description": "Title for geographic distribution analytics section",
-    "maxLength": 32
-  },
+  "@networkAnalyticsGeographic": [
+    [
+      "description",
+      "Title for geographic distribution analytics section"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "networkAnalyticsLevels": "Distribuição por Nível",
-  "@networkAnalyticsLevels": {
-    "description": "Title for level distribution analytics section",
-    "maxLength": 32
-  },
+  "@networkAnalyticsLevels": [
+    [
+      "description",
+      "Title for level distribution analytics section"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "networkAnalyticsChartPlaceholder": "Gráfico de Desempenho\n(Implementação do gráfico seria aqui)",
-  "@networkAnalyticsChartPlaceholder": {
-    "description": "Placeholder text for analytics chart area"
-  },
+  "@networkAnalyticsChartPlaceholder": [
+    [
+      "description",
+      "Placeholder text for analytics chart area"
+    ]
+  ],
   "networkLevelBadge": "Nível {level}",
-  "@networkLevelBadge": {
-    "description": "Badge showing member level in analytics",
-    "maxLength": 14,
-    "placeholders": {
-      "level": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
+  "@networkLevelBadge": [
+    [
+      "description",
+      "Badge showing member level in analytics"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "level",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "networkLevelMembersCount": "{count} membros",
-  "@networkLevelMembersCount": {
-    "description": "Count of members at specific level",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "25"
-      }
-    }
-  },
+  "@networkLevelMembersCount": [
+    [
+      "description",
+      "Count of members at specific level"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "25"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "settingsTitle": "Configurações",
-  "@settingsTitle": {
-    "description": "Settings screen title in app bar",
-    "maxLength": 32
-  },
+  "@settingsTitle": [
+    [
+      "description",
+      "Settings screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "settingsTitleOrganization": "Configurações da Organização",
-  "@settingsTitleOrganization": {
-    "description": "Section title for organization settings",
-    "maxLength": 36
-  },
+  "@settingsTitleOrganization": [
+    [
+      "description",
+      "Section title for organization settings"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "settingsWelcomeMessage": "Bem-vindo, {name}!\n\nVamos configurar a base da sua oportunidade de negócio.",
-  "@settingsWelcomeMessage": {
-    "description": "Welcome message on settings screen for new admin users",
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Stephen"
-      }
-    }
-  },
+  "@settingsWelcomeMessage": [
+    [
+      "description",
+      "Welcome message on settings screen for new admin users"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "name",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "settingsLabelOrganizationName": "Nome da Sua Organização",
-  "@settingsLabelOrganizationName": {
-    "description": "Label for organization name input field"
-  },
+  "@settingsLabelOrganizationName": [
+    [
+      "description",
+      "Label for organization name input field"
+    ]
+  ],
   "settingsLabelConfirmOrganizationName": "Confirmar Nome da Organização",
-  "@settingsLabelConfirmOrganizationName": {
-    "description": "Label for organization name confirmation field"
-  },
+  "@settingsLabelConfirmOrganizationName": [
+    [
+      "description",
+      "Label for organization name confirmation field"
+    ]
+  ],
   "settingsDialogImportantTitle": "Muito Importante!",
-  "@settingsDialogImportantTitle": {
-    "description": "Title for important information dialog",
-    "maxLength": 32
-  },
+  "@settingsDialogImportantTitle": [
+    [
+      "description",
+      "Title for important information dialog"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "settingsDialogReferralImportance": "Você deve inserir o link de indicação exato que recebeu do seu patrocinador {organization}.",
-  "@settingsDialogReferralImportance": {
-    "description": "Important message about entering correct referral link",
-    "placeholders": {
-      "organization": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@settingsDialogReferralImportance": [
+    [
+      "description",
+      "Important message about entering correct referral link"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "organization",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "settingsDialogButtonUnderstand": "Entendi",
-  "@settingsDialogButtonUnderstand": {
-    "description": "Button to acknowledge important dialog",
-    "maxLength": 22
-  },
+  "@settingsDialogButtonUnderstand": [
+    [
+      "description",
+      "Button to acknowledge important dialog"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "settingsLabelReferralLink": "Seu Link de Indicação",
-  "@settingsLabelReferralLink": {
-    "description": "Label for referral link input field"
-  },
+  "@settingsLabelReferralLink": [
+    [
+      "description",
+      "Label for referral link input field"
+    ]
+  ],
   "settingsLabelConfirmReferralLink": "Confirmar URL do Link de Indicação",
-  "@settingsLabelConfirmReferralLink": {
-    "description": "Label for referral link confirmation field"
-  },
+  "@settingsLabelConfirmReferralLink": [
+    [
+      "description",
+      "Label for referral link confirmation field"
+    ]
+  ],
   "settingsLabelCountries": "Países Disponíveis",
-  "@settingsLabelCountries": {
-    "description": "Label for countries selection section"
-  },
+  "@settingsLabelCountries": [
+    [
+      "description",
+      "Label for countries selection section"
+    ]
+  ],
   "settingsImportantLabel": "Importante:",
-  "@settingsImportantLabel": {
-    "description": "Label prefix for important information",
-    "maxLength": 14
-  },
+  "@settingsImportantLabel": [
+    [
+      "description",
+      "Label prefix for important information"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "settingsCountriesInstruction": "Selecione apenas os países onde sua oportunidade está disponível atualmente.",
-  "@settingsCountriesInstruction": {
-    "description": "Instruction text for country selection"
-  },
+  "@settingsCountriesInstruction": [
+    [
+      "description",
+      "Instruction text for country selection"
+    ]
+  ],
   "settingsButtonAddCountry": "Adicionar um País",
-  "@settingsButtonAddCountry": {
-    "description": "Button to add country to selection",
-    "maxLength": 22
-  },
+  "@settingsButtonAddCountry": [
+    [
+      "description",
+      "Button to add country to selection"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "settingsButtonSave": "Salvar Configurações",
-  "@settingsButtonSave": {
-    "description": "Button to save settings changes",
-    "maxLength": 22
-  },
+  "@settingsButtonSave": [
+    [
+      "description",
+      "Button to save settings changes"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "settingsDisplayOrganization": "Sua Organização",
-  "@settingsDisplayOrganization": {
-    "description": "Label for displaying saved organization name"
-  },
+  "@settingsDisplayOrganization": [
+    [
+      "description",
+      "Label for displaying saved organization name"
+    ]
+  ],
   "settingsDisplayReferralLink": "Seu Link de Indicação",
-  "@settingsDisplayReferralLink": {
-    "description": "Label for displaying saved referral link"
-  },
+  "@settingsDisplayReferralLink": [
+    [
+      "description",
+      "Label for displaying saved referral link"
+    ]
+  ],
   "settingsDisplayCountries": "Países Disponíveis Selecionados",
-  "@settingsDisplayCountries": {
-    "description": "Label for displaying selected countries list"
-  },
+  "@settingsDisplayCountries": [
+    [
+      "description",
+      "Label for displaying selected countries list"
+    ]
+  ],
   "settingsNoCountries": "Nenhum país selecionado.",
-  "@settingsNoCountries": {
-    "description": "Message when no countries have been selected"
-  },
+  "@settingsNoCountries": [
+    [
+      "description",
+      "Message when no countries have been selected"
+    ]
+  ],
   "settingsFeederSystemTitle": "Sistema de Rede de Alimentação",
-  "@settingsFeederSystemTitle": {
-    "description": "Title for network feeder system section",
-    "maxLength": 32
-  },
+  "@settingsFeederSystemTitle": [
+    [
+      "description",
+      "Title for network feeder system section"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "settingsFeederSystemDescription": "Este é seu motor de crescimento automatizado. Quando membros entram no Team Build Pro através do seu link, mas ainda não se qualificaram para sua oportunidade de negócio, eles são colocados na sua rede de alimentação. No momento em que você atender aos requisitos de elegibilidade abaixo, esses membros são transferidos automaticamente para sua equipe da oportunidade de negócio. É um sistema poderoso que recompensa sua dedicação - quanto maior sua rede de alimentação crescer, mais forte será seu lançamento quando você se qualificar.",
-  "@settingsFeederSystemDescription": {
-    "description": "Detailed explanation of the network feeder system"
-  },
+  "@settingsFeederSystemDescription": [
+    [
+      "description",
+      "Detailed explanation of the network feeder system"
+    ]
+  ],
   "settingsEligibilityTitle": "Requisitos Mínimos de Elegibilidade",
-  "@settingsEligibilityTitle": {
-    "description": "Title for eligibility requirements section",
-    "maxLength": 36
-  },
+  "@settingsEligibilityTitle": [
+    [
+      "description",
+      "Title for eligibility requirements section"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "settingsEligibilityDirectSponsors": "Patrocinadores Diretos",
-  "@settingsEligibilityDirectSponsors": {
-    "description": "Label for minimum direct sponsors requirement",
-    "maxLength": 28
-  },
+  "@settingsEligibilityDirectSponsors": [
+    [
+      "description",
+      "Label for minimum direct sponsors requirement"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "settingsEligibilityTotalTeam": "Total de Membros",
-  "@settingsEligibilityTotalTeam": {
-    "description": "Label for minimum total team members requirement",
-    "maxLength": 28
-  },
+  "@settingsEligibilityTotalTeam": [
+    [
+      "description",
+      "Label for minimum total team members requirement"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "settingsPrivacyLegalTitle": "Privacidade e Legal",
-  "@settingsPrivacyLegalTitle": {
-    "description": "Section title for privacy and legal links",
-    "maxLength": 32
-  },
+  "@settingsPrivacyLegalTitle": [
+    [
+      "description",
+      "Section title for privacy and legal links"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "settingsPrivacyPolicy": "Política de Privacidade",
-  "@settingsPrivacyPolicy": {
-    "description": "Label for privacy policy link",
-    "maxLength": 28
-  },
+  "@settingsPrivacyPolicy": [
+    [
+      "description",
+      "Label for privacy policy link"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "settingsPrivacyPolicySubtitle": "Veja nossas práticas de privacidade e tratamento de dados",
-  "@settingsPrivacyPolicySubtitle": {
-    "description": "Subtitle explaining privacy policy link"
-  },
+  "@settingsPrivacyPolicySubtitle": [
+    [
+      "description",
+      "Subtitle explaining privacy policy link"
+    ]
+  ],
   "settingsTermsOfService": "Termos de Serviço",
-  "@settingsTermsOfService": {
-    "description": "Label for terms of service link",
-    "maxLength": 28
-  },
+  "@settingsTermsOfService": [
+    [
+      "description",
+      "Label for terms of service link"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "settingsTermsOfServiceSubtitle": "Veja os termos e condições da plataforma",
-  "@settingsTermsOfServiceSubtitle": {
-    "description": "Subtitle explaining terms of service link"
-  },
+  "@settingsTermsOfServiceSubtitle": [
+    [
+      "description",
+      "Subtitle explaining terms of service link"
+    ]
+  ],
   "profileTitle": "Perfil",
-  "@profileTitle": {
-    "description": "Profile screen title in app bar",
-    "maxLength": 32
-  },
+  "@profileTitle": [
+    [
+      "description",
+      "Profile screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "profileLabelCity": "Cidade",
-  "@profileLabelCity": {
-    "description": "Label for city field in profile",
-    "maxLength": 14
-  },
+  "@profileLabelCity": [
+    [
+      "description",
+      "Label for city field in profile"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "profileLabelState": "Estado",
-  "@profileLabelState": {
-    "description": "Label for state/province field in profile",
-    "maxLength": 14
-  },
+  "@profileLabelState": [
+    [
+      "description",
+      "Label for state/province field in profile"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "profileLabelCountry": "País",
-  "@profileLabelCountry": {
-    "description": "Label for country field in profile",
-    "maxLength": 14
-  },
+  "@profileLabelCountry": [
+    [
+      "description",
+      "Label for country field in profile"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "profileLabelJoined": "Entrou",
-  "@profileLabelJoined": {
-    "description": "Label for join date in profile",
-    "maxLength": 14
-  },
+  "@profileLabelJoined": [
+    [
+      "description",
+      "Label for join date in profile"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "profileLabelSponsor": "Seu Patrocinador",
-  "@profileLabelSponsor": {
-    "description": "Label for sponsor name in profile",
-    "maxLength": 28
-  },
+  "@profileLabelSponsor": [
+    [
+      "description",
+      "Label for sponsor name in profile"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "profileLabelTeamLeader": "Líder de Equipe",
-  "@profileLabelTeamLeader": {
-    "description": "Label for team leader designation in profile",
-    "maxLength": 28
-  },
+  "@profileLabelTeamLeader": [
+    [
+      "description",
+      "Label for team leader designation in profile"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "profileButtonEdit": "Editar Perfil",
-  "@profileButtonEdit": {
-    "description": "Button to edit profile information",
-    "maxLength": 22
-  },
+  "@profileButtonEdit": [
+    [
+      "description",
+      "Button to edit profile information"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "profileButtonSignOut": "Sair",
-  "@profileButtonSignOut": {
-    "description": "Button to sign out of account",
-    "maxLength": 22
-  },
+  "@profileButtonSignOut": [
+    [
+      "description",
+      "Button to sign out of account"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "profileSigningOut": "Saindo...",
-  "@profileSigningOut": {
-    "description": "Loading message during sign out process"
-  },
+  "@profileSigningOut": [
+    [
+      "description",
+      "Loading message during sign out process"
+    ]
+  ],
   "profileButtonTerms": "Termos de Serviço",
-  "@profileButtonTerms": {
-    "description": "Button to view terms of service",
-    "maxLength": 28
-  },
+  "@profileButtonTerms": [
+    [
+      "description",
+      "Button to view terms of service"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "profileButtonPrivacy": "Política de Privacidade",
-  "@profileButtonPrivacy": {
-    "description": "Button to view privacy policy",
-    "maxLength": 28
-  },
+  "@profileButtonPrivacy": [
+    [
+      "description",
+      "Button to view privacy policy"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "profileButtonDeleteAccount": "Excluir Conta",
-  "@profileButtonDeleteAccount": {
-    "description": "Button to delete user account",
-    "maxLength": 22
-  },
+  "@profileButtonDeleteAccount": [
+    [
+      "description",
+      "Button to delete user account"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "profileDemoAccountTitle": "Informações da Conta Demo",
-  "@profileDemoAccountTitle": {
-    "description": "Dialog title for demo account protection message",
-    "maxLength": 36
-  },
+  "@profileDemoAccountTitle": [
+    [
+      "description",
+      "Dialog title for demo account protection message"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "profileDemoAccountMessage": "Esta é uma conta demo para testes e não pode ser excluída.",
-  "@profileDemoAccountMessage": {
-    "description": "Message explaining demo account cannot be deleted"
-  },
+  "@profileDemoAccountMessage": [
+    [
+      "description",
+      "Message explaining demo account cannot be deleted"
+    ]
+  ],
   "profileDemoAccountSubtext": "Contas demo são fornecidas para demonstrar os recursos e funcionalidades do app. Se você precisa criar uma conta real, faça o cadastro com suas informações pessoais.",
-  "@profileDemoAccountSubtext": {
-    "description": "Additional information about demo accounts"
-  },
+  "@profileDemoAccountSubtext": [
+    [
+      "description",
+      "Additional information about demo accounts"
+    ]
+  ],
   "profileDemoAccountButton": "Entendi",
-  "@profileDemoAccountButton": {
-    "description": "Button to acknowledge demo account information",
-    "maxLength": 22
-  },
+  "@profileDemoAccountButton": [
+    [
+      "description",
+      "Button to acknowledge demo account information"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "profileAdminProtectionTitle": "Proteção de Conta de Administrador",
-  "@profileAdminProtectionTitle": {
-    "description": "Dialog title for admin account protection message",
-    "maxLength": 36
-  },
+  "@profileAdminProtectionTitle": [
+    [
+      "description",
+      "Dialog title for admin account protection message"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "profileAdminProtectionMessage": "Contas de administrador com membros de equipe ativos não podem ser excluídas através do app. Esta proteção garante que os dados e relacionamentos da sua equipe permaneçam intactos.",
-  "@profileAdminProtectionMessage": {
-    "description": "Message explaining admin account deletion restrictions"
-  },
+  "@profileAdminProtectionMessage": [
+    [
+      "description",
+      "Message explaining admin account deletion restrictions"
+    ]
+  ],
   "profileAdminTeamSize": "Sua Equipe: {directCount} Patrocinadores Diretos",
-  "@profileAdminTeamSize": {
-    "description": "Label showing admin's team size",
-    "placeholders": {
-      "directCount": {
-        "type": "int",
-        "example": "15"
-      }
-    }
-  },
+  "@profileAdminTeamSize": [
+    [
+      "description",
+      "Label showing admin's team size"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "directCount",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "15"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "profileAdminProtectionInstructions": "Para excluir sua conta de administrador, entre em contato com nossa equipe de suporte em legal@teambuildpro.com. Trabalharemos com você para garantir uma transição suave para os membros da sua equipe.",
-  "@profileAdminProtectionInstructions": {
-    "description": "Instructions for admin account deletion"
-  },
+  "@profileAdminProtectionInstructions": [
+    [
+      "description",
+      "Instructions for admin account deletion"
+    ]
+  ],
   "profileAdminProtectionContact": "Contato: legal@teambuildpro.com",
-  "@profileAdminProtectionContact": {
-    "description": "Contact information for admin account support"
-  },
+  "@profileAdminProtectionContact": [
+    [
+      "description",
+      "Contact information for admin account support"
+    ]
+  ],
   "messageCenterTitle": "Central de Mensagens",
-  "@messageCenterTitle": {
-    "description": "Message center screen title in app bar",
-    "maxLength": 32
-  },
+  "@messageCenterTitle": [
+    [
+      "description",
+      "Message center screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "messageCenterSearchHint": "Buscar mensagens...",
-  "@messageCenterSearchHint": {
-    "description": "Placeholder for message search field"
-  },
+  "@messageCenterSearchHint": [
+    [
+      "description",
+      "Placeholder for message search field"
+    ]
+  ],
   "messageCenterFilterAll": "Todas",
-  "@messageCenterFilterAll": {
-    "description": "Filter to show all message threads",
-    "maxLength": 14
-  },
+  "@messageCenterFilterAll": [
+    [
+      "description",
+      "Filter to show all message threads"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageCenterFilterUnread": "Não lidas",
-  "@messageCenterFilterUnread": {
-    "description": "Filter to show unread message threads",
-    "maxLength": 14
-  },
+  "@messageCenterFilterUnread": [
+    [
+      "description",
+      "Filter to show unread message threads"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageCenterFilterTeam": "Equipe",
-  "@messageCenterFilterTeam": {
-    "description": "Filter to show team message threads",
-    "maxLength": 14
-  },
+  "@messageCenterFilterTeam": [
+    [
+      "description",
+      "Filter to show team message threads"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageCenterNewThread": "Nova Mensagem",
-  "@messageCenterNewThread": {
-    "description": "Button to start new message thread",
-    "maxLength": 22
-  },
+  "@messageCenterNewThread": [
+    [
+      "description",
+      "Button to start new message thread"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "messageCenterEmptyState": "Nenhuma mensagem ainda. Inicie uma conversa com os membros da sua equipe!",
-  "@messageCenterEmptyState": {
-    "description": "Empty state message when no messages exist"
-  },
+  "@messageCenterEmptyState": [
+    [
+      "description",
+      "Empty state message when no messages exist"
+    ]
+  ],
   "messageCenterUnreadBadge": "{count} nova(s)",
-  "@messageCenterUnreadBadge": {
-    "description": "Badge showing unread message count",
-    "maxLength": 14,
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
+  "@messageCenterUnreadBadge": [
+    [
+      "description",
+      "Badge showing unread message count"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "messageCenterLastMessage": "Última mensagem há {time}",
-  "@messageCenterLastMessage": {
-    "description": "Label showing time of last message",
-    "placeholders": {
-      "time": {
-        "type": "String",
-        "example": "2h ago"
-      }
-    }
-  },
-  "messageCenterErrorLoading": "Erro ao carregar mensagens",
-  "@messageCenterErrorLoading": {
-    "description": "Error message when messages fail to load"
-  },
+  "@messageCenterLastMessage": [
+    [
+      "description",
+      "Label showing time of last message"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "time",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "2h ago"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notificationsTitle": "Notificações",
-  "@notificationsTitle": {
-    "description": "Notifications screen title in app bar",
-    "maxLength": 32
-  },
+  "@notificationsTitle": [
+    [
+      "description",
+      "Notifications screen title in app bar"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "notificationsFilterAll": "Todas",
-  "@notificationsFilterAll": {
-    "description": "Filter to show all notifications",
-    "maxLength": 14
-  },
+  "@notificationsFilterAll": [
+    [
+      "description",
+      "Filter to show all notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "notificationsFilterUnread": "Não lidas",
-  "@notificationsFilterUnread": {
-    "description": "Filter to show unread notifications",
-    "maxLength": 14
-  },
+  "@notificationsFilterUnread": [
+    [
+      "description",
+      "Filter to show unread notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "notificationsFilterMilestones": "Marcos",
-  "@notificationsFilterMilestones": {
-    "description": "Filter to show milestone notifications",
-    "maxLength": 14
-  },
+  "@notificationsFilterMilestones": [
+    [
+      "description",
+      "Filter to show milestone notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "notificationsFilterTeam": "Equipe",
-  "@notificationsFilterTeam": {
-    "description": "Filter to show team notifications",
-    "maxLength": 14
-  },
+  "@notificationsFilterTeam": [
+    [
+      "description",
+      "Filter to show team notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "notificationsMarkAllRead": "Marcar Todas Lidas",
-  "@notificationsMarkAllRead": {
-    "description": "Button to mark all notifications as read",
-    "maxLength": 22
-  },
+  "@notificationsMarkAllRead": [
+    [
+      "description",
+      "Button to mark all notifications as read"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "notificationsClearAll": "Limpar Todas",
-  "@notificationsClearAll": {
-    "description": "Button to clear all notifications",
-    "maxLength": 22
-  },
+  "@notificationsClearAll": [
+    [
+      "description",
+      "Button to clear all notifications"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "notificationsEmptyState": "Nenhuma notificação ainda. Avisaremos sobre atualizações importantes da equipe!",
-  "@notificationsEmptyState": {
-    "description": "Empty state message when no notifications exist"
-  },
+  "@notificationsEmptyState": [
+    [
+      "description",
+      "Empty state message when no notifications exist"
+    ]
+  ],
   "notificationsTimeNow": "Agora",
-  "@notificationsTimeNow": {
-    "description": "Time label for very recent notifications",
-    "maxLength": 14
-  },
+  "@notificationsTimeNow": [
+    [
+      "description",
+      "Time label for very recent notifications"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "notificationsTimeMinutes": "há {minutes}m",
-  "@notificationsTimeMinutes": {
-    "description": "Time label for notifications from minutes ago",
-    "maxLength": 14,
-    "placeholders": {
-      "minutes": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
+  "@notificationsTimeMinutes": [
+    [
+      "description",
+      "Time label for notifications from minutes ago"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "minutes",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "5"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notificationsTimeHours": "há {hours}h",
-  "@notificationsTimeHours": {
-    "description": "Time label for notifications from hours ago",
-    "maxLength": 14,
-    "placeholders": {
-      "hours": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
+  "@notificationsTimeHours": [
+    [
+      "description",
+      "Time label for notifications from hours ago"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "hours",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "2"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notificationsTimeDays": "há {days}d",
-  "@notificationsTimeDays": {
-    "description": "Time label for notifications from days ago",
-    "maxLength": 14,
-    "placeholders": {
-      "days": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "notificationsTimeYears": "há {years}a",
-  "@notificationsTimeYears": {
-    "description": "Time label for notifications from years ago",
-    "maxLength": 14,
-    "placeholders": {
-      "years": {
-        "type": "int",
-        "example": "1"
-      }
-    }
-  },
+  "@notificationsTimeDays": [
+    [
+      "description",
+      "Time label for notifications from days ago"
+    ],
+    [
+      "maxLength",
+      14
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "days",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "gettingStartedTitle": "Primeiros Passos",
-  "@gettingStartedTitle": {
-    "description": "Getting started guide screen title",
-    "maxLength": 32
-  },
+  "@gettingStartedTitle": [
+    [
+      "description",
+      "Getting started guide screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "gettingStartedWelcome": "Bem-vindo ao Team Build Pro!",
-  "@gettingStartedWelcome": {
-    "description": "Welcome heading in getting started guide",
-    "maxLength": 36
-  },
+  "@gettingStartedWelcome": [
+    [
+      "description",
+      "Welcome heading in getting started guide"
+    ],
+    [
+      "maxLength",
+      36
+    ]
+  ],
   "gettingStartedIntro": "Vamos preparar você para o sucesso. Este guia rápido apresentará os recursos essenciais para começar a construir sua equipe.",
-  "@gettingStartedIntro": {
-    "description": "Introduction text for getting started guide"
-  },
+  "@gettingStartedIntro": [
+    [
+      "description",
+      "Introduction text for getting started guide"
+    ]
+  ],
   "gettingStartedStep1Title": "Faça sua lista",
-  "@gettingStartedStep1Title": {
-    "description": "Title for step 1 in getting started",
-    "maxLength": 32
-  },
+  "@gettingStartedStep1Title": [
+    [
+      "description",
+      "Title for step 1 in getting started"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "gettingStartedStep2Title": "Compartilhe com sua rede",
-  "@gettingStartedStep2Title": {
-    "description": "Title for step 2 in getting started",
-    "maxLength": 32
-  },
+  "@gettingStartedStep2Title": [
+    [
+      "description",
+      "Title for step 2 in getting started"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "gettingStartedStep3Title": "Dê boas-vindas aos seus novos membros da equipe",
-  "@gettingStartedStep3Title": {
-    "description": "Title for step 3 in getting started",
-    "maxLength": 32
-  },
+  "@gettingStartedStep3Title": [
+    [
+      "description",
+      "Title for step 3 in getting started"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "gettingStartedStep3Description": "Quando você receber uma notificação de novo membro da equipe, faça um acompanhamento imediato para dar boas-vindas à sua equipe. As primeiras impressões importam!",
-  "@gettingStartedStep3Description": {
-    "description": "Description for tracking progress step"
-  },
+  "@gettingStartedStep3Description": [
+    [
+      "description",
+      "Description for tracking progress step"
+    ]
+  ],
   "gettingStartedStep4Title": "Engaje Sua Equipe",
-  "@gettingStartedStep4Title": {
-    "description": "Title for step 4 in getting started",
-    "maxLength": 32
-  },
+  "@gettingStartedStep4Title": [
+    [
+      "description",
+      "Title for step 4 in getting started"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "gettingStartedStep4Description": "Use a central de mensagens para se comunicar com sua equipe e fornecer suporte.",
-  "@gettingStartedStep4Description": {
-    "description": "Description for team engagement step"
-  },
+  "@gettingStartedStep4Description": [
+    [
+      "description",
+      "Description for team engagement step"
+    ]
+  ],
   "gettingStartedButtonStart": "Começar",
-  "@gettingStartedButtonStart": {
-    "description": "Button to begin using the app after guide",
-    "maxLength": 22
-  },
+  "@gettingStartedButtonStart": [
+    [
+      "description",
+      "Button to begin using the app after guide"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "gettingStartedButtonNext": "Próximo",
-  "@gettingStartedButtonNext": {
-    "description": "Button to advance to next step in guide",
-    "maxLength": 14
-  },
+  "@gettingStartedButtonNext": [
+    [
+      "description",
+      "Button to advance to next step in guide"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "gettingStartedButtonBack": "Voltar",
-  "@gettingStartedButtonBack": {
-    "description": "Button to return to previous step in guide",
-    "maxLength": 14
-  },
+  "@gettingStartedButtonBack": [
+    [
+      "description",
+      "Button to return to previous step in guide"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "gettingStartedButtonSkip": "Pular",
-  "@gettingStartedButtonSkip": {
-    "description": "Button to skip getting started guide",
-    "maxLength": 14
-  },
-  "gettingStartedButtonFinish": "Concluir",
-  "@gettingStartedButtonFinish": {
-    "description": "Button to finish getting started guide",
-    "maxLength": 14
-  },
+  "@gettingStartedButtonSkip": [
+    [
+      "description",
+      "Button to skip getting started guide"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "welcomeTitle": "Boas-vindas",
-  "@welcomeTitle": {
-    "description": "Welcome screen title",
-    "maxLength": 32
-  },
+  "@welcomeTitle": [
+    [
+      "description",
+      "Welcome screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "welcomeHeadline": "Construa Sua Equipe.\nCresça Seu Negócio.",
-  "@welcomeHeadline": {
-    "description": "Main headline on welcome screen"
-  },
+  "@welcomeHeadline": [
+    [
+      "description",
+      "Main headline on welcome screen"
+    ]
+  ],
   "welcomeSubheadline": "A plataforma profissional para construção de equipes e crescimento de rede.",
-  "@welcomeSubheadline": {
-    "description": "Subheadline explaining app purpose"
-  },
+  "@welcomeSubheadline": [
+    [
+      "description",
+      "Subheadline explaining app purpose"
+    ]
+  ],
   "welcomeButtonSignIn": "Entrar",
-  "@welcomeButtonSignIn": {
-    "description": "Button to navigate to sign in screen",
-    "maxLength": 22
-  },
+  "@welcomeButtonSignIn": [
+    [
+      "description",
+      "Button to navigate to sign in screen"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "welcomeButtonSignUp": "Criar Conta",
-  "@welcomeButtonSignUp": {
-    "description": "Button to navigate to sign up screen",
-    "maxLength": 22
-  },
+  "@welcomeButtonSignUp": [
+    [
+      "description",
+      "Button to navigate to sign up screen"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "welcomeFeature1Title": "Rastreamento Inteligente",
-  "@welcomeFeature1Title": {
-    "description": "Title for feature 1 highlight",
-    "maxLength": 28
-  },
+  "@welcomeFeature1Title": [
+    [
+      "description",
+      "Title for feature 1 highlight"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "welcomeFeature1Description": "Monitore o crescimento da sua equipe em tempo real com análises poderosas.",
-  "@welcomeFeature1Description": {
-    "description": "Description for feature 1"
-  },
+  "@welcomeFeature1Description": [
+    [
+      "description",
+      "Description for feature 1"
+    ]
+  ],
   "welcomeFeature2Title": "Crescimento Automatizado",
-  "@welcomeFeature2Title": {
-    "description": "Title for feature 2 highlight",
-    "maxLength": 28
-  },
+  "@welcomeFeature2Title": [
+    [
+      "description",
+      "Title for feature 2 highlight"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "welcomeFeature2Description": "Sistema de rede de alimentação transfere automaticamente membros qualificados para sua equipe.",
-  "@welcomeFeature2Description": {
-    "description": "Description for feature 2"
-  },
+  "@welcomeFeature2Description": [
+    [
+      "description",
+      "Description for feature 2"
+    ]
+  ],
   "welcomeFeature3Title": "Mensagens Seguras",
-  "@welcomeFeature3Title": {
-    "description": "Title for feature 3 highlight",
-    "maxLength": 28
-  },
+  "@welcomeFeature3Title": [
+    [
+      "description",
+      "Title for feature 3 highlight"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "welcomeFeature3Description": "Comunique-se com segurança com sua equipe através de mensagens criptografadas.",
-  "@welcomeFeature3Description": {
-    "description": "Description for feature 3"
-  },
-  "welcomeButtonContinue": "Continuar",
-  "@welcomeButtonContinue": {
-    "description": "Button to continue from welcome screen",
-    "maxLength": 14
-  },
+  "@welcomeFeature3Description": [
+    [
+      "description",
+      "Description for feature 3"
+    ]
+  ],
   "addLinkTitle": "Adicionar link",
-  "@addLinkTitle": {
-    "description": "Screen title for adding business opportunity link",
-    "maxLength": 32
-  },
+  "@addLinkTitle": [
+    [
+      "description",
+      "Screen title for adding business opportunity link"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "addLinkDescription": "Adicione seu link de oportunidade de negócio para começar a construir sua equipe.",
-  "@addLinkDescription": {
-    "description": "Instruction text for add link screen"
-  },
+  "@addLinkDescription": [
+    [
+      "description",
+      "Instruction text for add link screen"
+    ]
+  ],
   "addLinkLabelUrl": "URL da Oportunidade de Negócio",
-  "@addLinkLabelUrl": {
-    "description": "Label for business URL input field"
-  },
+  "@addLinkLabelUrl": [
+    [
+      "description",
+      "Label for business URL input field"
+    ]
+  ],
   "addLinkHintUrl": "Digite a URL completa da sua página de oportunidade de negócio",
-  "@addLinkHintUrl": {
-    "description": "Placeholder for business URL input"
-  },
+  "@addLinkHintUrl": [
+    [
+      "description",
+      "Placeholder for business URL input"
+    ]
+  ],
   "addLinkUrlRequired": "Por favor, digite uma URL",
-  "@addLinkUrlRequired": {
-    "description": "Validation error when URL field is empty"
-  },
+  "@addLinkUrlRequired": [
+    [
+      "description",
+      "Validation error when URL field is empty"
+    ]
+  ],
   "addLinkUrlInvalid": "Por favor, digite uma URL válida",
-  "@addLinkUrlInvalid": {
-    "description": "Validation error when URL format is invalid"
-  },
+  "@addLinkUrlInvalid": [
+    [
+      "description",
+      "Validation error when URL format is invalid"
+    ]
+  ],
   "addLinkButtonSave": "Salvar Link",
-  "@addLinkButtonSave": {
-    "description": "Button to save business link",
-    "maxLength": 22
-  },
+  "@addLinkButtonSave": [
+    [
+      "description",
+      "Button to save business link"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "addLinkButtonTest": "Testar Link",
-  "@addLinkButtonTest": {
-    "description": "Button to test if link works",
-    "maxLength": 22
-  },
+  "@addLinkButtonTest": [
+    [
+      "description",
+      "Button to test if link works"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "addLinkSuccessMessage": "Link de negócio salvo com sucesso!",
-  "@addLinkSuccessMessage": {
-    "description": "Success message after saving link"
-  },
+  "@addLinkSuccessMessage": [
+    [
+      "description",
+      "Success message after saving link"
+    ]
+  ],
   "addLinkErrorMessage": "Erro ao salvar link. Por favor, tente novamente.",
-  "@addLinkErrorMessage": {
-    "description": "Error message when save fails"
-  },
+  "@addLinkErrorMessage": [
+    [
+      "description",
+      "Error message when save fails"
+    ]
+  ],
   "businessTitle": "Oportunidade de Negócio",
-  "@businessTitle": {
-    "description": "Business opportunity screen title",
-    "maxLength": 32
-  },
+  "@businessTitle": [
+    [
+      "description",
+      "Business opportunity screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "businessLoadingMessage": "Carregando detalhes da oportunidade...",
-  "@businessLoadingMessage": {
-    "description": "Loading message while fetching business details"
-  },
+  "@businessLoadingMessage": [
+    [
+      "description",
+      "Loading message while fetching business details"
+    ]
+  ],
   "businessErrorMessage": "Não foi possível carregar detalhes da oportunidade",
-  "@businessErrorMessage": {
-    "description": "Error message when loading fails"
-  },
+  "@businessErrorMessage": [
+    [
+      "description",
+      "Error message when loading fails"
+    ]
+  ],
   "businessButtonJoin": "Participar Agora",
-  "@businessButtonJoin": {
-    "description": "Button to join business opportunity",
-    "maxLength": 22
-  },
+  "@businessButtonJoin": [
+    [
+      "description",
+      "Button to join business opportunity"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "businessButtonLearnMore": "Saiba Mais",
-  "@businessButtonLearnMore": {
-    "description": "Button to learn more about opportunity",
-    "maxLength": 22
-  },
+  "@businessButtonLearnMore": [
+    [
+      "description",
+      "Button to learn more about opportunity"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "businessButtonContact": "Contatar Patrocinador",
-  "@businessButtonContact": {
-    "description": "Button to contact business sponsor",
-    "maxLength": 22
-  },
+  "@businessButtonContact": [
+    [
+      "description",
+      "Button to contact business sponsor"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "changePasswordTitle": "Alterar Senha",
-  "@changePasswordTitle": {
-    "description": "Change password screen title",
-    "maxLength": 32
-  },
+  "@changePasswordTitle": [
+    [
+      "description",
+      "Change password screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "changePasswordLabelCurrent": "Senha Atual",
-  "@changePasswordLabelCurrent": {
-    "description": "Label for current password field"
-  },
+  "@changePasswordLabelCurrent": [
+    [
+      "description",
+      "Label for current password field"
+    ]
+  ],
   "changePasswordHintCurrent": "Digite sua senha atual",
-  "@changePasswordHintCurrent": {
-    "description": "Placeholder for current password field"
-  },
+  "@changePasswordHintCurrent": [
+    [
+      "description",
+      "Placeholder for current password field"
+    ]
+  ],
   "changePasswordCurrentRequired": "Por favor, digite sua senha atual",
-  "@changePasswordCurrentRequired": {
-    "description": "Validation error when current password is empty"
-  },
+  "@changePasswordCurrentRequired": [
+    [
+      "description",
+      "Validation error when current password is empty"
+    ]
+  ],
   "changePasswordLabelNew": "Nova Senha",
-  "@changePasswordLabelNew": {
-    "description": "Label for new password field"
-  },
+  "@changePasswordLabelNew": [
+    [
+      "description",
+      "Label for new password field"
+    ]
+  ],
   "changePasswordHintNew": "Digite sua nova senha",
-  "@changePasswordHintNew": {
-    "description": "Placeholder for new password field"
-  },
+  "@changePasswordHintNew": [
+    [
+      "description",
+      "Placeholder for new password field"
+    ]
+  ],
   "changePasswordNewRequired": "Por favor, digite uma nova senha",
-  "@changePasswordNewRequired": {
-    "description": "Validation error when new password is empty"
-  },
+  "@changePasswordNewRequired": [
+    [
+      "description",
+      "Validation error when new password is empty"
+    ]
+  ],
   "changePasswordLabelConfirm": "Confirmar Nova Senha",
-  "@changePasswordLabelConfirm": {
-    "description": "Label for confirm new password field"
-  },
+  "@changePasswordLabelConfirm": [
+    [
+      "description",
+      "Label for confirm new password field"
+    ]
+  ],
   "changePasswordHintConfirm": "Digite sua nova senha novamente",
-  "@changePasswordHintConfirm": {
-    "description": "Placeholder for confirm password field"
-  },
+  "@changePasswordHintConfirm": [
+    [
+      "description",
+      "Placeholder for confirm password field"
+    ]
+  ],
   "changePasswordConfirmRequired": "Por favor, confirme sua nova senha",
-  "@changePasswordConfirmRequired": {
-    "description": "Validation error when confirm password is empty"
-  },
+  "@changePasswordConfirmRequired": [
+    [
+      "description",
+      "Validation error when confirm password is empty"
+    ]
+  ],
   "changePasswordMismatch": "As novas senhas não coincidem",
-  "@changePasswordMismatch": {
-    "description": "Validation error when passwords don't match"
-  },
+  "@changePasswordMismatch": [
+    [
+      "description",
+      "Validation error when passwords don't match"
+    ]
+  ],
   "changePasswordButtonUpdate": "Atualizar Senha",
-  "@changePasswordButtonUpdate": {
-    "description": "Button to update password",
-    "maxLength": 22
-  },
+  "@changePasswordButtonUpdate": [
+    [
+      "description",
+      "Button to update password"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "changePasswordSuccessMessage": "Senha atualizada com sucesso!",
-  "@changePasswordSuccessMessage": {
-    "description": "Success message after password change"
-  },
+  "@changePasswordSuccessMessage": [
+    [
+      "description",
+      "Success message after password change"
+    ]
+  ],
   "changePasswordErrorMessage": "Erro ao atualizar senha. Por favor, tente novamente.",
-  "@changePasswordErrorMessage": {
-    "description": "Error message when password change fails"
-  },
+  "@changePasswordErrorMessage": [
+    [
+      "description",
+      "Error message when password change fails"
+    ]
+  ],
   "chatTitle": "Chat",
-  "@chatTitle": {
-    "description": "Chat screen title",
-    "maxLength": 32
-  },
+  "@chatTitle": [
+    [
+      "description",
+      "Chat screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "chatInputHint": "Digite uma mensagem...",
-  "@chatInputHint": {
-    "description": "Placeholder for chat message input"
-  },
+  "@chatInputHint": [
+    [
+      "description",
+      "Placeholder for chat message input"
+    ]
+  ],
   "chatButtonSend": "Enviar",
-  "@chatButtonSend": {
-    "description": "Button to send chat message",
-    "maxLength": 14
-  },
+  "@chatButtonSend": [
+    [
+      "description",
+      "Button to send chat message"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "chatEmptyState": "Nenhuma mensagem ainda. Inicie a conversa!",
-  "@chatEmptyState": {
-    "description": "Empty state when chat has no messages"
-  },
+  "@chatEmptyState": [
+    [
+      "description",
+      "Empty state when chat has no messages"
+    ]
+  ],
   "chatMessageDeleted": "Esta mensagem foi excluída",
-  "@chatMessageDeleted": {
-    "description": "Placeholder for deleted message"
-  },
+  "@chatMessageDeleted": [
+    [
+      "description",
+      "Placeholder for deleted message"
+    ]
+  ],
   "chatMessageEdited": "editada",
-  "@chatMessageEdited": {
-    "description": "Label showing message was edited",
-    "maxLength": 14
-  },
+  "@chatMessageEdited": [
+    [
+      "description",
+      "Label showing message was edited"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "chatTypingIndicator": "{name} está digitando...",
-  "@chatTypingIndicator": {
-    "description": "Indicator showing someone is typing",
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Stephen"
-      }
-    }
-  },
-  "chatErrorSending": "Erro ao enviar mensagem",
-  "@chatErrorSending": {
-    "description": "Error message when chat message fails to send"
-  },
+  "@chatTypingIndicator": [
+    [
+      "description",
+      "Indicator showing someone is typing"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "name",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "chatbotTitle": "Coach de IA",
-  "@chatbotTitle": {
-    "description": "AI chatbot screen title",
-    "maxLength": 32
-  },
+  "@chatbotTitle": [
+    [
+      "description",
+      "AI chatbot screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "chatbotWelcome": "Oi! Sou seu coach de IA. Como posso ajudá-lo a expandir sua equipe hoje?",
-  "@chatbotWelcome": {
-    "description": "Welcome message from AI chatbot"
-  },
+  "@chatbotWelcome": [
+    [
+      "description",
+      "Welcome message from AI chatbot"
+    ]
+  ],
   "chatbotInputHint": "Pergunte-me qualquer coisa sobre construção de equipe...",
-  "@chatbotInputHint": {
-    "description": "Placeholder for chatbot input field"
-  },
+  "@chatbotInputHint": [
+    [
+      "description",
+      "Placeholder for chatbot input field"
+    ]
+  ],
   "chatbotSuggestion1": "Como recrutar de forma mais eficaz?",
-  "@chatbotSuggestion1": {
-    "description": "Suggested question 1 for chatbot",
-    "maxLength": 42
-  },
+  "@chatbotSuggestion1": [
+    [
+      "description",
+      "Suggested question 1 for chatbot"
+    ],
+    [
+      "maxLength",
+      42
+    ]
+  ],
   "chatbotSuggestion2": "Quais são os requisitos de elegibilidade?",
-  "@chatbotSuggestion2": {
-    "description": "Suggested question 2 for chatbot",
-    "maxLength": 42
-  },
+  "@chatbotSuggestion2": [
+    [
+      "description",
+      "Suggested question 2 for chatbot"
+    ],
+    [
+      "maxLength",
+      42
+    ]
+  ],
   "chatbotSuggestion3": "Como funciona o sistema de alimentação?",
-  "@chatbotSuggestion3": {
-    "description": "Suggested question 3 for chatbot",
-    "maxLength": 42
-  },
+  "@chatbotSuggestion3": [
+    [
+      "description",
+      "Suggested question 3 for chatbot"
+    ],
+    [
+      "maxLength",
+      42
+    ]
+  ],
   "chatbotThinking": "Pensando...",
-  "@chatbotThinking": {
-    "description": "Loading indicator while chatbot generates response"
-  },
-  "chatbotPlaceholder": "Digite sua pergunta...",
-  "@chatbotPlaceholder": {
-    "description": "Placeholder for chatbot message input"
-  },
+  "@chatbotThinking": [
+    [
+      "description",
+      "Loading indicator while chatbot generates response"
+    ]
+  ],
   "companyTitle": "Informações da Empresa",
-  "@companyTitle": {
-    "description": "Company information screen title",
-    "maxLength": 32
-  },
+  "@companyTitle": [
+    [
+      "description",
+      "Company information screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "companyAboutHeading": "Sobre o Team Build Pro",
-  "@companyAboutHeading": {
-    "description": "Heading for about section",
-    "maxLength": 32
-  },
+  "@companyAboutHeading": [
+    [
+      "description",
+      "Heading for about section"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "companyAboutText": "Team Build Pro é uma plataforma SaaS profissional projetada para construção de equipes e crescimento de rede. Fornecemos as ferramentas e tecnologia para ajudá-lo a construir e gerenciar sua equipe profissional de forma eficaz.",
-  "@companyAboutText": {
-    "description": "About company description text"
-  },
+  "@companyAboutText": [
+    [
+      "description",
+      "About company description text"
+    ]
+  ],
   "companyVersionLabel": "Versão do App",
-  "@companyVersionLabel": {
-    "description": "Label for app version information",
-    "maxLength": 22
-  },
+  "@companyVersionLabel": [
+    [
+      "description",
+      "Label for app version information"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "companyContactHeading": "Fale Conosco",
-  "@companyContactHeading": {
-    "description": "Heading for contact section",
-    "maxLength": 22
-  },
-  "companyButtonVisit": "Visitar Site",
-  "@companyButtonVisit": {
-    "description": "Button to visit company website",
-    "maxLength": 22
-  },
+  "@companyContactHeading": [
+    [
+      "description",
+      "Heading for contact section"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "deleteAccountTitle": "Excluir Conta",
-  "@deleteAccountTitle": {
-    "description": "Delete account screen title",
-    "maxLength": 32
-  },
+  "@deleteAccountTitle": [
+    [
+      "description",
+      "Delete account screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "deleteAccountWarning": "Atenção: Esta ação não pode ser desfeita!",
-  "@deleteAccountWarning": {
-    "description": "Warning message about permanent deletion",
-    "maxLength": 42
-  },
+  "@deleteAccountWarning": [
+    [
+      "description",
+      "Warning message about permanent deletion"
+    ],
+    [
+      "maxLength",
+      42
+    ]
+  ],
   "deleteAccountDescription": "Excluir sua conta removerá permanentemente todos os seus dados, incluindo seu perfil, informações da equipe e histórico de mensagens. Esta ação é irreversível.",
-  "@deleteAccountDescription": {
-    "description": "Detailed description of account deletion consequences"
-  },
+  "@deleteAccountDescription": [
+    [
+      "description",
+      "Detailed description of account deletion consequences"
+    ]
+  ],
   "deleteAccountConfirmPrompt": "Para confirmar a exclusão, digite EXCLUIR abaixo:",
-  "@deleteAccountConfirmPrompt": {
-    "description": "Prompt for confirmation text input"
-  },
+  "@deleteAccountConfirmPrompt": [
+    [
+      "description",
+      "Prompt for confirmation text input"
+    ]
+  ],
   "deleteAccountConfirmHint": "Digite seu endereço de e-mail",
-  "@deleteAccountConfirmHint": {
-    "description": "Placeholder for delete confirmation input"
-  },
+  "@deleteAccountConfirmHint": [
+    [
+      "description",
+      "Placeholder for delete confirmation input"
+    ]
+  ],
   "deleteAccountConfirmMismatch": "Por favor, digite EXCLUIR exatamente como mostrado",
-  "@deleteAccountConfirmMismatch": {
-    "description": "Error when confirmation text doesn't match"
-  },
+  "@deleteAccountConfirmMismatch": [
+    [
+      "description",
+      "Error when confirmation text doesn't match"
+    ]
+  ],
   "deleteAccountButtonDelete": "Excluir conta",
-  "@deleteAccountButtonDelete": {
-    "description": "Button to confirm account deletion",
-    "maxLength": 22
-  },
+  "@deleteAccountButtonDelete": [
+    [
+      "description",
+      "Button to confirm account deletion"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "deleteAccountButtonCancel": "Cancelar",
-  "@deleteAccountButtonCancel": {
-    "description": "Button to cancel deletion",
-    "maxLength": 14
-  },
+  "@deleteAccountButtonCancel": [
+    [
+      "description",
+      "Button to cancel deletion"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "deleteAccountSuccessMessage": "Sua conta foi excluída",
-  "@deleteAccountSuccessMessage": {
-    "description": "Success message after deletion"
-  },
+  "@deleteAccountSuccessMessage": [
+    [
+      "description",
+      "Success message after deletion"
+    ]
+  ],
   "deleteAccountErrorMessage": "Erro ao excluir conta. Entre em contato com o suporte.",
-  "@deleteAccountErrorMessage": {
-    "description": "Error message when deletion fails"
-  },
+  "@deleteAccountErrorMessage": [
+    [
+      "description",
+      "Error message when deletion fails"
+    ]
+  ],
   "editProfileTitle": "Editar Perfil",
-  "@editProfileTitle": {
-    "description": "Edit profile screen title",
-    "maxLength": 32
-  },
+  "@editProfileTitle": [
+    [
+      "description",
+      "Edit profile screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "editProfileLabelFirstName": "Nome",
-  "@editProfileLabelFirstName": {
-    "description": "Label for first name field"
-  },
+  "@editProfileLabelFirstName": [
+    [
+      "description",
+      "Label for first name field"
+    ]
+  ],
   "editProfileLabelLastName": "Sobrenome",
-  "@editProfileLabelLastName": {
-    "description": "Label for last name field"
-  },
+  "@editProfileLabelLastName": [
+    [
+      "description",
+      "Label for last name field"
+    ]
+  ],
   "editProfileLabelEmail": "Email",
-  "@editProfileLabelEmail": {
-    "description": "Label for email field"
-  },
+  "@editProfileLabelEmail": [
+    [
+      "description",
+      "Label for email field"
+    ]
+  ],
   "editProfileLabelPhone": "Número de Telefone",
-  "@editProfileLabelPhone": {
-    "description": "Label for phone number field"
-  },
+  "@editProfileLabelPhone": [
+    [
+      "description",
+      "Label for phone number field"
+    ]
+  ],
   "editProfileLabelCity": "Cidade",
-  "@editProfileLabelCity": {
-    "description": "Label for city field"
-  },
+  "@editProfileLabelCity": [
+    [
+      "description",
+      "Label for city field"
+    ]
+  ],
   "editProfileLabelState": "Estado/Província",
-  "@editProfileLabelState": {
-    "description": "Label for state/province field"
-  },
+  "@editProfileLabelState": [
+    [
+      "description",
+      "Label for state/province field"
+    ]
+  ],
   "editProfileLabelCountry": "País",
-  "@editProfileLabelCountry": {
-    "description": "Label for country field"
-  },
+  "@editProfileLabelCountry": [
+    [
+      "description",
+      "Label for country field"
+    ]
+  ],
   "editProfileLabelBio": "Biografia",
-  "@editProfileLabelBio": {
-    "description": "Label for bio/about field"
-  },
+  "@editProfileLabelBio": [
+    [
+      "description",
+      "Label for bio/about field"
+    ]
+  ],
   "editProfileHintBio": "Conte à sua equipe sobre você...",
-  "@editProfileHintBio": {
-    "description": "Placeholder for bio field"
-  },
+  "@editProfileHintBio": [
+    [
+      "description",
+      "Placeholder for bio field"
+    ]
+  ],
   "editProfileButtonSave": "Salvar Alterações",
-  "@editProfileButtonSave": {
-    "description": "Button to save profile changes",
-    "maxLength": 22
-  },
+  "@editProfileButtonSave": [
+    [
+      "description",
+      "Button to save profile changes"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "editProfileButtonCancel": "Cancelar",
-  "@editProfileButtonCancel": {
-    "description": "Button to cancel editing",
-    "maxLength": 14
-  },
+  "@editProfileButtonCancel": [
+    [
+      "description",
+      "Button to cancel editing"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "editProfileButtonChangePhoto": "Alterar Foto",
-  "@editProfileButtonChangePhoto": {
-    "description": "Button to change profile photo",
-    "maxLength": 22
-  },
+  "@editProfileButtonChangePhoto": [
+    [
+      "description",
+      "Button to change profile photo"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "editProfileSuccessMessage": "Perfil atualizado com sucesso!",
-  "@editProfileSuccessMessage": {
-    "description": "Success message after saving profile"
-  },
+  "@editProfileSuccessMessage": [
+    [
+      "description",
+      "Success message after saving profile"
+    ]
+  ],
   "editProfileErrorMessage": "Erro ao atualizar perfil. Por favor, tente novamente.",
-  "@editProfileErrorMessage": {
-    "description": "Error message when profile save fails"
-  },
+  "@editProfileErrorMessage": [
+    [
+      "description",
+      "Error message when profile save fails"
+    ]
+  ],
   "eligibilityTitle": "Status de Elegibilidade",
-  "@eligibilityTitle": {
-    "description": "Eligibility screen title",
-    "maxLength": 32
-  },
+  "@eligibilityTitle": [
+    [
+      "description",
+      "Eligibility screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "eligibilityCurrentStatus": "Status Atual",
-  "@eligibilityCurrentStatus": {
-    "description": "Section heading for current eligibility status",
-    "maxLength": 28
-  },
+  "@eligibilityCurrentStatus": [
+    [
+      "description",
+      "Section heading for current eligibility status"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "eligibilityStatusQualified": "Qualificado!",
-  "@eligibilityStatusQualified": {
-    "description": "Status label when user is qualified",
-    "maxLength": 14
-  },
+  "@eligibilityStatusQualified": [
+    [
+      "description",
+      "Status label when user is qualified"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "eligibilityStatusNotQualified": "Ainda Não Qualificado",
-  "@eligibilityStatusNotQualified": {
-    "description": "Status label when user is not qualified",
-    "maxLength": 22
-  },
+  "@eligibilityStatusNotQualified": [
+    [
+      "description",
+      "Status label when user is not qualified"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "eligibilityRequirementsHeading": "Requisitos",
-  "@eligibilityRequirementsHeading": {
-    "description": "Section heading for eligibility requirements",
-    "maxLength": 28
-  },
+  "@eligibilityRequirementsHeading": [
+    [
+      "description",
+      "Section heading for eligibility requirements"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "eligibilityDirectSponsorsLabel": "Patrocinadores Diretos",
-  "@eligibilityDirectSponsorsLabel": {
-    "description": "Label for direct sponsors requirement",
-    "maxLength": 28
-  },
+  "@eligibilityDirectSponsorsLabel": [
+    [
+      "description",
+      "Label for direct sponsors requirement"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "eligibilityDirectSponsorsProgress": "{current} de {required} necessários",
-  "@eligibilityDirectSponsorsProgress": {
-    "description": "Progress text for direct sponsors",
-    "placeholders": {
-      "current": {
-        "type": "int",
-        "example": "3"
-      },
-      "required": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
+  "@eligibilityDirectSponsorsProgress": [
+    [
+      "description",
+      "Progress text for direct sponsors"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "current",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ],
+        [
+          "required",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "5"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "eligibilityTotalTeamLabel": "Total de Membros da Equipe",
-  "@eligibilityTotalTeamLabel": {
-    "description": "Label for total team requirement",
-    "maxLength": 28
-  },
+  "@eligibilityTotalTeamLabel": [
+    [
+      "description",
+      "Label for total team requirement"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "eligibilityTotalTeamProgress": "{current} de {required} necessários",
-  "@eligibilityTotalTeamProgress": {
-    "description": "Progress text for total team",
-    "placeholders": {
-      "current": {
-        "type": "int",
-        "example": "15"
-      },
-      "required": {
-        "type": "int",
-        "example": "25"
-      }
-    }
-  },
+  "@eligibilityTotalTeamProgress": [
+    [
+      "description",
+      "Progress text for total team"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "current",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "15"
+            ]
+          ]
+        ],
+        [
+          "required",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "25"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "eligibilityProgressBar": "Progresso: {percent}%",
-  "@eligibilityProgressBar": {
-    "description": "Overall progress percentage",
-    "placeholders": {
-      "percent": {
-        "type": "int",
-        "example": "60"
-      }
-    }
-  },
+  "@eligibilityProgressBar": [
+    [
+      "description",
+      "Overall progress percentage"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "percent",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "60"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "eligibilityNextSteps": "Próximos Passos",
-  "@eligibilityNextSteps": {
-    "description": "Section heading for next steps",
-    "maxLength": 22
-  },
+  "@eligibilityNextSteps": [
+    [
+      "description",
+      "Section heading for next steps"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "eligibilityNextStepsDescription": "Continue compartilhando seu link de indicação para expandir sua equipe e atender aos requisitos!",
-  "@eligibilityNextStepsDescription": {
-    "description": "Encouragement text for next steps"
-  },
-  "eligibilityButtonContinue": "Continuar",
-  "@eligibilityButtonContinue": {
-    "description": "Button to continue from eligibility screen",
-    "maxLength": 14
-  },
+  "@eligibilityNextStepsDescription": [
+    [
+      "description",
+      "Encouragement text for next steps"
+    ]
+  ],
   "shareTitle": "Compartilhar",
-  "@shareTitle": {
-    "description": "Share screen title",
-    "maxLength": 32
-  },
+  "@shareTitle": [
+    [
+      "description",
+      "Share screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "shareYourLinkHeading": "Seu Link de Indicação",
-  "@shareYourLinkHeading": {
-    "description": "Heading for referral link section",
-    "maxLength": 28
-  },
+  "@shareYourLinkHeading": [
+    [
+      "description",
+      "Heading for referral link section"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "shareButtonCopyLink": "Copiar Link",
-  "@shareButtonCopyLink": {
-    "description": "Button to copy referral link",
-    "maxLength": 22
-  },
+  "@shareButtonCopyLink": [
+    [
+      "description",
+      "Button to copy referral link"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareLinkCopied": "Link copiado para a área de transferência!",
-  "@shareLinkCopied": {
-    "description": "Success message when link is copied"
-  },
+  "@shareLinkCopied": [
+    [
+      "description",
+      "Success message when link is copied"
+    ]
+  ],
   "shareButtonSms": "Compartilhar por SMS",
-  "@shareButtonSms": {
-    "description": "Button to share via SMS",
-    "maxLength": 22
-  },
+  "@shareButtonSms": [
+    [
+      "description",
+      "Button to share via SMS"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareButtonEmail": "Compartilhar por Email",
-  "@shareButtonEmail": {
-    "description": "Button to share via email",
-    "maxLength": 22
-  },
+  "@shareButtonEmail": [
+    [
+      "description",
+      "Button to share via email"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareButtonWhatsApp": "Compartilhar por WhatsApp",
-  "@shareButtonWhatsApp": {
-    "description": "Button to share via WhatsApp",
-    "maxLength": 22
-  },
+  "@shareButtonWhatsApp": [
+    [
+      "description",
+      "Button to share via WhatsApp"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareButtonMore": "Mais Opções",
-  "@shareButtonMore": {
-    "description": "Button to show more sharing options",
-    "maxLength": 22
-  },
+  "@shareButtonMore": [
+    [
+      "description",
+      "Button to show more sharing options"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareMessageTemplate": "Oi! Estou construindo minha equipe com Team Build Pro. Junte-se a mim: {link}",
-  "@shareMessageTemplate": {
-    "description": "Default message template for sharing",
-    "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://tbp.app/join/abc123"
-      }
-    }
-  },
+  "@shareMessageTemplate": [
+    [
+      "description",
+      "Default message template for sharing"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "link",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "https://tbp.app/join/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "shareStatsHeading": "Seu Impacto ao Compartilhar",
-  "@shareStatsHeading": {
-    "description": "Heading for sharing statistics",
-    "maxLength": 32
-  },
+  "@shareStatsHeading": [
+    [
+      "description",
+      "Heading for sharing statistics"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "shareStatsViews": "Visualizações do Link",
-  "@shareStatsViews": {
-    "description": "Label for link view count",
-    "maxLength": 22
-  },
+  "@shareStatsViews": [
+    [
+      "description",
+      "Label for link view count"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareStatsSignups": "Cadastros",
-  "@shareStatsSignups": {
-    "description": "Label for signup count from link",
-    "maxLength": 22
-  },
+  "@shareStatsSignups": [
+    [
+      "description",
+      "Label for signup count from link"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "shareStatsConversion": "Taxa de Conversão",
-  "@shareStatsConversion": {
-    "description": "Label for conversion rate percentage",
-    "maxLength": 22
-  },
-  "shareSuccessMessage": "Compartilhado com sucesso!",
-  "@shareSuccessMessage": {
-    "description": "Success message after sharing"
-  },
+  "@shareStatsConversion": [
+    [
+      "description",
+      "Label for conversion rate percentage"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "memberDetailTitle": "Detalhes do Membro",
-  "@memberDetailTitle": {
-    "description": "Member detail screen title",
-    "maxLength": 32
-  },
+  "@memberDetailTitle": [
+    [
+      "description",
+      "Member detail screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "memberDetailLabelName": "Nome",
-  "@memberDetailLabelName": {
-    "description": "Label for member name",
-    "maxLength": 14
-  },
+  "@memberDetailLabelName": [
+    [
+      "description",
+      "Label for member name"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelEmail": "Email",
-  "@memberDetailLabelEmail": {
-    "description": "Label for member email",
-    "maxLength": 14
-  },
+  "@memberDetailLabelEmail": [
+    [
+      "description",
+      "Label for member email"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelPhone": "Telefone",
-  "@memberDetailLabelPhone": {
-    "description": "Label for member phone",
-    "maxLength": 14
-  },
+  "@memberDetailLabelPhone": [
+    [
+      "description",
+      "Label for member phone"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelLocation": "Localização",
-  "@memberDetailLabelLocation": {
-    "description": "Label for member location",
-    "maxLength": 14
-  },
+  "@memberDetailLabelLocation": [
+    [
+      "description",
+      "Label for member location"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelJoined": "Entrou",
-  "@memberDetailLabelJoined": {
-    "description": "Label for member join date",
-    "maxLength": 14
-  },
+  "@memberDetailLabelJoined": [
+    [
+      "description",
+      "Label for member join date"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelSponsor": "Patrocinador",
-  "@memberDetailLabelSponsor": {
-    "description": "Label for member's sponsor",
-    "maxLength": 14
-  },
+  "@memberDetailLabelSponsor": [
+    [
+      "description",
+      "Label for member's sponsor"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailLabelLevel": "Nível",
-  "@memberDetailLabelLevel": {
-    "description": "Label for member's network level",
-    "maxLength": 14
-  },
+  "@memberDetailLabelLevel": [
+    [
+      "description",
+      "Label for member's network level"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "memberDetailTeamStats": "Estatísticas da Equipe",
-  "@memberDetailTeamStats": {
-    "description": "Section heading for team stats",
-    "maxLength": 28
-  },
+  "@memberDetailTeamStats": [
+    [
+      "description",
+      "Section heading for team stats"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "memberDetailDirectSponsors": "Patrocinadores Diretos: {count}",
-  "@memberDetailDirectSponsors": {
-    "description": "Label showing direct sponsor count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
+  "@memberDetailDirectSponsors": [
+    [
+      "description",
+      "Label showing direct sponsor count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "5"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "memberDetailTotalTeam": "Equipe Total: {count}",
-  "@memberDetailTotalTeam": {
-    "description": "Label showing total team count",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "25"
-      }
-    }
-  },
+  "@memberDetailTotalTeam": [
+    [
+      "description",
+      "Label showing total team count"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "25"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "memberDetailButtonMessage": "Enviar Mensagem",
-  "@memberDetailButtonMessage": {
-    "description": "Button to message team member",
-    "maxLength": 22
-  },
+  "@memberDetailButtonMessage": [
+    [
+      "description",
+      "Button to message team member"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "memberDetailButtonViewTeam": "Ver Equipe Deles",
-  "@memberDetailButtonViewTeam": {
-    "description": "Button to view member's team",
-    "maxLength": 22
-  },
-  "memberDetailErrorLoading": "Erro ao carregar detalhes do membro",
-  "@memberDetailErrorLoading": {
-    "description": "Error message when member details fail to load"
-  },
+  "@memberDetailButtonViewTeam": [
+    [
+      "description",
+      "Button to view member's team"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "messageThreadTitle": "Mensagens",
-  "@messageThreadTitle": {
-    "description": "Message thread screen title",
-    "maxLength": 32
-  },
+  "@messageThreadTitle": [
+    [
+      "description",
+      "Message thread screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "messageThreadInputHint": "Digite sua mensagem...",
-  "@messageThreadInputHint": {
-    "description": "Placeholder for message input field"
-  },
+  "@messageThreadInputHint": [
+    [
+      "description",
+      "Placeholder for message input field"
+    ]
+  ],
   "messageThreadButtonSend": "Enviar",
-  "@messageThreadButtonSend": {
-    "description": "Button to send message",
-    "maxLength": 14
-  },
+  "@messageThreadButtonSend": [
+    [
+      "description",
+      "Button to send message"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageThreadEmptyState": "Nenhuma mensagem ainda. Inicie a conversa!",
-  "@messageThreadEmptyState": {
-    "description": "Empty state when thread has no messages"
-  },
+  "@messageThreadEmptyState": [
+    [
+      "description",
+      "Empty state when thread has no messages"
+    ]
+  ],
   "messageThreadDelivered": "Entregue",
-  "@messageThreadDelivered": {
-    "description": "Status label for delivered message",
-    "maxLength": 14
-  },
+  "@messageThreadDelivered": [
+    [
+      "description",
+      "Status label for delivered message"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageThreadRead": "Lida",
-  "@messageThreadRead": {
-    "description": "Status label for read message",
-    "maxLength": 14
-  },
+  "@messageThreadRead": [
+    [
+      "description",
+      "Status label for read message"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "messageThreadSending": "Enviando...",
-  "@messageThreadSending": {
-    "description": "Status label while message is sending"
-  },
+  "@messageThreadSending": [
+    [
+      "description",
+      "Status label while message is sending"
+    ]
+  ],
   "messageThreadFailed": "Falha ao enviar",
-  "@messageThreadFailed": {
-    "description": "Status label when message fails to send"
-  },
-  "messageThreadErrorSending": "Erro ao enviar mensagem",
-  "@messageThreadErrorSending": {
-    "description": "Error message when message fails to send"
-  },
+  "@messageThreadFailed": [
+    [
+      "description",
+      "Status label when message fails to send"
+    ]
+  ],
   "loginTitle": "Entrar",
-  "@loginTitle": {
-    "description": "Login screen title",
-    "maxLength": 32
-  },
+  "@loginTitle": [
+    [
+      "description",
+      "Login screen title"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "loginButtonGoogle": "Continuar com Google",
-  "@loginButtonGoogle": {
-    "description": "Button to sign in with Google",
-    "maxLength": 28
-  },
+  "@loginButtonGoogle": [
+    [
+      "description",
+      "Button to sign in with Google"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "loginButtonApple": "Continuar com Apple",
-  "@loginButtonApple": {
-    "description": "Button to sign in with Apple",
-    "maxLength": 28
-  },
+  "@loginButtonApple": [
+    [
+      "description",
+      "Button to sign in with Apple"
+    ],
+    [
+      "maxLength",
+      28
+    ]
+  ],
   "loginDivider": "ou",
-  "@loginDivider": {
-    "description": "Divider text between social login and email login",
-    "maxLength": 8
-  },
+  "@loginDivider": [
+    [
+      "description",
+      "Divider text between social login and email login"
+    ],
+    [
+      "maxLength",
+      8
+    ]
+  ],
   "loginForgotPassword": "Esqueceu a Senha?",
-  "@loginForgotPassword": {
-    "description": "Link to password reset flow",
-    "maxLength": 22
-  },
+  "@loginForgotPassword": [
+    [
+      "description",
+      "Link to password reset flow"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "loginResetPasswordTitle": "Redefinir Senha",
-  "@loginResetPasswordTitle": {
-    "description": "Title for password reset dialog",
-    "maxLength": 32
-  },
+  "@loginResetPasswordTitle": [
+    [
+      "description",
+      "Title for password reset dialog"
+    ],
+    [
+      "maxLength",
+      32
+    ]
+  ],
   "loginResetPasswordDescription": "Digite seu endereço de email e enviaremos um link para redefinir sua senha.",
-  "@loginResetPasswordDescription": {
-    "description": "Instruction text for password reset"
-  },
+  "@loginResetPasswordDescription": [
+    [
+      "description",
+      "Instruction text for password reset"
+    ]
+  ],
   "loginResetPasswordButton": "Enviar Link",
-  "@loginResetPasswordButton": {
-    "description": "Button to send password reset email",
-    "maxLength": 22
-  },
+  "@loginResetPasswordButton": [
+    [
+      "description",
+      "Button to send password reset email"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "loginResetPasswordSuccess": "Email de redefinição enviado! Verifique sua caixa de entrada.",
-  "@loginResetPasswordSuccess": {
-    "description": "Success message after sending reset email"
-  },
+  "@loginResetPasswordSuccess": [
+    [
+      "description",
+      "Success message after sending reset email"
+    ]
+  ],
   "loginResetPasswordError": "Erro ao enviar email. Por favor, tente novamente.",
-  "@loginResetPasswordError": {
-    "description": "Error message when reset email fails"
-  },
+  "@loginResetPasswordError": [
+    [
+      "description",
+      "Error message when reset email fails"
+    ]
+  ],
   "commonButtonCancel": "Cancelar",
-  "@commonButtonCancel": {
-    "description": "Generic cancel button label",
-    "maxLength": 14
-  },
+  "@commonButtonCancel": [
+    [
+      "description",
+      "Generic cancel button label"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonButtonSave": "Salvar",
-  "@commonButtonSave": {
-    "description": "Generic save button label",
-    "maxLength": 14
-  },
+  "@commonButtonSave": [
+    [
+      "description",
+      "Generic save button label"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonButtonDelete": "Excluir",
-  "@commonButtonDelete": {
-    "description": "Generic delete button label",
-    "maxLength": 14
-  },
+  "@commonButtonDelete": [
+    [
+      "description",
+      "Generic delete button label"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonButtonEdit": "Editar",
-  "@commonButtonEdit": {
-    "description": "Generic edit button label",
-    "maxLength": 14
-  },
+  "@commonButtonEdit": [
+    [
+      "description",
+      "Generic edit button label"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonButtonClose": "Fechar",
-  "@commonButtonClose": {
-    "description": "Generic close button label",
-    "maxLength": 14
-  },
+  "@commonButtonClose": [
+    [
+      "description",
+      "Generic close button label"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonButtonOk": "OK",
-  "@commonButtonOk": {
-    "description": "Generic OK button label",
-    "maxLength": 8
-  },
+  "@commonButtonOk": [
+    [
+      "description",
+      "Generic OK button label"
+    ],
+    [
+      "maxLength",
+      8
+    ]
+  ],
   "commonButtonYes": "Sim",
-  "@commonButtonYes": {
-    "description": "Generic yes button label",
-    "maxLength": 8
-  },
+  "@commonButtonYes": [
+    [
+      "description",
+      "Generic yes button label"
+    ],
+    [
+      "maxLength",
+      8
+    ]
+  ],
   "commonButtonNo": "Não",
-  "@commonButtonNo": {
-    "description": "Generic no button label",
-    "maxLength": 8
-  },
+  "@commonButtonNo": [
+    [
+      "description",
+      "Generic no button label"
+    ],
+    [
+      "maxLength",
+      8
+    ]
+  ],
   "commonLoadingMessage": "Carregando...",
-  "@commonLoadingMessage": {
-    "description": "Generic loading message"
-  },
+  "@commonLoadingMessage": [
+    [
+      "description",
+      "Generic loading message"
+    ]
+  ],
   "commonErrorMessage": "Algo deu errado. Por favor, tente novamente.",
-  "@commonErrorMessage": {
-    "description": "Generic error message"
-  },
+  "@commonErrorMessage": [
+    [
+      "description",
+      "Generic error message"
+    ]
+  ],
   "commonSuccessMessage": "Sucesso!",
-  "@commonSuccessMessage": {
-    "description": "Generic success message",
-    "maxLength": 22
-  },
+  "@commonSuccessMessage": [
+    [
+      "description",
+      "Generic success message"
+    ],
+    [
+      "maxLength",
+      22
+    ]
+  ],
   "commonNoDataMessage": "Nenhum dado disponível",
-  "@commonNoDataMessage": {
-    "description": "Generic message when no data exists"
-  },
+  "@commonNoDataMessage": [
+    [
+      "description",
+      "Generic message when no data exists"
+    ]
+  ],
   "commonRetryButton": "Tentar Novamente",
-  "@commonRetryButton": {
-    "description": "Button to retry failed action",
-    "maxLength": 14
-  },
+  "@commonRetryButton": [
+    [
+      "description",
+      "Button to retry failed action"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "commonRefreshButton": "Atualizar",
-  "@commonRefreshButton": {
-    "description": "Button to refresh data",
-    "maxLength": 14
-  },
-  "commonNoResultsFound": "Nenhum resultado encontrado",
-  "@commonNoResultsFound": {
-    "description": "Generic message when search or filter returns no results"
-  },
+  "@commonRefreshButton": [
+    [
+      "description",
+      "Button to refresh data"
+    ],
+    [
+      "maxLength",
+      14
+    ]
+  ],
   "recruitT01FirstTouch": "Oi {prospectName}, é o {senderFirst}. Estou usando um app para ajudar amigos a começar com {companyName}. Dá uma olhada? {shortLink}",
-  "@recruitT01FirstTouch": {
-    "description": "Initial outreach message with prospect name",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "senderFirst": {
-        "type": "String",
-        "example": "Stephen"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT01FirstTouch": [
+    [
+      "description",
+      "Initial outreach message with prospect name"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "senderFirst",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT01FirstTouchNoName": "Oi, é o {senderFirst}. Estou usando um app para ajudar amigos a começar com {companyName}. Dá uma olhada? {shortLink}",
-  "@recruitT01FirstTouchNoName": {
-    "description": "Initial outreach message without prospect name (fallback)",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "senderFirst": {
-        "type": "String",
-        "example": "Stephen"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT01FirstTouchNoName": [
+    [
+      "description",
+      "Initial outreach message without prospect name (fallback)"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "senderFirst",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT02FollowUpWarm": "Oi {prospectName}! Fazendo um follow-up sobre {companyName}. Vi ótimos resultados essa semana. Tem tempo para um papo rápido? {shortLink}",
-  "@recruitT02FollowUpWarm": {
-    "description": "Warm follow-up message after initial interest",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT02FollowUpWarm": [
+    [
+      "description",
+      "Warm follow-up message after initial interest"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT03DeadlineNudge": "{prospectName}, as vagas estão se preenchendo para nosso lançamento com {companyName}. Quer que eu reserve uma para você? {shortLink}",
-  "@recruitT03DeadlineNudge": {
-    "description": "Time-sensitive reminder about limited availability",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT03DeadlineNudge": [
+    [
+      "description",
+      "Time-sensitive reminder about limited availability"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT04TeamNeeded": "{remaining, plural, =0 {Você está pronto para começar.} one {Você está a # pessoa de um começo forte.} other {Você está a # pessoas de um começo forte.}}",
-  "@recruitT04TeamNeeded": {
-    "description": "Team building progress message with plural logic",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "remaining": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
+  "@recruitT04TeamNeeded": [
+    [
+      "description",
+      "Team building progress message with plural logic"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "remaining",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "2"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT05MilestoneReached": "🎉 {prospectName}, você alcançou seu primeiro marco com {companyName}! Sua equipe está crescendo. Continue assim!",
-  "@recruitT05MilestoneReached": {
-    "description": "Celebration message for reaching a milestone",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT05MilestoneReached": [
+    [
+      "description",
+      "Celebration message for reaching a milestone"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT06WelcomeOnboard": "Bem-vindo, {prospectName}! Sou o {senderFirst} e estou aqui para ajudar. Vamos começar: {inviteLink}",
-  "@recruitT06WelcomeOnboard": {
-    "description": "Welcome message for new team member",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "senderFirst": {
-        "type": "String",
-        "example": "Stephen"
-      },
-      "inviteLink": {
-        "type": "String",
-        "example": "https://tbp.app/join/abc123"
-      }
-    }
-  },
+  "@recruitT06WelcomeOnboard": [
+    [
+      "description",
+      "Welcome message for new team member"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "senderFirst",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ],
+        [
+          "inviteLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "https://tbp.app/join/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT07WeeklyCheckIn": "Oi {prospectName}, check-in rápido sobre {companyName}. Como estão as coisas? Alguma dúvida que eu possa ajudar?",
-  "@recruitT07WeeklyCheckIn": {
-    "description": "Regular weekly check-in message",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT07WeeklyCheckIn": [
+    [
+      "description",
+      "Regular weekly check-in message"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT08Deadline": "Começamos em {days, plural, one {# dia} other {# dias}}. Quer que eu reserve sua vaga? {shortLink}",
-  "@recruitT08Deadline": {
-    "description": "Countdown to start date with days remaining",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "days": {
-        "type": "int",
-        "example": "3"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT08Deadline": [
+    [
+      "description",
+      "Countdown to start date with days remaining"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "days",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT09ResourceShare": "{prospectName}, achei isso útil para {companyName}. Achei que você ia querer ver: {inviteLink}",
-  "@recruitT09ResourceShare": {
-    "description": "Sharing a helpful resource or tool",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "inviteLink": {
-        "type": "String",
-        "example": "https://tbp.app/join/abc123"
-      }
-    }
-  },
+  "@recruitT09ResourceShare": [
+    [
+      "description",
+      "Sharing a helpful resource or tool"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "inviteLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "https://tbp.app/join/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT10InviteReminder": "Oi {prospectName}, você ainda tem um convite esperando para {companyName}. Pronto para entrar? {shortLink}",
-  "@recruitT10InviteReminder": {
-    "description": "Reminder about pending invitation",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "shortLink": {
-        "type": "String",
-        "example": "tbp.app/abc123"
-      }
-    }
-  },
+  "@recruitT10InviteReminder": [
+    [
+      "description",
+      "Reminder about pending invitation"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "shortLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "tbp.app/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT11TeamGrowth": "Ótimas notícias, {prospectName}! Sua equipe {companyName} cresceu essa semana. Você está fazendo um progresso real!",
-  "@recruitT11TeamGrowth": {
-    "description": "Team growth update and encouragement",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT11TeamGrowth": [
+    [
+      "description",
+      "Team growth update and encouragement"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT12Encouragement": "{prospectName}, construir com {companyName} leva tempo. Você está indo muito bem. Continue!",
-  "@recruitT12Encouragement": {
-    "description": "Motivational encouragement message",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT12Encouragement": [
+    [
+      "description",
+      "Motivational encouragement message"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT13TrainingInvite": "Oi {prospectName}, temos uma sessão de treinamento de {companyName} chegando. Quer participar? {inviteLink}",
-  "@recruitT13TrainingInvite": {
-    "description": "Invitation to training or event",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      },
-      "inviteLink": {
-        "type": "String",
-        "example": "https://tbp.app/join/abc123"
-      }
-    }
-  },
+  "@recruitT13TrainingInvite": [
+    [
+      "description",
+      "Invitation to training or event"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ],
+        [
+          "inviteLink",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "https://tbp.app/join/abc123"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT14QuickWin": "Bom trabalho, {prospectName}! Foi uma vitória sólida com {companyName}. Vamos manter o ritmo!",
-  "@recruitT14QuickWin": {
-    "description": "Quick win celebration message",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT14QuickWin": [
+    [
+      "description",
+      "Quick win celebration message"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT15SupportOffer": "Oi {prospectName}, estou aqui se você precisar de ajuda com {companyName}. É só me chamar quando quiser.",
-  "@recruitT15SupportOffer": {
-    "description": "Offering help and support",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT15SupportOffer": [
+    [
+      "description",
+      "Offering help and support"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "recruitT16Gratitude": "Obrigado por fazer parte da nossa equipe {companyName}, {prospectName}. Sua energia faz diferença!",
-  "@recruitT16Gratitude": {
-    "description": "Thank you and appreciation message",
-    "cap": {
-      "sms": 140
-    },
-    "placeholders": {
-      "prospectName": {
-        "type": "String",
-        "example": "María"
-      },
-      "companyName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@recruitT16Gratitude": [
+    [
+      "description",
+      "Thank you and appreciation message"
+    ],
+    [
+      "cap",
+      [
+        [
+          "sms",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "prospectName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "companyName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifMilestoneDirectTitle": "🎉 Progresso Incrível!",
-  "@notifMilestoneDirectTitle": {
-    "description": "Push notification title when user reaches direct sponsor milestone",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifMilestoneDirectTitle": [
+    [
+      "description",
+      "Push notification title when user reaches direct sponsor milestone"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifMilestoneDirectBody": "Parabéns, {firstName}! Você alcançou {directCount} patrocinadores diretos! Só mais {remaining} {remaining, plural, one {membro} other {membros}} da equipe para desbloquear seu convite {bizName}. Continue construindo!",
-  "@notifMilestoneDirectBody": {
-    "description": "Push notification body for direct sponsor milestone",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "firstName": {
-        "type": "String",
-        "example": "María"
-      },
-      "directCount": {
-        "type": "int",
-        "example": "4"
-      },
-      "remaining": {
-        "type": "int",
-        "example": "15"
-      },
-      "bizName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@notifMilestoneDirectBody": [
+    [
+      "description",
+      "Push notification body for direct sponsor milestone"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "firstName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "directCount",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "4"
+            ]
+          ]
+        ],
+        [
+          "remaining",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "15"
+            ]
+          ]
+        ],
+        [
+          "bizName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifMilestoneTeamTitle": "🚀 Crescimento Incrível!",
-  "@notifMilestoneTeamTitle": {
-    "description": "Push notification title when user reaches team size milestone",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifMilestoneTeamTitle": [
+    [
+      "description",
+      "Push notification title when user reaches team size milestone"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifMilestoneTeamBody": "Progresso incrível, {firstName}! Você construiu uma equipe de {teamCount}! Só mais {remaining} {remaining, plural, one {patrocinador direto} other {patrocinadores diretos}} para se qualificar para {bizName}. Você está tão perto!",
-  "@notifMilestoneTeamBody": {
-    "description": "Push notification body for team size milestone",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "firstName": {
-        "type": "String",
-        "example": "María"
-      },
-      "teamCount": {
-        "type": "int",
-        "example": "20"
-      },
-      "remaining": {
-        "type": "int",
-        "example": "3"
-      },
-      "bizName": {
-        "type": "String",
-        "example": "NeoLife"
-      }
-    }
-  },
+  "@notifMilestoneTeamBody": [
+    [
+      "description",
+      "Push notification body for team size milestone"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "firstName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ],
+        [
+          "teamCount",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "20"
+            ]
+          ]
+        ],
+        [
+          "remaining",
+          [
+            [
+              "type",
+              "int"
+            ],
+            [
+              "example",
+              "3"
+            ]
+          ]
+        ],
+        [
+          "bizName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "NeoLife"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifSubActiveTitle": "✅ Assinatura Ativa",
-  "@notifSubActiveTitle": {
-    "description": "Push notification title when subscription is activated",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubActiveTitle": [
+    [
+      "description",
+      "Push notification title when subscription is activated"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubActiveBody": "Sua assinatura está ativa até {expiryDate}.",
-  "@notifSubActiveBody": {
-    "description": "Push notification body for active subscription",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "expiryDate": {
-        "type": "String",
-        "example": "January 15, 2026"
-      }
-    }
-  },
+  "@notifSubActiveBody": [
+    [
+      "description",
+      "Push notification body for active subscription"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "expiryDate",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "January 15, 2026"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifSubCancelledTitle": "⚠️ Assinatura Cancelada",
-  "@notifSubCancelledTitle": {
-    "description": "Push notification title when subscription is cancelled",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubCancelledTitle": [
+    [
+      "description",
+      "Push notification title when subscription is cancelled"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubCancelledBody": "Sua assinatura foi cancelada, mas permanece ativa até {expiryDate}.",
-  "@notifSubCancelledBody": {
-    "description": "Push notification body for cancelled subscription",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "expiryDate": {
-        "type": "String",
-        "example": "January 15, 2026"
-      }
-    }
-  },
+  "@notifSubCancelledBody": [
+    [
+      "description",
+      "Push notification body for cancelled subscription"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "expiryDate",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "January 15, 2026"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifSubExpiredTitle": "❌ Assinatura Expirada",
-  "@notifSubExpiredTitle": {
-    "description": "Push notification title when subscription expires",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubExpiredTitle": [
+    [
+      "description",
+      "Push notification title when subscription expires"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubExpiredBody": "Sua assinatura expirou. Renove agora para continuar construindo sua equipe e acessando todas as ferramentas de recrutamento.",
-  "@notifSubExpiredBody": {
-    "description": "Push notification body for expired subscription",
-    "cap": {
-      "pushBody": 140
-    }
-  },
+  "@notifSubExpiredBody": [
+    [
+      "description",
+      "Push notification body for expired subscription"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ]
+  ],
   "notifSubExpiringSoonTitle": "⏰ Assinatura Expirando em Breve",
-  "@notifSubExpiringSoonTitle": {
-    "description": "Push notification title when subscription is expiring soon",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubExpiringSoonTitle": [
+    [
+      "description",
+      "Push notification title when subscription is expiring soon"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubExpiringSoonBody": "Sua assinatura expira em {expiryDate}. Renove agora para evitar interrupção.",
-  "@notifSubExpiringSoonBody": {
-    "description": "Push notification body for expiring subscription",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "expiryDate": {
-        "type": "String",
-        "example": "January 15"
-      }
-    }
-  },
+  "@notifSubExpiringSoonBody": [
+    [
+      "description",
+      "Push notification body for expiring subscription"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "expiryDate",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "January 15"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifSubPausedTitle": "⏸️ Assinatura Pausada",
-  "@notifSubPausedTitle": {
-    "description": "Push notification title when subscription is paused",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubPausedTitle": [
+    [
+      "description",
+      "Push notification title when subscription is paused"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubPausedBody": "Sua assinatura foi pausada. Retome na Play Store para restaurar o acesso a todos os recursos.",
-  "@notifSubPausedBody": {
-    "description": "Push notification body for paused subscription",
-    "cap": {
-      "pushBody": 140
-    }
-  },
+  "@notifSubPausedBody": [
+    [
+      "description",
+      "Push notification body for paused subscription"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ]
+  ],
   "notifSubPaymentIssueTitle": "⚠️ Problema no Pagamento",
-  "@notifSubPaymentIssueTitle": {
-    "description": "Push notification title when there's a payment problem",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifSubPaymentIssueTitle": [
+    [
+      "description",
+      "Push notification title when there's a payment problem"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifSubPaymentIssueBody": "Sua assinatura está suspensa devido a um problema no pagamento. Por favor, atualize seu método de pagamento na Play Store.",
-  "@notifSubPaymentIssueBody": {
-    "description": "Push notification body for payment issue",
-    "cap": {
-      "pushBody": 140
-    }
-  },
+  "@notifSubPaymentIssueBody": [
+    [
+      "description",
+      "Push notification body for payment issue"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ]
+  ],
   "notifNewMessageTitle": "Nova Mensagem de {senderName}",
-  "@notifNewMessageTitle": {
-    "description": "Push notification title for new chat message",
-    "cap": {
-      "pushTitle": 65
-    },
-    "placeholders": {
-      "senderName": {
-        "type": "String",
-        "example": "Stephen"
-      }
-    }
-  },
+  "@notifNewMessageTitle": [
+    [
+      "description",
+      "Push notification title for new chat message"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "senderName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Stephen"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifTeamActivityTitle": "👀 Atividade de Membro da Equipe",
-  "@notifTeamActivityTitle": {
-    "description": "Push notification title when team member visits business page",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifTeamActivityTitle": [
+    [
+      "description",
+      "Push notification title when team member visits business page"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifTeamActivityBody": "{visitorName} visitou a página da oportunidade de negócio!",
-  "@notifTeamActivityBody": {
-    "description": "Push notification body for team member activity",
-    "cap": {
-      "pushBody": 140
-    },
-    "placeholders": {
-      "visitorName": {
-        "type": "String",
-        "example": "María"
-      }
-    }
-  },
+  "@notifTeamActivityBody": [
+    [
+      "description",
+      "Push notification body for team member activity"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "visitorName",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "María"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "notifLaunchSentTitle": "Campanha de Lançamento Enviada",
-  "@notifLaunchSentTitle": {
-    "description": "Confirmation that launch campaign was sent successfully",
-    "cap": {
-      "pushTitle": 65
-    }
-  },
+  "@notifLaunchSentTitle": [
+    [
+      "description",
+      "Confirmation that launch campaign was sent successfully"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushTitle",
+          65
+        ]
+      ]
+    ]
+  ],
   "notifLaunchSentBody": "Sua campanha de lançamento foi enviada com sucesso para sua rede.",
-  "@notifLaunchSentBody": {
-    "description": "Body for launch campaign confirmation notification",
-    "cap": {
-      "pushBody": 140
-    }
-  },
+  "@notifLaunchSentBody": [
+    [
+      "description",
+      "Body for launch campaign confirmation notification"
+    ],
+    [
+      "cap",
+      [
+        [
+          "pushBody",
+          140
+        ]
+      ]
+    ]
+  ],
   "emptyNotifications": "Nenhuma notificação ainda.",
-  "@emptyNotifications": {
-    "description": "Empty state when user has no notifications"
-  },
+  "@emptyNotifications": [
+    [
+      "description",
+      "Empty state when user has no notifications"
+    ]
+  ],
   "emptyMessageContent": "Sem conteúdo de mensagem.",
-  "@emptyMessageContent": {
-    "description": "Fallback when notification has no message body"
-  },
+  "@emptyMessageContent": [
+    [
+      "description",
+      "Fallback when notification has no message body"
+    ]
+  ],
   "emptyNotificationTitle": "Sem Título",
-  "@emptyNotificationTitle": {
-    "description": "Fallback when notification has no title"
-  },
+  "@emptyNotificationTitle": [
+    [
+      "description",
+      "Fallback when notification has no title"
+    ]
+  ],
   "emptyMessageThreads": "Nenhuma conversa encontrada.",
-  "@emptyMessageThreads": {
-    "description": "Empty state when user has no message conversations"
-  },
+  "@emptyMessageThreads": [
+    [
+      "description",
+      "Empty state when user has no message conversations"
+    ]
+  ],
   "emptyTeamMember": "Membro da equipe não encontrado.",
-  "@emptyTeamMember": {
-    "description": "Error state when team member profile doesn't exist"
-  },
+  "@emptyTeamMember": [
+    [
+      "description",
+      "Error state when team member profile doesn't exist"
+    ]
+  ],
   "errorLoadingNotifications": "Erro ao carregar notificações",
-  "@errorLoadingNotifications": {
-    "description": "Error state when notifications fail to load"
-  },
+  "@errorLoadingNotifications": [
+    [
+      "description",
+      "Error state when notifications fail to load"
+    ]
+  ],
   "errorGeneric": "Erro: {error}",
-  "@errorGeneric": {
-    "description": "Generic error message with error details",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Network connection failed"
-      }
-    }
-  },
+  "@errorGeneric": [
+    [
+      "description",
+      "Generic error message with error details"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "error",
+          [
+            [
+              "type",
+              "String"
+            ],
+            [
+              "example",
+              "Network connection failed"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "authSignupErrorFirstName": "O primeiro nome não pode estar vazio",
   "authSignupErrorLastName": "O sobrenome não pode estar vazio",
   "addLinkHeading": "Adicione seu link de\n{business}",
@@ -3087,136 +6079,299 @@
   "privacySection8Title": "8. MUDANÇAS NA POLÍTICA DE PRIVACIDADE",
   "privacySection8Content": "ATUALIZAÇÕES:\n• Podemos atualizar esta Política de Privacidade periodicamente\n• Mudanças publicadas no Aplicativo e em nosso site\n• Mudanças materiais comunicadas por e-mail ou notificação\n• O uso continuado significa aceitação das mudanças\n\nSUAS OPÇÕES:\n• Revise esta política regularmente\n• Entre em contato conosco com perguntas: support@teambuildpro.com\n• Pare de usar o Aplicativo se discordar das mudanças\n• Exclua sua conta se não aceitar as atualizações\n\nDATA EFETIVA:\n• Versão atual: Janeiro 2025\n• Última Atualização: Janeiro 2025\n• Versões anteriores são substituídas\n\nINFORMAÇÕES DE CONTATO:\nTeam Build Pro\nEmail: support@teambuildpro.com\nWebsite: https://www.teambuildpro.com\nTermos de Serviço: https://info.teambuildpro.com/terms-of-service.html",
   "subscriptionScreenTitle": "Team Build Pro",
-  "@subscriptionScreenTitle": {
-    "description": "Title of the subscription screen"
-  },
+  "@subscriptionScreenTitle": [
+    [
+      "description",
+      "Title of the subscription screen"
+    ]
+  ],
   "subscriptionSuccessMessage": "✅ Assinatura ativada com sucesso!",
-  "@subscriptionSuccessMessage": {
-    "description": "Success message when subscription is activated"
-  },
-  "@subscriptionNotActiveTitle": {
-    "description": "Dialog title when subscription purchase is not yet active"
-  },
-  "@subscriptionNotActiveMessage": {
-    "description": "Dialog message when subscription purchase is not yet active"
-  },
-  "@subscriptionNotAvailableTitle": {
-    "description": "Dialog title when in-app purchase is not available"
-  },
+  "@subscriptionSuccessMessage": [
+    [
+      "description",
+      "Success message when subscription is activated"
+    ]
+  ],
+  "@subscriptionNotActiveTitle": [
+    [
+      "description",
+      "Dialog title when subscription purchase is not yet active"
+    ]
+  ],
+  "@subscriptionNotActiveMessage": [
+    [
+      "description",
+      "Dialog message when subscription purchase is not yet active"
+    ]
+  ],
+  "@subscriptionNotAvailableTitle": [
+    [
+      "description",
+      "Dialog title when in-app purchase is not available"
+    ]
+  ],
   "subscriptionRestoreSuccess": "✅ Assinatura restaurada com sucesso!",
-  "@subscriptionRestoreSuccess": {
-    "description": "Success message when subscription is restored"
-  },
+  "@subscriptionRestoreSuccess": [
+    [
+      "description",
+      "Success message when subscription is restored"
+    ]
+  ],
   "subscriptionRestoreNone": "Nenhuma assinatura anterior encontrada para restaurar.",
-  "@subscriptionRestoreNone": {
-    "description": "Message when no previous subscription can be restored"
-  },
-  "@subscriptionStatusActive": {
-    "description": "Status card title for active subscription"
-  },
-  "@subscriptionStatusActiveSubtitle": {
-    "description": "Status card subtitle for active subscription"
-  },
-  "@subscriptionStatusPaused": {
-    "description": "Status card title for paused subscription"
-  },
-  "@subscriptionStatusPausedSubtitle": {
-    "description": "Status card subtitle for paused subscription"
-  },
-  "@subscriptionStatusPaymentIssue": {
-    "description": "Status card title for payment issue"
-  },
-  "@subscriptionStatusPaymentIssueSubtitle": {
-    "description": "Status card subtitle for payment issue"
-  },
+  "@subscriptionRestoreNone": [
+    [
+      "description",
+      "Message when no previous subscription can be restored"
+    ]
+  ],
+  "@subscriptionStatusActive": [
+    [
+      "description",
+      "Status card title for active subscription"
+    ]
+  ],
+  "@subscriptionStatusActiveSubtitle": [
+    [
+      "description",
+      "Status card subtitle for active subscription"
+    ]
+  ],
+  "@subscriptionStatusPaused": [
+    [
+      "description",
+      "Status card title for paused subscription"
+    ]
+  ],
+  "@subscriptionStatusPausedSubtitle": [
+    [
+      "description",
+      "Status card subtitle for paused subscription"
+    ]
+  ],
+  "@subscriptionStatusPaymentIssue": [
+    [
+      "description",
+      "Status card title for payment issue"
+    ]
+  ],
+  "@subscriptionStatusPaymentIssueSubtitle": [
+    [
+      "description",
+      "Status card subtitle for payment issue"
+    ]
+  ],
   "subscriptionStatusTrial": "Teste Gratuito Ativo",
-  "@subscriptionStatusTrial": {
-    "description": "Status card title for trial subscription"
-  },
+  "@subscriptionStatusTrial": [
+    [
+      "description",
+      "Status card title for trial subscription"
+    ]
+  ],
   "subscriptionStatusTrialSubtitle": "{days} dias restantes no seu teste",
-  "@subscriptionStatusTrialSubtitle": {
-    "description": "Status card subtitle for trial subscription",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "@subscriptionStatusCancelled": {
-    "description": "Status card title for cancelled subscription"
-  },
-  "@subscriptionStatusCancelledSubtitle": {
-    "description": "Status card subtitle for cancelled subscription"
-  },
-  "@subscriptionStatusExpired": {
-    "description": "Status card title for expired subscription"
-  },
-  "@subscriptionStatusExpiredSubtitle": {
-    "description": "Status card subtitle for expired subscription"
-  },
+  "@subscriptionStatusTrialSubtitle": [
+    [
+      "description",
+      "Status card subtitle for trial subscription"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "days",
+          [
+            [
+              "type",
+              "int"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
+  "@subscriptionStatusCancelled": [
+    [
+      "description",
+      "Status card title for cancelled subscription"
+    ]
+  ],
+  "@subscriptionStatusCancelledSubtitle": [
+    [
+      "description",
+      "Status card subtitle for cancelled subscription"
+    ]
+  ],
+  "@subscriptionStatusExpired": [
+    [
+      "description",
+      "Status card title for expired subscription"
+    ]
+  ],
+  "@subscriptionStatusExpiredSubtitle": [
+    [
+      "description",
+      "Status card subtitle for expired subscription"
+    ]
+  ],
   "subscriptionPremiumFeaturesHeader": "Recursos Premium:",
-  "@subscriptionPremiumFeaturesHeader": {
-    "description": "Header for premium features list"
-  },
+  "@subscriptionPremiumFeaturesHeader": [
+    [
+      "description",
+      "Header for premium features list"
+    ]
+  ],
   "subscriptionFeatureReferralLink": "Envie seu link de indicação exclusivo de {bizOpp}",
-  "@subscriptionFeatureReferralLink": {
-    "description": "Premium feature: referral link submission",
-    "placeholders": {
-      "bizOpp": {
-        "type": "String"
-      }
-    }
-  },
+  "@subscriptionFeatureReferralLink": [
+    [
+      "description",
+      "Premium feature: referral link submission"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "bizOpp",
+          [
+            [
+              "type",
+              "String"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "subscriptionFeatureAiCoaching": "Treinamento de IA personalizado para recrutamento e construção de equipes",
-  "@subscriptionFeatureAiCoaching": {
-    "description": "Premium feature: AI coaching"
-  },
+  "@subscriptionFeatureAiCoaching": [
+    [
+      "description",
+      "Premium feature: AI coaching"
+    ]
+  ],
   "subscriptionFeatureMessaging": "Desbloqueie mensagens para usuários da sua equipe",
-  "@subscriptionFeatureMessaging": {
-    "description": "Premium feature: messaging capability"
-  },
+  "@subscriptionFeatureMessaging": [
+    [
+      "description",
+      "Premium feature: messaging capability"
+    ]
+  ],
   "subscriptionFeatureEnsureTeam": "Garanta que os membros da equipe entrem sob VOCÊ em {bizOpp}",
-  "@subscriptionFeatureEnsureTeam": {
-    "description": "Premium feature: team placement guarantee",
-    "placeholders": {
-      "bizOpp": {
-        "type": "String"
-      }
-    }
-  },
+  "@subscriptionFeatureEnsureTeam": [
+    [
+      "description",
+      "Premium feature: team placement guarantee"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "bizOpp",
+          [
+            [
+              "type",
+              "String"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "subscriptionFeatureAnalytics": "Análises avançadas e insights",
-  "@subscriptionFeatureAnalytics": {
-    "description": "Premium feature: analytics"
-  },
-  "@subscriptionSubscribeButton": {
-    "description": "Subscribe button text"
-  },
-  "@subscriptionRestoreButton": {
-    "description": "Restore subscription button text"
-  },
-  "@subscriptionLegalNotice": {
-    "description": "Legal notice about terms and privacy"
-  },
-  "@subscriptionTermsLink": {
-    "description": "Link text for Terms of Service"
-  },
-  "@subscriptionPrivacyLink": {
-    "description": "Link text for Privacy Policy"
-  },
-  "@subscriptionAutoRenewNotice": {
-    "description": "Auto-renewal notice with platform-specific management text",
-    "placeholders": {
-      "managementText": {
-        "type": "String"
-      }
-    }
-  },
+  "@subscriptionFeatureAnalytics": [
+    [
+      "description",
+      "Premium feature: analytics"
+    ]
+  ],
+  "@subscriptionSubscribeButton": [
+    [
+      "description",
+      "Subscribe button text"
+    ]
+  ],
+  "@subscriptionRestoreButton": [
+    [
+      "description",
+      "Restore subscription button text"
+    ]
+  ],
+  "@subscriptionLegalNotice": [
+    [
+      "description",
+      "Legal notice about terms and privacy"
+    ]
+  ],
+  "@subscriptionTermsLink": [
+    [
+      "description",
+      "Link text for Terms of Service"
+    ]
+  ],
+  "@subscriptionPrivacyLink": [
+    [
+      "description",
+      "Link text for Privacy Policy"
+    ]
+  ],
+  "@subscriptionAutoRenewNotice": [
+    [
+      "description",
+      "Auto-renewal notice with platform-specific management text"
+    ],
+    [
+      "placeholders",
+      [
+        [
+          "managementText",
+          [
+            [
+              "type",
+              "String"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ],
   "subscriptionManagementApple": "Você pode gerenciar sua assinatura nas configurações da sua conta Apple ID.",
-  "@subscriptionManagementApple": {
-    "description": "iOS subscription management instructions"
-  },
+  "@subscriptionManagementApple": [
+    [
+      "description",
+      "iOS subscription management instructions"
+    ]
+  ],
   "subscriptionManagementGoogle": "Você pode gerenciar sua assinatura na Google Play Store.",
-  "@subscriptionManagementGoogle": {
-    "description": "Android subscription management instructions"
+  "@subscriptionManagementGoogle": [
+    [
+      "description",
+      "Android subscription management instructions"
+    ]
+  ],
+  "messageCenterNotLoggedIn": "Por favor, faça login para ver mensagens.",
+  "@messageCenterNotLoggedIn": {
+    "description": "Message shown when user is not logged in"
+  },
+  "messageCenterError": "Erro ao carregar mensagens",
+  "@messageCenterError": {
+    "description": "Error message when messages fail to load"
+  },
+  "messageCenterLoadingChat": "Carregando chat...",
+  "@messageCenterLoadingChat": {
+    "description": "Loading message while chat is being loaded"
+  },
+  "messageCenterErrorLoadingUser": "Erro ao carregar detalhes do usuário",
+  "@messageCenterErrorLoadingUser": {
+    "description": "Error message when user details fail to load"
+  },
+  "messageCenterUnknownUser": "Usuário Desconhecido",
+  "@messageCenterUnknownUser": {
+    "description": "Fallback display name when user info is unavailable"
+  },
+  "companyContactEmail": "support@teambuildpro.com",
+  "@companyContactEmail": {
+    "description": "Support email address"
+  },
+  "companyContactWebsite": "www.teambuildpro.com",
+  "@companyContactWebsite": {
+    "description": "Company website URL"
   }
 }

@@ -37,7 +37,7 @@ class QuickPromptsWidget extends StatelessWidget {
                     Icon(Icons.smart_toy, color: AppColors.primary, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context)?.quickPromptsWelcomeTitle ?? 'Welcome to your AI Coach!',
+                      AppLocalizations.of(context).quickPromptsWelcomeTitle,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -48,7 +48,7 @@ class QuickPromptsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)?.quickPromptsWelcomeDescription ?? 'I\'m here to help you succeed with Team Build Pro. I can answer questions about the app, team building strategies, and guide you through features.',
+                  AppLocalizations.of(context).quickPromptsWelcomeDescription,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -71,7 +71,7 @@ class QuickPromptsWidget extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)?.quickPromptsDisclaimerMessage ?? 'AI Coach can make mistakes. Check important info.',
+                          AppLocalizations.of(context).quickPromptsDisclaimerMessage,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade700,
@@ -90,7 +90,7 @@ class QuickPromptsWidget extends StatelessWidget {
           
           // Quick start prompts header
           Text(
-            AppLocalizations.of(context)?.quickPromptsQuestionHeader ?? 'What can I help you with?',
+            AppLocalizations.of(context).quickPromptsQuestionHeader,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -100,7 +100,7 @@ class QuickPromptsWidget extends StatelessWidget {
           const SizedBox(height: 4),
 
           Text(
-            AppLocalizations.of(context)?.quickPromptsQuestionSubheader ?? 'Tap any question below to get started, or type your own question.',
+            AppLocalizations.of(context).quickPromptsQuestionSubheader,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey.shade600,
@@ -130,11 +130,11 @@ class QuickPromptsWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)?.quickPromptsProTipLabel ?? 'Pro Tip',
+                        AppLocalizations.of(context).quickPromptsProTipLabel,
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       Text(
-                        AppLocalizations.of(context)?.quickPromptsProTipText ?? 'Be specific with your questions. For example: "I have 2 direct sponsors, what should I focus on next?"',
+                        AppLocalizations.of(context).quickPromptsProTipText,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade700,

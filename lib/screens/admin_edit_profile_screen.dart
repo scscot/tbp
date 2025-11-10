@@ -339,7 +339,7 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      value: _countryController.text.isEmpty
+                      initialValue: _countryController.text.isEmpty
                           ? null
                           : _countryController.text,
                       isExpanded: true,
@@ -372,7 +372,7 @@ class _AdminEditProfileScreenState extends State<AdminEditProfileScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      value: _stateController.text.isEmpty
+                      initialValue: _stateController.text.isEmpty
                           ? null
                           : _stateController.text,
                       isExpanded: true,

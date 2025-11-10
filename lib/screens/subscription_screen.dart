@@ -302,16 +302,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  String get _platformStoreText {
-    if (Platform.isIOS) {
-      return context.l10n?.subscriptionPlatformAppStore ?? 'App Store';
-    } else if (Platform.isAndroid) {
-      return context.l10n?.subscriptionPlatformPlayStore ?? 'Google Play Store';
-    } else {
-      return context.l10n?.subscriptionPlatformGeneric ?? 'app store';
-    }
-  }
-
   String get _platformSubscriptionText {
     return context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$4.99/month';
   }

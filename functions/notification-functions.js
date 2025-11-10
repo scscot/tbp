@@ -22,6 +22,8 @@ const {
   isTriggerMode,
 } = require('./shared/utilities');
 
+const { getNotificationText, normalizeLanguageCode } = require('./translations');
+
 // Additional Firebase setup
 const messaging = admin.messaging();
 
@@ -84,10 +86,17 @@ async function checkUplineMilestone(userId, userData) {
       if (existingQuery.empty) {
         const remainingTeamNeeded = teamMin - totalTeam;
         const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+        const userLang = userData.preferredLanguage || 'en';
 
         notificationContent = {
-          title: "🎉 Amazing Progress!",
-          message: `Congratulations, ${userData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+          title: getNotificationText('milestoneDirectTitle', userLang),
+          message: getNotificationText('milestoneDirectMessage', userLang, {
+            firstName: userData.firstName,
+            directCount: directMin,
+            remainingTeam: remainingTeamNeeded,
+            pluralTeam: remainingTeamNeeded > 1 ? 's' : '',
+            bizName: bizName,
+          }),
           type: "milestone",
           subtype: "direct",
           route: "/network",
@@ -107,10 +116,17 @@ async function checkUplineMilestone(userId, userData) {
       if (existingQuery.empty) {
         const remainingDirectNeeded = directMin - directSponsors;
         const bizName = await getBusinessOpportunityName(userData.upline_admin, 'your business');
+        const userLang = userData.preferredLanguage || 'en';
 
         notificationContent = {
-          title: "🚀 Incredible Growth!",
-          message: `Amazing progress, ${userData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+          title: getNotificationText('milestoneTeamTitle', userLang),
+          message: getNotificationText('milestoneTeamMessage', userLang, {
+            firstName: userData.firstName,
+            teamCount: teamMin,
+            remainingDirect: remainingDirectNeeded,
+            pluralDirect: remainingDirectNeeded > 1 ? 's' : '',
+            bizName: bizName,
+          }),
           type: "milestone",
           subtype: "team",
           route: "/network",
@@ -1101,11 +1117,18 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
         afterTotalTeam < teamMin) {
 
       const remainingTeamNeeded = teamMin - afterTotalTeam;
+      const userLang = afterData.preferredLanguage || 'en';
       console.log(`🎯 MILESTONE: User ${userId} reached ${directMin} direct sponsors, needs ${remainingTeamNeeded} more total team members`);
 
       notificationContent = {
-        title: "🎉 Amazing Progress!",
-        message: `Congratulations, ${afterData.firstName}! You've reached ${directMin} direct sponsors! Just ${remainingTeamNeeded} more team member${remainingTeamNeeded > 1 ? 's' : ''} needed to unlock your ${bizName} invitation. Keep building!`,
+        title: getNotificationText('milestoneDirectTitle', userLang),
+        message: getNotificationText('milestoneDirectMessage', userLang, {
+          firstName: afterData.firstName,
+          directCount: directMin,
+          remainingTeam: remainingTeamNeeded,
+          pluralTeam: remainingTeamNeeded > 1 ? 's' : '',
+          bizName: bizName,
+        }),
         type: "milestone",
         subtype: "direct",
         route: "/network",
@@ -1118,11 +1141,18 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
              afterDirectSponsors < directMin) {
 
       const remainingDirectNeeded = directMin - afterDirectSponsors;
+      const userLang = afterData.preferredLanguage || 'en';
       console.log(`🎯 MILESTONE: User ${userId} reached ${teamMin} total team, needs ${remainingDirectNeeded} more direct sponsors`);
 
       notificationContent = {
-        title: "🚀 Incredible Growth!",
-        message: `Amazing progress, ${afterData.firstName}! You've built a team of ${teamMin}! Just ${remainingDirectNeeded} more direct sponsor${remainingDirectNeeded > 1 ? 's' : ''} needed to qualify for ${bizName}. You're so close!`,
+        title: getNotificationText('milestoneTeamTitle', userLang),
+        message: getNotificationText('milestoneTeamMessage', userLang, {
+          firstName: afterData.firstName,
+          teamCount: teamMin,
+          remainingDirect: remainingDirectNeeded,
+          pluralDirect: remainingDirectNeeded > 1 ? 's' : '',
+          bizName: bizName,
+        }),
         type: "milestone",
         subtype: "team",
         route: "/network",
