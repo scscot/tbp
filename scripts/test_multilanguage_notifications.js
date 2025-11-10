@@ -178,7 +178,7 @@ async function testMultiLanguageNotifications(userId) {
         console.log(`   Body: ${notif.body.substring(0, 80)}${notif.body.length > 80 ? '...' : ''}`);
         console.log('');
 
-        await delay(500);
+        await delay(5000);
 
       } catch (error) {
         console.log(`❌ [${i + 1}/${notifications.length}] ${notif.name} - Error: ${error.message}`);
