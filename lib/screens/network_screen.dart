@@ -8,7 +8,9 @@ import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/user_model.dart';
+import '../models/admin_settings_model.dart';
 import '../services/network_service.dart';
 import '../services/subscription_navigation_guard.dart';
 import '../screens/member_detail_screen.dart';
@@ -187,73 +189,27 @@ class _NetworkScreenState extends State<NetworkScreen>
       _levelOffset = userModel.level;
     }
 
-    // Fetch business opportunity name
-    await _fetchBizOppName();
+    _fetchBizOppName();
 
     await _fetchData();
   }
 
-  Future<void> _fetchBizOppName() async {
-    try {
-      final authUser = FirebaseAuth.instance.currentUser;
-      if (authUser != null) {
-        final currentUserDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(authUser.uid)
-            .get();
+  void _fetchBizOppName() {
+    final adminSettings = Provider.of<AdminSettingsModel?>(context, listen: false);
 
-        if (currentUserDoc.exists) {
-          final userData = currentUserDoc.data();
-          final uplineAdmin = userData?['upline_admin'] as String?;
-          debugPrint(
-              '🔍 BIZ_OPP DEBUG: Current user upline_admin: $uplineAdmin');
-
-          if (uplineAdmin != null && uplineAdmin.isNotEmpty) {
-            // Get admin settings for the upline admin
-            final adminSettingsDoc = await FirebaseFirestore.instance
-                .collection('admin_settings')
-                .doc(uplineAdmin)
-                .get();
-
-            if (adminSettingsDoc.exists) {
-              final data = adminSettingsDoc.data();
-              final bizOpp = data?['biz_opp'] as String?;
-              debugPrint('🔍 BIZ_OPP DEBUG: Admin settings data: $data');
-              debugPrint('🔍 BIZ_OPP DEBUG: biz_opp field: $bizOpp');
-
-              if (bizOpp != null && bizOpp.isNotEmpty) {
-                setState(() {
-                  _bizOppName = bizOpp;
-                });
-                debugPrint(
-                    '🔍 BIZ_OPP DEBUG: Set bizOppName from admin settings: $_bizOppName');
-                return;
-              }
-            } else {
-              debugPrint(
-                  '🔍 BIZ_OPP DEBUG: Admin settings document does not exist for admin: $uplineAdmin');
-            }
-          }
-
-          // Fallback: try to get bizOpp from current user's data
-          final userBizOpp = userData?['bizOpp'] as String?;
-          debugPrint('🔍 BIZ_OPP DEBUG: Current user bizOpp: $userBizOpp');
-
-          if (userBizOpp != null && userBizOpp.isNotEmpty) {
-            setState(() {
-              _bizOppName = userBizOpp;
-            });
-            debugPrint(
-                '🔍 BIZ_OPP DEBUG: Set bizOppName from current user: $_bizOppName');
-            return;
-          }
+    if (adminSettings?.bizOpp != null && adminSettings!.bizOpp!.isNotEmpty) {
+      if (_bizOppName != adminSettings.bizOpp!) {
+        setState(() {
+          _bizOppName = adminSettings.bizOpp!;
+        });
+        if (kDebugMode) {
+          debugPrint('🔍 BIZ_OPP: Set from AdminSettings Provider: $_bizOppName');
         }
       }
-
-      debugPrint(
-          '🔍 BIZ_OPP DEBUG: No bizOpp found, using default: $_bizOppName');
-    } catch (e) {
-      debugPrint('🔍 BIZ_OPP DEBUG: Error fetching biz opp name: $e');
+    } else {
+      if (kDebugMode) {
+        debugPrint('🔍 BIZ_OPP: AdminSettings Provider has no bizOpp, using default: $_bizOppName');
+      }
     }
   }
 
@@ -613,6 +569,8 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   @override
   Widget build(BuildContext context) {
+    _fetchBizOppName();
+
     return Scaffold(
       appBar: AppScreenBar(title: context.l10n?.networkTitle ?? 'Your Global Team', appId: widget.appId),
       body: Column(
