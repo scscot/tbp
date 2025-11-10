@@ -40,6 +40,13 @@ async function testMultiLanguageNotifications(userId) {
     console.log('═'.repeat(50));
     console.log('');
 
+    const bizNameTranslations = {
+      en: 'your business opportunity',
+      es: 'tu oportunidad de negocio',
+      pt: 'sua oportunidade de negócio',
+      de: 'Ihre Geschäftsmöglichkeit',
+    };
+
     const notifications = [];
 
     notifications.push({
@@ -155,13 +162,6 @@ async function testMultiLanguageNotifications(userId) {
       es: 'Spanish',
       pt: 'Portuguese',
       de: 'German',
-    };
-
-    const bizNameTranslations = {
-      en: 'your business opportunity',
-      es: 'tu oportunidad de negocio',
-      pt: 'sua oportunidade de negócio',
-      de: 'Ihre Geschäftsmöglichkeit',
     };
 
     console.log(`📱 Sending ${notifications.length} test notifications in ${languageNames[userLang] || userLang}...\n`);
