@@ -10,6 +10,10 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  exclude:
+    - check_translations.dart
+    - get_untranslated.dart
+    - translate_german.dart
   errors:
     # Demote deprecation warnings to non-fatal while we refactor dropdowns
     # TODO: Remove this after dropdown refactor PR (see GitHub issue)
