@@ -269,7 +269,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String recruitT01FirstTouch(String prospectName, String senderFirst,
       String companyName, String shortLink) {
-    return 'Hey $prospectName, it\'s $senderFirst. I\'m using an app to help friends launch with $companyName. Quick look? $shortLink';
+    return 'Hey $prospectName, it\'s $senderFirst. Using an app to help friends start with $companyName. Look? $shortLink';
   }
 
   @override
@@ -281,7 +281,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String recruitT02FollowUpWarm(
       String prospectName, String companyName, String shortLink) {
-    return 'Hi $prospectName! Following up on $companyName. I saw great results this week. Have time for a quick chat? $shortLink';
+    return 'Hi $prospectName! Following up on $companyName. Great results this week. Quick chat? $shortLink';
   }
 
   @override
@@ -354,7 +354,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String recruitT13TrainingInvite(
       String prospectName, String companyName, String inviteLink) {
-    return 'Hey $prospectName, we have a $companyName training session coming up. Want to join? $inviteLink';
+    return 'Hey $prospectName, $companyName training session coming up. Join? $inviteLink';
   }
 
   @override

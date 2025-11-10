@@ -274,7 +274,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String recruitT01FirstTouch(String prospectName, String senderFirst,
       String companyName, String shortLink) {
-    return 'Oi $prospectName, é o $senderFirst. Estou usando um app para ajudar amigos a começar com $companyName. Dá uma olhada? $shortLink';
+    return 'Oi $prospectName, sou $senderFirst. Uso app pra ajudar amigos com $companyName. Dá uma olhada? $shortLink';
   }
 
   @override
@@ -286,13 +286,13 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String recruitT02FollowUpWarm(
       String prospectName, String companyName, String shortLink) {
-    return 'Oi $prospectName! Fazendo um follow-up sobre $companyName. Vi ótimos resultados essa semana. Tem tempo para um papo rápido? $shortLink';
+    return 'Oi $prospectName! Follow-up sobre $companyName. Ótimos resultados essa semana. Tempo pra um papo? $shortLink';
   }
 
   @override
   String recruitT03DeadlineNudge(
       String prospectName, String companyName, String shortLink) {
-    return '$prospectName, as vagas estão se preenchendo para nosso lançamento com $companyName. Quer que eu reserve uma para você? $shortLink';
+    return '$prospectName, vagas preenchendo pro lançamento $companyName. Reservo uma pra você? $shortLink';
   }
 
   @override
@@ -359,7 +359,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String recruitT13TrainingInvite(
       String prospectName, String companyName, String inviteLink) {
-    return 'Oi $prospectName, temos uma sessão de treinamento de $companyName chegando. Quer participar? $inviteLink';
+    return 'Oi $prospectName, treinamento $companyName chegando. Quer participar? $inviteLink';
   }
 
   @override
@@ -3669,339 +3669,340 @@ class AppLocalizationsPt extends AppLocalizations {
       'Você pode gerenciar sua assinatura na Google Play Store.';
 
   @override
-  String get faqTitle => 'Frequently Asked Questions';
+  String get faqTitle => 'Perguntas Frequentes';
 
   @override
-  String get faqSearchHint => 'Search FAQs...';
+  String get faqSearchHint => 'Buscar perguntas...';
 
   @override
-  String get faqCategoryGettingStarted => 'Getting Started';
+  String get faqCategoryGettingStarted => 'Primeiros Passos';
 
   @override
-  String get faqCategoryBusinessModel => 'Business Model & Legitimacy';
+  String get faqCategoryBusinessModel => 'Modelo de Negócio e Legitimidade';
 
   @override
-  String get faqCategoryHowItWorks => 'How It Works';
+  String get faqCategoryHowItWorks => 'Como Funciona';
 
   @override
-  String get faqCategoryTeamBuilding => 'Team Building & Management';
+  String get faqCategoryTeamBuilding => 'Construção e Gestão de Equipes';
 
   @override
-  String get faqCategoryGlobalFeatures => 'Global & Technical Features';
+  String get faqCategoryGlobalFeatures => 'Recursos Globais e Técnicos';
 
   @override
-  String get faqCategoryPrivacySecurity => 'Privacy & Security';
+  String get faqCategoryPrivacySecurity => 'Privacidade e Segurança';
 
   @override
-  String get faqCategoryPricing => 'Pricing & Business Value';
+  String get faqCategoryPricing => 'Preços e Valor do Negócio';
 
   @override
-  String get faqCategoryConcerns => 'Common Concerns & Objections';
+  String get faqCategoryConcerns => 'Preocupações e Objeções Comuns';
 
   @override
-  String get faqCategorySuccess => 'Success & Results';
+  String get faqCategorySuccess => 'Sucesso e Resultados';
 
   @override
-  String get faqCategorySupport => 'Support & Training';
+  String get faqCategorySupport => 'Suporte e Treinamento';
 
   @override
-  String get faqQ1 => 'What exactly is Team Build Pro?';
+  String get faqQ1 => 'O que é exatamente o Team Build Pro?';
 
   @override
   String get faqA1 =>
-      'Team Build Pro is a professional software tool designed to help direct sales professionals build, manage, and track their teams before and during their business journey. It\'s NOT a business opportunity or MLM company - it\'s the tool that helps you succeed in whatever opportunity you choose.';
+      'Team Build Pro é uma ferramenta de software profissional projetada para ajudar profissionais de vendas diretas e construção de equipes a gerenciar e expandir suas redes de forma mais eficaz. É uma solução SaaS baseada em assinatura, não uma oportunidade de negócio ou empresa de MLM.';
 
   @override
   String get faqQ2 =>
-      'How is this different from other team building apps or CRM systems?';
+      'O Team Build Pro é uma empresa de MLM ou marketing de rede?';
 
   @override
   String get faqA2 =>
-      'Unlike generic CRMs, Team Build Pro is specifically designed for the direct sales industry. It understands the unique challenges you face: starting from zero, building momentum, qualifying prospects, and maintaining team motivation. Our system lets you pre-build your team before you even join an opportunity, giving you a massive head start.';
+      'Não. Team Build Pro é uma empresa de tecnologia que fornece software empresarial para profissionais de construção de equipes. Somos uma ferramenta SaaS legítima semelhante ao Salesforce ou HubSpot, mas focada nas necessidades únicas de profissionais de vendas diretas e construção de equipes.';
 
   @override
   String get faqQ3 =>
-      'Can I really build a team BEFORE joining a business opportunity?';
+      'Por que o Team Build Pro é focado em profissionais de vendas diretas se você não é uma empresa de MLM?';
 
   @override
   String get faqA3 =>
-      'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.';
+      'Assim como o Salesforce atende representantes de vendas, atendemos profissionais de vendas diretas. Vendas diretas e marketing de rede são indústrias legítimas que precisam de software profissional. Somos a ferramenta, não a oportunidade de negócio.';
 
   @override
-  String get faqQ4 => 'Do I need a credit card to try it?';
+  String get faqQ4 => 'Como faço para me cadastrar?';
 
   @override
   String get faqA4 =>
-      'No. You get full access to all premium features for 30 days completely free, with no credit card required. You can decide to subscribe at any point during or after your trial.';
+      'Baixe o aplicativo Team Build Pro da App Store ou Google Play. Você pode se cadastrar usando um código de indicação de um membro existente ou diretamente através do nosso site. Novos usuários recebem uma avaliação gratuita de 30 dias, sem necessidade de cartão de crédito.';
 
   @override
-  String get faqQ5 => 'Is Team Build Pro an MLM or business opportunity?';
+  String get faqQ5 => 'Como o sistema de indicação funciona?';
 
   @override
   String get faqA5 =>
-      'No. Team Build Pro is not a business opportunity, MLM, or income platform of any kind. We are a software tool designed exclusively to help professionals build and track their teams. We do not provide any form of user compensation.';
+      'Os membros existentes podem compartilhar códigos de indicação com novos usuários. Quando alguém se cadastra com seu código, eles se tornam parte da sua rede no aplicativo. Este é simplesmente um recurso de rastreamento de rede - não há comissões, pagamentos ou estrutura de compensação envolvida.';
 
   @override
-  String get faqQ6 => 'Can I use this with any direct sales company?';
+  String get faqQ6 => 'Como o Team Build Pro rastreia minha rede?';
 
   @override
   String get faqA6 =>
-      'Yes! Team Build Pro is company-agnostic. Whether you\'re in health and wellness, financial services, beauty, technology, or any other direct sales industry, our tools work with your business. You simply customize your profile with your opportunity details.';
+      'O aplicativo acompanha automaticamente os membros da sua equipe quando eles se cadastram usando seu código de indicação. Você pode visualizar toda a sua rede, crescimento da equipe e marcos de construção alcançados. A estrutura da rede é baseada em quem indicou quem, criando uma hierarquia visual da sua organização.';
 
   @override
   String get faqQ7 =>
-      'What if I\'m not currently with a company but want to join one?';
+      'Posso me comunicar com os membros da minha equipe através do aplicativo?';
 
   @override
   String get faqA7 =>
-      'Perfect! This is where Team Build Pro shines. You can start building your team immediately, even before you\'ve chosen which company to join. When you do decide, you\'ll launch with a pre-built, motivated team instead of starting from zero.';
+      'Sim! O Team Build Pro inclui mensagens diretas seguras, bate-papos em grupo e um sistema abrangente de notificações para manter você conectado com sua equipe. Você pode compartilhar atualizações, fornecer suporte e coordenar atividades de construção de equipes - tudo dentro do aplicativo.';
 
   @override
-  String get faqQ8 => 'How does the qualification system work?';
+  String get faqQ8 =>
+      'Posso convidar membros da equipe que não estão no aplicativo?';
 
   @override
   String get faqA8 =>
-      'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.';
+      'Absolutamente. O Team Build Pro permite que você envie códigos de indicação personalizados via SMS, e-mail ou mídias sociais. Novos membros podem se cadastrar usando esses códigos para se juntarem automaticamente à sua rede no sistema.';
 
   @override
-  String get faqQ9 =>
-      'What happens if someone joins my Team Build Pro team but doesn\'t want to join my business opportunity?';
+  String get faqQ9 => 'O que são marcos de construção?';
 
   @override
   String get faqA9 =>
-      'That\'s perfectly fine! They can continue using Team Build Pro to build their own team for whatever opportunity they choose, or they can stay focused on team building. There\'s no pressure. The beauty is that you\'re only working with people who have demonstrated commitment and success.';
+      'Marcos de construção são conquistas de crescimento de equipe que você desbloqueia à medida que sua rede se expande. Você recebe notificações quando membros da sua equipe atingem certos níveis, ajudando você a acompanhar o progresso e celebrar o sucesso juntos.';
 
   @override
-  String get faqQ10 => 'Can I track my team\'s progress and activity?';
+  String get faqQ10 => 'Como funciona o rastreamento de elegibilidade?';
 
   @override
   String get faqA10 =>
-      'Yes! You get comprehensive analytics including real-time team growth statistics, individual member progress toward qualification, activity levels and engagement metrics, geographic distribution of your team, performance trends and milestones, and daily/weekly growth reports.';
+      'O Team Build Pro permite que você configure e rastreie qualificações de elegibilidade personalizadas com base nos requisitos da sua oportunidade de negócio. Essas qualificações são visíveis para você e membros relevantes da equipe, ajudando todos a permanecerem no caminho certo com suas metas.';
 
   @override
-  String get faqQ11 => 'How do I get my referral link?';
+  String get faqQ11 => 'Posso usar o Team Build Pro em vários países?';
 
   @override
   String get faqA11 =>
-      'Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person.';
+      'Sim! O Team Build Pro suporta mais de 120 países com suporte nativo para fuso horário, moedas locais e vários idiomas. Quer sua equipe esteja em Nova York, Londres, Tóquio ou São Paulo, todos veem informações relevantes localizadas.';
 
   @override
-  String get faqQ12 =>
-      'What\'s the difference between \"sponsors\" and \"team members\"?';
+  String get faqQ12 => 'Quais idiomas o aplicativo suporta?';
 
   @override
   String get faqA12 =>
-      'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.';
+      'Atualmente suportamos inglês, espanhol, português e alemão, com planos de adicionar mais idiomas com base na demanda do usuário. O aplicativo detecta automaticamente a preferência de idioma do seu dispositivo.';
 
   @override
-  String get faqQ13 => 'Can my team members message each other?';
+  String get faqQ13 =>
+      'Como o Team Build Pro lida com diferentes fusos horários?';
 
   @override
   String get faqA13 =>
-      'Yes! Team Build Pro includes secure, encrypted messaging so your team can communicate, share tips, and support each other.';
+      'Todas as notificações, horários de eventos e registros de atividades são automaticamente ajustados para o fuso horário local de cada usuário. Isso garante que os membros da equipe global vejam informações precisas e relevantes, independentemente de onde estejam localizados.';
 
   @override
-  String get faqQ14 =>
-      'What if someone in my team becomes qualified before me?';
+  String get faqQ14 => 'Minhas informações pessoais estão seguras?';
 
   @override
   String get faqA14 =>
-      'That\'s actually great! It shows the system is working. They can advance to your business opportunity independently, and you continue building your own qualification. Success breeds success - having qualified team members often motivates others.';
+      'Sim. Usamos criptografia de nível empresarial, comunicação segura de servidor para servidor e aderimos aos mais altos padrões de proteção de dados. Suas informações pessoais nunca são compartilhadas com terceiros sem seu consentimento explícito.';
 
   @override
-  String get faqQ15 => 'How do I know if my team members are active?';
+  String get faqQ15 => 'Quem pode ver as informações da minha rede?';
 
   @override
   String get faqA15 =>
-      'Our dashboard shows activity levels, last login dates, team building progress, and engagement metrics for each member. You can easily identify who might need encouragement or support.';
+      'Somente você e seus patrocinadores diretos podem ver os detalhes completos da sua rede. Os membros da equipe podem ver sua própria linha ascendente e descendente, mas não podem acessar informações sobre ramos paralelos ou informações pessoais de outros membros sem as devidas permissões.';
 
   @override
-  String get faqQ16 => 'Can I remove someone from my team?';
+  String get faqQ16 =>
+      'O aplicativo armazena informações do meu cartão de crédito?';
 
   @override
   String get faqA16 =>
-      'Team members can choose to leave on their own, but you cannot remove them. This protects the integrity of the team and ensures everyone\'s hard work building their teams is preserved.';
+      'Não. Todo o processamento de pagamentos é feito através do sistema seguro de Compras no Aplicativo da Apple. Nunca vemos ou armazenamos suas informações de cartão de crédito. As assinaturas são gerenciadas através da sua conta Apple ID.';
 
   @override
-  String get faqQ17 => 'Does this work internationally?';
+  String get faqQ17 => 'Posso excluir minha conta e dados?';
 
   @override
   String get faqA17 =>
-      'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.';
+      'Sim. Você pode solicitar a exclusão completa da conta a qualquer momento através das configurações do aplicativo. Isso removerá permanentemente seus dados pessoais de nossos sistemas de acordo com as regulamentações do GDPR e LGPD.';
 
   @override
-  String get faqQ18 => 'What devices does it work on?';
+  String get faqQ18 => 'Quanto custa o Team Build Pro?';
 
   @override
   String get faqA18 =>
-      'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.';
+      'Oferecemos uma avaliação gratuita de 30 dias, após a qual o Team Build Pro custa \$4.99 USD por mês ou \$49.99 USD por ano (economize 17%). Os preços podem variar por região devido a taxas de câmbio e impostos locais.';
 
   @override
-  String get faqQ19 => 'What if I\'m not tech-savvy?';
+  String get faqQ19 => 'Existe um período de avaliação gratuito?';
 
   @override
   String get faqA19 =>
-      'The app is designed for simplicity. If you can use social media, you can use Team Build Pro. Plus, we provide onboarding tutorials and customer support to help you get started.';
+      'Sim! Todos os novos usuários recebem 30 dias completos de acesso premium sem necessidade de cartão de crédito. Experimente todos os recursos antes de se comprometer com uma assinatura.';
 
   @override
-  String get faqQ20 => 'Does the app work offline?';
+  String get faqQ20 => 'Como cancelo minha assinatura?';
 
   @override
   String get faqA20 =>
-      'You need an internet connection for real-time features like messaging and live updates, but you can view your team and some analytics offline. Data syncs when you reconnect.';
+      'Cancele a qualquer momento através das configurações de assinatura da sua Apple App Store. Não há taxas de cancelamento ou períodos de compromisso. Seu acesso continua até o final do período de cobrança atual.';
 
   @override
-  String get faqQ21 => 'How secure is my data?';
+  String get faqQ21 => 'Existe um plano familiar ou de equipe?';
 
   @override
   String get faqA21 =>
-      'We use enterprise-grade security including end-to-end encryption for all communications, secure cloud storage with regular backups, multi-factor authentication options, GDPR compliance for data protection, and no data sharing with third parties.';
+      'Cada membro da equipe mantém sua própria assinatura individual. Isso garante que todos tenham acesso total aos recursos e possam gerenciar sua própria conta de forma independente. Estamos explorando opções de licenciamento de equipe para futuras versões.';
 
   @override
-  String get faqQ22 => 'Who can see my team information?';
+  String get faqQ22 => 'Que valor eu recebo pela assinatura?';
 
   @override
   String get faqA22 =>
-      'Only you can see your complete team. Team members can see their own direct sponsors and downline, but cannot see your entire organization. This protects everyone\'s privacy while maintaining transparency in direct relationships.';
+      'Por menos do que o custo de um café por mês, você obtém rastreamento profissional de rede, comunicação ilimitada de equipe, análises de crescimento, marcos automatizados, recursos de conformidade e suporte contínuo. Compare isso com software empresarial semelhante que custa \$50-500+ por mês.';
 
   @override
-  String get faqQ23 => 'What happens to my data if I cancel?';
+  String get faqQ23 => 'O Team Build Pro é um esquema de pirâmide?';
 
   @override
   String get faqA23 =>
-      'You can export your team data before canceling. After cancellation, your account is deactivated but your team relationships remain intact for others in your team. We retain minimal data for legal/billing purposes only.';
+      'Não. O Team Build Pro é uma ferramenta de software, não uma oportunidade de negócio. Não há recrutamento, pagamentos ou estruturas de compensação. Você está simplesmente pagando pela assinatura de software, assim como pagaria pelo Microsoft Office ou Adobe Creative Cloud.';
 
   @override
-  String get faqQ24 => 'Do you sell my information to other companies?';
+  String get faqQ24 =>
+      'Por que preciso de um código de indicação para me cadastrar?';
 
   @override
   String get faqA24 =>
-      'Absolutely not. We never sell, rent, or share your personal information with third parties. Our revenue comes from subscriptions, not data sales.';
+      'Códigos de indicação ajudam a estabelecer sua conexão de rede inicial no sistema. Isso garante um rastreamento adequado da rede e permite que você e seu patrocinador se comuniquem efetivamente através do aplicativo. Se você não tiver um código, pode se cadastrar diretamente através do nosso site.';
 
   @override
-  String get faqQ25 =>
-      'Is \$4.99/month worth it compared to free alternatives?';
+  String get faqQ25 => 'Serei forçado a recrutar ou vender algo?';
 
   @override
   String get faqA25 =>
-      'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and team analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.';
+      'Absolutamente não. O Team Build Pro é apenas uma ferramenta de software. Não vendemos produtos, não exigimos recrutamento e não temos metas de vendas. Como você usa o aplicativo para gerenciar sua própria atividade de construção de equipes depende inteiramente de você.';
 
   @override
-  String get faqQ26 => 'Can I write this off as a business expense?';
+  String get faqQ26 =>
+      'Isso parece bom demais para ser verdade. Qual é o problema?';
 
   @override
   String get faqA26 =>
-      'Many direct sales professionals do treat it as a business tool expense, but consult your tax advisor for guidance specific to your situation.';
+      'Não há problema. Somos uma ferramenta SaaS legítima que cobra uma taxa de assinatura mensal transparente por software profissional. Nenhuma taxa oculta, nenhum requisito de recrutamento, nenhuma promessa de riqueza. Apenas um bom software a um preço justo.';
 
   @override
-  String get faqQ27 => 'What if I need to cancel?';
+  String get faqQ27 => 'Você faz promessas de renda?';
 
   @override
   String get faqA27 =>
-      'You can cancel anytime with no cancellation fees or long-term commitments. You retain access until the end of your current billing period.';
+      'Não. O Team Build Pro é uma ferramenta de software, não uma oportunidade de negócio. Não fazemos promessas de renda porque você não ganha dinheiro através do nosso aplicativo. Você paga por uma ferramenta para ajudá-lo a gerenciar suas próprias atividades de construção de equipes.';
 
   @override
-  String get faqQ28 => 'Do you offer team or volume discounts?';
+  String get faqQ28 => 'Como posso saber que o Team Build Pro é legítimo?';
 
   @override
   String get faqA28 =>
-      'Currently, we offer individual subscriptions only. This keeps costs low and ensures everyone has equal access to all features.';
+      'Somos uma empresa de software registrada com um aplicativo ao vivo na Apple App Store (que tem rigorosos processos de revisão). Não pedimos compras iniciais, não fazemos promessas não realistas e somos transparentes sobre o que nosso software faz. Temos termos de serviço claros, política de privacidade e informações de contato de suporte.';
 
   @override
-  String get faqQ29 => 'Isn\'t this just making direct sales more complicated?';
+  String get faqQ29 => 'Com que rapidez minha rede vai crescer?';
 
   @override
   String get faqA29 =>
-      'Actually, it simplifies everything! Instead of cold calling strangers or pressuring friends, you\'re building relationships with people who are actively engaged in team building. It removes the guesswork and awkwardness from traditional recruiting.';
+      'Não podemos prever o crescimento da rede porque isso depende inteiramente de suas próprias atividades de construção de equipes. O Team Build Pro simplesmente ajuda você a rastrear e gerenciar qualquer crescimento que você crie através de seus próprios esforços.';
 
   @override
-  String get faqQ30 => 'What if people think this is \"another MLM thing\"?';
+  String get faqQ30 => 'Quais resultados posso esperar?';
 
   @override
   String get faqA30 =>
-      'That\'s why we\'re very clear that Team Build Pro is software, not an opportunity. You\'re inviting people to use a professional tool, not join a business. Many people are more open to trying an app than joining an MLM.';
+      'Você pode esperar melhor organização, comunicação mais clara e rastreamento mais fácil de suas atividades de construção de equipes. O Team Build Pro é uma ferramenta para eficiência - seus resultados reais dependem de como você a usa e de suas próprias atividades comerciais.';
 
   @override
-  String get faqQ31 =>
-      'How do I explain this to prospects without confusing them?';
+  String get faqQ31 => 'Outras pessoas tiveram sucesso com o Team Build Pro?';
 
   @override
   String get faqA31 =>
-      'Simple: \"It\'s like LinkedIn for direct sales professionals. You build connections, track your team growth, and when you\'re ready to advance your career, opportunities become available.\" Focus on the professional development angle.';
+      'Muitos usuários relatam melhor organização de equipe, comunicação mais fácil e melhor rastreamento de crescimento. No entanto, lembre-se de que o Team Build Pro é apenas uma ferramenta - o sucesso vem de seus próprios esforços de construção de equipes, não do software em si.';
 
   @override
-  String get faqQ32 =>
-      'What if my current company doesn\'t allow outside tools?';
+  String get faqQ32 => 'Posso ver depoimentos ou avaliações?';
 
   @override
   String get faqA32 =>
-      'Check your company\'s policies, but most direct sales companies welcome tools that help you build your business. Team Build Pro doesn\'t compete with your company - it feeds qualified prospects into it.';
+      'Você pode ver avaliações de usuários verificados na Apple App Store. Concentramos depoimentos nos recursos de software e experiência do usuário, não em resultados de negócios, já que o Team Build Pro é uma ferramenta, não uma oportunidade de negócio.';
 
   @override
-  String get faqQ33 => 'How long does it take to see results?';
+  String get faqQ33 =>
+      'O que torna o Team Build Pro diferente de outras ferramentas?';
 
   @override
   String get faqA33 =>
-      'Direct sales success takes time regardless of tools. However, Team Build Pro users often see team growth within weeks because they\'re focused on relationship building rather than selling. The key is consistent daily activity.';
+      'Fomos projetados especificamente para construção de equipes e redes de vendas diretas. Enquanto outras ferramentas oferecem recursos genéricos de CRM, fornecemos rastreamento de rede especializado, marcos de construção, comunicação em equipe e recursos de conformidade adaptados às suas necessidades únicas.';
 
   @override
-  String get faqQ34 =>
-      'What\'s a realistic timeline to build a qualified team?';
+  String get faqQ34 => 'Qual treinamento ou suporte é fornecido?';
 
   @override
   String get faqA34 =>
-      'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.';
+      'Fornecemos documentação abrangente no aplicativo, perguntas frequentes, uma seção de Primeiros Passos e e-mail de suporte. Novos usuários também recebem notificações de integração para ajudá-los a aprender os principais recursos. Atualizamos regularmente nossos recursos de ajuda com base no feedback do usuário.';
 
   @override
-  String get faqQ35 => 'Do you guarantee results?';
+  String get faqQ35 => 'Posso obter treinamento individual?';
 
   @override
   String get faqA35 =>
-      'No software can guarantee your business success - that depends on your effort, market, and opportunity. We provide the tools; you provide the work ethic and relationship building skills.';
+      'Para problemas de software, nosso suporte por e-mail fornece assistência personalizada. Para orientação de construção de equipes, recomendamos trabalhar com seu patrocinador ou organização. Focamos em suporte de software, não em treinamento de negócios.';
 
   @override
-  String get faqQ36 => 'Can you share success stories?';
+  String get faqQ36 => 'Com que frequência o aplicativo é atualizado?';
 
   @override
   String get faqA36 =>
-      'While we maintain user privacy, we can share that our most successful users consistently share their Team Build Pro link, engage with their team daily, and focus on helping others succeed rather than just recruiting.';
+      'Lançamos atualizações regulares com novos recursos, melhorias de desempenho e correções de bugs. Todas as atualizações são gratuitas para assinantes. Você pode ver nossas notas de versão na App Store para ver melhorias recentes.';
 
   @override
-  String get faqQ37 => 'What kind of support do you provide?';
+  String get faqQ37 => 'O Team Build Pro funciona offline?';
 
   @override
   String get faqA37 =>
-      'We offer 24/7 customer support via in-app messaging, best practices for team building, and regular feature updates and improvements.';
+      'Você pode visualizar dados previamente carregados offline, mas a maioria dos recursos requer conexão com a internet para sincronização em tempo real. Isso garante que você e sua equipe sempre vejam as informações mais atualizadas.';
 
   @override
-  String get faqQ38 => 'What exactly does AI Coach do?';
+  String get faqQ38 => 'O que é o Coach de IA e como ele funciona?';
 
   @override
   String get faqA38 =>
-      'AI Coach helps you navigate the Team Build Pro app, answers questions about features and qualification requirements, provides team building guidance, and can suggest which app sections to visit for specific tasks.';
+      'O Coach de IA ajuda você a navegar pelo aplicativo Team Build Pro, responde perguntas sobre recursos e requisitos de qualificação, fornece orientação sobre construção de equipes e pode sugerir quais seções do aplicativo visitar para tarefas específicas.';
 
   @override
-  String get faqQ39 => 'Do you provide training on how to recruit or sell?';
+  String get faqQ39 =>
+      'Vocês fornecem treinamento sobre como recrutar ou vender?';
 
   @override
   String get faqA39 =>
-      'We focus on showing you how to use Team Build Pro effectively. For sales and recruiting training, we recommend working with your sponsor or company\'s training programs.';
+      'Focamos em mostrar como usar o Team Build Pro efetivamente. Para treinamento em vendas e recrutamento, recomendamos trabalhar com seu patrocinador ou os programas de treinamento da sua empresa.';
 
   @override
-  String get faqQ40 => 'What if I have technical problems?';
+  String get faqQ40 => 'E se eu tiver problemas técnicos?';
 
   @override
   String get faqA40 =>
-      'Contact our support team through the app or website. Most issues are resolved quickly, and we\'re committed to keeping your team building activities running smoothly.';
+      'Entre em contato com nossa equipe de suporte através do aplicativo ou site. A maioria dos problemas é resolvida rapidamente, e estamos comprometidos em manter suas atividades de construção de equipes funcionando perfeitamente.';
 
   @override
-  String get faqFooterTitle => 'Ready to Transform Your Team Building?';
+  String get faqFooterTitle =>
+      'Pronto para Transformar sua Construção de Equipes?';
 
   @override
   String get faqFooterSubtitle =>
-      'Start your 30-day free trial today and experience the difference professional tools make.';
+      'Comece seu teste gratuito de 30 dias hoje e experimente a diferença que as ferramentas profissionais fazem.';
 
   @override
   String get faqFooterContact =>
-      'Questions not answered here? Contact our support team - we\'re here to help you succeed!';
+      'Perguntas não respondidas aqui? Entre em contato com nossa equipe de suporte - estamos aqui para ajudá-lo a ter sucesso!';
 }

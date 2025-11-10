@@ -592,7 +592,7 @@ abstract class AppLocalizations {
   /// Initial outreach message with prospect name
   ///
   /// In en, this message translates to:
-  /// **'Hey {prospectName}, it\'s {senderFirst}. I\'m using an app to help friends launch with {companyName}. Quick look? {shortLink}'**
+  /// **'Hey {prospectName}, it\'s {senderFirst}. Using an app to help friends start with {companyName}. Look? {shortLink}'**
   String recruitT01FirstTouch(String prospectName, String senderFirst,
       String companyName, String shortLink);
 
@@ -606,7 +606,7 @@ abstract class AppLocalizations {
   /// Warm follow-up message after initial interest
   ///
   /// In en, this message translates to:
-  /// **'Hi {prospectName}! Following up on {companyName}. I saw great results this week. Have time for a quick chat? {shortLink}'**
+  /// **'Hi {prospectName}! Following up on {companyName}. Great results this week. Quick chat? {shortLink}'**
   String recruitT02FollowUpWarm(
       String prospectName, String companyName, String shortLink);
 
@@ -677,7 +677,7 @@ abstract class AppLocalizations {
   /// Invitation to training or event
   ///
   /// In en, this message translates to:
-  /// **'Hey {prospectName}, we have a {companyName} training session coming up. Want to join? {inviteLink}'**
+  /// **'Hey {prospectName}, {companyName} training session coming up. Join? {inviteLink}'**
   String recruitT13TrainingInvite(
       String prospectName, String companyName, String inviteLink);
 
