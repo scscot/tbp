@@ -3624,6 +3624,343 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionManagementGoogle =>
       'You can manage your subscription in the Google Play Store.';
+
+  @override
+  String get faqTitle => 'Frequently Asked Questions';
+
+  @override
+  String get faqSearchHint => 'Search FAQs...';
+
+  @override
+  String get faqCategoryGettingStarted => 'Getting Started';
+
+  @override
+  String get faqCategoryBusinessModel => 'Business Model & Legitimacy';
+
+  @override
+  String get faqCategoryHowItWorks => 'How It Works';
+
+  @override
+  String get faqCategoryTeamBuilding => 'Team Building & Management';
+
+  @override
+  String get faqCategoryGlobalFeatures => 'Global & Technical Features';
+
+  @override
+  String get faqCategoryPrivacySecurity => 'Privacy & Security';
+
+  @override
+  String get faqCategoryPricing => 'Pricing & Business Value';
+
+  @override
+  String get faqCategoryConcerns => 'Common Concerns & Objections';
+
+  @override
+  String get faqCategorySuccess => 'Success & Results';
+
+  @override
+  String get faqCategorySupport => 'Support & Training';
+
+  @override
+  String get faqQ1 => 'What exactly is Team Build Pro?';
+
+  @override
+  String get faqA1 =>
+      'Team Build Pro is a professional software tool designed to help direct sales professionals build, manage, and track their teams before and during their business journey. It\'s NOT a business opportunity or MLM company - it\'s the tool that helps you succeed in whatever opportunity you choose.';
+
+  @override
+  String get faqQ2 =>
+      'How is this different from other team building apps or CRM systems?';
+
+  @override
+  String get faqA2 =>
+      'Unlike generic CRMs, Team Build Pro is specifically designed for the direct sales industry. It understands the unique challenges you face: starting from zero, building momentum, qualifying prospects, and maintaining team motivation. Our system lets you pre-build your team before you even join an opportunity, giving you a massive head start.';
+
+  @override
+  String get faqQ3 =>
+      'Can I really build a team BEFORE joining a business opportunity?';
+
+  @override
+  String get faqA3 =>
+      'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.';
+
+  @override
+  String get faqQ4 => 'Do I need a credit card to try it?';
+
+  @override
+  String get faqA4 =>
+      'No. You get full access to all premium features for 30 days completely free, with no credit card required. You can decide to subscribe at any point during or after your trial.';
+
+  @override
+  String get faqQ5 => 'Is Team Build Pro an MLM or business opportunity?';
+
+  @override
+  String get faqA5 =>
+      'No. Team Build Pro is not a business opportunity, MLM, or income platform of any kind. We are a software tool designed exclusively to help professionals build and track their teams. We do not provide any form of user compensation.';
+
+  @override
+  String get faqQ6 => 'Can I use this with any direct sales company?';
+
+  @override
+  String get faqA6 =>
+      'Yes! Team Build Pro is company-agnostic. Whether you\'re in health and wellness, financial services, beauty, technology, or any other direct sales industry, our tools work with your business. You simply customize your profile with your opportunity details.';
+
+  @override
+  String get faqQ7 =>
+      'What if I\'m not currently with a company but want to join one?';
+
+  @override
+  String get faqA7 =>
+      'Perfect! This is where Team Build Pro shines. You can start building your team immediately, even before you\'ve chosen which company to join. When you do decide, you\'ll launch with a pre-built, motivated team instead of starting from zero.';
+
+  @override
+  String get faqQ8 => 'How does the qualification system work?';
+
+  @override
+  String get faqA8 =>
+      'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.';
+
+  @override
+  String get faqQ9 =>
+      'What happens if someone joins my Team Build Pro team but doesn\'t want to join my business opportunity?';
+
+  @override
+  String get faqA9 =>
+      'That\'s perfectly fine! They can continue using Team Build Pro to build their own team for whatever opportunity they choose, or they can stay focused on team building. There\'s no pressure. The beauty is that you\'re only working with people who have demonstrated commitment and success.';
+
+  @override
+  String get faqQ10 => 'Can I track my team\'s progress and activity?';
+
+  @override
+  String get faqA10 =>
+      'Yes! You get comprehensive analytics including real-time team growth statistics, individual member progress toward qualification, activity levels and engagement metrics, geographic distribution of your team, performance trends and milestones, and daily/weekly growth reports.';
+
+  @override
+  String get faqQ11 => 'How do I get my referral link?';
+
+  @override
+  String get faqA11 =>
+      'Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person.';
+
+  @override
+  String get faqQ12 =>
+      'What\'s the difference between \"sponsors\" and \"team members\"?';
+
+  @override
+  String get faqA12 =>
+      'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.';
+
+  @override
+  String get faqQ13 => 'Can my team members message each other?';
+
+  @override
+  String get faqA13 =>
+      'Yes! Team Build Pro includes secure, encrypted messaging so your team can communicate, share tips, and support each other.';
+
+  @override
+  String get faqQ14 =>
+      'What if someone in my team becomes qualified before me?';
+
+  @override
+  String get faqA14 =>
+      'That\'s actually great! It shows the system is working. They can advance to your business opportunity independently, and you continue building your own qualification. Success breeds success - having qualified team members often motivates others.';
+
+  @override
+  String get faqQ15 => 'How do I know if my team members are active?';
+
+  @override
+  String get faqA15 =>
+      'Our dashboard shows activity levels, last login dates, team building progress, and engagement metrics for each member. You can easily identify who might need encouragement or support.';
+
+  @override
+  String get faqQ16 => 'Can I remove someone from my team?';
+
+  @override
+  String get faqA16 =>
+      'Team members can choose to leave on their own, but you cannot remove them. This protects the integrity of the team and ensures everyone\'s hard work building their teams is preserved.';
+
+  @override
+  String get faqQ17 => 'Does this work internationally?';
+
+  @override
+  String get faqA17 =>
+      'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.';
+
+  @override
+  String get faqQ18 => 'What devices does it work on?';
+
+  @override
+  String get faqA18 =>
+      'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.';
+
+  @override
+  String get faqQ19 => 'What if I\'m not tech-savvy?';
+
+  @override
+  String get faqA19 =>
+      'The app is designed for simplicity. If you can use social media, you can use Team Build Pro. Plus, we provide onboarding tutorials and customer support to help you get started.';
+
+  @override
+  String get faqQ20 => 'Does the app work offline?';
+
+  @override
+  String get faqA20 =>
+      'You need an internet connection for real-time features like messaging and live updates, but you can view your team and some analytics offline. Data syncs when you reconnect.';
+
+  @override
+  String get faqQ21 => 'How secure is my data?';
+
+  @override
+  String get faqA21 =>
+      'We use enterprise-grade security including end-to-end encryption for all communications, secure cloud storage with regular backups, multi-factor authentication options, GDPR compliance for data protection, and no data sharing with third parties.';
+
+  @override
+  String get faqQ22 => 'Who can see my team information?';
+
+  @override
+  String get faqA22 =>
+      'Only you can see your complete team. Team members can see their own direct sponsors and downline, but cannot see your entire organization. This protects everyone\'s privacy while maintaining transparency in direct relationships.';
+
+  @override
+  String get faqQ23 => 'What happens to my data if I cancel?';
+
+  @override
+  String get faqA23 =>
+      'You can export your team data before canceling. After cancellation, your account is deactivated but your team relationships remain intact for others in your team. We retain minimal data for legal/billing purposes only.';
+
+  @override
+  String get faqQ24 => 'Do you sell my information to other companies?';
+
+  @override
+  String get faqA24 =>
+      'Absolutely not. We never sell, rent, or share your personal information with third parties. Our revenue comes from subscriptions, not data sales.';
+
+  @override
+  String get faqQ25 =>
+      'Is \$4.99/month worth it compared to free alternatives?';
+
+  @override
+  String get faqA25 =>
+      'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and team analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.';
+
+  @override
+  String get faqQ26 => 'Can I write this off as a business expense?';
+
+  @override
+  String get faqA26 =>
+      'Many direct sales professionals do treat it as a business tool expense, but consult your tax advisor for guidance specific to your situation.';
+
+  @override
+  String get faqQ27 => 'What if I need to cancel?';
+
+  @override
+  String get faqA27 =>
+      'You can cancel anytime with no cancellation fees or long-term commitments. You retain access until the end of your current billing period.';
+
+  @override
+  String get faqQ28 => 'Do you offer team or volume discounts?';
+
+  @override
+  String get faqA28 =>
+      'Currently, we offer individual subscriptions only. This keeps costs low and ensures everyone has equal access to all features.';
+
+  @override
+  String get faqQ29 => 'Isn\'t this just making direct sales more complicated?';
+
+  @override
+  String get faqA29 =>
+      'Actually, it simplifies everything! Instead of cold calling strangers or pressuring friends, you\'re building relationships with people who are actively engaged in team building. It removes the guesswork and awkwardness from traditional recruiting.';
+
+  @override
+  String get faqQ30 => 'What if people think this is \"another MLM thing\"?';
+
+  @override
+  String get faqA30 =>
+      'That\'s why we\'re very clear that Team Build Pro is software, not an opportunity. You\'re inviting people to use a professional tool, not join a business. Many people are more open to trying an app than joining an MLM.';
+
+  @override
+  String get faqQ31 =>
+      'How do I explain this to prospects without confusing them?';
+
+  @override
+  String get faqA31 =>
+      'Simple: \"It\'s like LinkedIn for direct sales professionals. You build connections, track your team growth, and when you\'re ready to advance your career, opportunities become available.\" Focus on the professional development angle.';
+
+  @override
+  String get faqQ32 =>
+      'What if my current company doesn\'t allow outside tools?';
+
+  @override
+  String get faqA32 =>
+      'Check your company\'s policies, but most direct sales companies welcome tools that help you build your business. Team Build Pro doesn\'t compete with your company - it feeds qualified prospects into it.';
+
+  @override
+  String get faqQ33 => 'How long does it take to see results?';
+
+  @override
+  String get faqA33 =>
+      'Direct sales success takes time regardless of tools. However, Team Build Pro users often see team growth within weeks because they\'re focused on relationship building rather than selling. The key is consistent daily activity.';
+
+  @override
+  String get faqQ34 =>
+      'What\'s a realistic timeline to build a qualified team?';
+
+  @override
+  String get faqA34 =>
+      'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.';
+
+  @override
+  String get faqQ35 => 'Do you guarantee results?';
+
+  @override
+  String get faqA35 =>
+      'No software can guarantee your business success - that depends on your effort, market, and opportunity. We provide the tools; you provide the work ethic and relationship building skills.';
+
+  @override
+  String get faqQ36 => 'Can you share success stories?';
+
+  @override
+  String get faqA36 =>
+      'While we maintain user privacy, we can share that our most successful users consistently share their Team Build Pro link, engage with their team daily, and focus on helping others succeed rather than just recruiting.';
+
+  @override
+  String get faqQ37 => 'What kind of support do you provide?';
+
+  @override
+  String get faqA37 =>
+      'We offer 24/7 customer support via in-app messaging, best practices for team building, and regular feature updates and improvements.';
+
+  @override
+  String get faqQ38 => 'What exactly does AI Coach do?';
+
+  @override
+  String get faqA38 =>
+      'AI Coach helps you navigate the Team Build Pro app, answers questions about features and qualification requirements, provides team building guidance, and can suggest which app sections to visit for specific tasks.';
+
+  @override
+  String get faqQ39 => 'Do you provide training on how to recruit or sell?';
+
+  @override
+  String get faqA39 =>
+      'We focus on showing you how to use Team Build Pro effectively. For sales and recruiting training, we recommend working with your sponsor or company\'s training programs.';
+
+  @override
+  String get faqQ40 => 'What if I have technical problems?';
+
+  @override
+  String get faqA40 =>
+      'Contact our support team through the app or website. Most issues are resolved quickly, and we\'re committed to keeping your team building activities running smoothly.';
+
+  @override
+  String get faqFooterTitle => 'Ready to Transform Your Team Building?';
+
+  @override
+  String get faqFooterSubtitle =>
+      'Start your 30-day free trial today and experience the difference professional tools make.';
+
+  @override
+  String get faqFooterContact =>
+      'Questions not answered here? Contact our support team - we\'re here to help you succeed!';
 }
 
 /// The translations for English (`en_XA`).

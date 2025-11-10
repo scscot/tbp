@@ -4266,5 +4266,385 @@
   "subscriptionManagementGoogle": "Sie können Ihr Abonnement im Google Play Store verwalten.",
   "@subscriptionManagementGoogle": {
     "description": "Android subscription management instructions"
+  },
+  "faqTitle": "Häufig gestellte Fragen",
+  "@faqTitle": {
+    "description": "FAQ screen title"
+  },
+  "faqSearchHint": "FAQs durchsuchen...",
+  "@faqSearchHint": {
+    "description": "FAQ search bar placeholder text"
+  },
+  "faqCategoryGettingStarted": "Erste Schritte",
+  "@faqCategoryGettingStarted": {
+    "description": "FAQ category: Getting Started"
+  },
+  "faqCategoryBusinessModel": "Geschäftsmodell und Legitimität",
+  "@faqCategoryBusinessModel": {
+    "description": "FAQ category: Business Model"
+  },
+  "faqCategoryHowItWorks": "Wie es funktioniert",
+  "@faqCategoryHowItWorks": {
+    "description": "FAQ category: How It Works"
+  },
+  "faqCategoryTeamBuilding": "Teamaufbau und Management",
+  "@faqCategoryTeamBuilding": {
+    "description": "FAQ category: Team Building"
+  },
+  "faqCategoryGlobalFeatures": "Globale und technische Funktionen",
+  "@faqCategoryGlobalFeatures": {
+    "description": "FAQ category: Global Features"
+  },
+  "faqCategoryPrivacySecurity": "Datenschutz und Sicherheit",
+  "@faqCategoryPrivacySecurity": {
+    "description": "FAQ category: Privacy & Security"
+  },
+  "faqCategoryPricing": "Preise und geschäftlicher Wert",
+  "@faqCategoryPricing": {
+    "description": "FAQ category: Pricing"
+  },
+  "faqCategoryConcerns": "Häufige Bedenken und Einwände",
+  "@faqCategoryConcerns": {
+    "description": "FAQ category: Concerns"
+  },
+  "faqCategorySuccess": "Erfolg und Ergebnisse",
+  "@faqCategorySuccess": {
+    "description": "FAQ category: Success"
+  },
+  "faqCategorySupport": "Support und Schulung",
+  "@faqCategorySupport": {
+    "description": "FAQ category: Support"
+  },
+  "faqQ1": "Was genau ist Team Build Pro?",
+  "@faqQ1": {
+    "description": "FAQ question 1"
+  },
+  "faqA1": "Team Build Pro ist ein professionelles Software-Tool, das Direktvertriebs- und Teamaufbau-Profis dabei hilft, ihre Netzwerke effektiver zu verwalten und auszubauen. Es ist eine abonnementbasierte SaaS-Lösung, keine Geschäftsmöglichkeit oder MLM-Firma.",
+  "@faqA1": {
+    "description": "FAQ answer 1"
+  },
+  "faqQ2": "Ist Team Build Pro ein MLM- oder Network-Marketing-Unternehmen?",
+  "@faqQ2": {
+    "description": "FAQ question 2"
+  },
+  "faqA2": "Nein. Team Build Pro ist ein Technologieunternehmen, das Unternehmenssoftware für Teamaufbau-Profis bereitstellt. Wir sind ein legitimes SaaS-Tool ähnlich wie Salesforce oder HubSpot, aber fokussiert auf die einzigartigen Bedürfnisse von Direktvertriebs- und Teamaufbau-Profis.",
+  "@faqA2": {
+    "description": "FAQ answer 2"
+  },
+  "faqQ3": "Warum konzentriert sich Team Build Pro auf Direktvertriebsprofis, wenn Sie kein MLM-Unternehmen sind?",
+  "@faqQ3": {
+    "description": "FAQ question 3"
+  },
+  "faqA3": "So wie Salesforce Vertriebsmitarbeiter bedient, bedienen wir Direktvertriebsprofis. Direktvertrieb und Network-Marketing sind legitime Branchen, die professionelle Software benötigen. Wir sind das Werkzeug, nicht die Geschäftsmöglichkeit.",
+  "@faqA3": {
+    "description": "FAQ answer 3"
+  },
+  "faqQ4": "Wie melde ich mich an?",
+  "@faqQ4": {
+    "description": "FAQ question 4"
+  },
+  "faqA4": "Laden Sie die Team Build Pro App aus dem App Store oder Google Play herunter. Sie können sich mit einem Empfehlungscode eines bestehenden Mitglieds oder direkt über unsere Website anmelden. Neue Benutzer erhalten eine 30-tägige kostenlose Testversion, keine Kreditkarte erforderlich.",
+  "@faqA4": {
+    "description": "FAQ answer 4"
+  },
+  "faqQ5": "Wie funktioniert das Empfehlungssystem?",
+  "@faqQ5": {
+    "description": "FAQ question 5"
+  },
+  "faqA5": "Bestehende Mitglieder können Empfehlungscodes mit neuen Benutzern teilen. Wenn sich jemand mit Ihrem Code anmeldet, wird er Teil Ihres Netzwerks in der App. Dies ist einfach eine Netzwerk-Tracking-Funktion - es gibt keine Provisionen, Zahlungen oder Vergütungsstruktur.",
+  "@faqA5": {
+    "description": "FAQ answer 5"
+  },
+  "faqQ6": "Wie verfolgt Team Build Pro mein Netzwerk?",
+  "@faqQ6": {
+    "description": "FAQ question 6"
+  },
+  "faqA6": "Die App verfolgt automatisch Ihre Teammitglieder, wenn sie sich mit Ihrem Empfehlungscode anmelden. Sie können Ihr gesamtes Netzwerk, Teamwachstum und erreichte Aufbau-Meilensteine einsehen. Die Netzwerkstruktur basiert darauf, wer wen empfohlen hat, und erstellt eine visuelle Hierarchie Ihrer Organisation.",
+  "@faqA6": {
+    "description": "FAQ answer 6"
+  },
+  "faqQ7": "Kann ich mit Teammitgliedern über die App kommunizieren?",
+  "@faqQ7": {
+    "description": "FAQ question 7"
+  },
+  "faqA7": "Ja! Team Build Pro enthält sichere Direktnachrichten, Gruppen-Chats und ein umfassendes Benachrichtigungssystem, um Sie mit Ihrem Team verbunden zu halten. Sie können Updates teilen, Support bieten und Teamaufbau-Aktivitäten koordinieren - alles innerhalb der App.",
+  "@faqA7": {
+    "description": "FAQ answer 7"
+  },
+  "faqQ8": "Kann ich Teammitglieder einladen, die nicht in der App sind?",
+  "@faqQ8": {
+    "description": "FAQ question 8"
+  },
+  "faqA8": "Absolut. Team Build Pro ermöglicht es Ihnen, personalisierte Empfehlungscodes per SMS, E-Mail oder Social Media zu versenden. Neue Mitglieder können sich mit diesen Codes anmelden, um automatisch Ihrem Netzwerk im System beizutreten.",
+  "@faqA8": {
+    "description": "FAQ answer 8"
+  },
+  "faqQ9": "Was sind Aufbau-Meilensteine?",
+  "@faqQ9": {
+    "description": "FAQ question 9"
+  },
+  "faqA9": "Aufbau-Meilensteine sind Teamwachstums-Erfolge, die Sie freischalten, während Ihr Netzwerk wächst. Sie erhalten Benachrichtigungen, wenn Teammitglieder bestimmte Ebenen erreichen, was Ihnen hilft, Fortschritte zu verfolgen und Erfolge gemeinsam zu feiern.",
+  "@faqA9": {
+    "description": "FAQ answer 9"
+  },
+  "faqQ10": "Wie funktioniert die Berechtigungs-Verfolgung?",
+  "@faqQ10": {
+    "description": "FAQ question 10"
+  },
+  "faqA10": "Team Build Pro ermöglicht es Ihnen, benutzerdefinierte Berechtigungsqualifikationen basierend auf den Anforderungen Ihrer Geschäftsmöglichkeit einzurichten und zu verfolgen. Diese Qualifikationen sind für Sie und relevante Teammitglieder sichtbar und helfen allen, auf Kurs mit ihren Zielen zu bleiben.",
+  "@faqA10": {
+    "description": "FAQ answer 10"
+  },
+  "faqQ11": "Kann ich Team Build Pro in mehreren Ländern verwenden?",
+  "@faqQ11": {
+    "description": "FAQ question 11"
+  },
+  "faqA11": "Ja! Team Build Pro unterstützt über 120 Länder mit nativer Zeitzonen-Unterstützung, lokalen Währungen und mehreren Sprachen. Ob Ihr Team in New York, London, Tokio oder São Paulo ist, jeder sieht relevante lokalisierte Informationen.",
+  "@faqA11": {
+    "description": "FAQ answer 11"
+  },
+  "faqQ12": "Welche Sprachen unterstützt die App?",
+  "@faqQ12": {
+    "description": "FAQ question 12"
+  },
+  "faqA12": "Wir unterstützen derzeit Englisch, Spanisch, Portugiesisch und Deutsch, mit Plänen, weitere Sprachen basierend auf der Benutzernachfrage hinzuzufügen. Die App erkennt automatisch die Spracheinstellung Ihres Geräts.",
+  "@faqA12": {
+    "description": "FAQ answer 12"
+  },
+  "faqQ13": "Wie geht Team Build Pro mit verschiedenen Zeitzonen um?",
+  "@faqQ13": {
+    "description": "FAQ question 13"
+  },
+  "faqA13": "Alle Benachrichtigungen, Event-Zeiten und Aktivitätsprotokolle werden automatisch an die lokale Zeitzone jedes Benutzers angepasst. Dies stellt sicher, dass globale Teammitglieder genaue und relevante Informationen sehen, unabhängig davon, wo sie sich befinden.",
+  "@faqA13": {
+    "description": "FAQ answer 13"
+  },
+  "faqQ14": "Sind meine persönlichen Daten sicher?",
+  "@faqQ14": {
+    "description": "FAQ question 14"
+  },
+  "faqA14": "Ja. Wir verwenden Unternehmensverschlüsselung, sichere Server-zu-Server-Kommunikation und halten die höchsten Datenschutzstandards ein. Ihre persönlichen Daten werden niemals ohne Ihre ausdrückliche Zustimmung an Dritte weitergegeben.",
+  "@faqA14": {
+    "description": "FAQ answer 14"
+  },
+  "faqQ15": "Wer kann meine Netzwerkinformationen sehen?",
+  "@faqQ15": {
+    "description": "FAQ question 15"
+  },
+  "faqA15": "Nur Sie und Ihre direkten Sponsoren können vollständige Details Ihres Netzwerks sehen. Teammitglieder können ihre eigene Upline und Downline sehen, können aber nicht auf Informationen über parallele Zweige oder persönliche Informationen anderer Mitglieder ohne entsprechende Berechtigungen zugreifen.",
+  "@faqA15": {
+    "description": "FAQ answer 15"
+  },
+  "faqQ16": "Speichert die App meine Kreditkarteninformationen?",
+  "@faqQ16": {
+    "description": "FAQ question 16"
+  },
+  "faqA16": "Nein. Die gesamte Zahlungsabwicklung erfolgt über Apples sicheres In-App-Kaufsystem. Wir sehen oder speichern niemals Ihre Kreditkarteninformationen. Abonnements werden über Ihr Apple-ID-Konto verwaltet.",
+  "@faqA16": {
+    "description": "FAQ answer 16"
+  },
+  "faqQ17": "Kann ich mein Konto und meine Daten löschen?",
+  "@faqQ17": {
+    "description": "FAQ question 17"
+  },
+  "faqA17": "Ja. Sie können jederzeit über die App-Einstellungen eine vollständige Kontolöschung anfordern. Dies entfernt dauerhaft Ihre persönlichen Daten aus unseren Systemen gemäß DSGVO- und LGPD-Vorschriften.",
+  "@faqA17": {
+    "description": "FAQ answer 17"
+  },
+  "faqQ18": "Was kostet Team Build Pro?",
+  "@faqQ18": {
+    "description": "FAQ question 18"
+  },
+  "faqA18": "Wir bieten eine 30-tägige kostenlose Testversion an, danach kostet Team Build Pro 4,99 USD pro Monat oder 49,99 USD pro Jahr (17% Ersparnis). Die Preise können je nach Region aufgrund von Wechselkursen und lokalen Steuern variieren.",
+  "@faqA18": {
+    "description": "FAQ answer 18"
+  },
+  "faqQ19": "Gibt es eine kostenlose Testphase?",
+  "@faqQ19": {
+    "description": "FAQ question 19"
+  },
+  "faqA19": "Ja! Alle neuen Benutzer erhalten 30 volle Tage Premium-Zugang ohne Kreditkarte. Testen Sie alle Funktionen, bevor Sie sich für ein Abonnement verpflichten.",
+  "@faqA19": {
+    "description": "FAQ answer 19"
+  },
+  "faqQ20": "Wie kündige ich mein Abonnement?",
+  "@faqQ20": {
+    "description": "FAQ question 20"
+  },
+  "faqA20": "Kündigen Sie jederzeit über Ihre Apple App Store Abonnementeinstellungen. Keine Kündigungsgebühren oder Verpflichtungszeiträume. Ihr Zugriff bleibt bis zum Ende des aktuellen Abrechnungszeitraums bestehen.",
+  "@faqA20": {
+    "description": "FAQ answer 20"
+  },
+  "faqQ21": "Gibt es einen Familien- oder Team-Plan?",
+  "@faqQ21": {
+    "description": "FAQ question 21"
+  },
+  "faqA21": "Jedes Teammitglied führt sein eigenes individuelles Abonnement. Dies stellt sicher, dass jeder vollen Zugriff auf Funktionen hat und sein eigenes Konto unabhängig verwalten kann. Wir prüfen Team-Lizenzierungsoptionen für zukünftige Versionen.",
+  "@faqA21": {
+    "description": "FAQ answer 21"
+  },
+  "faqQ22": "Welchen Wert bekomme ich für das Abonnement?",
+  "@faqQ22": {
+    "description": "FAQ question 22"
+  },
+  "faqA22": "Für weniger als die Kosten eines Kaffees pro Monat erhalten Sie professionelles Netzwerk-Tracking, unbegrenzte Team-Kommunikation, Wachstumsanalysen, automatisierte Meilensteine, Compliance-Funktionen und kontinuierlichen Support. Vergleichen Sie das mit ähnlicher Unternehmenssoftware, die 50-500+ USD pro Monat kostet.",
+  "@faqA22": {
+    "description": "FAQ answer 22"
+  },
+  "faqQ23": "Ist Team Build Pro ein Pyramidensystem?",
+  "@faqQ23": {
+    "description": "FAQ question 23"
+  },
+  "faqA23": "Nein. Team Build Pro ist ein Software-Tool, keine Geschäftsmöglichkeit. Es gibt keine Rekrutierung, Zahlungen oder Vergütungsstrukturen. Sie zahlen einfach für ein Software-Abonnement, genauso wie Sie für Microsoft Office oder Adobe Creative Cloud bezahlen würden.",
+  "@faqA23": {
+    "description": "FAQ answer 23"
+  },
+  "faqQ24": "Warum brauche ich einen Empfehlungscode zur Anmeldung?",
+  "@faqQ24": {
+    "description": "FAQ question 24"
+  },
+  "faqA24": "Empfehlungscodes helfen, Ihre anfängliche Netzwerkverbindung im System herzustellen. Dies gewährleistet ordnungsgemäßes Netzwerk-Tracking und ermöglicht es Ihnen und Ihrem Sponsor, effektiv über die App zu kommunizieren. Wenn Sie keinen Code haben, können Sie sich direkt über unsere Website anmelden.",
+  "@faqA24": {
+    "description": "FAQ answer 24"
+  },
+  "faqQ25": "Werde ich gezwungen, zu rekrutieren oder etwas zu verkaufen?",
+  "@faqQ25": {
+    "description": "FAQ question 25"
+  },
+  "faqA25": "Absolut nicht. Team Build Pro ist nur ein Software-Tool. Wir verkaufen keine Produkte, verlangen keine Rekrutierung und haben keine Verkaufsziele. Wie Sie die App verwenden, um Ihre eigene Teamaufbau-Aktivität zu verwalten, liegt ganz bei Ihnen.",
+  "@faqA25": {
+    "description": "FAQ answer 25"
+  },
+  "faqQ26": "Das klingt zu gut, um wahr zu sein. Was ist der Haken?",
+  "@faqQ26": {
+    "description": "FAQ question 26"
+  },
+  "faqA26": "Es gibt keinen Haken. Wir sind ein legitimes SaaS-Tool, das eine transparente monatliche Abonnementgebühr für professionelle Software berechnet. Keine versteckten Gebühren, keine Rekrutierungsanforderungen, keine Versprechungen von Reichtum. Einfach gute Software zu einem fairen Preis.",
+  "@faqA26": {
+    "description": "FAQ answer 26"
+  },
+  "faqQ27": "Machen Sie Einkommensversprechungen?",
+  "@faqQ27": {
+    "description": "FAQ question 27"
+  },
+  "faqA27": "Nein. Team Build Pro ist ein Software-Tool, keine Geschäftsmöglichkeit. Wir machen keine Einkommensversprechungen, weil Sie durch unsere App kein Geld verdienen. Sie zahlen für ein Tool, das Ihnen hilft, Ihre eigenen Teamaufbau-Aktivitäten zu verwalten.",
+  "@faqA27": {
+    "description": "FAQ answer 27"
+  },
+  "faqQ28": "Woher weiß ich, dass Team Build Pro legitim ist?",
+  "@faqQ28": {
+    "description": "FAQ question 28"
+  },
+  "faqA28": "Wir sind ein registriertes Softwareunternehmen mit einer Live-App im Apple App Store (der strenge Überprüfungsprozesse hat). Wir verlangen keine Vorabkäufe, machen keine unrealistischen Versprechungen und sind transparent darüber, was unsere Software tut. Wir haben klare Nutzungsbedingungen, Datenschutzrichtlinien und Support-Kontaktinformationen.",
+  "@faqA28": {
+    "description": "FAQ answer 28"
+  },
+  "faqQ29": "Wie schnell wird mein Netzwerk wachsen?",
+  "@faqQ29": {
+    "description": "FAQ question 29"
+  },
+  "faqA29": "Wir können das Netzwerkwachstum nicht vorhersagen, da es vollständig von Ihren eigenen Teamaufbau-Aktivitäten abhängt. Team Build Pro hilft Ihnen einfach, jedes Wachstum zu verfolgen und zu verwalten, das Sie durch Ihre eigenen Bemühungen schaffen.",
+  "@faqA29": {
+    "description": "FAQ answer 29"
+  },
+  "faqQ30": "Welche Ergebnisse kann ich erwarten?",
+  "@faqQ30": {
+    "description": "FAQ question 30"
+  },
+  "faqA30": "Sie können bessere Organisation, klarere Kommunikation und einfacheres Tracking Ihrer Teamaufbau-Aktivitäten erwarten. Team Build Pro ist ein Tool für Effizienz - Ihre tatsächlichen Ergebnisse hängen davon ab, wie Sie es verwenden und Ihre eigenen Geschäftsaktivitäten.",
+  "@faqA30": {
+    "description": "FAQ answer 30"
+  },
+  "faqQ31": "Haben andere Leute Erfolg mit Team Build Pro?",
+  "@faqQ31": {
+    "description": "FAQ question 31"
+  },
+  "faqA31": "Viele Benutzer berichten von besserer Team-Organisation, einfacherer Kommunikation und besserem Wachstums-Tracking. Denken Sie jedoch daran, dass Team Build Pro nur ein Tool ist - Erfolg kommt von Ihren eigenen Teamaufbau-Bemühungen, nicht von der Software selbst.",
+  "@faqA31": {
+    "description": "FAQ answer 31"
+  },
+  "faqQ32": "Kann ich Testimonials oder Bewertungen sehen?",
+  "@faqQ32": {
+    "description": "FAQ question 32"
+  },
+  "faqA32": "Sie können verifizierte Benutzerbewertungen im Apple App Store sehen. Wir konzentrieren Testimonials auf Software-Funktionen und Benutzererfahrung, nicht auf Geschäftsergebnisse, da Team Build Pro ein Tool ist, keine Geschäftsmöglichkeit.",
+  "@faqA32": {
+    "description": "FAQ answer 32"
+  },
+  "faqQ33": "Was macht Team Build Pro anders als andere Tools?",
+  "@faqQ33": {
+    "description": "FAQ question 33"
+  },
+  "faqA33": "Wir sind speziell für Teamaufbau und Direktvertriebs-Netzwerke entwickelt. Während andere Tools generische CRM-Funktionen bieten, liefern wir spezialisiertes Netzwerk-Tracking, Aufbau-Meilensteine, Team-Kommunikation und Compliance-Funktionen, die auf Ihre einzigartigen Bedürfnisse zugeschnitten sind.",
+  "@faqA33": {
+    "description": "FAQ answer 33"
+  },
+  "faqQ34": "Welche Schulung oder Unterstützung wird bereitgestellt?",
+  "@faqQ34": {
+    "description": "FAQ question 34"
+  },
+  "faqA34": "Wir bieten umfassende In-App-Dokumentation, FAQs, einen Erste-Schritte-Bereich und E-Mail-Support. Neue Benutzer erhalten auch Onboarding-Benachrichtigungen, um ihnen beim Erlernen der Hauptfunktionen zu helfen. Wir aktualisieren regelmäßig unsere Hilferessourcen basierend auf Benutzerfeedback.",
+  "@faqA34": {
+    "description": "FAQ answer 34"
+  },
+  "faqQ35": "Kann ich persönliche Schulung erhalten?",
+  "@faqQ35": {
+    "description": "FAQ question 35"
+  },
+  "faqA35": "Für Software-Probleme bietet unser E-Mail-Support personalisierte Hilfe. Für Teamaufbau-Anleitung empfehlen wir die Zusammenarbeit mit Ihrem Sponsor oder Ihrer Organisation. Wir konzentrieren uns auf Software-Support, nicht auf Geschäftsschulung.",
+  "@faqA35": {
+    "description": "FAQ answer 35"
+  },
+  "faqQ36": "Wie oft wird die App aktualisiert?",
+  "@faqQ36": {
+    "description": "FAQ question 36"
+  },
+  "faqA36": "Wir veröffentlichen regelmäßige Updates mit neuen Funktionen, Leistungsverbesserungen und Fehlerbehebungen. Alle Updates sind für Abonnenten kostenlos. Sie können unsere Versionshinweise im App Store einsehen, um die neuesten Verbesserungen zu sehen.",
+  "@faqA36": {
+    "description": "FAQ answer 36"
+  },
+  "faqQ37": "Funktioniert Team Build Pro offline?",
+  "@faqQ37": {
+    "description": "FAQ question 37"
+  },
+  "faqA37": "Sie können zuvor geladene Daten offline anzeigen, aber die meisten Funktionen erfordern eine Internetverbindung für Echtzeit-Synchronisation. Dies stellt sicher, dass Sie und Ihr Team immer die aktuellsten Informationen sehen.",
+  "@faqA37": {
+    "description": "FAQ answer 37"
+  },
+  "faqQ38": "Was ist der KI-Coach und wie funktioniert er?",
+  "@faqQ38": {
+    "description": "FAQ question 38"
+  },
+  "faqA38": "Der KI-Coach hilft Ihnen, durch die Team Build Pro App zu navigieren, beantwortet Fragen zu Funktionen und Qualifikationsanforderungen, bietet Teamaufbau-Anleitung und kann vorschlagen, welche App-Bereiche Sie für bestimmte Aufgaben besuchen sollten.",
+  "@faqA38": {
+    "description": "FAQ answer 38"
+  },
+  "faqQ39": "Bieten Sie Schulung zur Rekrutierung oder zum Verkauf an?",
+  "@faqQ39": {
+    "description": "FAQ question 39"
+  },
+  "faqA39": "Wir konzentrieren uns darauf, zu zeigen, wie man Team Build Pro effektiv nutzt. Für Verkaufs- und Rekrutierungsschulung empfehlen wir die Zusammenarbeit mit Ihrem Sponsor oder den Schulungsprogrammen Ihres Unternehmens.",
+  "@faqA39": {
+    "description": "FAQ answer 39"
+  },
+  "faqQ40": "Was ist, wenn ich technische Probleme habe?",
+  "@faqQ40": {
+    "description": "FAQ question 40"
+  },
+  "faqA40": "Kontaktieren Sie unser Support-Team über die App oder Website. Die meisten Probleme werden schnell gelöst, und wir sind bestrebt, Ihre Teamaufbau-Aktivitäten reibungslos am Laufen zu halten.",
+  "@faqA40": {
+    "description": "FAQ answer 40"
+  },
+  "faqFooterTitle": "Bereit, Ihren Teamaufbau zu transformieren?",
+  "@faqFooterTitle": {
+    "description": "FAQ footer title"
+  },
+  "faqFooterSubtitle": "Starten Sie heute Ihre 30-tägige kostenlose Testversion und erleben Sie den Unterschied, den professionelle Tools machen.",
+  "@faqFooterSubtitle": {
+    "description": "FAQ footer subtitle"
+  },
+  "faqFooterContact": "Fragen nicht hier beantwortet? Kontaktieren Sie unser Support-Team - wir sind hier, um Ihnen zum Erfolg zu verhelfen!",
+  "@faqFooterContact": {
+    "description": "FAQ footer contact text"
   }
 }

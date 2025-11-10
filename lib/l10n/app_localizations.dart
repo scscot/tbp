@@ -6234,6 +6234,576 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can manage your subscription in the Google Play Store.'**
   String get subscriptionManagementGoogle;
+
+  /// FAQ screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get faqTitle;
+
+  /// FAQ search bar placeholder text
+  ///
+  /// In en, this message translates to:
+  /// **'Search FAQs...'**
+  String get faqSearchHint;
+
+  /// FAQ category: Getting Started
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Started'**
+  String get faqCategoryGettingStarted;
+
+  /// FAQ category: Business Model
+  ///
+  /// In en, this message translates to:
+  /// **'Business Model & Legitimacy'**
+  String get faqCategoryBusinessModel;
+
+  /// FAQ category: How It Works
+  ///
+  /// In en, this message translates to:
+  /// **'How It Works'**
+  String get faqCategoryHowItWorks;
+
+  /// FAQ category: Team Building
+  ///
+  /// In en, this message translates to:
+  /// **'Team Building & Management'**
+  String get faqCategoryTeamBuilding;
+
+  /// FAQ category: Global Features
+  ///
+  /// In en, this message translates to:
+  /// **'Global & Technical Features'**
+  String get faqCategoryGlobalFeatures;
+
+  /// FAQ category: Privacy & Security
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get faqCategoryPrivacySecurity;
+
+  /// FAQ category: Pricing
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing & Business Value'**
+  String get faqCategoryPricing;
+
+  /// FAQ category: Concerns
+  ///
+  /// In en, this message translates to:
+  /// **'Common Concerns & Objections'**
+  String get faqCategoryConcerns;
+
+  /// FAQ category: Success
+  ///
+  /// In en, this message translates to:
+  /// **'Success & Results'**
+  String get faqCategorySuccess;
+
+  /// FAQ category: Support
+  ///
+  /// In en, this message translates to:
+  /// **'Support & Training'**
+  String get faqCategorySupport;
+
+  /// FAQ question 1
+  ///
+  /// In en, this message translates to:
+  /// **'What exactly is Team Build Pro?'**
+  String get faqQ1;
+
+  /// FAQ answer 1
+  ///
+  /// In en, this message translates to:
+  /// **'Team Build Pro is a professional software tool designed to help direct sales professionals build, manage, and track their teams before and during their business journey. It\'s NOT a business opportunity or MLM company - it\'s the tool that helps you succeed in whatever opportunity you choose.'**
+  String get faqA1;
+
+  /// FAQ question 2
+  ///
+  /// In en, this message translates to:
+  /// **'How is this different from other team building apps or CRM systems?'**
+  String get faqQ2;
+
+  /// FAQ answer 2
+  ///
+  /// In en, this message translates to:
+  /// **'Unlike generic CRMs, Team Build Pro is specifically designed for the direct sales industry. It understands the unique challenges you face: starting from zero, building momentum, qualifying prospects, and maintaining team motivation. Our system lets you pre-build your team before you even join an opportunity, giving you a massive head start.'**
+  String get faqA2;
+
+  /// FAQ question 3
+  ///
+  /// In en, this message translates to:
+  /// **'Can I really build a team BEFORE joining a business opportunity?'**
+  String get faqQ3;
+
+  /// FAQ answer 3
+  ///
+  /// In en, this message translates to:
+  /// **'Absolutely! This is our core innovation. You can invite prospects and existing team members to Team Build Pro, let them experience team building success, and when they hit qualification milestones (4 direct sponsors + 20 total team members), they automatically get invited to join your business opportunity. It eliminates the \"cold start\" problem that kills most new distributors.'**
+  String get faqA3;
+
+  /// FAQ question 4
+  ///
+  /// In en, this message translates to:
+  /// **'Do I need a credit card to try it?'**
+  String get faqQ4;
+
+  /// FAQ answer 4
+  ///
+  /// In en, this message translates to:
+  /// **'No. You get full access to all premium features for 30 days completely free, with no credit card required. You can decide to subscribe at any point during or after your trial.'**
+  String get faqA4;
+
+  /// FAQ question 5
+  ///
+  /// In en, this message translates to:
+  /// **'Is Team Build Pro an MLM or business opportunity?'**
+  String get faqQ5;
+
+  /// FAQ answer 5
+  ///
+  /// In en, this message translates to:
+  /// **'No. Team Build Pro is not a business opportunity, MLM, or income platform of any kind. We are a software tool designed exclusively to help professionals build and track their teams. We do not provide any form of user compensation.'**
+  String get faqA5;
+
+  /// FAQ question 6
+  ///
+  /// In en, this message translates to:
+  /// **'Can I use this with any direct sales company?'**
+  String get faqQ6;
+
+  /// FAQ answer 6
+  ///
+  /// In en, this message translates to:
+  /// **'Yes! Team Build Pro is company-agnostic. Whether you\'re in health and wellness, financial services, beauty, technology, or any other direct sales industry, our tools work with your business. You simply customize your profile with your opportunity details.'**
+  String get faqA6;
+
+  /// FAQ question 7
+  ///
+  /// In en, this message translates to:
+  /// **'What if I\'m not currently with a company but want to join one?'**
+  String get faqQ7;
+
+  /// FAQ answer 7
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect! This is where Team Build Pro shines. You can start building your team immediately, even before you\'ve chosen which company to join. When you do decide, you\'ll launch with a pre-built, motivated team instead of starting from zero.'**
+  String get faqA7;
+
+  /// FAQ question 8
+  ///
+  /// In en, this message translates to:
+  /// **'How does the qualification system work?'**
+  String get faqQ8;
+
+  /// FAQ answer 8
+  ///
+  /// In en, this message translates to:
+  /// **'When someone joins Team Build Pro through your referral, they begin building their own team. Once they reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your business opportunity. This ensures only motivated, proven team builders advance to your actual business.'**
+  String get faqA8;
+
+  /// FAQ question 9
+  ///
+  /// In en, this message translates to:
+  /// **'What happens if someone joins my Team Build Pro team but doesn\'t want to join my business opportunity?'**
+  String get faqQ9;
+
+  /// FAQ answer 9
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s perfectly fine! They can continue using Team Build Pro to build their own team for whatever opportunity they choose, or they can stay focused on team building. There\'s no pressure. The beauty is that you\'re only working with people who have demonstrated commitment and success.'**
+  String get faqA9;
+
+  /// FAQ question 10
+  ///
+  /// In en, this message translates to:
+  /// **'Can I track my team\'s progress and activity?'**
+  String get faqQ10;
+
+  /// FAQ answer 10
+  ///
+  /// In en, this message translates to:
+  /// **'Yes! You get comprehensive analytics including real-time team growth statistics, individual member progress toward qualification, activity levels and engagement metrics, geographic distribution of your team, performance trends and milestones, and daily/weekly growth reports.'**
+  String get faqA10;
+
+  /// FAQ question 11
+  ///
+  /// In en, this message translates to:
+  /// **'How do I get my referral link?'**
+  String get faqQ11;
+
+  /// FAQ answer 11
+  ///
+  /// In en, this message translates to:
+  /// **'Once you create your account, you get a personalized referral link that you can share via social media, email, text, or in person.'**
+  String get faqA11;
+
+  /// FAQ question 12
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the difference between \"sponsors\" and \"team members\"?'**
+  String get faqQ12;
+
+  /// FAQ answer 12
+  ///
+  /// In en, this message translates to:
+  /// **'Direct sponsors are people you personally invite who join through your referral link. Total team members include your direct sponsors plus everyone they sponsor (your downline). For qualification, you need 4 direct sponsors and 20 total team members.'**
+  String get faqA12;
+
+  /// FAQ question 13
+  ///
+  /// In en, this message translates to:
+  /// **'Can my team members message each other?'**
+  String get faqQ13;
+
+  /// FAQ answer 13
+  ///
+  /// In en, this message translates to:
+  /// **'Yes! Team Build Pro includes secure, encrypted messaging so your team can communicate, share tips, and support each other.'**
+  String get faqA13;
+
+  /// FAQ question 14
+  ///
+  /// In en, this message translates to:
+  /// **'What if someone in my team becomes qualified before me?'**
+  String get faqQ14;
+
+  /// FAQ answer 14
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s actually great! It shows the system is working. They can advance to your business opportunity independently, and you continue building your own qualification. Success breeds success - having qualified team members often motivates others.'**
+  String get faqA14;
+
+  /// FAQ question 15
+  ///
+  /// In en, this message translates to:
+  /// **'How do I know if my team members are active?'**
+  String get faqQ15;
+
+  /// FAQ answer 15
+  ///
+  /// In en, this message translates to:
+  /// **'Our dashboard shows activity levels, last login dates, team building progress, and engagement metrics for each member. You can easily identify who might need encouragement or support.'**
+  String get faqA15;
+
+  /// FAQ question 16
+  ///
+  /// In en, this message translates to:
+  /// **'Can I remove someone from my team?'**
+  String get faqQ16;
+
+  /// FAQ answer 16
+  ///
+  /// In en, this message translates to:
+  /// **'Team members can choose to leave on their own, but you cannot remove them. This protects the integrity of the team and ensures everyone\'s hard work building their teams is preserved.'**
+  String get faqA16;
+
+  /// FAQ question 17
+  ///
+  /// In en, this message translates to:
+  /// **'Does this work internationally?'**
+  String get faqQ17;
+
+  /// FAQ answer 17
+  ///
+  /// In en, this message translates to:
+  /// **'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.'**
+  String get faqA17;
+
+  /// FAQ question 18
+  ///
+  /// In en, this message translates to:
+  /// **'What devices does it work on?'**
+  String get faqQ18;
+
+  /// FAQ answer 18
+  ///
+  /// In en, this message translates to:
+  /// **'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.'**
+  String get faqA18;
+
+  /// FAQ question 19
+  ///
+  /// In en, this message translates to:
+  /// **'What if I\'m not tech-savvy?'**
+  String get faqQ19;
+
+  /// FAQ answer 19
+  ///
+  /// In en, this message translates to:
+  /// **'The app is designed for simplicity. If you can use social media, you can use Team Build Pro. Plus, we provide onboarding tutorials and customer support to help you get started.'**
+  String get faqA19;
+
+  /// FAQ question 20
+  ///
+  /// In en, this message translates to:
+  /// **'Does the app work offline?'**
+  String get faqQ20;
+
+  /// FAQ answer 20
+  ///
+  /// In en, this message translates to:
+  /// **'You need an internet connection for real-time features like messaging and live updates, but you can view your team and some analytics offline. Data syncs when you reconnect.'**
+  String get faqA20;
+
+  /// FAQ question 21
+  ///
+  /// In en, this message translates to:
+  /// **'How secure is my data?'**
+  String get faqQ21;
+
+  /// FAQ answer 21
+  ///
+  /// In en, this message translates to:
+  /// **'We use enterprise-grade security including end-to-end encryption for all communications, secure cloud storage with regular backups, multi-factor authentication options, GDPR compliance for data protection, and no data sharing with third parties.'**
+  String get faqA21;
+
+  /// FAQ question 22
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see my team information?'**
+  String get faqQ22;
+
+  /// FAQ answer 22
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see your complete team. Team members can see their own direct sponsors and downline, but cannot see your entire organization. This protects everyone\'s privacy while maintaining transparency in direct relationships.'**
+  String get faqA22;
+
+  /// FAQ question 23
+  ///
+  /// In en, this message translates to:
+  /// **'What happens to my data if I cancel?'**
+  String get faqQ23;
+
+  /// FAQ answer 23
+  ///
+  /// In en, this message translates to:
+  /// **'You can export your team data before canceling. After cancellation, your account is deactivated but your team relationships remain intact for others in your team. We retain minimal data for legal/billing purposes only.'**
+  String get faqA23;
+
+  /// FAQ question 24
+  ///
+  /// In en, this message translates to:
+  /// **'Do you sell my information to other companies?'**
+  String get faqQ24;
+
+  /// FAQ answer 24
+  ///
+  /// In en, this message translates to:
+  /// **'Absolutely not. We never sell, rent, or share your personal information with third parties. Our revenue comes from subscriptions, not data sales.'**
+  String get faqA24;
+
+  /// FAQ question 25
+  ///
+  /// In en, this message translates to:
+  /// **'Is \$4.99/month worth it compared to free alternatives?'**
+  String get faqQ25;
+
+  /// FAQ answer 25
+  ///
+  /// In en, this message translates to:
+  /// **'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and team analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.'**
+  String get faqA25;
+
+  /// FAQ question 26
+  ///
+  /// In en, this message translates to:
+  /// **'Can I write this off as a business expense?'**
+  String get faqQ26;
+
+  /// FAQ answer 26
+  ///
+  /// In en, this message translates to:
+  /// **'Many direct sales professionals do treat it as a business tool expense, but consult your tax advisor for guidance specific to your situation.'**
+  String get faqA26;
+
+  /// FAQ question 27
+  ///
+  /// In en, this message translates to:
+  /// **'What if I need to cancel?'**
+  String get faqQ27;
+
+  /// FAQ answer 27
+  ///
+  /// In en, this message translates to:
+  /// **'You can cancel anytime with no cancellation fees or long-term commitments. You retain access until the end of your current billing period.'**
+  String get faqA27;
+
+  /// FAQ question 28
+  ///
+  /// In en, this message translates to:
+  /// **'Do you offer team or volume discounts?'**
+  String get faqQ28;
+
+  /// FAQ answer 28
+  ///
+  /// In en, this message translates to:
+  /// **'Currently, we offer individual subscriptions only. This keeps costs low and ensures everyone has equal access to all features.'**
+  String get faqA28;
+
+  /// FAQ question 29
+  ///
+  /// In en, this message translates to:
+  /// **'Isn\'t this just making direct sales more complicated?'**
+  String get faqQ29;
+
+  /// FAQ answer 29
+  ///
+  /// In en, this message translates to:
+  /// **'Actually, it simplifies everything! Instead of cold calling strangers or pressuring friends, you\'re building relationships with people who are actively engaged in team building. It removes the guesswork and awkwardness from traditional recruiting.'**
+  String get faqA29;
+
+  /// FAQ question 30
+  ///
+  /// In en, this message translates to:
+  /// **'What if people think this is \"another MLM thing\"?'**
+  String get faqQ30;
+
+  /// FAQ answer 30
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s why we\'re very clear that Team Build Pro is software, not an opportunity. You\'re inviting people to use a professional tool, not join a business. Many people are more open to trying an app than joining an MLM.'**
+  String get faqA30;
+
+  /// FAQ question 31
+  ///
+  /// In en, this message translates to:
+  /// **'How do I explain this to prospects without confusing them?'**
+  String get faqQ31;
+
+  /// FAQ answer 31
+  ///
+  /// In en, this message translates to:
+  /// **'Simple: \"It\'s like LinkedIn for direct sales professionals. You build connections, track your team growth, and when you\'re ready to advance your career, opportunities become available.\" Focus on the professional development angle.'**
+  String get faqA31;
+
+  /// FAQ question 32
+  ///
+  /// In en, this message translates to:
+  /// **'What if my current company doesn\'t allow outside tools?'**
+  String get faqQ32;
+
+  /// FAQ answer 32
+  ///
+  /// In en, this message translates to:
+  /// **'Check your company\'s policies, but most direct sales companies welcome tools that help you build your business. Team Build Pro doesn\'t compete with your company - it feeds qualified prospects into it.'**
+  String get faqA32;
+
+  /// FAQ question 33
+  ///
+  /// In en, this message translates to:
+  /// **'How long does it take to see results?'**
+  String get faqQ33;
+
+  /// FAQ answer 33
+  ///
+  /// In en, this message translates to:
+  /// **'Direct sales success takes time regardless of tools. However, Team Build Pro users often see team growth within weeks because they\'re focused on relationship building rather than selling. The key is consistent daily activity.'**
+  String get faqA33;
+
+  /// FAQ question 34
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s a realistic timeline to build a qualified team?'**
+  String get faqQ34;
+
+  /// FAQ answer 34
+  ///
+  /// In en, this message translates to:
+  /// **'This varies greatly by individual effort and market, but our most successful users achieve qualification (4 direct, 20 total) within a few weeks of consistent activity. Remember, you\'re building relationships, not just collecting sign-ups.'**
+  String get faqA34;
+
+  /// FAQ question 35
+  ///
+  /// In en, this message translates to:
+  /// **'Do you guarantee results?'**
+  String get faqQ35;
+
+  /// FAQ answer 35
+  ///
+  /// In en, this message translates to:
+  /// **'No software can guarantee your business success - that depends on your effort, market, and opportunity. We provide the tools; you provide the work ethic and relationship building skills.'**
+  String get faqA35;
+
+  /// FAQ question 36
+  ///
+  /// In en, this message translates to:
+  /// **'Can you share success stories?'**
+  String get faqQ36;
+
+  /// FAQ answer 36
+  ///
+  /// In en, this message translates to:
+  /// **'While we maintain user privacy, we can share that our most successful users consistently share their Team Build Pro link, engage with their team daily, and focus on helping others succeed rather than just recruiting.'**
+  String get faqA36;
+
+  /// FAQ question 37
+  ///
+  /// In en, this message translates to:
+  /// **'What kind of support do you provide?'**
+  String get faqQ37;
+
+  /// FAQ answer 37
+  ///
+  /// In en, this message translates to:
+  /// **'We offer 24/7 customer support via in-app messaging, best practices for team building, and regular feature updates and improvements.'**
+  String get faqA37;
+
+  /// FAQ question 38
+  ///
+  /// In en, this message translates to:
+  /// **'What exactly does AI Coach do?'**
+  String get faqQ38;
+
+  /// FAQ answer 38
+  ///
+  /// In en, this message translates to:
+  /// **'AI Coach helps you navigate the Team Build Pro app, answers questions about features and qualification requirements, provides team building guidance, and can suggest which app sections to visit for specific tasks.'**
+  String get faqA38;
+
+  /// FAQ question 39
+  ///
+  /// In en, this message translates to:
+  /// **'Do you provide training on how to recruit or sell?'**
+  String get faqQ39;
+
+  /// FAQ answer 39
+  ///
+  /// In en, this message translates to:
+  /// **'We focus on showing you how to use Team Build Pro effectively. For sales and recruiting training, we recommend working with your sponsor or company\'s training programs.'**
+  String get faqA39;
+
+  /// FAQ question 40
+  ///
+  /// In en, this message translates to:
+  /// **'What if I have technical problems?'**
+  String get faqQ40;
+
+  /// FAQ answer 40
+  ///
+  /// In en, this message translates to:
+  /// **'Contact our support team through the app or website. Most issues are resolved quickly, and we\'re committed to keeping your team building activities running smoothly.'**
+  String get faqA40;
+
+  /// FAQ footer title
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Transform Your Team Building?'**
+  String get faqFooterTitle;
+
+  /// FAQ footer subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Start your 30-day free trial today and experience the difference professional tools make.'**
+  String get faqFooterSubtitle;
+
+  /// FAQ footer contact text
+  ///
+  /// In en, this message translates to:
+  /// **'Questions not answered here? Contact our support team - we\'re here to help you succeed!'**
+  String get faqFooterContact;
 }
 
 class _AppLocalizationsDelegate
