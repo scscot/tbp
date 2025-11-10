@@ -112,7 +112,10 @@ class PlaceholderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(title),
+      ),
       body: const Center(
         child: Text(
           '🚧 This feature is under construction.',

@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
-import '../widgets/navigation_shell.dart';
 import '../screens/profile_screen.dart';
 import '../screens/notifications_screen.dart';
 
@@ -234,23 +233,19 @@ class AppScreenBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = Navigator.canPop(context);
+
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      automaticallyImplyLeading: false, // Disable automatic back arrow
+      automaticallyImplyLeading: false,
       iconTheme: const IconThemeData(color: Colors.white),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          } else {
-            // For tab screens with no navigation stack, navigate to dashboard
-            final navigationShell = context.findAncestorStateOfType<NavigationShellState>();
-            navigationShell?.handleCommand(0); // Navigate to dashboard
-          }
-        },
-      ),
+      leading: canPop
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            )
+          : null,
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

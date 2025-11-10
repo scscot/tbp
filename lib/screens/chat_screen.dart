@@ -7,7 +7,10 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n?.chatTitle ?? 'Chat')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(context.l10n?.chatTitle ?? 'Chat'),
+      ),
       body: Center(child: Text(context.l10n?.chatPlaceholder ?? 'Chat interface goes here.')),
     );
   }

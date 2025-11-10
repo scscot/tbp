@@ -6,7 +6,10 @@ class JoinOpportunityConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Confirmation')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Confirmation'),
+      ),
       body: const Center(
         child: Padding(
           padding: EdgeInsets.all(24.0),
