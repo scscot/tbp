@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Downline Builder - Recruit Smarter, Build Faster</title>
-    <meta name="description" content="Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after.">
+    <meta name="description" content="Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Available in English, Spanish, Portuguese & German. Free 30-day trial. $4.99/mo after.">
     <meta name="keywords" content="AI,downline,building,recruiting,team builder,MLM,network marketing,coach,system,direct sales,mlm tools,ai recruiting system,downline building,team empowerment,pre-build teams,zero rejection,automated recruiting,24/7 coaching,social anxiety,rejection-free">
     <meta name="author" content="Team Build Pro">
     <meta name="robots" content="index, follow">
@@ -38,6 +38,66 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="stylesheet" href="css/style.css?v=6" />
     <link rel="stylesheet" href="css/downline-animation.css" />
+
+    <!-- Hero Section Visual Enhancements -->
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%) !important;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content-enhanced {
+            animation: fadeUp 1s ease-out both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            color: #ffffff !important;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero p,
+        .hero-subheadline {
+            color: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .platform-badge {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+        }
+
+        .download-buttons a,
+        .app-store-badge {
+            filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
+        }
+
+        .trial-badge {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+    </style>
 
     <!-- reCAPTCHA Enterprise Script -->
     <script
@@ -153,6 +213,7 @@
     <main>
         <!-- Hero Section -->
         <section class="hero gradient-bg">
+            <div class="hero-overlay"></div>
             <div class="container">
                 <div class="hero-content-enhanced">
                     <div id="personal-invite-container"></div>
@@ -164,24 +225,16 @@
                         </span>
                     </div>
 
-                    <!-- Pain Point Badge -->
-                    <div class="hero-pain-point" style="text-align: center; margin: 24px 0 16px 0;">
-                        <span class="pain-badge" style="background: #FEF3C7; color: #92400E; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; margin-bottom: 8px; border: 1px solid #F59E0B;">
-                            ⚠️ 75% of recruits quit in their first year
-                        </span>
-                        <br>
-                        <span class="solution-badge" style="background: #D1FAE5; color: #065F46; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; border: 1px solid #10B981;">
-                            ✅ Team Build Pro changes that with AI-powered downline building
-                        </span>
-                    </div>
-
                     <h1 id="hero-headline" data-dynamic="hero-headline">
                         AI Downline Building System for Direct Sales Professionals
                     </h1>
 
                     <p id="hero-subheadline" class="hero-subheadline" data-dynamic="hero-subheadline">
-                        Build your downline smarter with AI coaching. 8 pre-written messages for every situation, 24/7 support, real-time tracking. No awkward pitches. No expensive funnels. Just smart tools that work.
+                        Empower your business partners and recruiting prospects with AI-powered coaching and tools that drive downline growth—before and after they join your opportunity.
                     </p>
+
+                    <!-- Referrer message (populated by JavaScript for ?ref= links only) -->
+                    <div id="referrer-message" style="text-align: center; margin: 16px auto 0 auto; max-width: 600px;"></div>
 
                     <!-- Early Adopter badges (hidden when all spots claimed) -->
                     <div id="early-adopter-badges" class="hero-early-adopter-badges" style="display: none;">
@@ -190,6 +243,13 @@
                         </span>
                         <span class="early-adopter-badge urgency" aria-label="Spots remaining">
                             🔥 Only <span id="spots-remaining">--</span> spots remaining
+                        </span>
+                    </div>
+
+                    <!-- Language support badge -->
+                    <div style="text-align: center; margin: 24px 0 16px 0;">
+                        <span style="background: rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; border: 1px solid rgba(255, 255, 255, 0.25);" aria-label="Language support badge">
+                            🌍 Available in English, Español, Português & Deutsch
                         </span>
                     </div>
 
@@ -1985,7 +2045,7 @@
 
         function createAndroidPreviewButton(isPrimary = true) {
             return `
-                <a href="#" class="google-play-badge" onclick="event.preventDefault(); trackDownloadClick('google_play', ${isPrimary}, 'hero'); openModal();">
+                <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" class="google-play-badge" onclick="trackDownloadClick('google_play', ${isPrimary}, 'hero');" target="_blank" rel="noopener noreferrer">
                     <img src="assets/images/Google-Play.png" alt="Get it on Google Play" />
                 </a>
             `;
@@ -2168,25 +2228,29 @@
                 const referrerFullName = `${userData.firstName} ${userData.lastName}`;
                 const bizOppName = userData.bizOppName || 'your opportunity';
 
-                // ~150–160 chars; reused across subheadline + meta
-                const descText = `Your ${bizOppName} partner ${referrerFullName} recommends Team Build Pro — an AI recruiting coach that helps prospects pre-build teams and duplicate success.`;
-
-                heroHeadline = 'AI Recruiting Coach for Your Team';
-                heroSubheadline = descText;
+                heroHeadline = 'AI Downline Building System for Direct Sales Professionals';
+                heroSubheadline = 'Empower your business partners and recruiting prospects with AI-powered coaching and tools that drive downline growth—before and after they join your opportunity.';
                 trialNote = 'Free 30-day trial · $4.99/mo · Cancel anytime';
+
+                // Personalized referrer message displayed below subheadline
+                const referrerMessage = `Your ${bizOppName} partner ${referrerFullName} recommends Team Build Pro — an AI recruiting coach that helps prospects pre-build teams and duplicate success.`;
+                const referrerMessageEl = document.getElementById('referrer-message');
+                if (referrerMessageEl) {
+                    referrerMessageEl.innerHTML = `<p style="color: rgba(255, 255, 255, 0.85); font-size: 15px; line-height: 1.5; margin: 0;">${referrerMessage}</p>`;
+                }
 
                 // ---- Dynamic SEO for partners
                 document.title = `AI Recruiting System for ${bizOppName} Teams — Recommended by ${referrerFullName} | Team Build Pro`;
 
-                // Meta description
+                // Meta description (use referrer message)
                 ensureMeta('meta[name="description"]', { name: 'description' })
-                    .setAttribute('content', descText);
+                    .setAttribute('content', referrerMessage);
 
                 // ---- Open Graph
                 ensureMeta('meta[property="og:title"]', { property: 'og:title' })
                     .setAttribute('content', `AI Recruiting for ${bizOppName} Teams`);
                 ensureMeta('meta[property="og:description"]', { property: 'og:description' })
-                    .setAttribute('content', descText);
+                    .setAttribute('content', referrerMessage);
                 ensureMeta('meta[property="og:url"]', { property: 'og:url' })
                     .setAttribute('content', window.location.href);
 
@@ -2194,12 +2258,12 @@
                 ensureMeta('meta[name="twitter:title"]', { name: 'twitter:title' })
                     .setAttribute('content', `AI Recruiting for ${bizOppName} Teams`);
                 ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' })
-                    .setAttribute('content', descText);
+                    .setAttribute('content', referrerMessage);
 
             } else {
                 // DEFAULT SPONSOR VIEW – direct traffic (no referral)
                 heroHeadline = 'AI Downline Building System for Direct Sales Professionals';
-                heroSubheadline = 'Build your downline smarter with AI coaching. 8 pre-written messages for every situation, 24/7 support, real-time tracking. No awkward pitches. No expensive funnels. Just smart tools that work.';
+                heroSubheadline = 'Empower your business partners and recruiting prospects with AI-powered coaching and tools that drive downline growth—before and after they join your opportunity.';
                 trialNote = 'Free 30-day trial · $4.99/mo · Cancel anytime';
             }
 
@@ -3053,6 +3117,7 @@
 
     <!-- Downline Animation Script -->
     <script src="js/downline-animation.js"></script>
+
 
 </body>
 
