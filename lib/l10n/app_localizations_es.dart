@@ -624,8 +624,8 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '# Miembros',
-      one: '# Miembro',
+      other: '$count Miembros',
+      one: '$count Miembro',
     );
     return '$_temp0';
   }
@@ -1888,7 +1888,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get memberDetailLabelJoinedNetwork => 'Se unió a la red';
 
   @override
-  String get memberDetailLabelJoinedOrganization => 'Se unió a la organización';
+  String memberDetailLabelJoinedOrganization(String bizOpp) {
+    return 'Se unió a $bizOpp';
+  }
 
   @override
   String get memberDetailLabelQualified => 'Calificado';
@@ -1924,6 +1926,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get memberDetailEligibilityWaived => 'Exonerado';
+
+  @override
+  String memberDetailEligibilityWaivedMessage(String organization) {
+    return 'Los requisitos de elegibilidad están exentos para personas que se unieron a $organization antes de unirse a la Red.';
+  }
 
   @override
   String get messageThreadHeading => 'Centro de mensajes';

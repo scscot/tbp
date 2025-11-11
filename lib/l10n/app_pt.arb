@@ -586,7 +586,7 @@
       }
     }
   },
-  "networkMembersCount": "{count, plural, one {# Membro} other {# Membros}}",
+  "networkMembersCount": "{count, plural, one {{count} Membro} other {{count} Membros}}",
   "@networkMembersCount": {
     "description": "Count of members with proper pluralization",
     "placeholders": {
@@ -2539,7 +2539,7 @@
   "memberDetailButtonSendMessage": "Enviar mensagem",
   "memberDetailLabelDirectSponsors": "Patrocinadores diretos",
   "memberDetailLabelJoinedNetwork": "Entrou na rede",
-  "memberDetailLabelJoinedOrganization": "Entrou na organização",
+  "memberDetailLabelJoinedOrganization": "Entrou em {bizOpp}",
   "memberDetailLabelQualified": "Qualificado",
   "memberDetailLabelQualifiedDate": "Data de qualificação",
   "memberDetailLabelTeamLeader": "Líder da equipe",
@@ -2551,6 +2551,7 @@
   "memberDetailEligibilityTotalTeam": "Equipe total",
   "memberDetailEligibilityMessage": "Os membros da equipe que atenderem a esses requisitos são automaticamente convidados a se juntar a {organization}.",
   "memberDetailEligibilityWaived": "Dispensado",
+  "memberDetailEligibilityWaivedMessage": "Os requisitos de elegibilidade são dispensados para indivíduos que ingressaram em {organization} antes de ingressar na Rede.",
   "messageThreadHeading": "Centro de mensagens",
   "messageThreadEmptyMessage": "Comece a conversa!",
   "messageThreadUrlWarningTitle": "Aviso de link externo",

@@ -586,7 +586,7 @@
       }
     }
   },
-  "networkMembersCount": "{count, plural, one {# Miembro} other {# Miembros}}",
+  "networkMembersCount": "{count, plural, one {{count} Miembro} other {{count} Miembros}}",
   "@networkMembersCount": {
     "description": "Count of members with proper pluralization",
     "placeholders": {
@@ -2511,7 +2511,7 @@
   "memberDetailButtonSendMessage": "Enviar mensaje",
   "memberDetailLabelDirectSponsors": "Patrocinadores directos",
   "memberDetailLabelJoinedNetwork": "Se unió a la red",
-  "memberDetailLabelJoinedOrganization": "Se unió a la organización",
+  "memberDetailLabelJoinedOrganization": "Se unió a {bizOpp}",
   "memberDetailLabelQualified": "Calificado",
   "memberDetailLabelQualifiedDate": "Fecha de calificación",
   "memberDetailLabelTeamLeader": "Líder de equipo",
@@ -2523,6 +2523,7 @@
   "memberDetailEligibilityTotalTeam": "Equipo total",
   "memberDetailEligibilityMessage": "Los miembros del equipo que cumplan estos requisitos son invitados automáticamente a unirse a {organization}.",
   "memberDetailEligibilityWaived": "Exonerado",
+  "memberDetailEligibilityWaivedMessage": "Los requisitos de elegibilidad están exentos para personas que se unieron a {organization} antes de unirse a la Red.",
   "messageThreadHeading": "Centro de mensajes",
   "messageThreadEmptyMessage": "¡Comienza la conversación!",
   "messageThreadUrlWarningTitle": "Advertencia de enlace externo",

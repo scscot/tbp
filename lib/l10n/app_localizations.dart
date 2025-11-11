@@ -1070,7 +1070,7 @@ abstract class AppLocalizations {
   /// Count of members with proper pluralization
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, one {# Member} other {# Members}}'**
+  /// **'{count, plural, one {{count} Member} other {{count} Members}}'**
   String networkMembersCount(int count);
 
   /// Loading indicator when fetching additional members
@@ -3245,11 +3245,11 @@ abstract class AppLocalizations {
   /// **'Joined Network'**
   String get memberDetailLabelJoinedNetwork;
 
-  /// Label for organization join date
+  /// Label for organization join date with business opportunity name
   ///
   /// In en, this message translates to:
-  /// **'Joined Organization'**
-  String get memberDetailLabelJoinedOrganization;
+  /// **'Joined {bizOpp}'**
+  String memberDetailLabelJoinedOrganization(String bizOpp);
 
   /// Label for qualified status
   ///
@@ -3316,6 +3316,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waived'**
   String get memberDetailEligibilityWaived;
+
+  /// Eligibility waived explanation message
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility requirements are waived for individuals who joined {organization} prior to joining the Network.'**
+  String memberDetailEligibilityWaivedMessage(String organization);
 
   /// Heading for message thread screen
   ///

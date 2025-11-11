@@ -617,8 +617,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '# Members',
-      one: '# Member',
+      other: '$count Members',
+      one: '$count Member',
     );
     return '$_temp0';
   }
@@ -1858,7 +1858,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberDetailLabelJoinedNetwork => 'Joined Network';
 
   @override
-  String get memberDetailLabelJoinedOrganization => 'Joined Organization';
+  String memberDetailLabelJoinedOrganization(String bizOpp) {
+    return 'Joined $bizOpp';
+  }
 
   @override
   String get memberDetailLabelQualified => 'Qualified';
@@ -1894,6 +1896,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get memberDetailEligibilityWaived => 'Waived';
+
+  @override
+  String memberDetailEligibilityWaivedMessage(String organization) {
+    return 'Eligibility requirements are waived for individuals who joined $organization prior to joining the Network.';
+  }
 
   @override
   String get messageThreadHeading => 'Message Center';

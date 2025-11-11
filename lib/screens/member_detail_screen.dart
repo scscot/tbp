@@ -263,14 +263,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                                         context.l10n?.memberDetailLabelQualified ?? 'Qualified', context.l10n?.memberDetailNotYet ?? 'Not Yet'),
                                   if (_user!.bizJoinDate != null)
                                     _buildInfoRow(
-                                        (context.l10n?.memberDetailLabelJoinedOrganization ?? 'Joined [organization]')
-                                            .replaceAll('[organization]', _bizOpp ?? 'organization'),
+                                        context.l10n?.memberDetailLabelJoinedOrganization(_bizOpp ?? 'organization') ?? 'Joined ${_bizOpp ?? 'organization'}',
                                         DateFormat.yMMMd()
                                             .format(_user!.bizJoinDate!))
                                   else
                                     _buildInfoRow(
-                                        (context.l10n?.memberDetailLabelJoinedOrganization ?? 'Joined [organization]')
-                                            .replaceAll('[organization]', _bizOpp ?? 'organization'),
+                                        context.l10n?.memberDetailLabelJoinedOrganization(_bizOpp ?? 'organization') ?? 'Joined ${_bizOpp ?? 'organization'}',
                                         context.l10n?.memberDetailNotYetJoined ?? 'Not Yet'),
                                 ],
                                 if (_sponsorName != null)
@@ -458,10 +456,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   const SizedBox(height: 20),
                   Text(
                     _user!.currentPartner == true
-                        ? (context.l10n?.memberDetailEligibilityWaived ?? 'Eligibility requirements are waived for individuals who joined the [organization] prior to joining the Network.')
-                            .toString().replaceAll('[organization]', _bizOpp ?? 'organization')
-                        : (context.l10n?.memberDetailEligibilityMessage ?? 'Team members who meet these requirements are automatically invited to join the [organization].')
-                            .toString().replaceAll('[organization]', _bizOpp ?? 'organization'),
+                        ? (context.l10n?.memberDetailEligibilityWaivedMessage(_bizOpp ?? 'organization') ?? 'Eligibility requirements are waived for individuals who joined ${_bizOpp ?? 'organization'} prior to joining the Network.')
+                        : (context.l10n?.memberDetailEligibilityMessage(_bizOpp ?? 'organization') ?? 'Team members who meet these requirements are automatically invited to join ${_bizOpp ?? 'organization'}.'),
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

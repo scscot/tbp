@@ -1154,7 +1154,7 @@
       }
     }
   },
-  "networkMembersCount": "{count, plural, one {# Member} other {# Members}}",
+  "networkMembersCount": "{count, plural, one {{count} Member} other {{count} Members}}",
   "@networkMembersCount": {
     "description": "Count of members with proper pluralization",
     "placeholders": {
@@ -3120,10 +3120,15 @@
     "description": "Label for network join date",
     "maxLength": 22
   },
-  "memberDetailLabelJoinedOrganization": "Joined Organization",
+  "memberDetailLabelJoinedOrganization": "Joined {bizOpp}",
   "@memberDetailLabelJoinedOrganization": {
-    "description": "Label for organization join date",
-    "maxLength": 28
+    "description": "Label for organization join date with business opportunity name",
+    "placeholders": {
+      "bizOpp": {
+        "type": "String",
+        "example": "Young Living"
+      }
+    }
   },
   "memberDetailLabelQualified": "Qualified",
   "@memberDetailLabelQualified": {
@@ -3184,6 +3189,16 @@
   "@memberDetailEligibilityWaived": {
     "description": "Status when eligibility is waived",
     "maxLength": 14
+  },
+  "memberDetailEligibilityWaivedMessage": "Eligibility requirements are waived for individuals who joined {organization} prior to joining the Network.",
+  "@memberDetailEligibilityWaivedMessage": {
+    "description": "Eligibility waived explanation message",
+    "placeholders": {
+      "organization": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
   },
   "messageThreadHeading": "Message Center",
   "@messageThreadHeading": {

@@ -1154,7 +1154,7 @@
       }
     }
   },
-  "networkMembersCount": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
+  "networkMembersCount": "{count, plural, one {{count} Mitglied} other {{count} Mitglieder}}",
   "@networkMembersCount": {
     "description": "Count of members with proper pluralization",
     "placeholders": {
@@ -3120,7 +3120,7 @@
     "description": "Label for network join date",
     "maxLength": 22
   },
-  "memberDetailLabelJoinedOrganization": "Organisation beigetreten",
+  "memberDetailLabelJoinedOrganization": "{bizOpp} beigetreten",
   "@memberDetailLabelJoinedOrganization": {
     "description": "Label for organization join date",
     "maxLength": 28
@@ -3181,6 +3181,7 @@
     }
   },
   "memberDetailEligibilityWaived": "Verzichtet",
+  "memberDetailEligibilityWaivedMessage": "Berechtigungsanforderungen sind für Personen erlassen, die {organization} vor dem Beitritt zum Netzwerk beigetreten sind.",
   "@memberDetailEligibilityWaived": {
     "description": "Status when eligibility is waived",
     "maxLength": 14
