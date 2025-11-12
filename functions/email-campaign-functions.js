@@ -13,9 +13,9 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Winner from Oct 2025 campaign analysis: 6.2% open rate
-  // Subject 1 + 2version outperformed all other combinations by 3x
-  const selectedSubject = `${contact.firstName}, give your team the AI recruiting advantage`;
+  // Updated Nov 2025: Aligned with new "AI Downline Building" positioning
+  // Reflects 4-language capability and global team building focus
+  const selectedSubject = `${contact.firstName}, build your downline with AI-powered team tools`;
   const selectedVersion = '2version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
