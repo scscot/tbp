@@ -1,15 +1,17 @@
 const { onRequest } = require('firebase-functions/v2/https');
-const { defineSecret } = require('firebase-functions/params');
+const { defineSecret, defineString } = require('firebase-functions/params');
 const admin = require('firebase-admin');
-const sgMail = require('@sendgrid/mail');
+const axios = require('axios');
+const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-// Define SendGrid API key secret
-const sendgridApiKey = defineSecret('SENDGRID_API_KEY');
+// Define Mailgun API key secret and domain
+const mailgunApiKey = defineSecret('MAILGUN_API_KEY');
+const mailgunDomain = defineString('MAILGUN_DOMAIN', { default: 'info.teambuildpro.com' });
 
 // Load the email template
-const templatePath = path.join(__dirname, 'email_templates/launch_campaign_with_hero.html');
+const templatePath = path.join(__dirname, 'email_templates/launch_campaign_mailgun.html');
 let emailTemplate;
 
 try {
@@ -24,7 +26,7 @@ exports.sendLaunchCampaign = onRequest(
   {
     cors: true,
     region: 'us-central1',
-    secrets: [sendgridApiKey],
+    secrets: [mailgunApiKey],
     timeoutSeconds: 540, // 9 minutes for large campaigns
     memory: '1GiB',
   },
@@ -42,8 +44,9 @@ exports.sendLaunchCampaign = onRequest(
         return res.status(500).json({ error: 'Email template not available' });
       }
 
-      // Set the SendGrid API key
-      sgMail.setApiKey(sendgridApiKey.value());
+      // Get Mailgun API key and domain
+      const apiKey = mailgunApiKey.value();
+      const domain = mailgunDomain.value();
 
       // Get request parameters
       const {
@@ -60,7 +63,7 @@ exports.sendLaunchCampaign = onRequest(
       // If test email provided, send only to that email
       if (testEmail) {
         console.log(`🧪 LAUNCH_CAMPAIGN: Test mode - sending to ${testEmail}`);
-        const testResult = await sendTestEmail(testEmail, emailTemplate);
+        const testResult = await sendTestEmail(testEmail, emailTemplate, apiKey, domain);
         return res.json({
           success: true,
           message: 'Test email sent successfully',
@@ -114,7 +117,7 @@ exports.sendLaunchCampaign = onRequest(
       }
 
       // Send campaign in batches
-      const results = await sendCampaignInBatches(subscribers, emailTemplate, batchSize);
+      const results = await sendCampaignInBatches(subscribers, emailTemplate, batchSize, apiKey, domain);
 
       // Log campaign completion
       await logCampaignCompletion(results, deviceFilter);
@@ -145,23 +148,31 @@ exports.sendLaunchCampaign = onRequest(
 /**
  * Send test email to specified address
  */
-async function sendTestEmail(testEmail, template) {
-  const personalizedTemplate = personalizeTemplate(template, {
-    firstName: 'Test User',
-    deviceSelection: 'both',
-  });
+async function sendTestEmail(testEmail, template, apiKey, domain) {
+  const personalizedTemplate = template
+    .replace(/%recipient\.firstName%/g, 'Test User')
+    .replace(/%recipient\.email%/g, testEmail);
 
-  const emailData = {
-    to: testEmail,
-    from: 'Team Build Pro <support@teambuildpro.com>',
-    subject: '🚀 Team Build Pro is Now Available! [TEST]',
-    html: personalizedTemplate,
-  };
+  const form = new FormData();
+  form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+  form.append('to', testEmail);
+  form.append('subject', '🚀 Team Build Pro is Now Available! [TEST]');
+  form.append('html', personalizedTemplate);
+  form.append('o:tag', 'launch_campaign_test');
+  form.append('o:tracking', 'yes');
+  form.append('o:tracking-opens', 'yes');
+  form.append('o:tracking-clicks', 'yes');
 
   try {
-    await sgMail.send(emailData);
+    const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
+    const response = await axios.post(`${mailgunBaseUrl}/messages`, form, {
+      headers: {
+        ...form.getHeaders(),
+        'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
+      }
+    });
     console.log(`✅ LAUNCH_CAMPAIGN: Test email sent to ${testEmail}`);
-    return { success: true, email: testEmail };
+    return { success: true, email: testEmail, messageId: response.data.id };
   } catch (error) {
     console.error(`❌ LAUNCH_CAMPAIGN: Test email failed for ${testEmail}:`, error);
     throw error;
@@ -171,7 +182,7 @@ async function sendTestEmail(testEmail, template) {
 /**
  * Send campaign in batches to avoid rate limits
  */
-async function sendCampaignInBatches(subscribers, template, batchSize) {
+async function sendCampaignInBatches(subscribers, template, batchSize, apiKey, domain) {
   let sent = 0;
   let failed = 0;
   const totalBatches = Math.ceil(subscribers.length / batchSize);
@@ -187,7 +198,7 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
     );
 
     const batchResults = await Promise.allSettled(
-      batch.map((subscriber) => sendPersonalizedEmail(subscriber, template))
+      batch.map((subscriber) => sendPersonalizedEmail(subscriber, template, apiKey, domain))
     );
 
     // Count results
@@ -203,7 +214,7 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
       }
     });
 
-    // Small delay between batches to be respectful to SendGrid
+    // Small delay between batches to be respectful to Mailgun
     if (i + batchSize < subscribers.length) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
@@ -215,82 +226,38 @@ async function sendCampaignInBatches(subscribers, template, batchSize) {
 /**
  * Send personalized email to individual subscriber
  */
-async function sendPersonalizedEmail(subscriber, template) {
-  const { firstName, lastName, email, deviceSelection } = subscriber;
+async function sendPersonalizedEmail(subscriber, template, apiKey, domain) {
+  const { firstName, lastName, email } = subscriber;
 
-  // Personalize the template
-  const personalizedTemplate = personalizeTemplate(template, subscriber);
+  const personalizedTemplate = template
+    .replace(/%recipient\.firstName%/g, firstName)
+    .replace(/%recipient\.email%/g, email);
 
-  const emailData = {
-    to: `${firstName} ${lastName} <${email}>`,
-    from: 'Team Build Pro <support@teambuildpro.com>',
-    bcc: 'scscot@gmail.com', // Keep your BCC for tracking
-    subject: `🚀 Team Build Pro is Now Available, ${firstName}!`,
-    html: personalizedTemplate,
-    // Add custom args for SendGrid tracking
-    customArgs: {
-      campaign: 'launch_2025',
-      device_preference: deviceSelection || 'unknown',
-      subscriber_id: subscriber.id,
-    },
-  };
+  const form = new FormData();
+  form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+  form.append('to', `${firstName} ${lastName} <${email}>`);
+  form.append('bcc', 'scscot@gmail.com');
+  form.append('subject', `${firstName}, Team Build Pro is now available!`);
+  form.append('html', personalizedTemplate);
+  form.append('o:tag', 'launch_campaign_2025');
+  form.append('o:tag', subscriber.id || 'no_id');
+  form.append('o:tracking', 'yes');
+  form.append('o:tracking-opens', 'yes');
+  form.append('o:tracking-clicks', 'yes');
 
-  await sgMail.send(emailData);
+  const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
+  await axios.post(`${mailgunBaseUrl}/messages`, form, {
+    headers: {
+      ...form.getHeaders(),
+      'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
+    }
+  });
+
   console.log(`✅ LAUNCH_CAMPAIGN: Email sent to ${firstName} ${lastName} (${email})`);
 
   return { success: true, email: email };
 }
 
-/**
- * Personalize template with subscriber data
- */
-function personalizeTemplate(template, subscriber) {
-  const { firstName = 'Team Builder', deviceSelection } = subscriber;
-
-  // Determine which download buttons to show
-  const showAppleButton =
-    !deviceSelection || deviceSelection === 'ios' || deviceSelection === 'both';
-  const showGoogleButton =
-    !deviceSelection || deviceSelection === 'android' || deviceSelection === 'both';
-
-  // App Store URLs (you may want to add referral tracking here)
-  const appStoreUrl = 'https://apps.apple.com/app/team-build-pro/id6751211622';
-  const googlePlayUrl = 'https://play.google.com/store/apps/details?id=com.scott.ultimatefix';
-
-  // Screenshot composite URL - Correct location
-  const screenshotCompositeUrl = 'http://teambuildpro.com/assets/images/hero-composite.png';
-
-  let personalizedTemplate = template
-    .replace(/\{\{firstName\}\}/g, firstName)
-    .replace(/\{\{appStoreUrl\}\}/g, appStoreUrl)
-    .replace(/\{\{googlePlayUrl\}\}/g, googlePlayUrl)
-    .replace(/\{\{screenshotCompositeUrl\}\}/g, screenshotCompositeUrl);
-
-  // Handle conditional download buttons using simple string replacement
-  if (showAppleButton) {
-    personalizedTemplate = personalizedTemplate.replace(/\{\{#if showAppleButton\}\}/g, '');
-    personalizedTemplate = personalizedTemplate.replace(/\{\{\/if\}\}/g, '');
-  } else {
-    // Remove the Apple button section
-    personalizedTemplate = personalizedTemplate.replace(
-      /\{\{#if showAppleButton\}\}[\s\S]*?\{\{\/if\}\}/g,
-      ''
-    );
-  }
-
-  if (showGoogleButton) {
-    personalizedTemplate = personalizedTemplate.replace(/\{\{#if showGoogleButton\}\}/g, '');
-    personalizedTemplate = personalizedTemplate.replace(/\{\{\/if\}\}/g, '');
-  } else {
-    // Remove the Google button section
-    personalizedTemplate = personalizedTemplate.replace(
-      /\{\{#if showGoogleButton\}\}[\s\S]*?\{\{\/if\}\}/g,
-      ''
-    );
-  }
-
-  return personalizedTemplate;
-}
 
 /**
  * Get device breakdown for analytics
