@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-06
+**Last Updated**: 2025-11-12
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -19,12 +19,14 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 
 - **75% of recruits quit in their first year** (primary pain point)
 - **16 pre-written messages** (8 for recruiting prospects + 8 for existing business partners)
-- **24/7 AI Coach** for instant recruiting guidance
+- **24/7 AI Coach** for instant recruiting guidance in 4 languages
+- **4 languages supported**: English, Spanish (Español), Portuguese (Português), German (Deutsch)
 - **4 direct sponsors + 20 total downline members** = qualification milestones
 - **120+ countries supported** with timezone-aware features
 - **100+ direct sales companies** compatible
 - **$4.99/month** after 30-day free trial
 - **70% performance improvement** through client-side caching
+- **30.9% email open rate** - 2x industry average for cold email campaigns
 
 ---
 
@@ -35,7 +37,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
 - **Functions**: 50+ Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
-- **Email**: Mailgun for campaigns, SendGrid for transactional
+- **Email**: Mailgun for all email delivery (campaigns and launch announcements)
 
 ### Key Directories
 ```
@@ -141,12 +143,14 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ## 📱 App Store Listing
 
 **App Name**: Team Build Pro: Direct Sales
-**App ID**: 6751211622
+**App ID (iOS)**: 6751211622
 **Package ID (Android)**: com.scott.ultimatefix
+**Status**: LIVE on both iOS App Store and Google Play Store (as of Nov 2025)
 
 ### App Store URLs
-- **iOS**: https://apps.apple.com/us/app/team-build-pro-direct-sales/id6751211622
+- **iOS**: https://apps.apple.com/us/app/team-build-pro-ai-team-builder/id6751211622
 - **Android**: https://play.google.com/store/apps/details?id=com.scott.ultimatefix
+- **Website**: https://teambuildpro.com
 
 ### Key Features (as listed)
 1. AI-Powered Recruiting Coach
@@ -185,16 +189,57 @@ git add . && git commit -m "message" && git push
 
 ## 📧 Email Campaigns
 
-### Current Campaign (Mailgun)
-- **Subject**: `{{firstName}}, give your team the AI recruiting advantage`
-- **Template**: `2version` (initial template)
-- **Performance**: 6.2% open rate (winning combination)
+### Current Campaign (Mailgun - Automated)
+- **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
+- **Subject**: `{{firstName}}, build your downline with AI-powered team tools`
+- **Template**: `2version` (Mailgun template variant)
+- **CTA Strategy**: Landing page routing (https://teambuildpro.com) with subtle text link "Learn more at TeamBuildPro.com"
 - **Schedule**: 8am, 10am, 12pm, 3pm, 6pm PT, Monday-Saturday
+- **Batch Size**: 25 emails per run (125 emails/day)
 - **Domain**: info.teambuildpro.com
+- **Data Source**: Firestore `emailCampaigns/master/contacts` collection
+
+### Campaign Performance (as of Nov 2025)
+- **Total Contacts**: 5,527
+- **Total Sent**: 2,077 (37.6%)
+- **Remaining**: 3,450 (62.4%)
+- **Open Rate**: 30.9% (excellent - industry avg 15-25%)
+- **Click Rate**: 5.5% (good - industry avg 2-3%)
+- **Engagement Rate**: 36.4% (outstanding)
+- **Delivery Rate**: 96.5% (2 failures out of 57 daily)
+- **Completion Timeline**: ~28 days at current rate
+
+### Launch Campaign (Mailgun - Manual Trigger)
+- **Function**: `sendLaunchCampaign` in `functions/sendLaunchCampaign.js`
+- **Template**: `launch_campaign_mailgun.html` (simple, personal style)
+- **Trigger**: HTTP POST endpoint (manual execution)
+- **Data Source**: Firestore `launch_notifications` collection
+- **Purpose**: One-time announcement emails to landing page signups
+- **Status**: Converted from SendGrid to Mailgun (Nov 2025)
+
+### Email Strategy Decisions
+1. **Landing Page CTA** (not direct app store links):
+   - Works on all devices (desktop/mobile)
+   - Enables retargeting and analytics
+   - Provides social proof and trust building
+   - Better for cold email to MLM professionals
+
+2. **Subtle Text Links** (not buttons):
+   - Less "markety" for pitch-fatigued MLM audience
+   - Builds trust through restraint
+   - Stands out by NOT looking promotional
+   - Proven with 30.9% open rate
+
+3. **Personal, Simple Style**:
+   - No complex hero images or heavy formatting
+   - Personal tone from Stephen Scott
+   - Focus on value and benefits
+   - Works well with Mailgun's deliverability
 
 ### Target Audience
 - Current direct sales professionals (not prospects)
-- Goal: App downloads → Trial sign-ups → Paid conversions
+- Cold email list sourced from MLM/direct sales databases
+- Goal: Landing page visits → App downloads → Trial sign-ups → Paid conversions
 
 ---
 
@@ -234,12 +279,21 @@ git add . && git commit -m "message" && git push
 - `lib/services/network_service.dart` - Advanced caching
 - `lib/screens/share_screen.dart` - 16 pre-written messages
 - `functions/index.js` - All Cloud Functions
+- `functions/email-campaign-functions.js` - Automated hourly email campaign
+- `functions/sendLaunchCampaign.js` - Manual launch announcement emails
+- `functions/email_templates/launch_campaign_mailgun.html` - Launch email template
 - `web/faq.html` - Dynamic FAQ implementation
+
+### Utility Scripts (functions/)
+- `count-todays-emails.js` - Query Firestore for daily email send counts
+- `get-mailgun-stats.js` - Query Mailgun API for delivery/engagement statistics
+- `test-email.js` - Send test emails via Mailgun for campaign testing
 
 ---
 
 ## 🔄 Recent Major Changes (as of Nov 2025)
 
+### Week of Nov 6
 1. ✅ Updated FAQ with dynamic audience filtering (prospect vs professional)
 2. ✅ Corrected message count from 8 to 16 throughout marketing materials
 3. ✅ Fixed category dropdown filtering on FAQ page
@@ -247,6 +301,27 @@ git add . && git commit -m "message" && git push
 5. ✅ Standardized 75% quit rate statistic (was inconsistent)
 6. ✅ Added "perpetual recruiting engine" messaging
 7. ✅ Removed "proven/prove" language from messaging
+
+### Week of Nov 12
+8. ✅ **Google Play Store Launch**: App now LIVE on Android (completed Nov 12)
+9. ✅ **Email CTA Strategy Update**: Changed from direct app store links to landing page routing
+   - Updated both `email-body-only-updated.html` and `email-template-updated.html`
+   - Implemented subtle text link CTA: "Learn more at TeamBuildPro.com"
+   - Rationale: Better cross-device experience, enables analytics/retargeting
+10. ✅ **Email Campaign Performance**: Achieving 30.9% open rate (2x industry average)
+11. ✅ **Mailgun Conversion**: Converted `sendLaunchCampaign.js` from SendGrid to Mailgun
+   - Created new `launch_campaign_mailgun.html` template
+   - Updated function to use Mailgun API with FormData
+   - Simplified personalization (uses Mailgun variable syntax)
+12. ✅ **Campaign Statistics Tracking**: Created monitoring scripts
+   - `count-todays-emails.js` for Firestore tracking
+   - `get-mailgun-stats.js` for delivery/engagement metrics
+13. ✅ **Website Updates**: Updated 115 company pages with Google Play Store link
+14. ✅ **App Store URL Update**: Updated all 121 website files with new App Store URL
+   - Changed from `team-build-pro-direct-sales` to `team-build-pro-ai-team-builder`
+   - URL slug updated to reflect app name change in App Store Connect
+   - Old URLs redirect automatically to new URLs (Apple's redirect behavior)
+   - Best practice: Use current URL format for SEO and consistency
 
 ---
 
