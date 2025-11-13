@@ -15,8 +15,8 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   // Updated Nov 2025: Aligned with new "AI Downline Building" positioning
   // Reflects 4-language capability and global team building focus
-  // const selectedSubject = `${contact.firstName}, build your downline with AI-powered team tools`;
-  const selectedSubject = `build your downline with AI-powered tools`;
+  const selectedSubject = `${contact.firstName}, build your downline with AI-powered tools.`;
+  // const selectedSubject = `build your downline with AI-powered tools`;
   const selectedVersion = '2version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
