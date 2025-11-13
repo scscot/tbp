@@ -264,6 +264,11 @@ git add . && git commit -m "message" && git push
 5. **NEVER create new files unless necessary**
    - Always prefer editing existing files
 
+6. **NEVER automatically deploy to Firebase hosting**
+   - ONLY render changes locally using `open` command
+   - User will handle ALL Firebase hosting deployments manually
+   - Do NOT run `firebase deploy` commands
+
 ---
 
 ## 🎓 Learning Resources
