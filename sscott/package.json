@@ -1,0 +1,35 @@
+{
+  "name": "stephenscott-website",
+  "version": "1.0.0",
+  "description": "Stephen Scott's author website - AI, Network Marketing, and Personal Growth books",
+  "type": "module",
+  "scripts": {
+    "migrate": "node scripts/wordpress-migration.js",
+    "download-images": "node scripts/download-book-images.js",
+    "update-book-images": "node scripts/update-book-images.js",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "optimize-images": "node scripts/optimize-images.js",
+    "scrape-amazon": "node scrape-amazon-covers.js",
+    "serve": "cd .. && firebase serve --only hosting:sscott",
+    "deploy": "cd .. && firebase deploy --only hosting:sscott"
+  },
+  "keywords": [
+    "author-website",
+    "firebase-hosting",
+    "seo-optimized",
+    "static-site"
+  ],
+  "author": "Stephen Scott",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "sharp": "^0.33.1",
+    "jsdom": "^23.0.1",
+    "csv-parser": "^3.0.0",
+    "puppeteer": "^24.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

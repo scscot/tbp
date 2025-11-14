@@ -112,6 +112,64 @@
             ],
             "cleanUrls": true,
             "trailingSlash": false
+        },
+        {
+            "target": "sscott",
+            "public": "sscott/public",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "cleanUrls": true,
+            "trailingSlash": false,
+            "redirects": [
+                {
+                    "source": "/blogs/:slug",
+                    "destination": "/blog/:slug",
+                    "type": 301
+                },
+                {
+                    "source": "/blogs",
+                    "destination": "/blog",
+                    "type": 301
+                },
+                {
+                    "source": "/shop/:slug",
+                    "destination": "/books/:slug",
+                    "type": 301
+                },
+                {
+                    "source": "/shop",
+                    "destination": "/books",
+                    "type": 301
+                },
+                {
+                    "source": "/product/:slug",
+                    "destination": "/books/:slug",
+                    "type": 301
+                }
+            ],
+            "headers": [
+                {
+                    "source": "**/*.@(html|htm)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "no-cache, no-store, must-revalidate"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff|woff2|ttf|eot)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "max-age=31536000"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

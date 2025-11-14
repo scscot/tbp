@@ -1,0 +1,148 @@
+{
+  "books": [
+    {
+      "name": "How To Grow Your Network Marketing Business Using Artificial Intelligence (AI)",
+      "slug": "how-to-grow-your-network-marketing-business-using-artificial-intelligence-ai",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-US.png",
+      "excerpt": "Discover how to supercharge your network marketing business with AI. Learn practical strategies for using AI to automate tasks, generate leads, enhanc",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9FXZZGG",
+      "inStock": true
+    },
+    {
+      "name": "How To Grow Your Network Marketing Business Using AI",
+      "slug": "how-to-grow-your-network-marketing-business-using-ai",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-US.jpg",
+      "excerpt": "Network marketing expert Stephen Scott shows you how artificial intelligence (AI) can skyrocket your business. This practical guide r",
+      "amazonUrl": "#",
+      "inStock": true
+    },
+    {
+      "name": "The Art of Mastering Fear and Uncertainty",
+      "slug": "the-art-of-mastering-fear-and-uncertainty",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Fear-and-Uncertainty.png",
+      "excerpt": "Fear and uncertainty are two of the most common emotions that people experience. They can be debilitating, preventing us from taking risks and living ",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9SHFSSL",
+      "inStock": true
+    },
+    {
+      "name": "Wie Sie Ihr Network Marketing Business mit KI ausbauen können",
+      "slug": "wie-sie-ihr-network-marketing-business-mit-ki-ausbauen-knnen",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-DE.jpg",
+      "excerpt": "Erfahren Sie, wie Sie Ihr Network-Marketing-Geschäft mit KI optimieren. Lernen Sie praktische Strategien zur Nutzung von KI, um Aufgaben zu automatisi",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9SJ2NJ8",
+      "inStock": true
+    },
+    {
+      "name": "Como expandir seu negócio de marketing de rede usando inteligência artificial (IA)",
+      "slug": "como-expandir-seu-negcio-de-marketing-de-rede-usando-inteligncia-artificial-ia",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-BR-1.png",
+      "excerpt": "Descubra como potencializar seu negócio de marketing de rede com IA. Aprenda estratégias práticas para usar a IA na automação de tarefas, geração de l",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9SJ2NQ2",
+      "inStock": true
+    },
+    {
+      "name": "AIを活用したネットワークマーケティングビジネスの成長方法",
+      "slug": "ai",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-JP.png",
+      "excerpt": "ネットワークマーケティングビジネスをAIで強化する方法を学びましょう。タスクの自動化、リードの生成、顧客サービスの向上、チームの効果的な成長のための実践的な戦略を習得しましょう。スティーブン・スコットのガイドは、ネットワークマーケティングにAIを活用するための必読書です。",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9S7NZS2",
+      "inStock": true
+    },
+    {
+      "name": "कैसे ए.आई. का उपयोग करके अपना नेटवर्क मार्केटिंग व्यापार बढ़ाएं",
+      "slug": "-",
+      "price": "6.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-HI.png",
+      "excerpt": "\"एआई के साथ अपने नेटवर्क मार्केटिंग व्यवसाय को सुपरचार्ज करने का तरीका जानें। कार्यों को स्वचालित करने, लीड्स उत्पन्न करने, ग्राहक सेवा को बढ़ाने और अ",
+      "amazonUrl": "https://www.amazon.com/dp/B0C6LCG6XJ",
+      "inStock": true
+    },
+    {
+      "name": "The Network Marketing Playbook Your Step-by-Step Guide to Success",
+      "slug": "the-network-marketing-playbook-your-step-by-step-guide-to-success",
+      "price": "6.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-Kindle-3D.png",
+      "excerpt": "Uncover the secrets to network marketing success with \"The Network Marketing Playbook: Your Step-by-Step Guide to Success.\" This comp",
+      "amazonUrl": "#",
+      "inStock": true
+    },
+    {
+      "name": "Cómo Hacer Crecer Tu Negocio de Marketing en Red Utilizando Inteligencia Artificial",
+      "slug": "cmo-hacer-crecer-tu-negocio-de-marketing-en-red-utilizando-inteligencia-artificial",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/MLM-Cover-ES.jpg",
+      "excerpt": "Descubre cómo mejorar tu negocio de marketing en red con IA. Aprende estrategias prácticas para usar la IA y automatizar tareas, generar clientes pote",
+      "amazonUrl": "https://www.amazon.com/dp/B0C9SDDNZG",
+      "inStock": true
+    },
+    {
+      "name": "The 2024-2025 Beginner’s Guide to AI in Affiliate & Network Marketing",
+      "slug": "the-2024-2025-beginners-guide-to-ai-in-affiliate-network-marketing",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Paperback-Cover-Image.png",
+      "excerpt": "Discover how to harness artificial intelligence to elevate your affiliate and network marketing. Learn practical strategies for automating tasks, grow",
+      "amazonUrl": "https://www.amazon.com/dp/B0DJXXBRQC",
+      "inStock": true
+    },
+    {
+      "name": "Stop Sabotaging Your Best Life - The Art of Mastering Fear and Uncertainty",
+      "slug": "stop-sabotaging-your-best-life-the-art-of-mastering-fear-and-uncertainty",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Stop-Sabotaging.jpg",
+      "excerpt": "Overcome fear, self-doubt, and self-sabotage to live your best life. In Stop Sabotaging Your Best Life, Stephen Scott provides actionable str",
+      "amazonUrl": "https://www.amazon.com/dp/1980977852",
+      "inStock": true
+    },
+    {
+      "name": "Breaking Through: Overcoming Deep-Seated Barriers to Achieve Authentic Success",
+      "slug": "breaking-through-overcoming-deep-seated-barriers-to-achieve-authentic-success",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Breaking-through-Dark.jpg",
+      "excerpt": "Uncover the keys to breaking through internal barriers and achieving true success with Stephen Scott’s powerful guide. Learn to overcome self-sabotage",
+      "amazonUrl": "https://www.amazon.com/dp/B0DJJNXLR9",
+      "inStock": true
+    },
+    {
+      "name": "Divine Conversations: Six Spiritual Leaders and Everyday Voices on Global Challenges",
+      "slug": "divine-conversations-six-spiritual-leaders-and-everyday-voices-on-global-challenges",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Divine-Conversations.jpg",
+      "excerpt": "Explore profound discussions on faith, unity, and global challenges in Divine Conversations. Six spiritual leaders engage in dialogue on topi",
+      "amazonUrl": "https://www.amazon.com/dp/B0DKJGMFDR",
+      "inStock": true
+    },
+    {
+      "name": "Thrive Within: The Journey to Overcome Obstacles and Experience Lasting Fulfillment",
+      "slug": "thrive-within-the-journey-to-overcome-obstacles-and-experience-lasting-fulfillment",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/Thrive-Within.jpg",
+      "excerpt": "Unlock lasting fulfillment by overcoming personal obstacles and embracing resilience. In Thrive Within, Stephen Scott offers a journey to sel",
+      "amazonUrl": "https://www.amazon.com/dp/B0DKP5P3FK",
+      "inStock": true
+    },
+    {
+      "name": "The Stoic King of New York: The Rise of Marcus Aurelius - COMING SOON!",
+      "slug": "the-stoic-king-of-new-york-the-rise-of-marcus-aurelius-coming-soon",
+      "price": "0.00",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/11/The-Rise-of-Marcus-Aurelius.jpg",
+      "excerpt": "A gripping tale of power, loyalty, and philosophy, The Stoic King of New York follows Marcus Aurelius Aurelio’s rise in 1980s Brooklyn’s Mafi",
+      "amazonUrl": "#",
+      "inStock": false
+    },
+    {
+      "name": "AI - Your Gateway to a Better Life",
+      "slug": "ai-your-gateway-to-a-better-life",
+      "price": "12.95",
+      "image": "https://www.stephenscott.us/wp-content/uploads/2024/12/AI-Your-Gateway-to-a-Bbetter-Life-Cover-v6.png",
+      "excerpt": "Unlock a world of possibilities with AI! Learn how artificial intelligence can simplify your life, work, and relationships. Discover practical applica",
+      "amazonUrl": "https://www.amazon.com/dp/B0DRYPBD9N",
+      "inStock": true
+    }
+  ]
+}
