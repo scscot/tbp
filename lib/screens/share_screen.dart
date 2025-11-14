@@ -245,58 +245,58 @@ class _ShareScreenState extends State<ShareScreen>
       'general_invitation': {
         'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
         'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
-        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Before You Join - Guided by AI',
+        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Your Team Before Joining $_bizOppName',
         'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'You\'re invited to try a smarter way to start.\n\nWith Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\nHere\'s how it helps:\n- Drafts personalized messages\n- Schedules follow-ups automatically\n- Tracks momentum and next steps\n\nSo Day 1 isn\'t a cold start - it\'s a running start.\n\nTake a look: $_prospectReferralLink'),
+            'Thinking about $_bizOppName? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track who\'s interested and ready\n- Build real momentum risk-free\n\nSo when you do join $_bizOppName, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: $_prospectReferralLink\n\nDay 1 isn\'t a cold start. It\'s a running start.'),
       },
       'past_struggles': {
         'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
         'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
-        'subject': context.l10n?.shareProspectPastStrugglesSubject ?? 'A Smarter Way to Start This Time',
+        'subject': context.l10n?.shareProspectPastStrugglesSubject ?? 'Try $_bizOppName Differently This Time',
         'message': (context.l10n?.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'If past attempts left you stuck at zero with no momentum, here\'s a smarter path.\n\nTeam Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you even join.\n\nIt drafts your messages, times your follow-ups, and tracks who\'s interested - so you don\'t start from scratch this time. You launch with people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: $_prospectReferralLink\n\nYou deserve a real shot this time.'),
+            'Been burned before in direct sales? Past attempts at $_bizOppName or similar businesses left you stuck at zero?\n\nThis time, start smarter.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. The AI Coach drafts your messages, times your follow-ups, and tracks who\'s interested.\n\nSo you don\'t start from scratch. You launch with real people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: $_prospectReferralLink\n\nYou deserve a real shot this time.'),
       },
       'not_salesperson': {
         'title': context.l10n?.shareProspectNotSalespersonTitle ?? 'For Non-Sales Minded',
         'description': context.l10n?.shareProspectNotSalespersonDescription ?? 'Great for people who don\'t see themselves as "salespeople"',
-        'subject': context.l10n?.shareProspectNotSalespersonSubject ?? 'You Don\'t Have to Be a "Salesperson"',
+        'subject': context.l10n?.shareProspectNotSalespersonSubject ?? 'Build Your $_bizOppName Team Without Being "Salesy"',
         'message': (context.l10n?.shareProspectNotSalespersonMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Not a "natural salesperson"? That\'s okay. You have an AI Coach.\n\nTeam Build Pro helps you pre-build your $_bizOppName team with AI that drafts your messages, schedules your follow-ups, and tracks everyone\'s interest.\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on relationships. The AI handles the rest.\n\nStart building before you even join: $_prospectReferralLink\n\nYou don\'t need a "sales personality." You need smart tools. Now you have them.'),
+            'Not a "natural salesperson"? Considering $_bizOppName but worried about the recruiting part?\n\nYou don\'t need a sales personality. You just need smart AI tools.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you join - with an AI Coach that:\n\n- Drafts your recruiting messages for you\n- Schedules follow-ups automatically\n- Tracks who\'s interested\n- Coaches every conversation\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on genuine relationships. The AI handles the awkward sales stuff.\n\nStart building before you even join: $_prospectReferralLink'),
       },
       'hope_after_disappointment': {
         'title': context.l10n?.shareProspectHopeAfterDisappointmentTitle ?? 'Hope After Disappointment',
         'description': context.l10n?.shareProspectHopeAfterDisappointmentDescription ?? 'Ideal for prospects burned by previous opportunities',
-        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'A Smarter Way to Start This Time',
+        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'Try $_bizOppName With Real Support This Time',
         'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Been burned before? Promised the world, then left starting from zero?\n\nThis time is different. Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you join.\n\nIt drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches you on next steps. You gain real momentum before Day 1.\n\nNo hype. No empty promises. Just AI-powered tools that work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that actually sets you up to win.'),
+            'Been burned before? Promised the world by $_bizOppName or other opportunities, then left starting from zero?\n\nThis time is different.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. The AI Coach drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches every step.\n\nYou gain real momentum before Day 1. No hype. No empty promises. Just AI-powered tools that actually work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that sets you up to win.'),
       },
       'social_anxiety': {
         'title': context.l10n?.shareProspectSocialAnxietyTitle ?? 'Avoiding Awkward Conversations',
         'description': context.l10n?.shareProspectSocialAnxietyDescription ?? 'Perfect for introverts or those uncomfortable with face-to-face recruiting',
-        'subject': context.l10n?.shareProspectSocialAnxietySubject ?? 'Build Your Team Without Awkward Conversations',
+        'subject': context.l10n?.shareProspectSocialAnxietySubject ?? 'Build Your $_bizOppName Team Without Awkward Conversations',
         'message': (context.l10n?.shareProspectSocialAnxietyMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Uncomfortable approaching friends and family? You don\'t have to.\n\nTeam Build Pro lets you build your $_bizOppName network online first - where it feels comfortable.\n\nThe AI Coach drafts your messages, suggests who to contact, and tracks responses. You build relationships at your own pace, without pressure.\n\nNo cold calls. No awkward pitches. Just genuine connections guided by AI.\n\nStart building on your terms: $_prospectReferralLink\n\nFinally, a way to grow your network that feels natural to you.'),
+            'Considering $_bizOppName but uncomfortable with awkward conversations? You\'re not alone.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - online, at your own pace, where it feels comfortable.\n\nThe AI Coach:\n- Drafts recruiting messages for you\n- Suggests who to contact next\n- Tracks responses and engagement\n- Guides every conversation step-by-step\n\nNo cold calls. No awkward face-to-face pitches. Just genuine online connections guided by AI.\n\nYou build real momentum risk-free. So when you do join $_bizOppName, you\'re launching with people already waiting for you.\n\nStart building on your terms: $_prospectReferralLink'),
       },
       'time_constrained': {
         'title': context.l10n?.shareProspectTimeConstrainedTitle ?? 'For Busy Professionals',
         'description': context.l10n?.shareProspectTimeConstrainedDescription ?? 'Ideal for prospects juggling job, family, and other commitments',
-        'subject': context.l10n?.shareProspectTimeConstrainedSubject ?? 'Build Your Team in the Gaps',
+        'subject': context.l10n?.shareProspectTimeConstrainedSubject ?? 'Build Your $_bizOppName Team in the Gaps',
         'message': (context.l10n?.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro works around your schedule. Build your $_bizOppName team during morning coffee, lunch breaks, or evening downtime.\n\nThe AI handles the heavy lifting:\n- Schedules your follow-ups automatically\n- Reminds you when it\'s time to reach out\n- Tracks everything so you never lose momentum\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSee how it fits your life: $_prospectReferralLink\n\nBuild a real business without sacrificing everything else.'),
+            'Interested in $_bizOppName but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- Drafts recruiting messages for you\n- Schedules follow-ups automatically\n- Reminds you when it\'s time to reach out\n- Tracks everything so momentum never stops\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join $_bizOppName, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: $_prospectReferralLink'),
       },
       'financial_risk_averse': {
         'title': context.l10n?.shareProspectFinancialRiskAverseTitle ?? 'Afraid of Losing Money',
         'description': context.l10n?.shareProspectFinancialRiskAverseDescription ?? 'Great for prospects worried about financial risk',
-        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject ?? 'See Results Before Investing Heavily',
+        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject ?? 'See Results Before Investing in $_bizOppName',
         'message': (context.l10n?.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Worried about losing money? Smart.\n\nWith Team Build Pro, you can pre-build your $_bizOppName team and see real results before investing heavily.\n\nStart for free. Test the system. Track your actual progress in real-time. Only \$4.99/month once you\'re ready to invite your first prospects.\n\nNo expensive lead funnels. No complex systems. Just AI-powered tools that help you build real relationships and real momentum.\n\nSee proof first: $_prospectReferralLink\n\nYou deserve to see what\'s possible before risking anything.'),
+            'Considering $_bizOppName but worried about losing money? Smart.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - so you see real results before investing heavily.\n\nStart for free. Test the AI recruiting system. Track your actual progress in real-time:\n- See who\'s interested in joining your team\n- Watch your momentum build\n- Prove the system works for you\n\nOnly \$4.99/month once you\'re ready to invite prospects. No expensive lead funnels. No complex systems.\n\nWhen you finally join $_bizOppName, you\'re launching with people already waiting - not risking everything on zero momentum.\n\nSee proof first: $_prospectReferralLink'),
       },
       'skeptical_realist': {
         'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',
         'description': context.l10n?.shareProspectSkepticalRealistDescription ?? 'Perfect for prospects burned by false promises',
-        'subject': context.l10n?.shareProspectSkepticalRealistSubject ?? 'No Hype. Just Track Your Real Progress',
+        'subject': context.l10n?.shareProspectSkepticalRealistSubject ?? 'No Hype. Track Your Real $_bizOppName Progress',
         'message': (context.l10n?.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'Tired of empty promises and hype?\n\nTeam Build Pro shows you real metrics. No fluff. No exaggeration.\n\nYour dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI recommends\n\nYou\'ll know exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\nSee the transparency: $_prospectReferralLink\n\nFinally, a system that shows you the truth.'),
+            'Considering $_bizOppName but tired of empty promises and hype?\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - and shows you real metrics every step of the way.\n\nNo fluff. No exaggeration. Your dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI Coach recommends\n\nYou see exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\nWhen you finally do join, you\'re launching with proof - not blind faith.\n\nSee the transparency: $_prospectReferralLink'),
       },
     };
   }
@@ -423,62 +423,62 @@ class _ShareScreenState extends State<ShareScreen>
       'general_team_tool': {
         'title': context.l10n?.sharePartnerGeneralTeamToolTitle ?? 'General Invitation',
         'description': context.l10n?.sharePartnerGeneralTeamToolDescription ?? 'A versatile message for any partner situation',
-        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your Team',
+        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your $_bizOppName Team',
         'message': (context.l10n?.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Want to give your $_bizOppName team a real competitive edge?\n\nTeam Build Pro has AI recruiting built in. It helps your entire team:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement\n- Coach every conversation\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\nCheck it out: $_partnerReferralLink\n\nThis is the AI advantage your team needs.'),
+            'Your $_bizOppName team deserves a real competitive edge.\n\nTeam Build Pro gives your entire $_bizOppName organization AI recruiting tools that actually duplicate:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement in real-time\n- Coach every conversation step-by-step\n\nYour team\'s prospects pre-build their teams BEFORE joining. Your partners duplicate the exact same AI tools. Everyone in your $_bizOppName organization grows faster.\n\nGive your team the AI advantage: $_partnerReferralLink\n\nThis is how modern leaders scale their teams.'),
       },
       'warm_market_exhausted': {
         'title': context.l10n?.sharePartnerWarmMarketExhaustedTitle ?? 'Warm Market Exhausted',
         'description': context.l10n?.sharePartnerWarmMarketExhaustedDescription ?? 'For partners who\'ve tapped out friends and family',
-        'subject': context.l10n?.sharePartnerWarmMarketExhaustedSubject ?? 'Give Your Team an AI Recruiting Companion',
+        'subject': context.l10n?.sharePartnerWarmMarketExhaustedSubject ?? 'Give Your $_bizOppName Team an AI Recruiting Companion',
         'message': (context.l10n?.sharePartnerWarmMarketExhaustedMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Tapped out your warm market? Tired of leads that ghost you?\n\nGive your $_bizOppName team an AI recruiting companion instead.\n\nTeam Build Pro drafts your team\'s recruiting messages, times their follow-ups, tracks prospect interest, and coaches every conversation.\n\nYour prospects pre-build their teams before joining - so they launch with momentum, not from zero.\n\nBest part? Your entire team gets the same AI advantage. True duplication at scale.\n\nSee how: $_partnerReferralLink\n\nStop chasing. Start coaching with AI.'),
+            'Your $_bizOppName team tapped out their warm market? Tired of watching them chase leads that ghost them?\n\nGive your entire $_bizOppName organization an AI recruiting companion.\n\nTeam Build Pro works for every person on your team:\n- Drafts their recruiting messages\n- Times their follow-ups perfectly\n- Tracks prospect interest automatically\n- Coaches every conversation\n\nTheir prospects pre-build teams BEFORE joining - launching with momentum, not from zero.\n\nYour entire $_bizOppName team gets the same AI advantage. True duplication at scale.\n\nEmpower your team: $_partnerReferralLink\n\nStop watching them chase. Start watching them succeed.'),
       },
       'expensive_system_fatigue': {
         'title': context.l10n?.sharePartnerExpensiveSystemFatigueTitle ?? 'System Fatigue & Expense',
         'description': context.l10n?.sharePartnerExpensiveSystemFatigueDescription ?? 'For partners burned out on expensive recruiting methods',
-        'subject': context.l10n?.sharePartnerExpensiveSystemFatigueSubject ?? 'The AI Recruiting System Inside Team Build Pro',
+        'subject': context.l10n?.sharePartnerExpensiveSystemFatigueSubject ?? 'Stop Overpaying. Empower Your $_bizOppName Team with AI',
         'message': (context.l10n?.sharePartnerExpensiveSystemFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Sick of paying for leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro has AI recruiting built right in - no extra cost, no complex setup.\n\nIt drafts recruiting messages, schedules follow-ups, tracks engagement, and coaches your entire $_bizOppName team through every conversation.\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nCheck it out: $_partnerReferralLink\n\nStop overpaying. Start using AI.'),
+            'Your $_bizOppName team burning money on leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro gives your entire $_bizOppName organization AI recruiting tools - built right in. No extra costs. No complex setup.\n\nEvery person on your team gets:\n- AI-drafted recruiting messages\n- Automated follow-up scheduling\n- Real-time engagement tracking\n- Step-by-step conversation coaching\n\nTheir prospects pre-build teams BEFORE joining. Your $_bizOppName team duplicates the exact same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nEmpower your team: $_partnerReferralLink\n\nStop overpaying. Start scaling smart.'),
       },
       'duplication_struggle': {
         'title': context.l10n?.sharePartnerDuplicationStruggleTitle ?? 'Duplication Challenges',
         'description': context.l10n?.sharePartnerDuplicationStruggleDescription ?? 'For leaders struggling to get their team to duplicate',
-        'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'AI-Powered Duplication for Your Entire Team',
+        'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'Finally, Real Duplication for Your $_bizOppName Team',
         'message': (context.l10n?.sharePartnerDuplicationStruggleMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your team struggles to duplicate your recruiting success? Not anymore.\n\nTeam Build Pro gives every person on your $_bizOppName team the same AI recruiting coach.\n\nIt drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\nNew recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\nYour prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\nSee it work: $_partnerReferralLink\n\nFinally, a system your entire team can duplicate.'),
+            'Your $_bizOppName team struggles to duplicate your recruiting success? That ends today.\n\nTeam Build Pro gives every person on your $_bizOppName team the same AI recruiting coach you wish you\'d had:\n- Drafts their recruiting messages\n- Times their follow-ups perfectly\n- Tracks their prospects automatically\n- Coaches their next steps\n\nNew recruit or veteran leader - everyone in your $_bizOppName organization gets identical AI tools. True system duplication.\n\nTheir prospects pre-build teams BEFORE joining. Your team grows faster. Consistently.\n\nEmpower true duplication: $_partnerReferralLink\n\nFinally, your entire team succeeds the same way.'),
       },
       'retention_crisis': {
         'title': context.l10n?.sharePartnerRetentionCrisisTitle ?? 'Team Dropout Problem',
         'description': context.l10n?.sharePartnerRetentionCrisisDescription ?? 'For leaders frustrated by team members quitting early',
-        'subject': context.l10n?.sharePartnerRetentionCrisisSubject ?? 'Stop Losing Your Team in the First Year',
+        'subject': context.l10n?.sharePartnerRetentionCrisisSubject ?? 'Stop Losing Your $_bizOppName Team in the First Year',
         'message': (context.l10n?.sharePartnerRetentionCrisisMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Watching your $_bizOppName team quit before they succeed?\n\n75% drop out in their first year. Usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nGive your team the support they need: $_partnerReferralLink\n\nStop watching them quit. Start watching them succeed.'),
+            'Watching your $_bizOppName team quit before they succeed?\n\n75% drop out in their first year - usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that for your entire $_bizOppName organization. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nYour $_bizOppName team finally has the support they need to succeed.\n\nEmpower your team: $_partnerReferralLink\n\nStop watching them quit. Start watching them win.'),
       },
       'skill_gap_team': {
         'title': context.l10n?.sharePartnerSkillGapTeamTitle ?? 'Non-Sales Team Members',
         'description': context.l10n?.sharePartnerSkillGapTeamDescription ?? 'Perfect for teams where most people lack sales experience',
-        'subject': context.l10n?.sharePartnerSkillGapTeamSubject ?? 'Your Non-Sales Team Can Win with AI',
+        'subject': context.l10n?.sharePartnerSkillGapTeamSubject ?? 'Your Non-Sales $_bizOppName Team Can Win with AI',
         'message': (context.l10n?.sharePartnerSkillGapTeamMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been the problem.\n\nTeam Build Pro solves it. The AI Coach turns non-sales people into confident recruiters by:\n- Drafting their recruiting messages for them\n- Suggesting exactly who to contact next\n- Coaching them through every conversation\n- Tracking progress so they see real momentum\n\nYour introverts, your part-timers, your "I\'m not good at sales" people - they all get the same AI advantage.\n\nFinally, everyone can duplicate your success.\n\nSee how: $_partnerReferralLink\n\nYou don\'t need a team of salespeople. You need a team with AI.'),
+            'Most of your $_bizOppName team aren\'t natural salespeople. That\'s been holding them back.\n\nTeam Build Pro turns your non-sales $_bizOppName partners into confident recruiters:\n- Drafts their recruiting messages for them\n- Suggests exactly who to contact next\n- Coaches them through every conversation\n- Tracks progress so they see real momentum\n\nYour introverts, your part-timers, your "I\'m not good at sales" people - everyone in your $_bizOppName organization gets the same AI advantage.\n\nFinally, your entire team can duplicate your success.\n\nEmpower everyone: $_partnerReferralLink\n\nYou don\'t need a team of salespeople. You need a team with AI.'),
       },
       'recruitment_fatigue': {
         'title': context.l10n?.sharePartnerRecruitmentFatigueTitle ?? 'Tired of Constant Recruiting',
         'description': context.l10n?.sharePartnerRecruitmentFatigueDescription ?? 'For partners exhausted from the endless recruiting cycle',
-        'subject': context.l10n?.sharePartnerRecruitmentFatigueSubject ?? 'Automate the Grind. Keep the Growth.',
+        'subject': context.l10n?.sharePartnerRecruitmentFatigueSubject ?? 'Automate the Grind. Grow Your $_bizOppName Team.',
         'message': (context.l10n?.sharePartnerRecruitmentFatigueMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind so you don\'t have to.\n\nFor your entire $_bizOppName team, the AI:\n- Schedules follow-ups automatically\n- Tracks every prospect and their status\n- Reminds your team when to reach out\n- Coaches them on what to say next\n\nYou stay focused on high-value activities. Your team stays productive without burning out.\n\nThe AI never gets tired. Your momentum never stops.\n\nTry it: $_partnerReferralLink\n\nSustainable growth without the burnout.'),
+            'Your $_bizOppName team burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind for your entire $_bizOppName organization.\n\nFor every person on your team, the AI:\n- Schedules follow-ups automatically\n- Tracks every prospect and their status\n- Reminds them when to reach out\n- Coaches them on what to say next\n\nYou stay focused on leadership. Your $_bizOppName team stays productive without burning out.\n\nThe AI never gets tired. Your team\'s momentum never stops.\n\nEmpower sustainable growth: $_partnerReferralLink\n\nGrowth without the burnout. Finally.'),
       },
       'availability_gap': {
         'title': context.l10n?.sharePartnerAvailabilityGapTitle ?? 'Can\'t Be There 24/7',
         'description': context.l10n?.sharePartnerAvailabilityGapDescription ?? 'Ideal for leaders who can\'t be constantly available to their team',
-        'subject': context.l10n?.sharePartnerAvailabilityGapSubject ?? 'Your Team Grows Even When You\'re Not There',
+        'subject': context.l10n?.sharePartnerAvailabilityGapSubject ?? 'Your $_bizOppName Team Grows Even When You\'re Not There',
         'message': (context.l10n?.sharePartnerAvailabilityGapMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your team an AI Coach that\'s always on. While you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their "what do I do next?" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\n'
-            'Your team gets the support they need, exactly when they need it.\n\n'
+            'Your $_bizOppName team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your entire $_bizOppName organization an AI Coach that\'s always on.\n\nWhile you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their "what do I do next?" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\n'
+            'Your $_bizOppName team gets support exactly when they need it - not just when you\'re available.\n\n'
             'You stay focused on leadership. The AI handles daily coaching.\n\n'
-            'See it work: $_partnerReferralLink\n\n'
-            'Finally, a team that grows without needing you every minute.'),
+            'Empower your team: $_partnerReferralLink\n\n'
+            'Finally, your team grows without needing you every minute.'),
       },
     };
   }
