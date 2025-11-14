@@ -35,7 +35,7 @@ class _ShareScreenState extends State<ShareScreen>
   late Animation<double> _fadeAnimation;
   bool _showProspectMessages = false;
   bool _showPartnerMessages = false;
-  Map<String, String?> _selectedLanguages = {}; // Track selected language per message
+  final Map<String, String?> _selectedLanguages = {}; // Track selected language per message
 
   @override
   void initState() {
