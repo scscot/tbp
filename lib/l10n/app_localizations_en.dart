@@ -2402,7 +2402,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerGeneralTeamToolTitle => 'General Team Tool';
+  String get sharePartnerGeneralTeamToolTitle => 'General Invitation';
 
   @override
   String get sharePartnerGeneralTeamToolDescription =>

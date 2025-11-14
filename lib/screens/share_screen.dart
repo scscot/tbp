@@ -4,12 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../widgets/localized_text.dart';
+import '../l10n/app_localizations.dart';
 
 class ShareScreen extends StatefulWidget {
   final String appId;
@@ -34,6 +35,7 @@ class _ShareScreenState extends State<ShareScreen>
   late Animation<double> _fadeAnimation;
   bool _showProspectMessages = false;
   bool _showPartnerMessages = false;
+  Map<String, String?> _selectedLanguages = {}; // Track selected language per message
 
   @override
   void initState() {
@@ -164,47 +166,39 @@ class _ShareScreenState extends State<ShareScreen>
     required String subject,
     required String body,
   }) async {
+    final text = '$subject\n\n$body';
+
     if (kDebugMode) {
-      debugPrint('📧 SHARE_SCREEN: _composeEmail called');
+      debugPrint('📧 SHARE_SCREEN: _composeEmail → Share.share()');
       debugPrint('📧 Subject: $subject');
       debugPrint('📧 Body length: ${body.length} characters');
-    }
-    
-    // Custom encoding that preserves spaces properly
-    String enc(String s) => Uri.encodeComponent(s).replaceAll('+', '%20');
-
-    final uri = Uri.parse(
-      'mailto:?subject=${enc(subject)}&body=${enc(body)}',
-    );
-
-    if (kDebugMode) {
-      debugPrint('📧 SHARE_SCREEN: Launching email client with URI: ${uri.toString()}');
+      debugPrint('📧 Total text length: ${text.length} characters');
     }
 
-    // Try to launch and check the boolean result
-    final launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    try {
+      final box = context.findRenderObject() as RenderBox?;
+      await Share.share(
+        text,
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+      );
 
-    if (launched) {
-      if (kDebugMode) debugPrint('✅ SHARE_SCREEN: Email client launched successfully');
-      return;
+      if (kDebugMode) {
+        debugPrint('✅ SHARE_SCREEN: Share.share() completed successfully');
+      }
+    } catch (e, stack) {
+      if (kDebugMode) {
+        debugPrint('❌ SHARE_SCREEN: Share.share() error: $e');
+        debugPrint(stack.toString());
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to open share sheet: $e'),
+        ),
+      );
     }
-
-    // If we get here, the system couldn't open mailto:
-    if (kDebugMode) {
-      debugPrint('❌ SHARE_SCREEN: Failed to open $uri (no handler / simulator / not configured)');
-    }
-
-    // Fallback: show message and/or share sheet
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('No email app available. Try sharing with Messages or copy link.'),
-      ),
-    );
   }
+
 
   // Check if sharing is enabled via Firebase Remote Config
   bool _isSharingEnabled() {
@@ -248,6 +242,13 @@ class _ShareScreenState extends State<ShareScreen>
 
   Map<String, Map<String, String>> _getProspectMessages(BuildContext context) {
     return {
+      'general_invitation': {
+        'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
+        'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
+        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Before You Join - Guided by AI',
+        'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
+            'You\'re invited to try a smarter way to start.\n\nWith Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\nHere\'s how it helps:\n- Drafts personalized messages\n- Schedules follow-ups automatically\n- Tracks momentum and next steps\n\nSo Day 1 isn\'t a cold start - it\'s a running start.\n\nTake a look: $_prospectReferralLink'),
+      },
       'past_struggles': {
         'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
         'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
@@ -268,13 +269,6 @@ class _ShareScreenState extends State<ShareScreen>
         'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'A Smarter Way to Start This Time',
         'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Been burned before? Promised the world, then left starting from zero?\n\nThis time is different. Team Build Pro\'s AI Coach helps you pre-build your $_bizOppName team before you join.\n\nIt drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches you on next steps. You gain real momentum before Day 1.\n\nNo hype. No empty promises. Just AI-powered tools that work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that actually sets you up to win.'),
-      },
-      'general_invitation': {
-        'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
-        'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
-        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Before You Join - Guided by AI',
-        'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'You\'re invited to try a smarter way to start.\n\nWith Team Build Pro, an AI Coach helps you pre-build your $_bizOppName team before you officially join.\n\nHere\'s how it helps:\n- Drafts personalized messages\n- Schedules follow-ups automatically\n- Tracks momentum and next steps\n\nSo Day 1 isn\'t a cold start - it\'s a running start.\n\nTake a look: $_prospectReferralLink'),
       },
       'social_anxiety': {
         'title': context.l10n?.shareProspectSocialAnxietyTitle ?? 'Avoiding Awkward Conversations',
@@ -307,7 +301,60 @@ class _ShareScreenState extends State<ShareScreen>
     };
   }
 
-  void _shareProspectMessage(BuildContext context, String messageKey) {
+  Map<String, Map<String, String>> _getProspectMessagesForL10n(AppLocalizations l10n) {
+    return {
+      'general_invitation': {
+        'title': l10n.shareProspectGeneralInvitationTitle,
+        'description': l10n.shareProspectGeneralInvitationDescription,
+        'subject': l10n.shareProspectGeneralInvitationSubject,
+        'message': l10n.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'past_struggles': {
+        'title': l10n.shareProspectPastStrugglesTitle,
+        'description': l10n.shareProspectPastStrugglesDescription,
+        'subject': l10n.shareProspectPastStrugglesSubject,
+        'message': l10n.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'not_salesperson': {
+        'title': l10n.shareProspectNotSalespersonTitle,
+        'description': l10n.shareProspectNotSalespersonDescription,
+        'subject': l10n.shareProspectNotSalespersonSubject,
+        'message': l10n.shareProspectNotSalespersonMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'hope_after_disappointment': {
+        'title': l10n.shareProspectHopeAfterDisappointmentTitle,
+        'description': l10n.shareProspectHopeAfterDisappointmentDescription,
+        'subject': l10n.shareProspectHopeAfterDisappointmentSubject,
+        'message': l10n.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'social_anxiety': {
+        'title': l10n.shareProspectSocialAnxietyTitle,
+        'description': l10n.shareProspectSocialAnxietyDescription,
+        'subject': l10n.shareProspectSocialAnxietySubject,
+        'message': l10n.shareProspectSocialAnxietyMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'time_constrained': {
+        'title': l10n.shareProspectTimeConstrainedTitle,
+        'description': l10n.shareProspectTimeConstrainedDescription,
+        'subject': l10n.shareProspectTimeConstrainedSubject,
+        'message': l10n.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'financial_risk_averse': {
+        'title': l10n.shareProspectFinancialRiskAverseTitle,
+        'description': l10n.shareProspectFinancialRiskAverseDescription,
+        'subject': l10n.shareProspectFinancialRiskAverseSubject,
+        'message': l10n.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+      'skeptical_realist': {
+        'title': l10n.shareProspectSkepticalRealistTitle,
+        'description': l10n.shareProspectSkepticalRealistDescription,
+        'subject': l10n.shareProspectSkepticalRealistSubject,
+        'message': l10n.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? ''),
+      },
+    };
+  }
+
+  Future<void> _shareProspectMessage(BuildContext context, String messageKey) async {
     if (kDebugMode) {
       debugPrint('🚀 SHARE_SCREEN: _shareProspectMessage called with key: $messageKey');
     }
@@ -322,24 +369,46 @@ class _ShareScreenState extends State<ShareScreen>
     }
 
     if (_prospectReferralLink != null) {
-      final messages = _getProspectMessages(context);
-      final selectedMessage = messages[messageKey];
-      
-      if (selectedMessage != null) {
-        final targetedLink = _buildTargetedLink(messageKey, false);
-        final messageBody = selectedMessage['message']!.replaceAll(_prospectReferralLink!, targetedLink);
-        
-        if (kDebugMode) {
-          debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+      final selectedLanguage = _selectedLanguages[messageKey];
+
+      if (selectedLanguage != null && selectedLanguage != Localizations.localeOf(context).languageCode) {
+        final l10n = await _getLocalizationForLanguage(selectedLanguage);
+        final messages = _getProspectMessagesForL10n(l10n);
+        final selectedMessage = messages[messageKey];
+
+        if (selectedMessage != null) {
+          final targetedLink = _buildTargetedLink(messageKey, false);
+          final messageBody = selectedMessage['message']!.replaceAll(_prospectReferralLink!, targetedLink);
+
+          if (kDebugMode) {
+            debugPrint('📧 SHARE_SCREEN: Composing email (lang: $selectedLanguage) with targeted link: $targetedLink');
+          }
+
+          _composeEmail(
+            subject: selectedMessage['subject']!,
+            body: messageBody,
+          );
         }
-        
-        _composeEmail(
-          subject: selectedMessage['subject']!,
-          body: messageBody,
-        );
       } else {
-        if (kDebugMode) {
-          debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+        final messages = _getProspectMessages(context);
+        final selectedMessage = messages[messageKey];
+
+        if (selectedMessage != null) {
+          final targetedLink = _buildTargetedLink(messageKey, false);
+          final messageBody = selectedMessage['message']!.replaceAll(_prospectReferralLink!, targetedLink);
+
+          if (kDebugMode) {
+            debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+          }
+
+          _composeEmail(
+            subject: selectedMessage['subject']!,
+            body: messageBody,
+          );
+        } else {
+          if (kDebugMode) {
+            debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+          }
         }
       }
     } else {
@@ -351,6 +420,13 @@ class _ShareScreenState extends State<ShareScreen>
 
   Map<String, Map<String, String>> _getPartnerMessages(BuildContext context) {
     return {
+      'general_team_tool': {
+        'title': context.l10n?.sharePartnerGeneralTeamToolTitle ?? 'General Invitation',
+        'description': context.l10n?.sharePartnerGeneralTeamToolDescription ?? 'A versatile message for any partner situation',
+        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your Team',
+        'message': (context.l10n?.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? '') ??
+            'Want to give your $_bizOppName team a real competitive edge?\n\nTeam Build Pro has AI recruiting built in. It helps your entire team:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement\n- Coach every conversation\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\nCheck it out: $_partnerReferralLink\n\nThis is the AI advantage your team needs.'),
+      },
       'warm_market_exhausted': {
         'title': context.l10n?.sharePartnerWarmMarketExhaustedTitle ?? 'Warm Market Exhausted',
         'description': context.l10n?.sharePartnerWarmMarketExhaustedDescription ?? 'For partners who\'ve tapped out friends and family',
@@ -371,13 +447,6 @@ class _ShareScreenState extends State<ShareScreen>
         'subject': context.l10n?.sharePartnerDuplicationStruggleSubject ?? 'AI-Powered Duplication for Your Entire Team',
         'message': (context.l10n?.sharePartnerDuplicationStruggleMessage(_bizOppName, _partnerReferralLink ?? '') ??
             'Your team struggles to duplicate your recruiting success? Not anymore.\n\nTeam Build Pro gives every person on your $_bizOppName team the same AI recruiting coach.\n\nIt drafts their messages. Times their follow-ups. Tracks their prospects. Coaches their next steps.\n\nNew recruit or veteran leader - everyone gets the same AI advantage. True system duplication.\n\nYour prospects pre-build teams before joining. Your team grows faster using identical AI tools.\n\nSee it work: $_partnerReferralLink\n\nFinally, a system your entire team can duplicate.'),
-      },
-      'general_team_tool': {
-        'title': context.l10n?.sharePartnerGeneralTeamToolTitle ?? 'General Team Tool',
-        'description': context.l10n?.sharePartnerGeneralTeamToolDescription ?? 'A versatile message for any partner situation',
-        'subject': context.l10n?.sharePartnerGeneralTeamToolSubject ?? 'The AI Recruiting Advantage for Your Team',
-        'message': (context.l10n?.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? '') ??
-            'Want to give your $_bizOppName team a real competitive edge?\n\nTeam Build Pro has AI recruiting built in. It helps your entire team:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement\n- Coach every conversation\n\nYour prospects pre-build their teams before joining. Your team duplicates the same AI tools. Everyone grows faster.\n\nCheck it out: $_partnerReferralLink\n\nThis is the AI advantage your team needs.'),
       },
       'retention_crisis': {
         'title': context.l10n?.sharePartnerRetentionCrisisTitle ?? 'Team Dropout Problem',
@@ -414,7 +483,65 @@ class _ShareScreenState extends State<ShareScreen>
     };
   }
 
-  void _sharePartnerMessage(BuildContext context, String messageKey) {
+  Map<String, Map<String, String>> _getPartnerMessagesForL10n(AppLocalizations l10n) {
+    return {
+      'general_team_tool': {
+        'title': l10n.sharePartnerGeneralTeamToolTitle,
+        'description': l10n.sharePartnerGeneralTeamToolDescription,
+        'subject': l10n.sharePartnerGeneralTeamToolSubject,
+        'message': l10n.sharePartnerGeneralTeamToolMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'warm_market_exhausted': {
+        'title': l10n.sharePartnerWarmMarketExhaustedTitle,
+        'description': l10n.sharePartnerWarmMarketExhaustedDescription,
+        'subject': l10n.sharePartnerWarmMarketExhaustedSubject,
+        'message': l10n.sharePartnerWarmMarketExhaustedMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'expensive_system_fatigue': {
+        'title': l10n.sharePartnerExpensiveSystemFatigueTitle,
+        'description': l10n.sharePartnerExpensiveSystemFatigueDescription,
+        'subject': l10n.sharePartnerExpensiveSystemFatigueSubject,
+        'message': l10n.sharePartnerExpensiveSystemFatigueMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'duplication_struggle': {
+        'title': l10n.sharePartnerDuplicationStruggleTitle,
+        'description': l10n.sharePartnerDuplicationStruggleDescription,
+        'subject': l10n.sharePartnerDuplicationStruggleSubject,
+        'message': l10n.sharePartnerDuplicationStruggleMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'retention_crisis': {
+        'title': l10n.sharePartnerRetentionCrisisTitle,
+        'description': l10n.sharePartnerRetentionCrisisDescription,
+        'subject': l10n.sharePartnerRetentionCrisisSubject,
+        'message': l10n.sharePartnerRetentionCrisisMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'skill_gap_team': {
+        'title': l10n.sharePartnerSkillGapTeamTitle,
+        'description': l10n.sharePartnerSkillGapTeamDescription,
+        'subject': l10n.sharePartnerSkillGapTeamSubject,
+        'message': l10n.sharePartnerSkillGapTeamMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'recruitment_fatigue': {
+        'title': l10n.sharePartnerRecruitmentFatigueTitle,
+        'description': l10n.sharePartnerRecruitmentFatigueDescription,
+        'subject': l10n.sharePartnerRecruitmentFatigueSubject,
+        'message': l10n.sharePartnerRecruitmentFatigueMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+      'availability_gap': {
+        'title': l10n.sharePartnerAvailabilityGapTitle,
+        'description': l10n.sharePartnerAvailabilityGapDescription,
+        'subject': l10n.sharePartnerAvailabilityGapSubject,
+        'message': l10n.sharePartnerAvailabilityGapMessage(_bizOppName, _partnerReferralLink ?? ''),
+      },
+    };
+  }
+
+  Future<AppLocalizations> _getLocalizationForLanguage(String languageCode) async {
+    final locale = Locale(languageCode);
+    return await AppLocalizations.delegate.load(locale);
+  }
+
+  Future<void> _sharePartnerMessage(BuildContext context, String messageKey) async {
     if (kDebugMode) {
       debugPrint('🚀 SHARE_SCREEN: _sharePartnerMessage called with key: $messageKey');
     }
@@ -429,24 +556,46 @@ class _ShareScreenState extends State<ShareScreen>
     }
 
     if (_partnerReferralLink != null) {
-      final messages = _getPartnerMessages(context);
-      final selectedMessage = messages[messageKey];
-      
-      if (selectedMessage != null) {
-        final targetedLink = _buildTargetedLink(messageKey, true);
-        final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
-        
-        if (kDebugMode) {
-          debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+      final selectedLanguage = _selectedLanguages[messageKey];
+
+      if (selectedLanguage != null && selectedLanguage != Localizations.localeOf(context).languageCode) {
+        final l10n = await _getLocalizationForLanguage(selectedLanguage);
+        final messages = _getPartnerMessagesForL10n(l10n);
+        final selectedMessage = messages[messageKey];
+
+        if (selectedMessage != null) {
+          final targetedLink = _buildTargetedLink(messageKey, true);
+          final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+
+          if (kDebugMode) {
+            debugPrint('📧 SHARE_SCREEN: Composing email (lang: $selectedLanguage) with targeted link: $targetedLink');
+          }
+
+          _composeEmail(
+            subject: selectedMessage['subject']!,
+            body: messageBody,
+          );
         }
-        
-        _composeEmail(
-          subject: selectedMessage['subject']!,
-          body: messageBody,
-        );
       } else {
-        if (kDebugMode) {
-          debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+        final messages = _getPartnerMessages(context);
+        final selectedMessage = messages[messageKey];
+
+        if (selectedMessage != null) {
+          final targetedLink = _buildTargetedLink(messageKey, true);
+          final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+
+          if (kDebugMode) {
+            debugPrint('📧 SHARE_SCREEN: Composing email with targeted link: $targetedLink');
+          }
+
+          _composeEmail(
+            subject: selectedMessage['subject']!,
+            body: messageBody,
+          );
+        } else {
+          if (kDebugMode) {
+            debugPrint('❌ SHARE_SCREEN: No message found for key: $messageKey');
+          }
         }
       }
     } else {
@@ -734,6 +883,17 @@ class _ShareScreenState extends State<ShareScreen>
             ],
           ),
           const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildLanguageButton(messageKey, 'en', '🇺🇸', 'English'),
+              _buildLanguageButton(messageKey, 'es', '🇪🇸', 'Español'),
+              _buildLanguageButton(messageKey, 'pt', '🇵🇹', 'Português'),
+              _buildLanguageButton(messageKey, 'de', '🇩🇪', 'Deutsch'),
+            ],
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -773,6 +933,44 @@ class _ShareScreenState extends State<ShareScreen>
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLanguageButton(String messageKey, String languageCode, String flag, String label) {
+    final isSelected = _selectedLanguages[messageKey] == languageCode;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedLanguages[messageKey] = languageCode;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue.shade50 : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: isSelected ? Colors.blue : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(flag, style: const TextStyle(fontSize: 16)),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isSelected ? Colors.blue : Colors.grey.shade700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2456,7 +2456,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerGeneralTeamToolTitle => 'Allgemeines Team-Tool';
+  String get sharePartnerGeneralTeamToolTitle => 'Allgemeine Einladung';
 
   @override
   String get sharePartnerGeneralTeamToolDescription =>

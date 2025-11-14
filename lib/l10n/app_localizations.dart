@@ -4162,7 +4162,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerGeneralTeamToolTitle.
   ///
   /// In en, this message translates to:
-  /// **'General Team Tool'**
+  /// **'General Invitation'**
   String get sharePartnerGeneralTeamToolTitle;
 
   /// No description provided for @sharePartnerGeneralTeamToolDescription.

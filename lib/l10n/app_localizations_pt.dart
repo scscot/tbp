@@ -2427,7 +2427,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get sharePartnerGeneralTeamToolTitle => 'Ferramenta Geral de Equipe';
+  String get sharePartnerGeneralTeamToolTitle => 'Convite Geral';
 
   @override
   String get sharePartnerGeneralTeamToolDescription =>
