@@ -148,8 +148,85 @@
                     "source": "/product/:slug",
                     "destination": "/books/:slug",
                     "type": 301
+                },
+                {
+                    "source": "/books/how-to-grow-your-network-marketing-business-using-artificial-intelligence-ai",
+                    "destination": "/books/how-to-grow-your-network-marketing-business-using-ai",
+                    "type": 301
+                },
+                {
+                    "source": "/books/breaking-through-overcoming-deep-seated-barriers-to-achieve-authentic-success",
+                    "destination": "/books/breaking-through-barriers",
+                    "type": 301
+                },
+                {
+                    "source": "/books/cmo-hacer-crecer-tu-negocio-de-marketing-en-red-utilizando-inteligencia-artificial",
+                    "destination": "/books/mlm-ai-espanol",
+                    "type": 301
+                },
+                {
+                    "source": "/books/como-expandir-seu-negcio-de-marketing-de-rede-usando-inteligncia-artificial-ia",
+                    "destination": "/books/mlm-ai-portugues",
+                    "type": 301
+                },
+                {
+                    "source": "/books/divine-conversations-six-spiritual-leaders-and-everyday-voices-on-global-challenges",
+                    "destination": "/books/divine-conversations",
+                    "type": 301
+                },
+                {
+                    "source": "/books/stop-sabotaging-your-best-life-the-art-of-mastering-fear-and-uncertainty",
+                    "destination": "/books/stop-sabotaging-your-life",
+                    "type": 301
+                },
+                {
+                    "source": "/books/the-2024-2025-beginners-guide-to-ai-in-affiliate-network-marketing",
+                    "destination": "/books/ai-beginners-guide-2024-2025",
+                    "type": 301
+                },
+                {
+                    "source": "/books/thrive-within-the-journey-to-overcome-obstacles-and-experience-lasting-fulfillment",
+                    "destination": "/books/thrive-within",
+                    "type": 301
+                },
+                {
+                    "source": "/books/wie-sie-ihr-network-marketing-business-mit-ki-ausbauen-knnen",
+                    "destination": "/books/mlm-ai-german",
+                    "type": 301
                 }
             ],
+            "headers": [
+                {
+                    "source": "**/*.@(html|htm)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "no-cache, no-store, must-revalidate"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff|woff2|ttf|eot)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "max-age=31536000"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "target": "tbpproject",
+            "public": "tbp-project/public",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "cleanUrls": true,
+            "trailingSlash": false,
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",

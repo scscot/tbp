@@ -175,6 +175,7 @@ const { setup_faq } = require('./setup_faq');
 // ==============================
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
+const { submitStephenScottContact } = require('./submitStephenScottContact');
 // const { addToInternalTesting } = require('./addToInternalTesting'); // Disabled - using CSV approach instead
 const { addToDemoLeads } = require('./addToDemoLeads');
 const { getDemoCount } = require('./getDemoCount');
@@ -289,6 +290,7 @@ module.exports = {
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,
   submitContactFormHttp,
+  submitStephenScottContact,
 
   // ========== INTERNAL TESTING FUNCTIONS ==========
   // addToInternalTesting, // Disabled - using CSV approach instead
