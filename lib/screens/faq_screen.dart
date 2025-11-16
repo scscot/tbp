@@ -37,7 +37,7 @@ class _FAQScreenState extends State<FAQScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: Text(
           context.l10n?.faqTitle ?? 'Frequently Asked Questions',
           style: const TextStyle(
@@ -47,6 +47,7 @@ class _FAQScreenState extends State<FAQScreen> {
         ),
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textInverse,
+        iconTheme: const IconThemeData(color: AppColors.textInverse),
         elevation: 0,
       ),
       body: Column(

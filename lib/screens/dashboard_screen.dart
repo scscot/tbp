@@ -16,6 +16,10 @@ import 'subscription_screen_enhanced.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
+import 'share_screen.dart';
+import 'network_screen.dart';
+import 'message_center_screen.dart';
+import 'notifications_screen.dart';
 import '../services/review_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../i18n/dashboard_analytics.dart';
@@ -708,7 +712,10 @@ class _DashboardScreenState extends State<DashboardScreen>
               name: DashboardAnalytics.dashCtaTap,
               parameters: {'cta': 'grow_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
             );
-            widget.onTabSelected?.call(2);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ShareScreen(appId: widget.appId)),
+            );
           },
         ),
         _buildActionCard(
@@ -720,7 +727,10 @@ class _DashboardScreenState extends State<DashboardScreen>
               name: DashboardAnalytics.dashCtaTap,
               parameters: {'cta': 'view_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
             );
-            widget.onTabSelected?.call(1);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NetworkScreen(appId: widget.appId)),
+            );
           },
         ),
         _buildActionCard(
@@ -747,7 +757,10 @@ class _DashboardScreenState extends State<DashboardScreen>
               name: DashboardAnalytics.dashCtaTap,
               parameters: {'cta': 'message_center', 'locale': Localizations.localeOf(context).toLanguageTag()},
             );
-            widget.onTabSelected?.call(3);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MessageCenterScreen(appId: widget.appId)),
+            );
           },
         ),
         _buildActionCard(
@@ -756,7 +769,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           color: AppColors.notificationPrimary,
           hasBadge: _unreadNotificationCount > 0,
           badgeCount: _unreadNotificationCount,
-          onTap: () => widget.onTabSelected?.call(4),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NotificationsScreen(appId: widget.appId)),
+            );
+          },
         ),
         _buildActionCard(
           icon: Icons.help_outline,
