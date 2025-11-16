@@ -288,9 +288,9 @@
         </section>
 
         <!-- Benefits Section (Dual Audience) -->
-        <section class="section section-gray" id="benefits">
+        <section class="section section-gray" id="benefits" style="padding-top: 3rem;">
             <div class="container">
-                <h2 id="benefits-main-title" class="reveal-on-scroll" style="text-align: center; margin-bottom: 4rem;">Why Team Build Pro Works for Everyone</h2>
+                <h2 id="benefits-main-title" class="reveal-on-scroll" style="text-align: center; margin-bottom: 2.5rem;">Why Team Build Pro Works for Everyone</h2>
 
                 <!-- Vertical stacked layout for dual audiences -->
                 <div style="max-width: 900px; margin: 0 auto;">
@@ -306,7 +306,7 @@
                                     <div class="feature-icon blue">
                                         <span class="material-symbols-outlined">autorenew</span>
                                     </div>
-                                    <h4 id="benefits-section1-card1-title">Give Prospects a Perpetual Recruiting Engine</h4>
+                                    <h4 id="benefits-section1-card1-title">Provide Them With a Perpetual Recruiting Engine</h4>
                                 </div>
                                 <p id="benefits-section1-card1-text">Not just a pitch—actual AI tools they use before AND after joining. Feeds your organizations growth long after they sign up.</p>
                             </div>
@@ -326,9 +326,9 @@
                                     <div class="feature-icon green">
                                         <span class="material-symbols-outlined">groups</span>
                                     </div>
-                                    <h4>True Duplication: 24/7 AI Coach for Your Entire Downline</h4>
+                                    <h4>True Duplication: 24/7 AI Coach for Their Existing Downline</h4>
                                 </div>
-                                <p>Instant guidance in 4 languages, even when you're offline. Scales your mentorship without scaling your time.</p>
+                                <p>Ture gloabl expansion with instant guidance in 4 languages, even when they're offline. Scale their mentorship without scaling their time.</p>
                             </div>
 
                             <div class="feature-card reveal-on-scroll" style="padding: 1.5rem;">
@@ -366,7 +366,7 @@
                                     </div>
                                     <h4>16 Pre-Written Messages Eliminate "What Do I Say?"</h4>
                                 </div>
-                                <p>8 messages for prospects + 8 for existing partners. Handle skepticism, social anxiety, time constraints—all covered.</p>
+                                <p id="messages-description">With one-click they can send effective and targeted recruiting messages. Handle skepticism, social anxiety, time constraints—all covered.</p>
                             </div>
 
                             <div class="feature-card reveal-on-scroll" style="padding: 1.5rem;">
@@ -386,7 +386,7 @@
                                     </div>
                                     <h4>24/7 AI Coach Guides Every Decision</h4>
                                 </div>
-                                <p>Who to contact, what to say, when to follow up. Available in English, Spanish, Portuguese, German.</p>
+                                <p id="ai-coach-description">They have access to their own private AI coach who helps them with who to contact, what to say, when to follow up, and much more. Available in English, Spanish, Portuguese, German.</p>
                             </div>
                         </div>
                     </div>
@@ -1851,18 +1851,18 @@
 
             } else if (hasRef) {
                 // Scenario 2: ?ref= parameter (Professional view)
-                updateElement('benefits-main-title', 'Why Your Prospects Will Love Team Build Pro');
+                updateElement('benefits-main-title', 'Help Current and Potential Team Members');
 
                 // Section 1: For Direct Sales Professionals
-                updateElement('benefits-section1-title', 'For Direct Sales Professionals');
-                updateElement('benefits-section1-subtitle', `Empower Your Prospects to Build Teams Before Joining ${oppName}`);
+                updateElement('benefits-section1-title', `For Your ${oppName} Downline`);
+                updateElement('benefits-section1-subtitle', `Empower Them with Tools to Help Them Recruit Better and Build Faster`);
                 updateElement('benefits-section1-card2-title', 'Recruit Potential Leaders and Help Them Build Momentum');
-                updateElement('benefits-section1-card2-text', `Your prospects hit recruiting milestones before joining ${oppName}. They bring proven skills and momentum, not just hope.`);
+                updateElement('benefits-section1-card2-text', `They create momentum in their own ${oppName} downline by offering recruiting prospects a proven, AI-Driven system, not just hope.`);
                 updateElement('benefits-section1-card3-text', `Offer something truly unique: an AI system that works with ${oppName}. Turn skeptical prospects into confident builders.`);
 
                 // Section 2: For Recruiting Prospects
-                updateElement('benefits-section2-title', 'For Recruiting Prospects');
-                updateElement('benefits-section2-subtitle', `Build Confidence Before They Commit`);
+                updateElement('benefits-section2-title', 'For Your Recruiting Prospects');
+                updateElement('benefits-section2-subtitle', `Help Them Build Confidence Before They Commit`);
                 updateElement('benefits-section2-card1-title', `Pre-Build Their Team Before Joining ${oppName}`);
                 updateElement('benefits-section2-card1-text', `Help them start recruiting now, join ${oppName} later with momentum already built. They can test their recruiting ability risk-free.`);
                 updateElement('benefits-section2-card3-title', `Start Day 1 in ${oppName} with Momentum, Not From Zero`);
@@ -2301,7 +2301,7 @@
                 // Meta description - cached for reuse across subheadline and SEO tags (~150 chars for SERP snippets)
                 const descText = `${referrerFullName} from ${bizOppName} recommends Team Build Pro — the AI recruiting coach that helps you pre-build your team before you join.`;
 
-                heroHeadline = 'Build Your Team Before You Join — AI Coach Guides You Every Step';
+                heroHeadline = `Build Your <span style="color: #fbbf24;">${bizOppName}</span> Team Before You Join — AI Coach Guides You Every Step`;
                 heroSubheadline = descText;
                 trialNote = 'Start free for 30 days · $4.99/mo after · Cancel anytime';
 
@@ -2325,6 +2325,17 @@
                 ensureMeta('meta[name="twitter:description"]', { name: 'twitter:description' })
                     .setAttribute('content', descText);
 
+                // Update messages description for prospect view
+                const messagesDesc = document.getElementById('messages-description');
+                if (messagesDesc) {
+                    messagesDesc.textContent = 'With one-click you can send effective and targeted recruiting messages. Handle skepticism, social anxiety, time constraints—all covered.';
+                }
+
+                // Update AI coach description for prospect view
+                const aiCoachDesc = document.getElementById('ai-coach-description');
+                if (aiCoachDesc) {
+                    aiCoachDesc.textContent = 'You have access to your own private AI coach who helps you with who to contact, what to say, when to follow up, and much more. Available in English, Spanish, Portuguese, German.';
+                }
 
             } else if (referralInfo && referralInfo.type === 'partner' && userData) {
                 // PARTNER VIEW – Arrived via ?ref= link (already in downline)

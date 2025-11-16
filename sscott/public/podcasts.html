@@ -13,21 +13,155 @@
     gtag('config', 'G-CSBMH9D41J');
   </script>
 
-  <title>Podcasts & Interviews | Stephen Scott on AI & Network Marketing</title>
-  <meta name="description" content="Listen to Stephen Scott discuss artificial intelligence, network marketing, personal growth, and technology entrepreneurship on podcasts and interviews. Expert insights on AI implementation for direct sales professionals.">
+  <title>Podcasts & Audiobook Series | Stephen Scott on AI, Spirituality & Personal Growth</title>
+  <meta name="description" content="Listen to Stephen Scott's audiobook podcast series with hosts Mike and Wendy. Deep dives into AI in network marketing, interfaith dialogue, and personal transformation. 35 episodes across 3 series.">
 
   <link rel="canonical" href="https://www.stephenscott.us/podcasts">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.stephenscott.us/podcasts">
-  <meta property="og:title" content="Podcasts & Interviews | Stephen Scott">
-  <meta property="og:description" content="Listen to Stephen Scott discuss AI, network marketing, and technology entrepreneurship.">
+  <meta property="og:title" content="Podcasts & Audiobook Series | Stephen Scott">
+  <meta property="og:description" content="Listen to Stephen Scott's audiobook podcast series. Deep dives into AI, spirituality, and personal growth. 35 episodes across 3 series.">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Podcasts & Interviews | Stephen Scott">
-  <meta name="twitter:description" content="Expert insights on AI and network marketing from Stephen Scott.">
+  <meta name="twitter:title" content="Podcasts & Audiobook Series | Stephen Scott">
+  <meta name="twitter:description" content="35 episodes across 3 podcast series on AI, spirituality, and personal transformation.">
 
   <link rel="stylesheet" href="/assets/css/main.css">
+
+  <style>
+    .podcast-card {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      gap: 1.5rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .podcast-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .podcast-card-image-wrapper {
+      position: relative;
+      flex-shrink: 0;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .podcast-card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .podcast-card:hover .podcast-card-image {
+      transform: scale(1.05);
+    }
+
+    .podcast-card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .podcast-card-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+      color: var(--color-text);
+    }
+
+    .podcast-card-description {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--color-text-light);
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+
+    .podcast-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .podcast-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.875rem;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #bae6fd;
+      border-radius: 1rem;
+      font-size: 0.813rem;
+      font-weight: 600;
+      color: #0369a1;
+      white-space: nowrap;
+    }
+
+    .podcast-badge-episodes {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-color: #fcd34d;
+      color: #92400e;
+    }
+
+    .podcast-badge-category {
+      background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+      border-color: #d8b4fe;
+      color: #6b21a8;
+    }
+
+    .podcast-cta {
+      margin-top: auto;
+      width: 100%;
+      text-align: center;
+      padding: 0.875rem 1.25rem;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .podcast-cta::after {
+      content: '→';
+      font-size: 1.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    .podcast-cta:hover::after {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+      .podcast-card {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .podcast-card-image-wrapper {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        margin-bottom: 1.25rem;
+      }
+
+      .podcast-card-title {
+        font-size: 1.25rem;
+      }
+
+      .podcast-card-description {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
 
   <script type="application/ld+json">
   {
@@ -89,12 +223,111 @@
             </div>
           </div>
 
-          <div style="padding: 2rem; background-color: var(--color-bg-alt); border-radius: var(--radius-lg); margin-bottom: 3rem; text-align: center;">
-            <h2>Podcast Appearances Coming Soon</h2>
-            <p style="font-size: 1.125rem; color: var(--color-text-light); margin-bottom: 1.5rem;">
-              I'm actively seeking podcast opportunities to share insights on AI, network marketing, and technology entrepreneurship.
-            </p>
-            <a href="/contact" class="btn">Invite Me to Your Podcast</a>
+          <h2>Podcast Series</h2>
+          <p style="font-size: 1.125rem; color: var(--color-text-light); margin-bottom: 2rem;">
+            Join hosts Mike and Wendy as they explore my books through engaging audiobook-style podcast discussions.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem;">
+            <div class="card podcast-card">
+              <div class="podcast-card-image-wrapper">
+                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/8f/11/7e/8f117ee5-25a8-c632-a0d5-8d1f14e72343/mza_9818174482973419331.jpg/600x600bb.webp"
+                     alt="AI in Affiliate Network Marketing Podcast"
+                     class="podcast-card-image">
+              </div>
+              <div class="podcast-card-content">
+                <h3 class="podcast-card-title">AI in Network Marketing</h3>
+                <p class="podcast-card-description">
+                  A profound exploration of The 2024-2025 Beginner's Guide to AI in Affiliate & Network Marketing,
+                  breaking down complex AI concepts with practical marketing strategies.
+                </p>
+                <div class="podcast-meta">
+                  <span class="podcast-badge podcast-badge-episodes">2 episodes</span>
+                  <span class="podcast-badge podcast-badge-category">Marketing</span>
+                  <span class="podcast-badge">Updated Weekly</span>
+                </div>
+                <a href="https://podcasts.apple.com/us/podcast/id1777598538"
+                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+              </div>
+            </div>
+
+            <div class="card podcast-card">
+              <div class="podcast-card-image-wrapper">
+                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/cf/8b/90/cf8b90c3-94c9-7e35-e305-c6d5a10c02f5/mza_13603824014364253135.jpg/600x600bb.webp"
+                     alt="Divine Conversations Podcast"
+                     class="podcast-card-image">
+              </div>
+              <div class="podcast-card-content">
+                <h3 class="podcast-card-title">Divine Conversations</h3>
+                <p class="podcast-card-description">
+                  Exploring interfaith dialogue through six spiritual traditions, examining global challenges
+                  from religious freedom to environmental responsibility and technology ethics.
+                </p>
+                <div class="podcast-meta">
+                  <span class="podcast-badge podcast-badge-episodes">23 episodes</span>
+                  <span class="podcast-badge podcast-badge-category">Religion & Spirituality</span>
+                  <span class="podcast-badge">Weekly</span>
+                </div>
+                <a href="https://podcasts.apple.com/us/podcast/id1778070747"
+                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+              </div>
+            </div>
+
+            <div class="card podcast-card">
+              <div class="podcast-card-image-wrapper">
+                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/45/40/11/454011d3-bef2-d75f-57ee-9e93e80c7d3f/mza_17478888898460370579.png/600x600bb.webp"
+                     alt="Stop Sabotaging Your Best Life Podcast"
+                     class="podcast-card-image">
+              </div>
+              <div class="podcast-card-content">
+                <h3 class="podcast-card-title">Stop Sabotaging Your Best Life</h3>
+                <p class="podcast-card-description">
+                  Transformative strategies to overcome self-doubt and build resilience. Covering decision-making,
+                  purpose, relationships, gratitude, and personal growth.
+                </p>
+                <div class="podcast-meta">
+                  <span class="podcast-badge podcast-badge-episodes">10 episodes</span>
+                  <span class="podcast-badge podcast-badge-category">Mental Health & Self-Improvement</span>
+                  <span class="podcast-badge">Weekly</span>
+                </div>
+                <a href="https://podcasts.apple.com/us/podcast/id1777623309"
+                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+              </div>
+            </div>
+          </div>
+
+          <h2>Listen Now</h2>
+          <p style="font-size: 1.125rem; color: var(--color-text-light); margin-bottom: 2rem;">
+            Stream episodes directly or subscribe on your favorite podcast platform.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            <div>
+              <iframe height="450" width="100%" title="AI in Network Marketing Podcast"
+                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-ai-in-affiliate-network-marketing/id1777598538?theme=auto"
+                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+                allow="autoplay *; encrypted-media *; clipboard-write"
+                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
+              </iframe>
+            </div>
+
+            <div>
+              <iframe height="450" width="100%" title="Divine Conversations Podcast"
+                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-divine-conversations/id1778070747?theme=auto"
+                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+                allow="autoplay *; encrypted-media *; clipboard-write"
+                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
+              </iframe>
+            </div>
+
+            <div>
+              <iframe height="450" width="100%" title="Stop Sabotaging Your Best Life Podcast"
+                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-stop-sabotaging-your-best-life/id1777623309?theme=auto"
+                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+                allow="autoplay *; encrypted-media *; clipboard-write"
+                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
+              </iframe>
+            </div>
           </div>
 
           <h2>What to Expect</h2>
