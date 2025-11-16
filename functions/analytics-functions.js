@@ -592,26 +592,77 @@ const getFirestoreMetrics = onRequest({
     // Count documents in major collections
     const collections = ['users', 'chats', 'admin_settings'];
 
+    // First pass: identify excluded user UIDs (demo/test data)
+    const DEMO_UID = 'KJ8uFnlhKhWgBa4NVcwT';
+    const excludedUserUids = new Set();
+    const usersSnapshot = await db.collection('users').get();
+    for (const doc of usersSnapshot.docs) {
+      const userData = doc.data();
+      const isExcluded =
+        doc.id === DEMO_UID ||
+        userData.upline_admin === DEMO_UID ||
+        userData.sponsor_id === DEMO_UID ||
+        (userData.upline_refs && userData.upline_refs.includes(DEMO_UID));
+
+      if (isExcluded) {
+        excludedUserUids.add(doc.id);
+      }
+    }
+
     for (const collectionName of collections) {
       try {
         const snapshot = await db.collection(collectionName).get();
-        const docCount = snapshot.size;
+        let docCount = snapshot.size;
 
         // Count subcollections for users
         let subCollectionCount = 0;
+        const countryDistribution = {};
         if (collectionName === 'users') {
+          let excludedUsersCount = 0;
           for (const doc of snapshot.docs) {
+            if (excludedUserUids.has(doc.id)) {
+              excludedUsersCount++;
+              continue;
+            }
+
             const notificationsSnapshot = await doc.ref.collection('notifications').get();
+            const userData = doc.data();
+
             subCollectionCount += notificationsSnapshot.size;
+            const country = userData.country || 'Unknown';
+            countryDistribution[country] = (countryDistribution[country] || 0) + 1;
           }
+          docCount -= excludedUsersCount;
         }
 
         // Count messages for chats
         if (collectionName === 'chats') {
+          let excludedChatsCount = 0;
           for (const doc of snapshot.docs) {
+            const chatData = doc.data();
+            const participants = chatData.participants || [];
+
+            const hasExcludedUser = participants.some(uid => excludedUserUids.has(uid));
+            if (hasExcludedUser) {
+              excludedChatsCount++;
+              continue;
+            }
+
             const messagesSnapshot = await doc.ref.collection('messages').get();
             subCollectionCount += messagesSnapshot.size;
           }
+          docCount -= excludedChatsCount;
+        }
+
+        // Filter admin_settings for excluded users
+        if (collectionName === 'admin_settings') {
+          let excludedAdminSettingsCount = 0;
+          for (const doc of snapshot.docs) {
+            if (doc.id === DEMO_UID || excludedUserUids.has(doc.id)) {
+              excludedAdminSettingsCount++;
+            }
+          }
+          docCount -= excludedAdminSettingsCount;
         }
 
         stats.collections[collectionName] = {
@@ -619,6 +670,10 @@ const getFirestoreMetrics = onRequest({
           subDocuments: subCollectionCount,
           total: docCount + subCollectionCount
         };
+
+        if (collectionName === 'users' && Object.keys(countryDistribution).length > 0) {
+          stats.collections[collectionName].countryDistribution = countryDistribution;
+        }
 
         stats.totalDocuments += docCount + subCollectionCount;
       } catch (error) {

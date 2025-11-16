@@ -14,7 +14,8 @@ async function sendTestEmail() {
     email: 'scscot@gmail.com'
   };
 
-  const selectedSubject = `${contact.firstName}, build your downline with AI-powered team tools`;
+  // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
+  const selectedSubject = `${contact.firstName}, recruiting just got easier (AI does the talking)`;
   const selectedVersion = '2version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
