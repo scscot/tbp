@@ -13,10 +13,10 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildp
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Updated Nov 2025: Aligned with new "AI Downline Building" positioning
-  // Reflects 4-language capability and global team building focus
-  const selectedSubject = `${contact.firstName}, build your downline with AI-powered tools.`;
-  // const selectedSubject = `build your downline with AI-powered tools`;
+  // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
+  // Research-backed subject line optimized for higher open rates (targeting 15%+ vs previous 7.1%)
+  const selectedSubject = `${contact.firstName}, recruiting just got easier (AI does the talking)`;
+  // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (7.1% open rate)
   const selectedVersion = '2version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
