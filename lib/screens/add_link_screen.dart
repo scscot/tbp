@@ -197,7 +197,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                backgroundColor: AppColors.primaryColor,
+                backgroundColor: AppColors.primary,
               ),
               child: Text(
                 'I Have My $_bizOppName Link',
