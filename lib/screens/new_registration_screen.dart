@@ -16,6 +16,7 @@ import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:uuid/uuid.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/session_manager.dart';
@@ -568,6 +569,11 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
           FirebaseFunctions.instanceFor(region: 'us-central1')
               .httpsCallable('registerUser');
 
+      // Generate idempotency token for this registration request
+      const uuid = Uuid();
+      final requestId = uuid.v4();
+      debugPrint('🔑 IDEMPOTENCY: Generated request ID: $requestId');
+
       // Prepare registration data
       String deviceLanguage = 'en';
       try {
@@ -590,6 +596,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
         'referralSource': _referralSource, // Track attribution source
         'role': _initialReferralCode == null ? 'admin' : 'user',
         'preferredLanguage': deviceLanguage,
+        'requestId': requestId, // Idempotency token
       };
 
       debugPrint(

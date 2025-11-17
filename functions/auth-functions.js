@@ -155,12 +155,13 @@ const getUserByReferralCode = onRequest({
 
 /**
  * Register a new user with sponsor relationship
+ * Includes idempotency token support to prevent duplicate registrations
  */
 const registerUser = onCall({ region: "us-central1" }, async (request) => {
   logger.info(`Starting registerUser function for project ${process.env.GCLOUD_PROJECT}`);
   logger.info("Request data:", JSON.stringify(request.data, null, 2));
 
-  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city, preferredLanguage } = request.data;
+  const { email, password, firstName, lastName, sponsorReferralCode, adminReferralCode, role, country, state, city, preferredLanguage, requestId } = request.data;
 
   // Validate required fields
   validateInput(request.data, {
@@ -169,6 +170,45 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
     firstName: { required: true, type: 'string', minLength: 1 },
     lastName: { required: true, type: 'string', minLength: 1 }
   });
+
+  // Idempotency check - prevent duplicate registrations from network retries
+  if (requestId) {
+    logger.info(`🔄 IDEMPOTENCY: Checking request ID: ${requestId}`);
+    const requestRef = db.collection('registrationRequests').doc(requestId);
+    const requestSnap = await requestRef.get();
+
+    if (requestSnap.exists) {
+      const requestData = requestSnap.data();
+      const status = requestData.status;
+
+      if (status === 'completed') {
+        logger.info(`✅ IDEMPOTENCY: Request ${requestId} already completed, returning cached result`);
+        return requestData.result;
+      } else if (status === 'processing') {
+        const processingStarted = requestData.startedAt?.toMillis() || 0;
+        const now = Date.now();
+        const ageMinutes = (now - processingStarted) / 60000;
+
+        if (ageMinutes < 5) {
+          logger.warn(`⏳ IDEMPOTENCY: Request ${requestId} is still processing (${ageMinutes.toFixed(1)} minutes old)`);
+          throw createError('already-exists', 'Registration request is currently being processed. Please wait.');
+        } else {
+          logger.warn(`⚠️ IDEMPOTENCY: Request ${requestId} stalled (${ageMinutes.toFixed(1)} minutes old), allowing retry`);
+        }
+      }
+    }
+
+    // Mark request as processing
+    await requestRef.set({
+      status: 'processing',
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      startedAt: FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp()
+    });
+    logger.info(`📝 IDEMPOTENCY: Marked request ${requestId} as processing`);
+  }
 
   let sponsorId = null;
   let sponsorUplineRefs = [];
@@ -389,10 +429,42 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
     }
 
     logger.info("Registration completed successfully");
-    return { success: true, uid: uid };
+
+    const result = { success: true, uid: uid };
+
+    // Mark idempotency request as completed with cached result
+    if (requestId) {
+      try {
+        await db.collection('registrationRequests').doc(requestId).update({
+          status: 'completed',
+          result: result,
+          completedAt: FieldValue.serverTimestamp(),
+          uid: uid
+        });
+        logger.info(`✅ IDEMPOTENCY: Marked request ${requestId} as completed`);
+      } catch (updateError) {
+        logger.error(`Failed to update idempotency record for ${requestId}:`, updateError);
+      }
+    }
+
+    return result;
 
   } catch (error) {
     logger.error("Error during registration:", error);
+
+    // Mark idempotency request as failed
+    if (requestId) {
+      try {
+        await db.collection('registrationRequests').doc(requestId).update({
+          status: 'failed',
+          error: error.message,
+          failedAt: FieldValue.serverTimestamp()
+        });
+        logger.info(`❌ IDEMPOTENCY: Marked request ${requestId} as failed`);
+      } catch (updateError) {
+        logger.error(`Failed to update idempotency record for ${requestId}:`, updateError);
+      }
+    }
 
     // Atomic cleanup - if we created auth user but failed later, clean it up
     if (uid) {
