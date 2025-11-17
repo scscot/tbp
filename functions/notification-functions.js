@@ -1055,6 +1055,11 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     const lastName = visitingUserData.lastName || '';
     const bizName = visitingUserData.bizOpp || 'business opportunity';
 
+    // Update visiting user's biz_visit_date
+    await db.collection("users").doc(visitingUserId).update({
+      biz_visit_date: FieldValue.serverTimestamp()
+    });
+
     // Create notification for sponsor
     await createNotification({
       userId: sponsorId,
@@ -1073,8 +1078,8 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
       }
     });
 
-    logger.info(`Notified sponsor ${sponsorId} of business opportunity visit by ${visitingUserId}`);
-    return { success: true, message: "Sponsor notified successfully." };
+    logger.info(`✅ BIZ OPP VISIT: Updated biz_visit_date and notified sponsor ${sponsorId} for user ${visitingUserId}`);
+    return { success: true, message: "Visit date recorded and sponsor notified." };
 
   } catch (error) {
     logger.error("Error notifying sponsor of business opportunity visit:", error);
