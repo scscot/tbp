@@ -21,6 +21,8 @@ const translations = {
     chatMessageTitle: "New Message from {senderName}",
     teamActivityTitle: "👀 Team Member Activity",
     teamActivityMessage: "{firstName} {lastName} from your team visited their {bizName} link!",
+    bizOppCompletionTitle: "🎉 Team Member Joined {bizName}!",
+    bizOppCompletionMessage: "{firstName} {lastName} completed their {bizName} registration! Welcome them to the opportunity and help them get started.",
   },
 
   es: {
@@ -45,6 +47,8 @@ const translations = {
     chatMessageTitle: "Nuevo Mensaje de {senderName}",
     teamActivityTitle: "👀 Actividad del Miembro del Equipo",
     teamActivityMessage: "¡{firstName} {lastName} de tu equipo visitó su enlace de {bizName}!",
+    bizOppCompletionTitle: "🎉 ¡Miembro del Equipo se Unió a {bizName}!",
+    bizOppCompletionMessage: "¡{firstName} {lastName} completó su registro en {bizName}! Dales la bienvenida a la oportunidad y ayúdales a comenzar.",
   },
 
   pt: {
@@ -69,6 +73,8 @@ const translations = {
     chatMessageTitle: "Nova Mensagem de {senderName}",
     teamActivityTitle: "👀 Atividade do Membro da Equipe",
     teamActivityMessage: "{firstName} {lastName} da sua equipe visitou o link de {bizName}!",
+    bizOppCompletionTitle: "🎉 Membro da Equipe Entrou em {bizName}!",
+    bizOppCompletionMessage: "{firstName} {lastName} completou o registro em {bizName}! Dê as boas-vindas à oportunidade e ajude-os a começar.",
   },
 
   de: {
@@ -93,6 +99,8 @@ const translations = {
     chatMessageTitle: "Neue Nachricht von {senderName}",
     teamActivityTitle: "👀 Teammitglied-Aktivität",
     teamActivityMessage: "{firstName} {lastName} aus Ihrem Team hat ihren {bizName}-Link besucht!",
+    bizOppCompletionTitle: "🎉 Teammitglied ist {bizName} beigetreten!",
+    bizOppCompletionMessage: "{firstName} {lastName} hat die {bizName}-Registrierung abgeschlossen! Heißen Sie sie in der Gelegenheit willkommen und helfen Sie ihnen beim Einstieg.",
   },
 };
 

@@ -9,7 +9,7 @@ const db = admin.firestore();
 
 async function countUsersWithUpline() {
   const includeUid = 'KJ8uFnlhKhWgBa4NVcwT';
-  const excludeUid = 'a6f3b223-993b-4efd-9f62-df1961aa8f46';
+  const excludeUid = 'qzvHp5bIjvTEniYuds544aHLNE93';
 
   console.log(`Querying users where upline_refs contains: ${includeUid}`);
   console.log(`AND upline_refs does NOT contain: ${excludeUid}`);

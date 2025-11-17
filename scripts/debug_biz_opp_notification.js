@@ -125,7 +125,7 @@ const userId = process.argv[2];
 
 if (!userId) {
   console.log('Usage: node debug_biz_opp_notification.js <userId>');
-  console.log('Example: node debug_biz_opp_notification.js a6f3b223-993b-4efd-9f62-df1961aa8f46');
+  console.log('Example: node debug_biz_opp_notification.js qzvHp5bIjvTEniYuds544aHLNE93');
   process.exit(1);
 }
 

@@ -50,7 +50,7 @@ const userId = process.argv[2];
 
 if (!userId) {
   console.log('Usage: node clear_biz_visit_date.js <userId>');
-  console.log('Example: node clear_biz_visit_date.js a6f3b223-993b-4efd-9f62-df1961aa8f46');
+  console.log('Example: node clear_biz_visit_date.js qzvHp5bIjvTEniYuds544aHLNE93');
   process.exit(1);
 }
 

@@ -309,7 +309,7 @@ class UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   Future<void> _saveProfile() async {
     // Check if this is the demo user
-    if (widget.user.uid == 'a6f3b223-993b-4efd-9f62-df1961aa8f46') {
+    if (widget.user.uid == 'qzvHp5bIjvTEniYuds544aHLNE93') {
       // Show popup for demo user
       _showDemoModeDialog();
       return;

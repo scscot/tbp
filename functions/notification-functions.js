@@ -1004,6 +1004,102 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
   }
 });
 
+const notifySponsorOfBizOppCompletion = onDocumentUpdated('users/{userId}', async (event) => {
+  const before = event.data?.before?.data();
+  const after = event.data?.after?.data();
+  const userId = event.params.userId;
+
+  // Only trigger when biz_join_date transitions from null to set
+  const wasNull = !before?.biz_join_date;
+  const nowSet = !!after?.biz_join_date;
+
+  if (!wasNull || !nowSet) {
+    return;
+  }
+
+  // Check if already notified
+  if (after.biz_completion_notified === true) {
+    logger.info(`Completion already notified for user ${userId}, skipping`);
+    return;
+  }
+
+  // Execution fuse for idempotency
+  const fuseId = `bizOppCompletion_${userId}`;
+  const fuseRef = db.collection('execution_fuses').doc(fuseId);
+
+  try {
+    await fuseRef.create({
+      userId,
+      timestamp: FieldValue.serverTimestamp(),
+      type: 'biz_opp_completion'
+    });
+  } catch (e) {
+    if (e?.code === 6 || e?.code === 'already-exists') {
+      logger.info(`Completion notification already sent for user ${userId}`);
+      return;
+    }
+  }
+
+  try {
+    // Find sponsor
+    const sponsorId = after.sponsor_id || after.upline_admin;
+
+    if (!sponsorId) {
+      logger.info(`User ${userId} has no sponsor, skipping completion notification`);
+      return;
+    }
+
+    const sponsorDoc = await db.collection('users').doc(sponsorId).get();
+    if (!sponsorDoc.exists) {
+      logger.warn(`Sponsor ${sponsorId} not found for user ${userId}`);
+      return;
+    }
+
+    const sponsorData = sponsorDoc.data();
+    const sponsorLang = sponsorData.preferredLanguage || 'en';
+    const userName = `${after.firstName || ''} ${after.lastName || ''}`.trim();
+    const bizName = after.biz_opp || await getBusinessOpportunityName(after.upline_admin, 'business opportunity');
+
+    // Create notification for sponsor
+    const notifId = `bizOppCompletion_${userId}`;
+    await createNotification({
+      userId: sponsorId,
+      notifId,
+      type: 'biz_opp_completion',
+      title: getNotificationText('bizOppCompletionTitle', sponsorLang, { bizName }),
+      body: getNotificationText('bizOppCompletionMessage', sponsorLang, {
+        firstName: after.firstName,
+        lastName: after.lastName,
+        bizName: bizName,
+      }),
+      docFields: {
+        completedUserId: userId,
+        completedUserName: userName,
+        route: '/team',
+        route_params: JSON.stringify({ action: 'view_activity' })
+      }
+    });
+
+    logger.info(`Notified sponsor ${sponsorId} of ${bizName} completion by ${userId}`);
+
+    // Mark as notified to prevent duplicates
+    await db.collection('users').doc(userId).update({
+      biz_completion_notified: true,
+      biz_completion_notified_at: FieldValue.serverTimestamp()
+    });
+
+  } catch (error) {
+    logger.error(`Error notifying sponsor of biz opp completion for ${userId}:`, error);
+  } finally {
+    // Clean up fuse
+    try {
+      await fuseRef.delete();
+    } catch (e) {
+      logger.warn('Failed to cleanup execution fuse (non-fatal)');
+    }
+  }
+});
+
 // ==============================
 // Firestore Trigger Functions
 // ==============================
@@ -2343,6 +2439,7 @@ module.exports = {
 
   // Business and team notifications
   notifySponsorOfBizOppVisit,
+  notifySponsorOfBizOppCompletion,
 
   // Firestore triggers
   onNotificationCreated,

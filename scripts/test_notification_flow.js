@@ -118,7 +118,7 @@ const userId = process.argv[2];
 
 if (!userId) {
   console.log('Usage: node test_notification_flow.js <userId>');
-  console.log('Example: node test_notification_flow.js a6f3b223-993b-4efd-9f62-df1961aa8f46');
+  console.log('Example: node test_notification_flow.js qzvHp5bIjvTEniYuds544aHLNE93');
   process.exit(1);
 }
 

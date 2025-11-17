@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../config/app_constants.dart';
 import '../models/user_model.dart';
 import '../services/subscription_service.dart';
@@ -342,6 +343,98 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _refLinkController.dispose();
     _refLinkConfirmController.dispose();
     super.dispose();
+  }
+
+  Future<void> _runDatabaseCleanup({required bool dryRun}) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    const superAdminUid = 'KJ8uFnlhKhWgBa4NVcwT';
+
+    if (uid != superAdminUid) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🚫 Only Super Admin can perform database cleanup'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      final callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('deleteNonAdminUsers');
+
+      final result = await callable.call<Map<String, dynamic>>({
+        'dryRun': dryRun,
+      });
+
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      final data = result.data;
+      final summary = data['summary'] as Map<String, dynamic>;
+      final message = data['message'] as String;
+
+      debugPrint('🗑️ CLEANUP RESULT: $data');
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(dryRun ? '🔍 Dry-Run Results' : '✅ Cleanup Complete'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(message),
+                const SizedBox(height: 16),
+                Text('Total Users: ${summary['totalUsers']}',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text('Non-Admin Users: ${summary['nonAdminUsers']}'),
+                Text('Protected Admins: ${summary['protectedAdmins']}'),
+                const SizedBox(height: 12),
+                if (!dryRun) ...[
+                  const Text('Deleted:',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text('  Users: ${summary['deleted']['users']}'),
+                  Text('  Chats: ${summary['deleted']['chats']}'),
+                  Text('  Chat Logs: ${summary['deleted']['chatLogs']}'),
+                  Text('  Chat Usage: ${summary['deleted']['chatUsage']}'),
+                  Text('  Referral Codes: ${summary['deleted']['referralCodes']}'),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      debugPrint('❌ CLEANUP ERROR: $e');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -689,6 +782,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+          ),
+          const SizedBox(height: 32),
+          const Divider(thickness: 2, color: Colors.red),
+          const SizedBox(height: 16),
+          const Text(
+            '⚠️ SUPER ADMIN TOOLS',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Database Cleanup: Remove all non-admin users and related data. This action affects users, chats, logs, and referral codes.',
+            style: TextStyle(fontSize: 14, color: Colors.black87),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () => _runDatabaseCleanup(dryRun: true),
+                  icon: const Icon(Icons.preview),
+                  label: const Text('Preview Cleanup'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('⚠️ WARNING'),
+                        content: const Text(
+                          'This will PERMANENTLY delete all non-admin users, chats, logs, and related data.\n\nThis action CANNOT be undone!\n\nAre you absolutely sure?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _runDatabaseCleanup(dryRun: false);
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                            ),
+                            child: const Text('DELETE ALL'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.delete_forever),
+                  label: const Text('Execute Cleanup'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 24),
         ],
