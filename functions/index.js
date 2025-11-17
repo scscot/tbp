@@ -192,6 +192,14 @@ const { sendDemoNotification } = require('./sendDemoNotification');
 const { tbpEventLog } = require('./analytics-events');
 
 // ==============================
+// Import Monitoring Functions
+// ==============================
+const {
+  monitoringHealthCheck,
+  getMonitoringDashboard,
+} = require('./monitoring-functions');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -308,6 +316,10 @@ module.exports = {
 
   // ========== ANALYTICS FUNCTIONS ==========
   tbpEventLog,
+
+  // ========== MONITORING FUNCTIONS ==========
+  monitoringHealthCheck,
+  getMonitoringDashboard,
 };
 
 // ==============================

@@ -23,6 +23,7 @@ const {
 } = require('./shared/utilities');
 
 const { getNotificationText } = require('./translations');
+const { trackFCMDelivery, trackMilestoneNotification } = require('./monitoring-functions');
 
 // Additional Firebase setup
 const messaging = admin.messaging();
@@ -168,8 +169,17 @@ async function checkUplineMilestone(userId, userData) {
 
       if (result.ok) {
         console.log(`✅ MILESTONE UPLINE: Milestone notification created for user ${userId} - ${notificationContent.subtype}`);
+        await trackMilestoneNotification(userId, notificationContent.subtype, 'success', {
+          directSponsors,
+          totalTeam,
+        });
       } else {
         console.log(`❌ MILESTONE UPLINE: Failed to create notification for ${userId}`);
+        await trackMilestoneNotification(userId, notificationContent.subtype, 'failure', {
+          directSponsors,
+          totalTeam,
+          error: result.error || 'unknown',
+        });
       }
     }
 
@@ -324,10 +334,16 @@ async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
     const tokenPreview = token ? String(token).slice(0, 8) : '<no-token>';
     logger.info(`PUSH DETAILED: type=${payload?.type} subtype=${payload?.subtype || 'none'} to=${tokenPreview}* msgId=${response} notifId=${notificationId}`);
 
+    // Track successful FCM delivery
+    await trackFCMDelivery(userId, true);
+
     return { sent: true, reason: 'sent', tokenSource: source };
   } catch (err) {
     const code = (err && err.code) || '';
     logger.error('PUSH: error', { userId, notificationId, code, msg: err.message });
+
+    // Track failed FCM delivery
+    await trackFCMDelivery(userId, false, err.message);
 
     if (code === 'messaging/registration-token-not-registered') {
       await cleanupDeadToken(userRef, token);
