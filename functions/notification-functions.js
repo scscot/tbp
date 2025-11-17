@@ -1035,9 +1035,14 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     const visitingUserData = visitingUserDoc.data();
     const sponsorId = visitingUserData.sponsorId;
 
+    // ALWAYS update biz_visit_date, even if there's no sponsor
+    await db.collection("users").doc(visitingUserId).update({
+      biz_visit_date: FieldValue.serverTimestamp()
+    });
+
     if (!sponsorId) {
-      logger.info("Visiting user has no sponsor, skipping notification.");
-      return { success: true, message: "No sponsor to notify." };
+      logger.info("✅ BIZ OPP VISIT: Updated biz_visit_date for user with no sponsor:", visitingUserId);
+      return { success: true, message: "Visit date recorded (no sponsor to notify)." };
     }
 
     // Get sponsor data
@@ -1054,11 +1059,6 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     const firstName = visitingUserData.firstName || '';
     const lastName = visitingUserData.lastName || '';
     const bizName = visitingUserData.bizOpp || 'business opportunity';
-
-    // Update visiting user's biz_visit_date
-    await db.collection("users").doc(visitingUserId).update({
-      biz_visit_date: FieldValue.serverTimestamp()
-    });
 
     // Create notification for sponsor
     await createNotification({
