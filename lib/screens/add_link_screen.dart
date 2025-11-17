@@ -68,11 +68,31 @@ class _AddLinkScreenState extends State<AddLinkScreen>
       setState(() {}); // Rebuild to update confirmation validation
     });
 
+    // Add smart formatting listener
+    _bizOppRefUrlController.addListener(_smartFormatUrl);
+
     _loadData();
+  }
+
+  void _smartFormatUrl() {
+    final text = _bizOppRefUrlController.text.trim();
+
+    // Auto-add https:// if no protocol
+    if (text.isNotEmpty && !text.startsWith('http://') && !text.startsWith('https://')) {
+      // Prevent infinite loop
+      if (!text.contains('://')) {
+        final cursorPos = _bizOppRefUrlController.selection.baseOffset;
+        _bizOppRefUrlController.value = TextEditingValue(
+          text: 'https://$text',
+          selection: TextSelection.collapsed(offset: cursorPos + 8),
+        );
+      }
+    }
   }
 
   @override
   void dispose() {
+    _bizOppRefUrlController.removeListener(_smartFormatUrl);
     _bizOppRefUrlController.dispose();
     _bizOppRefUrlConfirmController.dispose();
     _animationController.dispose();
@@ -252,7 +272,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             children: [
               Icon(Icons.error, color: AppColors.textInverse),
               const SizedBox(width: 12),
-              Text((context.l10n?.addLinkErrorMessage ?? 'Error: [error]').replaceAll('[error]', e.toString())),
+              Text(context.l10n?.addLinkErrorMessage ?? 'Error saving link. Please try again.'),
             ],
           ),
           backgroundColor: AppColors.error,
@@ -325,8 +345,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                (context.l10n?.addLinkDialogDuplicateMessage ?? 'The [business] referral link you entered is already in use by another Team Build Pro member.')
-                    .toString().replaceAll('[business]', _bizOpp ?? 'business opportunity'),
+                context.l10n?.addLinkDialogDuplicateMessage(_bizOpp ?? 'business opportunity') ?? 'The ${_bizOpp ?? 'business opportunity'} referral link you entered is already in use by another Team Build Pro member.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.textPrimary,
@@ -557,8 +576,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            (context.l10n?.addLinkHeading ?? 'Add Your\n[Business] Link')
-                .toString().replaceAll('[Business]', _bizOpp ?? 'Business'),
+            context.l10n?.addLinkHeading(_bizOpp ?? 'Business') ?? 'Add Your\n${_bizOpp ?? 'Business'} Link',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -618,8 +636,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            (context.l10n?.addLinkDisclaimer ?? 'You are updating your Team Build Pro account to track referrals to [business]. This is a separate, independent business entity that is NOT owned, operated, or affiliated with Team Build Pro.')
-                .toString().replaceAll('[business]', _bizOpp ?? 'this business opportunity'),
+            context.l10n?.addLinkDisclaimer(_bizOpp ?? 'this business opportunity') ?? 'You are updating your Team Build Pro account to track referrals to ${_bizOpp ?? 'this business opportunity'}. This is a separate, independent business entity that is NOT owned, operated, or affiliated with Team Build Pro.',
             style: TextStyle(
               fontSize: 15,
               color: AppColors.textPrimary,
@@ -678,8 +695,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             context.l10n?.addLinkInstructionBullet1 ?? 'Your referral link will be stored in your Team Build Pro profile for tracking purposes only.',
           ),
           _buildBulletPoint(
-            (context.l10n?.addLinkInstructionBullet2 ?? 'When your team members qualify and join the [business] opportunity, they will automatically be placed in your official team')
-                .toString().replaceAll('[business]', _bizOpp ?? 'business'),
+            context.l10n?.addLinkInstructionBullet2(_bizOpp ?? 'business') ?? 'When your team members qualify and join the ${_bizOpp ?? 'business'} opportunity, they will automatically be placed in your official team',
           ),
           _buildBulletPoint(
             context.l10n?.addLinkInstructionBullet3 ?? 'This link can only be set once, so please verify it\'s correct before saving.',
@@ -790,8 +806,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                     // --- NEWLY ADDED SUBTITLE ---
                     const SizedBox(height: 4),
                     Text(
-                      (context.l10n?.addLinkFinalStepSubtitle ?? 'This ensures your new team members are automatically placed in your [business] organization.')
-                          .toString().replaceAll('[business]', _bizOpp ?? 'business'),
+                      context.l10n?.addLinkFinalStepSubtitle(_bizOpp ?? 'business') ?? 'This ensures your new team members are automatically placed in your ${_bizOpp ?? 'business'} organization.',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -816,8 +831,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  (context.l10n?.addLinkFieldInstruction ?? 'Enter your [business] referral link below. This will be used to track referrals from your team.')
-                      .toString().replaceAll('[business]', _bizOpp ?? 'business'),
+                  context.l10n?.addLinkFieldInstruction(_bizOpp ?? 'business') ?? 'Enter your ${_bizOpp ?? 'business'} referral link below. This will be used to track referrals from your team.',
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
@@ -828,8 +842,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                 if (_baseUrl != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                    (context.l10n?.addLinkMustBeginWith ?? 'Must begin with:\n[baseUrl]')
-                        .toString().replaceAll('[baseUrl]', _baseUrl!),
+                    context.l10n?.addLinkMustBeginWith(_baseUrl!) ?? 'Must begin with:\n$_baseUrl',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.primary,
@@ -849,8 +862,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             decoration: InputDecoration(
               labelText: context.l10n?.addLinkFieldLabel ?? 'Enter Your Referral Link',
               helperText: _baseUrl != null
-                  ? (context.l10n?.addLinkFieldHelper ?? 'Must start with [baseUrl]\nThis cannot be changed once set')
-                      .toString().replaceAll('[baseUrl]', _baseUrl!)
+                  ? context.l10n?.addLinkFieldHelper(_baseUrl!) ?? 'Must start with $_baseUrl\nThis cannot be changed once set'
                   : 'This cannot be changed once set',
               hintText: _baseUrl != null
                   ? 'e.g., ${_baseUrl}your_username_here'
@@ -873,8 +885,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return (context.l10n?.addLinkFieldError ?? 'Please enter your [business] referral link.')
-                    .toString().replaceAll('[business]', _bizOpp ?? 'business');
+                return context.l10n?.addLinkFieldError(_bizOpp ?? 'business') ?? 'Please enter your ${_bizOpp ?? 'business'} referral link.';
               }
 
               // Basic link validation
@@ -912,8 +923,7 @@ class _AddLinkScreenState extends State<AddLinkScreen>
                           color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     content: Text(
-                      (context.l10n?.addLinkDialogImportantMessage ?? 'You must enter the exact referral link you received from [business]. This will ensure your team members that join [business] are automatically placed in your [business] team.')
-                          .toString().replaceAll('[business]', _bizOppName),
+                      context.l10n?.addLinkDialogImportantMessage(_bizOppName) ?? 'You must enter the exact referral link you received from $_bizOppName. This will ensure your team members that join $_bizOppName are automatically placed in your $_bizOppName team.',
                       style: const TextStyle(fontSize: 16, color: Colors.black),
                     ),
                     actions: [

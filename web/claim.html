@@ -24,7 +24,7 @@
   (function () {
     var qs = location.search;
     var isDebug = /(?:[?&])debug=1(?:[&#]|$)/.test(qs);
-    var fromUL = /(?:[?&])_ul=1(?:[&#]|$)/.test(qs);
+    var fromUL = /(?:[?&])_?ul=1(?:[&#]|$)/.test(qs);
     var APP_STORE_URL = 'https://apps.apple.com/app/team-build-pro-ai-team-builder/id6751211622';
 
     // Track if page became hidden (app opened)

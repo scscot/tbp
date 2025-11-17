@@ -235,8 +235,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
     } else if (isTrialValid) {
       cardColor = Colors.blue.shade50;
       statusText = context.l10n?.subscriptionStatusTrial ?? 'Free Trial Active';
-      final trialSubtitle = context.l10n?.subscriptionStatusTrialSubtitle ?? '{days} days remaining in your trial';
-      subtitle = trialSubtitle.toString().replaceAll('{days}', trialDaysRemaining.toString());
+      subtitle = context.l10n?.subscriptionStatusTrialSubtitle(trialDaysRemaining) ?? '$trialDaysRemaining days remaining in your trial';
       icon = Icons.schedule;
     } else if (isInGracePeriod) {
       cardColor = Colors.orange.shade50;
@@ -360,11 +359,11 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                   ),
                   const SizedBox(height: 12),
                   _buildFeatureItem(
-                      (context.l10n?.subscriptionFeatureReferralLink ?? 'Submit your unique {bizOpp} referral link').toString().replaceAll('{bizOpp}', _bizOpp ?? 'business opportunity')),
+                      context.l10n?.subscriptionFeatureReferralLink(_bizOpp ?? 'business opportunity') ?? 'Submit your unique ${_bizOpp ?? 'business opportunity'} referral link'),
                   _buildFeatureItem(context.l10n?.subscriptionFeatureAiCoaching ?? 'Custom AI Coaching for recruiting and team building'),
                   _buildFeatureItem(context.l10n?.subscriptionFeatureMessaging ?? 'Unlock messaging to users on your team'),
                   _buildFeatureItem(
-                      (context.l10n?.subscriptionFeatureEnsureTeam ?? 'Ensure team members join under YOU in {bizOpp}').toString().replaceAll('{bizOpp}', _bizOpp ?? 'your business opportunity')),
+                      context.l10n?.subscriptionFeatureEnsureTeam(_bizOpp ?? 'your business opportunity') ?? 'Ensure team members join under YOU in ${_bizOpp ?? 'your business opportunity'}'),
                   _buildFeatureItem(context.l10n?.subscriptionFeatureAnalytics ?? 'Advanced analytics and insights'),
 
                   const SizedBox(height: 32),
@@ -486,7 +485,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          (context.l10n?.subscriptionAutoRenewNotice ?? 'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. {managementText}').toString().replaceAll('{managementText}', _platformSubscriptionManagementText(context)),
+                          context.l10n?.subscriptionAutoRenewNotice(_platformSubscriptionManagementText(context)) ?? 'Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. ${_platformSubscriptionManagementText(context)}',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade600,

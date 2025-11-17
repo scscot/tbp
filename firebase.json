@@ -61,16 +61,6 @@
                     "source": "/index.html",
                     "destination": "/",
                     "type": 301
-                },
-                {
-                    "source": "/claim",
-                    "destination": "/claim.html",
-                    "type": 302
-                },
-                {
-                    "source": "/claim-google",
-                    "destination": "/claim-google.html",
-                    "type": 302
                 }
             ],
             "headers": [

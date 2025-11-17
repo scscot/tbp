@@ -61,6 +61,7 @@ const {
 
   // Business and team notifications
   notifySponsorOfBizOppVisit,
+  notifySponsorOfBizOppCompletion,
 
   // Firestore triggers
   onNotificationCreated,
@@ -100,6 +101,8 @@ const {
 
   // Team management
   recalculateTeamCounts,
+  deleteNonAdminUsers,
+  cleanupOrphanedUsers,
 
   // User profile management
   updateUserTimezone,
@@ -224,6 +227,7 @@ module.exports = {
   onUserProfileCompleted,
   triggerSponsorship,
   notifySponsorOfBizOppVisit,
+  notifySponsorOfBizOppCompletion,
 
   // User-facing badge management
   clearAppBadge,
@@ -243,6 +247,8 @@ module.exports = {
   getMilestoneFuseStatus,
   getFirestoreMetrics,
   recalculateTeamCounts,
+  deleteNonAdminUsers,
+  cleanupOrphanedUsers,
   updateUserTimezone,
 
   // ========== ADMIN FUNCTIONS ==========

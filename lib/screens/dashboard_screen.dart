@@ -24,6 +24,7 @@ import '../services/review_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../i18n/dashboard_analytics.dart';
 import '../widgets/localized_text.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -162,6 +163,165 @@ class _DashboardScreenState extends State<DashboardScreen>
           _isLoadingCounts = false;
         });
       }
+    }
+  }
+
+  /// Database cleanup function for Super Admin
+  Future<void> _runDatabaseCleanup({required bool dryRun}) async {
+    if (!mounted) return;
+
+    try {
+      final callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('deleteNonAdminUsers');
+
+      final result = await callable.call({
+        'dryRun': dryRun,
+      });
+
+      if (!mounted) return;
+
+      final data = Map<String, dynamic>.from(result.data as Map);
+      final summary = Map<String, dynamic>.from(data['summary'] as Map);
+      final deleted = Map<String, dynamic>.from(summary['deleted'] as Map);
+      final message = data['message'] as String;
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(dryRun ? '🔍 Dry-Run Results' : '✅ Cleanup Complete'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                Text('Total Users: ${summary['totalUsers']}'),
+                Text('Non-Admin Users: ${summary['nonAdminUsers']}'),
+                Text('Protected Admins: ${summary['protectedAdmins']}'),
+                const SizedBox(height: 12),
+                const Text('Would Delete:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('  Users: ${deleted['users']}'),
+                Text('  Chats: ${deleted['chats']}'),
+                Text('  Chat Logs: ${deleted['chatLogs']}'),
+                Text('  Chat Usage: ${deleted['chatUsage']}'),
+                Text('  Referral Codes: ${deleted['referralCodes']}'),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
+  }
+
+  Future<void> _runOrphanedCleanup({required bool dryRun}) async {
+    if (!mounted) return;
+
+    try {
+      final callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('cleanupOrphanedUsers');
+
+      final result = await callable.call({
+        'dryRun': dryRun,
+      });
+
+      if (!mounted) return;
+
+      final data = Map<String, dynamic>.from(result.data as Map);
+      final summary = Map<String, dynamic>.from(data['summary'] as Map);
+      final deleted = Map<String, dynamic>.from(summary['deleted'] as Map);
+      final message = data['message'] as String;
+      final sampleParents = (summary['sampleOrphanedParents'] as List?)?.cast<String>() ?? [];
+      final sampleSubcollectionsList = summary['sampleSubcollections'] as List? ?? [];
+      final sampleSubcollections = sampleSubcollectionsList.map((item) => Map<String, dynamic>.from(item as Map)).toList();
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(dryRun ? '🔍 Orphaned Subcollections Preview' : '✅ Cleanup Complete'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                Text('Notifications Scanned: ${summary['notificationsScanned']}'),
+                Text('FCM Tokens Scanned: ${summary['fcmTokensScanned']}'),
+                const SizedBox(height: 12),
+                const Text('Orphaned Data Found:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('  Total Orphaned Subcollections: ${summary['totalOrphanedSubcollections']}'),
+                Text('  Orphaned Notifications: ${summary['orphanedNotifications']}'),
+                Text('  Orphaned FCM Tokens: ${summary['orphanedFcmTokens']}'),
+                Text('  Non-Existent Parent Users: ${summary['uniqueOrphanedParents']}'),
+                Text('Execution Time: ${summary['executionTime']}'),
+                if (!dryRun) ...[
+                  const SizedBox(height: 12),
+                  const Text('Deleted:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text('  Notifications: ${deleted['notifications']['success']}'),
+                  Text('  FCM Tokens: ${deleted['fcmTokens']['success']}'),
+                ],
+                if (sampleParents.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  const Text('Sample Non-Existent Parent UIDs:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  ...sampleParents.take(5).map((uid) => Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 2),
+                    child: Text(uid, style: const TextStyle(fontSize: 10, fontFamily: 'monospace')),
+                  )),
+                ],
+                if (sampleSubcollections.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  const Text('Sample Orphaned Subcollections:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  ...sampleSubcollections.take(5).map((sub) => Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${sub['type']} under ${sub['parentUserId']}',
+                          style: const TextStyle(fontSize: 10)),
+                        Text('  Path: ${sub['path']}',
+                          style: const TextStyle(fontSize: 9, color: Colors.grey)),
+                      ],
+                    ),
+                  )),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
 
@@ -999,6 +1159,172 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                         const AppleNotificationTestWidget(),
                         const GoogleNotificationTestWidget(),
+
+                        // Database Cleanup Section
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Divider(thickness: 2, color: Colors.orange),
+                              const SizedBox(height: 12),
+                              const Text(
+                                '🗑️ DATABASE CLEANUP',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Remove all non-admin users and related data (chats, logs, etc.)',
+                                style: TextStyle(fontSize: 12, color: Colors.black87),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _runDatabaseCleanup(dryRun: true),
+                                      icon: const Icon(Icons.preview, size: 18),
+                                      label: const Text('Preview Cleanup'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.orange,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('⚠️ WARNING'),
+                                            content: const Text(
+                                              'This will PERMANENTLY delete all non-admin users and their data. This action cannot be undone!\n\nAre you sure?',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  _runDatabaseCleanup(dryRun: false);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                child: const Text('Execute'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.delete_forever, size: 18),
+                                      label: const Text('Execute Cleanup'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Divider(thickness: 2, color: Colors.purple),
+                              const SizedBox(height: 12),
+                              const Text(
+                                '🧹 ORPHANED DATA CLEANUP',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Remove empty, UUID-based, and orphaned user documents',
+                                style: TextStyle(fontSize: 12, color: Colors.black87),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _runOrphanedCleanup(dryRun: true),
+                                      icon: const Icon(Icons.search, size: 18),
+                                      label: const Text('Preview Orphaned'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.deepPurple,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('⚠️ WARNING'),
+                                            content: const Text(
+                                              'This will PERMANENTLY delete all orphaned, empty, and UUID-based user documents. This action cannot be undone!\n\nAre you sure?',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  _runOrphanedCleanup(dryRun: false);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.purple,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                child: const Text('Execute'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.cleaning_services, size: 18),
+                                      label: const Text('Execute Cleanup'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.purple,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

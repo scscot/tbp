@@ -725,13 +725,13 @@ const getFirestoreMetrics = onRequest({
  */
 const recalculateTeamCounts = onCall({
   region: "us-central1",
-  timeoutSeconds: 540, // 9 minutes for heavy operation
+  timeoutSeconds: 540,
   memory: '1GiB'
 }, async (request) => {
   const userId = validateAuthentication(request);
+  const { dryRun = false } = request.data || {};
 
   try {
-    // Validate user document exists and has admin role
     const userDoc = await db.collection("users").doc(userId).get();
     if (!userDoc.exists) {
       logger.warn(`🚫 RECALCULATE: User document not found for ${userId}`);
@@ -740,11 +740,10 @@ const recalculateTeamCounts = onCall({
 
     const userData = userDoc.data();
     if (userData.role !== 'admin') {
-      logger.warn(`🚫 RECALCULATE: Non-admin user attempted access: ${userId} (role: ${userData.role})`);
+      logger.warn(`🚫 RECALCULATE: Non-admin user attempted access: ${userId}`);
       throw new HttpsError("permission-denied", "Administrator privileges required.");
     }
 
-    // Validate admin settings and super admin status
     const adminSettingsDoc = await db.collection("admin_settings").doc(userId).get();
     if (!adminSettingsDoc.exists) {
       logger.warn(`🚫 RECALCULATE: Admin settings not found for ${userId}`);
@@ -760,44 +759,658 @@ const recalculateTeamCounts = onCall({
     logger.info(`✅ RECALCULATE: Super admin access validated for ${userId}`);
   } catch (error) {
     if (error instanceof HttpsError) throw error;
-    logger.error(`❌ RECALCULATE: Error validating admin ${userId}:`, error);
+    logger.error(`❌ RECALCULATE: Error validating admin:`, error);
     throw new HttpsError("internal", "Admin validation failed.");
   }
 
-  const usersSnapshot = await db.collection("users").get();
-  const countsMap = new Map();
-  usersSnapshot.docs.forEach(doc => {
-    countsMap.set(doc.id, { directSponsorCount: 0, totalTeamCount: 0 });
-  });
+  if (dryRun) {
+    logger.info('🔒 DRY RUN MODE - No changes will be made');
+  }
 
-  usersSnapshot.docs.forEach(doc => {
+  logger.info('📊 RECALCULATE: Fetching all users...');
+  const usersSnapshot = await db.collection("users").get();
+  const allUsers = usersSnapshot.docs;
+  logger.info(`📊 RECALCULATE: Found ${allUsers.length} total users`);
+
+  const existingUids = new Set(allUsers.map(doc => doc.id));
+  const completedUsers = allUsers.filter(doc => doc.data().isProfileComplete === true);
+  logger.info(`📊 RECALCULATE: ${completedUsers.length} users with completed profiles`);
+
+  const countsMap = new Map();
+  allUsers.forEach(doc => countsMap.set(doc.id, { directSponsorCount: 0, totalTeamCount: 0 }));
+
+  let orphanedSponsorRefs = 0;
+  let orphanedUplineRefs = 0;
+
+  completedUsers.forEach(doc => {
     const { sponsor_id, upline_refs } = doc.data();
-    if (sponsor_id && countsMap.has(sponsor_id)) {
-      countsMap.get(sponsor_id).directSponsorCount++;
+
+    if (sponsor_id) {
+      if (existingUids.has(sponsor_id)) {
+        countsMap.get(sponsor_id).directSponsorCount++;
+      } else {
+        orphanedSponsorRefs++;
+      }
     }
+
     (upline_refs || []).forEach(uid => {
-      if (countsMap.has(uid)) {
+      if (existingUids.has(uid)) {
         countsMap.get(uid).totalTeamCount++;
+      } else {
+        orphanedUplineRefs++;
       }
     });
   });
 
-  const batch = db.batch();
-  let updatesCount = 0;
-  usersSnapshot.docs.forEach(doc => {
-    const { directSponsorCount, totalTeamCount } = doc.data();
-    const calculated = countsMap.get(doc.id);
-    if (directSponsorCount !== calculated.directSponsorCount || totalTeamCount !== calculated.totalTeamCount) {
-      batch.update(doc.ref, calculated);
-      updatesCount++;
+  const usersToDelete = [];
+  const deletedUsersList = [];
+
+  allUsers.forEach(doc => {
+    const uid = doc.id;
+    const data = doc.data();
+    const { sponsor_id, level } = data;
+    const calculatedCounts = countsMap.get(uid);
+
+    const isOrphaned = !sponsor_id || !existingUids.has(sponsor_id);
+    const hasNoTeam = calculatedCounts.directSponsorCount === 0;
+    const isNotAdmin = level !== 0;
+
+    if (isOrphaned && hasNoTeam && isNotAdmin) {
+      usersToDelete.push({
+        uid,
+        email: data.email || 'no-email',
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        sponsorId: sponsor_id || 'none',
+        reason: sponsor_id ? `Orphaned sponsor (${sponsor_id})` : 'No sponsor'
+      });
     }
   });
 
-  if (updatesCount > 0) {
-    await batch.commit();
-    return { success: true, message: `Successfully recalculated counts for ${updatesCount} users.` };
+  logger.info(`🗑️ RECALCULATE: Found ${usersToDelete.length} orphaned users to delete`);
+
+  let usersDeleted = 0;
+  let authDeleteFailed = 0;
+  let firestoreDeleteFailed = 0;
+
+  if (!dryRun && usersToDelete.length > 0) {
+    for (const user of usersToDelete) {
+      let authDeleted = false;
+      let firestoreDeleted = false;
+
+      try {
+        await admin.auth().deleteUser(user.uid);
+        authDeleted = true;
+        logger.info(`🗑️ DELETED AUTH: ${user.email} (${user.uid})`);
+      } catch (error) {
+        authDeleteFailed++;
+        logger.warn(`⚠️ AUTH DELETE FAILED: ${user.uid} - ${error.message}`);
+      }
+
+      try {
+        await db.collection('users').doc(user.uid).delete();
+        firestoreDeleted = true;
+        logger.info(`🗑️ DELETED FIRESTORE: ${user.email} (${user.uid})`);
+      } catch (error) {
+        firestoreDeleteFailed++;
+        logger.warn(`⚠️ FIRESTORE DELETE FAILED: ${user.uid} - ${error.message}`);
+      }
+
+      if (authDeleted || firestoreDeleted) {
+        usersDeleted++;
+        deletedUsersList.push({
+          email: user.email,
+          uid: user.uid,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          sponsorId: user.sponsorId,
+          reason: user.reason
+        });
+      }
+    }
+
+    existingUids.clear();
+    allUsers.forEach(doc => {
+      if (!usersToDelete.some(u => u.uid === doc.id)) {
+        existingUids.add(doc.id);
+      }
+    });
   }
-  return { success: true, message: "All user counts were already up-to-date." };
+
+  const referencesToClean = [];
+  let orphanedSponsorsCleaned = 0;
+  let orphanedUplineRefsCleaned = 0;
+
+  allUsers.forEach(doc => {
+    if (usersToDelete.some(u => u.uid === doc.id)) return;
+
+    const { sponsor_id, upline_refs } = doc.data();
+    const cleanupNeeded = {};
+
+    if (sponsor_id && !existingUids.has(sponsor_id)) {
+      cleanupNeeded.sponsor_id = null;
+      orphanedSponsorsCleaned++;
+    }
+
+    const validRefs = (upline_refs || []).filter(uid => existingUids.has(uid));
+    if (validRefs.length !== (upline_refs || []).length) {
+      cleanupNeeded.upline_refs = validRefs;
+      orphanedUplineRefsCleaned += (upline_refs || []).length - validRefs.length;
+    }
+
+    if (Object.keys(cleanupNeeded).length > 0) {
+      referencesToClean.push({ docRef: doc.ref, updates: cleanupNeeded });
+    }
+  });
+
+  const BATCH_SIZE = 500;
+  let batches = [];
+  let currentBatch = db.batch();
+  let batchCount = 0;
+  let countsUpdated = 0;
+  let referencesModified = 0;
+
+  allUsers.forEach(doc => {
+    if (usersToDelete.some(u => u.uid === doc.id)) return;
+
+    const currentData = doc.data();
+    const calculated = countsMap.get(doc.id);
+
+    const needsCountUpdate =
+      currentData.directSponsorCount !== calculated.directSponsorCount ||
+      currentData.totalTeamCount !== calculated.totalTeamCount;
+
+    const refCleanup = referencesToClean.find(r => r.docRef.id === doc.id);
+
+    if (needsCountUpdate || refCleanup) {
+      const updateData = needsCountUpdate ? { ...calculated } : {};
+      if (refCleanup) Object.assign(updateData, refCleanup.updates);
+
+      if (!dryRun) {
+        currentBatch.update(doc.ref, updateData);
+        batchCount++;
+      }
+
+      if (needsCountUpdate) countsUpdated++;
+      if (refCleanup) referencesModified++;
+
+      logger.info(`🔄 UPDATE: ${doc.id} - ${needsCountUpdate ? 'counts' : ''}${needsCountUpdate && refCleanup ? '+' : ''}${refCleanup ? 'refs' : ''}`);
+
+      if (batchCount >= BATCH_SIZE) {
+        batches.push(currentBatch);
+        currentBatch = db.batch();
+        batchCount = 0;
+      }
+    }
+  });
+
+  if (batchCount > 0 && !dryRun) batches.push(currentBatch);
+
+  if (!dryRun && batches.length > 0) {
+    logger.info(`📊 RECALCULATE: Committing ${batches.length} batches...`);
+    for (let i = 0; i < batches.length; i++) {
+      await batches[i].commit();
+      logger.info(`✅ Batch ${i + 1}/${batches.length} committed`);
+    }
+  }
+
+  if (!dryRun && deletedUsersList.length > 0) {
+    const fs = require('fs');
+    const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+    const filename = `deleted_orphaned_users_${timestamp}.csv`;
+    const header = 'UID,Email,FirstName,LastName,SponsorId,Reason\n';
+    const rows = deletedUsersList.map(u =>
+      `"${u.uid}","${u.email}","${u.firstName}","${u.lastName}","${u.sponsorId}","${u.reason}"`
+    ).join('\n');
+    fs.writeFileSync(filename, header + rows);
+    logger.info(`📄 Deleted users log saved to: ${filename}`);
+  }
+
+  return {
+    success: true,
+    dryRun,
+    summary: {
+      totalUsers: allUsers.length,
+      completedProfiles: completedUsers.length,
+      incompleteProfiles: allUsers.length - completedUsers.length,
+      usersDeleted,
+      authDeleteFailed,
+      firestoreDeleteFailed,
+      deletedUsers: dryRun ? usersToDelete.map(u => ({ email: u.email, uid: u.uid, reason: u.reason })) : deletedUsersList,
+      countsUpdated,
+      countsUnchanged: allUsers.length - usersDeleted - countsUpdated,
+      orphanedSponsorsCleaned,
+      orphanedUplineRefsCleaned,
+      referencesModified,
+      batchesCommitted: dryRun ? 0 : batches.length
+    },
+    message: dryRun
+      ? `DRY RUN: Would delete ${usersToDelete.length} users, update ${countsUpdated} counts, clean ${referencesModified} references.`
+      : `Deleted ${usersDeleted} users, updated ${countsUpdated} counts, cleaned ${referencesModified} references.`
+  };
+});
+
+// ==============================
+// Database Cleanup Functions
+// ==============================
+
+const deleteNonAdminUsers = onCall({
+  region: "us-central1",
+  timeoutSeconds: 540,
+  memory: '1GiB'
+}, async (request) => {
+  const userId = validateAuthentication(request);
+  const { dryRun = false } = request.data || {};
+
+  const PROTECTED_ADMIN_UIDS = [
+    'JIMtU2WyFfQAfOkrI4ez3d62wUi2',
+    'KJ8uFnlhKhWgBa4NVcwT',
+    'lGHtGq9yRdWkhUyQGnzES5hkWiu1',
+    'q3G4qodwR2MAHisuHzTREcS6hJu1'
+  ];
+
+  const SUPER_ADMIN_UID = 'KJ8uFnlhKhWgBa4NVcwT';
+
+  if (userId !== SUPER_ADMIN_UID) {
+    logger.warn(`🚫 DELETE_NON_ADMIN: Unauthorized attempt by ${userId}`);
+    throw new HttpsError('permission-denied', 'Only super admin can delete non-admin users');
+  }
+
+  logger.info(`🗑️ DELETE_NON_ADMIN: Starting cleanup (dryRun: ${dryRun}) by ${userId}`);
+
+  if (dryRun) {
+    logger.info('🔒 DRY RUN MODE - No changes will be made');
+  }
+
+  const admin = require('firebase-admin');
+  const startTime = Date.now();
+
+  try {
+    const usersSnapshot = await db.collection('users').get();
+    const allUsers = usersSnapshot.docs;
+
+    const nonAdminUsers = allUsers.filter(doc => {
+      const data = doc.data();
+      const uid = doc.id;
+      return data.level > 0 && !PROTECTED_ADMIN_UIDS.includes(uid);
+    });
+
+    logger.info(`📊 DELETE_NON_ADMIN: Found ${nonAdminUsers.length} non-admin users to delete`);
+    logger.info(`📊 DELETE_NON_ADMIN: Protected ${PROTECTED_ADMIN_UIDS.length} admin accounts`);
+
+    if (nonAdminUsers.length === 0) {
+      return {
+        success: true,
+        dryRun,
+        message: 'No non-admin users found to delete',
+        summary: {
+          totalUsers: allUsers.length,
+          nonAdminUsers: 0,
+          protectedAdmins: PROTECTED_ADMIN_UIDS.length,
+          deleted: { users: 0, chats: 0, chatLogs: 0, chatUsage: 0, referralCodes: 0 }
+        }
+      };
+    }
+
+    const deletedUsersList = [];
+    const stats = {
+      users: { attempted: 0, firestoreSuccess: 0, authSuccess: 0, failed: 0 },
+      chats: { attempted: 0, success: 0, failed: 0 },
+      chatLogs: { attempted: 0, success: 0, failed: 0 },
+      chatUsage: { attempted: 0, success: 0, failed: 0 },
+      referralCodes: { attempted: 0, success: 0, failed: 0 }
+    };
+
+    for (const userDoc of nonAdminUsers) {
+      const uid = userDoc.id;
+      const userData = userDoc.data();
+
+      deletedUsersList.push({
+        uid,
+        email: userData.email || 'no-email',
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        level: userData.level || 0,
+        directSponsorCount: userData.directSponsorCount || 0,
+        totalTeamCount: userData.totalTeamCount || 0
+      });
+
+      if (!dryRun) {
+        stats.users.attempted++;
+
+        try {
+          await db.collection('users').doc(uid).delete();
+          stats.users.firestoreSuccess++;
+          logger.info(`🗑️ Deleted Firestore user: ${userData.email} (${uid})`);
+        } catch (error) {
+          logger.error(`❌ Failed to delete Firestore user ${uid}:`, error);
+          stats.users.failed++;
+        }
+
+        try {
+          await admin.auth().deleteUser(uid);
+          stats.users.authSuccess++;
+          logger.info(`🗑️ Deleted Auth user: ${userData.email} (${uid})`);
+        } catch (error) {
+          if (error.code === 'auth/user-not-found') {
+            logger.info(`ℹ️ Auth user already deleted: ${uid}`);
+          } else {
+            logger.error(`❌ Failed to delete Auth user ${uid}:`, error);
+            stats.users.failed++;
+          }
+        }
+
+        try {
+          const chatsSnapshot = await db.collection('chats')
+            .where('participants', 'array-contains', uid)
+            .get();
+
+          for (const chatDoc of chatsSnapshot.docs) {
+            stats.chats.attempted++;
+            try {
+              const messagesSnapshot = await chatDoc.ref.collection('messages').get();
+              for (const msgDoc of messagesSnapshot.docs) {
+                await msgDoc.ref.delete();
+              }
+              await chatDoc.ref.delete();
+              stats.chats.success++;
+            } catch (error) {
+              logger.error(`❌ Failed to delete chat ${chatDoc.id}:`, error);
+              stats.chats.failed++;
+            }
+          }
+        } catch (error) {
+          logger.error(`❌ Failed to query chats for ${uid}:`, error);
+        }
+
+        try {
+          const chatLogsSnapshot = await db.collection('chat_logs')
+            .where('userId', '==', uid)
+            .get();
+
+          for (const logDoc of chatLogsSnapshot.docs) {
+            stats.chatLogs.attempted++;
+            try {
+              await logDoc.ref.delete();
+              stats.chatLogs.success++;
+            } catch (error) {
+              logger.error(`❌ Failed to delete chat_log ${logDoc.id}:`, error);
+              stats.chatLogs.failed++;
+            }
+          }
+        } catch (error) {
+          logger.error(`❌ Failed to query chat_logs for ${uid}:`, error);
+        }
+
+        try {
+          const chatUsageSnapshot = await db.collection('chat_usage')
+            .where(admin.firestore.FieldPath.documentId(), '>=', uid)
+            .where(admin.firestore.FieldPath.documentId(), '<', uid + '\uf8ff')
+            .get();
+
+          for (const usageDoc of chatUsageSnapshot.docs) {
+            stats.chatUsage.attempted++;
+            try {
+              await usageDoc.ref.delete();
+              stats.chatUsage.success++;
+            } catch (error) {
+              logger.error(`❌ Failed to delete chat_usage ${usageDoc.id}:`, error);
+              stats.chatUsage.failed++;
+            }
+          }
+        } catch (error) {
+          logger.error(`❌ Failed to query chat_usage for ${uid}:`, error);
+        }
+
+        try {
+          const referralCodesSnapshot = await db.collection('referralCodes')
+            .where('uid', '==', uid)
+            .get();
+
+          for (const codeDoc of referralCodesSnapshot.docs) {
+            stats.referralCodes.attempted++;
+            try {
+              await codeDoc.ref.delete();
+              stats.referralCodes.success++;
+            } catch (error) {
+              logger.error(`❌ Failed to delete referralCode ${codeDoc.id}:`, error);
+              stats.referralCodes.failed++;
+            }
+          }
+        } catch (error) {
+          logger.error(`❌ Failed to query referralCodes for ${uid}:`, error);
+        }
+      }
+    }
+
+    if (!dryRun && deletedUsersList.length > 0) {
+      const fs = require('fs');
+      const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+      const filename = `deleted_non_admin_users_${timestamp}.csv`;
+      const header = 'UID,Email,FirstName,LastName,Level,DirectSponsors,TotalTeam\n';
+      const rows = deletedUsersList.map(u =>
+        `"${u.uid}","${u.email}","${u.firstName}","${u.lastName}",${u.level},${u.directSponsorCount},${u.totalTeamCount}`
+      ).join('\n');
+      fs.writeFileSync(filename, header + rows);
+      logger.info(`📄 Deleted users log saved to: ${filename}`);
+    }
+
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    const summary = {
+      totalUsers: allUsers.length,
+      nonAdminUsers: nonAdminUsers.length,
+      protectedAdmins: PROTECTED_ADMIN_UIDS.length,
+      executionTime: `${duration}s`,
+      deleted: {
+        users: stats.users.firestoreSuccess,
+        authUsers: stats.users.authSuccess,
+        chats: stats.chats.success,
+        chatLogs: stats.chatLogs.success,
+        chatUsage: stats.chatUsage.success,
+        referralCodes: stats.referralCodes.success
+      },
+      failed: {
+        users: stats.users.failed,
+        chats: stats.chats.failed,
+        chatLogs: stats.chatLogs.failed,
+        chatUsage: stats.chatUsage.failed,
+        referralCodes: stats.referralCodes.failed
+      },
+      deletedUsers: dryRun ? deletedUsersList : deletedUsersList.slice(0, 10)
+    };
+
+    logger.info(`✅ DELETE_NON_ADMIN: Completed in ${duration}s`);
+
+    return {
+      success: true,
+      dryRun,
+      summary,
+      message: dryRun
+        ? `DRY RUN: Would delete ${nonAdminUsers.length} users and all related data`
+        : `Deleted ${stats.users.firestoreSuccess} users and cleaned up ${stats.chats.success} chats, ${stats.chatLogs.success} logs, ${stats.chatUsage.success} usage records, ${stats.referralCodes.success} referral codes`
+    };
+
+  } catch (error) {
+    logger.error(`❌ DELETE_NON_ADMIN: Fatal error:`, error);
+    throw new HttpsError('internal', `Cleanup failed: ${error.message}`);
+  }
+});
+
+const cleanupOrphanedUsers = onCall({
+  region: "us-central1",
+  timeoutSeconds: 540,
+  memory: '1GiB'
+}, async (request) => {
+  const startTime = Date.now();
+  const caller = request.auth;
+
+  if (!caller) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated');
+  }
+
+  const SUPER_ADMIN_UID = 'KJ8uFnlhKhWgBa4NVcwT';
+  if (caller.uid !== SUPER_ADMIN_UID) {
+    logger.warn(`🚫 CLEANUP_ORPHANED: Unauthorized attempt by ${caller.uid}`);
+    throw new HttpsError('permission-denied', 'Super Admin only');
+  }
+
+  const dryRun = request.data?.dryRun === true;
+  logger.info(`🧹 CLEANUP_ORPHANED: Starting ${dryRun ? 'DRY RUN' : 'LIVE'} subcollection cleanup by ${caller.uid}`);
+
+  const PROTECTED_ADMIN_UIDS = [
+    'JIMtU2WyFfQAfOkrI4ez3d62wUi2',
+    'KJ8uFnlhKhWgBa4NVcwT',
+    'lGHtGq9yRdWkhUyQGnzES5hkWiu1',
+    'q3G4qodwR2MAHisuHzTREcS6hJu1'
+  ];
+
+  try {
+    const orphanedSubcollections = [];
+    const stats = {
+      notificationsScanned: 0,
+      fcmTokensScanned: 0,
+      orphanedNotifications: 0,
+      orphanedFcmTokens: 0,
+      uniqueOrphanedParents: new Set(),
+      deleted: {
+        notifications: { success: 0, failed: 0 },
+        fcmTokens: { success: 0, failed: 0 }
+      }
+    };
+
+    logger.info(`🔍 Scanning all notifications using collectionGroup...`);
+    const allNotifications = await db.collectionGroup('notifications').get();
+    stats.notificationsScanned = allNotifications.docs.length;
+    logger.info(`📊 Found ${stats.notificationsScanned} total notification documents across all users`);
+
+    for (const notifDoc of allNotifications.docs) {
+      const parentUserRef = notifDoc.ref.parent.parent;
+      const parentUserId = parentUserRef.id;
+
+      if (PROTECTED_ADMIN_UIDS.includes(parentUserId)) {
+        continue;
+      }
+
+      const parentSnapshot = await parentUserRef.get();
+
+      if (!parentSnapshot.exists) {
+        stats.orphanedNotifications++;
+        stats.uniqueOrphanedParents.add(parentUserId);
+
+        orphanedSubcollections.push({
+          type: 'notification',
+          parentUserId,
+          docId: notifDoc.id,
+          path: notifDoc.ref.path,
+          data: notifDoc.data()
+        });
+
+        if (!dryRun) {
+          try {
+            await notifDoc.ref.delete();
+            stats.deleted.notifications.success++;
+          } catch (error) {
+            logger.error(`Failed to delete orphaned notification ${notifDoc.ref.path}:`, error);
+            stats.deleted.notifications.failed++;
+          }
+        }
+      }
+
+      if (stats.notificationsScanned % 100 === 0) {
+        logger.info(`📊 Progress: ${stats.notificationsScanned} notifications scanned, ${stats.orphanedNotifications} orphaned`);
+      }
+    }
+
+    logger.info(`🔍 Scanning all fcmTokens using collectionGroup...`);
+    const allFcmTokens = await db.collectionGroup('fcmTokens').get();
+    stats.fcmTokensScanned = allFcmTokens.docs.length;
+    logger.info(`📊 Found ${stats.fcmTokensScanned} total fcmToken documents across all users`);
+
+    for (const tokenDoc of allFcmTokens.docs) {
+      const parentUserRef = tokenDoc.ref.parent.parent;
+      const parentUserId = parentUserRef.id;
+
+      if (PROTECTED_ADMIN_UIDS.includes(parentUserId)) {
+        continue;
+      }
+
+      const parentSnapshot = await parentUserRef.get();
+
+      if (!parentSnapshot.exists) {
+        stats.orphanedFcmTokens++;
+        stats.uniqueOrphanedParents.add(parentUserId);
+
+        orphanedSubcollections.push({
+          type: 'fcmToken',
+          parentUserId,
+          docId: tokenDoc.id,
+          path: tokenDoc.ref.path,
+          data: tokenDoc.data()
+        });
+
+        if (!dryRun) {
+          try {
+            await tokenDoc.ref.delete();
+            stats.deleted.fcmTokens.success++;
+          } catch (error) {
+            logger.error(`Failed to delete orphaned fcmToken ${tokenDoc.ref.path}:`, error);
+            stats.deleted.fcmTokens.failed++;
+          }
+        }
+      }
+
+      if (stats.fcmTokensScanned % 100 === 0) {
+        logger.info(`📊 Progress: ${stats.fcmTokensScanned} fcmTokens scanned, ${stats.orphanedFcmTokens} orphaned`);
+      }
+    }
+
+    if (!dryRun && orphanedSubcollections.length > 0) {
+      const csvPath = `/tmp/deleted_orphaned_subcollections_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+      const csvHeader = 'Type,ParentUserId,DocId,Path\n';
+      const csvRows = orphanedSubcollections.map(s =>
+        `"${s.type}","${s.parentUserId}","${s.docId}","${s.path}"`
+      ).join('\n');
+      require('fs').writeFileSync(csvPath, csvHeader + csvRows);
+      logger.info(`📄 CSV backup written to ${csvPath}`);
+    }
+
+    const executionTime = ((Date.now() - startTime) / 1000).toFixed(1);
+    const totalOrphaned = stats.orphanedNotifications + stats.orphanedFcmTokens;
+    const uniqueParents = Array.from(stats.uniqueOrphanedParents);
+
+    const summary = {
+      notificationsScanned: stats.notificationsScanned,
+      fcmTokensScanned: stats.fcmTokensScanned,
+      totalOrphanedSubcollections: totalOrphaned,
+      orphanedNotifications: stats.orphanedNotifications,
+      orphanedFcmTokens: stats.orphanedFcmTokens,
+      uniqueOrphanedParents: uniqueParents.length,
+      executionTime: `${executionTime}s`,
+      deleted: stats.deleted,
+      sampleOrphanedParents: uniqueParents.slice(0, 10),
+      sampleSubcollections: orphanedSubcollections.slice(0, 10).map(s => ({
+        type: s.type,
+        parentUserId: s.parentUserId,
+        path: s.path
+      }))
+    };
+
+    logger.info(`✅ CLEANUP_ORPHANED: Completed in ${executionTime}s - ${totalOrphaned} orphaned subcollections ${dryRun ? 'identified' : 'deleted'} from ${uniqueParents.length} non-existent parent users`);
+
+    return {
+      success: true,
+      dryRun,
+      summary,
+      message: dryRun
+        ? `DRY RUN: Would delete ${totalOrphaned} orphaned subcollections from ${uniqueParents.length} non-existent user documents`
+        : `Deleted ${stats.deleted.notifications.success} orphaned notifications and ${stats.deleted.fcmTokens.success} orphaned fcmTokens from ${uniqueParents.length} non-existent user documents`
+    };
+
+  } catch (error) {
+    logger.error(`❌ CLEANUP_ORPHANED: Fatal error:`, error);
+    throw new HttpsError('internal', `Cleanup failed: ${error.message}`);
+  }
 });
 
 // ==============================
@@ -982,6 +1595,8 @@ module.exports = {
 
   // Team management analytics
   recalculateTeamCounts,
+  deleteNonAdminUsers,
+  cleanupOrphanedUsers,
 
   // User profile management
   updateUserTimezone,

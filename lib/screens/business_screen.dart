@@ -154,8 +154,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  (context.l10n?.businessConfirmDialogMessage ?? "This is the next step in your journey. After joining [business] through your sponsor's link, you must return here to add your new [business] referral link to your profile. This is a critical step to ensure your new team members are placed correctly.")
-                      .toString().replaceAll('[business]', bizOpp ?? 'business'),
+                  context.l10n?.businessConfirmDialogMessage(bizOpp ?? 'business') ?? "This is the next step in your journey. After joining ${bizOpp ?? 'business'} through your sponsor's link, you must return here to add your new ${bizOpp ?? 'business'} referral link to your profile. This is a critical step to ensure your new team members are placed correctly.",
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
@@ -255,7 +254,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               children: [
                 Icon(Icons.error, color: AppColors.textInverse),
                 const SizedBox(width: 12),
-                Text((context.l10n?.businessUrlCopyError ?? 'Failed to copy URL: [error]').toString().replaceAll('[error]', e.toString())),
+                Text(context.l10n?.businessUrlCopyError(e.toString()) ?? 'Failed to copy URL: ${e.toString()}'),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -310,8 +309,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    (context.l10n?.businessVisitRequiredMessage ?? "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit [business] and complete your registration.")
-                        .toString().replaceAll('[business]', bizOpp ?? 'business'),
+                    context.l10n?.businessVisitRequiredMessage(bizOpp ?? 'business') ?? "Before updating your profile, you must first use the 'Copy Registration Link' button on this page to visit ${bizOpp ?? 'business'} and complete your registration.",
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
@@ -390,8 +388,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            (context.l10n?.businessHeroMessage ?? 'Your hard work and team-building have paid off. You are now eligible to join the [business] opportunity.')
-                .toString().replaceAll('[business]', bizOpp ?? 'business'),
+            context.l10n?.businessHeroMessage(bizOpp ?? 'business') ?? 'Your hard work and team-building have paid off. You are now eligible to join the ${bizOpp ?? 'business'} opportunity.',
             style: TextStyle(
               fontSize: 18,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -450,8 +447,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            (context.l10n?.businessDisclaimerMessage ?? 'Your team growth has unlocked access to [business]. This opportunity operates as an independent business and has no affiliation with the Team Build Pro platform.')
-                .toString().replaceAll('[business]', bizOpp ?? 'business'),
+            context.l10n?.businessDisclaimerMessage(bizOpp ?? 'business') ?? 'Your team growth has unlocked access to ${bizOpp ?? 'business'}. This opportunity operates as an independent business and has no affiliation with the Team Build Pro platform.',
             style: TextStyle(
               fontSize: 15,
               color: AppColors.textPrimary,
@@ -472,8 +468,7 @@ class _BusinessScreenState extends State<BusinessScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    (context.l10n?.businessDisclaimerInfo ?? 'The Team Build Pro App simply facilitates access to [business] via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.')
-                        .toString().replaceAll('[business]', bizOpp ?? 'business'),
+                    context.l10n?.businessDisclaimerInfo(bizOpp ?? 'business') ?? 'The Team Build Pro App simply facilitates access to ${bizOpp ?? 'business'} via your upline sponsor. It does not endorse or guarantee any specific outcomes from this opportunity.',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.darker(AppColors.success),
@@ -534,52 +529,52 @@ class _BusinessScreenState extends State<BusinessScreen>
                 color: AppColors.textSecondary,
                 height: 1.5,
               ),
-              children: [
-                TextSpan(
-                  text: (context.l10n?.businessSponsorMessage ?? 'If you choose to explore [business], your referral contact will be [sponsor]. This person is a member of your upline team who has already joined [business].')
-                      .toString().replaceAll('[business]', bizOpp ?? 'business')
-                      .split('[sponsor]')[0],
-                ),
-                if (sponsorName != null && sponsorUid != null)
-                  WidgetSpan(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => MemberDetailScreen(
-                              userId: sponsorUid!,
-                              appId: widget.appId,
+              children: () {
+                final fullMessage = context.l10n?.businessSponsorMessage(
+                  bizOpp ?? 'business',
+                  sponsorName ?? 'an upline Team Leader',
+                ) ?? 'If you choose to explore ${bizOpp ?? 'business'}, your referral contact will be ${sponsorName ?? 'an upline Team Leader'}. This person is a member of your upline team who has already joined ${bizOpp ?? 'business'}.';
+
+                final parts = fullMessage.split(sponsorName ?? 'an upline Team Leader');
+
+                return <InlineSpan>[
+                  TextSpan(text: parts[0]),
+                  if (sponsorName != null && sponsorUid != null)
+                    WidgetSpan(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MemberDetailScreen(
+                                userId: sponsorUid!,
+                                appId: widget.appId,
+                              ),
                             ),
+                          );
+                        },
+                        child: Text(
+                          sponsorName!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
                           ),
-                        );
-                      },
-                      child: Text(
-                        sponsorName!,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
                         ),
                       ),
+                    )
+                  else
+                    TextSpan(
+                      text: sponsorName ?? 'an upline Team Leader',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  )
-                else
-                  TextSpan(
-                    text: sponsorName ?? 'an upline Team Leader',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                TextSpan(
-                  text: (context.l10n?.businessSponsorMessage ?? 'If you choose to explore [business], your referral contact will be [sponsor]. This person is a member of your upline team who has already joined [business].')
-                      .toString().replaceAll('[business]', bizOpp ?? 'business')
-                      .split('[sponsor]')
-                      .skip(1)
-                      .join('[sponsor]'),
-                ),
-              ],
+                  if (parts.length > 1)
+                    TextSpan(text: parts.skip(1).join(sponsorName ?? 'an upline Team Leader')),
+                ];
+              }(),
             ),
           ),
         ],
@@ -603,8 +598,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
               const SizedBox(width: 8),
               Text(
-                (context.l10n?.businessInstructionsTitle ?? 'How to Join [business]')
-                    .toString().replaceAll('[business]', bizOpp ?? 'business'),
+                context.l10n?.businessInstructionsTitle(bizOpp ?? 'business') ?? 'How to Join ${bizOpp ?? 'business'}',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -615,8 +609,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            (context.l10n?.businessInstructions ?? '1. Copy the referral link below\n2. Open your web browser\n3. Paste the link and complete the [business] registration\n4. Return here to add your [business] referral link')
-                .toString().replaceAll('[business]', bizOpp ?? 'business'),
+            context.l10n?.businessInstructions(bizOpp ?? 'business') ?? '1. Copy the referral link below\n2. Open your web browser\n3. Paste the link and complete the ${bizOpp ?? 'business'} registration\n4. Return here to add your ${bizOpp ?? 'business'} referral link',
             style: TextStyle(
               fontSize: 14,
               color: Colors.blue.shade800,
@@ -626,6 +619,138 @@ class _BusinessScreenState extends State<BusinessScreen>
         ],
       ),
     );
+  }
+
+  Widget _buildProgressTracker() {
+    final user = Provider.of<UserModel?>(context);
+    final hasVisited = user?.bizVisitDate != null;
+    final hasJoined = user?.bizJoinDate != null;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.primary.withOpacity(0.1), AppColors.surface],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.timeline, color: AppColors.primary, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                'Registration Progress',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildProgressStep(
+            stepNumber: 1,
+            title: 'Copy Registration Link',
+            isComplete: hasVisited,
+            completedDate: user?.bizVisitDate,
+          ),
+          const SizedBox(height: 12),
+          _buildProgressStep(
+            stepNumber: 2,
+            title: 'Complete Registration',
+            isComplete: hasJoined,
+            completedDate: user?.bizJoinDate,
+          ),
+          const SizedBox(height: 12),
+          _buildProgressStep(
+            stepNumber: 3,
+            title: 'Add Your Referral Link',
+            isComplete: hasJoined,
+            icon: Icons.link,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressStep({
+    required int stepNumber,
+    required String title,
+    required bool isComplete,
+    DateTime? completedDate,
+    IconData? icon,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: isComplete ? AppColors.success : AppColors.border,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: isComplete
+                ? Icon(Icons.check, color: AppColors.textInverse, size: 20)
+                : Text(
+                    '$stepNumber',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: isComplete ? AppColors.success : AppColors.textPrimary,
+                ),
+              ),
+              if (completedDate != null)
+                Text(
+                  'Completed ${_formatDate(completedDate)}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (isComplete)
+          Icon(Icons.verified, color: AppColors.success, size: 20),
+      ],
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date);
+
+    if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours}h ago';
+    } else if (diff.inDays < 7) {
+      return '${diff.inDays}d ago';
+    } else {
+      return '${date.month}/${date.day}/${date.year}';
+    }
   }
 
   Widget _buildUrlSection() {
@@ -730,8 +855,7 @@ class _BusinessScreenState extends State<BusinessScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            (context.l10n?.businessFollowUpMessage ?? "After exploring [business], you must return here and add your new [business] referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.")
-                .toString().replaceAll('[business]', bizOpp ?? 'business'),
+            context.l10n?.businessFollowUpMessage(bizOpp ?? 'business') ?? "After exploring ${bizOpp ?? 'business'}, you must return here and add your new ${bizOpp ?? 'business'} referral link to your Team Build Pro profile. This ensures your team connections are tracked correctly.",
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -806,6 +930,8 @@ class _BusinessScreenState extends State<BusinessScreen>
                     _buildDisclaimerCard(),
                     const SizedBox(height: 24),
                     _buildSponsorInfoCard(),
+                    const SizedBox(height: 24),
+                    _buildProgressTracker(),
                     const SizedBox(height: 24),
                     _buildInstructionsCard(),
                     const SizedBox(height: 20),
