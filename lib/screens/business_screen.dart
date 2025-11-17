@@ -99,6 +99,10 @@ class _BusinessScreenState extends State<BusinessScreen>
 
       if (!mounted) return;
 
+      if (kDebugMode) {
+        debugPrint("🔍 BUSINESS: _loadData - user.bizVisitDate = ${user.bizVisitDate}, hasVisitedOpp will be ${user.bizVisitDate != null}");
+      }
+
       setState(() {
         bizOpp = retrievedBizOpp.isNotEmpty ? retrievedBizOpp : null;
         bizOppRefUrl = retrievedBizOppRefUrl;
@@ -198,31 +202,44 @@ class _BusinessScreenState extends State<BusinessScreen>
 
     // Only call the Cloud Function if the user hasn't visited the opportunity yet
     // This ensures the sponsor notification is only sent on the first copy
+    if (kDebugMode) {
+      debugPrint("🔍 BUSINESS: hasVisitedOpp = $hasVisitedOpp, calling Cloud Function: ${!hasVisitedOpp}");
+    }
+
     if (!hasVisitedOpp) {
       try {
+        if (kDebugMode) {
+          debugPrint("📞 BUSINESS: Calling notifySponsorOfBizOppVisit Cloud Function...");
+        }
+
         HttpsCallable callable =
             FirebaseFunctions.instanceFor(region: 'us-central1')
                 .httpsCallable('notifySponsorOfBizOppVisit');
-        await callable.call();
+        final result = await callable.call();
+
+        if (kDebugMode) {
+          debugPrint("✅ BUSINESS: Cloud Function returned: ${result.data}");
+        }
 
         if (mounted) {
           // Update the local state to reflect the change immediately
           setState(() => hasVisitedOpp = true);
           if (kDebugMode) {
-            debugPrint(
-                "Successfully triggered sponsor notification function on first copy.");
+            debugPrint("✅ BUSINESS: Updated local state - hasVisitedOpp = true");
           }
         }
       } on FirebaseFunctionsException catch (e) {
         if (kDebugMode) {
-          debugPrint(
-              "Error calling notifySponsorOfBizOppVisit: ${e.code} - ${e.message}");
+          debugPrint("❌ BUSINESS: FirebaseFunctionsException - code: ${e.code}, message: ${e.message}, details: ${e.details}");
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint("❌ BUSINESS: Unexpected error calling notifySponsorOfBizOppVisit: $e");
         }
       }
     } else {
       if (kDebugMode) {
-        debugPrint(
-            "User has already visited opportunity - skipping notification call.");
+        debugPrint("⏭️ BUSINESS: User has already visited opportunity - skipping notification call.");
       }
     }
 
