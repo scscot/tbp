@@ -17,11 +17,11 @@ const messaging = admin.messaging();
  */
 const updateUserBadge = async (userId, newNotificationCount = null, newUnreadChatCount = null) => {
   try {
-    console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId}`);
+    console.log(`🔔 BADGE UPDATE: Starting badge update for user ${userId} (notifCount=${newNotificationCount}, chatCount=${newUnreadChatCount})`);
 
     const userDoc = await db.collection('users').doc(userId).get();
     if (!userDoc.exists) {
-      console.log(`🔔 BADGE UPDATE: User document for ${userId} does not exist`);
+      console.log(`⚠️ BADGE UPDATE: User document for ${userId} does not exist - skipping badge update`);
       return;
     }
 
@@ -29,13 +29,16 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
     const fcmToken = userData?.fcm_token;
 
     if (!fcmToken) {
-      console.log(`🔔 BADGE UPDATE: No FCM token for user ${userId}`);
+      console.log(`⚠️ BADGE UPDATE: No FCM token for user ${userId} - skipping badge update (user may not have enabled notifications)`);
       return;
     }
+
+    console.log(`🔔 BADGE UPDATE: Resolved FCM token for user ${userId} (token length: ${fcmToken.length})`);
 
     // Count unread notifications
     let notificationCount = newNotificationCount;
     if (notificationCount === null) {
+      console.log(`🔔 BADGE UPDATE: Querying unread notifications for user ${userId}...`);
       const unreadNotificationsSnapshot = await db
         .collection('users')
         .doc(userId)
@@ -44,11 +47,15 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
         .count()
         .get();
       notificationCount = unreadNotificationsSnapshot.data().count;
+      console.log(`🔔 BADGE UPDATE: Found ${notificationCount} unread notifications`);
+    } else {
+      console.log(`🔔 BADGE UPDATE: Using provided notification count: ${notificationCount}`);
     }
 
     // Count unread chat messages (count threads with unread messages)
     let messageCount = newUnreadChatCount;
     if (messageCount === null) {
+      console.log(`🔔 BADGE UPDATE: Querying unread chats for user ${userId}...`);
       const chatDocs = await db
         .collection('chats')
         .where('participants', 'array-contains', userId)
@@ -67,12 +74,15 @@ const updateUserBadge = async (userId, newNotificationCount = null, newUnreadCha
           messageCount++;
         }
       });
+      console.log(`🔔 BADGE UPDATE: Found ${messageCount} unread chat threads (from ${chatDocs.docs.length} total chats)`);
+    } else {
+      console.log(`🔔 BADGE UPDATE: Using provided chat count: ${messageCount}`);
     }
 
     const totalBadgeCount = notificationCount + messageCount;
 
     console.log(
-      `🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total: ${totalBadgeCount}`
+      `🔔 BADGE UPDATE: User ${userId} - Notifications: ${notificationCount}, Messages: ${messageCount}, Total Badge: ${totalBadgeCount}`
     );
 
     // Send badge update message

@@ -311,6 +311,21 @@ const registerUser = onCall({ region: "us-central1" }, async (request) => {
       reviewPromptedAt: null,
     };
 
+    // Validate and add photoUrl if provided (optional field)
+    if (request.data.photoUrl) {
+      try {
+        const url = new URL(request.data.photoUrl);
+        if (url.protocol === 'https:') {
+          newUser.photoUrl = request.data.photoUrl;
+          logger.info('✅ REGISTER: Valid photoUrl provided');
+        } else {
+          logger.warn(`⚠️ REGISTER: Ignoring photoUrl with non-HTTPS protocol: ${url.protocol}`);
+        }
+      } catch (urlError) {
+        logger.warn(`⚠️ REGISTER: Ignoring invalid photoUrl format: ${request.data.photoUrl}`);
+      }
+    }
+
     let finalLanguage = 'en';
     if (preferredLanguage && ['en', 'es', 'pt', 'de'].includes(preferredLanguage.toLowerCase())) {
       finalLanguage = preferredLanguage.toLowerCase();

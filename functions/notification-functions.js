@@ -59,14 +59,27 @@ async function checkUplineMilestone(userId, userData) {
   try {
     console.log(`MILESTONE UPLINE: Checking milestones for upline user ${userId}`);
 
+    // Validate userData exists
+    if (!userData || typeof userData !== 'object') {
+      logger.warn(`MILESTONE UPLINE: Invalid userData for user ${userId}`);
+      return;
+    }
+
     // Skip admins and qualified users
     if (userData.role === 'admin' || userData.qualifiedDate) {
       console.log(`MILESTONE UPLINE: Skipping ${userId} - admin or qualified`);
       return;
     }
 
-    const directSponsors = userData.directSponsorCount || 0;
-    const totalTeam = userData.totalTeamCount || 0;
+    // Safely extract and validate counts
+    const directSponsors = Number(userData.directSponsorCount) || 0;
+    const totalTeam = Number(userData.totalTeamCount) || 0;
+
+    if (isNaN(directSponsors) || isNaN(totalTeam)) {
+      logger.warn(`MILESTONE UPLINE: Invalid milestone counts for user ${userId} - Direct: ${userData.directSponsorCount}, Team: ${userData.totalTeamCount}`);
+      return;
+    }
+
     const directMin = 4;
     const teamMin = 20;
 
@@ -205,10 +218,16 @@ async function resolveBestFcmTokenForUser(userRef, userDataMaybe) {
         source = 'fcmTokens(subcollection)';
       }
     } catch (e) {
-      const sub = await userRef.collection('fcmTokens').orderBy(FieldPath.documentId()).limit(1).get();
-      if (!sub.empty) {
-        token = sub.docs[0].id.trim();
-        source = 'fcmTokens(subcollection)';
+      // Fallback: Try ordering by document ID if updatedAt field doesn't exist
+      try {
+        const sub = await userRef.collection('fcmTokens').orderBy(FieldPath.documentId()).limit(1).get();
+        if (!sub.empty) {
+          token = sub.docs[0].id.trim();
+          source = 'fcmTokens(subcollection)';
+        }
+      } catch (fallbackError) {
+        logger.error(`FCM token subcollection query failed for user ${userRef.id}:`, fallbackError);
+        // Graceful degradation - return null token
       }
     }
   }
@@ -912,24 +931,42 @@ const onNewChatMessage = onDocumentCreated("chats/{threadId}/messages/{messageId
  * Update profile reading permissions when chat is created
  */
 const updateCanReadProfileOnChatCreate = onDocumentCreated("chats/{chatId}", async (event) => {
-  const snap = event.data;
-  if (!snap) return;
-  const chatData = snap.data();
-  const { participants } = chatData;
-  if (!participants || participants.length !== 2) return;
-
-  const [uid1, uid2] = participants;
-  const userRef1 = db.collection("users").doc(uid1);
-  const userRef2 = db.collection("users").doc(uid2);
-  const batch = db.batch();
-  batch.update(userRef1, { can_read_profile: FieldValue.arrayUnion(uid2) });
-  batch.update(userRef2, { can_read_profile: FieldValue.arrayUnion(uid1) });
-
   try {
+    const snap = event.data;
+    if (!snap) {
+      logger.warn('updateCanReadProfileOnChatCreate: No event data');
+      return;
+    }
+
+    const chatData = snap.data();
+    if (!chatData) {
+      logger.warn('updateCanReadProfileOnChatCreate: No chat data');
+      return;
+    }
+
+    const { participants } = chatData;
+    if (!participants || !Array.isArray(participants) || participants.length !== 2) {
+      logger.warn(`updateCanReadProfileOnChatCreate: Invalid participants array - length: ${participants?.length}`);
+      return;
+    }
+
+    const [uid1, uid2] = participants;
+    if (!uid1 || !uid2) {
+      logger.warn('updateCanReadProfileOnChatCreate: Invalid participant UIDs');
+      return;
+    }
+
+    const userRef1 = db.collection("users").doc(uid1);
+    const userRef2 = db.collection("users").doc(uid2);
+    const batch = db.batch();
+    batch.update(userRef1, { can_read_profile: FieldValue.arrayUnion(uid2) });
+    batch.update(userRef2, { can_read_profile: FieldValue.arrayUnion(uid1) });
+
     await batch.commit();
-    logger.info(`Successfully updated can_read_profile permissions for users: ${uid1} and ${uid2}`);
+    logger.info(`✅ CHAT PERMISSIONS: Updated can_read_profile for users ${uid1} and ${uid2}`);
   } catch (error) {
-    logger.error("Error updating can_read_profile permissions:", error);
+    logger.error(`❌ CHAT PERMISSIONS: Failed to update can_read_profile for chat ${event.params.chatId}:`, error);
+    // Don't throw - log and continue to prevent chat creation failures
   }
 });
 
