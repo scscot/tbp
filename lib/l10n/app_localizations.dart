@@ -6810,6 +6810,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Questions not answered here? Contact our support team - we\'re here to help you succeed!'**
   String get faqFooterContact;
+
+  /// Title for business opportunity education modal
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Your Sponsorship Position!'**
+  String get bizOppEducationTitle;
+
+  /// Section title explaining sponsorship mechanics
+  ///
+  /// In en, this message translates to:
+  /// **'How Sponsorship Works'**
+  String get bizOppEducationWorksTitle;
+
+  /// Explanation of how sponsorship is determined
+  ///
+  /// In en, this message translates to:
+  /// **'When your team members join {business}, their sponsor will be the FIRST person in their upline who has already joined.'**
+  String bizOppEducationWorksBody(String business);
+
+  /// Title for benefits section
+  ///
+  /// In en, this message translates to:
+  /// **'Join now to ensure:'**
+  String get bizOppEducationBenefitsTitle;
+
+  /// First benefit of joining now
+  ///
+  /// In en, this message translates to:
+  /// **'Your recruits are sponsored under YOU'**
+  String get bizOppEducationBenefit1;
+
+  /// Second benefit of joining now
+  ///
+  /// In en, this message translates to:
+  /// **'You receive credit for their activity'**
+  String get bizOppEducationBenefit2;
+
+  /// Third benefit of joining now
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t miss out on this opportunity'**
+  String get bizOppEducationBenefit3;
+
+  /// Button to dismiss modal temporarily
+  ///
+  /// In en, this message translates to:
+  /// **'Remind Me Later'**
+  String get bizOppEducationRemindLater;
+
+  /// Button to proceed to join business opportunity
+  ///
+  /// In en, this message translates to:
+  /// **'Join Now'**
+  String get bizOppEducationJoinNow;
+
+  /// Label for important notice
+  ///
+  /// In en, this message translates to:
+  /// **'Important:'**
+  String get sharePartnerImportantLabel;
+
+  /// Important notice about respecting sponsorship relationships
+  ///
+  /// In en, this message translates to:
+  /// **'We highly recommend you share the Team Build Pro app with your front-line {business} team members (individuals you have personally sponsored) before sharing it with {business} team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your {business} downline.'**
+  String sharePartnerImportantText(String business);
+
+  /// Title for business opportunity registration progress section
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Progress'**
+  String get bizProgressTitle;
+
+  /// Step 1: Copy the registration link to visit the business opportunity site
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Registration Link'**
+  String get bizProgressStep1;
+
+  /// Step 2: Complete registration on the business opportunity website
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Registration'**
+  String get bizProgressStep2;
+
+  /// Step 3: Add your referral link from the business opportunity
+  ///
+  /// In en, this message translates to:
+  /// **'Add Your Referral Link'**
+  String get bizProgressStep3;
+
+  /// Title for How It Works screen
+  ///
+  /// In en, this message translates to:
+  /// **'How It Works'**
+  String get hiwTitle;
+
+  /// Subtitle for How It Works screen hero section
+  ///
+  /// In en, this message translates to:
+  /// **'Transform your recruiting with a pre-qualified team pipeline.'**
+  String get hiwSubtitle;
+
+  /// Title for featured business opportunity section
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Opportunity'**
+  String get hiwFeaturedOpp;
+
+  /// Title for pipeline system section
+  ///
+  /// In en, this message translates to:
+  /// **'PIPELINE SYSTEM'**
+  String get hiwPipelineSystem;
+
+  /// Title for pipeline step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Set Your Foundation'**
+  String get hiwStep1Title;
+
+  /// Description for pipeline step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.'**
+  String get hiwStep1Desc;
+
+  /// Title for pipeline step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Build Smart, Not Hard'**
+  String get hiwStep2Title;
+
+  /// Description for pipeline step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the \"cold start\" problem.'**
+  String get hiwStep2Desc;
+
+  /// Title for pipeline step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic Qualification'**
+  String get hiwStep3Title;
+
+  /// Description for pipeline step 3
+  ///
+  /// In en, this message translates to:
+  /// **'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.'**
+  String get hiwStep3Desc;
+
+  /// Title for pipeline step 4
+  ///
+  /// In en, this message translates to:
+  /// **'Rapid Growth'**
+  String get hiwStep4Title;
+
+  /// Description for pipeline step 4
+  ///
+  /// In en, this message translates to:
+  /// **'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.'**
+  String get hiwStep4Desc;
+
+  /// Title for key growth targets section
+  ///
+  /// In en, this message translates to:
+  /// **'KEY GROWTH TARGETS'**
+  String get hiwKeyTargets;
+
+  /// Label for direct sponsors metric
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Sponsors'**
+  String get hiwDirectSponsors;
+
+  /// Label for total team members metric
+  ///
+  /// In en, this message translates to:
+  /// **'Total Team Members'**
+  String get hiwTotalTeam;
+
+  /// Call to action title
+  ///
+  /// In en, this message translates to:
+  /// **'Grow Your Network'**
+  String get hiwGrowNetwork;
+
+  /// Call to action description
+  ///
+  /// In en, this message translates to:
+  /// **'Expand your Network to drive organization growth!'**
+  String get hiwExpandNetwork;
+
+  /// Button text for proven growth strategies
+  ///
+  /// In en, this message translates to:
+  /// **'Proven Growth Strategies'**
+  String get hiwProvenStrategies;
+
+  /// Platform Management screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get pmTitle;
+
+  /// Dialog title for creating new admin account
+  ///
+  /// In en, this message translates to:
+  /// **'Important Terms'**
+  String get pmDialogTitle;
+
+  /// Introduction text for new admin account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'You are creating a new, separate admin account. By proceeding, you understand and agree to the following:'**
+  String get pmDialogIntro;
+
+  /// Term 1 for new admin account creation
+  ///
+  /// In en, this message translates to:
+  /// **'This new account is completely separate and cannot be merged with your current account.'**
+  String get pmTerm1;
+
+  /// Term 2 for new admin account creation with business opportunity name
+  ///
+  /// In en, this message translates to:
+  /// **'Your existing \"{bizOpp}\" team is non-transferable.'**
+  String pmTerm2(String bizOpp);
+
+  /// Term 3 for new admin account creation
+  ///
+  /// In en, this message translates to:
+  /// **'This account must be used for a new, different business opportunity.'**
+  String get pmTerm3;
+
+  /// Term 4 for new admin account creation
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-promoting or recruiting members between your separate accounts is strictly prohibited.'**
+  String get pmTerm4;
+
+  /// Term 5 for new admin account creation
+  ///
+  /// In en, this message translates to:
+  /// **'Violation of these terms may result in the suspension or cancellation of ALL your associated accounts.'**
+  String get pmTerm5;
+
+  /// Checkbox text for agreeing to terms
+  ///
+  /// In en, this message translates to:
+  /// **'I understand and agree to these terms'**
+  String get pmAgreeTerms;
+
+  /// Cancel button text
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pmCancel;
+
+  /// Continue button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get pmContinue;
+
+  /// Card title for managing another opportunity
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Another Opportunity'**
+  String get pmCardTitle;
+
+  /// Card description for creating separate account
+  ///
+  /// In en, this message translates to:
+  /// **'Create a separate account to manage and grow a different opportunity.'**
+  String get pmCardDesc;
+
+  /// Button text for creating new account
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Account'**
+  String get pmCreateButton;
 }
 
 class _AppLocalizationsDelegate

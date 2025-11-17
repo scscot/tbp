@@ -3968,6 +3968,166 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get faqFooterContact =>
       'Questions not answered here? Contact our support team - we\'re here to help you succeed!';
+
+  @override
+  String get bizOppEducationTitle => 'Secure Your Sponsorship Position!';
+
+  @override
+  String get bizOppEducationWorksTitle => 'How Sponsorship Works';
+
+  @override
+  String bizOppEducationWorksBody(String business) {
+    return 'When your team members join $business, their sponsor will be the FIRST person in their upline who has already joined.';
+  }
+
+  @override
+  String get bizOppEducationBenefitsTitle => 'Join now to ensure:';
+
+  @override
+  String get bizOppEducationBenefit1 => 'Your recruits are sponsored under YOU';
+
+  @override
+  String get bizOppEducationBenefit2 => 'You receive credit for their activity';
+
+  @override
+  String get bizOppEducationBenefit3 =>
+      'You don\'t miss out on this opportunity';
+
+  @override
+  String get bizOppEducationRemindLater => 'Remind Me Later';
+
+  @override
+  String get bizOppEducationJoinNow => 'Join Now';
+
+  @override
+  String get sharePartnerImportantLabel => 'Important:';
+
+  @override
+  String sharePartnerImportantText(String business) {
+    return 'We highly recommend you share the Team Build Pro app with your front-line $business team members (individuals you have personally sponsored) before sharing it with $business team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your $business downline.';
+  }
+
+  @override
+  String get bizProgressTitle => 'Registration Progress';
+
+  @override
+  String get bizProgressStep1 => 'Copy Registration Link';
+
+  @override
+  String get bizProgressStep2 => 'Complete Registration';
+
+  @override
+  String get bizProgressStep3 => 'Add Your Referral Link';
+
+  @override
+  String get hiwTitle => 'How It Works';
+
+  @override
+  String get hiwSubtitle =>
+      'Transform your recruiting with a pre-qualified team pipeline.';
+
+  @override
+  String get hiwFeaturedOpp => 'Featured Opportunity';
+
+  @override
+  String get hiwPipelineSystem => 'PIPELINE SYSTEM';
+
+  @override
+  String get hiwStep1Title => 'Set Your Foundation';
+
+  @override
+  String get hiwStep1Desc =>
+      'Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.';
+
+  @override
+  String get hiwStep2Title => 'Build Smart, Not Hard';
+
+  @override
+  String get hiwStep2Desc =>
+      'Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the \"cold start\" problem.';
+
+  @override
+  String get hiwStep3Title => 'Automatic Qualification';
+
+  @override
+  String get hiwStep3Desc =>
+      'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.';
+
+  @override
+  String get hiwStep4Title => 'Rapid Growth';
+
+  @override
+  String get hiwStep4Desc =>
+      'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.';
+
+  @override
+  String get hiwKeyTargets => 'KEY GROWTH TARGETS';
+
+  @override
+  String get hiwDirectSponsors => 'Direct Sponsors';
+
+  @override
+  String get hiwTotalTeam => 'Total Team Members';
+
+  @override
+  String get hiwGrowNetwork => 'Grow Your Network';
+
+  @override
+  String get hiwExpandNetwork =>
+      'Expand your Network to drive organization growth!';
+
+  @override
+  String get hiwProvenStrategies => 'Proven Growth Strategies';
+
+  @override
+  String get pmTitle => 'Create Account';
+
+  @override
+  String get pmDialogTitle => 'Important Terms';
+
+  @override
+  String get pmDialogIntro =>
+      'You are creating a new, separate admin account. By proceeding, you understand and agree to the following:';
+
+  @override
+  String get pmTerm1 =>
+      'This new account is completely separate and cannot be merged with your current account.';
+
+  @override
+  String pmTerm2(String bizOpp) {
+    return 'Your existing \"$bizOpp\" team is non-transferable.';
+  }
+
+  @override
+  String get pmTerm3 =>
+      'This account must be used for a new, different business opportunity.';
+
+  @override
+  String get pmTerm4 =>
+      'Cross-promoting or recruiting members between your separate accounts is strictly prohibited.';
+
+  @override
+  String get pmTerm5 =>
+      'Violation of these terms may result in the suspension or cancellation of ALL your associated accounts.';
+
+  @override
+  String get pmAgreeTerms => 'I understand and agree to these terms';
+
+  @override
+  String get pmCancel => 'Cancel';
+
+  @override
+  String get pmContinue => 'Continue';
+
+  @override
+  String get pmCardTitle => 'Manage Another Opportunity';
+
+  @override
+  String get pmCardDesc =>
+      'Create a separate account to manage and grow a different opportunity.';
+
+  @override
+  String get pmCreateButton => 'Create New Account';
 }
 
 /// The translations for English (`en_XA`).

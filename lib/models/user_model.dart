@@ -28,10 +28,14 @@ class UserModel {
   final String? uplineAdmin;
   // --- MODIFICATION: Added field for business opportunity join date ---
   final DateTime? bizJoinDate;
+  // --- MODIFICATION: Added field for locked-in business opportunity sponsor ---
+  final String? bizOppSponsorId;
   // --- MODIFICATION: Added field to track if sponsor was notified of completion ---
   final bool bizCompletionNotified;
   // --- MODIFICATION: Added field to track if user is a current business partner ---
   final bool currentPartner;
+  // --- MODIFICATION: Added field to track if user has seen business opportunity education modal ---
+  final bool bizOppEducationShown;
   // --- MULTI-LANGUAGE: User's preferred language for push notifications ---
   final String? preferredLanguage;
 
@@ -73,9 +77,13 @@ class UserModel {
     // --- MODIFICATION: Added to constructor ---
     this.bizJoinDate,
     // --- MODIFICATION: Added to constructor ---
+    this.bizOppSponsorId,
+    // --- MODIFICATION: Added to constructor ---
     this.bizCompletionNotified = false,
     // --- MODIFICATION: Added to constructor ---
     this.currentPartner = false,
+    // --- MODIFICATION: Added to constructor ---
+    this.bizOppEducationShown = false,
     // --- MULTI-LANGUAGE: User's preferred language ---
     this.preferredLanguage,
     // --- PHASE 1: Apple Store Subscription Fields ---
@@ -163,12 +171,16 @@ class UserModel {
       bizVisitDate: parseDate(map['biz_visit_date']),
       // --- MODIFICATION: Parse biz_join_date from the map ---
       bizJoinDate: parseDate(map['biz_join_date']),
+      // --- MODIFICATION: Parse biz_opp_sponsor_id from the map ---
+      bizOppSponsorId: map['biz_opp_sponsor_id'],
       // --- MODIFICATION: Parse bizCompletionNotified from the map ---
       bizCompletionNotified: map['biz_completion_notified'] == true,
       // --- MODIFICATION: Parse currentPartner from the map ---
       currentPartner: map['currentPartner'] is bool
           ? map['currentPartner']
           : (map['currentPartner'] == 'true' ? true : false),
+      // --- MODIFICATION: Parse bizOppEducationShown from the map ---
+      bizOppEducationShown: map['bizOppEducationShown'] == true,
       // --- MULTI-LANGUAGE: Parse preferredLanguage from the map ---
       preferredLanguage: map['preferredLanguage'],
       // --- PHASE 1: Parse subscription fields from the map ---
@@ -213,10 +225,14 @@ class UserModel {
           bizVisitDate != null ? Timestamp.fromDate(bizVisitDate!) : null,
       'biz_join_date':
           bizJoinDate != null ? Timestamp.fromDate(bizJoinDate!) : null,
+      // --- MODIFICATION: Add biz_opp_sponsor_id to Firestore format ---
+      'biz_opp_sponsor_id': bizOppSponsorId,
       // --- MODIFICATION: Add bizCompletionNotified to Firestore format ---
       'biz_completion_notified': bizCompletionNotified,
       // --- MODIFICATION: Add currentPartner to Firestore format ---
       'currentPartner': currentPartner,
+      // --- MODIFICATION: Add bizOppEducationShown to Firestore format ---
+      'bizOppEducationShown': bizOppEducationShown,
       // --- MULTI-LANGUAGE: Add preferredLanguage to Firestore format ---
       'preferredLanguage': preferredLanguage,
       // --- PHASE 1: Convert subscription fields to Firestore format ---
@@ -263,8 +279,10 @@ class UserModel {
       'upline_admin': uplineAdmin,
       'biz_visit_date': bizVisitDate?.toIso8601String(),
       'biz_join_date': bizJoinDate?.toIso8601String(),
+      'biz_opp_sponsor_id': bizOppSponsorId,
       'biz_completion_notified': bizCompletionNotified,
       'currentPartner': currentPartner,
+      'bizOppEducationShown': bizOppEducationShown,
       'preferredLanguage': preferredLanguage,
       'subscriptionStatus': subscriptionStatus,
       'subscriptionExpiry': subscriptionExpiry?.toIso8601String(),

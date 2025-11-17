@@ -4034,4 +4034,163 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get faqFooterContact =>
       '¿Preguntas no respondidas aquí? Contacta a nuestro equipo de soporte - ¡estamos aquí para ayudarte a tener éxito!';
+
+  @override
+  String get bizOppEducationTitle => '¡Asegure Su Posición de Patrocinio!';
+
+  @override
+  String get bizOppEducationWorksTitle => 'Cómo Funciona el Patrocinio';
+
+  @override
+  String bizOppEducationWorksBody(String business) {
+    return 'Cuando los miembros de tu equipo se unan a $business, su patrocinador será la PRIMERA persona en su línea ascendente que ya se haya unido.';
+  }
+
+  @override
+  String get bizOppEducationBenefitsTitle => 'Únete ahora para asegurar:';
+
+  @override
+  String get bizOppEducationBenefit1 => 'Tus reclutas son patrocinados bajo TI';
+
+  @override
+  String get bizOppEducationBenefit2 => 'Recibes crédito por su actividad';
+
+  @override
+  String get bizOppEducationBenefit3 => 'No te pierdes esta oportunidad';
+
+  @override
+  String get bizOppEducationRemindLater => 'Recuérdamelo Más Tarde';
+
+  @override
+  String get bizOppEducationJoinNow => 'Unirse Ahora';
+
+  @override
+  String get sharePartnerImportantLabel => 'Importante:';
+
+  @override
+  String sharePartnerImportantText(String business) {
+    return 'Recomendamos encarecidamente que compartas la aplicación Team Build Pro con los miembros de tu equipo de primera línea de $business (personas que has patrocinado personalmente) antes de compartirla con miembros del equipo de $business que no patrocinaste personalmente. Esto brindará la oportunidad de respetar las relaciones de patrocinio establecidas en tu línea descendente de $business.';
+  }
+
+  @override
+  String get bizProgressTitle => 'Progreso de Registro';
+
+  @override
+  String get bizProgressStep1 => 'Copiar Enlace de Registro';
+
+  @override
+  String get bizProgressStep2 => 'Completar Registro';
+
+  @override
+  String get bizProgressStep3 => 'Agregar Tu Enlace de Referencia';
+
+  @override
+  String get hiwTitle => 'Cómo Funciona';
+
+  @override
+  String get hiwSubtitle =>
+      'Transforma tu reclutamiento con un equipo pre-calificado.';
+
+  @override
+  String get hiwFeaturedOpp => 'Oportunidad Destacada';
+
+  @override
+  String get hiwPipelineSystem => 'SISTEMA DE CANALIZACIÓN';
+
+  @override
+  String get hiwStep1Title => 'Establece Tu Base';
+
+  @override
+  String get hiwStep1Desc =>
+      'Personaliza tu cuenta de Team Build Pro con los detalles de tu oportunidad y conecta tu enlace de referencia, convirtiendo la aplicación en tu canal personal de reclutamiento.';
+
+  @override
+  String get hiwStep2Title => 'Construye Inteligentemente, No Duramente';
+
+  @override
+  String get hiwStep2Desc =>
+      'Comparte Team Build Pro con prospectos y miembros del equipo existentes. Los miembros actuales del equipo crean impulso instantáneo, y los prospectos de reclutamiento experimentan un éxito real en la construcción del equipo antes de unirse a tu oportunidad, eliminando el problema del \"arranque en frío\".';
+
+  @override
+  String get hiwStep3Title => 'Calificación Automática';
+
+  @override
+  String get hiwStep3Desc =>
+      'Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.';
+
+  @override
+  String get hiwStep4Title => 'Crecimiento Rápido';
+
+  @override
+  String get hiwStep4Desc =>
+      'A medida que tu organización de Team Build Pro se expande, cada líder calificado alimenta nuevos prospectos pre-entrenados en tu oportunidad, creando un motor de crecimiento autosostenible.';
+
+  @override
+  String get hiwKeyTargets => 'OBJETIVOS CLAVE DE CRECIMIENTO';
+
+  @override
+  String get hiwDirectSponsors => 'Patrocinadores Directos';
+
+  @override
+  String get hiwTotalTeam => 'Miembros Totales del Equipo';
+
+  @override
+  String get hiwGrowNetwork => 'Haz Crecer Tu Red';
+
+  @override
+  String get hiwExpandNetwork =>
+      '¡Expande tu Red para impulsar el crecimiento de la organización!';
+
+  @override
+  String get hiwProvenStrategies => 'Estrategias Probadas de Crecimiento';
+
+  @override
+  String get pmTitle => 'Crear Cuenta';
+
+  @override
+  String get pmDialogTitle => 'Términos Importantes';
+
+  @override
+  String get pmDialogIntro =>
+      'Estás creando una nueva cuenta de administrador separada. Al continuar, comprendes y aceptas lo siguiente:';
+
+  @override
+  String get pmTerm1 =>
+      'Esta nueva cuenta es completamente separada y no se puede fusionar con tu cuenta actual.';
+
+  @override
+  String pmTerm2(String bizOpp) {
+    return 'Tu equipo existente de \"$bizOpp\" no es transferible.';
+  }
+
+  @override
+  String get pmTerm3 =>
+      'Esta cuenta debe usarse para una oportunidad de negocio nueva y diferente.';
+
+  @override
+  String get pmTerm4 =>
+      'La promoción cruzada o el reclutamiento de miembros entre tus cuentas separadas está estrictamente prohibido.';
+
+  @override
+  String get pmTerm5 =>
+      'La violación de estos términos puede resultar en la suspensión o cancelación de TODAS tus cuentas asociadas.';
+
+  @override
+  String get pmAgreeTerms => 'Comprendo y acepto estos términos';
+
+  @override
+  String get pmCancel => 'Cancelar';
+
+  @override
+  String get pmContinue => 'Continuar';
+
+  @override
+  String get pmCardTitle => 'Administrar Otra Oportunidad';
+
+  @override
+  String get pmCardDesc =>
+      'Crea una cuenta separada para administrar y hacer crecer una oportunidad diferente.';
+
+  @override
+  String get pmCreateButton => 'Crear Nueva Cuenta';
 }

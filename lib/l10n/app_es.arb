@@ -3567,5 +3567,106 @@
   "faqFooterContact": "¿Preguntas no respondidas aquí? Contacta a nuestro equipo de soporte - ¡estamos aquí para ayudarte a tener éxito!",
   "@faqFooterContact": {
     "description": "FAQ footer contact text"
-  }
+  },
+  "bizOppEducationTitle": "¡Asegure Su Posición de Patrocinio!",
+  "@bizOppEducationTitle": {
+    "description": "Title for business opportunity education modal",
+    "maxLength": 40
+  },
+  "bizOppEducationWorksTitle": "Cómo Funciona el Patrocinio",
+  "@bizOppEducationWorksTitle": {
+    "description": "Section title explaining sponsorship mechanics",
+    "maxLength": 32
+  },
+  "bizOppEducationWorksBody": "Cuando los miembros de tu equipo se unan a {business}, su patrocinador será la PRIMERA persona en su línea ascendente que ya se haya unido.",
+  "@bizOppEducationWorksBody": {
+    "description": "Explanation of how sponsorship is determined",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "bizOppEducationBenefitsTitle": "Únete ahora para asegurar:",
+  "@bizOppEducationBenefitsTitle": {
+    "description": "Title for benefits section",
+    "maxLength": 32
+  },
+  "bizOppEducationBenefit1": "Tus reclutas son patrocinados bajo TI",
+  "@bizOppEducationBenefit1": {
+    "description": "First benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationBenefit2": "Recibes crédito por su actividad",
+  "@bizOppEducationBenefit2": {
+    "description": "Second benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationBenefit3": "No te pierdes esta oportunidad",
+  "@bizOppEducationBenefit3": {
+    "description": "Third benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationRemindLater": "Recuérdamelo Más Tarde",
+  "@bizOppEducationRemindLater": {
+    "description": "Button to dismiss modal temporarily",
+    "maxLength": 20
+  },
+  "bizOppEducationJoinNow": "Unirse Ahora",
+  "@bizOppEducationJoinNow": {
+    "description": "Button to proceed to join business opportunity",
+    "maxLength": 12
+  },
+  "sharePartnerImportantLabel": "Importante:",
+  "@sharePartnerImportantLabel": {
+    "description": "Label for important notice",
+    "maxLength": 16
+  },
+  "sharePartnerImportantText": "Recomendamos encarecidamente que compartas la aplicación Team Build Pro con los miembros de tu equipo de primera línea de {business} (personas que has patrocinado personalmente) antes de compartirla con miembros del equipo de {business} que no patrocinaste personalmente. Esto brindará la oportunidad de respetar las relaciones de patrocinio establecidas en tu línea descendente de {business}.",
+  "@sharePartnerImportantText": {
+    "description": "Important notice about respecting sponsorship relationships",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "bizProgressTitle": "Progreso de Registro",
+  "bizProgressStep1": "Copiar Enlace de Registro",
+  "bizProgressStep2": "Completar Registro",
+  "bizProgressStep3": "Agregar Tu Enlace de Referencia",
+  "hiwTitle": "Cómo Funciona",
+  "hiwSubtitle": "Transforma tu reclutamiento con un equipo pre-calificado.",
+  "hiwFeaturedOpp": "Oportunidad Destacada",
+  "hiwPipelineSystem": "SISTEMA DE CANALIZACIÓN",
+  "hiwStep1Title": "Establece Tu Base",
+  "hiwStep1Desc": "Personaliza tu cuenta de Team Build Pro con los detalles de tu oportunidad y conecta tu enlace de referencia, convirtiendo la aplicación en tu canal personal de reclutamiento.",
+  "hiwStep2Title": "Construye Inteligentemente, No Duramente",
+  "hiwStep2Desc": "Comparte Team Build Pro con prospectos y miembros del equipo existentes. Los miembros actuales del equipo crean impulso instantáneo, y los prospectos de reclutamiento experimentan un éxito real en la construcción del equipo antes de unirse a tu oportunidad, eliminando el problema del \"arranque en frío\".",
+  "hiwStep3Title": "Calificación Automática",
+  "hiwStep3Desc": "Cuando los prospectos de reclutamiento alcanzan nuestros hitos de éxito (4 patrocinadores directos + 20 miembros totales del equipo), automáticamente reciben una invitación para unirse a tu oportunidad.",
+  "hiwStep4Title": "Crecimiento Rápido",
+  "hiwStep4Desc": "A medida que tu organización de Team Build Pro se expande, cada líder calificado alimenta nuevos prospectos pre-entrenados en tu oportunidad, creando un motor de crecimiento autosostenible.",
+  "hiwKeyTargets": "OBJETIVOS CLAVE DE CRECIMIENTO",
+  "hiwDirectSponsors": "Patrocinadores Directos",
+  "hiwTotalTeam": "Miembros Totales del Equipo",
+  "hiwGrowNetwork": "Haz Crecer Tu Red",
+  "hiwExpandNetwork": "¡Expande tu Red para impulsar el crecimiento de la organización!",
+  "hiwProvenStrategies": "Estrategias Probadas de Crecimiento",
+  "pmTitle": "Crear Cuenta",
+  "pmDialogTitle": "Términos Importantes",
+  "pmDialogIntro": "Estás creando una nueva cuenta de administrador separada. Al continuar, comprendes y aceptas lo siguiente:",
+  "pmTerm1": "Esta nueva cuenta es completamente separada y no se puede fusionar con tu cuenta actual.",
+  "pmTerm2": "Tu equipo existente de \"{bizOpp}\" no es transferible.",
+  "pmTerm3": "Esta cuenta debe usarse para una oportunidad de negocio nueva y diferente.",
+  "pmTerm4": "La promoción cruzada o el reclutamiento de miembros entre tus cuentas separadas está estrictamente prohibido.",
+  "pmTerm5": "La violación de estos términos puede resultar en la suspensión o cancelación de TODAS tus cuentas asociadas.",
+  "pmAgreeTerms": "Comprendo y acepto estos términos",
+  "pmCancel": "Cancelar",
+  "pmContinue": "Continuar",
+  "pmCardTitle": "Administrar Otra Oportunidad",
+  "pmCardDesc": "Crea una cuenta separada para administrar y hacer crecer una oportunidad diferente.",
+  "pmCreateButton": "Crear Nueva Cuenta"
 }

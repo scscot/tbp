@@ -23,6 +23,12 @@ const translations = {
     teamActivityMessage: "{firstName} {lastName} from your team visited their {bizName} link!",
     bizOppCompletionTitle: "🎉 Team Member Joined {bizName}!",
     bizOppCompletionMessage: "{firstName} {lastName} completed their {bizName} registration! Welcome them to the opportunity and help them get started.",
+    bizOppReminder24hTitle: "Complete Your Registration",
+    bizOppReminder24hMessage: "You're one step away! Add your {bizName} referral link to start building your team. Click here to learn more!",
+    bizOppReminder72hTitle: "Don't Miss Out!",
+    bizOppReminder72hMessage: "Complete your {bizName} registration to unlock team building. Click here to learn more!",
+    bizOppReminder168hTitle: "Final Reminder",
+    bizOppReminder168hMessage: "Your {bizName} registration is still incomplete. Add your referral link now! Click here to learn more!",
   },
 
   es: {
@@ -49,6 +55,12 @@ const translations = {
     teamActivityMessage: "¡{firstName} {lastName} de tu equipo visitó su enlace de {bizName}!",
     bizOppCompletionTitle: "🎉 ¡Miembro del Equipo se Unió a {bizName}!",
     bizOppCompletionMessage: "¡{firstName} {lastName} completó su registro en {bizName}! Dales la bienvenida a la oportunidad y ayúdales a comenzar.",
+    bizOppReminder24hTitle: "Completa Tu Registro",
+    bizOppReminder24hMessage: "¡Estás a un paso! Agrega tu enlace de referencia de {bizName} para comenzar a construir tu equipo. ¡Haz clic aquí para obtener más información!",
+    bizOppReminder72hTitle: "¡No Te Lo Pierdas!",
+    bizOppReminder72hMessage: "Completa tu registro en {bizName} para desbloquear la construcción de equipos. ¡Haz clic aquí para obtener más información!",
+    bizOppReminder168hTitle: "Recordatorio Final",
+    bizOppReminder168hMessage: "Tu registro en {bizName} aún está incompleto. ¡Agrega tu enlace de referencia ahora! ¡Haz clic aquí para obtener más información!",
   },
 
   pt: {
@@ -75,6 +87,12 @@ const translations = {
     teamActivityMessage: "{firstName} {lastName} da sua equipe visitou o link de {bizName}!",
     bizOppCompletionTitle: "🎉 Membro da Equipe Entrou em {bizName}!",
     bizOppCompletionMessage: "{firstName} {lastName} completou o registro em {bizName}! Dê as boas-vindas à oportunidade e ajude-os a começar.",
+    bizOppReminder24hTitle: "Complete Seu Registro",
+    bizOppReminder24hMessage: "Você está a um passo! Adicione seu link de referência {bizName} para começar a construir sua equipe. Clique aqui para saber mais!",
+    bizOppReminder72hTitle: "Não Perca!",
+    bizOppReminder72hMessage: "Complete seu registro em {bizName} para desbloquear a construção de equipes. Clique aqui para saber mais!",
+    bizOppReminder168hTitle: "Lembrete Final",
+    bizOppReminder168hMessage: "Seu registro em {bizName} ainda está incompleto. Adicione seu link de referência agora! Clique aqui para saber mais!",
   },
 
   de: {
@@ -101,6 +119,12 @@ const translations = {
     teamActivityMessage: "{firstName} {lastName} aus Ihrem Team hat ihren {bizName}-Link besucht!",
     bizOppCompletionTitle: "🎉 Teammitglied ist {bizName} beigetreten!",
     bizOppCompletionMessage: "{firstName} {lastName} hat die {bizName}-Registrierung abgeschlossen! Heißen Sie sie in der Gelegenheit willkommen und helfen Sie ihnen beim Einstieg.",
+    bizOppReminder24hTitle: "Schließen Sie Ihre Registrierung Ab",
+    bizOppReminder24hMessage: "Sie sind nur einen Schritt entfernt! Fügen Sie Ihren {bizName}-Empfehlungslink hinzu, um mit dem Teamaufbau zu beginnen. Klicken Sie hier, um mehr zu erfahren!",
+    bizOppReminder72hTitle: "Verpassen Sie Es Nicht!",
+    bizOppReminder72hMessage: "Schließen Sie Ihre {bizName}-Registrierung ab, um den Teamaufbau freizuschalten. Klicken Sie hier, um mehr zu erfahren!",
+    bizOppReminder168hTitle: "Letzte Erinnerung",
+    bizOppReminder168hMessage: "Ihre {bizName}-Registrierung ist noch unvollständig. Fügen Sie jetzt Ihren Empfehlungslink hinzu! Klicken Sie hier, um mehr zu erfahren!",
   },
 };
 

@@ -84,12 +84,28 @@ class _BusinessScreenState extends State<BusinessScreen>
         fallback: '' // Use empty string instead of null
       );
 
-      // Fetch bizOppRefUrl and sponsor info by traversing upline_refs
+      // Fetch bizOppRefUrl and sponsor info
       String? retrievedBizOppRefUrl;
       String? retrievedSponsorName;
       String? retrievedSponsorUid;
 
-      if (user.uplineRefs.isNotEmpty) {
+      // Check if sponsor is already locked in
+      if (user.bizOppSponsorId != null && user.bizOppSponsorId!.isNotEmpty) {
+        // Use locked-in sponsor for consistency
+        if (kDebugMode) {
+          debugPrint("🔒 BUSINESS: Using locked-in sponsor: ${user.bizOppSponsorId}");
+        }
+        final result = await BusinessOpportunityService.getLockedInSponsorInfo(
+          user.bizOppSponsorId!
+        );
+        retrievedBizOppRefUrl = result.bizOppRefUrl;
+        retrievedSponsorName = result.sponsorName;
+        retrievedSponsorUid = result.sponsorUid;
+      } else if (user.uplineRefs.isNotEmpty) {
+        // No locked-in sponsor yet, find current upline sponsor dynamically
+        if (kDebugMode) {
+          debugPrint("🔍 BUSINESS: No locked-in sponsor, finding current upline sponsor");
+        }
         final result =
             await BusinessOpportunityService.findUplineReferralInfo(user.uplineRefs);
         retrievedBizOppRefUrl = result.bizOppRefUrl;
@@ -662,7 +678,7 @@ class _BusinessScreenState extends State<BusinessScreen>
               Icon(Icons.timeline, color: AppColors.primary, size: 24),
               const SizedBox(width: 12),
               Text(
-                'Registration Progress',
+                context.l10n?.bizProgressTitle ?? 'Registration Progress',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -674,21 +690,21 @@ class _BusinessScreenState extends State<BusinessScreen>
           const SizedBox(height: 20),
           _buildProgressStep(
             stepNumber: 1,
-            title: 'Copy Registration Link',
+            title: context.l10n?.bizProgressStep1 ?? 'Copy Registration Link',
             isComplete: hasVisited,
             completedDate: user?.bizVisitDate,
           ),
           const SizedBox(height: 12),
           _buildProgressStep(
             stepNumber: 2,
-            title: 'Complete Registration',
+            title: context.l10n?.bizProgressStep2 ?? 'Complete Registration',
             isComplete: hasJoined,
             completedDate: user?.bizJoinDate,
           ),
           const SizedBox(height: 12),
           _buildProgressStep(
             stepNumber: 3,
-            title: 'Add Your Referral Link',
+            title: context.l10n?.bizProgressStep3 ?? 'Add Your Referral Link',
             isComplete: hasJoined,
             icon: Icons.link,
           ),

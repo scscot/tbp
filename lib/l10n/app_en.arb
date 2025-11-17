@@ -4661,5 +4661,256 @@
   "faqFooterContact": "Questions not answered here? Contact our support team - we're here to help you succeed!",
   "@faqFooterContact": {
     "description": "FAQ footer contact text"
+  },
+  "bizOppEducationTitle": "Secure Your Sponsorship Position!",
+  "@bizOppEducationTitle": {
+    "description": "Title for business opportunity education modal",
+    "maxLength": 40
+  },
+  "bizOppEducationWorksTitle": "How Sponsorship Works",
+  "@bizOppEducationWorksTitle": {
+    "description": "Section title explaining sponsorship mechanics",
+    "maxLength": 32
+  },
+  "bizOppEducationWorksBody": "When your team members join {business}, their sponsor will be the FIRST person in their upline who has already joined.",
+  "@bizOppEducationWorksBody": {
+    "description": "Explanation of how sponsorship is determined",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "bizOppEducationBenefitsTitle": "Join now to ensure:",
+  "@bizOppEducationBenefitsTitle": {
+    "description": "Title for benefits section",
+    "maxLength": 32
+  },
+  "bizOppEducationBenefit1": "Your recruits are sponsored under YOU",
+  "@bizOppEducationBenefit1": {
+    "description": "First benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationBenefit2": "You receive credit for their activity",
+  "@bizOppEducationBenefit2": {
+    "description": "Second benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationBenefit3": "You don't miss out on this opportunity",
+  "@bizOppEducationBenefit3": {
+    "description": "Third benefit of joining now",
+    "maxLength": 50
+  },
+  "bizOppEducationRemindLater": "Remind Me Later",
+  "@bizOppEducationRemindLater": {
+    "description": "Button to dismiss modal temporarily",
+    "maxLength": 20
+  },
+  "bizOppEducationJoinNow": "Join Now",
+  "@bizOppEducationJoinNow": {
+    "description": "Button to proceed to join business opportunity",
+    "maxLength": 12
+  },
+  "sharePartnerImportantLabel": "Important:",
+  "@sharePartnerImportantLabel": {
+    "description": "Label for important notice",
+    "maxLength": 16
+  },
+  "sharePartnerImportantText": "We highly recommend you share the Team Build Pro app with your front-line {business} team members (individuals you have personally sponsored) before sharing it with {business} team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your {business} downline.",
+  "@sharePartnerImportantText": {
+    "description": "Important notice about respecting sponsorship relationships",
+    "placeholders": {
+      "business": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "bizProgressTitle": "Registration Progress",
+  "@bizProgressTitle": {
+    "description": "Title for business opportunity registration progress section",
+    "maxLength": 25
+  },
+  "bizProgressStep1": "Copy Registration Link",
+  "@bizProgressStep1": {
+    "description": "Step 1: Copy the registration link to visit the business opportunity site",
+    "maxLength": 30
+  },
+  "bizProgressStep2": "Complete Registration",
+  "@bizProgressStep2": {
+    "description": "Step 2: Complete registration on the business opportunity website",
+    "maxLength": 30
+  },
+  "bizProgressStep3": "Add Your Referral Link",
+  "@bizProgressStep3": {
+    "description": "Step 3: Add your referral link from the business opportunity",
+    "maxLength": 30
+  },
+  "hiwTitle": "How It Works",
+  "@hiwTitle": {
+    "description": "Title for How It Works screen",
+    "maxLength": 20
+  },
+  "hiwSubtitle": "Transform your recruiting with a pre-qualified team pipeline.",
+  "@hiwSubtitle": {
+    "description": "Subtitle for How It Works screen hero section",
+    "maxLength": 80
+  },
+  "hiwFeaturedOpp": "Featured Opportunity",
+  "@hiwFeaturedOpp": {
+    "description": "Title for featured business opportunity section",
+    "maxLength": 30
+  },
+  "hiwPipelineSystem": "PIPELINE SYSTEM",
+  "@hiwPipelineSystem": {
+    "description": "Title for pipeline system section",
+    "maxLength": 20
+  },
+  "hiwStep1Title": "Set Your Foundation",
+  "@hiwStep1Title": {
+    "description": "Title for pipeline step 1",
+    "maxLength": 30
+  },
+  "hiwStep1Desc": "Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.",
+  "@hiwStep1Desc": {
+    "description": "Description for pipeline step 1",
+    "maxLength": 200
+  },
+  "hiwStep2Title": "Build Smart, Not Hard",
+  "@hiwStep2Title": {
+    "description": "Title for pipeline step 2",
+    "maxLength": 30
+  },
+  "hiwStep2Desc": "Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the \"cold start\" problem.",
+  "@hiwStep2Desc": {
+    "description": "Description for pipeline step 2",
+    "maxLength": 300
+  },
+  "hiwStep3Title": "Automatic Qualification",
+  "@hiwStep3Title": {
+    "description": "Title for pipeline step 3",
+    "maxLength": 30
+  },
+  "hiwStep3Desc": "When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.",
+  "@hiwStep3Desc": {
+    "description": "Description for pipeline step 3",
+    "maxLength": 200
+  },
+  "hiwStep4Title": "Rapid Growth",
+  "@hiwStep4Title": {
+    "description": "Title for pipeline step 4",
+    "maxLength": 20
+  },
+  "hiwStep4Desc": "As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.",
+  "@hiwStep4Desc": {
+    "description": "Description for pipeline step 4",
+    "maxLength": 200
+  },
+  "hiwKeyTargets": "KEY GROWTH TARGETS",
+  "@hiwKeyTargets": {
+    "description": "Title for key growth targets section",
+    "maxLength": 25
+  },
+  "hiwDirectSponsors": "Direct Sponsors",
+  "@hiwDirectSponsors": {
+    "description": "Label for direct sponsors metric",
+    "maxLength": 20
+  },
+  "hiwTotalTeam": "Total Team Members",
+  "@hiwTotalTeam": {
+    "description": "Label for total team members metric",
+    "maxLength": 25
+  },
+  "hiwGrowNetwork": "Grow Your Network",
+  "@hiwGrowNetwork": {
+    "description": "Call to action title",
+    "maxLength": 25
+  },
+  "hiwExpandNetwork": "Expand your Network to drive organization growth!",
+  "@hiwExpandNetwork": {
+    "description": "Call to action description",
+    "maxLength": 80
+  },
+  "hiwProvenStrategies": "Proven Growth Strategies",
+  "@hiwProvenStrategies": {
+    "description": "Button text for proven growth strategies",
+    "maxLength": 30
+  },
+  "pmTitle": "Create Account",
+  "@pmTitle": {
+    "description": "Platform Management screen title",
+    "maxLength": 20
+  },
+  "pmDialogTitle": "Important Terms",
+  "@pmDialogTitle": {
+    "description": "Dialog title for creating new admin account",
+    "maxLength": 25
+  },
+  "pmDialogIntro": "You are creating a new, separate admin account. By proceeding, you understand and agree to the following:",
+  "@pmDialogIntro": {
+    "description": "Introduction text for new admin account dialog",
+    "maxLength": 150
+  },
+  "pmTerm1": "This new account is completely separate and cannot be merged with your current account.",
+  "@pmTerm1": {
+    "description": "Term 1 for new admin account creation",
+    "maxLength": 120
+  },
+  "pmTerm2": "Your existing \"{bizOpp}\" team is non-transferable.",
+  "@pmTerm2": {
+    "description": "Term 2 for new admin account creation with business opportunity name",
+    "maxLength": 100,
+    "placeholders": {
+      "bizOpp": {
+        "type": "String",
+        "example": "NeoLife"
+      }
+    }
+  },
+  "pmTerm3": "This account must be used for a new, different business opportunity.",
+  "@pmTerm3": {
+    "description": "Term 3 for new admin account creation",
+    "maxLength": 100
+  },
+  "pmTerm4": "Cross-promoting or recruiting members between your separate accounts is strictly prohibited.",
+  "@pmTerm4": {
+    "description": "Term 4 for new admin account creation",
+    "maxLength": 120
+  },
+  "pmTerm5": "Violation of these terms may result in the suspension or cancellation of ALL your associated accounts.",
+  "@pmTerm5": {
+    "description": "Term 5 for new admin account creation",
+    "maxLength": 130
+  },
+  "pmAgreeTerms": "I understand and agree to these terms",
+  "@pmAgreeTerms": {
+    "description": "Checkbox text for agreeing to terms",
+    "maxLength": 50
+  },
+  "pmCancel": "Cancel",
+  "@pmCancel": {
+    "description": "Cancel button text",
+    "maxLength": 15
+  },
+  "pmContinue": "Continue",
+  "@pmContinue": {
+    "description": "Continue button text",
+    "maxLength": 15
+  },
+  "pmCardTitle": "Manage Another Opportunity",
+  "@pmCardTitle": {
+    "description": "Card title for managing another opportunity",
+    "maxLength": 40
+  },
+  "pmCardDesc": "Create a separate account to manage and grow a different opportunity.",
+  "@pmCardDesc": {
+    "description": "Card description for creating separate account",
+    "maxLength": 100
+  },
+  "pmCreateButton": "Create New Account",
+  "@pmCreateButton": {
+    "description": "Button text for creating new account",
+    "maxLength": 25
   }
 }

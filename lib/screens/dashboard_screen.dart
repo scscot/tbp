@@ -25,6 +25,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import '../i18n/dashboard_analytics.dart';
 import '../widgets/localized_text.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import '../widgets/biz_opp_education_modal.dart';
 
 // --- 1. New import for SubscriptionScreen ---
 
@@ -63,6 +64,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   bool _hasTrackedView = false;
 
+  // Business opportunity state
+  String? _bizOppName;
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +99,30 @@ class _DashboardScreenState extends State<DashboardScreen>
     final user = Provider.of<UserModel?>(context, listen: false);
     if (user != null) {
       await ReviewService.checkAndPromptReview(user.uid);
+    }
+  }
+
+  Future<void> _checkAndShowEducationModal() async {
+    final user = Provider.of<UserModel?>(context, listen: false);
+    if (user == null || _bizOppName == null) return;
+
+    final shouldShowModal = user.qualifiedDate != null &&
+        user.bizJoinDate == null &&
+        !user.bizOppEducationShown;
+
+    if (shouldShowModal) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          showBizOppEducationModal(
+            context,
+            user.uid,
+            _bizOppName!,
+            () {
+              widget.onTabSelected?.call(7);
+            },
+          );
+        }
+      });
     }
   }
 
@@ -425,9 +453,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           .get();
 
       if (adminSettingsDoc.exists && mounted) {
-        adminSettingsDoc.data();
+        final adminData = adminSettingsDoc.data();
+        final bizOpp = adminData?['biz_opp'] as String?;
 
-        setState(() {});
+        setState(() {
+          _bizOppName = bizOpp ?? user.bizOpp;
+        });
+
+        await _checkAndShowEducationModal();
       }
     } catch (e) {
       debugPrint('Error loading biz_opp data: $e');
@@ -589,15 +622,19 @@ class _DashboardScreenState extends State<DashboardScreen>
             children: [
               Icon(Icons.analytics, color: AppColors.growthPrimary, size: 24),
               const SizedBox(width: 12),
-              Text(
-                context.l10n?.dashKpiTitle ?? 'Your Current Team Stats',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+              Expanded(
+                child: Text(
+                  context.l10n?.dashKpiTitle ?? 'Your Current Team Stats',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               // Refresh button for manual cache refresh
               IconButton(
                 onPressed: _isLoadingCounts ? null : _refreshNetworkCounts,
@@ -722,6 +759,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     required Color color,
     bool hasBadge = false,
     int badgeCount = 0,
+    bool hasAttentionBadge = false,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -746,13 +784,34 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.withOpacity(color, 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: color, size: 28),
+                Stack(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.withOpacity(color, 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(icon, color: color, size: 28),
+                    ),
+                    if (hasAttentionBadge)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: Colors.amber,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -851,6 +910,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ? (context.l10n?.dashTileOpportunity ?? 'Opportunity Details')
                 : (context.l10n?.dashTileJoinOpportunity ?? 'Join Opportunity!'),
             color: AppColors.opportunityPrimary,
+            hasAttentionBadge: user.bizJoinDate == null,
             onTap: () => widget.onTabSelected?.call(
               user.bizOppRefUrl != null ? 6 : 7,
             ),

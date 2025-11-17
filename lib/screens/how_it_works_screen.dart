@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/header_widgets.dart';
 import '../config/app_constants.dart';
 import '../config/app_colors.dart';
+import '../widgets/localized_text.dart';
 import 'share_screen.dart';
 
 class HowItWorksScreen extends StatefulWidget {
@@ -96,7 +97,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'How It Works',
+            context.l10n?.hiwTitle ?? 'How It Works',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -107,7 +108,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Transform your recruiting with a pre-qualified team pipeline.',
+            context.l10n?.hiwSubtitle ?? 'Transform your recruiting with a pre-qualified team pipeline.',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -279,13 +280,13 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: const AppScreenBar(title: 'How It Works'),
+        appBar: AppScreenBar(title: context.l10n?.hiwTitle ?? 'How It Works'),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'How It Works'),
+      appBar: AppScreenBar(title: context.l10n?.hiwTitle ?? 'How It Works'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -326,7 +327,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            'Featured Opportunity',
+                            context.l10n?.hiwFeaturedOpp ?? 'Featured Opportunity',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -440,7 +441,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                         ),
                         const SizedBox(width: 16),
                         Text(
-                          'PIPELINE SYSTEM',
+                          context.l10n?.hiwPipelineSystem ?? 'PIPELINE SYSTEM',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -452,30 +453,30 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                     const SizedBox(height: 20),
                     _buildProcessStep(
                       step: 1,
-                      title: 'Set Your Foundation',
+                      title: context.l10n?.hiwStep1Title ?? 'Set Your Foundation',
                       description:
-                          'Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.',
+                          context.l10n?.hiwStep1Desc ?? 'Customize your Team Build Pro account with your opportunity details and connect your referral link - turning the app into your personal recruiting pipeline.',
                       icon: Icons.foundation,
                     ),
                     _buildProcessStep(
                       step: 2,
-                      title: 'Build Smart, Not Hard',
+                      title: context.l10n?.hiwStep2Title ?? 'Build Smart, Not Hard',
                       description:
-                          'Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the "cold start" problem.',
+                          context.l10n?.hiwStep2Desc ?? 'Share Team Build Pro with prospects and existing team members. Current team members create instant momentum, and recruiting prospects experience real team building success before joining your opportunity, eliminating the "cold start" problem.',
                       icon: Icons.group_add,
                     ),
                     _buildProcessStep(
                       step: 3,
-                      title: 'Automatic Qualification',
+                      title: context.l10n?.hiwStep3Title ?? 'Automatic Qualification',
                       description:
-                          'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.',
+                          context.l10n?.hiwStep3Desc ?? 'When recruiting prospects reach our success milestones (4 direct sponsors + 20 total team members), they automatically receive an invitation to join your opportunity.',
                       icon: Icons.verified,
                     ),
                     _buildProcessStep(
                       step: 4,
-                      title: 'Rapid Growth',
+                      title: context.l10n?.hiwStep4Title ?? 'Rapid Growth',
                       description:
-                          'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.',
+                          context.l10n?.hiwStep4Desc ?? 'As your Team Build Pro organization expands, each qualified leader feeds new, pre-trained prospects into your opportunity - creating a self-sustaining growth engine.',
                       icon: Icons.trending_up,
                     ),
                   ],
@@ -494,7 +495,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                 child: Column(
                   children: [
                     Text(
-                      ' KEY GROWTH TARGETS',
+                      context.l10n?.hiwKeyTargets ?? 'KEY GROWTH TARGETS',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -509,14 +510,14 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                           icon: Icons.connect_without_contact,
                           value: AppConstants.projectWideDirectSponsorMin
                               .toString(),
-                          label: 'Direct Sponsors',
+                          label: context.l10n?.hiwDirectSponsors ?? 'Direct Sponsors',
                         ),
                         const SizedBox(width: 16),
                         _buildMetricCard(
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: 'Total Team Members',
+                          label: context.l10n?.hiwTotalTeam ?? 'Total Team Members',
                         ),
                       ],
                     ),
@@ -543,7 +544,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Grow Your Network',
+                    context.l10n?.hiwGrowNetwork ?? 'Grow Your Network',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -553,7 +554,7 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Expand your Network to drive organization growth!',
+                    context.l10n?.hiwExpandNetwork ?? 'Expand your Network to drive organization growth!',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.withOpacity(AppColors.textInverse, 0.9),
@@ -582,9 +583,9 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      'Proven Growth Strategies',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n?.hiwProvenStrategies ?? 'Proven Growth Strategies',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

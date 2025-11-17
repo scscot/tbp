@@ -8,6 +8,7 @@ import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/session_manager.dart';
 import '../widgets/header_widgets.dart';
+import '../widgets/localized_text.dart';
 import 'new_registration_screen.dart';
 
 class PlatformManagementScreen extends StatefulWidget {
@@ -87,16 +88,16 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
-              title: const Row(
+              title: Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded,
+                  const Icon(Icons.warning_amber_rounded,
                       color: Colors.orange, size: 28),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Important Terms',
+                      context.l10n?.pmDialogTitle ?? 'Important Terms',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -104,26 +105,26 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    const Text(
-                      'You are creating a new, separate admin account. By proceeding, you understand and agree to the following:',
+                    Text(
+                      context.l10n?.pmDialogIntro ?? 'You are creating a new, separate admin account. By proceeding, you understand and agree to the following:',
                     ),
                     const SizedBox(height: 16),
                     _buildTermPoint(
-                        'This new account is completely separate and cannot be merged with your current account.'),
+                        context.l10n?.pmTerm1 ?? 'This new account is completely separate and cannot be merged with your current account.'),
                     _buildTermPoint(
-                        'Your existing "$bizOpp" team is non-transferable.'),
+                        context.l10n?.pmTerm2(bizOpp) ?? 'Your existing "$bizOpp" team is non-transferable.'),
                     _buildTermPoint(
-                        'This account must be used for a new, different business opportunity.'),
+                        context.l10n?.pmTerm3 ?? 'This account must be used for a new, different business opportunity.'),
                     _buildTermPoint(
-                      'Cross-promoting or recruiting members between your separate accounts is strictly prohibited.',
+                      context.l10n?.pmTerm4 ?? 'Cross-promoting or recruiting members between your separate accounts is strictly prohibited.',
                     ),
                     _buildTermPoint(
-                        'Violation of these terms may result in the suspension or cancellation of ALL your associated accounts.'),
+                        context.l10n?.pmTerm5 ?? 'Violation of these terms may result in the suspension or cancellation of ALL your associated accounts.'),
                     const SizedBox(height: 16),
                     CheckboxListTile(
-                      title: const Text(
-                        "I understand and agree to these terms",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      title: Text(
+                        context.l10n?.pmAgreeTerms ?? "I understand and agree to these terms",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       value: isChecked,
                       onChanged: (bool? value) {
@@ -140,7 +141,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
+                  child: Text(context.l10n?.pmCancel ?? 'Cancel'),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -149,8 +150,8 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                     backgroundColor: Colors.blue,
                     disabledBackgroundColor: Colors.grey.shade400,
                   ),
-                  child: const Text('Continue',
-                      style: TextStyle(color: Colors.white)),
+                  child: Text(context.l10n?.pmContinue ?? 'Continue',
+                      style: const TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -206,7 +207,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
     final currentUser = Provider.of<UserModel?>(context);
 
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Create Account'),
+      appBar: AppScreenBar(title: context.l10n?.pmTitle ?? 'Create Account'),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -226,7 +227,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Manage Another Opportunity',
+                                context.l10n?.pmCardTitle ?? 'Manage Another Opportunity',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -235,9 +236,9 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                                     ),
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Create a separate account to manage and grow a different opportunity.',
-                                style: TextStyle(color: Colors.black54),
+                              Text(
+                                context.l10n?.pmCardDesc ?? 'Create a separate account to manage and grow a different opportunity.',
+                                style: const TextStyle(color: Colors.black54),
                               ),
                               const SizedBox(height: 16),
                               Center(
@@ -245,7 +246,7 @@ class _PlatformManagementScreenState extends State<PlatformManagementScreen> {
                                   onPressed: currentUser != null ? () =>
                                       _createNewAdminAccount(currentUser) : null,
                                   icon: const Icon(Icons.person_add),
-                                  label: const Text('Create New Account'),
+                                  label: Text(context.l10n?.pmCreateButton ?? 'Create New Account'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,

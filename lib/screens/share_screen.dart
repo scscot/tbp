@@ -1010,7 +1010,7 @@ class _ShareScreenState extends State<ShareScreen>
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      (context.l10n?.sharePartnerSubtitle ?? 'Great for your existing $_bizOppName team').toString(),
+                      context.l10n?.sharePartnerSubtitle(_bizOppName) ?? 'Great for your existing $_bizOppName team',
                       style: TextStyle(
                           fontSize: 12, color: AppColors.textSecondary),
                     ),
@@ -1025,8 +1025,54 @@ class _ShareScreenState extends State<ShareScreen>
             style: TextStyle(
                 fontSize: 14, color: AppColors.textSecondary, height: 1.4),
           ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.amber.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.amber.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: Colors.amber[700],
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        height: 1.4,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: context.l10n?.sharePartnerImportantLabel ?? 'Important: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber[900],
+                          ),
+                        ),
+                        TextSpan(
+                          text: context.l10n?.sharePartnerImportantText(_bizOppName) ?? 'We highly recommend you share the Team Build Pro app with your front-line $_bizOppName team members (individuals you have personally sponsored) before sharing it with $_bizOppName team members you did not personally sponsor. This will provide an opportunity to respect the established sponsoring relationships in your $_bizOppName downline.',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 20),
-          
+
           // Message Selection Toggle
           GestureDetector(
             onTap: () {

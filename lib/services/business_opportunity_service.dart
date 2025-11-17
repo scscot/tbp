@@ -117,4 +117,55 @@ class BusinessOpportunityService {
       return false;
     }
   }
+
+  /// Fetch specific sponsor's information by UID (for locked-in sponsors)
+  ///
+  /// [sponsorUid] - The Firebase UID of the locked-in business opportunity sponsor
+  /// Returns [BizOppResult] with referral URL and sponsor information, or nulls if not found
+  static Future<BizOppResult> getLockedInSponsorInfo(String sponsorUid) async {
+    try {
+      debugPrint('🔒 BIZ_OPP_SERVICE: Fetching locked-in sponsor info for: $sponsorUid');
+
+      final sponsorDoc = await _firestore
+          .collection('users')
+          .doc(sponsorUid)
+          .get();
+
+      if (sponsorDoc.exists) {
+        final sponsorData = sponsorDoc.data();
+        final bizOppRefUrl = sponsorData?['biz_opp_ref_url'] as String?;
+
+        if (bizOppRefUrl != null && bizOppRefUrl.isNotEmpty) {
+          final firstName = sponsorData?['firstName'] as String? ?? '';
+          final lastName = sponsorData?['lastName'] as String? ?? '';
+          final sponsorName = '$firstName $lastName'.trim();
+
+          debugPrint('✅ BIZ_OPP_SERVICE: Locked-in sponsor found: $sponsorName');
+
+          return BizOppResult(
+            bizOppRefUrl: bizOppRefUrl,
+            sponsorName: sponsorName.isNotEmpty ? sponsorName : null,
+            sponsorUid: sponsorUid,
+          );
+        } else {
+          debugPrint('⚠️ BIZ_OPP_SERVICE: Locked-in sponsor has no biz_opp_ref_url');
+        }
+      } else {
+        debugPrint('❌ BIZ_OPP_SERVICE: Locked-in sponsor document does not exist: $sponsorUid');
+      }
+
+      return BizOppResult(
+        bizOppRefUrl: null,
+        sponsorName: null,
+        sponsorUid: null,
+      );
+    } catch (e) {
+      debugPrint('💥 BIZ_OPP_SERVICE: Error fetching locked-in sponsor info: $e');
+      return BizOppResult(
+        bizOppRefUrl: null,
+        sponsorName: null,
+        sponsorUid: null,
+      );
+    }
+  }
 }

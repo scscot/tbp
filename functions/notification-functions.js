@@ -1033,23 +1033,44 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     }
 
     const visitingUserData = visitingUserDoc.data();
-    const sponsorId = visitingUserData.sponsor_id;
+    const uplineRefs = visitingUserData.upline_refs || [];
 
-    // ALWAYS update biz_visit_date, even if there's no sponsor
-    await db.collection("users").doc(visitingUserId).update({
-      biz_visit_date: FieldValue.serverTimestamp()
-    });
-
-    if (!sponsorId) {
-      logger.info("✅ BIZ OPP VISIT: Updated biz_visit_date for user with no sponsor:", visitingUserId);
-      return { success: true, message: "Visit date recorded (no sponsor to notify)." };
+    // Find business opportunity sponsor by traversing upline_refs
+    // This matches the logic in business_screen.dart
+    let bizOppSponsorId = null;
+    for (const uplineId of uplineRefs) {
+      const uplineDoc = await db.collection("users").doc(uplineId).get();
+      if (uplineDoc.exists) {
+        const uplineData = uplineDoc.data();
+        if (uplineData.biz_opp_ref_url) {
+          bizOppSponsorId = uplineId;
+          logger.info(`✅ BIZ OPP VISIT: Found biz opp sponsor ${bizOppSponsorId} for user ${visitingUserId}`);
+          break;
+        }
+      }
     }
 
-    // Get sponsor data
-    const sponsorDoc = await db.collection("users").doc(sponsorId).get();
+    // ALWAYS update biz_visit_date and lock in the sponsor (if found)
+    const updateData = {
+      biz_visit_date: FieldValue.serverTimestamp()
+    };
+
+    if (bizOppSponsorId) {
+      updateData.biz_opp_sponsor_id = bizOppSponsorId;
+    }
+
+    await db.collection("users").doc(visitingUserId).update(updateData);
+
+    if (!bizOppSponsorId) {
+      logger.info("✅ BIZ OPP VISIT: Updated biz_visit_date for user with no biz opp sponsor:", visitingUserId);
+      return { success: true, message: "Visit date recorded (no business opportunity sponsor found)." };
+    }
+
+    // Get sponsor data for notification
+    const sponsorDoc = await db.collection("users").doc(bizOppSponsorId).get();
     if (!sponsorDoc.exists) {
-      logger.warn("Sponsor not found for user:", visitingUserId);
-      return { success: true, message: "Sponsor not found." };
+      logger.warn("Business opportunity sponsor not found:", bizOppSponsorId);
+      return { success: true, message: "Visit date recorded but sponsor not found." };
     }
 
     const sponsorData = sponsorDoc.data();
@@ -1058,11 +1079,11 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     const visitingUserName = `${visitingUserData.firstName || ''} ${visitingUserData.lastName || ''}`.trim();
     const firstName = visitingUserData.firstName || '';
     const lastName = visitingUserData.lastName || '';
-    const bizName = visitingUserData.bizOpp || 'business opportunity';
+    const bizName = visitingUserData.bizOpp || sponsorData.biz_opp || 'business opportunity';
 
-    // Create notification for sponsor
+    // Create notification for business opportunity sponsor
     await createNotification({
-      userId: sponsorId,
+      userId: bizOppSponsorId,
       type: 'biz_opp_visit',
       title: getNotificationText('teamActivityTitle', sponsorLang),
       body: getNotificationText('teamActivityMessage', sponsorLang, {
@@ -1078,7 +1099,7 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
       }
     });
 
-    logger.info(`✅ BIZ OPP VISIT: Updated biz_visit_date and notified sponsor ${sponsorId} for user ${visitingUserId}`);
+    logger.info(`✅ BIZ OPP VISIT: Updated biz_visit_date, locked sponsor ${bizOppSponsorId}, and sent notification for user ${visitingUserId}`);
     return { success: true, message: "Visit date recorded and sponsor notified." };
 
   } catch (error) {
@@ -1124,11 +1145,11 @@ const notifySponsorOfBizOppCompletion = onDocumentUpdated('users/{userId}', asyn
   }
 
   try {
-    // Find sponsor
-    const sponsorId = after.sponsor_id || after.upline_admin;
+    // Use the locked-in business opportunity sponsor
+    const sponsorId = after.biz_opp_sponsor_id;
 
     if (!sponsorId) {
-      logger.info(`User ${userId} has no sponsor, skipping completion notification`);
+      logger.info(`User ${userId} has no locked-in biz opp sponsor, skipping completion notification`);
       return;
     }
 
@@ -2652,17 +2673,20 @@ const sendBizOppReminderNotifications = onSchedule(
           const bizOppName = userData.biz_opp || 'business opportunity';
           const userLang = userData.preferredLanguage || 'en';
 
-          let title, body;
+          let titleKey, bodyKey;
           if (interval.hours === 24) {
-            title = 'Complete Your Registration';
-            body = `You're one step away! Add your ${bizOppName} referral link to start building your team. Click here to learn more!`;
+            titleKey = 'bizOppReminder24hTitle';
+            bodyKey = 'bizOppReminder24hMessage';
           } else if (interval.hours === 72) {
-            title = 'Don\'t Miss Out!';
-            body = `Complete your ${bizOppName} registration to unlock team building. Click here to learn more!`;
+            titleKey = 'bizOppReminder72hTitle';
+            bodyKey = 'bizOppReminder72hMessage';
           } else {
-            title = 'Final Reminder';
-            body = `Your ${bizOppName} registration is still incomplete. Add your referral link now! Click here to learn more!`;
+            titleKey = 'bizOppReminder168hTitle';
+            bodyKey = 'bizOppReminder168hMessage';
           }
+
+          const title = getNotificationText(titleKey, userLang);
+          const body = getNotificationText(bodyKey, userLang, { bizName: bizOppName });
 
           try {
             await createNotification({
