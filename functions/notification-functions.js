@@ -1033,7 +1033,7 @@ const notifySponsorOfBizOppVisit = onCall({ region: "us-central1" }, async (requ
     }
 
     const visitingUserData = visitingUserDoc.data();
-    const sponsorId = visitingUserData.sponsorId;
+    const sponsorId = visitingUserData.sponsor_id;
 
     // ALWAYS update biz_visit_date, even if there's no sponsor
     await db.collection("users").doc(visitingUserId).update({
