@@ -1,6 +1,7 @@
 // lib/services/fcm_service.dart
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -313,13 +314,54 @@ class FCMService {
       debugPrint("--- SAVE TOKEN: Got FCM token starting with: ${token.substring(0, 15)}...");
     }
 
+    final trimmedToken = token.trim();
+    final userDoc = _firestore.collection('users').doc(uid);
+
     try {
-      // Minimal write: single `fcm_token` field (server already resolves across 3 tiers)
-      final doc = _firestore.collection('users').doc(uid);
-      await doc.update({'fcm_token': token.trim()});
+      // PRIMARY: Write to fcmTokens subcollection with device metadata
+      final tokenRef = userDoc.collection('fcmTokens').doc(trimmedToken);
+      final tokenSnap = await tokenRef.get();
+
+      final now = FieldValue.serverTimestamp();
+      final platform = Platform.isIOS ? 'ios' : 'android';
+
+      // Device metadata
+      final tokenData = <String, dynamic>{
+        'token': trimmedToken,
+        'platform': platform,
+        'updatedAt': now,
+      };
+
+      if (tokenSnap.exists) {
+        // Update existing token
+        await tokenRef.update(tokenData);
+        if (kDebugMode) {
+          debugPrint("✅ SAVE TOKEN: Updated existing token in subcollection");
+        }
+      } else {
+        // Create new token with createdAt
+        tokenData['createdAt'] = now;
+        await tokenRef.set(tokenData);
+        if (kDebugMode) {
+          debugPrint("✅ SAVE TOKEN: Created new token in subcollection");
+        }
+      }
+
+      // BACKWARD COMPATIBILITY: Also write to legacy fcm_token field
+      // This ensures older server code still works during migration period
+      try {
+        await userDoc.update({'fcm_token': trimmedToken});
+        if (kDebugMode) {
+          debugPrint("✅ SAVE TOKEN: Updated legacy fcm_token field for compatibility");
+        }
+      } catch (legacyError) {
+        if (kDebugMode) {
+          debugPrint("⚠️ SAVE TOKEN: Legacy field update failed (non-critical): $legacyError");
+        }
+      }
 
       if (kDebugMode) {
-        debugPrint("✅✅✅ SAVE TOKEN SUCCESS: Firestore write completed without error.");
+        debugPrint("✅✅✅ SAVE TOKEN SUCCESS: Token saved to subcollection + legacy field");
       }
     } catch (error) {
       if (kDebugMode) {
@@ -334,16 +376,44 @@ class FCMService {
 
   /// Clear token in Firestore for this user and unbind locally.
   Future<void> clearFCMToken({required String uid}) async {
-    // Delete from Firestore
     try {
-      final doc = _firestore.collection('users').doc(uid);
-      await doc.update({'fcm_token': FieldValue.delete()});
+      final userDoc = _firestore.collection('users').doc(uid);
+
+      // Get current token to delete specific subcollection document
+      final currentToken = await _messaging.getToken();
+
+      if (currentToken != null && currentToken.trim().isNotEmpty) {
+        // PRIMARY: Delete from fcmTokens subcollection
+        try {
+          await userDoc.collection('fcmTokens').doc(currentToken.trim()).delete();
+          if (kDebugMode) {
+            debugPrint('🧹 Cleared FCM token from subcollection for user: $uid');
+          }
+        } catch (subError) {
+          if (kDebugMode) {
+            debugPrint('⚠️ Error clearing token from subcollection: $subError');
+          }
+        }
+      }
+
+      // LEGACY: Also delete from fcm_token field for backward compatibility
+      try {
+        await userDoc.update({'fcm_token': FieldValue.delete()});
+        if (kDebugMode) {
+          debugPrint('🧹 Cleared legacy FCM token field for user: $uid');
+        }
+      } catch (legacyError) {
+        if (kDebugMode) {
+          debugPrint('⚠️ Error clearing legacy token field: $legacyError');
+        }
+      }
+
       if (kDebugMode) {
-        debugPrint('🧹 Cleared FCM token for user: $uid');
+        debugPrint('✅ FCM token cleanup complete for user: $uid');
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('⚠️ Error clearing FCM token: $e');
+        debugPrint('❌ Error clearing FCM token: $e');
       }
     }
 

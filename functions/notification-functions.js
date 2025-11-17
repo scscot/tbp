@@ -23,7 +23,7 @@ const {
 } = require('./shared/utilities');
 
 const { getNotificationText } = require('./translations');
-const { trackFCMDelivery, trackMilestoneNotification } = require('./monitoring-functions');
+const { trackFCMDelivery, trackMilestoneNotification, recordMetric } = require('./monitoring-functions');
 
 // Additional Firebase setup
 const messaging = admin.messaging();
@@ -201,68 +201,93 @@ function toStringMap(obj) {
  * Resolves the best FCM token for a user using a 3-tier approach
  */
 async function resolveBestFcmTokenForUser(userRef, userDataMaybe) {
-  let token = null, source = 'none';
-  const data = userDataMaybe || (await userRef.get()).data() || {};
+  let token = null, source = 'none', tokenDoc = null;
 
-  // Tier 1: users/{uid}.fcm_token
-  if (typeof data.fcm_token === 'string' && data.fcm_token.trim()) {
-    token = data.fcm_token.trim();
-    source = 'fcm_token';
-  }
+  // Tier 1 (NEW PRIORITY): users/{uid}/fcmTokens/{tokenId} subcollection
+  // This is now the PRIMARY source - most up-to-date and tracks device metadata
+  try {
+    const sub = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+    if (!sub.empty) {
+      tokenDoc = sub.docs[0];
+      const tokenData = tokenDoc.data();
+      token = (tokenData.token || tokenDoc.id).trim();
+      source = 'fcmTokens(subcollection)';
 
-  // Tier 2: users/{uid}.fcmTokens[0]
-  if (!token && Array.isArray(data.fcmTokens) && data.fcmTokens.length) {
-    const first = (data.fcmTokens.find(t => typeof t === 'string' && t.trim()) || '').trim();
-    if (first) {
-      token = first;
-      source = 'fcmTokens[0]';
+      // Update lastUsedAt to track token usage for stale cleanup
+      try {
+        await tokenDoc.ref.update({
+          lastUsedAt: FieldValue.serverTimestamp()
+        });
+      } catch (updateError) {
+        // Non-critical - continue if lastUsedAt update fails
+        logger.warn(`Could not update lastUsedAt for token ${tokenDoc.id}:`, updateError.message);
+      }
     }
-  }
-
-  // Tier 3: users/{uid}/fcmTokens/{tokenId} subcollection
-  if (!token) {
+  } catch (e) {
+    // Fallback: Try ordering by document ID if updatedAt field doesn't exist
     try {
-      const sub = await userRef.collection('fcmTokens').orderBy('updatedAt', 'desc').limit(1).get();
+      const sub = await userRef.collection('fcmTokens').orderBy(FieldPath.documentId()).limit(1).get();
       if (!sub.empty) {
-        token = (sub.docs[0].data().token || sub.docs[0].id).trim();
+        tokenDoc = sub.docs[0];
+        token = (tokenDoc.data().token || tokenDoc.id).trim();
         source = 'fcmTokens(subcollection)';
       }
-    } catch (e) {
-      // Fallback: Try ordering by document ID if updatedAt field doesn't exist
-      try {
-        const sub = await userRef.collection('fcmTokens').orderBy(FieldPath.documentId()).limit(1).get();
-        if (!sub.empty) {
-          token = sub.docs[0].id.trim();
-          source = 'fcmTokens(subcollection)';
-        }
-      } catch (fallbackError) {
-        logger.error(`FCM token subcollection query failed for user ${userRef.id}:`, fallbackError);
-        // Graceful degradation - return null token
+    } catch (fallbackError) {
+      logger.error(`FCM token subcollection query failed for user ${userRef.id}:`, fallbackError);
+    }
+  }
+
+  // Tier 2 (LEGACY FALLBACK): users/{uid}.fcm_token field
+  if (!token) {
+    const data = userDataMaybe || (await userRef.get()).data() || {};
+    if (typeof data.fcm_token === 'string' && data.fcm_token.trim()) {
+      token = data.fcm_token.trim();
+      source = 'fcm_token(legacy)';
+    }
+  }
+
+  // Tier 3 (LEGACY FALLBACK): users/{uid}.fcmTokens[0] array
+  if (!token) {
+    const data = userDataMaybe || (await userRef.get()).data() || {};
+    if (Array.isArray(data.fcmTokens) && data.fcmTokens.length) {
+      const first = (data.fcmTokens.find(t => typeof t === 'string' && t.trim()) || '').trim();
+      if (first) {
+        token = first;
+        source = 'fcmTokens[0](legacy)';
       }
     }
   }
 
-  return { token, source };
+  return { token, source, tokenDoc };
 }
 
 /**
  * Cleanup dead FCM tokens from all storage locations
+ * @param {DocumentReference} userRef - Reference to the user document
+ * @param {string} token - The dead FCM token to remove
+ * @param {DocumentSnapshot} tokenDocSnap - Optional: the tokenDoc from resolution for efficient deletion
  */
-async function cleanupDeadToken(userRef, token) {
+async function cleanupDeadToken(userRef, token, tokenDocSnap) {
   if (!token) return;
 
   const batch = db.batch();
 
   try {
-    // Remove from fcm_token field
+    // Remove from legacy fcm_token field
     batch.update(userRef, { fcm_token: FieldValue.delete() });
 
-    // Remove from fcmTokens array
+    // Remove from legacy fcmTokens array
     batch.update(userRef, { fcmTokens: FieldValue.arrayRemove(token) });
 
-    // Remove from fcmTokens subcollection
-    const tokenDoc = userRef.collection('fcmTokens').doc(token);
-    batch.delete(tokenDoc);
+    // Remove from fcmTokens subcollection (primary storage)
+    if (tokenDocSnap && tokenDocSnap.exists) {
+      // Use the provided tokenDoc reference for efficient deletion
+      batch.delete(tokenDocSnap.ref);
+    } else {
+      // Fallback: construct the document reference from the token
+      const tokenDoc = userRef.collection('fcmTokens').doc(token);
+      batch.delete(tokenDoc);
+    }
 
     await batch.commit();
     logger.info('Dead token cleaned up', { token: token.slice(0, 8) + '***' });
@@ -276,7 +301,7 @@ async function cleanupDeadToken(userRef, token) {
  */
 async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
   const userRef = db.collection('users').doc(userId);
-  const { token, source } = await resolveBestFcmTokenForUser(userRef, userDataMaybe);
+  const { token, source, tokenDoc } = await resolveBestFcmTokenForUser(userRef, userDataMaybe);
 
   if (!token) {
     logger.info('PUSH: no token', { userId, notificationId });
@@ -346,7 +371,7 @@ async function sendPushToUser(userId, notificationId, payload, userDataMaybe) {
     await trackFCMDelivery(userId, false, err.message);
 
     if (code === 'messaging/registration-token-not-registered') {
-      await cleanupDeadToken(userRef, token);
+      await cleanupDeadToken(userRef, token, tokenDoc);
       return { sent: false, reason: 'token_not_registered', tokenSource: source };
     }
     return { sent: false, reason: code || 'unknown', tokenSource: source };
@@ -2464,6 +2489,102 @@ const testPushNotifications = onCall(
   }
 );
 
+// ============================================================================
+// SCHEDULED FCM TOKEN CLEANUP
+// ============================================================================
+
+/**
+ * Weekly scheduled function to cleanup stale FCM tokens
+ * Removes tokens that haven't been used in 90 days to keep the database clean
+ * and prevent pushes to long-inactive devices
+ */
+const cleanupStaleFcmTokens = onSchedule(
+  {
+    schedule: '0 2 * * 0', // Weekly at 2am UTC on Sundays
+    timeZone: 'UTC',
+    region: 'us-central1',
+  },
+  async (event) => {
+    logger.info('🧹 FCM TOKEN CLEANUP: Starting weekly cleanup of stale tokens');
+
+    const now = Date.now();
+    const staleThresholdMs = 90 * 24 * 60 * 60 * 1000; // 90 days in milliseconds
+    const staleTimestamp = new Date(now - staleThresholdMs);
+
+    let totalScanned = 0;
+    let totalDeleted = 0;
+    let usersProcessed = 0;
+    let errors = 0;
+
+    try {
+      // Query all users (using select() for minimal data transfer)
+      const usersSnap = await db.collection('users').select().get();
+      logger.info(`🧹 FCM TOKEN CLEANUP: Found ${usersSnap.size} users to process`);
+
+      // Process users in batches to avoid memory issues
+      for (const userDoc of usersSnap.docs) {
+        try {
+          // Query tokens older than 90 days based on updatedAt
+          const staleTokensSnap = await userDoc.ref
+            .collection('fcmTokens')
+            .where('updatedAt', '<', staleTimestamp)
+            .get();
+
+          totalScanned += staleTokensSnap.size;
+
+          if (!staleTokensSnap.empty) {
+            // Delete stale tokens in batch (max 500 per batch)
+            const batch = db.batch();
+            let batchCount = 0;
+
+            for (const tokenDoc of staleTokensSnap.docs) {
+              batch.delete(tokenDoc.ref);
+              batchCount++;
+              totalDeleted++;
+
+              // Commit batch if we hit 500 operations
+              if (batchCount >= 500) {
+                await batch.commit();
+                batchCount = 0;
+              }
+            }
+
+            // Commit remaining operations
+            if (batchCount > 0) {
+              await batch.commit();
+            }
+
+            logger.info(
+              `🧹 FCM TOKEN CLEANUP: Deleted ${staleTokensSnap.size} stale tokens for user ${userDoc.id}`
+            );
+          }
+
+          usersProcessed++;
+        } catch (userError) {
+          errors++;
+          logger.error(
+            `❌ FCM TOKEN CLEANUP: Error processing user ${userDoc.id}:`,
+            userError
+          );
+        }
+      }
+
+      logger.info(
+        `✅ FCM TOKEN CLEANUP: Complete - Processed ${usersProcessed} users, Scanned ${totalScanned} tokens, Deleted ${totalDeleted} stale tokens, Errors: ${errors}`
+      );
+
+      // Record metrics
+      await recordMetric('fcm_stale_tokens_scanned', totalScanned);
+      await recordMetric('fcm_stale_tokens_deleted', totalDeleted);
+      await recordMetric('fcm_cleanup_errors', errors);
+
+    } catch (error) {
+      logger.error('❌ FCM TOKEN CLEANUP: Critical failure:', error);
+      throw error;
+    }
+  }
+);
+
 // ==============================
 // Exports
 // ==============================
@@ -2507,6 +2628,7 @@ module.exports = {
 
   // Scheduled functions
   sendDailyTeamGrowthNotifications,
+  cleanupStaleFcmTokens,
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,
