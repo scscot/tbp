@@ -144,8 +144,72 @@ class _AddLinkScreenState extends State<AddLinkScreen>
       if (mounted) {
         setState(() => _isLoading = false);
         _animationController.forward();
+
+        // Check if user has visited business screen
+        final user = Provider.of<UserModel?>(context, listen: false);
+        if (user != null && user.bizVisitDate == null && !_hasShownDialog) {
+          _hasShownDialog = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showPreFormValidationModal();
+          });
+        }
       }
     }
+  }
+
+  void _showPreFormValidationModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Have You Joined $_bizOppName?',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'If you have not yet joined $_bizOppName and received your unique referral link, you must do so before completing this form.',
+                style: const TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/business');
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: Text(
+                'Join $_bizOppName',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                backgroundColor: AppColors.primaryColor,
+              ),
+              child: Text(
+                'I Have My $_bizOppName Link',
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ],
+          actionsPadding: const EdgeInsets.all(16),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+        );
+      },
+    );
   }
 
   /// Validate that the link begins with the expected host from the business opportunity

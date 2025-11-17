@@ -2585,6 +2585,114 @@ const cleanupStaleFcmTokens = onSchedule(
   }
 );
 
+/**
+ * Hourly scheduled function to send reminder notifications to users
+ * who copied the business opportunity link but haven't completed registration
+ *
+ * Sends reminders at:
+ * - 24 hours after copying link
+ * - 72 hours after copying link
+ * - 7 days after copying link
+ *
+ * Deep links users directly to add_link_screen when they tap the notification
+ */
+const sendBizOppReminderNotifications = onSchedule(
+  {
+    schedule: '0 * * * *', // Every hour
+    timeZone: 'UTC',
+    region: 'us-central1',
+  },
+  async (event) => {
+    logger.info('📬 BIZ OPP REMINDERS: Starting reminder notification check');
+
+    const now = new Date(event.scheduleTime);
+
+    const reminderIntervals = [
+      { hours: 24, label: '24-hour' },
+      { hours: 72, label: '72-hour' },
+      { hours: 168, label: '7-day' }
+    ];
+
+    let totalReminders = 0;
+
+    try {
+      for (const interval of reminderIntervals) {
+        const windowStart = new Date(now.getTime() - (interval.hours * 60 * 60 * 1000) - (30 * 60 * 1000));
+        const windowEnd = new Date(now.getTime() - (interval.hours * 60 * 60 * 1000) + (30 * 60 * 1000));
+
+        logger.info(`📬 BIZ OPP REMINDERS: Checking ${interval.label} window: ${windowStart.toISOString()} to ${windowEnd.toISOString()}`);
+
+        const usersSnapshot = await db.collection('users')
+          .where('biz_visit_date', '>=', windowStart)
+          .where('biz_visit_date', '<=', windowEnd)
+          .get();
+
+        logger.info(`📬 BIZ OPP REMINDERS: Found ${usersSnapshot.size} users in ${interval.label} window`);
+
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          const userId = userDoc.id;
+
+          if (userData.biz_join_date) {
+            logger.info(`📬 BIZ OPP REMINDERS: Skipping user ${userId} - already completed registration`);
+            continue;
+          }
+
+          const reminderKey = `biz_opp_reminder_${interval.hours}h`;
+          if (userData[reminderKey] === true) {
+            logger.info(`📬 BIZ OPP REMINDERS: Skipping user ${userId} - ${interval.label} reminder already sent`);
+            continue;
+          }
+
+          const bizOppName = userData.biz_opp || 'business opportunity';
+          const userLang = userData.preferredLanguage || 'en';
+
+          let title, body;
+          if (interval.hours === 24) {
+            title = 'Complete Your Registration';
+            body = `You're one step away! Add your ${bizOppName} referral link to start building your team. Click here to learn more!`;
+          } else if (interval.hours === 72) {
+            title = 'Don\'t Miss Out!';
+            body = `Complete your ${bizOppName} registration to unlock team building. Click here to learn more!`;
+          } else {
+            title = 'Final Reminder';
+            body = `Your ${bizOppName} registration is still incomplete. Add your referral link now! Click here to learn more!`;
+          }
+
+          try {
+            await createNotification({
+              userId,
+              type: 'biz_opp_reminder',
+              title,
+              body,
+              docFields: {
+                bizOpp: bizOppName,
+                reminderType: interval.label,
+                route: '/business-add-link',
+                route_params: JSON.stringify({ action: 'complete_registration' })
+              }
+            });
+
+            await db.collection('users').doc(userId).update({
+              [reminderKey]: true
+            });
+
+            totalReminders++;
+            logger.info(`📬 BIZ OPP REMINDERS: Sent ${interval.label} reminder to user ${userId}`);
+          } catch (error) {
+            logger.error(`📬 BIZ OPP REMINDERS: Error sending reminder to user ${userId}:`, error);
+          }
+        }
+      }
+
+      logger.info(`📬 BIZ OPP REMINDERS: Completed - sent ${totalReminders} reminders`);
+    } catch (error) {
+      logger.error('❌ BIZ OPP REMINDERS: Critical failure:', error);
+      throw error;
+    }
+  }
+);
+
 // ==============================
 // Exports
 // ==============================
@@ -2629,6 +2737,7 @@ module.exports = {
   // Scheduled functions
   sendDailyTeamGrowthNotifications,
   cleanupStaleFcmTokens,
+  sendBizOppReminderNotifications,
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,

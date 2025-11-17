@@ -77,6 +77,7 @@ const {
   // Scheduled functions
   sendDailyTeamGrowthNotifications,
   cleanupStaleFcmTokens,
+  sendBizOppReminderNotifications,
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,
@@ -246,6 +247,7 @@ module.exports = {
   sendDailyTeamGrowthNotifications,
   sendLaunchNotificationConfirmation,
   cleanupStaleFcmTokens,
+  sendBizOppReminderNotifications,
 
   // ========== ANALYTICS FUNCTIONS ==========
   getNetwork,

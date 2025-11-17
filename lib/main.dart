@@ -21,6 +21,7 @@ import 'screens/edit_profile_screen.dart';
 import 'screens/subscription_screen_enhanced.dart';
 import 'screens/member_detail_screen.dart';
 import 'screens/business_screen.dart';
+import 'screens/add_link_screen.dart';
 import 'screens/message_thread_screen.dart';
 import 'screens/new_registration_screen.dart';
 import 'screens/login_screen_enhanced.dart';
@@ -318,6 +319,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             } else if (settings.name == '/business') {
               return MaterialPageRoute(
                 builder: (context) => BusinessScreen(appId: appId),
+                settings: settings,
+              );
+            } else if (settings.name == '/business-add-link') {
+              return MaterialPageRoute(
+                builder: (context) => AddLinkScreen(appId: appId),
                 settings: settings,
               );
             } else if (settings.name == '/message_thread') {
