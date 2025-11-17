@@ -37,6 +37,26 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   bool _isLoading = false;
   bool _isValidatingUrl = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _refLinkController.addListener(_smartFormatUrl);
+  }
+
+  void _smartFormatUrl() {
+    final text = _refLinkController.text.trim();
+
+    if (text.isNotEmpty && !text.startsWith('http://') && !text.startsWith('https://')) {
+      if (!text.contains('://')) {
+        final cursorPos = _refLinkController.selection.baseOffset;
+        _refLinkController.value = TextEditingValue(
+          text: 'https://$text',
+          selection: TextSelection.collapsed(offset: cursorPos + 8),
+        );
+      }
+    }
+  }
+
   Future<void> _scrollToField(GlobalKey fieldKey) async {
     if (fieldKey.currentContext != null) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -146,6 +166,28 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       }
       if (uri.scheme != 'https') {
         return 'Referral link must use HTTPS (not HTTP) for security';
+      }
+
+      // Ensure not localhost or IP address (business links should be public)
+      if (uri.host == 'localhost' ||
+          uri.host.startsWith('127.') ||
+          uri.host.startsWith('192.168.') ||
+          uri.host.startsWith('10.') ||
+          RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
+        return 'Please enter a valid business referral link\n(not localhost or IP address)';
+      }
+
+      // Ensure proper TLD
+      if (!uri.host.contains('.')) {
+        return 'Please enter a valid URL with a proper domain\n(e.g., company.com)';
+      }
+
+      // Ensure it's not just a homepage - must have path or query parameters
+      // Admins should provide their unique referral link, not just the base domain
+      if ((uri.path.isEmpty || uri.path == '/' || uri.path == '') &&
+          uri.query.isEmpty &&
+          uri.fragment.isEmpty) {
+        return 'Please enter your complete referral link, not just the homepage.\nYour referral link should include your unique identifier\n(e.g., https://company.com/join?ref=yourname)';
       }
     } catch (_) {
       return 'Invalid URL format. Please check your referral link.';
@@ -466,6 +508,47 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             validator: (value) =>
                                 value!.isEmpty ? 'Required' : null,
                           ),
+                          if (_refLinkController.text.isNotEmpty) ...{
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.green.withValues(alpha: 0.1),
+                                border: Border.all(
+                                    color: Colors.green.withValues(alpha: 0.3)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.check_circle,
+                                          color: Colors.green.shade700, size: 20),
+                                      const SizedBox(width: 8),
+                                      const Text(
+                                        'Referral Link Preview:',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    _refLinkController.text.trim(),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          },
                         ],
                       ),
                     ),
@@ -494,6 +577,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
 
   @override
   void dispose() {
+    _refLinkController.removeListener(_smartFormatUrl);
     _scrollController.dispose();
     _bizNameController.dispose();
     _bizNameConfirmController.dispose();
