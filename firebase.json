@@ -54,7 +54,7 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [
                 {
@@ -100,7 +100,7 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false
         },
         {
@@ -111,7 +111,7 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [
                 {
@@ -214,7 +214,7 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [],
             "headers": [
