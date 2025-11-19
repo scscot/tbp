@@ -1,0 +1,17 @@
+{
+  "name": "tbp-analytics",
+  "version": "1.0.0",
+  "description": "Google Analytics 4 data fetcher for Team Build Pro",
+  "main": "fetch-ga4-data.js",
+  "scripts": {
+    "fetch": "node fetch-ga4-data.js",
+    "fetch-combined": "node fetch-combined-analytics.js",
+    "setup": "echo 'Run: npm install && follow README.md for authentication setup'"
+  },
+  "dependencies": {
+    "@google-analytics/data": "^4.0.0",
+    "axios": "^1.6.0"
+  },
+  "author": "Stephen Scott",
+  "license": "UNLICENSED"
+}
