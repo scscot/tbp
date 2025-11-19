@@ -268,7 +268,7 @@
     "description": "Bottom navigation tab label for team/network",
     "maxLength": 14
   },
-  "navShare": "Compartir",
+  "navShare": "Crecer",
   "@navShare": {
     "description": "Bottom navigation tab label for sharing",
     "maxLength": 14

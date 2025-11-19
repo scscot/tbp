@@ -678,7 +678,7 @@ class _ShareScreenState extends State<ShareScreen>
     );
   }
 
-  Widget _buildHeader() {
+ /*  Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -707,7 +707,7 @@ class _ShareScreenState extends State<ShareScreen>
         ],
       ),
     );
-  }
+  } */
 
   Widget _buildSharingStrategies() {
     return Column(

@@ -365,7 +365,7 @@ class NavigationShellState extends State<NavigationShell> {
                 label: context.l10n?.navTeam,
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.share),
+                icon: const Icon(Icons.trending_up),
                 label: context.l10n?.navShare,
               ),
               BottomNavigationBarItem(
