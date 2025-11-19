@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-17
+**Last Updated**: 2025-11-18
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -283,9 +283,11 @@ git add . && git commit -m "message" && git push
 - `lib/services/auth_service.dart` - Authentication
 - `lib/services/network_service.dart` - Advanced caching
 - `lib/screens/share_screen.dart` - 16 pre-written messages
+- `lib/screens/dashboard_screen.dart` - Main dashboard with stats and action cards (responsive text handling for multilingual support)
 - `lib/screens/how_it_works_screen.dart` - How It Works (fully localized in 4 languages)
 - `lib/screens/platform_management_screen.dart` - Admin account creation (fully localized in 4 languages)
 - `lib/widgets/biz_opp_education_modal.dart` - Business opportunity education modal
+- `lib/widgets/quick_prompts_widget.dart` - AI Coach welcome screen with quick prompts
 - `lib/l10n/app_*.arb` - Localization files (EN, ES, PT, DE)
 - `functions/index.js` - All Cloud Functions
 - `functions/email-campaign-functions.js` - Automated hourly email campaign
@@ -347,6 +349,30 @@ git add . && git commit -m "message" && git push
    - Deleted Android cache directories (android/.gradle, android/build) - freed 43MB
    - Cleaned Flutter build caches via `flutter clean`
    - Project ready for fresh builds
+18. ✅ **German UI Text Overflow Fixes**: Fixed multilingual text display issues
+   - `lib/screens/dashboard_screen.dart`: Fixed stats card title overflow (reduced font size 18→16, added line height 1.2, enabled soft wrapping)
+   - `lib/screens/dashboard_screen.dart`: Fixed action card title overflow (wrapped Text in Flexible widget, enabled 2-line display)
+   - `lib/widgets/quick_prompts_widget.dart`: Fixed AI Coach welcome title overflow (wrapped Text in Flexible widget)
+   - Verified all fixes with German locale hot reload testing
+19. ✅ **Android Build v1.0.62+92**: Created AAB with German UI fixes
+   - Build size: 55.6MB
+   - All German text overflow issues resolved
+   - Committed and pushed to GitHub with detailed commit message
+20. ✅ **Major Disk Space Optimization**: Freed 14GB for iOS archive builds
+   - Deleted Gradle cache: 5.5GB (`~/.gradle/caches`)
+   - Deleted npm cache: 4.8GB (`~/.npm`)
+   - Deleted Xcode DerivedData: 3.8GB (kept 165MB for active project)
+   - Deleted CocoaPods cache: 155MB
+   - Disk space improved: 7.1GB → 21GB available (97% → 90% capacity)
+21. ✅ **iOS Build v1.0.64+94**: Prepared iOS release with debug symbols
+   - Fixed localization build issue (regenerated `build/l10n_missing.txt` via `flutter gen-l10n`)
+   - Successfully built iOS release with `flutter build ios --release --no-codesign`
+   - Build size: 69.5MB with proper dSYM files
+   - **Note**: Flutter.framework dSYM warning is a known Flutter issue and safe to ignore
+     - Apple accepts submissions with this warning
+     - Only Flutter's engine framework lacks dSYMs (app code has symbols)
+     - Crash reporting works normally for app code
+     - Thousands of Flutter apps in production with same warning
 
 ---
 
