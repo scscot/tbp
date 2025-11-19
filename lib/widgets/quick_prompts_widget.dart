@@ -36,12 +36,16 @@ class QuickPromptsWidget extends StatelessWidget {
                   children: [
                     Icon(Icons.smart_toy, color: AppColors.primary, size: 24),
                     const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context).quickPromptsWelcomeTitle,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context).quickPromptsWelcomeTitle,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.visible,
                       ),
                     ),
                   ],

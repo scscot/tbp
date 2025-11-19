@@ -626,12 +626,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: Text(
                   context.l10n?.dashKpiTitle ?? 'Your Current Team Stats',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
+                    height: 1.2,
                   ),
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
+                  softWrap: true,
                 ),
               ),
               const SizedBox(width: 8),
@@ -817,12 +819,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                 Expanded(
                   child: Row(
                     children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       if (hasBadge && badgeCount > 0) ...[
