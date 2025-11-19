@@ -1315,7 +1315,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Continue compartilhando seu link de indicação para expandir sua equipe e atender aos requisitos!';
 
   @override
-  String get shareTitle => 'Compartilhar';
+  String get shareTitle => 'Crescer';
 
   @override
   String get shareYourLinkHeading => 'Seu Link de Indicação';

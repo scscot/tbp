@@ -2294,7 +2294,7 @@ abstract class AppLocalizations {
   /// Share screen title
   ///
   /// In en, this message translates to:
-  /// **'Share'**
+  /// **'Grow'**
   String get shareTitle;
 
   /// Heading for referral link section

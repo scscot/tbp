@@ -1299,7 +1299,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keep sharing your referral link to grow your team and meet the requirements!';
 
   @override
-  String get shareTitle => 'Share';
+  String get shareTitle => 'Grow';
 
   @override
   String get shareYourLinkHeading => 'Your Referral Link';

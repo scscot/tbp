@@ -1329,7 +1329,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Teilen Sie weiterhin Ihren Empfehlungslink, um Ihr Team zu vergrößern und die Anforderungen zu erfüllen!';
 
   @override
-  String get shareTitle => 'Teilen';
+  String get shareTitle => 'Wachsen';
 
   @override
   String get shareYourLinkHeading => 'Ihr Empfehlungslink';

@@ -106,7 +106,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     final user = Provider.of<UserModel?>(context, listen: false);
     if (user == null || _bizOppName == null) return;
 
-    final shouldShowModal = user.qualifiedDate != null &&
+    final shouldShowModal = user.role != 'admin' &&
+        user.qualifiedDate != null &&
         user.bizJoinDate == null &&
         !user.bizOppEducationShown;
 

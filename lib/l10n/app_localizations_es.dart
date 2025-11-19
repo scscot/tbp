@@ -1323,7 +1323,7 @@ class AppLocalizationsEs extends AppLocalizations {
       '¡Siga compartiendo su enlace de referido para hacer crecer su equipo y cumplir con los requisitos!';
 
   @override
-  String get shareTitle => 'Compartir';
+  String get shareTitle => 'Crecer';
 
   @override
   String get shareYourLinkHeading => 'Su Enlace de Referido';

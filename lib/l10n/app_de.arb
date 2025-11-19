@@ -2192,7 +2192,7 @@
   "@eligibilityNextStepsDescription": {
     "description": "Encouragement text for next steps"
   },
-  "shareTitle": "Teilen",
+  "shareTitle": "Wachsen",
   "@shareTitle": {
     "description": "Share screen title",
     "maxLength": 32

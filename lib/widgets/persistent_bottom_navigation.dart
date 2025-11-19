@@ -115,8 +115,8 @@ class _PersistentBottomNavigationState
                 label: 'Messages',
               ),
               const BottomNavigationBarItem(
-                icon: Icon(Icons.share),
-                label: 'Share',
+                icon: Icon(Icons.trending_up),
+                label: 'Grow',
               ),
               BottomNavigationBarItem(
                 icon: _buildProfileIcon(user),
