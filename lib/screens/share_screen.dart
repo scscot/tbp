@@ -1045,9 +1045,10 @@ class _ShareScreenState extends State<ShareScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: RichText(
+                    overflow: TextOverflow.visible,
                     text: TextSpan(
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         color: AppColors.textSecondary,
                         height: 1.4,
                       ),
@@ -1153,9 +1154,11 @@ class _ShareScreenState extends State<ShareScreen>
             children: [
               Icon(Icons.lightbulb_rounded, color: AppColors.warning, size: 24),
               const SizedBox(width: 12),
-              Text(
-                context.l10n?.shareProTipsTitle ?? 'Pro Tips for Success',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  context.l10n?.shareProTipsTitle ?? 'Pro Tips for Success',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

@@ -152,8 +152,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authSignupPrivacyShort => 'Datenschutzerklärung';
 
   @override
-  String get authSignupTosRequired =>
-      'Sie müssen den Bedingungen zustimmen, um fortzufahren';
+  String get authSignupTosRequired => 'Erforderlich für die Kontoerstellung';
 
   @override
   String get authSignupButtonCreateAccount => 'Konto erstellen';
@@ -4208,4 +4207,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pmCreateButton => 'Neues Konto Erstellen';
+
+  @override
+  String get authSignupTitle => 'Kontoregistrierung';
+
+  @override
+  String get authSignupCreateLoginHeader => 'Erstellen Sie Ihren Login';
+
+  @override
+  String get authSignupEmailPrivacy =>
+      'Ihre E-Mail wird niemals mit jemandem geteilt';
 }

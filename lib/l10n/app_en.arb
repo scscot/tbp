@@ -4912,5 +4912,21 @@
   "@pmCreateButton": {
     "description": "Button text for creating new account",
     "maxLength": 25
+  },
+  "authSignupTitle": "Account Registration",
+  "@authSignupTitle": {
+    "description": "Title for account registration screen"
+  },
+  "authSignupCreateLoginHeader": "Create Your Login",
+  "@authSignupCreateLoginHeader": {
+    "description": "Header text for login creation section"
+  },
+  "authSignupEmailPrivacy": "Your email will never be shared with anyone",
+  "@authSignupEmailPrivacy": {
+    "description": "Privacy assurance message for email field"
+  },
+  "authSignupTosRequired": "Required for account creation",
+  "@authSignupTosRequired": {
+    "description": "Message indicating TOS acceptance is required"
   }
 }

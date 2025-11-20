@@ -355,10 +355,10 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get authSignupPrivacyShort;
 
-  /// Validation error when user hasn't accepted terms
+  /// Message indicating TOS acceptance is required
   ///
   /// In en, this message translates to:
-  /// **'You must accept the terms to continue'**
+  /// **'Required for account creation'**
   String get authSignupTosRequired;
 
   /// Create account button label - title case
@@ -7092,6 +7092,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create New Account'**
   String get pmCreateButton;
+
+  /// Title for account registration screen
+  ///
+  /// In en, this message translates to:
+  /// **'Account Registration'**
+  String get authSignupTitle;
+
+  /// Header text for login creation section
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your Login'**
+  String get authSignupCreateLoginHeader;
+
+  /// Privacy assurance message for email field
+  ///
+  /// In en, this message translates to:
+  /// **'Your email will never be shared with anyone'**
+  String get authSignupEmailPrivacy;
 }
 
 class _AppLocalizationsDelegate

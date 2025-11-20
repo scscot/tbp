@@ -4748,5 +4748,9 @@
   "pmContinue": "Fortfahren",
   "pmCardTitle": "Andere Gelegenheit Verwalten",
   "pmCardDesc": "Erstellen Sie ein separates Konto, um eine andere Gelegenheit zu verwalten und auszubauen.",
-  "pmCreateButton": "Neues Konto Erstellen"
+  "pmCreateButton": "Neues Konto Erstellen",
+  "authSignupTitle": "Kontoregistrierung",
+  "authSignupCreateLoginHeader": "Erstellen Sie Ihren Login",
+  "authSignupEmailPrivacy": "Ihre E-Mail wird niemals mit jemandem geteilt",
+  "authSignupTosRequired": "Erforderlich für die Kontoerstellung"
 }

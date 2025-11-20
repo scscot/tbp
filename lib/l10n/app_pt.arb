@@ -3669,5 +3669,9 @@
   "pmContinue": "Continuar",
   "pmCardTitle": "Gerenciar Outra Oportunidade",
   "pmCardDesc": "Crie uma conta separada para gerenciar e expandir uma oportunidade diferente.",
-  "pmCreateButton": "Criar Nova Conta"
+  "pmCreateButton": "Criar Nova Conta",
+  "authSignupTitle": "Registro de Conta",
+  "authSignupCreateLoginHeader": "Crie Seu Login",
+  "authSignupEmailPrivacy": "Seu e-mail nunca será compartilhado com ninguém",
+  "authSignupTosRequired": "Obrigatório para criar a conta"
 }

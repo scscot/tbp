@@ -1366,7 +1366,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                       ),
 
                     Text(
-                      'Account Registration',
+                      context.l10n?.authSignupTitle ?? 'Account Registration',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
@@ -1538,7 +1538,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Create Your Login',
+                            context.l10n?.authSignupCreateLoginHeader ?? 'Create Your Login',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -1549,7 +1549,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '🔒 Your email will never be shared with anyone',
+                            '🔒 ${context.l10n?.authSignupEmailPrivacy ?? "Your email will never be shared with anyone"}',
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: Colors.black,
@@ -1651,7 +1651,7 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '🔒 Required for account creation',
+                            '🔒 ${context.l10n?.authSignupTosRequired ?? "Required for account creation"}',
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textTertiary,

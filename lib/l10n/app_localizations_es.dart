@@ -144,8 +144,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authSignupPrivacyShort => 'Política de Privacidad';
 
   @override
-  String get authSignupTosRequired =>
-      'Debes aceptar los términos para continuar';
+  String get authSignupTosRequired => 'Requerido para crear la cuenta';
 
   @override
   String get authSignupButtonCreateAccount => 'Crear Cuenta';
@@ -4193,4 +4192,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pmCreateButton => 'Crear Nueva Cuenta';
+
+  @override
+  String get authSignupTitle => 'Registro de Cuenta';
+
+  @override
+  String get authSignupCreateLoginHeader => 'Crea Tu Inicio de Sesión';
+
+  @override
+  String get authSignupEmailPrivacy =>
+      'Tu correo electrónico nunca será compartido con nadie';
 }

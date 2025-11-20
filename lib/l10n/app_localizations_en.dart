@@ -143,7 +143,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSignupPrivacyShort => 'Privacy Policy';
 
   @override
-  String get authSignupTosRequired => 'You must accept the terms to continue';
+  String get authSignupTosRequired => 'Required for account creation';
 
   @override
   String get authSignupButtonCreateAccount => 'Create Account';
@@ -4128,6 +4128,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmCreateButton => 'Create New Account';
+
+  @override
+  String get authSignupTitle => 'Account Registration';
+
+  @override
+  String get authSignupCreateLoginHeader => 'Create Your Login';
+
+  @override
+  String get authSignupEmailPrivacy =>
+      'Your email will never be shared with anyone';
 }
 
 /// The translations for English (`en_XA`).
