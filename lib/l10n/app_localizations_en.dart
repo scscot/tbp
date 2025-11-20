@@ -202,7 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTeam => 'Team';
 
   @override
-  String get navShare => 'Share';
+  String get navShare => 'Grow';
 
   @override
   String get navMessages => 'Messages';

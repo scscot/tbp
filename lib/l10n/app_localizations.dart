@@ -466,7 +466,7 @@ abstract class AppLocalizations {
   /// Bottom navigation tab label for sharing
   ///
   /// In en, this message translates to:
-  /// **'Share'**
+  /// **'Grow'**
   String get navShare;
 
   /// Bottom navigation tab label for messages

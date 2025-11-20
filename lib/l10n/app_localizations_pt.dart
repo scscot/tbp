@@ -207,7 +207,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get navTeam => 'Equipe';
 
   @override
-  String get navShare => 'Compartilhar';
+  String get navShare => 'Crescer';
 
   @override
   String get navMessages => 'Mensagens';

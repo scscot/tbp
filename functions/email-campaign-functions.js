@@ -16,7 +16,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
   // Research-backed subject line optimized for higher open rates (targeting 15%+ vs previous 7.1%)
   // const selectedSubject = `${contact.firstName}, recruiting just got easier (AI does the talking)`;
-  const selectedSubject = `${contact.firstName}, how to recruit and build your downline with ai`;
+  const selectedSubject = `${contact.firstName}, build your downline with AI-powered tools.`;
   // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (7.1% open rate)
   const selectedVersion = '2version';
 
@@ -51,7 +51,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
 const sendHourlyEmailCampaign = onSchedule({
   // schedule: "32 17 * * *",  // 4:40pm
-  schedule: "0 8-15 * * 1-6",
+  schedule: "0 8,10,12,15,18 * * 1-6",
   // schedule: "30 15 * * 1-6",  // 3:30pm PT test run
    timeZone: "America/Los_Angeles",
   region: "us-central1",
