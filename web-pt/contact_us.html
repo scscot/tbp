@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <!-- === SEO & METADATA (OPTIMIZED) === -->
+    <meta charset="UTF-8">
+    <title>Fale Conosco | Team Build Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Entre em contato com a equipe de suporte do Team Build Pro para consultas gerais, suporte técnico, questões de cobrança ou feedback. Estamos aqui para ajudar você a ter sucesso.">
+    <link rel="canonical" href="https://pt.teambuildpro.com/contact_us.html" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pt.teambuildpro.com/contact_us.html" />
+    <meta property="og:title" content="Fale Conosco | Team Build Pro" />
+    <meta property="og:description"
+        content="Entre em contato com a equipe de suporte do Team Build Pro para consultas gerais, suporte técnico, questões de cobrança ou feedback. Estamos aqui para ajudar você a ter sucesso." />
+    <meta property="og:image" content="https://pt.teambuildpro.com/assets/images/social-preview.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://pt.teambuildpro.com/contact_us.html" />
+    <meta property="twitter:title" content="Fale Conosco | Team Build Pro" />
+    <meta property="twitter:description"
+        content="Entre em contato com a equipe de suporte do Team Build Pro para consultas gerais, suporte técnico, questões de cobrança ou feedback. Estamos aqui para ajudar você a ter sucesso." />
+    <meta property="twitter:image" content="https://pt.teambuildpro.com/assets/images/social-preview.jpg" />
+    <!-- === END: SEO & METADATA === -->
+
+    <!-- Updated reCAPTCHA script with consistent site key -->
+    <script
+        src="https://www.google.com/recaptcha/enterprise.js?render=6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE"></script>
+
+    <link rel="stylesheet" href="css/style.css?v=6" />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png" />
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="https://pt.teambuildpro.com" class="logo">
+                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+                <span>Team Build Pro</span>
+            </a>
+
+            <!-- Sandwich Menu Button -->
+            <button id="menu-btn" class="menu-btn" aria-label="Abrir menu" aria-haspopup="true" aria-expanded="false">
+                <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+            </button>
+            <!-- Dropdown Menu -->
+            <div id="mobile-menu" class="mobile-menu" role="menu">
+                <a href="/#screenshots" role="menuitem">Capturas de Tela</a>
+                <a href="/#pricing" role="menuitem">Preços</a>
+                <a href="/#faq" role="menuitem">Perguntas Frequentes</a>
+                <a href="/blog.html" role="menuitem">Blog</a>
+                <a href="/books/" role="menuitem">Livros</a>
+                <a href="/contact_us.html" role="menuitem">Fale Conosco</a>
+            </div>
+        </nav>
+    </header>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4E4TBBPZ7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.ip === '76.33.111.72') {
+                    gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+                } else {
+                    gtag('config', 'G-G4E4TBBPZ7');
+                }
+            })
+            .catch(() => {
+                gtag('config', 'G-G4E4TBBPZ7');
+            });
+    </script>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title">Fale Conosco</h1>
+            <p class="hero-subtitle">Entre em contato com nossa equipe - estamos aqui para ajudar você!</p>
+        </div>
+
+        <div class="contact-form">
+            <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">Nome *</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Sobrenome *</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Endereço de E-mail *</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject" class="form-label">Assunto *</label>
+                    <select id="subject" name="subject" class="form-select" required>
+                        <option value="">Por favor selecione um assunto</option>
+                        <option value="general">Consulta Geral</option>
+                        <option value="support">Suporte Técnico</option>
+                        <option value="billing">Cobrança e Assinaturas</option>
+                        <option value="feedback">Feedback e Sugestões</option>
+                        <option value="other">Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message" class="form-label">Mensagem *</label>
+                    <textarea id="message" name="message" class="form-textarea"
+                        placeholder="Por favor descreva sua consulta em detalhes..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Enviar Mensagem
+                </button>
+            </form>
+        </div>
+
+        <div class="response-section" id="responseSection" style="display: none;">
+            <div class="response-icon">✅</div>
+            <div class="response-title">Mensagem Enviada com Sucesso!</div>
+            <div class="response-text">
+                Obrigado por entrar em contato conosco. Recebemos sua mensagem e responderemos em até 24-48 horas.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+                <span>Team Build Pro</span>
+            </div>
+            <div class="footer-links">
+                <a href="/#pricing">Preços</a>
+                <a href="/faq.html">Perguntas Frequentes</a>
+                <a href="/books/">Livros</a>
+                <a href="/companies.html">Guias de Recrutamento</a>
+                <a href="/contact_us.html">Contato</a>
+                <a href="/privacy_policy.html">Política de Privacidade</a>
+                <a href="/terms_of_service.html">Termos de Serviço</a>
+            </div>
+            <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos os Direitos Reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set current year
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+
+        // Handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Show loading state
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+
+            // Execute reCAPTCHA Enterprise with the SAME site key used in the script tag
+            grecaptcha.enterprise.ready(async () => {
+                try {
+                    const token = await grecaptcha.enterprise.execute('6Lfwj5orAAAAADS--lFfBYWuz1b4LiQVUlOHZiyE', { action: 'submit' });
+                    // Add reCAPTCHA token to form data
+                    data.recaptchaToken = token;
+
+                    // Send form data with reCAPTCHA token
+                    const response = await fetch('https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/submitContactFormHttp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Hide form and show success message
+                        document.querySelector('.contact-form').style.display = 'none';
+                        document.getElementById('responseSection').style.display = 'block';
+
+                        // Scroll to response section
+                        document.getElementById('responseSection').scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    } else {
+                        // Handle failure
+                        console.error('Form submission failed:', result.error);
+                        alert('Falha ao enviar mensagem. Por favor tente novamente mais tarde.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ocorreu um erro. Por favor tente novamente mais tarde.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Add form validation feedback
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+
+            inputs.forEach(input => {
+                input.addEventListener('blur', function () {
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.style.borderColor = 'var(--error)';
+                    } else {
+                        this.style.borderColor = 'var(--border)';
+                    }
+                });
+
+                input.addEventListener('input', function () {
+                    if (this.style.borderColor === 'var(--error)' && this.value.trim()) {
+                        this.style.borderColor = 'var(--success)';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Sandwich Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = menuBtn.querySelector('.material-symbols-outlined');
+
+        menuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', isOpen);
+            menuIcon.textContent = isOpen ? 'close' : 'menu';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+                if (mobileMenu.classList.contains('open')) {
+                    mobileMenu.classList.remove('open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    menuIcon.textContent = 'menu';
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
