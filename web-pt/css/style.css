@@ -277,15 +277,7 @@
     letter-spacing: 0.3px;
 }
 
-/* Adjust body padding when invite bar is visible */
-body:has(.top-invite-bar.visible) {
-    padding-top: 50px;
-}
-
-/* Adjust header position when invite bar is visible */
-body:has(.top-invite-bar.visible) .header {
-    top: 50px;
-}
+/* No padding needed - referral banner is fixed and header flows normally */
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
@@ -300,14 +292,6 @@ body:has(.top-invite-bar.visible) .header {
 
     .top-invite-text {
         font-size: 13px;
-    }
-
-    body:has(.top-invite-bar.visible) {
-        padding-top: 45px;
-    }
-
-    body:has(.top-invite-bar.visible) .header {
-        top: 45px;
     }
 }
 
@@ -1250,12 +1234,7 @@ div.section .section-header {
 
 /* Header establishes positioning context for language switcher */
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: transparent;
+    position: relative;
 }
 
 /* Nav becomes flexbox on desktop */
