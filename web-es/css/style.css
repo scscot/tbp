@@ -1212,15 +1212,15 @@ div.section .section-header {
     }
 }
 
-/* Hero Language Switcher - positioned at top of hero section */
-.hero-language-switcher {
+/* Header Language Switcher - positioned at bottom of header */
+.header-language-switcher {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    position: relative;
-    z-index: 10;
+    margin: 0 auto 10px;
+    max-width: 1200px;
+    padding: 0 1rem;
 }
 
 .lang-link {
@@ -1250,11 +1250,11 @@ div.section .section-header {
     user-select: none;
 }
 
-/* Mobile responsive adjustments for hero language switcher */
+/* Mobile responsive adjustments for header language switcher */
 @media (max-width: 768px) {
-    .hero-language-switcher {
+    .header-language-switcher {
         gap: 0.4rem;
-        margin-bottom: 0.625rem;
+        margin-bottom: 8px;
     }
 
     .lang-link {
@@ -1267,9 +1267,9 @@ div.section .section-header {
 }
 
 @media (max-width: 480px) {
-    .hero-language-switcher {
+    .header-language-switcher {
         gap: 0.3rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 6px;
     }
 
     .lang-link {
