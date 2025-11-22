@@ -531,7 +531,7 @@ const blogPosts = [
     `
   },
   {
-    slug: "the-new-tech-divide-in-direct-sales-why-ai-platforms-aren-t-solving-the-recruiting-problem",
+    slug: "ai-recruiting-platforms-failing-direct-sales",
     title: "The New Tech Divide in Direct Sales: Why AI Platforms Aren't Solving the Recruiting Problem",
     excerpt: "AI recruiting tools promise efficiency but deliver empty pipelines. Discover why speed-focused platforms fail and how pre-qualification beats algorithms.",
     category: "Recruiting Tips",
