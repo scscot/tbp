@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-18
+**Last Updated**: 2025-11-21
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -48,11 +48,13 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── services/          # Business logic (auth, IAP, network, FCM)
 │   └── models/            # Data models
 ├── functions/             # Firebase Cloud Functions (Node.js)
-├── web/                   # Public website files
+├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── companies/        # Company-specific recruiting guides
 │   └── blog/             # Blog posts
+├── web-es/                # Spanish website (es.teambuildpro.com)
+├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 └── documents/            # Documentation and metadata
 ```
 
@@ -78,6 +80,8 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - `?new=ABC` = Prospect view (considering joining referrer's opportunity)
 - `?ref=ABC` = Professional view (existing team member)
 - Referral codes map to Firebase UIDs via `referralCodes` collection
+- Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese)
+- Share screen uses language selection to route to appropriate domain
 
 ---
 
@@ -115,15 +119,22 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 
 ---
 
-## 🌐 Website Structure (teambuildpro.com)
+## 🌐 Website Structure
 
-### Dynamic FAQ System
+### Multi-Language Hosting
+- **English**: teambuildpro.com (web/)
+- **Spanish**: es.teambuildpro.com (web-es/)
+- **Portuguese**: pt.teambuildpro.com (web-pt/)
+- **Firebase Hosting**: Separate targets (tbpproject, es, pt) with individual configs
+- **SEO**: Hreflang tags link all language versions for proper indexing
+
+### Dynamic FAQ System (English site)
 - **URL Parameter Detection**: `?new=` = Prospect view, otherwise = Professional view
 - **Audience Filtering**: Uses `data-audience` attributes (prospect, professional, both)
 - **Three Filter Systems**: Audience + Category dropdown + Search (unified)
 - **SEO Optimization**: Dynamic meta tags based on audience type
 
-### Key Pages
+### Key Pages (English)
 - `/` - Homepage with hero animation
 - `/faq.html` - Dynamic FAQ (audience-aware)
 - `/companies.html` - 60+ company-specific recruiting guides
@@ -132,6 +143,13 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - `/books/` - Free e-books for lead generation
 - `/contact_us.html` - Contact form
 - `/delete-account.html` - Account deletion (App Store requirement)
+
+### Spanish/Portuguese Sites
+- Fully localized homepages with 8 FAQ items
+- Contact forms with Google Analytics integration
+- FAQ pages with accordion functionality
+- Privacy policy and terms of service pages
+- Proper sitemap.xml with hreflang tags for SEO
 
 ### SEO & Meta Tags
 - Title: "AI Downline Builder - Recruit Smarter, Build Faster"
@@ -299,6 +317,9 @@ git add . && git commit -m "message" && git push
 - `count-todays-emails.js` - Query Firestore for daily email send counts
 - `get-mailgun-stats.js` - Query Mailgun API for delivery/engagement statistics
 - `test-email.js` - Send test emails via Mailgun for campaign testing
+- `reset-failed-contacts.js` - Reset failed email campaign contacts from Mailgun CSV exports
+- `reset_failed_batch.js` - Batch processing for failed contact resets
+- `reset_failed_contacts.js` - Alternative reset script for email campaign recovery
 
 ---
 
@@ -373,6 +394,45 @@ git add . && git commit -m "message" && git push
      - Only Flutter's engine framework lacks dSYMs (app code has symbols)
      - Crash reporting works normally for app code
      - Thousands of Flutter apps in production with same warning
+
+### Week of Nov 21
+22. ✅ **Multi-Language Website Launch**: Complete Spanish and Portuguese websites
+   - Created web-es/ (es.teambuildpro.com) and web-pt/ (pt.teambuildpro.com) directories
+   - Fully localized homepages with 8 FAQ items (vs 6 on English site)
+   - Fixed FAQ navigation links to point to /faq.html instead of /#faq
+   - Added "View All Questions & Answers" button to both ES and PT homepages
+   - Fixed FAQ accordion functionality using CSS class-based toggle
+   - Contact forms with Google Analytics integration (internal IP filtering: 76.33.111.72)
+   - Privacy policy and terms of service pages in both languages
+   - Proper sitemap.xml files with hreflang tags for SEO
+
+23. ✅ **Firebase Hosting Configuration**: Multi-site setup
+   - Added ES and PT hosting targets to firebase.json
+   - Configured cache headers: HTML (no-cache), assets (1 year)
+   - Added 301 redirects for index.html → root path
+   - Successfully deployed both sites (157 files each)
+
+24. ✅ **Referral System Simplification** (v1.0.67+97):
+   - Removed message type targeting (&t=X parameter)
+   - Implemented language-specific domain routing
+   - Share screen now routes to es.teambuildpro.com or pt.teambuildpro.com based on language selection
+   - Cleaner URL structure: `https://es.teambuildpro.com/?new=ABC`
+   - Updated share_screen.dart to use `_buildTargetedLink()` with domain selection
+
+25. ✅ **Backend CORS Updates**:
+   - Added es.teambuildpro.com and pt.teambuildpro.com to CORS whitelist
+   - Updated functions/src/referrals.ts and compiled JavaScript files
+   - Ensures API access from all language-specific domains
+
+26. ✅ **SEO Improvements**:
+   - Simplified EN sitemap.xml from 100+ URLs to essential pages only
+   - Added hreflang tags linking EN/ES/PT versions for proper Google indexing
+   - All three sites now properly cross-reference each other for multilingual SEO
+
+27. ✅ **Email Campaign Utility Scripts**:
+   - Created reset-failed-contacts.js for recovering failed email deliveries
+   - Processes Mailgun CSV exports to reset contact status in Firestore
+   - Enables retry of failed email sends from campaign
 
 ---
 
