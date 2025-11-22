@@ -277,7 +277,10 @@
     letter-spacing: 0.3px;
 }
 
-/* No padding needed - referral banner is fixed and header flows normally */
+/* Adjust body padding when referral banner is visible */
+body:has(.top-invite-bar.visible) {
+    padding-top: 50px;
+}
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
@@ -292,6 +295,10 @@
 
     .top-invite-text {
         font-size: 13px;
+    }
+
+    body:has(.top-invite-bar.visible) {
+        padding-top: 45px;
     }
 }
 
