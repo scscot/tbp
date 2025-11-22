@@ -3294,7 +3294,7 @@
     <!-- Language Switcher Parameter Preservation -->
     <script>
     (function() {
-        const langLinks = document.querySelectorAll('.lang-link');
+        const langLinks = document.querySelectorAll('a.lang-link');
         const params = new URLSearchParams(window.location.search);
 
         if (params.toString()) {
