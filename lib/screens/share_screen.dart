@@ -126,40 +126,22 @@ class _ShareScreenState extends State<ShareScreen>
     }
   }
 
-  // Get message type index for targeting
-  String _getMessageTypeIndex(String messageKey, bool isPartner) {
-    if (isPartner) {
-      switch (messageKey) {
-        case 'warm_market_exhausted': return '5';
-        case 'expensive_system_fatigue': return '6';
-        case 'duplication_struggle': return '7';
-        case 'general_team_tool': return '8';
-        case 'retention_crisis': return '13';
-        case 'skill_gap_team': return '14';
-        case 'recruitment_fatigue': return '15';
-        case 'availability_gap': return '16';
-        default: return '8';
-      }
-    } else {
-      switch (messageKey) {
-        case 'past_struggles': return '1';
-        case 'not_salesperson': return '2';
-        case 'hope_after_disappointment': return '3';
-        case 'general_invitation': return '4';
-        case 'social_anxiety': return '9';
-        case 'time_constrained': return '10';
-        case 'financial_risk_averse': return '11';
-        case 'skeptical_realist': return '12';
-        default: return '4';
-      }
-    }
-  }
-
-  // Build targeted referral link with message type
+  // Build targeted referral link with language-specific domain
   String _buildTargetedLink(String messageKey, bool isPartner) {
-    final baseLink = isPartner ? _partnerReferralLink : _prospectReferralLink;
-    final messageType = _getMessageTypeIndex(messageKey, isPartner);
-    return '$baseLink&t=$messageType';
+    final selectedLanguage = _selectedLanguages[messageKey];
+
+    // Determine base domain based on selected language
+    String baseDomain = 'https://teambuildpro.com';
+    if (selectedLanguage == 'es') {
+      baseDomain = 'https://es.teambuildpro.com';
+    } else if (selectedLanguage == 'pt') {
+      baseDomain = 'https://pt.teambuildpro.com';
+    }
+
+    final referralParam = isPartner ? 'ref' : 'new';
+    final referralCode = _currentUser!.referralCode;
+
+    return '$baseDomain/?$referralParam=$referralCode';
   }
 
   Future<void> _composeEmail({

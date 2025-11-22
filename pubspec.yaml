@@ -1,7 +1,7 @@
 name: ultimatefix
 description: Team Build Pro (Dart-only with SDK)
 publish_to: 'none'
-version: 1.0.65+95
+version: 1.0.67+97
 
 environment:
   sdk: ^3.3.0

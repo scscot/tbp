@@ -14,10 +14,10 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
   // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
-  // Research-backed subject line optimized for higher open rates (targeting 15%+ vs previous 7.1%)
-  // const selectedSubject = `${contact.firstName}, recruiting just got easier (AI does the talking)`;
-  const selectedSubject = `${contact.firstName}, build your downline with AI-powered tools.`;
-  // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (7.1% open rate)
+  // Subject line optimized to avoid spam triggers and improve deliverability
+  // Removed MLM terminology ("downline") which was causing spam filter issues
+  const selectedSubject = `${contact.firstName}, meet your AI recruiting assistant`;
+  // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
   const selectedVersion = '2version';
 
   form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');

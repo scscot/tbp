@@ -121,7 +121,7 @@
           "name": "Worldwide"
         }
       },
-      "description": "AI-powered downline building system for direct sales professionals. 8 pre-written recruiting messages address social anxiety, time constraints, and skepticism. 24/7 AI coaching supports your entire downline. Pre-build teams before Day 1. Eliminate the 75% first-year dropout rate. Works with any MLM, network marketing, or direct sales opportunity.",
+      "description": "AI-powered downline building system for direct sales professionals. 16 pre-written recruiting messages address social anxiety, time constraints, and skepticism. 24/7 AI coaching supports your entire downline. Pre-build teams before Day 1. Eliminate the 75% first-year dropout rate. Works with any MLM, network marketing, or direct sales opportunity.",
       "url": "https://teambuildpro.com",
       "screenshot": "https://teambuildpro.com/assets/icons/team-build-pro.png",
       "softwareVersion": "1.0.52",
@@ -328,7 +328,7 @@
                                     </div>
                                     <h4>True Duplication: 24/7 AI Coach for Their Existing Downline</h4>
                                 </div>
-                                <p>Ture gloabl expansion with instant guidance in 4 languages, even when they're offline. Scale their mentorship without scaling their time.</p>
+                                <p>True global expansion with instant guidance in 4 languages, even when they're offline. Scale their mentorship without scaling their time.</p>
                             </div>
 
                             <div class="feature-card reveal-on-scroll" style="padding: 1.5rem;">
@@ -830,6 +830,7 @@
                 <div class="section-header">
                     <h2>Risk-Free 30-Day Trial</h2>
                     <p>One plan, all features. Start your free trial today, no credit card required.</p>
+                    <p style="margin-top: 8px; font-size: 14px; opacity: 0.75;">International payments accepted</p>
                 </div>
                 <div class="trust-grid trust-grid-two">
                     <div class="trust-item">
@@ -2155,9 +2156,43 @@
             `;
         }
 
-        function createAndroidPreviewButton(isPrimary = true) {
+        async function createAndroidPreviewButton(isPrimary = true) {
+            const TBP_FN_BASE = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
+            let playStoreUrl = 'https://play.google.com/store/apps/details?id=com.scott.ultimatefix';
+
+            // Get referral info from URL parameters
+            const referralInfo = getReferralInfo();
+
+            if (referralInfo && referralInfo.code) {
+                try {
+                    // Mint token via issueReferralV2
+                    const sponsor = referralInfo.code;
+                    const t = referralInfo.targeting || '1';
+
+                    const mintUrl = `${TBP_FN_BASE}/issueReferralV2`;
+                    const res = await fetch(mintUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sponsorCode: sponsor, t, source: 'index_google_play' })
+                    });
+                    const data = await res.json();
+                    const token = data.token;
+
+                    if (token) {
+                        // Build TBP_REF payload
+                        const payload = `TBP_REF:${sponsor};TKN:${token};T:${t};V:2`;
+                        const encodedPayload = encodeURIComponent(payload);
+                        playStoreUrl += `&referrer=${encodedPayload}`;
+
+                        console.log('[createAndroidPreviewButton] Google Play URL with referrer:', playStoreUrl);
+                    }
+                } catch (err) {
+                    console.warn('[createAndroidPreviewButton] Failed to mint token for Google Play:', err);
+                }
+            }
+
             return `
-                <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" class="google-play-badge" onclick="trackDownloadClick('google_play', ${isPrimary}, 'hero');" target="_blank" rel="noopener noreferrer">
+                <a href="${playStoreUrl}" class="google-play-badge" onclick="trackDownloadClick('google_play', ${isPrimary}, 'hero');" target="_blank" rel="noopener noreferrer">
                     <img src="assets/images/Google-Play.png" alt="Get it on Google Play" />
                 </a>
             `;
@@ -2180,13 +2215,13 @@
 
             if (device.isIOS) {
                 // iOS users get App Store download button first
-                primaryContainer.innerHTML = await createAppStoreBadge(true) + createAndroidPreviewButton(false);
+                primaryContainer.innerHTML = await createAppStoreBadge(true) + await createAndroidPreviewButton(false);
             } else if (device.isAndroid) {
                 // Android users get preview button first
-                primaryContainer.innerHTML = createAndroidPreviewButton(true) + await createAppStoreBadge(false);
+                primaryContainer.innerHTML = await createAndroidPreviewButton(true) + await createAppStoreBadge(false);
             } else {
                 // Desktop users get both options (iOS first, Android second)
-                primaryContainer.innerHTML = await createAppStoreBadge(true) + createAndroidPreviewButton(false);
+                primaryContainer.innerHTML = await createAppStoreBadge(true) + await createAndroidPreviewButton(false);
             }
         }
 
@@ -2258,7 +2293,7 @@
                             ${await createAppStoreBadge(true)}
                         </div>
                         <div style="height: 60px; display: flex; align-items: center;">
-                            ${createAndroidPreviewButton(false)}
+                            ${await createAndroidPreviewButton(false)}
                         </div>
                     </div>
                 `;

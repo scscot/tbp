@@ -15,6 +15,8 @@ const corsHandler = cors({
   origin: [
     'https://teambuildpro.com',
     'https://www.teambuildpro.com',
+    'https://es.teambuildpro.com',
+    'https://pt.teambuildpro.com',
     /https:\/\/.*--teambuilder-plus-fe74d\.web\.app$/,  // Firebase Hosting preview channels
     /https:\/\/.*--teambuilder-plus-fe74d\.firebaseapp\.com$/,
     /^http:\/\/localhost(:\d+)?$/,  // localhost with any port
@@ -147,13 +149,32 @@ async function checkSponsorRateLimit(sponsorCode) {
  * Returns: { token: string }
  */
 const issueReferral = onRequest(async (req, res) => {
-  return corsHandler(req, res, async () => {
-    try {
-      // Only allow POST requests
-      if (req.method !== 'POST') {
-        console.warn('🚨 Invalid method attempted:', req.method);
-        return res.status(405).json({ error: 'POST only' });
-      }
+  const allowedOrigins = [
+    'https://teambuildpro.com',
+    'https://www.teambuildpro.com',
+    'https://es.teambuildpro.com',
+    'https://pt.teambuildpro.com'
+  ];
+
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+    res.set('Access-Control-Allow-Credentials', 'true');
+    res.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+  }
+
+  try {
+    // Handle OPTIONS preflight request
+    if (req.method === 'OPTIONS') {
+      return res.status(204).send('');
+    }
+
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      console.warn('🚨 Invalid method attempted:', req.method);
+      return res.status(405).json({ error: 'POST only' });
+    }
 
       // Extract and validate request data
       const ip = getClientIP(req);
@@ -205,13 +226,12 @@ const issueReferral = onRequest(async (req, res) => {
         ipHash: hashIP(ip)
       });
 
-      return res.status(200).json({ token });
+    return res.status(200).json({ token });
 
-    } catch (error) {
-      console.error('❌ Error in issueReferral:', error);
-      return res.status(500).json({ error: 'internal' });
-    }
-  });
+  } catch (error) {
+    console.error('❌ Error in issueReferral:', error);
+    return res.status(500).json({ error: 'internal' });
+  }
 });
 
 /**
