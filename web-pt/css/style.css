@@ -1218,8 +1218,6 @@ div.section .section-header {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    flex: 1;
-    max-width: 300px;
 }
 
 .lang-link {
@@ -1257,21 +1255,33 @@ div.section .section-header {
     align-items: center;
     padding: 1rem;
     flex-wrap: wrap;
+    position: relative;
 }
 
-/* Logo gets flex: 1 to balance with language switcher */
+/* Logo stays on left */
 .nav .logo {
-    flex: 1;
+    flex: 0 0 auto;
 }
 
-/* Menu button has no flex, stays at natural width */
+/* Language switcher absolutely centered */
+.header-language-switcher {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+/* Menu button stays on right */
 .nav .menu-btn {
     flex: 0 0 auto;
+    margin-left: auto;
 }
 
 /* Mobile: language switcher drops to separate line */
 @media (max-width: 768px) {
     .header-language-switcher {
+        position: static;
+        transform: none;
         order: 3;
         width: 100%;
         flex: 1 1 100%;
