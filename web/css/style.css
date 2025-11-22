@@ -1212,82 +1212,80 @@ div.section .section-header {
     }
 }
 
-.language-switcher {
+/* Hero Language Switcher - positioned at top of hero section */
+.hero-language-switcher {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    margin-left: auto;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 10;
 }
 
 .lang-link {
-    color: #cbd5e1;
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.375rem;
     transition: all 0.2s ease;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .lang-link:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
 }
 
 .lang-link.active {
-    color: #fbbf24;
+    color: #1e293b;
+    background: #fbbf24;
+    border-color: #fbbf24;
     font-weight: 700;
 }
 
 .lang-separator {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
     user-select: none;
 }
 
+/* Mobile responsive adjustments for hero language switcher */
 @media (max-width: 768px) {
-    .nav {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .language-switcher {
-        order: 2;
-        margin-left: 0;
-        flex-basis: 100%;
-        justify-content: center;
-        margin-top: 0.5rem;
-    }
-
-    .menu-btn {
-        order: 3;
+    .hero-language-switcher {
+        gap: 0.4rem;
+        margin-bottom: 1.25rem;
     }
 
     .lang-link {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.4rem;
-        letter-spacing: 0px;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.65rem;
     }
 
     .lang-separator {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 480px) {
-    .language-switcher {
+    .hero-language-switcher {
         gap: 0.3rem;
-        margin-top: 0.4rem;
+        margin-bottom: 1rem;
     }
 
     .lang-link {
-        font-size: 0.7rem;
-        padding: 0.15rem 0.35rem;
-        letter-spacing: 0px;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.55rem;
+        letter-spacing: 0.2px;
     }
 
     .lang-separator {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
 }
