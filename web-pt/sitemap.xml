@@ -37,6 +37,14 @@
 
   <!-- Blog Posts -->
   <url>
+    <loc>https://pt.teambuildpro.com/blog/ai-recruiting-platforms-failing-direct-sales.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
     <loc>https://pt.teambuildpro.com/blog/ai-automation-transforms-direct-sales.html</loc>
     <lastmod>2025-11-22</lastmod>
     <changefreq>monthly</changefreq>
