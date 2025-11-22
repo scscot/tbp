@@ -1259,6 +1259,16 @@ div.section .section-header {
     flex-wrap: wrap;
 }
 
+/* Logo gets flex: 1 to balance with language switcher */
+.nav .logo {
+    flex: 1;
+}
+
+/* Menu button has no flex, stays at natural width */
+.nav .menu-btn {
+    flex: 0 0 auto;
+}
+
 /* Mobile: language switcher drops to separate line */
 @media (max-width: 768px) {
     .header-language-switcher {
