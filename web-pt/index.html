@@ -172,6 +172,13 @@
                 <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
                 <span>Team Build Pro</span>
             </a>
+            <div class="language-switcher">
+                <a href="https://teambuildpro.com/" hreflang="en" lang="en" class="lang-link">EN</a>
+                <span class="lang-separator">|</span>
+                <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">ES</a>
+                <span class="lang-separator">|</span>
+                <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link active">PT</a>
+            </div>
             <button id="menu-btn" class="menu-btn" aria-label="Abrir menu" aria-haspopup="true" aria-expanded="false">
                 <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
             </button>
@@ -1101,6 +1108,24 @@
         document.addEventListener("DOMContentLoaded", () => {
             initializePage();
         });
+    </script>
+
+    <!-- Language Switcher Parameter Preservation -->
+    <script>
+    (function() {
+        const langLinks = document.querySelectorAll('.lang-link');
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.toString()) {
+            langLinks.forEach(link => {
+                const url = new URL(link.href);
+                params.forEach((value, key) => {
+                    url.searchParams.set(key, value);
+                });
+                link.href = url.toString();
+            });
+        }
+    })();
     </script>
 </body>
 </html>
