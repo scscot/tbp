@@ -16,7 +16,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
   // Subject line optimized to avoid spam triggers and improve deliverability
   // Removed MLM terminology ("downline") which was causing spam filter issues
-  const selectedSubject = `${contact.firstName}, meet your AI recruiting assistant`;
+  const selectedSubject = `The hidden reason most reps stall after Day 1.`;
   // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
   const selectedVersion = '2version';
 
