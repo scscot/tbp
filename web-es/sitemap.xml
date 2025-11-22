@@ -24,6 +24,57 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/faq.html" />
   </url>
 
+  <!-- Blog Page -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/blog.html" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/blog.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/blog.html" />
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog/ai-automation-transforms-direct-sales.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog/ai-recruiting-best-practices-2025.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog/qualify-new-recruits-30-days.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog/team-build-pro-november-2025-update.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://es.teambuildpro.com/blog/young-living-recruiting-strategies.html</loc>
+    <lastmod>2025-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Contact Us -->
   <url>
     <loc>https://es.teambuildpro.com/contact_us.html</loc>
