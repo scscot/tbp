@@ -1218,9 +1218,10 @@ div.section .section-header {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin: 0 auto 10px;
-    max-width: 1200px;
+    margin-bottom: 10px;
+    width: 100%;
     padding: 0 1rem;
+    text-align: center;
 }
 
 .lang-link {
