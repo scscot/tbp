@@ -1248,6 +1248,8 @@ div.section .section-header {
     background: #fbbf24;
     border-color: #fbbf24;
     font-weight: 700;
+    cursor: default;
+    pointer-events: none;
 }
 
 .lang-separator {
