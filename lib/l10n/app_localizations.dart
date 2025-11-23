@@ -98,7 +98,6 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
     Locale('en'),
-    Locale('en', 'XA'),
     Locale('es'),
     Locale('pt')
   ];
@@ -2120,7 +2119,7 @@ abstract class AppLocalizations {
   /// Success message after deletion
   ///
   /// In en, this message translates to:
-  /// **'Your account has been deleted'**
+  /// **'Account successfully deleted. Thank you for using Team Build Pro.'**
   String get deleteAccountSuccessMessage;
 
   /// Error message when deletion fails
@@ -2602,6 +2601,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get commonButtonNo;
+
+  /// Loading indicator text shown while app initializes
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get commonLoading;
 
   /// Generic loading message
   ///
@@ -3544,6 +3549,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get deleteAccountDemoButton;
+
+  /// Error message when account deletion fails with dynamic error
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion failed: {error}'**
+  String deleteAccountErrorFailed(String error);
+
+  /// Error when confirmation email doesn't match
+  ///
+  /// In en, this message translates to:
+  /// **'The email address you entered does not match your account email. Please check and try again.'**
+  String get deleteAccountErrorEmailMismatch;
+
+  /// Error when account not found
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find your account in our system. Please contact support for assistance.'**
+  String get deleteAccountErrorNotFound;
+
+  /// Error when user session has expired
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please sign out and sign in again, then retry account deletion.'**
+  String get deleteAccountErrorSessionExpired;
+
+  /// Error when user lacks permission
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to delete this account. Please contact support if you need assistance.'**
+  String get deleteAccountErrorPermissionDenied;
+
+  /// Error when server encounters internal error
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred on our servers. Please try again in a few minutes or contact support.'**
+  String get deleteAccountErrorServerError;
+
+  /// Error when service is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'The service is temporarily unavailable. Please check your internet connection and try again.'**
+  String get deleteAccountErrorServiceUnavailable;
+
+  /// Error when request processing fails
+  ///
+  /// In en, this message translates to:
+  /// **'We encountered an issue processing your request. Please try again or contact support for help.'**
+  String get deleteAccountErrorProcessing;
+
+  /// Default/fallback error message
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.'**
+  String get deleteAccountErrorUnexpected;
+
+  /// Error when email app cannot be launched
+  ///
+  /// In en, this message translates to:
+  /// **'Could not launch email app. Please contact support@teambuildpro.com manually.'**
+  String get deleteAccountErrorEmailApp;
 
   /// Main heading for edit profile screen
   ///
@@ -4878,6 +4943,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not Set'**
   String get settingsNotSet;
+
+  /// No description provided for @settingsSuperAdminOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'🚫 Only Super Admin can perform database cleanup'**
+  String get settingsSuperAdminOnly;
+
+  /// No description provided for @settingsCleanupError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String settingsCleanupError(Object error);
+
+  /// No description provided for @settingsCleanupDryRunTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🔍 Dry-Run Results'**
+  String get settingsCleanupDryRunTitle;
+
+  /// No description provided for @settingsCleanupCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Cleanup Complete'**
+  String get settingsCleanupCompleteTitle;
+
+  /// No description provided for @settingsCleanupTotalUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Users:'**
+  String get settingsCleanupTotalUsers;
+
+  /// No description provided for @settingsCleanupNonAdminUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-Admin Users:'**
+  String get settingsCleanupNonAdminUsers;
+
+  /// No description provided for @settingsCleanupProtectedAdmins.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected Admins:'**
+  String get settingsCleanupProtectedAdmins;
+
+  /// No description provided for @settingsCleanupDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted:'**
+  String get settingsCleanupDeleted;
+
+  /// No description provided for @settingsCleanupDeletedUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Users:'**
+  String get settingsCleanupDeletedUsers;
+
+  /// No description provided for @settingsCleanupDeletedChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats:'**
+  String get settingsCleanupDeletedChats;
+
+  /// No description provided for @settingsCleanupDeletedChatLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Logs:'**
+  String get settingsCleanupDeletedChatLogs;
+
+  /// No description provided for @settingsCleanupDeletedChatUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Usage:'**
+  String get settingsCleanupDeletedChatUsage;
+
+  /// No description provided for @settingsCleanupDeletedReferralCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Codes:'**
+  String get settingsCleanupDeletedReferralCodes;
+
+  /// No description provided for @settingsOkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get settingsOkButton;
 
   /// No description provided for @profileUpdateBiometricFailed.
   ///
@@ -7110,6 +7259,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your email will never be shared with anyone'**
   String get authSignupEmailPrivacy;
+
+  /// AppBar title for admin profile setup screen
+  ///
+  /// In en, this message translates to:
+  /// **'Business Setup'**
+  String get adminEditProfileTitle;
+
+  /// Main header for business opportunity section
+  ///
+  /// In en, this message translates to:
+  /// **'Your Business Opportunity'**
+  String get adminEditProfileHeaderTitle;
+
+  /// Warning text that business info is immutable after saving
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Important: This information cannot be changed once saved.'**
+  String get adminEditProfileWarningCannotChange;
+
+  /// Explanation of why business info cannot be changed
+  ///
+  /// In en, this message translates to:
+  /// **'Your business opportunity name and referral link ensure that Team Build Pro members are accurately placed in your business opportunity downline when they qualify. Changing this would break the connection between your networks.'**
+  String get adminEditProfileWarningExplanation;
+
+  /// Label for business opportunity name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Your Business Opportunity Name'**
+  String get adminEditProfileLabelBizOppName;
+
+  /// Helper text indicating field is immutable after saving
+  ///
+  /// In en, this message translates to:
+  /// **'This cannot be changed once set'**
+  String get adminEditProfileHelperCannotChange;
+
+  /// Label for business opportunity name confirmation field
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Business Opportunity Name'**
+  String get adminEditProfileLabelBizOppNameConfirm;
+
+  /// Label for referral link input field
+  ///
+  /// In en, this message translates to:
+  /// **'Your Referral Link'**
+  String get adminEditProfileLabelReferralLink;
+
+  /// Label for referral link confirmation field
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Referral Link URL'**
+  String get adminEditProfileLabelReferralLinkConfirm;
+
+  /// Validation error for empty required fields in admin profile
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get adminEditProfileValidationRequired;
+
+  /// Title for referral link validation error dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Link Error'**
+  String get adminEditProfileDialogErrorTitle;
+
+  /// Helper text in referral link error dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify your referral link and try again.'**
+  String get adminEditProfileDialogErrorHelper;
+
+  /// Title for important information dialog about referral links
+  ///
+  /// In en, this message translates to:
+  /// **'Very Important!'**
+  String get adminEditProfileDialogImportantTitle;
+
+  /// Message explaining importance of exact referral link
+  ///
+  /// In en, this message translates to:
+  /// **'You must enter the exact referral link you received from your company. This will ensure your team members that join your business opportunity are automatically placed in your business opportunity team.'**
+  String get adminEditProfileDialogImportantMessage;
+
+  /// Button text to acknowledge important information
+  ///
+  /// In en, this message translates to:
+  /// **'I Understand'**
+  String get adminEditProfileButtonUnderstand;
+
+  /// Title for referral link preview section
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Link Preview:'**
+  String get adminEditProfilePreviewTitle;
+
+  /// Button text to complete profile setup and start building team
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Profile & Start Building!'**
+  String get adminEditProfileButtonComplete;
+
+  /// Success message when profile is saved successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Profile completed successfully!'**
+  String get adminEditProfileSuccessSaved;
+
+  /// Error message when profile save fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String adminEditProfileErrorSaving(String error);
+
+  /// Validation error when business opportunity name is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your business opportunity name'**
+  String get adminEditProfileValidationBizNameRequired;
+
+  /// Validation error when business opportunity name confirmation is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your business opportunity name'**
+  String get adminEditProfileValidationBizNameConfirmRequired;
+
+  /// Validation error when referral link is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your referral link'**
+  String get adminEditProfileValidationReferralLinkRequired;
+
+  /// Validation error when referral link confirmation is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your referral link'**
+  String get adminEditProfileValidationReferralLinkConfirmRequired;
+
+  /// Validation error when business name contains invalid characters
+  ///
+  /// In en, this message translates to:
+  /// **'Business name can only contain letters, numbers, and common punctuation.'**
+  String get adminEditProfileValidationBizNameInvalidChars;
+
+  /// Basic validation error for invalid URL format
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid referral link (e.g., https://example.com).'**
+  String get adminEditProfileValidationUrlBasic;
+
+  /// Validation error when business name and confirmation don't match
+  ///
+  /// In en, this message translates to:
+  /// **'Business Name fields must match for confirmation.'**
+  String get adminEditProfileValidationBizNameMismatch;
+
+  /// Validation error when referral link and confirmation don't match
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Link fields must match for confirmation.'**
+  String get adminEditProfileValidationReferralLinkMismatch;
+
+  /// Validation error for invalid URL format in async validation
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid URL (e.g., https://example.com)'**
+  String get adminEditProfileValidationUrlInvalid;
+
+  /// Validation error when URL uses HTTP instead of HTTPS
+  ///
+  /// In en, this message translates to:
+  /// **'Referral link must use HTTPS (not HTTP) for security'**
+  String get adminEditProfileValidationUrlNotHttps;
+
+  /// Validation error when URL is localhost or IP address
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid business referral link\n(not localhost or IP address)'**
+  String get adminEditProfileValidationUrlLocalhost;
+
+  /// Validation error when URL has no top-level domain
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid URL with a proper domain\n(e.g., company.com)'**
+  String get adminEditProfileValidationUrlNoTld;
+
+  /// Validation error when URL is just a homepage without unique identifier
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your complete referral link, not just the homepage.\nYour referral link should include your unique identifier\n(e.g., https://company.com/join?ref=yourname)'**
+  String get adminEditProfileValidationUrlHomepageOnly;
+
+  /// Generic validation error for URL format issues
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid URL format. Please check your referral link.'**
+  String get adminEditProfileValidationUrlFormat;
+
+  /// Validation error when URL verification fails due to network issues
+  ///
+  /// In en, this message translates to:
+  /// **'The referral link you entered could not be verified. Please check your internet connection and try again.'**
+  String get adminEditProfileValidationUrlVerificationFailed;
+
+  /// Generic validation error when URL verification fails
+  ///
+  /// In en, this message translates to:
+  /// **'The referral link you entered could not be verified. Please check the URL and try again.'**
+  String get adminEditProfileValidationUrlVerificationError;
 }
 
 class _AppLocalizationsDelegate
@@ -7130,18 +7489,6 @@ class _AppLocalizationsDelegate
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-  // Lookup logic when language+country codes are specified.
-  switch (locale.languageCode) {
-    case 'en':
-      {
-        switch (locale.countryCode) {
-          case 'XA':
-            return AppLocalizationsEnXa();
-        }
-        break;
-      }
-  }
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'de':

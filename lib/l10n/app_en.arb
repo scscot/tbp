@@ -2038,7 +2038,7 @@
     "description": "Button to cancel deletion",
     "maxLength": 14
   },
-  "deleteAccountSuccessMessage": "Your account has been deleted",
+  "deleteAccountSuccessMessage": "Account successfully deleted. Thank you for using Team Build Pro.",
   "@deleteAccountSuccessMessage": {
     "description": "Success message after deletion"
   },
@@ -2458,6 +2458,10 @@
   "@commonButtonNo": {
     "description": "Generic no button label",
     "maxLength": 8
+  },
+  "commonLoading": "Loading...",
+  "@commonLoading": {
+    "description": "Loading indicator text shown while app initializes"
   },
   "commonLoadingMessage": "Loading...",
   "@commonLoadingMessage": {
@@ -3373,6 +3377,52 @@
     "description": "Button to acknowledge demo protection",
     "maxLength": 8
   },
+  "deleteAccountErrorFailed": "Account deletion failed: {error}",
+  "@deleteAccountErrorFailed": {
+    "description": "Error message when account deletion fails with dynamic error",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The specific error message"
+      }
+    }
+  },
+  "deleteAccountErrorEmailMismatch": "The email address you entered does not match your account email. Please check and try again.",
+  "@deleteAccountErrorEmailMismatch": {
+    "description": "Error when confirmation email doesn't match"
+  },
+  "deleteAccountErrorNotFound": "We could not find your account in our system. Please contact support for assistance.",
+  "@deleteAccountErrorNotFound": {
+    "description": "Error when account not found"
+  },
+  "deleteAccountErrorSessionExpired": "Your session has expired. Please sign out and sign in again, then retry account deletion.",
+  "@deleteAccountErrorSessionExpired": {
+    "description": "Error when user session has expired"
+  },
+  "deleteAccountErrorPermissionDenied": "You do not have permission to delete this account. Please contact support if you need assistance.",
+  "@deleteAccountErrorPermissionDenied": {
+    "description": "Error when user lacks permission"
+  },
+  "deleteAccountErrorServerError": "An unexpected error occurred on our servers. Please try again in a few minutes or contact support.",
+  "@deleteAccountErrorServerError": {
+    "description": "Error when server encounters internal error"
+  },
+  "deleteAccountErrorServiceUnavailable": "The service is temporarily unavailable. Please check your internet connection and try again.",
+  "@deleteAccountErrorServiceUnavailable": {
+    "description": "Error when service is unavailable"
+  },
+  "deleteAccountErrorProcessing": "We encountered an issue processing your request. Please try again or contact support for help.",
+  "@deleteAccountErrorProcessing": {
+    "description": "Error when request processing fails"
+  },
+  "deleteAccountErrorUnexpected": "An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.",
+  "@deleteAccountErrorUnexpected": {
+    "description": "Default/fallback error message"
+  },
+  "deleteAccountErrorEmailApp": "Could not launch email app. Please contact support@teambuildpro.com manually.",
+  "@deleteAccountErrorEmailApp": {
+    "description": "Error when email app cannot be launched"
+  },
   "editProfileHeading": "Edit Profile",
   "@editProfileHeading": {
     "description": "Main heading for edit profile screen",
@@ -3866,6 +3916,25 @@
   },
   "settingsRequired": "Required",
   "settingsNotSet": "Not Set",
+  "settingsSuperAdminOnly": "🚫 Only Super Admin can perform database cleanup",
+  "settingsCleanupError": "Error: {error}",
+  "@settingsCleanupError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "settingsCleanupDryRunTitle": "🔍 Dry-Run Results",
+  "settingsCleanupCompleteTitle": "✅ Cleanup Complete",
+  "settingsCleanupTotalUsers": "Total Users:",
+  "settingsCleanupNonAdminUsers": "Non-Admin Users:",
+  "settingsCleanupProtectedAdmins": "Protected Admins:",
+  "settingsCleanupDeleted": "Deleted:",
+  "settingsCleanupDeletedUsers": "Users:",
+  "settingsCleanupDeletedChats": "Chats:",
+  "settingsCleanupDeletedChatLogs": "Chat Logs:",
+  "settingsCleanupDeletedChatUsage": "Chat Usage:",
+  "settingsCleanupDeletedReferralCodes": "Referral Codes:",
+  "settingsOkButton": "OK",
   "profileUpdateBiometricFailed": "Biometric authentication failed. Please try again.",
   "profileUpdatePasswordRequired": "Password required to enable biometric login",
   "profileUpdateEmailNotFound": "User email not found",
@@ -4928,5 +4997,151 @@
   "authSignupTosRequired": "Required for account creation",
   "@authSignupTosRequired": {
     "description": "Message indicating TOS acceptance is required"
+  },
+  "adminEditProfileTitle": "Business Setup",
+  "@adminEditProfileTitle": {
+    "description": "AppBar title for admin profile setup screen"
+  },
+  "adminEditProfileHeaderTitle": "Your Business Opportunity",
+  "@adminEditProfileHeaderTitle": {
+    "description": "Main header for business opportunity section"
+  },
+  "adminEditProfileWarningCannotChange": "⚠️ Important: This information cannot be changed once saved.",
+  "@adminEditProfileWarningCannotChange": {
+    "description": "Warning text that business info is immutable after saving"
+  },
+  "adminEditProfileWarningExplanation": "Your business opportunity name and referral link ensure that Team Build Pro members are accurately placed in your business opportunity downline when they qualify. Changing this would break the connection between your networks.",
+  "@adminEditProfileWarningExplanation": {
+    "description": "Explanation of why business info cannot be changed"
+  },
+  "adminEditProfileLabelBizOppName": "Your Business Opportunity Name",
+  "@adminEditProfileLabelBizOppName": {
+    "description": "Label for business opportunity name input field"
+  },
+  "adminEditProfileHelperCannotChange": "This cannot be changed once set",
+  "@adminEditProfileHelperCannotChange": {
+    "description": "Helper text indicating field is immutable after saving"
+  },
+  "adminEditProfileLabelBizOppNameConfirm": "Confirm Business Opportunity Name",
+  "@adminEditProfileLabelBizOppNameConfirm": {
+    "description": "Label for business opportunity name confirmation field"
+  },
+  "adminEditProfileLabelReferralLink": "Your Referral Link",
+  "@adminEditProfileLabelReferralLink": {
+    "description": "Label for referral link input field"
+  },
+  "adminEditProfileLabelReferralLinkConfirm": "Confirm Referral Link URL",
+  "@adminEditProfileLabelReferralLinkConfirm": {
+    "description": "Label for referral link confirmation field"
+  },
+  "adminEditProfileValidationRequired": "Required",
+  "@adminEditProfileValidationRequired": {
+    "description": "Validation error for empty required fields in admin profile"
+  },
+  "adminEditProfileDialogErrorTitle": "Referral Link Error",
+  "@adminEditProfileDialogErrorTitle": {
+    "description": "Title for referral link validation error dialog"
+  },
+  "adminEditProfileDialogErrorHelper": "Please verify your referral link and try again.",
+  "@adminEditProfileDialogErrorHelper": {
+    "description": "Helper text in referral link error dialog"
+  },
+  "adminEditProfileDialogImportantTitle": "Very Important!",
+  "@adminEditProfileDialogImportantTitle": {
+    "description": "Title for important information dialog about referral links"
+  },
+  "adminEditProfileDialogImportantMessage": "You must enter the exact referral link you received from your company. This will ensure your team members that join your business opportunity are automatically placed in your business opportunity team.",
+  "@adminEditProfileDialogImportantMessage": {
+    "description": "Message explaining importance of exact referral link"
+  },
+  "adminEditProfileButtonUnderstand": "I Understand",
+  "@adminEditProfileButtonUnderstand": {
+    "description": "Button text to acknowledge important information"
+  },
+  "adminEditProfilePreviewTitle": "Referral Link Preview:",
+  "@adminEditProfilePreviewTitle": {
+    "description": "Title for referral link preview section"
+  },
+  "adminEditProfileButtonComplete": "Complete Profile & Start Building!",
+  "@adminEditProfileButtonComplete": {
+    "description": "Button text to complete profile setup and start building team"
+  },
+  "adminEditProfileSuccessSaved": "Profile completed successfully!",
+  "@adminEditProfileSuccessSaved": {
+    "description": "Success message when profile is saved successfully"
+  },
+  "adminEditProfileErrorSaving": "Error: {error}",
+  "@adminEditProfileErrorSaving": {
+    "description": "Error message when profile save fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network connection failed"
+      }
+    }
+  },
+  "adminEditProfileValidationBizNameRequired": "Please enter your business opportunity name",
+  "@adminEditProfileValidationBizNameRequired": {
+    "description": "Validation error when business opportunity name is empty"
+  },
+  "adminEditProfileValidationBizNameConfirmRequired": "Please confirm your business opportunity name",
+  "@adminEditProfileValidationBizNameConfirmRequired": {
+    "description": "Validation error when business opportunity name confirmation is empty"
+  },
+  "adminEditProfileValidationReferralLinkRequired": "Please enter your referral link",
+  "@adminEditProfileValidationReferralLinkRequired": {
+    "description": "Validation error when referral link is empty"
+  },
+  "adminEditProfileValidationReferralLinkConfirmRequired": "Please confirm your referral link",
+  "@adminEditProfileValidationReferralLinkConfirmRequired": {
+    "description": "Validation error when referral link confirmation is empty"
+  },
+  "adminEditProfileValidationBizNameInvalidChars": "Business name can only contain letters, numbers, and common punctuation.",
+  "@adminEditProfileValidationBizNameInvalidChars": {
+    "description": "Validation error when business name contains invalid characters"
+  },
+  "adminEditProfileValidationUrlBasic": "Please enter a valid referral link (e.g., https://example.com).",
+  "@adminEditProfileValidationUrlBasic": {
+    "description": "Basic validation error for invalid URL format"
+  },
+  "adminEditProfileValidationBizNameMismatch": "Business Name fields must match for confirmation.",
+  "@adminEditProfileValidationBizNameMismatch": {
+    "description": "Validation error when business name and confirmation don't match"
+  },
+  "adminEditProfileValidationReferralLinkMismatch": "Referral Link fields must match for confirmation.",
+  "@adminEditProfileValidationReferralLinkMismatch": {
+    "description": "Validation error when referral link and confirmation don't match"
+  },
+  "adminEditProfileValidationUrlInvalid": "Please enter a valid URL (e.g., https://example.com)",
+  "@adminEditProfileValidationUrlInvalid": {
+    "description": "Validation error for invalid URL format in async validation"
+  },
+  "adminEditProfileValidationUrlNotHttps": "Referral link must use HTTPS (not HTTP) for security",
+  "@adminEditProfileValidationUrlNotHttps": {
+    "description": "Validation error when URL uses HTTP instead of HTTPS"
+  },
+  "adminEditProfileValidationUrlLocalhost": "Please enter a valid business referral link\n(not localhost or IP address)",
+  "@adminEditProfileValidationUrlLocalhost": {
+    "description": "Validation error when URL is localhost or IP address"
+  },
+  "adminEditProfileValidationUrlNoTld": "Please enter a valid URL with a proper domain\n(e.g., company.com)",
+  "@adminEditProfileValidationUrlNoTld": {
+    "description": "Validation error when URL has no top-level domain"
+  },
+  "adminEditProfileValidationUrlHomepageOnly": "Please enter your complete referral link, not just the homepage.\nYour referral link should include your unique identifier\n(e.g., https://company.com/join?ref=yourname)",
+  "@adminEditProfileValidationUrlHomepageOnly": {
+    "description": "Validation error when URL is just a homepage without unique identifier"
+  },
+  "adminEditProfileValidationUrlFormat": "Invalid URL format. Please check your referral link.",
+  "@adminEditProfileValidationUrlFormat": {
+    "description": "Generic validation error for URL format issues"
+  },
+  "adminEditProfileValidationUrlVerificationFailed": "The referral link you entered could not be verified. Please check your internet connection and try again.",
+  "@adminEditProfileValidationUrlVerificationFailed": {
+    "description": "Validation error when URL verification fails due to network issues"
+  },
+  "adminEditProfileValidationUrlVerificationError": "The referral link you entered could not be verified. Please check the URL and try again.",
+  "@adminEditProfileValidationUrlVerificationError": {
+    "description": "Generic validation error when URL verification fails"
   }
 }

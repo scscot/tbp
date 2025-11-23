@@ -1203,7 +1203,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccountButtonCancel => 'Cancel';
 
   @override
-  String get deleteAccountSuccessMessage => 'Your account has been deleted';
+  String get deleteAccountSuccessMessage =>
+      'Account successfully deleted. Thank you for using Team Build Pro.';
 
   @override
   String get deleteAccountErrorMessage =>
@@ -1463,6 +1464,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonButtonNo => 'No';
+
+  @override
+  String get commonLoading => 'Loading...';
 
   @override
   String get commonLoadingMessage => 'Loading...';
@@ -2028,6 +2032,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountDemoButton => 'OK';
+
+  @override
+  String deleteAccountErrorFailed(String error) {
+    return 'Account deletion failed: $error';
+  }
+
+  @override
+  String get deleteAccountErrorEmailMismatch =>
+      'The email address you entered does not match your account email. Please check and try again.';
+
+  @override
+  String get deleteAccountErrorNotFound =>
+      'We could not find your account in our system. Please contact support for assistance.';
+
+  @override
+  String get deleteAccountErrorSessionExpired =>
+      'Your session has expired. Please sign out and sign in again, then retry account deletion.';
+
+  @override
+  String get deleteAccountErrorPermissionDenied =>
+      'You do not have permission to delete this account. Please contact support if you need assistance.';
+
+  @override
+  String get deleteAccountErrorServerError =>
+      'An unexpected error occurred on our servers. Please try again in a few minutes or contact support.';
+
+  @override
+  String get deleteAccountErrorServiceUnavailable =>
+      'The service is temporarily unavailable. Please check your internet connection and try again.';
+
+  @override
+  String get deleteAccountErrorProcessing =>
+      'We encountered an issue processing your request. Please try again or contact support for help.';
+
+  @override
+  String get deleteAccountErrorUnexpected =>
+      'An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.';
+
+  @override
+  String get deleteAccountErrorEmailApp =>
+      'Could not launch email app. Please contact support@teambuildpro.com manually.';
 
   @override
   String get editProfileHeading => 'Edit Profile';
@@ -2826,6 +2871,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotSet => 'Not Set';
+
+  @override
+  String get settingsSuperAdminOnly =>
+      '🚫 Only Super Admin can perform database cleanup';
+
+  @override
+  String settingsCleanupError(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get settingsCleanupDryRunTitle => '🔍 Dry-Run Results';
+
+  @override
+  String get settingsCleanupCompleteTitle => '✅ Cleanup Complete';
+
+  @override
+  String get settingsCleanupTotalUsers => 'Total Users:';
+
+  @override
+  String get settingsCleanupNonAdminUsers => 'Non-Admin Users:';
+
+  @override
+  String get settingsCleanupProtectedAdmins => 'Protected Admins:';
+
+  @override
+  String get settingsCleanupDeleted => 'Deleted:';
+
+  @override
+  String get settingsCleanupDeletedUsers => 'Users:';
+
+  @override
+  String get settingsCleanupDeletedChats => 'Chats:';
+
+  @override
+  String get settingsCleanupDeletedChatLogs => 'Chat Logs:';
+
+  @override
+  String get settingsCleanupDeletedChatUsage => 'Chat Usage:';
+
+  @override
+  String get settingsCleanupDeletedReferralCodes => 'Referral Codes:';
+
+  @override
+  String get settingsOkButton => 'OK';
 
   @override
   String get profileUpdateBiometricFailed =>
@@ -4138,280 +4228,136 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authSignupEmailPrivacy =>
       'Your email will never be shared with anyone';
-}
-
-/// The translations for English (`en_XA`).
-class AppLocalizationsEnXa extends AppLocalizationsEn {
-  AppLocalizationsEnXa() : super('en_XA');
 
   @override
-  String get appTitle => '[Ṫḗȧm ßüïld Þrö ÞÞÞÞ]';
+  String get adminEditProfileTitle => 'Business Setup';
 
   @override
-  String get authLoginHeaderTitle => '[Wḗlċömḗ bȧċk ÞÞÞÞ]';
+  String get adminEditProfileHeaderTitle => 'Your Business Opportunity';
 
   @override
-  String get authLoginLabelEmail => '[Ḗmȧïl ÞÞ]';
+  String get adminEditProfileWarningCannotChange =>
+      '⚠️ Important: This information cannot be changed once saved.';
 
   @override
-  String get authLoginHintEmail => '[Ḗñtḗr yöür ḗmȧïl ȧddrḗšš ÞÞÞÞÞÞÞ]';
+  String get adminEditProfileWarningExplanation =>
+      'Your business opportunity name and referral link ensure that Team Build Pro members are accurately placed in your business opportunity downline when they qualify. Changing this would break the connection between your networks.';
 
   @override
-  String get authLoginEmailRequired => '[Þlḗȧšḗ ḗñtḗr yöür ḗmȧïl ÞÞÞÞÞÞÞ]';
+  String get adminEditProfileLabelBizOppName =>
+      'Your Business Opportunity Name';
 
   @override
-  String get authLoginEmailInvalid => '[Þlḗȧšḗ ḗñtḗr ȧ vȧlïd ḗmȧïl ÞÞÞÞÞÞÞÞ]';
+  String get adminEditProfileHelperCannotChange =>
+      'This cannot be changed once set';
 
   @override
-  String get authLoginLabelPassword => '[Þȧššwörd ÞÞ]';
+  String get adminEditProfileLabelBizOppNameConfirm =>
+      'Confirm Business Opportunity Name';
 
   @override
-  String get authLoginHintPassword => '[Ḗñtḗr yöür pȧššwörd ÞÞÞÞÞÞ]';
+  String get adminEditProfileLabelReferralLink => 'Your Referral Link';
 
   @override
-  String get authLoginPasswordRequired =>
-      '[Þlḗȧšḗ ḗñtḗr yöür pȧššwörd ÞÞÞÞÞÞÞÞ]';
+  String get adminEditProfileLabelReferralLinkConfirm =>
+      'Confirm Referral Link URL';
 
   @override
-  String authLoginPasswordTooShort(int min) {
-    return '[Þȧššwörd müšt bḗ ȧt lḗȧšt $min ċhȧrȧċtḗrš ÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationRequired => 'Required';
+
+  @override
+  String get adminEditProfileDialogErrorTitle => 'Referral Link Error';
+
+  @override
+  String get adminEditProfileDialogErrorHelper =>
+      'Please verify your referral link and try again.';
+
+  @override
+  String get adminEditProfileDialogImportantTitle => 'Very Important!';
+
+  @override
+  String get adminEditProfileDialogImportantMessage =>
+      'You must enter the exact referral link you received from your company. This will ensure your team members that join your business opportunity are automatically placed in your business opportunity team.';
+
+  @override
+  String get adminEditProfileButtonUnderstand => 'I Understand';
+
+  @override
+  String get adminEditProfilePreviewTitle => 'Referral Link Preview:';
+
+  @override
+  String get adminEditProfileButtonComplete =>
+      'Complete Profile & Start Building!';
+
+  @override
+  String get adminEditProfileSuccessSaved => 'Profile completed successfully!';
+
+  @override
+  String adminEditProfileErrorSaving(String error) {
+    return 'Error: $error';
   }
 
   @override
-  String get authLoginButtonSignIn => '[Šïgñ Ïñ ÞÞ]';
+  String get adminEditProfileValidationBizNameRequired =>
+      'Please enter your business opportunity name';
 
   @override
-  String get authLoginNoAccountPrompt => '[Döñ\'t hȧvḗ ȧñ ȧċċöüñt? ÞÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationBizNameConfirmRequired =>
+      'Please confirm your business opportunity name';
 
   @override
-  String get authLoginLinkSignUp => '[Šïgñ Üp ÞÞ]';
+  String get adminEditProfileValidationReferralLinkRequired =>
+      'Please enter your referral link';
 
   @override
-  String authLoginBiometric(String method) {
-    return '[Šïgñ ïñ wïth $method ÞÞÞÞÞÞ]';
-  }
+  String get adminEditProfileValidationReferralLinkConfirmRequired =>
+      'Please confirm your referral link';
 
   @override
-  String get authLoginBiometricMethodFace => '[Fȧċḗ ÏD ÞÞ]';
+  String get adminEditProfileValidationBizNameInvalidChars =>
+      'Business name can only contain letters, numbers, and common punctuation.';
 
   @override
-  String get authLoginBiometricMethodTouch => '[Ṫöüċh ÏD ÞÞ]';
+  String get adminEditProfileValidationUrlBasic =>
+      'Please enter a valid referral link (e.g., https://example.com).';
 
   @override
-  String get authLoginBiometricMethodGeneric => '[ßïömḗtrïċš ÞÞÞ]';
+  String get adminEditProfileValidationBizNameMismatch =>
+      'Business Name fields must match for confirmation.';
 
   @override
-  String get authSignupHeaderTitle => '[Ċrḗȧtḗ yöür ȧċċöüñt ÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationReferralLinkMismatch =>
+      'Referral Link fields must match for confirmation.';
 
   @override
-  String get authSignupLabelFirstName => '[Fïršt Ñȧmḗ ÞÞÞ]';
+  String get adminEditProfileValidationUrlInvalid =>
+      'Please enter a valid URL (e.g., https://example.com)';
 
   @override
-  String get authSignupHintFirstName => '[Ḗñtḗr yöür fïršt ñȧmḗ ÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationUrlNotHttps =>
+      'Referral link must use HTTPS (not HTTP) for security';
 
   @override
-  String get authSignupFirstNameRequired =>
-      '[Þlḗȧšḗ ḗñtḗr yöür fïršt ñȧmḗ ÞÞÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationUrlLocalhost =>
+      'Please enter a valid business referral link\n(not localhost or IP address)';
 
   @override
-  String get authSignupLabelLastName => '[Lȧšt Ñȧmḗ ÞÞÞ]';
+  String get adminEditProfileValidationUrlNoTld =>
+      'Please enter a valid URL with a proper domain\n(e.g., company.com)';
 
   @override
-  String get authSignupHintLastName => '[Ḗñtḗr yöür lȧšt ñȧmḗ ÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationUrlHomepageOnly =>
+      'Please enter your complete referral link, not just the homepage.\nYour referral link should include your unique identifier\n(e.g., https://company.com/join?ref=yourname)';
 
   @override
-  String get authSignupLastNameRequired =>
-      '[Þlḗȧšḗ ḗñtḗr yöür lȧšt ñȧmḗ ÞÞÞÞÞÞÞÞ]';
+  String get adminEditProfileValidationUrlFormat =>
+      'Invalid URL format. Please check your referral link.';
 
   @override
-  String get authSignupLabelEmail => '[Ḗmȧïl ÞÞ]';
+  String get adminEditProfileValidationUrlVerificationFailed =>
+      'The referral link you entered could not be verified. Please check your internet connection and try again.';
 
   @override
-  String get authSignupHintEmail => '[Ḗñtḗr yöür ḗmȧïl ȧddrḗšš ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupEmailRequired => '[Þlḗȧšḗ ḗñtḗr yöür ḗmȧïl ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupEmailInvalid => '[Þlḗȧšḗ ḗñtḗr ȧ vȧlïd ḗmȧïl ÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupLabelPassword => '[Þȧššwörd ÞÞ]';
-
-  @override
-  String get authSignupHintPassword => '[Ċrḗȧtḗ ȧ pȧššwörd ÞÞÞÞÞ]';
-
-  @override
-  String get authSignupPasswordRequired => '[Þlḗȧšḗ ḗñtḗr ȧ pȧššwörd ÞÞÞÞÞÞÞ]';
-
-  @override
-  String authSignupPasswordTooShort(int min) {
-    return '[Þȧššwörd müšt bḗ ȧt lḗȧšt $min ċhȧrȧċtḗrš ÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-  }
-
-  @override
-  String get authSignupLabelConfirmPassword => '[Ċöñfïrm Þȧššwörd ÞÞÞÞÞ]';
-
-  @override
-  String get authSignupHintConfirmPassword =>
-      '[Rḗ-ḗñtḗr yöür pȧššwörd ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupConfirmPasswordRequired =>
-      '[Þlḗȧšḗ ċöñfïrm yöür pȧššwörd ÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupPasswordMismatch => '[Þȧššwördš döñ\'t mȧtċh ÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupLabelReferralCode =>
-      '[Rḗfḗrrȧl Ċödḗ (Öptïöñȧl) ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupHintReferralCode =>
-      '[Ḗñtḗr ïñvïtḗ ċödḗ ïf yöü hȧvḗ öñḗ ÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupButtonPasteCode => '[Þȧštḗ ÞÞ]';
-
-  @override
-  String get authSignupTosConsent =>
-      '[ßy ċöñtïñüïñg, yöü ȧgrḗḗ tö thḗ Ṫḗrmš öf Šḗrvïċḗ ȧñd Þrïvȧċy Þölïċy ÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupTermsShort => '[Ṫḗrmš öf Šḗrvïċḗ ÞÞÞÞÞ]';
-
-  @override
-  String get authSignupPrivacyShort => '[Þrïvȧċy Þölïċy ÞÞÞÞ]';
-
-  @override
-  String get authSignupTosRequired =>
-      '[Yöü müšt ȧċċḗpt thḗ tḗrmš tö ċöñtïñüḗ ÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupButtonCreateAccount => '[Ċrḗȧtḗ Ȧċċöüñt ÞÞÞÞ]';
-
-  @override
-  String get authSignupHaveAccountPrompt =>
-      '[Ȧlrḗȧdy hȧvḗ ȧñ ȧċċöüñt? ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authSignupLinkSignIn => '[Šïgñ Ïñ ÞÞ]';
-
-  @override
-  String get authPasswordShow => '[Šhöw pȧššwörd ÞÞÞÞ]';
-
-  @override
-  String get authPasswordHide => '[Hïdḗ pȧššwörd ÞÞÞÞ]';
-
-  @override
-  String get authErrorInvalidEmail =>
-      '[Ṫhȧt ḗmȧïl ïšñ\'t vȧlïd. Þlḗȧšḗ ċhḗċk ȧñd try ȧgȧïñ. ÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorUserDisabled =>
-      '[Ṫhïš ȧċċöüñt hȧš bḗḗñ dïšȧblḗd. Þlḗȧšḗ ċöñtȧċt šüppört. ÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorUserNotFound =>
-      '[Ñö ȧċċöüñt föüñd wïth thȧt ḗmȧïl. ÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorWrongPassword =>
-      '[Ïñċörrḗċt pȧššwörd. Þlḗȧšḗ try ȧgȧïñ. ÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorEmailInUse =>
-      '[Ȧñ ȧċċöüñt wïth thȧt ḗmȧïl ȧlrḗȧdy ḗxïštš. ÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorWeakPassword =>
-      '[Þlḗȧšḗ ċhööšḗ ȧ štröñgḗr pȧššwörd. ÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorNetworkError =>
-      '[Ñḗtwörk ḗrrör. Þlḗȧšḗ ċhḗċk yöür ċöññḗċtïöñ. ÞÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorTooMany =>
-      '[Ṫöö mȧñy ȧttḗmptš. Þlḗȧšḗ wȧït ȧ mömḗñt. ÞÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorInvalidCredential =>
-      '[Ṫhöšḗ dḗtȧïlš döñ\'t mȧtċh öür rḗċördš. ÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get authErrorUnknown =>
-      '[Ȧñ ḗrrör öċċürrḗd. Þlḗȧšḗ try ȧgȧïñ. ÞÞÞÞÞÞÞÞÞÞÞ]';
-
-  @override
-  String get navHome => '[Hömḗ Þ]';
-
-  @override
-  String get navTeam => '[Ṫḗȧm Þ]';
-
-  @override
-  String get navShare => '[Šhȧrḗ ÞÞ]';
-
-  @override
-  String get navMessages => '[Mḗššȧgḗš ÞÞ]';
-
-  @override
-  String get navNotices => '[Ñötïċḗš ÞÞ]';
-
-  @override
-  String get navProfile => '[Þröfïlḗ ÞÞ]';
-
-  @override
-  String get dashTitle => '[Ċöñtröl Ċḗñtḗr ÞÞÞÞ]';
-
-  @override
-  String get dashKpiDirectSponsors => '[Dïrḗċt Špöñšörš ÞÞÞÞÞ]';
-
-  @override
-  String get dashKpiTotalTeam => '[Ṫötȧl Ṫḗȧm Mḗmbḗrš ÞÞÞÞÞ]';
-
-  @override
-  String get dashStatsRefreshed => '[Ṫḗȧm štȧtš rḗfrḗšhḗd ÞÞÞÞÞÞ]';
-
-  @override
-  String dashStatsError(String error) {
-    return '[Ḗrrör rḗfrḗšhïñg štȧtš: $error ÞÞÞÞÞÞÞÞÞ]';
-  }
-
-  @override
-  String get dashTileGettingStarted => '[Gḗttïñg Štȧrtḗd ÞÞÞÞÞ]';
-
-  @override
-  String get dashTileOpportunity => '[Öppörtüñïty Dḗtȧïlš ÞÞÞÞÞÞ]';
-
-  @override
-  String get dashTileEligibility => '[Yöür Ḗlïgïbïlïty Štȧtüš ÞÞÞÞÞÞÞ]';
-
-  @override
-  String get dashTileGrowTeam => '[Gröw Yöür Ṫḗȧm ÞÞÞÞ]';
-
-  @override
-  String get dashTileViewTeam => '[Vïḗw Yöür Ṫḗȧm ÞÞÞÞ]';
-
-  @override
-  String get dashTileAiCoach => '[Yöür ȦÏ Ċöȧċh ÞÞÞÞ]';
-
-  @override
-  String get dashTileMessageCenter => '[Mḗššȧgḗ Ċḗñtḗr ÞÞÞÞ]';
-
-  @override
-  String get dashTileNotifications => '[Ñötïfïċȧtïöñš ÞÞÞÞ]';
-
-  @override
-  String get dashTileHowItWorks => '[Höw Ït Wörkš ÞÞÞÞ]';
-
-  @override
-  String get dashTileFaqs => '[FȦQ\'š ÞÞ]';
-
-  @override
-  String get dashTileProfile => '[Vïḗw Yöür Þröfïlḗ ÞÞÞÞÞ]';
-
-  @override
-  String get dashTileCreateAccount => '[Ċrḗȧtḗ Ñḗw Ȧċċöüñt ÞÞÞÞÞ]';
+  String get adminEditProfileValidationUrlVerificationError =>
+      'The referral link you entered could not be verified. Please check the URL and try again.';
 }

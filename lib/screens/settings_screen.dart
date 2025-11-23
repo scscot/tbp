@@ -83,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Authentication required.')),
+            SnackBar(content: Text(context.l10n?.settingsAuthRequired ?? 'Authentication required.')),
           );
           Navigator.of(context).pop();
         }
@@ -102,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User profile not found.')),
+              SnackBar(content: Text(context.l10n?.settingsUserNotFound ?? 'User profile not found.')),
             );
             Navigator.of(context).pop();
           }
@@ -117,8 +117,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Access Denied: Admin role required.')),
+              SnackBar(
+                  content: Text(context.l10n?.settingsAccessDenied ?? 'Access Denied: Admin role required.')),
             );
             Navigator.of(context).pop();
           }
@@ -170,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       debugPrint('SettingsScreen: Error loading user settings: $e.');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load settings: ${e.toString()}')),
+          SnackBar(content: Text(context.l10n?.settingsLoadFailed(e.toString()) ?? 'Failed to load settings: ${e.toString()}')),
         );
       }
       _isBizSettingsSet = false;
@@ -198,8 +198,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!businessNameRegExp.hasMatch(businessName)) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
+        SnackBar(
+            content: Text(context.l10n?.settingsBusinessNameInvalid ??
                 'Business name can only contain letters, numbers, and common punctuation.')),
       );
       return;
@@ -216,8 +216,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
+        SnackBar(
+            content: Text(context.l10n?.settingsReferralLinkInvalid ??
                 'Please enter a valid referral link (e.g., https://example.com).')),
       );
       return;
@@ -228,8 +228,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (_bizNameController.text != _bizNameConfirmController.text) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
+          SnackBar(
+              content: Text(context.l10n?.settingsOrgNameMismatch ??
                   'Organization Name fields must match for confirmation.')),
         );
         return;
@@ -237,9 +237,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (_refLinkController.text != _refLinkConfirmController.text) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
               content:
-                  Text('Referral Link fields must match for confirmation.')),
+                  Text(context.l10n?.settingsReferralLinkMismatch ?? 'Referral Link fields must match for confirmation.')),
         );
         return;
       }
@@ -250,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       debugPrint('SettingsScreen: User not authenticated for submission.');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User not authenticated.')),
+        SnackBar(content: Text(context.l10n?.settingsUserNotAuthenticated ?? 'User not authenticated.')),
       );
       return;
     }
@@ -267,8 +267,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext dialogContext) => AlertDialog(
-          title: const Text('Upgrade Required'),
-          content: const Text(
+          title: Text(context.l10n?.settingsUpgradeRequiredTitle ?? 'Upgrade Required'),
+          content: Text(context.l10n?.settingsUpgradeRequiredMessage ??
               'Upgrade your Admin subscription to save these changes.'),
           actions: [
             TextButton(
@@ -280,7 +280,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Cancel'),
+              child: Text(context.l10n?.settingsCancelButton ?? 'Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -293,7 +293,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.pushNamed(context, '/subscription');
                 }
               },
-              child: const Text('Upgrade Now'),
+              child: Text(context.l10n?.settingsUpgradeButton ?? 'Upgrade Now'),
             ),
           ],
         ),
@@ -324,13 +324,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Settings saved successfully.')),
+        SnackBar(content: Text(context.l10n?.settingsSavedSuccess ?? 'Settings saved successfully.')),
       );
     } catch (e) {
       debugPrint('SettingsScreen: Error submitting settings: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save settings: ${e.toString()}')),
+          SnackBar(content: Text(context.l10n?.settingsSaveFailed(e.toString()) ?? 'Failed to save settings: ${e.toString()}')),
         );
       }
     }
@@ -352,8 +352,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (uid != superAdminUid) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('🚫 Only Super Admin can perform database cleanup'),
+        SnackBar(
+          content: Text(context.l10n?.settingsSuperAdminOnly ?? '🚫 Only Super Admin can perform database cleanup'),
           backgroundColor: Colors.red,
         ),
       );
@@ -389,7 +389,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(dryRun ? '🔍 Dry-Run Results' : '✅ Cleanup Complete'),
+          title: Text(dryRun
+              ? (context.l10n?.settingsCleanupDryRunTitle ?? '🔍 Dry-Run Results')
+              : (context.l10n?.settingsCleanupCompleteTitle ?? '✅ Cleanup Complete')),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,19 +399,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Text(message),
                 const SizedBox(height: 16),
-                Text('Total Users: ${summary['totalUsers']}',
+                Text('${context.l10n?.settingsCleanupTotalUsers ?? 'Total Users:'} ${summary['totalUsers']}',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text('Non-Admin Users: ${summary['nonAdminUsers']}'),
-                Text('Protected Admins: ${summary['protectedAdmins']}'),
+                Text('${context.l10n?.settingsCleanupNonAdminUsers ?? 'Non-Admin Users:'} ${summary['nonAdminUsers']}'),
+                Text('${context.l10n?.settingsCleanupProtectedAdmins ?? 'Protected Admins:'} ${summary['protectedAdmins']}'),
                 const SizedBox(height: 12),
                 if (!dryRun) ...[
-                  const Text('Deleted:',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('  Users: ${summary['deleted']['users']}'),
-                  Text('  Chats: ${summary['deleted']['chats']}'),
-                  Text('  Chat Logs: ${summary['deleted']['chatLogs']}'),
-                  Text('  Chat Usage: ${summary['deleted']['chatUsage']}'),
-                  Text('  Referral Codes: ${summary['deleted']['referralCodes']}'),
+                  Text(context.l10n?.settingsCleanupDeleted ?? 'Deleted:',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('  ${context.l10n?.settingsCleanupDeletedUsers ?? 'Users:'} ${summary['deleted']['users']}'),
+                  Text('  ${context.l10n?.settingsCleanupDeletedChats ?? 'Chats:'} ${summary['deleted']['chats']}'),
+                  Text('  ${context.l10n?.settingsCleanupDeletedChatLogs ?? 'Chat Logs:'} ${summary['deleted']['chatLogs']}'),
+                  Text('  ${context.l10n?.settingsCleanupDeletedChatUsage ?? 'Chat Usage:'} ${summary['deleted']['chatUsage']}'),
+                  Text('  ${context.l10n?.settingsCleanupDeletedReferralCodes ?? 'Referral Codes:'} ${summary['deleted']['referralCodes']}'),
                 ],
               ],
             ),
@@ -417,7 +419,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text(context.l10n?.settingsOkButton ?? 'OK'),
             ),
           ],
         ),
@@ -430,7 +432,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
+          content: Text(context.l10n?.settingsCleanupError(e.toString()) ?? 'Error: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -486,14 +488,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 fillColor: _isBizLocked ? Colors.grey[200] : null,
               ),
               validator: (value) =>
-                  _isBizLocked ? null : (value!.isEmpty ? 'Required' : null),
+                  _isBizLocked ? null : (value!.isEmpty ? (context.l10n?.settingsRequired ?? 'Required') : null),
             ),
             if (!_isBizLocked)
               TextFormField(
                 controller: _bizNameConfirmController,
                 decoration: InputDecoration(
                     labelText: context.l10n?.settingsLabelConfirmOrganizationName ?? 'Confirm Organization Name'),
-                validator: (value) => value!.isEmpty ? 'Required' : null,
+                validator: (value) => value!.isEmpty ? (context.l10n?.settingsRequired ?? 'Required') : null,
               ),
             const SizedBox(height: 16),
             GestureDetector(
@@ -546,7 +548,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       validator: (value) => _isBizLocked
                           ? null
-                          : (value!.isEmpty ? 'Required' : null),
+                          : (value!.isEmpty ? (context.l10n?.settingsRequired ?? 'Required') : null),
                     ),
                     if (!_isBizLocked)
                       TextFormField(
@@ -555,7 +557,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           labelText: context.l10n?.settingsLabelConfirmReferralLink ?? 'Confirm Referral Link URL',
                         ),
                         validator: (value) =>
-                            value!.isEmpty ? 'Required' : null,
+                            value!.isEmpty ? (context.l10n?.settingsRequired ?? 'Required') : null,
                       ),
                   ],
                 ),
@@ -644,7 +646,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: const Icon(Icons.business, color: Colors.blue),
                   title: Text(context.l10n?.settingsDisplayOrganization ?? 'Your Organization'),
                   subtitle: Text(
-                    _bizOpp ?? 'Not Set',
+                    _bizOpp ?? (context.l10n?.settingsNotSet ?? 'Not Set'),
                     style: const TextStyle(fontSize: 16, color: Colors.black87),
                   ),
                 ),
@@ -653,7 +655,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: const Icon(Icons.link, color: Colors.blue),
                   title: Text(context.l10n?.settingsDisplayReferralLink ?? 'Your Referral Link'),
                   subtitle: SelectableText(
-                    _bizRefUrl ?? 'Not Set',
+                    _bizRefUrl ?? (context.l10n?.settingsNotSet ?? 'Not Set'),
                     style: const TextStyle(fontSize: 14, color: Colors.black54),
                   ),
                 ),

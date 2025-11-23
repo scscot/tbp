@@ -39,6 +39,7 @@ import 'screens/network_screen.dart';
 import 'services/badge_service.dart';
 import 'screens/homepage_screen.dart';
 import 'widgets/navigation_shell.dart';
+import 'widgets/localized_text.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -561,14 +562,14 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 20),
-            Text('Loading...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 20),
+            Text(context.l10n?.commonLoading ?? 'Loading...'),
           ],
         ),
       ),

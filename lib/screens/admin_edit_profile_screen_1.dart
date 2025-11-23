@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../l10n/app_localizations.dart';
 import '../widgets/header_widgets.dart';
 import '../widgets/navigation_shell.dart';
 import '../services/link_validator_service.dart';
@@ -70,6 +71,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   void _showValidationErrorDialog(String errorMessage) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -85,10 +87,10 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
               size: 28,
             ),
             const SizedBox(width: 12),
-            const Expanded(
+            Expanded(
               child: Text(
-                'Referral Link Error',
-                style: TextStyle(
+                l10n.adminEditProfileDialogErrorTitle,
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.red,
@@ -120,10 +122,10 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                 children: [
                   Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Please verify your referral link and try again.',
-                      style: TextStyle(
+                      l10n.adminEditProfileDialogErrorHelper,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -144,9 +146,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                 Navigator.of(context).pop();
               }
             },
-            child: const Text(
-              'OK',
-              style: TextStyle(
+            child: Text(
+              l10n.commonButtonOk,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -158,14 +160,16 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   Future<String?> _validateReferralLinkAsync(String referralLink) async {
+    final l10n = AppLocalizations.of(context)!;
+
     // Client-side pre-checks for instant feedback
     try {
       final uri = Uri.parse(referralLink);
       if (!uri.isAbsolute || uri.host.isEmpty) {
-        return 'Please enter a valid URL (e.g., https://example.com)';
+        return l10n.adminEditProfileValidationUrlInvalid;
       }
       if (uri.scheme != 'https') {
-        return 'Referral link must use HTTPS (not HTTP) for security';
+        return l10n.adminEditProfileValidationUrlNotHttps;
       }
 
       // Ensure not localhost or IP address (business links should be public)
@@ -174,12 +178,12 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
           uri.host.startsWith('192.168.') ||
           uri.host.startsWith('10.') ||
           RegExp(r'^\d+\.\d+\.\d+\.\d+$').hasMatch(uri.host)) {
-        return 'Please enter a valid business referral link\n(not localhost or IP address)';
+        return l10n.adminEditProfileValidationUrlLocalhost;
       }
 
       // Ensure proper TLD
       if (!uri.host.contains('.')) {
-        return 'Please enter a valid URL with a proper domain\n(e.g., company.com)';
+        return l10n.adminEditProfileValidationUrlNoTld;
       }
 
       // Ensure it's not just a homepage - must have path or query parameters
@@ -187,10 +191,10 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       if ((uri.path.isEmpty || uri.path == '/' || uri.path == '') &&
           uri.query.isEmpty &&
           uri.fragment.isEmpty) {
-        return 'Please enter your complete referral link, not just the homepage.\nYour referral link should include your unique identifier\n(e.g., https://company.com/join?ref=yourname)';
+        return l10n.adminEditProfileValidationUrlHomepageOnly;
       }
     } catch (_) {
-      return 'Invalid URL format. Please check your referral link.';
+      return l10n.adminEditProfileValidationUrlFormat;
     }
 
     // Server-side validation with comprehensive checks
@@ -205,9 +209,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       debugPrint('❌ ADMIN_PROFILE: Validation error: $e');
       // Handle network/connection errors with user-friendly message
       if (e.toString().contains('fetch failed') || e.toString().contains('network')) {
-        return 'The referral link you entered could not be verified. Please check your internet connection and try again.';
+        return l10n.adminEditProfileValidationUrlVerificationFailed;
       }
-      return 'The referral link you entered could not be verified. Please check the URL and try again.';
+      return l10n.adminEditProfileValidationUrlVerificationError;
     } finally {
       if (mounted) {
         setState(() => _isValidatingUrl = false);
@@ -216,28 +220,30 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   String? _getFirstValidationError() {
+    final l10n = AppLocalizations.of(context)!;
+
     // Check business name
     if (_bizNameController.text.trim().isEmpty) {
       _scrollToField(_bizNameKey);
-      return 'Please enter your business opportunity name';
+      return l10n.adminEditProfileValidationBizNameRequired;
     }
 
     // Check business name confirmation
     if (_bizNameConfirmController.text.trim().isEmpty) {
       _scrollToField(_bizNameConfirmKey);
-      return 'Please confirm your business opportunity name';
+      return l10n.adminEditProfileValidationBizNameConfirmRequired;
     }
 
     // Check referral link
     if (_refLinkController.text.trim().isEmpty) {
       _scrollToField(_refLinkKey);
-      return 'Please enter your referral link';
+      return l10n.adminEditProfileValidationReferralLinkRequired;
     }
 
     // Check referral link confirmation
     if (_refLinkConfirmController.text.trim().isEmpty) {
       _scrollToField(_refLinkConfirmKey);
-      return 'Please confirm your referral link';
+      return l10n.adminEditProfileValidationReferralLinkConfirmRequired;
     }
 
     // Business Name Content Validation
@@ -246,7 +252,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
 
     if (!businessNameRegExp.hasMatch(businessName)) {
       _scrollToField(_bizNameKey);
-      return 'Business name can only contain letters, numbers, and common punctuation.';
+      return l10n.adminEditProfileValidationBizNameInvalidChars;
     }
 
     // Referral Link URL Validation - basic client-side check only
@@ -259,18 +265,18 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       }
     } catch (_) {
       _scrollToField(_refLinkKey);
-      return 'Please enter a valid referral link (e.g., https://example.com).';
+      return l10n.adminEditProfileValidationUrlBasic;
     }
 
     // Confirmation field validation
     if (_bizNameController.text != _bizNameConfirmController.text) {
       _scrollToField(_bizNameConfirmKey);
-      return 'Business Name fields must match for confirmation.';
+      return l10n.adminEditProfileValidationBizNameMismatch;
     }
 
     if (_refLinkController.text != _refLinkConfirmController.text) {
       _scrollToField(_refLinkConfirmKey);
-      return 'Referral Link fields must match for confirmation.';
+      return l10n.adminEditProfileValidationReferralLinkMismatch;
     }
 
     return null; // No validation errors
@@ -333,8 +339,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       });
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile completed successfully!')),
+          SnackBar(content: Text(l10n.adminEditProfileSuccessSaved)),
         );
 
         // Navigate to profile screen
@@ -346,8 +353,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text(l10n.adminEditProfileErrorSaving(e.toString()))),
         );
       }
     } finally {
@@ -361,8 +369,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: const AppScreenBar(title: 'Business Setup', actions: []),
+      appBar: AppScreenBar(title: l10n.adminEditProfileTitle, actions: const []),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -373,10 +382,10 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
+                    Center(
                       child: Text(
-                        'Your Business Opportunity',
-                        style: TextStyle(
+                        l10n.adminEditProfileHeaderTitle,
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -388,9 +397,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "⚠️ Important: This information cannot be changed once saved.",
-                          style: TextStyle(
+                        Text(
+                          l10n.adminEditProfileWarningCannotChange,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.red,
                             fontSize: 16,
@@ -398,9 +407,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Your business opportunity name and referral link ensure that Team Build Pro members "
-                          "are accurately placed in your business opportunity downline when they qualify. "
-                          "Changing this would break the connection between your networks.",
+                          l10n.adminEditProfileWarningExplanation,
                           style: TextStyle(
                             color: Colors.grey.shade700,
                             height: 1.4,
@@ -412,27 +419,27 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                     TextFormField(
                       key: _bizNameKey,
                       controller: _bizNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Your Business Opportunity Name',
-                        helperText: 'This cannot be changed once set',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.adminEditProfileLabelBizOppName,
+                        helperText: l10n.adminEditProfileHelperCannotChange,
+                        border: const OutlineInputBorder(),
                         contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Required' : null,
+                      validator: (value) => value!.isEmpty ? l10n.adminEditProfileValidationRequired : null,
                     ),
                     const SizedBox(height: 16),
 
                     TextFormField(
                       key: _bizNameConfirmKey,
                       controller: _bizNameConfirmController,
-                      decoration: const InputDecoration(
-                        labelText: 'Confirm Business Opportunity Name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.adminEditProfileLabelBizOppNameConfirm,
+                        border: const OutlineInputBorder(),
                         contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Required' : null,
+                      validator: (value) => value!.isEmpty ? l10n.adminEditProfileValidationRequired : null,
                     ),
                     const SizedBox(height: 16),
 
@@ -442,16 +449,14 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                           context: context,
                           barrierDismissible: true,
                           builder: (BuildContext dialogContext) => AlertDialog(
-                            title: const Text(
-                              'Very Important!',
-                              style: TextStyle(
+                            title: Text(
+                              l10n.adminEditProfileDialogImportantTitle,
+                              style: const TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold),
                             ),
-                            content: const Text(
-                                'You must enter the exact referral link you received from your company. '
-                                'This will ensure your team members that join your business opportunity '
-                                'are automatically placed in your business opportunity team.'),
+                            content: Text(
+                                l10n.adminEditProfileDialogImportantMessage),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -462,7 +467,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                                     Navigator.of(context).pop();
                                   }
                                 },
-                                child: const Text('I Understand'),
+                                child: Text(l10n.adminEditProfileButtonUnderstand),
                               ),
                             ],
                           ),
@@ -474,8 +479,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                             key: _refLinkKey,
                             controller: _refLinkController,
                             decoration: InputDecoration(
-                              labelText: 'Your Referral Link',
-                              helperText: 'This cannot be changed once set',
+                              labelText: l10n.adminEditProfileLabelReferralLink,
+                              helperText: l10n.adminEditProfileHelperCannotChange,
                               border: const OutlineInputBorder(),
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
@@ -493,20 +498,20 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                                   : null,
                             ),
                             validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
+                                value!.isEmpty ? l10n.adminEditProfileValidationRequired : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
                             key: _refLinkConfirmKey,
                             controller: _refLinkConfirmController,
-                            decoration: const InputDecoration(
-                              labelText: 'Confirm Referral Link URL',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
+                            decoration: InputDecoration(
+                              labelText: l10n.adminEditProfileLabelReferralLinkConfirm,
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
                             ),
                             validator: (value) =>
-                                value!.isEmpty ? 'Required' : null,
+                                value!.isEmpty ? l10n.adminEditProfileValidationRequired : null,
                           ),
                           if (_refLinkController.text.isNotEmpty) ...{
                             const SizedBox(height: 16),
@@ -526,9 +531,9 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                                       Icon(Icons.check_circle,
                                           color: Colors.green.shade700, size: 20),
                                       const SizedBox(width: 8),
-                                      const Text(
-                                        'Referral Link Preview:',
-                                        style: TextStyle(
+                                      Text(
+                                        l10n.adminEditProfilePreviewTitle,
+                                        style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.green,
@@ -563,8 +568,8 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Complete Profile & Start Building!',
-                            style: TextStyle(fontSize: 16)),
+                        child: Text(l10n.adminEditProfileButtonComplete,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 24),

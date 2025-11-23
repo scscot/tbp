@@ -1226,7 +1226,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteAccountButtonCancel => 'Cancelar';
 
   @override
-  String get deleteAccountSuccessMessage => 'Su cuenta ha sido eliminada';
+  String get deleteAccountSuccessMessage =>
+      'Cuenta eliminada exitosamente. Gracias por usar Team Build Pro.';
 
   @override
   String get deleteAccountErrorMessage =>
@@ -1486,6 +1487,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commonButtonNo => 'No';
+
+  @override
+  String get commonLoading => 'Cargando...';
 
   @override
   String get commonLoadingMessage => 'Cargando...';
@@ -2060,6 +2064,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deleteAccountDemoButton => 'OK';
+
+  @override
+  String deleteAccountErrorFailed(String error) {
+    return 'Error al eliminar la cuenta: $error';
+  }
+
+  @override
+  String get deleteAccountErrorEmailMismatch =>
+      'La dirección de correo electrónico que ingresaste no coincide con el correo de tu cuenta. Por favor verifica e inténtalo de nuevo.';
+
+  @override
+  String get deleteAccountErrorNotFound =>
+      'No pudimos encontrar tu cuenta en nuestro sistema. Por favor contacta a soporte para asistencia.';
+
+  @override
+  String get deleteAccountErrorSessionExpired =>
+      'Tu sesión ha expirado. Por favor cierra sesión e inicia sesión nuevamente, luego reintenta la eliminación de cuenta.';
+
+  @override
+  String get deleteAccountErrorPermissionDenied =>
+      'No tienes permiso para eliminar esta cuenta. Por favor contacta a soporte si necesitas asistencia.';
+
+  @override
+  String get deleteAccountErrorServerError =>
+      'Ocurrió un error inesperado en nuestros servidores. Por favor intenta de nuevo en unos minutos o contacta a soporte.';
+
+  @override
+  String get deleteAccountErrorServiceUnavailable =>
+      'El servicio está temporalmente no disponible. Por favor verifica tu conexión a internet e intenta de nuevo.';
+
+  @override
+  String get deleteAccountErrorProcessing =>
+      'Encontramos un problema al procesar tu solicitud. Por favor intenta de nuevo o contacta a soporte para ayuda.';
+
+  @override
+  String get deleteAccountErrorUnexpected =>
+      'Ocurrió un error inesperado. Por favor intenta de nuevo o contacta a support@teambuildpro.com para asistencia.';
+
+  @override
+  String get deleteAccountErrorEmailApp =>
+      'No se pudo abrir la aplicación de correo. Por favor contacta a support@teambuildpro.com manualmente.';
 
   @override
   String get editProfileHeading => 'Editar perfil';
@@ -2869,6 +2914,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsNotSet => 'No Establecido';
+
+  @override
+  String get settingsSuperAdminOnly =>
+      '🚫 Solo el Super Administrador puede realizar la limpieza de la base de datos';
+
+  @override
+  String settingsCleanupError(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get settingsCleanupDryRunTitle => '🔍 Resultados de Prueba';
+
+  @override
+  String get settingsCleanupCompleteTitle => '✅ Limpieza Completada';
+
+  @override
+  String get settingsCleanupTotalUsers => 'Total de Usuarios:';
+
+  @override
+  String get settingsCleanupNonAdminUsers => 'Usuarios No Administradores:';
+
+  @override
+  String get settingsCleanupProtectedAdmins => 'Administradores Protegidos:';
+
+  @override
+  String get settingsCleanupDeleted => 'Eliminados:';
+
+  @override
+  String get settingsCleanupDeletedUsers => 'Usuarios:';
+
+  @override
+  String get settingsCleanupDeletedChats => 'Chats:';
+
+  @override
+  String get settingsCleanupDeletedChatLogs => 'Registros de Chat:';
+
+  @override
+  String get settingsCleanupDeletedChatUsage => 'Uso de Chat:';
+
+  @override
+  String get settingsCleanupDeletedReferralCodes => 'Códigos de Referencia:';
+
+  @override
+  String get settingsOkButton => 'Aceptar';
 
   @override
   String get profileUpdateBiometricFailed =>
@@ -4202,4 +4292,137 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get authSignupEmailPrivacy =>
       'Tu correo electrónico nunca será compartido con nadie';
+
+  @override
+  String get adminEditProfileTitle => 'Configuración del Negocio';
+
+  @override
+  String get adminEditProfileHeaderTitle => 'Tu Oportunidad de Negocio';
+
+  @override
+  String get adminEditProfileWarningCannotChange =>
+      '⚠️ Importante: Esta información no se puede cambiar una vez guardada.';
+
+  @override
+  String get adminEditProfileWarningExplanation =>
+      'El nombre de tu oportunidad de negocio y el enlace de referencia aseguran que los miembros de Team Build Pro se coloquen con precisión en tu línea descendente de oportunidad de negocio cuando califiquen. Cambiar esto rompería la conexión entre tus redes.';
+
+  @override
+  String get adminEditProfileLabelBizOppName =>
+      'Nombre de Tu Oportunidad de Negocio';
+
+  @override
+  String get adminEditProfileHelperCannotChange =>
+      'Esto no se puede cambiar una vez establecido';
+
+  @override
+  String get adminEditProfileLabelBizOppNameConfirm =>
+      'Confirmar Nombre de Oportunidad de Negocio';
+
+  @override
+  String get adminEditProfileLabelReferralLink => 'Tu Enlace de Referencia';
+
+  @override
+  String get adminEditProfileLabelReferralLinkConfirm =>
+      'Confirmar URL del Enlace de Referencia';
+
+  @override
+  String get adminEditProfileValidationRequired => 'Requerido';
+
+  @override
+  String get adminEditProfileDialogErrorTitle =>
+      'Error de Enlace de Referencia';
+
+  @override
+  String get adminEditProfileDialogErrorHelper =>
+      'Por favor verifica tu enlace de referencia e intenta nuevamente.';
+
+  @override
+  String get adminEditProfileDialogImportantTitle => '¡Muy Importante!';
+
+  @override
+  String get adminEditProfileDialogImportantMessage =>
+      'Debes ingresar el enlace de referencia exacto que recibiste de tu compañía. Esto asegurará que los miembros de tu equipo que se unan a tu oportunidad de negocio sean colocados automáticamente en tu equipo de oportunidad de negocio.';
+
+  @override
+  String get adminEditProfileButtonUnderstand => 'Entiendo';
+
+  @override
+  String get adminEditProfilePreviewTitle =>
+      'Vista Previa del Enlace de Referencia:';
+
+  @override
+  String get adminEditProfileButtonComplete => '¡Completar Perfil y Comenzar!';
+
+  @override
+  String get adminEditProfileSuccessSaved => '¡Perfil completado exitosamente!';
+
+  @override
+  String adminEditProfileErrorSaving(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get adminEditProfileValidationBizNameRequired =>
+      'Por favor ingresa el nombre de tu oportunidad de negocio';
+
+  @override
+  String get adminEditProfileValidationBizNameConfirmRequired =>
+      'Por favor confirma el nombre de tu oportunidad de negocio';
+
+  @override
+  String get adminEditProfileValidationReferralLinkRequired =>
+      'Por favor ingresa tu enlace de referencia';
+
+  @override
+  String get adminEditProfileValidationReferralLinkConfirmRequired =>
+      'Por favor confirma tu enlace de referencia';
+
+  @override
+  String get adminEditProfileValidationBizNameInvalidChars =>
+      'El nombre del negocio solo puede contener letras, números y puntuación común.';
+
+  @override
+  String get adminEditProfileValidationUrlBasic =>
+      'Por favor ingresa un enlace de referencia válido (ej., https://ejemplo.com).';
+
+  @override
+  String get adminEditProfileValidationBizNameMismatch =>
+      'Los campos de Nombre de Negocio deben coincidir para confirmación.';
+
+  @override
+  String get adminEditProfileValidationReferralLinkMismatch =>
+      'Los campos de Enlace de Referencia deben coincidir para confirmación.';
+
+  @override
+  String get adminEditProfileValidationUrlInvalid =>
+      'Por favor ingresa una URL válida (ej., https://ejemplo.com)';
+
+  @override
+  String get adminEditProfileValidationUrlNotHttps =>
+      'El enlace de referencia debe usar HTTPS (no HTTP) por seguridad';
+
+  @override
+  String get adminEditProfileValidationUrlLocalhost =>
+      'Por favor ingresa un enlace de referencia de negocio válido\n(no localhost o dirección IP)';
+
+  @override
+  String get adminEditProfileValidationUrlNoTld =>
+      'Por favor ingresa una URL válida con un dominio apropiado\n(ej., compania.com)';
+
+  @override
+  String get adminEditProfileValidationUrlHomepageOnly =>
+      'Por favor ingresa tu enlace de referencia completo, no solo la página principal.\nTu enlace de referencia debe incluir tu identificador único\n(ej., https://compania.com/unirse?ref=tunombre)';
+
+  @override
+  String get adminEditProfileValidationUrlFormat =>
+      'Formato de URL inválido. Por favor verifica tu enlace de referencia.';
+
+  @override
+  String get adminEditProfileValidationUrlVerificationFailed =>
+      'El enlace de referencia que ingresaste no pudo ser verificado. Por favor verifica tu conexión a internet e intenta nuevamente.';
+
+  @override
+  String get adminEditProfileValidationUrlVerificationError =>
+      'El enlace de referencia que ingresaste no pudo ser verificado. Por favor verifica la URL e intenta nuevamente.';
 }

@@ -166,7 +166,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Account deletion failed: ${_getErrorMessage(e)}'),
+            content: Text(context.l10n?.deleteAccountErrorFailed(_getErrorMessage(e)) ?? 'Account deletion failed: ${_getErrorMessage(e)}'),
             backgroundColor: AppColors.error,
             duration: const Duration(seconds: 3),
           ),
@@ -179,22 +179,22 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     if (error is FirebaseFunctionsException) {
       switch (error.code) {
         case 'invalid-argument':
-          return 'The email address you entered does not match your account email. Please check and try again.';
+          return context.l10n?.deleteAccountErrorEmailMismatch ?? 'The email address you entered does not match your account email. Please check and try again.';
         case 'not-found':
-          return 'We could not find your account in our system. Please contact support for assistance.';
+          return context.l10n?.deleteAccountErrorNotFound ?? 'We could not find your account in our system. Please contact support for assistance.';
         case 'unauthenticated':
-          return 'Your session has expired. Please sign out and sign in again, then retry account deletion.';
+          return context.l10n?.deleteAccountErrorSessionExpired ?? 'Your session has expired. Please sign out and sign in again, then retry account deletion.';
         case 'permission-denied':
-          return 'You do not have permission to delete this account. Please contact support if you need assistance.';
+          return context.l10n?.deleteAccountErrorPermissionDenied ?? 'You do not have permission to delete this account. Please contact support if you need assistance.';
         case 'internal':
-          return 'An unexpected error occurred on our servers. Please try again in a few minutes or contact support.';
+          return context.l10n?.deleteAccountErrorServerError ?? 'An unexpected error occurred on our servers. Please try again in a few minutes or contact support.';
         case 'unavailable':
-          return 'The service is temporarily unavailable. Please check your internet connection and try again.';
+          return context.l10n?.deleteAccountErrorServiceUnavailable ?? 'The service is temporarily unavailable. Please check your internet connection and try again.';
         default:
-          return 'We encountered an issue processing your request. Please try again or contact support for help.';
+          return context.l10n?.deleteAccountErrorProcessing ?? 'We encountered an issue processing your request. Please try again or contact support for help.';
       }
     }
-    return 'An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.';
+    return context.l10n?.deleteAccountErrorUnexpected ?? 'An unexpected error occurred. Please try again or contact support@teambuildpro.com for assistance.';
   }
 
   Future<void> _launchSupportEmail() async {
@@ -214,9 +214,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),
-              duration: Duration(seconds: 4),
+            SnackBar(
+              content: Text(context.l10n?.deleteAccountErrorEmailApp ?? 'Could not launch email app. Please contact support@teambuildpro.com manually.'),
+              duration: const Duration(seconds: 4),
             ),
           );
         }
@@ -224,9 +224,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not launch email app. Please contact support@teambuildpro.com manually.'),
-            duration: Duration(seconds: 4),
+          SnackBar(
+            content: Text(context.l10n?.deleteAccountErrorEmailApp ?? 'Could not launch email app. Please contact support@teambuildpro.com manually.'),
+            duration: const Duration(seconds: 4),
           ),
         );
       }

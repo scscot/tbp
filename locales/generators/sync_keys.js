@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 const L10N_DIR = path.join(__dirname, '../../lib/l10n');
-const SUPPORTED_LOCALES = ['en', 'es', 'pt', 'tl'];
+const SUPPORTED_LOCALES = ['en', 'es', 'pt', 'de'];
 const EN_LOCALE = 'en';
 
 /**

@@ -182,23 +182,23 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Account Required'),
-          content: const Text(
-            'It looks like you need to create an account first. Would you like to register now?',
+          title: Text(context.l10n!.authLoginAccountRequiredTitle),
+          content: Text(
+            context.l10n!.authLoginAccountRequiredMessage,
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(context.l10n!.authLoginCancelButton),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _navigateToRegistration();
               },
-              child: const Text('Register'),
+              child: Text(context.l10n!.authLoginRegisterButton),
             ),
           ],
         );
@@ -255,8 +255,8 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Sign in to continue building your team',
+                LocalizedText(
+                  (l10n) => l10n.authLoginSubtitle,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -304,8 +304,8 @@ class _LoginScreenEnhancedState extends State<LoginScreenEnhanced> {
                       const Expanded(child: Divider()),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'or continue with',
+                        child: LocalizedText(
+                          (l10n) => l10n.authLoginOrContinueWith,
                           style: TextStyle(color: AppColors.textSecondary),
                         ),
                       ),
@@ -472,8 +472,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: authProvider.isLoading ? null : () => _showForgotPasswordDialog(context),
-                  child: Text(
-                    'Forgot Password?',
+                  child: LocalizedText(
+                    (l10n) => l10n.authLoginForgotPassword,
                     style: TextStyle(
                       color: AppColors.primary,
                       fontSize: 14,
@@ -553,7 +553,7 @@ class _SocialLoginButtons extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: authProvider.isLoading ? null : () => _signInWithGoogle(context),
                   icon: const FaIcon(FontAwesomeIcons.google, size: 20),
-                  label: const Text('Continue with Google'),
+                  label: LocalizedText((l10n) => l10n.authLoginContinueWithGoogle),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -572,7 +572,7 @@ class _SocialLoginButtons extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: authProvider.isLoading ? null : () => _signInWithApple(context),
                   icon: const FaIcon(FontAwesomeIcons.apple, size: 20),
-                  label: const Text('Continue with Apple'),
+                  label: LocalizedText((l10n) => l10n.authLoginContinueWithApple),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -622,7 +622,7 @@ class _BiometricLoginButton extends StatelessWidget {
               label: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Sign in with biometric'),
+                  LocalizedText((l10n) => l10n.authLoginBiometricButton),
                   if (storedEmail != null)
                     Text(
                       storedEmail!,
@@ -680,7 +680,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
       builder: (context, authProvider, child) {
         return AlertDialog(
           title: Text(
-            _emailSent ? 'Check Your Email' : 'Reset Password',
+            _emailSent ? context.l10n!.authLoginCheckEmailTitle : context.l10n!.authLoginResetPasswordTitle,
             style: TextStyle(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
@@ -697,7 +697,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'We\'ve sent a password reset link to:',
+                      context.l10n!.authLoginResetEmailSent,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
@@ -711,7 +711,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Please check your inbox and follow the instructions to reset your password.',
+                      context.l10n!.authLoginResetInstructions,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.textSecondary,
@@ -726,7 +726,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Enter your email address and we\'ll send you a link to reset your password.',
+                        context.l10n!.authLoginResetPrompt,
                         style: TextStyle(color: AppColors.textSecondary),
                       ),
                       const SizedBox(height: 20),
@@ -736,8 +736,8 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                         autocorrect: false,
                         enabled: !authProvider.isLoading,
                         decoration: InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'Enter your email address',
+                          labelText: context.l10n!.authLoginResetEmailLabel,
+                          hintText: context.l10n!.authLoginResetEmailHint,
                           prefixIcon: const Icon(Icons.email_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -745,10 +745,10 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return context.l10n!.authLoginResetEmailRequired;
                           }
                           if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                            return 'Please enter a valid email';
+                            return context.l10n!.authLoginResetEmailInvalid;
                           }
                           return null;
                         },
@@ -763,7 +763,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                   : () {
                       Navigator.of(context).pop();
                     },
-              child: Text(_emailSent ? 'Done' : 'Cancel'),
+              child: Text(_emailSent ? context.l10n!.authLoginDoneButton : context.l10n!.authLoginCancelButton),
             ),
             if (!_emailSent)
               ElevatedButton(
@@ -781,7 +781,7 @@ class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text('Send Reset Link'),
+                    : Text(context.l10n!.authLoginSendResetLink),
               ),
           ],
         );
