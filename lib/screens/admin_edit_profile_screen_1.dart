@@ -71,7 +71,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   void _showValidationErrorDialog(String errorMessage) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -160,7 +160,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   Future<String?> _validateReferralLinkAsync(String referralLink) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     // Client-side pre-checks for instant feedback
     try {
@@ -220,7 +220,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
   }
 
   String? _getFirstValidationError() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     // Check business name
     if (_bizNameController.text.trim().isEmpty) {
@@ -339,7 +339,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       });
 
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminEditProfileSuccessSaved)),
         );
@@ -353,7 +353,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
       }
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminEditProfileErrorSaving(e.toString()))),
         );
@@ -369,7 +369,7 @@ class _AdminEditProfileScreen1State extends State<AdminEditProfileScreen1> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppScreenBar(title: l10n.adminEditProfileTitle, actions: const []),
       body: _isLoading
