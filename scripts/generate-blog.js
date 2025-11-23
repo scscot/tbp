@@ -855,7 +855,7 @@ function generateBlogPost(post) {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=8" />
+  <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
@@ -1141,7 +1141,7 @@ function generateBlogIndex(posts) {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=8" />
+  <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->

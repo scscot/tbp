@@ -259,7 +259,7 @@ def reduce_related_companies(content):
 
 def update_cache_buster(content):
     """Update CSS cache buster from v=6 to v=8"""
-    content = re.sub(r'style\.css\?v=6', 'style.css?v=8', content)
+    content = re.sub(r'style\.css\?v=6', 'style.css', content)
     return content
 
 

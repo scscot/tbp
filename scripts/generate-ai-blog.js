@@ -254,7 +254,7 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
-  <link rel="stylesheet" href="/css/style.css?v=8" />
+  <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/blog-post.css" />
 
   <!-- JSON-LD Structured Data -->
