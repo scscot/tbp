@@ -1,0 +1,13 @@
+# This robots.txt file controls how search engine crawlers index the site.
+
+User-agent: *
+
+# Allow all public pages
+Allow: /
+
+# NOTE: Test files temporarily unblocked so Google can see 410 Gone status from .htaccess
+# After Google removes them from index (1-2 weeks), re-add Disallow rules for:
+# - /test_*.html, /*-test.html, /*-backup.html, /*-temp.html, /*-mock.html, /index-*.html
+
+# Sitemap location
+Sitemap: https://pt.teambuildpro.com/sitemap.xml
