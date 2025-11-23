@@ -292,13 +292,13 @@
           e.stopPropagation();
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('active');
+          mobileMenu.classList.toggle('open');
         });
 
         // Close menu when clicking outside
         document.addEventListener('click', function(e) {
-          if (mobileMenu.classList.contains('active') && !mobileMenu.contains(e.target) && e.target !== menuBtn) {
-            mobileMenu.classList.remove('active');
+          if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && e.target !== menuBtn) {
+            mobileMenu.classList.remove('open');
             menuBtn.setAttribute('aria-expanded', 'false');
           }
         });
