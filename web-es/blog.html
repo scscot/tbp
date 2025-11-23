@@ -264,6 +264,10 @@
       const menuBtn = document.getElementById('menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
 
+      // Set current year
+      const currentYearEl = document.getElementById("currentYear");
+      if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+
       // Category filtering
       categoryBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -284,10 +288,19 @@
 
       // Mobile menu
       if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', function() {
+        menuBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
           mobileMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (mobileMenu.classList.contains('active') && !mobileMenu.contains(e.target) && e.target !== menuBtn) {
+            mobileMenu.classList.remove('active');
+            menuBtn.setAttribute('aria-expanded', 'false');
+          }
         });
       }
     });
