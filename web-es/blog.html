@@ -102,21 +102,28 @@
   <header class="header">
     <nav class="nav container">
       <a href="https://es.teambuildpro.com" class="logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
+        <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Abrir menú" aria-haspopup="true" aria-expanded="false">
         <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="https://es.teambuildpro.com" role="menuitem">Inicio</a>
-        <a href="https://es.teambuildpro.com#screenshots" role="menuitem">Capturas</a>
-        <a href="https://es.teambuildpro.com#pricing" role="menuitem">Precios</a>
+        <a href="#screenshots" role="menuitem">Capturas</a>
+        <a href="#pricing" role="menuitem">Precios</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
         <a href="/blog.html" role="menuitem">Blog</a>
-        <a href="https://teambuildpro.com/contact_us.html" role="menuitem">Contacto</a>
+        <a href="https://es.teambuildpro.com/contact_us.html" role="menuitem">Contacto</a>
       </div>
     </nav>
+    <!-- Language Switcher -->
+    <div class="language-switcher header-language-switcher">
+      <a href="https://teambuildpro.com/" hreflang="en" lang="en" class="lang-link">English</a>
+      <span class="lang-separator">|</span>
+      <span class="lang-link active" lang="es">Español</span>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+    </div>
   </header>
 
   <!-- Hero Section -->
@@ -233,15 +240,19 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
-      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. Todos los derechos reservados.</p>
-      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
-        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">Política de Privacidad</a>
-        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">Términos de Servicio</a>
-        <a href="/faq.html" style="color:#667eea;text-decoration:none">FAQ</a>
-        <a href="https://teambuildpro.com/contact_us.html" style="color:#667eea;text-decoration:none">Contacto</a>
-        <a href="/blog.html" style="color:#667eea;text-decoration:none">Blog</a>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
+      <div class="footer-links">
+        <a href="#pricing">Precios</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="https://es.teambuildpro.com/contact_us.html">Contacto</a>
+        <a href="https://es.teambuildpro.com/privacy_policy.html">Política de Privacidad</a>
+        <a href="https://es.teambuildpro.com/terms_of_service.html">Términos de Servicio</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos los derechos reservados.</p>
     </div>
   </footer>
 
