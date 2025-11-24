@@ -980,7 +980,7 @@ function generateBlogPost(post) {
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
         <a href="/blog.html" role="menuitem">Blog</a>
-        <a href="/books/" role="menuitem">Books</a>
+        <a href="/books.html" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
@@ -1225,7 +1225,7 @@ function generateBlogIndex(posts) {
         <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
         <a href="/blog.html" role="menuitem">Blog</a>
-        <a href="/books/" role="menuitem">Books</a>
+        <a href="/books.html" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
