@@ -52,10 +52,21 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/*
 echo "Clearing Xcode iOS DeviceSupport..."
 rm -rf ~/Library/Developer/Xcode/iOS\ DeviceSupport/*
 
-# 3. Clear iOS Simulator data
-echo "Clearing iOS Simulator devices..."
+# 3. Clear iOS Simulator data (preserving iPhone 16 Pro)
+echo "Clearing iOS Simulator devices (preserving iPhone 16 Pro)..."
 xcrun simctl delete unavailable
-xcrun simctl erase all
+
+# Preserve iPhone 16 Pro (18.5) simulator
+PRESERVE_DEVICE="679ABAB9-9899-414B-AB17-14422C7A10CD"
+
+# Get all device UUIDs except the one to preserve and erase them
+xcrun simctl list devices | grep -E "^    " | grep -oE "[A-F0-9-]{36}" | while read device_id; do
+  if [ "$device_id" != "$PRESERVE_DEVICE" ]; then
+    xcrun simctl erase "$device_id" 2>/dev/null || true
+  fi
+done
+
+echo "✓ Preserved: iPhone 16 Pro (18.5) - $PRESERVE_DEVICE"
 
 # 4. Clear Flutter/Dart caches
 echo "Clearing Flutter pub cache..."
