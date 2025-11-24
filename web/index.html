@@ -185,17 +185,56 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
+      function isBot() {
+        const ua = navigator.userAgent || '';
+
+        const botPatterns = [
+          // Generic bots/crawlers (word boundaries to avoid false positives)
+          /\bbot\b/i, /\bcrawl(er|ing)?\b/i, /\bspider\b/i,
+
+          // Automation/headless browsers
+          /headless(chrome)?/i, /phantomjs/i, /selenium/i, /webdriver/i,
+          /playwright/i, /puppeteer/i, /cypress/i,
+
+          // Search engine crawlers
+          /googlebot/i, /google-inspectiontool/i, /adsbot-google/i,
+          /bingbot/i, /bingpreview/i, /slurp/i, /duckduckbot/i,
+          /baiduspider/i, /yandex(bot|images|media)/i,
+
+          // Social media scrapers (bot-specific, NOT in-app browsers)
+          /facebookexternalhit/i, /facebot/i, /linkedinbot/i,
+          /twitterbot/i, /pinterestbot/i,
+
+          // Uptime monitoring services
+          /uptimerobot/i, /pingdom/i, /statuscake/i, /site24x7/i,
+
+          // SEO/site analysis tools
+          /sitechecker/i, /ahrefsbot/i, /semrushbot/i, /mj12bot/i,
+
+          // Additional common bots
+          /prerender/i, /applebot/i, /archive\.org_bot/i
+        ];
+
+        const isWebDriver = navigator.webdriver === true;
+
+        return botPatterns.some(pattern => pattern.test(ua)) || isWebDriver;
+      }
+
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          if (data.ip === '76.33.111.72') {
+          if (data.ip === '76.33.111.72' || isBot()) {
             gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
           } else {
             gtag('config', 'G-G4E4TBBPZ7');
           }
         })
         .catch(() => {
-          gtag('config', 'G-G4E4TBBPZ7');
+          if (isBot()) {
+            gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+          } else {
+            gtag('config', 'G-G4E4TBBPZ7');
+          }
         });
     </script>
 

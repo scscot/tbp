@@ -35,6 +35,17 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/blog.html" />
   </url>
 
+  <!-- Books Page -->
+  <url>
+    <loc>https://pt.teambuildpro.com/books.html</loc>
+    <lastmod>2025-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/books.html" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/books.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/books.html" />
+  </url>
+
   <!-- Blog Posts -->
   <url>
     <loc>https://pt.teambuildpro.com/blog/ai-recruiting-platforms-failing-direct-sales.html</loc>
