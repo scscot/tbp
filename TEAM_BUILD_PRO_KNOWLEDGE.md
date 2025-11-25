@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-21
+**Last Updated**: 2025-11-24
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -51,10 +51,35 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
 │   ├── faq.html          # FAQ with dynamic filtering
-│   ├── companies/        # Company-specific recruiting guides
-│   └── blog/             # Blog posts
+│   ├── books.html        # Books landing page
+│   ├── companies/        # Company-specific recruiting guides (120+ pages)
+│   └── blog/             # Blog posts (6 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
+│   ├── index.html        # Spanish homepage
+│   ├── faq.html          # Spanish FAQ
+│   ├── books.html        # Spanish books page
+│   ├── blog/             # Spanish blog (6 translated posts)
+│   ├── sitemap.xml       # Spanish sitemap
+│   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
+│   ├── index.html        # Portuguese homepage
+│   ├── faq.html          # Portuguese FAQ
+│   ├── books.html        # Portuguese books page
+│   ├── blog/             # Portuguese blog (6 translated posts)
+│   ├── sitemap.xml       # Portuguese sitemap
+│   └── robots.txt        # Portuguese search engine directives
+├── sscott/                # Stephen Scott author website (stephenscott.us)
+│   ├── public/           # Author site pages (migrated from Dreamhost to Firebase)
+│   │   ├── index.html   # Author homepage
+│   │   ├── books.html   # Author books catalog
+│   │   ├── books/       # 13 individual book pages
+│   │   ├── podcasts.html # Podcast listings
+│   │   └── blog.html    # Author blog
+│   └── scripts/         # Build automation scripts
+├── analytics/             # Analytics workspace (GA4 + Mailgun)
+│   ├── fetch-combined-analytics.js  # Combined reporting
+│   ├── fetch-ga4-data.js           # Google Analytics 4 data
+│   └── package.json                # Analytics dependencies
 └── documents/            # Documentation and metadata
 ```
 
@@ -121,12 +146,40 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 
 ## 🌐 Website Structure
 
-### Multi-Language Hosting
-- **English**: teambuildpro.com (web/)
-- **Spanish**: es.teambuildpro.com (web-es/)
-- **Portuguese**: pt.teambuildpro.com (web-pt/)
-- **Firebase Hosting**: Separate targets (tbpproject, es, pt) with individual configs
-- **SEO**: Hreflang tags link all language versions for proper indexing
+### Multi-Language Website Architecture
+
+#### Hosting Structure (4 Sites)
+- **English**: teambuildpro.com (web/) - Primary site
+- **Spanish**: es.teambuildpro.com (web-es/) - Complete Spanish translation
+- **Portuguese**: pt.teambuildpro.com (web-pt/) - Complete Portuguese translation
+- **Author**: stephenscott.us (sscott/) - Stephen Scott author website (migrated from Dreamhost)
+- **Firebase Hosting**: Four separate targets (main, es, pt, sscott) with individual configs
+
+#### Language Switcher Implementation
+- **Location**: Top-right of header on all pages
+- **Functionality**: Switches between EN/ES/PT versions
+- **Query String Preservation**: Maintains `?new=` and `?ref=` parameters across language switches
+- **Mobile Optimized**: Responsive positioning for all screen sizes
+- **Smart Routing**: Directs to corresponding page in target language
+
+#### Complete Content Parity (EN, ES, PT)
+All three main sites have identical structure:
+- Homepage with hero animation
+- FAQ page (8 questions)
+- Books landing page with localized covers
+- Blog index with 6 translated posts
+- Privacy policy
+- Terms of service
+- Contact form
+- Sitemap.xml for SEO
+- Robots.txt for search engine directives
+
+#### SEO Optimization
+- **Hreflang Tags**: Cross-reference all language versions
+- **Localized Sitemaps**: Comprehensive page listing for each site
+- **Robots.txt**: Custom directives per language
+- **Meta Tags**: Language-specific titles and descriptions
+- **Canonical URLs**: Proper canonical linking across languages
 
 ### Dynamic FAQ System (English site)
 - **URL Parameter Detection**: `?new=` = Prospect view, otherwise = Professional view
@@ -134,27 +187,142 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **Three Filter Systems**: Audience + Category dropdown + Search (unified)
 - **SEO Optimization**: Dynamic meta tags based on audience type
 
-### Key Pages (English)
+### Key Pages (English - web/)
 - `/` - Homepage with hero animation
-- `/faq.html` - Dynamic FAQ (audience-aware)
-- `/companies.html` - 60+ company-specific recruiting guides
+- `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
+- `/books.html` - Books landing page with AI/MLM book covers
+- `/blog.html` - Blog index
+- `/blog/` - 6 blog posts:
+  - ai-automation-transforms-direct-sales.html
+  - ai-recruiting-best-practices-2025.html
+  - ai-recruiting-platforms-failing-direct-sales.html
+  - qualify-new-recruits-30-days.html
+  - team-build-pro-november-2025-update.html
+  - young-living-recruiting-strategies.html
+- `/companies.html` - 120+ company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
-- `/blog/` - Blog index
-- `/books/` - Free e-books for lead generation
 - `/contact_us.html` - Contact form
 - `/delete-account.html` - Account deletion (App Store requirement)
+- `/privacy_policy.html` - Privacy policy
+- `/terms_of_service.html` - Terms of service
+- `/sitemap.xml` - Comprehensive sitemap
+- `/robots.txt` - Search engine directives
 
-### Spanish/Portuguese Sites
-- Fully localized homepages with 8 FAQ items
-- Contact forms with Google Analytics integration
-- FAQ pages with accordion functionality
-- Privacy policy and terms of service pages
-- Proper sitemap.xml with hreflang tags for SEO
+### Spanish Site (web-es/ - es.teambuildpro.com)
+- `/` - Spanish homepage with hero animation
+- `/faq.html` - Spanish FAQ (8 questions with accordion)
+- `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
+- `/blog.html` - Spanish blog index
+- `/blog/` - 6 translated blog posts (same titles as EN)
+- `/contact_us.html` - Spanish contact form
+- `/privacy_policy.html` - Spanish privacy policy
+- `/terms_of_service.html` - Spanish terms of service
+- `/sitemap.xml` - Spanish sitemap with hreflang tags
+- `/robots.txt` - Spanish search directives
+
+### Portuguese Site (web-pt/ - pt.teambuildpro.com)
+- `/` - Portuguese homepage with hero animation
+- `/faq.html` - Portuguese FAQ (8 questions with accordion)
+- `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
+- `/blog.html` - Portuguese blog index
+- `/blog/` - 6 translated blog posts (same titles as EN)
+- `/contact_us.html` - Portuguese contact form
+- `/privacy_policy.html` - Portuguese privacy policy
+- `/terms_of_service.html` - Portuguese terms of service
+- `/sitemap.xml` - Portuguese sitemap with hreflang tags
+- `/robots.txt` - Portuguese search directives
+
+### Stephen Scott Author Website (sscott/ - stephenscott.us)
+- `/` - Author homepage (professional portfolio)
+- `/about.html` - About Stephen Scott (253 lines)
+- `/books.html` - Author books catalog (13 books)
+- `/books/[book-slug].html` - Individual book pages:
+  - ai-beginners-guide-2024-2025.html
+  - ai-your-gateway-to-a-better-life.html
+  - breaking-through-barriers.html
+  - divine-conversations.html
+  - grow-your-network-marketing-business-using-ai.html
+  - mlm-ai-espanol.html, mlm-ai-german.html, mlm-ai-hindi.html, mlm-ai-japanese.html, mlm-ai-portugues.html
+  - stop-sabotaging-your-life.html
+  - the-art-of-mastering-fear-and-uncertainty.html
+  - thrive-within.html
+- `/podcasts.html` - Podcast listings (425 lines)
+- `/blog.html` - Author blog index
+- `/contact.html` - Author contact form (Cloud Function: submitStephenScottContact)
+- `/404.html` - Custom error page
+- `/sitemap.xml` - Author site sitemap (122 lines)
 
 ### SEO & Meta Tags
 - Title: "AI Downline Builder - Recruit Smarter, Build Faster"
 - Description: "Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after."
 - Focus keywords: AI downline builder, pre-build teams, direct sales recruiting
+
+---
+
+## 🤖 Bot Detection & Traffic Analysis
+
+### Comprehensive Bot Filtering System
+- **Implementation**: JavaScript bot detection across all sites (EN, ES, PT, Author)
+- **Detection Method**: Browser fingerprinting, behavior analysis, known bot signatures
+- **Scripts**: add-bot-detection.js, fix-bot-detection.js deployed site-wide
+- **Purpose**: Filter bot traffic from analytics for accurate user metrics
+
+### Traffic Analysis Tools
+
+**analyze-boardman-traffic.js** (169 lines)
+- Investigates suspicious traffic from Boardman, OR
+- Browser/OS fingerprinting analysis
+- Pattern detection for bot identification
+- GA4 integration for comprehensive reporting
+
+**analyze-city-traffic.js** (217 lines)
+- General city-level traffic monitoring
+- Traffic quality assessment
+- Anomaly detection across geographic regions
+- Identifies patterns of automated access
+
+### Integration
+- Bot detection runs on page load
+- Flags bot traffic before analytics tracking
+- Preserves clean user metrics in GA4
+- Continuously updated bot signature database
+
+---
+
+## 📊 Analytics Infrastructure
+
+### Analytics Workspace (analytics/ directory)
+- **Purpose**: Separate npm workspace for analytics tools
+- **Dependencies**: Google Analytics Data API v1, Mailgun API integration
+- **Environment**: Service account authentication (ga4-service-account.json)
+
+### Core Analytics Functions
+
+**fetch-combined-analytics.js** (511 lines)
+- Combined GA4 + Mailgun reporting system
+- Cross-references website traffic with email campaign performance
+- Generates comprehensive analytics reports
+- Correlates email engagement with website visits
+
+**fetch-ga4-data.js** (384 lines)
+- Google Analytics 4 data extraction
+- Automated report generation
+- Traffic source analysis
+- User behavior metrics
+- Conversion tracking
+
+**count-unsent-emails.js** (33 lines)
+- Email campaign queue monitoring
+- Real-time unsent email counts
+- Campaign progress tracking
+
+### Reporting Capabilities
+- Daily/weekly/monthly traffic reports
+- Email campaign performance metrics
+- Geographic traffic distribution
+- User engagement analysis
+- Conversion funnel tracking
+- Bot vs. human traffic differentiation
 
 ---
 
@@ -209,13 +377,14 @@ git add . && git commit -m "message" && git push
 
 ### Current Campaign (Mailgun - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
-- **Subject**: `{{firstName}}, build your downline with AI-powered team tools`
+- **Subject**: `The Recruiting App Built for Direct Sales` (updated Nov 2025)
 - **Template**: `2version` (Mailgun template variant)
 - **CTA Strategy**: Landing page routing (https://teambuildpro.com) with subtle text link "Learn more at TeamBuildPro.com"
-- **Schedule**: 8am, 10am, 12pm, 3pm, 6pm PT, Monday-Saturday
-- **Batch Size**: 25 emails per run (125 emails/day)
+- **Schedule**: 8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday
+- **Batch Size**: 75 emails per run (450 emails/day) - increased Nov 24
 - **Domain**: info.teambuildpro.com
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
+- **Independent Control**: EMAIL_CAMPAIGN_ENABLED environment variable
 
 ### Campaign Performance (as of Nov 2025)
 - **Total Contacts**: 5,527
@@ -226,6 +395,31 @@ git add . && git commit -m "message" && git push
 - **Engagement Rate**: 36.4% (outstanding)
 - **Delivery Rate**: 96.5% (2 failures out of 57 daily)
 - **Completion Timeline**: ~28 days at current rate
+
+### Android Launch Campaign (Mailgun - Automated Phase 2)
+- **Function**: `sendAndroidLaunchCampaign` in `functions/email-campaign-functions.js`
+- **Subject**: `The Recruiting App Built for Direct Sales` (same as Phase 1)
+- **Template**: `resend` (Mailgun template variant for Android launch announcement)
+- **Purpose**: Re-engage contacts sent before Nov 12, 2025 Android launch
+- **Schedule**: Same as Phase 1 (8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday)
+- **Batch Size**: Same as Phase 1 (75 emails per run)
+- **Data Source**: Firestore `emailCampaigns/master/contacts` collection (resend field)
+- **Independent Control**: ANDROID_CAMPAIGN_ENABLED environment variable (currently disabled)
+- **Pre-marked Contacts**: 2,077 contacts marked with `resend: false` via mark-contacts-for-resend.js script
+- **App Store URLs**: Correct URLs (fixed from incorrect com.teambuildpro.app to com.scott.ultimatefix)
+- **Status**: Ready to deploy after Phase 1 completion
+
+### Mailgun Event Sync (Automated Data Collection)
+- **Function**: `syncMailgunEvents` in `functions/email-campaign-functions.js`
+- **Purpose**: Sync Mailgun delivery/engagement data to Firestore before 24-hour log expiration
+- **Schedule**: 10 minutes after each campaign window (8:10am, 10:10am, 12:10pm, 1:10pm, 3:10pm, 6:10pm PT)
+- **Lookback Window**: 2 hours (captures events from previous campaign run)
+- **Event Types**: delivered, failed, opened, clicked
+- **Data Stored**: deliveryStatus, deliveredAt, failedAt, failureReason, openedAt, openCount, clickedAt, clickCount
+- **Independent Control**: EMAIL_CAMPAIGN_SYNC_ENABLED environment variable
+- **Batch Processing**: Handles up to 500 contacts per Firestore batch commit
+- **API Limit**: 300 events per event type per query
+- **Status**: Deployed and operational (Nov 24, 2025)
 
 ### Launch Campaign (Mailgun - Manual Trigger)
 - **Function**: `sendLaunchCampaign` in `functions/sendLaunchCampaign.js`
@@ -320,6 +514,7 @@ git add . && git commit -m "message" && git push
 - `reset-failed-contacts.js` - Reset failed email campaign contacts from Mailgun CSV exports
 - `reset_failed_batch.js` - Batch processing for failed contact resets
 - `reset_failed_contacts.js` - Alternative reset script for email campaign recovery
+- `mark-contacts-for-resend.js` - Mark all contacts sent before Nov 12, 2025 for Android launch resend campaign
 
 ---
 
@@ -433,6 +628,106 @@ git add . && git commit -m "message" && git push
    - Created reset-failed-contacts.js for recovering failed email deliveries
    - Processes Mailgun CSV exports to reset contact status in Firestore
    - Enables retry of failed email sends from campaign
+
+### Week of Nov 24
+28. ✅ **Android Launch Campaign (Phase 2)**:
+   - Created `sendAndroidLaunchCampaign` function in email-campaign-functions.js
+   - Created email_resend_version.html template with Android launch announcement
+   - Marked 2,077 pre-Nov 12 contacts for resend via mark-contacts-for-resend.js script
+   - Fixed incorrect Google Play Store URL (com.teambuildpro.app → com.scott.ultimatefix)
+   - Added ANDROID_CAMPAIGN_ENABLED environment variable for independent campaign control
+   - Status: Ready to deploy after Phase 1 completion
+
+29. ✅ **Mailgun Event Sync System**:
+   - Created `syncMailgunEvents` function in email-campaign-functions.js
+   - Automated sync of delivery/engagement data from Mailgun to Firestore
+   - Runs 10 minutes after each campaign window with 2-hour lookback
+   - Captures delivered, failed, opened, clicked events before 24-hour log expiration
+   - Stores deliveryStatus, timestamps, counts, and failure reasons in Firestore
+   - Added EMAIL_CAMPAIGN_SYNC_ENABLED environment variable
+   - Successfully tested with 24-hour window to capture initial 3pm batch data (300 delivered, 15 failed, 6 opened)
+   - Deployed and operational (Nov 24, 2025)
+
+30. ✅ **Email Campaign Subject Line Update**:
+   - Changed from "{{firstName}}, build your downline with AI-powered team tools"
+   - To "The Recruiting App Built for Direct Sales"
+   - Updated positioning aligns with new "AI Recruiting" branding
+   - Removes MLM terminology that was causing spam filter issues
+
+31. ✅ **Email Campaign Batch Size Increase**:
+   - Increased from 25 emails per run to 75 emails per run
+   - Daily capacity increased from 125 to 450 emails per day
+   - Completion timeline reduced from ~44 days to ~8 days
+   - Schedule remains 8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday
+
+32. ✅ **Stephen Scott Author Website Migration to Firebase**:
+   - Migrated stephenscott.us from Dreamhost to Firebase Hosting
+   - Created sscott/ directory with complete website rebuild
+   - 13 individual book pages with purchase links
+   - Podcasts page (425 lines) with iframe embeds
+   - About page (253 lines) with professional bio
+   - Contact form integrated with Cloud Function (submitStephenScottContact)
+   - Sitemap.xml (122 lines) for SEO
+   - 301 redirects for legacy /blogs, /shop, /product URLs
+   - Firebase hosting target: "sscott" pointing to sscott/public/
+   - Build automation scripts in sscott/scripts/
+
+33. ✅ **Bot Detection & Traffic Analysis System**:
+   - Implemented comprehensive JavaScript bot detection across all sites
+   - Created analyze-boardman-traffic.js (169 lines) for suspicious traffic investigation
+   - Created analyze-city-traffic.js (217 lines) for general traffic monitoring
+   - Browser fingerprinting and behavior analysis
+   - Pattern detection for bot identification
+   - Scripts: add-bot-detection.js, fix-bot-detection.js
+
+34. ✅ **Analytics Infrastructure (GA4 + Mailgun Integration)**:
+   - Created analytics/ workspace as separate npm project
+   - fetch-combined-analytics.js (511 lines): Combined GA4 + Mailgun reporting
+   - fetch-ga4-data.js (384 lines): Google Analytics 4 data extraction
+   - Cross-references website traffic with email campaign performance
+   - Service account authentication (ga4-service-account.json)
+   - Daily/weekly/monthly reporting capabilities
+   - Bot vs. human traffic differentiation
+
+35. ✅ **Books Landing Pages for All Languages**:
+   - Created books.html for English site with localized book covers
+   - Created books.html for Spanish site (es.teambuildpro.com)
+   - Created books.html for Portuguese site (pt.teambuildpro.com)
+   - AI/MLM book catalog with purchase links
+   - Consistent design across all three languages
+   - SEO-optimized with proper hreflang tags
+
+36. ✅ **Blog Expansion & Translation**:
+   - 6 blog posts created for English site (web/blog/)
+   - All 6 posts translated to Spanish (web-es/blog/)
+   - All 6 posts translated to Portuguese (web-pt/blog/)
+   - Blog index pages for all three languages
+   - Topics: AI automation, recruiting best practices, platform comparisons
+   - Localized meta tags and SEO optimization
+
+37. ✅ **Language Switcher Implementation**:
+   - Top-right placement on all EN/ES/PT pages
+   - Preserves query string parameters (?new=, ?ref=) across language switches
+   - Smart routing to corresponding pages in target language
+   - Mobile-optimized responsive design
+   - JavaScript-based with smooth user experience
+
+38. ✅ **App Localization Phase 1 (60+ Translation Keys)**:
+   - Created biz_opp_education_modal.dart widget for business opportunity education
+   - Localized 14 Flutter screens with full translations (EN, ES, PT, DE)
+   - Added 60+ new localization keys to app_*.arb files
+   - Placeholder support for dynamic content (e.g., {bizOpp})
+   - Database schema update: bizOppEducationShown field added to users collection
+   - Fixed import paths and null-aware operators
+   - Verified with flutter analyze - no issues
+
+39. ✅ **SEO & Cross-Site Integration**:
+   - Hreflang tags linking all language versions (EN/ES/PT)
+   - Simplified EN sitemap.xml to essential pages only
+   - Complete sitemaps for ES and PT sites with cross-references
+   - Robots.txt files for all four sites (EN, ES, PT, stephenscott.us)
+   - Proper canonical URL implementation across all sites
+   - Google Analytics integration with internal IP filtering (76.33.111.72)
 
 ---
 
