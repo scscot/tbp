@@ -10,7 +10,7 @@ const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { defaul
 const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "info.teambuildpro.com" });
+const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "notify.teambuildpro.com" });
 
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
@@ -22,13 +22,13 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
   const selectedVersion = '2version';
 
-  form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+  form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', selectedSubject);
 
-  form.append('template', 'initial');
-  form.append('t:version', selectedVersion);
+  form.append('template', 'campaign');
+  form.append('t:version', 'initial');
   form.append('o:tag', 'winning_combination');
   form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
@@ -53,7 +53,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
 const sendHourlyEmailCampaign = onSchedule({
   // schedule: "32 17 * * *",  // 4:40pm
-  schedule: "0 8,10,12,13,15,18 * * 1-6",
+  schedule: "0 8,10,12,14,16,18 * * *",
   // schedule: "30 15 * * 1-6",  // 3:30pm PT test run
    timeZone: "America/Los_Angeles",
   region: "us-central1",
@@ -162,7 +162,7 @@ const sendHourlyEmailCampaign = onSchedule({
 });
 
 const sendAndroidLaunchCampaign = onSchedule({
-  schedule: "0 8,10,12,13,15,18 * * 1-6",
+  schedule: "0 8,10,12,14,16,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
@@ -216,12 +216,12 @@ const sendAndroidLaunchCampaign = onSchedule({
 
         const form = new FormData();
         const selectedSubject = `The Recruiting App Built for Direct Sales`;
-        const selectedVersion = 'resend';
+        const selectedVersion = 'initial';
 
-        form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+        form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
         form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
         form.append('subject', selectedSubject);
-        form.append('template', 'initial');
+        form.append('template', 'campaign');
         form.append('t:version', selectedVersion);
         form.append('o:tag', 'android_launch');
         form.append('o:tag', selectedVersion);
@@ -294,7 +294,7 @@ const sendAndroidLaunchCampaign = onSchedule({
 });
 
 const syncMailgunEvents = onSchedule({
-  schedule: "10 8,10,12,13,15,18 * * 1-6",
+  schedule: "10 8,10,12,14,16,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
