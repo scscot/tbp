@@ -102,6 +102,7 @@ ios/Podfile.lock
 # === Firebase Functions ===
 # Ignore most of the functions directory
 functions/node_modules/
+functions/.env.*
 functions/.eslintrc.js
 functions/firebase-debug.log
 functions/firebase-debug.*.log
