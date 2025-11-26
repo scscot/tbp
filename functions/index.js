@@ -123,6 +123,15 @@ const {
 } = require('./email-campaign-functions');
 
 // ==============================
+// Import Yahoo Email Campaign Functions
+// ==============================
+const {
+  sendHourlyEmailCampaignYahoo,
+  sendAndroidLaunchCampaignYahoo,
+  syncMailgunEventsYahoo
+} = require('./email-campaign-functions-yahoo');
+
+// ==============================
 // Import Beta Tester Functions
 // ==============================
 const {
@@ -303,6 +312,11 @@ module.exports = {
   sendHourlyEmailCampaign,
   sendAndroidLaunchCampaign,
   syncMailgunEvents,
+
+  // Yahoo email campaign (scheduled)
+  sendHourlyEmailCampaignYahoo,
+  sendAndroidLaunchCampaignYahoo,
+  syncMailgunEventsYahoo,
 
   // ========== BETA TESTER FUNCTIONS ==========
   grantBetaTesterLifetimeAccess,

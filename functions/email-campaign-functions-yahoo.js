@@ -4,11 +4,11 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { db } = require('./shared/utilities');
 
-// Define parameters for v2 functions
-const emailCampaignEnabled = defineString("EMAIL_CAMPAIGN_ENABLED", { default: "false" });
-const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { default: "false" });
-const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
-const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
+// Define parameters for v2 functions - Yahoo-specific campaign
+const emailCampaignEnabledYahoo = defineString("EMAIL_CAMPAIGN_ENABLED_YAHOO", { default: "false" });
+const androidCampaignEnabledYahoo = defineString("ANDROID_CAMPAIGN_ENABLED_YAHOO", { default: "false" });
+const emailCampaignSyncEnabledYahoo = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED_YAHOO", { default: "false" });
+const emailCampaignBatchSizeYahoo = defineString("EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO", { default: "1" });
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
 const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "notify.teambuildpro.com" });
 
@@ -29,7 +29,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'campaign');
   form.append('t:version', 'initial');
-  form.append('o:tag', 'winning_combination');
+  form.append('o:tag', 'yahoo_campaign');
   form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
@@ -51,38 +51,36 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   return response.data;
 }
 
-const sendHourlyEmailCampaign = onSchedule({
-  // schedule: "32 17 * * *",  // 4:40pm
-  schedule: "0 8,10,12,14,16,18 * * *",
-  // schedule: "30 15 * * 1-6",  // 3:30pm PT test run
-   timeZone: "America/Los_Angeles",
+const sendHourlyEmailCampaignYahoo = onSchedule({
+  schedule: "0 7,9,11,13,15,17 * * *",
+  timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
   timeoutSeconds: 60
 }, async (event) => {
-  console.log("📧 HOURLY EMAIL CAMPAIGN: Starting batch email send");
+  console.log("📧 YAHOO EMAIL CAMPAIGN: Starting batch email send");
 
-  // Get parameter values
-  const campaignEnabled = emailCampaignEnabled.value().toLowerCase() === 'true';
-  const batchSize = parseInt(emailCampaignBatchSize.value());
+  // Get parameter values - use Yahoo-specific settings
+  const campaignEnabled = emailCampaignEnabledYahoo.value().toLowerCase() === 'true';
+  const batchSize = parseInt(emailCampaignBatchSizeYahoo.value());
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
   if (!campaignEnabled) {
-    console.log("📧 EMAIL CAMPAIGN: Disabled via environment variable. Skipping.");
+    console.log("📧 YAHOO EMAIL CAMPAIGN: Disabled via environment variable. Skipping.");
     return { status: 'disabled', sent: 0 };
   }
 
   if (!apiKey) {
-    console.error("❌ EMAIL CAMPAIGN: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO EMAIL CAMPAIGN: MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 
-  console.log(`📧 EMAIL CAMPAIGN: Batch size set to ${batchSize}`);
+  console.log(`📧 YAHOO EMAIL CAMPAIGN: Batch size set to ${batchSize}`);
 
   try {
-    const batchId = `batch_${Date.now()}`;
-    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
+    const batchId = `yahoo_batch_${Date.now()}`;
+    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts_yahoo');
 
     const unsentSnapshot = await contactsRef
       .where('sent', '==', false)
@@ -91,11 +89,11 @@ const sendHourlyEmailCampaign = onSchedule({
       .get();
 
     if (unsentSnapshot.empty) {
-      console.log("✅ EMAIL CAMPAIGN: No unsent emails found. Campaign complete!");
+      console.log("✅ YAHOO EMAIL CAMPAIGN: No unsent emails found. Campaign complete!");
       return { status: 'complete', sent: 0 };
     }
 
-    console.log(`📧 EMAIL CAMPAIGN: Processing ${unsentSnapshot.size} emails in ${batchId}`);
+    console.log(`📧 YAHOO EMAIL CAMPAIGN: Processing ${unsentSnapshot.size} emails in ${batchId}`);
 
     let sent = 0;
     let failed = 0;
@@ -157,40 +155,40 @@ const sendHourlyEmailCampaign = onSchedule({
     };
 
   } catch (error) {
-    console.error('💥 EMAIL CAMPAIGN: Batch failed:', error.message);
+    console.error('💥 YAHOO EMAIL CAMPAIGN: Batch failed:', error.message);
     throw error;
   }
 });
 
-const sendAndroidLaunchCampaign = onSchedule({
+const sendAndroidLaunchCampaignYahoo = onSchedule({
   schedule: "0 8,10,12,14,16,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
   timeoutSeconds: 60
 }, async (event) => {
-  console.log("📧 ANDROID LAUNCH CAMPAIGN: Starting resend batch");
+  console.log("📧 YAHOO ANDROID LAUNCH CAMPAIGN: Starting resend batch");
 
-  const campaignEnabled = androidCampaignEnabled.value().toLowerCase() === 'true';
-  const batchSize = parseInt(emailCampaignBatchSize.value());
+  const campaignEnabled = androidCampaignEnabledYahoo.value().toLowerCase() === 'true';
+  const batchSize = parseInt(emailCampaignBatchSizeYahoo.value());
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
   if (!campaignEnabled) {
-    console.log("📧 ANDROID LAUNCH CAMPAIGN: Disabled via environment variable. Skipping.");
+    console.log("📧 YAHOO ANDROID LAUNCH CAMPAIGN: Disabled via environment variable. Skipping.");
     return { status: 'disabled', sent: 0 };
   }
 
   if (!apiKey) {
-    console.error("❌ ANDROID LAUNCH CAMPAIGN: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO ANDROID LAUNCH CAMPAIGN: MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 
-  console.log(`📧 ANDROID LAUNCH CAMPAIGN: Batch size set to ${batchSize}`);
+  console.log(`📧 YAHOO ANDROID LAUNCH CAMPAIGN: Batch size set to ${batchSize}`);
 
   try {
-    const batchId = `android_batch_${Date.now()}`;
-    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
+    const batchId = `yahoo_android_batch_${Date.now()}`;
+    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts_yahoo');
 
     const resendSnapshot = await contactsRef
       .where('resend', '==', false)
@@ -199,11 +197,11 @@ const sendAndroidLaunchCampaign = onSchedule({
       .get();
 
     if (resendSnapshot.empty) {
-      console.log("✅ ANDROID LAUNCH CAMPAIGN: No contacts to resend. Campaign complete!");
+      console.log("✅ YAHOO ANDROID LAUNCH CAMPAIGN: No contacts to resend. Campaign complete!");
       return { status: 'complete', sent: 0 };
     }
 
-    console.log(`📧 ANDROID LAUNCH CAMPAIGN: Processing ${resendSnapshot.size} emails in ${batchId}`);
+    console.log(`📧 YAHOO ANDROID LAUNCH CAMPAIGN: Processing ${resendSnapshot.size} emails in ${batchId}`);
 
     let sent = 0;
     let failed = 0;
@@ -224,7 +222,7 @@ const sendAndroidLaunchCampaign = onSchedule({
         form.append('subject', selectedSubject);
         form.append('template', 'campaign');
         form.append('t:version', selectedVersion);
-        form.append('o:tag', 'android_launch');
+        form.append('o:tag', 'yahoo_android_launch');
         form.append('o:tag', selectedVersion);
         form.append('o:tracking', 'yes');
         form.append('o:tracking-opens', 'yes');
@@ -289,31 +287,31 @@ const sendAndroidLaunchCampaign = onSchedule({
     };
 
   } catch (error) {
-    console.error('💥 ANDROID LAUNCH CAMPAIGN: Batch failed:', error.message);
+    console.error('💥 YAHOO ANDROID LAUNCH CAMPAIGN: Batch failed:', error.message);
     throw error;
   }
 });
 
-const syncMailgunEvents = onSchedule({
-  schedule: "10 8,10,12,14,16,18 * * *",
+const syncMailgunEventsYahoo = onSchedule({
+  schedule: "10 7,9,11,13,15,17 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
   timeoutSeconds: 540
 }, async (event) => {
-  console.log("🔄 MAILGUN EVENT SYNC: Starting event synchronization");
+  console.log("🔄 YAHOO MAILGUN EVENT SYNC: Starting event synchronization");
 
-  const syncEnabled = emailCampaignSyncEnabled.value().toLowerCase() === 'true';
+  const syncEnabled = emailCampaignSyncEnabledYahoo.value().toLowerCase() === 'true';
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
   if (!syncEnabled) {
-    console.log("🔄 MAILGUN EVENT SYNC: Disabled via environment variable. Skipping.");
+    console.log("🔄 YAHOO MAILGUN EVENT SYNC: Disabled via environment variable. Skipping.");
     return { status: 'disabled', synced: 0 };
   }
 
   if (!apiKey) {
-    console.error("❌ MAILGUN EVENT SYNC: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO MAILGUN EVENT SYNC: MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 
@@ -322,7 +320,7 @@ const syncMailgunEvents = onSchedule({
     const now = new Date();
     const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000));
 
-    console.log(`🔄 MAILGUN EVENT SYNC: Querying events from ${twoHoursAgo.toISOString()} to ${now.toISOString()}`);
+    console.log(`🔄 YAHOO MAILGUN EVENT SYNC: Querying events from ${twoHoursAgo.toISOString()} to ${now.toISOString()}`);
 
     const eventTypes = ['delivered', 'failed', 'opened', 'clicked'];
     const eventsByEmail = {};
@@ -363,14 +361,14 @@ const syncMailgunEvents = onSchedule({
     }
 
     const emailsToSync = Object.keys(eventsByEmail);
-    console.log(`🔄 MAILGUN EVENT SYNC: Processing ${emailsToSync.length} unique email addresses`);
+    console.log(`🔄 YAHOO MAILGUN EVENT SYNC: Processing ${emailsToSync.length} unique email addresses`);
 
     if (emailsToSync.length === 0) {
-      console.log("✅ MAILGUN EVENT SYNC: No events to sync");
+      console.log("✅ YAHOO MAILGUN EVENT SYNC: No events to sync");
       return { status: 'success', synced: 0 };
     }
 
-    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
+    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts_yahoo');
     let synced = 0;
     let notFound = 0;
     let errors = 0;
@@ -439,7 +437,7 @@ const syncMailgunEvents = onSchedule({
       batches.push(currentBatch);
     }
 
-    console.log(`💾 MAILGUN EVENT SYNC: Committing ${batches.length} batch(es)...`);
+    console.log(`💾 YAHOO MAILGUN EVENT SYNC: Committing ${batches.length} batch(es)...`);
 
     for (let i = 0; i < batches.length; i++) {
       try {
@@ -450,7 +448,7 @@ const syncMailgunEvents = onSchedule({
       }
     }
 
-    console.log(`\n✅ MAILGUN EVENT SYNC: Complete`);
+    console.log(`\n✅ YAHOO MAILGUN EVENT SYNC: Complete`);
     console.log(`   Emails processed: ${emailsToSync.length}`);
     console.log(`   Contacts updated: ${synced}`);
     console.log(`   Contacts not found: ${notFound}`);
@@ -465,13 +463,13 @@ const syncMailgunEvents = onSchedule({
     };
 
   } catch (error) {
-    console.error('💥 MAILGUN EVENT SYNC: Failed:', error.message);
+    console.error('💥 YAHOO MAILGUN EVENT SYNC: Failed:', error.message);
     throw error;
   }
 });
 
 module.exports = {
-  sendHourlyEmailCampaign,
-  sendAndroidLaunchCampaign,
-  syncMailgunEvents
+  sendHourlyEmailCampaignYahoo,
+  sendAndroidLaunchCampaignYahoo,
+  syncMailgunEventsYahoo
 };
