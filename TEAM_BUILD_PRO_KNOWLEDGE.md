@@ -5,6 +5,126 @@
 
 ---
 
+## 🌐 Team Build Pro Ecosystem
+
+The Team Build Pro ecosystem is a comprehensive, interconnected network of digital properties designed to drive app downloads and user acquisition. Each component serves a specific purpose in the customer journey, working together to convert prospects into paying subscribers.
+
+### Ecosystem Components
+
+| Property | URL | Purpose |
+|----------|-----|---------|
+| **Main Website (EN)** | https://teambuildpro.com | Primary landing page, SEO hub, conversion funnel |
+| **Spanish Website** | https://es.teambuildpro.com | Spanish-speaking market acquisition |
+| **Portuguese Website** | https://pt.teambuildpro.com | Brazilian/Portuguese market acquisition |
+| **iOS App** | https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622 | iPhone/iPad distribution |
+| **Android App** | https://play.google.com/store/apps/details?id=com.scott.ultimatefix | Android distribution |
+| **Author Website** | https://www.stephenscott.us | Thought leadership, book sales, credibility |
+| **Legacy Brand** | https://www.teambuildingproject.com | Historical brand, redirects to main site |
+
+### Ecosystem Synergy & Conversion Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        DISCOVERY CHANNELS                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Email Campaigns → SEO/Blog → Social Media → Author Website → Referrals│
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      WEBSITE ECOSYSTEM                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│  teambuildpro.com ◄──► es.teambuildpro.com ◄──► pt.teambuildpro.com   │
+│         │                      │                        │               │
+│    120+ Company           Localized              Localized             │
+│    Landing Pages          Content                Content               │
+│         │                      │                        │               │
+│    Blog (8 posts)         Blog (8 posts)        Blog (8 posts)        │
+│         │                      │                        │               │
+│    FAQ/Books              FAQ/Books              FAQ/Books             │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        APP STORES                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│           iOS App Store  ◄──────────────────►  Google Play Store       │
+│                          │                                             │
+│                          ▼                                             │
+│                   30-Day Free Trial                                    │
+│                          │                                             │
+│                          ▼                                             │
+│                  $4.99/month Subscription                              │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### How Each Component Drives Downloads
+
+**1. Main Website (teambuildpro.com)**
+- Primary SEO target with 120+ company-specific landing pages
+- Dynamic FAQ filtering for prospects vs professionals
+- Blog content targeting "AI recruiting" and "direct sales" keywords
+- Hero animation and CTA buttons directing to app stores
+- Trust signals: privacy policy, terms, professional design
+
+**2. Multilingual Websites (ES/PT)**
+- Capture Spanish and Portuguese-speaking markets (Brazil, Latin America, Spain)
+- Full content parity with English site
+- Language-specific referral links from app share screen
+- SEO-optimized with hreflang tags for international ranking
+
+**3. Stephen Scott Author Website (stephenscott.us)**
+- Establishes creator credibility through 13 published books
+- Podcast presence builds thought leadership
+- Cross-links to Team Build Pro app
+- Professional bio builds trust for app purchase decisions
+
+**4. Company Landing Pages (120+ pages)**
+- Target long-tail keywords: "AI recruiting for [Company Name]"
+- Each page customized for specific direct sales companies
+- Captures search traffic from professionals in specific companies
+- All pages link to app store downloads
+
+**5. Blog Content Strategy**
+- Twice-weekly automated publishing (Mon/Thu)
+- Topics: AI recruiting, direct sales best practices, industry trends
+- Available in EN, ES, PT for global reach
+- Each post includes app download CTAs
+
+**6. Email Campaign Integration**
+- Cold email to 5,500+ direct sales professionals
+- 30.9% open rate (2x industry average)
+- Drives traffic to landing page → app downloads
+- Mailgun infrastructure with detailed analytics
+
+**7. Legacy Brand (teambuildingproject.com)**
+- Historical domain from earlier brand iteration
+- Configured with redirects to teambuildpro.com
+- Preserves any existing backlinks for SEO value
+
+### Ecosystem Metrics & KPIs
+
+| Metric | Current Value | Target |
+|--------|---------------|--------|
+| Email Open Rate | 30.9% | 25%+ |
+| Email Click Rate | 5.5% | 3%+ |
+| Website Languages | 3 (EN, ES, PT) | 4 (add DE) |
+| Blog Posts (per language) | 8 | 15+ |
+| Company Landing Pages | 120+ | 150+ |
+| App Languages | 4 (EN, ES, PT, DE) | 4 |
+
+### Cross-Linking Strategy
+
+All ecosystem components are interconnected:
+- **Website → App Stores**: Direct download links on every page
+- **App → Websites**: Share screen generates language-specific referral URLs
+- **Author Site → App**: Book pages link to Team Build Pro as the "tool that implements the strategies"
+- **Email → Website → App**: Landing page routing for analytics and retargeting
+- **Blog → App**: Every post includes "Get the App" CTA sections
+- **Company Pages → App**: Tailored messaging for each company's audience
+
+---
+
 ## 🎯 Core Product Identity
 
 ### What is Team Build Pro?
@@ -58,19 +178,19 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (120+ pages)
-│   └── blog/             # Blog posts (7 articles)
+│   └── blog/             # Blog posts (8 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (7 translated posts)
+│   ├── blog/             # Spanish blog (8 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (7 translated posts)
+│   ├── blog/             # Portuguese blog (8 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -172,7 +292,7 @@ All three main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
-- Blog index with 6 translated posts
+- Blog index with 8 translated posts
 - Privacy policy
 - Terms of service
 - Contact form
@@ -197,7 +317,7 @@ All three main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 7 blog posts:
+- `/blog/` - 8 blog posts:
   - ai-automation-transforms-direct-sales.html
   - ai-recruiting-best-practices-2025.html
   - ai-recruiting-platforms-failing-direct-sales.html
@@ -205,6 +325,7 @@ All three main sites have identical structure:
   - team-build-pro-november-2025-update.html
   - young-living-recruiting-strategies.html
   - ai-network-marketing-corporate-field-leaders-use.html
+  - use-ai-mlm-recruiting-without-losing-human-touch.html
 - `/companies.html` - 120+ company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -219,7 +340,7 @@ All three main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 7 translated blog posts (same titles as EN)
+- `/blog/` - 8 translated blog posts (same titles as EN)
 - `/contact_us.html` - Spanish contact form
 - `/privacy_policy.html` - Spanish privacy policy
 - `/terms_of_service.html` - Spanish terms of service
@@ -231,7 +352,7 @@ All three main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 7 translated blog posts (same titles as EN)
+- `/blog/` - 8 translated blog posts (same titles as EN)
 - `/contact_us.html` - Portuguese contact form
 - `/privacy_policy.html` - Portuguese privacy policy
 - `/terms_of_service.html` - Portuguese terms of service
@@ -381,39 +502,61 @@ git add . && git commit -m "message" && git push
 
 ## 📧 Email Campaigns
 
-### Current Campaign (Mailgun - Automated)
-- **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
-- **Subject**: `The Recruiting App Built for Direct Sales` (updated Nov 2025)
-- **Template**: `2version` (Mailgun template variant)
-- **CTA Strategy**: Landing page routing (https://teambuildpro.com) with subtle text link "Learn more at TeamBuildPro.com"
-- **Schedule**: 8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday
-- **Batch Size**: 75 emails per run (450 emails/day) - increased Nov 24
-- **Domain**: info.teambuildpro.com
-- **Data Source**: Firestore `emailCampaigns/master/contacts` collection
-- **Independent Control**: EMAIL_CAMPAIGN_ENABLED environment variable
+### Campaign Architecture Overview
 
-### Campaign Performance (as of Nov 2025)
-- **Total Contacts**: 5,527
-- **Total Sent**: 2,077 (37.6%)
-- **Remaining**: 3,450 (62.4%)
-- **Open Rate**: 30.9% (excellent - industry avg 15-25%)
-- **Click Rate**: 5.5% (good - industry avg 2-3%)
-- **Engagement Rate**: 36.4% (outstanding)
-- **Delivery Rate**: 96.5% (2 failures out of 57 daily)
-- **Completion Timeline**: ~28 days at current rate
+The email campaign system consists of two parallel campaigns targeting different audience segments, both using the same Mailgun template with different data sources.
+
+**Mailgun Configuration:**
+- **Template Name**: `campaign`
+- **Template Version**: `initial`
+- **Subject Line**: `The Recruiting App Built for Direct Sales`
+- **From**: `Stephen Scott <ss@notify.teambuildpro.com>`
+- **Domain**: notify.teambuildpro.com
+- **Tracking**: Opens, clicks, and delivery status enabled
+
+### Main Campaign (Mailgun - Automated)
+- **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
+- **Tags**: `winning_combination`, `2version`
+- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (even hours)
+- **Data Source**: Firestore `emailCampaigns/master/contacts` collection
+- **Control Variable**: EMAIL_CAMPAIGN_ENABLED
+- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (configurable)
+
+### Yahoo Campaign (Mailgun - Automated)
+- **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
+- **Tags**: `yahoo_campaign`, `2version`
+- **Schedule**: 7am, 9am, 11am, 1pm, 3pm, 5pm PT (odd hours, offset from main)
+- **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
+- **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
+- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (configurable)
+- **Purpose**: Separate campaign for Yahoo/AOL email addresses which require different sending patterns
+
+### Campaign Performance (Post-Cleanup, as of Nov 27, 2025)
+After cleaning invalid emails from the database, current metrics from the past 24 hours:
+- **Delivered**: 54 emails
+- **Failed**: 11 emails
+- **Delivery Rate**: 83.1% (54 of 65 accepted)
+- **Open Rate**: 20.4% (11 opens, above industry avg 15-25%)
+- **Click Rate**: 0.0% (0 clicks)
+- **Note**: Database was cleaned to remove invalid emails; metrics are now from verified contacts
 
 ### Android Launch Campaign (Mailgun - Automated Phase 2)
 - **Function**: `sendAndroidLaunchCampaign` in `functions/email-campaign-functions.js`
-- **Subject**: `The Recruiting App Built for Direct Sales` (same as Phase 1)
-- **Template**: `resend` (Mailgun template variant for Android launch announcement)
+- **Tags**: `android_launch`, `initial`
+- **Template Version**: `initial`
 - **Purpose**: Re-engage contacts sent before Nov 12, 2025 Android launch
-- **Schedule**: Same as Phase 1 (8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday)
-- **Batch Size**: Same as Phase 1 (75 emails per run)
+- **Schedule**: Same as Main Campaign (8am, 10am, 12pm, 2pm, 4pm, 6pm PT)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection (resend field)
-- **Independent Control**: ANDROID_CAMPAIGN_ENABLED environment variable (currently disabled)
+- **Control Variable**: ANDROID_CAMPAIGN_ENABLED (currently disabled)
 - **Pre-marked Contacts**: 2,077 contacts marked with `resend: false` via mark-contacts-for-resend.js script
-- **App Store URLs**: Correct URLs (fixed from incorrect com.teambuildpro.app to com.scott.ultimatefix)
 - **Status**: Ready to deploy after Phase 1 completion
+
+### Yahoo Android Launch Campaign
+- **Function**: `sendAndroidLaunchCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
+- **Tags**: `yahoo_android_launch`, `initial`
+- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT
+- **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection (resend field)
+- **Control Variable**: ANDROID_CAMPAIGN_ENABLED_YAHOO (currently disabled)
 
 ### Mailgun Event Sync (Automated Data Collection)
 - **Function**: `syncMailgunEvents` in `functions/email-campaign-functions.js`
@@ -712,9 +855,9 @@ git add . && git commit -m "message" && git push
    - SEO-optimized with proper hreflang tags
 
 36. ✅ **Blog Expansion & Translation**:
-   - 6 blog posts created for English site (web/blog/)
-   - All 6 posts translated to Spanish (web-es/blog/)
-   - All 6 posts translated to Portuguese (web-pt/blog/)
+   - 8 blog posts created for English site (web/blog/)
+   - All 8 posts translated to Spanish (web-es/blog/)
+   - All 8 posts translated to Portuguese (web-pt/blog/)
    - Blog index pages for all three languages
    - Topics: AI automation, recruiting best practices, platform comparisons
    - Localized meta tags and SEO optimization
@@ -789,6 +932,38 @@ git add . && git commit -m "message" && git push
      - FIREBASE_SERVICE_ACCOUNT: For Firebase deployment
    - **Manual trigger**: Supports workflow_dispatch for testing
    - **Auto-commit**: Generated blog files committed back to repository by GitHub Actions bot
+
+44. ✅ **ES/PT Blog Template UI Enhancement**:
+   - Updated `generateTranslatedBlogHTML()` function in `scripts/generate-ai-blog.js`
+   - ES/PT blog posts now match EN template quality with full UI elements:
+     - Breadcrumb navigation (Home → Blog → Article)
+     - Category eyebrow badge with color-coded styling
+     - Improved typography with inline CSS
+     - Social share buttons (Twitter, LinkedIn, Facebook)
+     - App download CTA section with store badges
+     - Complete header/footer matching homepage navigation
+   - Regenerated existing ES/PT blog posts with updated template
+   - Deployed to Firebase Hosting (es and pt targets)
+
+45. ✅ **Blog Index Page Updates (ES/PT)**:
+   - Updated `web-es/blog.html` and `web-pt/blog.html`
+   - Added new blog post entries to index pages
+   - Consistent card layout and styling across all three languages
+
+46. ✅ **Sitemap Auto-Update Verification**:
+   - Confirmed `generate-ai-blog.js` automatically updates sitemaps via `updateSitemap()` function
+   - Updates EN sitemap (`web/sitemap.xml`)
+   - Updates ES sitemap (`web-es/sitemap.xml`)
+   - Updates PT sitemap (`web-pt/sitemap.xml`)
+   - New blog URLs properly added with correct lastmod dates
+
+47. ✅ **New Blog Post: AI in MLM Recruiting Without Losing Human Touch**:
+   - Generated via automated pipeline
+   - English: `web/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
+   - Spanish: `web-es/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
+   - Portuguese: `web-pt/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
+   - Topic: Balancing AI automation with authentic human connection in recruiting
+   - All three versions deployed with matching UI templates
 
 ---
 
