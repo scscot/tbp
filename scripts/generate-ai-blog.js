@@ -28,6 +28,10 @@ const importFlag = args.find(arg => arg.startsWith('--import='));
 const notesFlag = args.find(arg => arg.startsWith('--notes='));
 const interactiveFlag = args.includes('--interactive');
 const generateFlag = args.includes('--generate');
+const researchFlag = args.includes('--research');
+const fullAutoFlag = args.includes('--full-auto');
+const notifyEmailFlag = args.find(arg => arg.startsWith('--notify-email='));
+const notifyEmail = notifyEmailFlag ? notifyEmailFlag.split('=')[1] : 'scscot@gmail.com';
 
 // Extract values
 const category = categoryFlag ? categoryFlag.split('=')[1] : 'Recruiting Tips';
@@ -1086,9 +1090,329 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   console.log('');
 }
 
+// Generate research prompt for trend analysis
+function generateResearchPrompt() {
+  const today = new Date();
+  const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const dateRange = `${oneWeekAgo.toISOString().split('T')[0]} to ${today.toISOString().split('T')[0]}`;
+
+  return `You are a research analyst specializing in direct sales, network marketing, MLM, AI technology, and recruiting trends.
+
+TASK: Conduct deep research on what's being discussed in the direct sales/network marketing/MLM industry within the past week (${dateRange}). Identify trending topics, emerging narratives, and content gaps that would make excellent blog topics for Team Build Pro.
+
+RESEARCH SOURCES TO ANALYZE:
+1. BusinessForHome.org - Industry news, company updates, momentum rankings
+2. Direct Selling News - Industry publications and thought leadership
+3. Social media trends - LinkedIn, Facebook, Twitter/X discussions in MLM/direct sales communities
+4. Software vendor announcements - MLM software, AI tools for direct sales
+5. Training/coaching content - What leaders and trainers are teaching
+6. Compliance/legal updates - Regulatory changes affecting the industry
+7. AI/technology integration - How companies are adopting AI
+
+ANALYSIS FRAMEWORK:
+1. What are the HOT TOPICS being discussed this week?
+2. What GAPS exist in current coverage that Team Build Pro can fill?
+3. What is the UNIQUE ANGLE Team Build Pro can offer (field-level practical advice vs corporate/vendor content)?
+4. What PAIN POINTS are distributors discussing that need solutions?
+
+TEAM BUILD PRO POSITIONING:
+- Team Build Pro is an AI-powered recruiting app for direct sales professionals
+- Unique value: Helps prospects pre-build their teams BEFORE joining a business opportunity
+- Focus: Practical, field-level advice (not corporate/vendor perspective)
+- Target audience: Direct sales professionals and network marketers
+- Differentiator: 30-day pre-qualification approach, 16 pre-written messages, AI Coach
+
+OUTPUT FORMAT:
+Return a JSON object with exactly this structure:
+
+{
+  "researchDate": "${today.toISOString().split('T')[0]}",
+  "industryTrends": [
+    {
+      "trend": "Brief description of the trend",
+      "sources": ["Source 1", "Source 2"],
+      "relevance": "Why this matters to Team Build Pro audience"
+    }
+  ],
+  "contentGaps": [
+    {
+      "gap": "What's NOT being covered well",
+      "opportunity": "How Team Build Pro can fill this gap"
+    }
+  ],
+  "recommendations": [
+    {
+      "rank": 1,
+      "title": "SEO-optimized blog title",
+      "category": "Recruiting Tips|Product Updates|Tutorials",
+      "keywords": "comma, separated, seo, keywords",
+      "notes": "Detailed angle and context for the blog post - what specific points to cover, what examples to use, what makes this timely and relevant",
+      "urgency": "high|medium|low",
+      "reasoning": "Why this topic now, what gap it fills, expected audience interest"
+    }
+  ]
+}
+
+REQUIREMENTS:
+- Provide 5-10 blog recommendations, ranked by relevance and timeliness
+- Each recommendation must have actionable notes that can be passed to the blog generator
+- Focus on topics where Team Build Pro's unique perspective adds value
+- Prioritize evergreen content that will rank well in search
+- Ensure titles are SEO-optimized (include relevant keywords naturally)
+- Return ONLY the JSON object, no other text`;
+}
+
+// Run research mode - analyze trends and recommend topics
+async function runResearchMode() {
+  console.log(`\n${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}   RESEARCH MODE - Analyzing Industry Trends${colors.reset}`);
+  console.log(`${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
+
+  console.log(`${colors.cyan}Researching direct sales, network marketing, MLM, AI, and recruiting trends...${colors.reset}`);
+  console.log(`${colors.cyan}This may take 2-3 minutes...${colors.reset}\n`);
+
+  const researchPrompt = generateResearchPrompt();
+
+  const promptLogFile = path.join(__dirname, 'last-research-prompt.txt');
+  fs.writeFileSync(promptLogFile, researchPrompt, 'utf8');
+
+  try {
+    const response = await callClaudeWithStdin(researchPrompt, 'industry research', 300000);
+    const research = extractJsonFromResponse(response);
+
+    const outputFile = path.join(__dirname, 'blog-recommendations.json');
+    fs.writeFileSync(outputFile, JSON.stringify(research, null, 2), 'utf8');
+
+    console.log(`${colors.green}\n✅ Research complete!${colors.reset}\n`);
+    console.log(`${colors.bright}Industry Trends Identified:${colors.reset}`);
+    if (research.industryTrends) {
+      research.industryTrends.forEach((trend, i) => {
+        console.log(`  ${i + 1}. ${trend.trend}`);
+      });
+    }
+
+    console.log(`\n${colors.bright}Content Gaps Found:${colors.reset}`);
+    if (research.contentGaps) {
+      research.contentGaps.forEach((gap, i) => {
+        console.log(`  ${i + 1}. ${gap.gap}`);
+      });
+    }
+
+    console.log(`\n${colors.bright}Blog Recommendations (ranked):${colors.reset}`);
+    if (research.recommendations) {
+      research.recommendations.forEach((rec, i) => {
+        const urgencyColor = rec.urgency === 'high' ? colors.yellow : rec.urgency === 'medium' ? colors.cyan : colors.reset;
+        console.log(`\n  ${colors.bright}#${rec.rank || i + 1}:${colors.reset} ${rec.title}`);
+        console.log(`      Category: ${rec.category}`);
+        console.log(`      Keywords: ${rec.keywords}`);
+        console.log(`      Urgency: ${urgencyColor}${rec.urgency}${colors.reset}`);
+        console.log(`      Notes: ${rec.notes.substring(0, 100)}...`);
+      });
+    }
+
+    console.log(`\n${colors.bright}Saved to:${colors.reset} ${colors.cyan}scripts/blog-recommendations.json${colors.reset}`);
+    console.log(`\n${colors.bright}To generate the top recommendation:${colors.reset}`);
+    if (research.recommendations && research.recommendations[0]) {
+      const top = research.recommendations[0];
+      console.log(`  ${colors.yellow}node scripts/generate-ai-blog.js "${top.title}" --keywords="${top.keywords}" --notes="${top.notes.substring(0, 100)}..." --generate${colors.reset}`);
+    }
+    console.log('');
+
+    return research;
+  } catch (error) {
+    console.error(`${colors.yellow}❌ Research failed: ${error.message}${colors.reset}`);
+    throw error;
+  }
+}
+
+// Send email notification via Mailgun
+async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
+  const axios = require('axios');
+  const FormData = require('form-data');
+
+  const mailgunApiKey = process.env.MAILGUN_API_KEY;
+  const mailgunDomain = 'notify.teambuildpro.com';
+
+  if (!mailgunApiKey) {
+    console.log(`${colors.yellow}⚠️  MAILGUN_API_KEY not set, skipping email notification${colors.reset}`);
+    return false;
+  }
+
+  try {
+    const form = new FormData();
+    form.append('from', 'Team Build Pro Blog Bot <blog@notify.teambuildpro.com>');
+    form.append('to', toEmail);
+    form.append('subject', subject);
+    form.append('html', htmlBody);
+    form.append('text', textBody);
+
+    await axios.post(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, form, {
+      headers: {
+        ...form.getHeaders(),
+        'Authorization': `Basic ${Buffer.from('api:' + mailgunApiKey).toString('base64')}`
+      }
+    });
+
+    console.log(`${colors.green}✅ Email notification sent to ${toEmail}${colors.reset}`);
+    return true;
+  } catch (error) {
+    console.error(`${colors.yellow}⚠️  Failed to send email: ${error.message}${colors.reset}`);
+    return false;
+  }
+}
+
+// Deploy to Firebase Hosting
+async function deployToFirebase() {
+  const { execSync } = require('child_process');
+
+  console.log(`${colors.cyan}Deploying to Firebase Hosting...${colors.reset}`);
+
+  try {
+    execSync('firebase deploy --only hosting', {
+      cwd: path.join(__dirname, '..'),
+      stdio: 'inherit',
+      timeout: 300000
+    });
+    console.log(`${colors.green}✅ Firebase deployment complete${colors.reset}`);
+    return true;
+  } catch (error) {
+    console.error(`${colors.yellow}⚠️  Firebase deployment failed: ${error.message}${colors.reset}`);
+    return false;
+  }
+}
+
+// Full automation mode: research -> generate -> deploy -> notify
+async function runFullAutoMode(emailTo) {
+  const startTime = Date.now();
+  let blogPost = null;
+  let deploySuccess = false;
+  let errors = [];
+
+  console.log(`\n${colors.bright}${colors.magenta}═══════════════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(`${colors.bright}${colors.magenta}   FULL AUTOMATION MODE${colors.reset}`);
+  console.log(`${colors.bright}${colors.magenta}   Research → Generate → Deploy → Notify${colors.reset}`);
+  console.log(`${colors.bright}${colors.magenta}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
+
+  try {
+    console.log(`${colors.bright}${colors.yellow}Step 1/4:${colors.reset} Researching industry trends...\n`);
+    const research = await runResearchMode();
+
+    if (!research.recommendations || research.recommendations.length === 0) {
+      throw new Error('No blog recommendations generated from research');
+    }
+
+    const topRec = research.recommendations[0];
+    console.log(`\n${colors.bright}${colors.yellow}Step 2/4:${colors.reset} Generating blog from top recommendation...`);
+    console.log(`  Title: ${topRec.title}`);
+    console.log(`  Category: ${topRec.category}`);
+    console.log(`  Keywords: ${topRec.keywords}\n`);
+
+    await runFullAutomation(topRec.title, topRec.category, topRec.keywords, topRec.notes);
+
+    const blogResponseFile = path.join(__dirname, 'blog-response.json');
+    if (fs.existsSync(blogResponseFile)) {
+      blogPost = JSON.parse(fs.readFileSync(blogResponseFile, 'utf8'));
+    }
+
+    console.log(`\n${colors.bright}${colors.yellow}Step 3/4:${colors.reset} Deploying to Firebase Hosting...\n`);
+    deploySuccess = await deployToFirebase();
+    if (!deploySuccess) {
+      errors.push('Firebase deployment failed');
+    }
+
+  } catch (error) {
+    errors.push(error.message);
+    console.error(`${colors.yellow}❌ Error during automation: ${error.message}${colors.reset}`);
+  }
+
+  console.log(`\n${colors.bright}${colors.yellow}Step 4/4:${colors.reset} Sending email notification...\n`);
+
+  const duration = Math.round((Date.now() - startTime) / 1000 / 60);
+  const status = errors.length === 0 ? 'SUCCESS' : 'COMPLETED WITH ERRORS';
+
+  const htmlBody = `
+    <h2>Team Build Pro Blog Automation - ${status}</h2>
+    <p><strong>Date:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} PST</p>
+    <p><strong>Duration:</strong> ${duration} minutes</p>
+    ${blogPost ? `
+      <h3>Blog Generated:</h3>
+      <ul>
+        <li><strong>Title:</strong> ${blogPost.title}</li>
+        <li><strong>Category:</strong> ${blogPost.category}</li>
+        <li><strong>Slug:</strong> ${blogPost.slug}</li>
+        <li><strong>Word Count:</strong> ~${Math.round(blogPost.content.length / 5)} words</li>
+      </ul>
+      <h3>Published URLs:</h3>
+      <ul>
+        <li><a href="https://teambuildpro.com/blog/${blogPost.slug}.html">English</a></li>
+        <li><a href="https://es.teambuildpro.com/blog/${blogPost.slug}.html">Spanish</a></li>
+        <li><a href="https://pt.teambuildpro.com/blog/${blogPost.slug}.html">Portuguese</a></li>
+      </ul>
+    ` : '<p>No blog was generated.</p>'}
+    ${errors.length > 0 ? `
+      <h3>Errors:</h3>
+      <ul>
+        ${errors.map(e => `<li>${e}</li>`).join('')}
+      </ul>
+    ` : ''}
+    <hr>
+    <p><em>This is an automated message from Team Build Pro Blog Bot</em></p>
+  `;
+
+  const textBody = `Team Build Pro Blog Automation - ${status}
+Date: ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} PST
+Duration: ${duration} minutes
+${blogPost ? `
+Blog Generated:
+- Title: ${blogPost.title}
+- Category: ${blogPost.category}
+- Slug: ${blogPost.slug}
+
+Published URLs:
+- English: https://teambuildpro.com/blog/${blogPost.slug}.html
+- Spanish: https://es.teambuildpro.com/blog/${blogPost.slug}.html
+- Portuguese: https://pt.teambuildpro.com/blog/${blogPost.slug}.html
+` : 'No blog was generated.'}
+${errors.length > 0 ? `Errors: ${errors.join(', ')}` : ''}
+`;
+
+  await sendEmailNotification(
+    `[Blog Bot] ${status}: ${blogPost ? blogPost.title : 'Automation Run'}`,
+    htmlBody,
+    textBody,
+    emailTo
+  );
+
+  console.log(`\n${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}   FULL AUTOMATION COMPLETE - ${status}${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
+
+  if (blogPost) {
+    console.log(`${colors.bright}Published:${colors.reset}`);
+    console.log(`  English:    https://teambuildpro.com/blog/${blogPost.slug}.html`);
+    console.log(`  Spanish:    https://es.teambuildpro.com/blog/${blogPost.slug}.html`);
+    console.log(`  Portuguese: https://pt.teambuildpro.com/blog/${blogPost.slug}.html`);
+  }
+  console.log('');
+
+  return { blogPost, deploySuccess, errors };
+}
+
 // Main execution
 async function main() {
   console.log(`\n${colors.bright}${colors.blue}Team Build Pro - AI Blog Generator${colors.reset}\n`);
+
+  // Full auto mode: research -> generate -> deploy -> notify
+  if (fullAutoFlag) {
+    await runFullAutoMode(notifyEmail);
+    return;
+  }
+
+  // Research mode: analyze trends and recommend topics
+  if (researchFlag) {
+    await runResearchMode();
+    return;
+  }
 
   // If importing, process the import
   if (importFile) {
@@ -1099,21 +1423,27 @@ async function main() {
   // Validate inputs
   if (!title) {
     console.log(`${colors.yellow}Usage:${colors.reset}`);
+    console.log(`\n${colors.bright}Full automation (research + generate + deploy + notify):${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js --full-auto${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js --full-auto --notify-email="your@email.com"${colors.reset}`);
+    console.log(`\n${colors.bright}Research mode (analyze trends, recommend topics):${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js --research${colors.reset}`);
+    console.log(`\n${colors.bright}Generate mode (create blog from title):${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --generate${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --keywords="..." --notes="..." --generate${colors.reset}`);
     console.log(`\n${colors.bright}Prompt-only mode (manual workflow):${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title Here"${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" "Additional context or angle"${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --notes="Focus on X"${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --category="Tutorials"${colors.reset}`);
-    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --keywords="seo, keywords"${colors.reset}`);
-    console.log(`\n${colors.bright}Full automation mode (recommended):${colors.reset}`);
-    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --generate${colors.reset}`);
-    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" "Extra context" --generate${colors.reset}`);
-    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --category="Tutorials" --generate${colors.reset}`);
     console.log(`\n${colors.bright}Import mode (from saved JSON):${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js --import=scripts/blog-response.json${colors.reset}`);
     console.log(`\n${colors.bright}Valid categories:${colors.reset} ${validCategories.join(', ')}`);
     console.log(`\n${colors.bright}Flags:${colors.reset}`);
-    console.log(`  ${colors.cyan}--generate${colors.reset}          Full automation: generates EN, ES, PT blogs in one command`);
+    console.log(`  ${colors.cyan}--full-auto${colors.reset}         Complete automation: research + generate + deploy + email`);
+    console.log(`  ${colors.cyan}--research${colors.reset}          Analyze trends and recommend blog topics`);
+    console.log(`  ${colors.cyan}--generate${colors.reset}          Generate EN, ES, PT blogs from title`);
+    console.log(`  ${colors.cyan}--notify-email=...${colors.reset} Email for notifications (default: scscot@gmail.com)`);
     console.log(`  ${colors.cyan}--category="..."${colors.reset}   Set blog category (default: Recruiting Tips)`);
     console.log(`  ${colors.cyan}--keywords="..."${colors.reset}   Set target SEO keywords`);
     console.log(`  ${colors.cyan}--notes="..."${colors.reset}      Add extra context or angle for the blog`);
