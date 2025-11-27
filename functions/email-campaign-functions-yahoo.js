@@ -20,7 +20,11 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Removed MLM terminology ("downline") which was causing spam filter issues
   const selectedSubject = `The Recruiting App Built for Direct Sales`;
   // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
-  const selectedVersion = '2version';
+
+  // A/B Testing: Alternate between 'initial' and 'initial_1' template versions
+  // Even index -> initial (soft, humble approach)
+  // Odd index -> initial_1 (direct, benefit-focused approach)
+  const templateVersion = index % 2 === 0 ? 'initial' : 'initial_1';
 
   form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -28,9 +32,9 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('subject', selectedSubject);
 
   form.append('template', 'campaign');
-  form.append('t:version', 'initial');
+  form.append('t:version', templateVersion);
   form.append('o:tag', 'yahoo_campaign');
-  form.append('o:tag', selectedVersion);
+  form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
@@ -116,7 +120,8 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
           mailgunId: result.id || ''
         });
 
-        console.log(`✅ Sent to ${contact.email}: ${result.id}`);
+        const templateUsed = i % 2 === 0 ? 'initial' : 'initial_1';
+        console.log(`✅ Sent to ${contact.email} [${templateUsed}]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {
