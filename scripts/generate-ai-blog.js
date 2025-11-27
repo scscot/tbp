@@ -1278,7 +1278,7 @@ async function deployToFirebase() {
   console.log(`${colors.cyan}Deploying to Firebase Hosting...${colors.reset}`);
 
   try {
-    execSync('firebase deploy --only hosting', {
+    execSync('firebase deploy --only hosting:main,hosting:es,hosting:pt --project teambuilder-plus-fe74d', {
       cwd: path.join(__dirname, '..'),
       stdio: 'inherit',
       timeout: 300000
