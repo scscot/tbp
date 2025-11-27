@@ -59,25 +59,6 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    
-  function isBot() {
-    const botPatterns = [
-      /bot/i, /crawler/i, /spider/i, /crawling/i,
-      /headless/i, /phantom/i, /selenium/i, /webdriver/i,
-      /googlebot/i, /bingbot/i, /slurp/i, /duckduckbot/i,
-      /baiduspider/i, /yandexbot/i, /facebookexternalhit/i,
-      /linkedinbot/i, /twitter/i, /pinterest/i,
-      /whatsapp/i, /telegram/i,
-      /uptimerobot/i, /monitor/i, /pingdom/i, /statuscake/i,
-      /sitechecker/i, /seo/i
-    ];
-    const ua = navigator.userAgent;
-    return botPatterns.some(pattern => pattern.test(ua)) ||
-           !navigator.webdriver === false;
-  }
-
-  
-
     fetch('https://api.ipify.org?format=json')
       .then(response => response.json())
       .then(data => {
@@ -120,30 +101,23 @@
   <!-- Header -->
   <header class="header">
     <nav class="nav container">
-      <a href="https://teambuildpro.com" class="logo">
-        <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+      <a href="/" class="logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
         <span>Team Build Pro</span>
       </a>
       <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
         <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="#screenshots" role="menuitem">Screenshots</a>
-        <a href="#pricing" role="menuitem">Pricing</a>
+        <a href="/" role="menuitem">Home</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Pricing</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
         <a href="/blog.html" role="menuitem">Blog</a>
         <a href="/books.html" role="menuitem">Books</a>
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
-    <!-- Language Switcher -->
-    <div class="language-switcher header-language-switcher">
-      <span class="lang-link active" lang="en">English</span>
-      <span class="lang-separator">|</span>
-      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
-      <span class="lang-separator">|</span>
-      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
-    </div>
   </header>
 
   <!-- Hero Section -->
@@ -168,6 +142,20 @@
 
       <!-- Blog Grid -->
       <div class="blog-grid" id="blog-grid">
+        
+          <a href="/blog/ai-network-marketing-corporate-field-leaders-use.html" class="blog-card" data-category="Recruiting Tips">
+            <div class="card-content">
+              <span class="category-badge ">RECRUITING TIPS</span>
+              <h3>AI in Network Marketing Isn't Just for Corporate: How Field Leaders Can Actually Use It</h3>
+              <p>Corporate AI tools grab headlines, but field leaders need practical systems they control. Here's how to leverage AI without waiting for your...</p>
+              <div class="meta">
+                <span>November 26, 2025</span>
+                <span>•</span>
+                <span>By Team Build Pro</span>
+              </div>
+              <span class="read-more">Read Article →</span>
+            </div>
+          </a>
         
           <a href="/blog/ai-recruiting-platforms-failing-direct-sales.html" class="blog-card" data-category="Recruiting Tips">
             <div class="card-content">
@@ -260,22 +248,15 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">
-        <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-        <span>Team Build Pro</span>
+    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
+      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. All rights reserved.</p>
+      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
+        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">Privacy Policy</a>
+        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">Terms of Service</a>
+        <a href="/faq.html" style="color:#667eea;text-decoration:none">FAQ</a>
+        <a href="/contact_us.html" style="color:#667eea;text-decoration:none">Contact</a>
+        <a href="/blog.html" style="color:#667eea;text-decoration:none">Blog</a>
       </div>
-      <div class="footer-links">
-        <a href="/#pricing">Pricing</a>
-        <a href="/faq.html">FAQ</a>
-        <a href="/books/">Books</a>
-        <a href="/companies.html">Recruiting Guides</a>
-        <a href="/contact_us.html">Contact</a>
-        <a href="/privacy_policy.html">Privacy Policy</a>
-        <a href="/terms_of_service.html">Terms of Service</a>
-      </div>
-
-      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
     </div>
   </footer>
 
@@ -286,10 +267,6 @@
       const blogCards = document.querySelectorAll('.blog-card');
       const menuBtn = document.getElementById('menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
-
-      // Set current year
-      const currentYearEl = document.getElementById("currentYear");
-      if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
       // Category filtering
       categoryBtns.forEach(btn => {
@@ -311,19 +288,10 @@
 
       // Mobile menu
       if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
+        menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
           mobileMenu.classList.toggle('open');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-          if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && e.target !== menuBtn) {
-            mobileMenu.classList.remove('open');
-            menuBtn.setAttribute('aria-expanded', 'false');
-          }
         });
       }
     });

@@ -16,26 +16,240 @@ const colors = {
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const title = args.find(arg => !arg.startsWith('--'));
+
+// First non-flag arg = title, everything after = extra notes (positional)
+const nonFlagArgs = args.filter(arg => !arg.startsWith('--'));
+const title = nonFlagArgs[0] || null;
+const positionalNotes = nonFlagArgs.slice(1).join(' ') || '';
+
 const categoryFlag = args.find(arg => arg.startsWith('--category='));
 const keywordsFlag = args.find(arg => arg.startsWith('--keywords='));
 const importFlag = args.find(arg => arg.startsWith('--import='));
+const notesFlag = args.find(arg => arg.startsWith('--notes='));
 const interactiveFlag = args.includes('--interactive');
+const generateFlag = args.includes('--generate');
 
 // Extract values
 const category = categoryFlag ? categoryFlag.split('=')[1] : 'Recruiting Tips';
 const keywords = keywordsFlag ? keywordsFlag.split('=')[1] : '';
 const importFile = importFlag ? importFlag.split('=')[1] : null;
+const flagNotes = notesFlag ? notesFlag.split('=')[1] : '';
+
+// Combine positional notes and flag notes
+const extraNotes = [positionalNotes, flagNotes].filter(Boolean).join(' ');
 
 // Valid categories
 const validCategories = ['Recruiting Tips', 'Product Updates', 'Tutorials'];
 
-// Helper function to generate slug from title
+// Helper to strip ANSI color codes from text
+function stripAnsiColors(text) {
+  return text.replace(/\x1b\[[0-9;]*m/g, '');
+}
+
+// Robust Claude CLI call using stdin piping
+async function callClaudeWithStdin(prompt, description, timeoutMs = 180000) {
+  const { execSync } = require('child_process');
+  const tempPromptFile = path.join(__dirname, `temp-prompt-${Date.now()}.txt`);
+  const tempResponseFile = path.join(__dirname, `temp-response-${Date.now()}.txt`);
+
+  try {
+    fs.writeFileSync(tempPromptFile, prompt, 'utf8');
+
+    console.log(`${colors.cyan}  Calling Claude CLI for ${description}...${colors.reset}`);
+
+    const claudeCommand = `cat "${tempPromptFile}" | claude -p --output-format text > "${tempResponseFile}" 2>&1`;
+
+    execSync(claudeCommand, {
+      stdio: 'pipe',
+      shell: '/bin/bash',
+      timeout: timeoutMs,
+      maxBuffer: 10 * 1024 * 1024
+    });
+
+    const response = fs.readFileSync(tempResponseFile, 'utf8');
+
+    fs.unlinkSync(tempPromptFile);
+    fs.unlinkSync(tempResponseFile);
+
+    return response.trim();
+  } catch (error) {
+    if (fs.existsSync(tempPromptFile)) fs.unlinkSync(tempPromptFile);
+    if (fs.existsSync(tempResponseFile)) fs.unlinkSync(tempResponseFile);
+    throw new Error(`Claude CLI call failed: ${error.message}`);
+  }
+}
+
+// Extract JSON from Claude response (handles markdown code blocks)
+function extractJsonFromResponse(response) {
+  let jsonStr = response;
+
+  const jsonBlockMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
+  if (jsonBlockMatch) {
+    jsonStr = jsonBlockMatch[1];
+  } else {
+    const codeBlockMatch = response.match(/```\s*([\s\S]*?)\s*```/);
+    if (codeBlockMatch) {
+      jsonStr = codeBlockMatch[1];
+    }
+  }
+
+  const firstBrace = jsonStr.indexOf('{');
+  const lastBrace = jsonStr.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1) {
+    jsonStr = jsonStr.substring(firstBrace, lastBrace + 1);
+  }
+
+  return JSON.parse(jsonStr);
+}
+
+// Generate plain text prompt for Claude API (no ANSI colors)
+function generateBlogPromptPlain(title, category, keywords, extraNotes) {
+  const slug = generateSlug(title);
+  const date = getTodayDate();
+
+  const extraSection = extraNotes
+    ? `\nADDITIONAL CONTEXT / ANGLE:\n${extraNotes}\n`
+    : '';
+
+  return `Generate a comprehensive, SEO-optimized blog post for Team Build Pro with the following requirements:
+
+TITLE: "${title}"
+CATEGORY: ${category}
+TARGET KEYWORDS: ${keywords || 'ai recruiting, direct sales, team building, network marketing'}${extraSection}SLUG: ${slug}
+PUBLISH DATE: ${date}
+
+SEO REQUIREMENTS:
+- Word count: 1,500-2,500 words (optimal for SEO ranking)
+- Include 5-8 H2 headings (clear hierarchy)
+- Include 10-15 H3 subheadings where appropriate
+- Use <ul class="checklist"> for actionable bullet points
+- Include real examples, statistics, or case studies
+- Add <p class="note"> callout boxes for key insights/tips
+- Include internal links to /companies.html or specific company pages
+- Use <div class="divider"></div> before final CTA
+- Meta description: 150-160 characters
+- Excerpt: 140-160 characters
+
+BRAND VOICE & STYLE:
+- Direct, actionable, no fluff or filler content
+- Focus on practical strategies over theory
+- Use specific examples and data points
+- Speak directly to direct sales professionals and network marketers
+- Emphasize Team Build Pro's unique pre-qualification approach
+- Professional but conversational tone
+- No emojis in content (only in examples if relevant)
+
+CONTENT STRUCTURE:
+1. **Opening Hook** (1-2 paragraphs)
+   - Address a specific pain point or challenge
+   - Make it relatable and urgent
+
+2. **Why This Matters Now** (1 H2 section)
+   - Current trends or context
+   - Why traditional approaches fail
+   - What's changed in 2025
+
+3. **Main Content** (5-7 H2 sections)
+   - Each section should be 200-400 words
+   - Include H3 subheadings for deeper topics
+   - Use checklists for actionable items
+   - Include note boxes for pro tips or warnings
+
+4. **Real-World Examples** (integrate throughout)
+   - Specific scenarios or case studies
+   - "Before/after" comparisons
+   - Testimonial-style quotes (can be synthesized)
+
+5. **Implementation Steps** (1 H2 section)
+   - Step-by-step action plan
+   - Use ordered list or checklist format
+
+6. **Common Mistakes** (optional H2 section)
+   - What NOT to do
+   - How to avoid pitfalls
+
+7. **Conclusion** (final paragraph before CTA)
+   - Summarize key takeaways
+   - Reinforce main benefit
+   - Lead into CTA
+
+8. **CTA Section** (after divider)
+   - Strong call to action
+   - Reference Team Build Pro features
+   - Encourage download or trial
+
+INTERNAL LINKING:
+- Link to /companies.html when mentioning company-specific strategies
+- Link to specific company pages like /companies/ai-recruiting-young-living.html
+- Link to other blog posts if relevant (use realistic URLs like /blog/other-post-slug.html)
+- Link to /faq.html or /contact_us.html where appropriate
+
+OUTPUT FORMAT:
+Return ONLY a valid JSON object with this exact structure (no markdown, no explanation, just JSON):
+
+{
+  "slug": "${slug}",
+  "title": "${title}",
+  "excerpt": "Your 140-160 character excerpt here that hooks the reader...",
+  "category": "${category}",
+  "author": "Team Build Pro",
+  "publishDate": "${date}",
+  "metaDescription": "Your 150-160 character meta description optimized for search engines...",
+  "featured": false,
+  "content": "<p>Your opening paragraph...</p><h2>First H2</h2>..."
+}
+
+IMPORTANT:
+- Return ONLY the JSON object, no other text
+- Ensure content is original and valuable (not generic)
+- Focus on Team Build Pro's unique 30-day pre-qualification approach
+- Include specific tactics readers can implement immediately
+- Make it comprehensive enough to rank for target keywords
+- Maintain professional quality throughout
+- All HTML in content field should be on a single line or use \\n for newlines`;
+}
+
+// Helper function to generate SEO-optimized slug from title
+// - Removes stop words for cleaner URLs
+// - Limits length to ~50 characters for SEO best practices
+// - Preserves important keywords
 function generateSlug(title) {
-  return title
+  const stopWords = new Set([
+    'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+    'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
+    'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+    'could', 'should', 'may', 'might', 'must', 'shall', 'can', 'need',
+    'it', 'its', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she',
+    'we', 'they', 'what', 'which', 'who', 'whom', 'how', 'when', 'where',
+    'why', 'all', 'each', 'every', 'both', 'few', 'more', 'most', 'other',
+    'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than',
+    'too', 'very', 'just', 'also', 'now', 'here', 'there', 'then', 'once',
+    'isn', 'isnt', "isn't", 'aren', 'arent', "aren't", 'don', 'dont', "don't",
+    'doesn', 'doesnt', "doesn't", 'didn', 'didnt', "didn't", 'won', 'wont',
+    "won't", 'wouldn', 'wouldnt', "wouldn't", 'couldn', 'couldnt', "couldn't",
+    'shouldn', 'shouldnt', "shouldn't", 'actually', 'really', 'simply', 'about'
+  ]);
+
+  const maxLength = 50;
+
+  const words = title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(word => word.length > 0 && !stopWords.has(word));
+
+  let slug = '';
+  for (const word of words) {
+    const potentialSlug = slug ? `${slug}-${word}` : word;
+    if (potentialSlug.length <= maxLength) {
+      slug = potentialSlug;
+    } else {
+      break;
+    }
+  }
+
+  return slug || words.slice(0, 3).join('-');
 }
 
 // Helper function to get today's date in YYYY-MM-DD format
@@ -96,37 +310,10 @@ function validateBlogPost(post) {
   return errors;
 }
 
-// Function to call Claude API for translation
+// Function to call Claude API for translation (uses robust stdin approach)
 async function callClaudeForTranslation(prompt, languageName) {
-  console.log(`${colors.cyan}  Calling Claude API for ${languageName} translation...${colors.reset}`);
-
-  const { execSync } = require('child_process');
-  const tempPromptFile = path.join(__dirname, `temp-${languageName.toLowerCase()}-prompt.txt`);
-  const tempResponseFile = path.join(__dirname, `temp-${languageName.toLowerCase()}-response.json`);
-
-  fs.writeFileSync(tempPromptFile, prompt, 'utf8');
-
-  const claudeCommand = `claude -p "$(cat ${tempPromptFile})" --format json > ${tempResponseFile}`;
-
-  try {
-    execSync(claudeCommand, {
-      stdio: 'pipe',
-      shell: '/bin/bash',
-      timeout: 120000
-    });
-
-    const response = fs.readFileSync(tempResponseFile, 'utf8');
-    const translation = JSON.parse(response);
-
-    fs.unlinkSync(tempPromptFile);
-    fs.unlinkSync(tempResponseFile);
-
-    return translation;
-  } catch (error) {
-    if (fs.existsSync(tempPromptFile)) fs.unlinkSync(tempPromptFile);
-    if (fs.existsSync(tempResponseFile)) fs.unlinkSync(tempResponseFile);
-    throw new Error(`Claude API call failed: ${error.message}`);
-  }
+  const response = await callClaudeWithStdin(prompt, `${languageName} translation`, 180000);
+  return extractJsonFromResponse(response);
 }
 
 // Translation helper function - generates translation prompt for Claude Code
@@ -136,21 +323,27 @@ function generateTranslationPrompt(blogPost, targetLang) {
 
   return `Translate the following blog post to ${langName} with cultural adaptation.
 
-IMPORTANT TRANSLATION REQUIREMENTS:
+CRITICAL REQUIREMENTS:
 - This is NOT a literal translation - adapt the content for ${langName}-speaking cultures
 - Maintain the marketing impact and professional tone
 - Translate ALL text including: title, excerpt, meta description, and full content
 - Update ALL URLs from "teambuildpro.com" to "${baseUrl}"
-- Preserve HTML structure exactly (all tags, classes, attributes)
 - Keep the same slug: "${blogPost.slug}"
 - Maintain SEO quality - meta description should be compelling in ${langName}
+
+CONTENT FIELD FORMAT - VERY IMPORTANT:
+- The "content" field must contain ONLY the article body HTML (p, h2, h3, ul, div tags, etc.)
+- Do NOT include <!DOCTYPE>, <html>, <head>, <body>, <header>, <footer>, or <script> tags
+- Do NOT wrap content in a full HTML document structure
+- Just translate the existing content HTML as-is, preserving tags and classes
 
 BLOG POST TO TRANSLATE:
 ${JSON.stringify(blogPost, null, 2)}
 
 OUTPUT FORMAT:
 Return ONLY a valid JSON object with the exact same structure, with all text translated to ${langName}.
-The output must be valid JSON that can be parsed directly.`;
+The output must be valid JSON that can be parsed directly.
+IMPORTANT: The "content" field should contain article body HTML only, not a full HTML page.`;
 }
 
 // Sitemap update helper function
@@ -205,11 +398,54 @@ function updateSitemap(sitemapPath, blogPost, lang) {
   return true;
 }
 
+// Sanitize content - extract article body if content contains a full HTML document
+function sanitizeContent(content) {
+  if (!content) return '';
+
+  // Check if content contains a full HTML document
+  if (content.includes('<!DOCTYPE') || content.includes('<html')) {
+    // Try to extract content from <article> tag first
+    const articleMatch = content.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+    if (articleMatch) {
+      return articleMatch[1].trim();
+    }
+
+    // Try to extract from main content area
+    const mainMatch = content.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    if (mainMatch) {
+      // Look for article inside main
+      const innerArticle = mainMatch[1].match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+      if (innerArticle) {
+        return innerArticle[1].trim();
+      }
+      return mainMatch[1].trim();
+    }
+
+    // Try to extract from body
+    const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    if (bodyMatch) {
+      let bodyContent = bodyMatch[1];
+      // Remove header and footer
+      bodyContent = bodyContent.replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '');
+      bodyContent = bodyContent.replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '');
+      bodyContent = bodyContent.replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '');
+      bodyContent = bodyContent.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+      bodyContent = bodyContent.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+      return bodyContent.trim();
+    }
+  }
+
+  return content;
+}
+
 // Generate HTML for translated blog post
 function generateTranslatedBlogHTML(blogPost, lang) {
   const baseUrl = lang === 'es' ? 'https://es.teambuildpro.com' : 'https://pt.teambuildpro.com';
   const langCode = lang === 'es' ? 'es' : 'pt';
   const langName = lang === 'es' ? 'Spanish' : 'Portuguese';
+
+  // Sanitize content to remove any nested HTML documents
+  const cleanContent = sanitizeContent(blogPost.content);
 
   // Format date in target language
   const dateObj = new Date(blogPost.publishDate);
@@ -296,10 +532,25 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   <header class="header">
     <nav class="nav container">
       <a href="${baseUrl}" class="logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
         <span>Team Build Pro</span>
       </a>
+      <button id="menu-btn" class="menu-btn" aria-label="${lang === 'es' ? 'Abrir menú' : 'Abrir menu'}" aria-haspopup="true" aria-expanded="false">
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+      </button>
+      <div id="mobile-menu" class="mobile-menu" role="menu">
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="${baseUrl}/contact_us.html" role="menuitem">${lang === 'es' ? 'Contacto' : 'Contato'}</a>
+      </div>
     </nav>
+    <div class="language-switcher header-language-switcher">
+      <a href="https://teambuildpro.com/" hreflang="en" lang="en" class="lang-link">English</a>
+      <span class="lang-separator">|</span>
+      ${lang === 'es' ? '<span class="lang-link active" lang="es">Español</span>' : '<a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>'}
+      <span class="lang-separator">|</span>
+      ${lang === 'pt' ? '<span class="lang-link active" lang="pt">Português</span>' : '<a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>'}
+    </div>
   </header>
 
   <!-- Blog Post -->
@@ -318,7 +569,7 @@ function generateTranslatedBlogHTML(blogPost, lang) {
       </header>
 
       <div class="post-content">
-        ${blogPost.content}
+        ${cleanContent}
       </div>
 
     </div>
@@ -326,10 +577,29 @@ function generateTranslatedBlogHTML(blogPost, lang) {
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
-      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. All rights reserved.</p>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
+      </div>
+      <div class="footer-links">
+        <a href="/faq.html">FAQ</a>
+        <a href="${baseUrl}/contact_us.html">${lang === 'es' ? 'Contacto' : 'Contato'}</a>
+        <a href="${baseUrl}/privacy_policy.html">${lang === 'es' ? 'Política de Privacidad' : 'Política de Privacidade'}</a>
+        <a href="${baseUrl}/terms_of_service.html">${lang === 'es' ? 'Términos de Servicio' : 'Termos de Serviço'}</a>
+      </div>
+      <p>&copy; 2025 Team Build Pro. ${lang === 'es' ? 'Todos los derechos reservados.' : 'Todos os Direitos Reservados.'}</p>
     </div>
   </footer>
+
+  <script>
+    document.getElementById('menu-btn').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+      menu.style.display = isExpanded ? 'none' : 'flex';
+    });
+  </script>
 
 </body>
 </html>`;
@@ -338,9 +608,13 @@ function generateTranslatedBlogHTML(blogPost, lang) {
 }
 
 // Generate the AI prompt for Claude Code
-function generatePrompt(title, category, keywords) {
+function generatePrompt(title, category, keywords, extraNotes) {
   const slug = generateSlug(title);
   const date = getTodayDate();
+
+  const extraSection = extraNotes
+    ? `\n${colors.bright}ADDITIONAL CONTEXT / ANGLE:${colors.reset}\n${extraNotes}\n`
+    : '';
 
   return `
 ${colors.bright}${colors.cyan}═══════════════════════════════════════════════════════════════════${colors.reset}
@@ -355,8 +629,7 @@ Generate a comprehensive, SEO-optimized blog post for Team Build Pro with the fo
 
 ${colors.bright}TITLE:${colors.reset} "${title}"
 ${colors.bright}CATEGORY:${colors.reset} ${category}
-${colors.bright}TARGET KEYWORDS:${colors.reset} ${keywords || 'ai recruiting, direct sales, team building, network marketing'}
-${colors.bright}SLUG:${colors.reset} ${slug}
+${colors.bright}TARGET KEYWORDS:${colors.reset} ${keywords || 'ai recruiting, direct sales, team building, network marketing'}${extraSection}${colors.bright}SLUG:${colors.reset} ${slug}
 ${colors.bright}PUBLISH DATE:${colors.reset} ${date}
 
 ${colors.bright}SEO REQUIREMENTS:${colors.reset}
@@ -534,10 +807,26 @@ async function processImport(importFile) {
     process.exit(1);
   }
 
+  // Ensure previous entry has a trailing comma
+  const contentBeforeInsert = generateBlogContent.slice(0, insertPosition);
+  const lastClosingBrace = contentBeforeInsert.lastIndexOf('}');
+  if (lastClosingBrace !== -1) {
+    const afterBrace = contentBeforeInsert.slice(lastClosingBrace + 1).trim();
+    if (afterBrace === '' || afterBrace === '\n') {
+      // No comma after the last closing brace - add one
+      generateBlogContent =
+        generateBlogContent.slice(0, lastClosingBrace + 1) +
+        ',' +
+        generateBlogContent.slice(lastClosingBrace + 1);
+    }
+  }
+
+  // Recalculate insert position after potential comma insertion
+  const newInsertPosition = generateBlogContent.indexOf('];\n');
   generateBlogContent =
-    generateBlogContent.slice(0, insertPosition) +
+    generateBlogContent.slice(0, newInsertPosition) +
     blogPostString +
-    generateBlogContent.slice(insertPosition);
+    generateBlogContent.slice(newInsertPosition);
 
   fs.writeFileSync(generateBlogPath, generateBlogContent, 'utf8');
 
@@ -637,6 +926,166 @@ async function processImport(importFile) {
   }
 }
 
+// Full automation mode - generates blog in all languages with a single command
+async function runFullAutomation(title, category, keywords, extraNotes) {
+  console.log(`\n${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}   FULL AUTOMATION MODE - Generating blog in EN, ES, PT${colors.reset}`);
+  console.log(`${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
+
+  console.log(`${colors.cyan}Title:${colors.reset} ${title}`);
+  console.log(`${colors.cyan}Category:${colors.reset} ${category}`);
+  if (keywords) console.log(`${colors.cyan}Keywords:${colors.reset} ${keywords}`);
+  if (extraNotes) console.log(`${colors.cyan}Notes:${colors.reset} ${extraNotes}`);
+  console.log('');
+
+  const slug = generateSlug(title);
+
+  // Step 1: Generate blog content via Claude
+  console.log(`${colors.bright}${colors.yellow}Step 1/6:${colors.reset} Generating blog content via Claude API...`);
+  console.log(`${colors.cyan}  This may take 1-2 minutes...${colors.reset}\n`);
+
+  const blogPrompt = generateBlogPromptPlain(title, category, keywords, extraNotes);
+
+  // Save prompt for debugging
+  const promptLogFile = path.join(__dirname, 'last-blog-prompt.txt');
+  fs.writeFileSync(promptLogFile, blogPrompt, 'utf8');
+  console.log(`${colors.cyan}  Prompt saved to: scripts/last-blog-prompt.txt${colors.reset}\n`);
+
+  let blogPost;
+  try {
+    const response = await callClaudeWithStdin(blogPrompt, 'blog generation', 300000);
+    blogPost = extractJsonFromResponse(response);
+    console.log(`${colors.green}  ✅ Blog content generated successfully${colors.reset}\n`);
+  } catch (error) {
+    console.error(`${colors.yellow}❌ Error generating blog content: ${error.message}${colors.reset}`);
+    console.log(`\n${colors.cyan}Tip: Try running the prompt manually:${colors.reset}`);
+    const prompt = generatePrompt(title, category, keywords, extraNotes);
+    console.log(prompt);
+    process.exit(1);
+  }
+
+  // Step 2: Validate blog content
+  console.log(`${colors.bright}${colors.yellow}Step 2/6:${colors.reset} Validating blog content...`);
+  const errors = validateBlogPost(blogPost);
+  if (errors.length > 0) {
+    console.error(`${colors.yellow}⚠️  Validation warnings (${errors.length}):${colors.reset}`);
+    errors.forEach(error => console.log(`   • ${error}`));
+    console.log(`${colors.cyan}  Proceeding with generation despite warnings...${colors.reset}\n`);
+  } else {
+    console.log(`${colors.green}  ✅ Validation passed${colors.reset}\n`);
+  }
+
+  // Save raw blog response
+  const blogResponseFile = path.join(__dirname, 'blog-response.json');
+  fs.writeFileSync(blogResponseFile, JSON.stringify(blogPost, null, 2), 'utf8');
+  console.log(`${colors.cyan}  Saved raw response to: scripts/blog-response.json${colors.reset}\n`);
+
+  // Step 3: Add to generate-blog.js and generate English HTML
+  console.log(`${colors.bright}${colors.yellow}Step 3/6:${colors.reset} Adding blog to database and generating English HTML...`);
+
+  const generateBlogPath = path.join(__dirname, 'generate-blog.js');
+  let generateBlogContent = fs.readFileSync(generateBlogPath, 'utf8');
+
+  const blogPostString = `  ${JSON.stringify(blogPost, null, 2).replace(/\n/g, '\n  ')},\n`;
+  const insertPosition = generateBlogContent.indexOf('];\n');
+
+  if (insertPosition === -1) {
+    console.error(`${colors.yellow}❌ Error: Could not find blogPosts array in generate-blog.js${colors.reset}`);
+    process.exit(1);
+  }
+
+  generateBlogContent =
+    generateBlogContent.slice(0, insertPosition) +
+    blogPostString +
+    generateBlogContent.slice(insertPosition);
+
+  fs.writeFileSync(generateBlogPath, generateBlogContent, 'utf8');
+  console.log(`${colors.green}  ✅ Added blog post to generate-blog.js${colors.reset}`);
+
+  // Generate HTML
+  const { execSync } = require('child_process');
+  execSync('node scripts/generate-blog.js', { stdio: 'inherit' });
+  console.log(`${colors.green}  ✅ English HTML files generated${colors.reset}\n`);
+
+  // Update English sitemap
+  const englishSitemapPath = path.join(__dirname, '..', 'web', 'sitemap.xml');
+  updateSitemap(englishSitemapPath, blogPost, 'en');
+
+  // Step 4: Generate Spanish translation
+  console.log(`${colors.bright}${colors.yellow}Step 4/6:${colors.reset} Generating Spanish translation...`);
+  const spanishPrompt = generateTranslationPrompt(blogPost, 'es');
+
+  try {
+    const spanishTranslation = await callClaudeForTranslation(spanishPrompt, 'Spanish');
+    const spanishTransFile = path.join(__dirname, 'spanish-translation.json');
+    fs.writeFileSync(spanishTransFile, JSON.stringify(spanishTranslation, null, 2), 'utf8');
+    console.log(`${colors.green}  ✅ Spanish translation received${colors.reset}`);
+
+    // Generate Spanish HTML
+    const spanishHTML = generateTranslatedBlogHTML(spanishTranslation, 'es');
+    const spanishPath = path.join(__dirname, '..', 'web-es', 'blog', `${blogPost.slug}.html`);
+    fs.writeFileSync(spanishPath, spanishHTML, 'utf8');
+    console.log(`${colors.green}  ✅ Spanish blog created: web-es/blog/${blogPost.slug}.html${colors.reset}`);
+
+    // Update Spanish sitemap
+    const spanishSitemapPath = path.join(__dirname, '..', 'web-es', 'sitemap.xml');
+    updateSitemap(spanishSitemapPath, blogPost, 'es');
+    console.log('');
+  } catch (error) {
+    console.error(`${colors.yellow}⚠️  Spanish translation failed: ${error.message}${colors.reset}`);
+    console.log(`${colors.cyan}  Saved prompt to scripts/spanish-translation-prompt.txt for manual retry${colors.reset}\n`);
+    fs.writeFileSync(path.join(__dirname, 'spanish-translation-prompt.txt'), spanishPrompt, 'utf8');
+  }
+
+  // Step 5: Generate Portuguese translation
+  console.log(`${colors.bright}${colors.yellow}Step 5/6:${colors.reset} Generating Portuguese translation...`);
+  const portuguesePrompt = generateTranslationPrompt(blogPost, 'pt');
+
+  try {
+    const portugueseTranslation = await callClaudeForTranslation(portuguesePrompt, 'Portuguese');
+    const portugueseTransFile = path.join(__dirname, 'portuguese-translation.json');
+    fs.writeFileSync(portugueseTransFile, JSON.stringify(portugueseTranslation, null, 2), 'utf8');
+    console.log(`${colors.green}  ✅ Portuguese translation received${colors.reset}`);
+
+    // Generate Portuguese HTML
+    const portugueseHTML = generateTranslatedBlogHTML(portugueseTranslation, 'pt');
+    const portuguesePath = path.join(__dirname, '..', 'web-pt', 'blog', `${blogPost.slug}.html`);
+    fs.writeFileSync(portuguesePath, portugueseHTML, 'utf8');
+    console.log(`${colors.green}  ✅ Portuguese blog created: web-pt/blog/${blogPost.slug}.html${colors.reset}`);
+
+    // Update Portuguese sitemap
+    const portugueseSitemapPath = path.join(__dirname, '..', 'web-pt', 'sitemap.xml');
+    updateSitemap(portugueseSitemapPath, blogPost, 'pt');
+    console.log('');
+  } catch (error) {
+    console.error(`${colors.yellow}⚠️  Portuguese translation failed: ${error.message}${colors.reset}`);
+    console.log(`${colors.cyan}  Saved prompt to scripts/portuguese-translation-prompt.txt for manual retry${colors.reset}\n`);
+    fs.writeFileSync(path.join(__dirname, 'portuguese-translation-prompt.txt'), portuguesePrompt, 'utf8');
+  }
+
+  // Step 6: Summary
+  console.log(`${colors.bright}${colors.yellow}Step 6/6:${colors.reset} Complete!\n`);
+
+  console.log(`${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}   BLOG GENERATION COMPLETE${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
+
+  console.log(`${colors.bright}Generated files:${colors.reset}`);
+  console.log(`  ${colors.cyan}English:${colors.reset}    web/blog/${blogPost.slug}.html`);
+  console.log(`  ${colors.cyan}Spanish:${colors.reset}    web-es/blog/${blogPost.slug}.html`);
+  console.log(`  ${colors.cyan}Portuguese:${colors.reset} web-pt/blog/${blogPost.slug}.html`);
+
+  console.log(`\n${colors.bright}Blog summary:${colors.reset}`);
+  console.log(`  Title: ${blogPost.title}`);
+  console.log(`  Slug: ${blogPost.slug}`);
+  console.log(`  Category: ${blogPost.category}`);
+  console.log(`  Content length: ~${Math.round(blogPost.content.length / 5)} words`);
+
+  console.log(`\n${colors.bright}Next step:${colors.reset}`);
+  console.log(`  ${colors.yellow}firebase deploy --only hosting${colors.reset}`);
+  console.log('');
+}
+
 // Main execution
 async function main() {
   console.log(`\n${colors.bright}${colors.blue}Team Build Pro - AI Blog Generator${colors.reset}\n`);
@@ -650,11 +1099,25 @@ async function main() {
   // Validate inputs
   if (!title) {
     console.log(`${colors.yellow}Usage:${colors.reset}`);
+    console.log(`\n${colors.bright}Prompt-only mode (manual workflow):${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title Here"${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" "Additional context or angle"${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --notes="Focus on X"${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --category="Tutorials"${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --keywords="seo, keywords"${colors.reset}`);
+    console.log(`\n${colors.bright}Full automation mode (recommended):${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --generate${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" "Extra context" --generate${colors.reset}`);
+    console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js "Blog Title" --category="Tutorials" --generate${colors.reset}`);
+    console.log(`\n${colors.bright}Import mode (from saved JSON):${colors.reset}`);
     console.log(`  ${colors.cyan}node scripts/generate-ai-blog.js --import=scripts/blog-response.json${colors.reset}`);
     console.log(`\n${colors.bright}Valid categories:${colors.reset} ${validCategories.join(', ')}`);
+    console.log(`\n${colors.bright}Flags:${colors.reset}`);
+    console.log(`  ${colors.cyan}--generate${colors.reset}          Full automation: generates EN, ES, PT blogs in one command`);
+    console.log(`  ${colors.cyan}--category="..."${colors.reset}   Set blog category (default: Recruiting Tips)`);
+    console.log(`  ${colors.cyan}--keywords="..."${colors.reset}   Set target SEO keywords`);
+    console.log(`  ${colors.cyan}--notes="..."${colors.reset}      Add extra context or angle for the blog`);
+    console.log(`  ${colors.cyan}--import=file${colors.reset}      Import blog from JSON file`);
     console.log('');
     process.exit(1);
   }
@@ -665,8 +1128,18 @@ async function main() {
     process.exit(1);
   }
 
-  // Generate and display the prompt
-  const prompt = generatePrompt(title, category, keywords);
+  // Full automation mode
+  if (generateFlag) {
+    if (!title) {
+      console.error(`${colors.yellow}Error: Title is required when using --generate${colors.reset}`);
+      process.exit(1);
+    }
+    await runFullAutomation(title, category, keywords, extraNotes);
+    return;
+  }
+
+  // Prompt-only mode: generate and display the prompt
+  const prompt = generatePrompt(title, category, keywords, extraNotes);
   console.log(prompt);
 }
 
