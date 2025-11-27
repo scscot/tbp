@@ -50,36 +50,45 @@ function stripAnsiColors(text) {
   return text.replace(/\x1b\[[0-9;]*m/g, '');
 }
 
-// Robust Claude CLI call using stdin piping
+// Call Anthropic API directly (works in GitHub Actions without CLI auth)
 async function callClaudeWithStdin(prompt, description, timeoutMs = 180000) {
-  const { execSync } = require('child_process');
-  const tempPromptFile = path.join(__dirname, `temp-prompt-${Date.now()}.txt`);
-  const tempResponseFile = path.join(__dirname, `temp-response-${Date.now()}.txt`);
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is not set');
+  }
+
+  console.log(`${colors.cyan}  Calling Claude API for ${description}...${colors.reset}`);
 
   try {
-    fs.writeFileSync(tempPromptFile, prompt, 'utf8');
-
-    console.log(`${colors.cyan}  Calling Claude CLI for ${description}...${colors.reset}`);
-
-    const claudeCommand = `cat "${tempPromptFile}" | claude -p --output-format text > "${tempResponseFile}" 2>&1`;
-
-    execSync(claudeCommand, {
-      stdio: 'pipe',
-      shell: '/bin/bash',
-      timeout: timeoutMs,
-      maxBuffer: 10 * 1024 * 1024
+    const response = await axios.post('https://api.anthropic.com/v1/messages', {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 8192,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      timeout: timeoutMs
     });
 
-    const response = fs.readFileSync(tempResponseFile, 'utf8');
+    if (response.data && response.data.content && response.data.content[0]) {
+      return response.data.content[0].text.trim();
+    }
 
-    fs.unlinkSync(tempPromptFile);
-    fs.unlinkSync(tempResponseFile);
-
-    return response.trim();
+    throw new Error('Unexpected API response format');
   } catch (error) {
-    if (fs.existsSync(tempPromptFile)) fs.unlinkSync(tempPromptFile);
-    if (fs.existsSync(tempResponseFile)) fs.unlinkSync(tempResponseFile);
-    throw new Error(`Claude CLI call failed: ${error.message}`);
+    if (error.response) {
+      throw new Error(`Anthropic API error: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+    }
+    throw new Error(`Anthropic API call failed: ${error.message}`);
   }
 }
 

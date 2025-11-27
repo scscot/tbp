@@ -37,11 +37,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'scripts/package.json'
 
-      - name: Install Claude CLI
-        run: |
-          npm install -g @anthropic-ai/claude-code
-          echo "Claude CLI installed"
-
       - name: Install script dependencies
         working-directory: scripts
         run: |
