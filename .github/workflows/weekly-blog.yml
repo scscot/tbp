@@ -18,6 +18,9 @@ on:
 env:
   NODE_VERSION: '20'
 
+permissions:
+  contents: write
+
 jobs:
   generate-blog:
     runs-on: ubuntu-latest

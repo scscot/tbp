@@ -1343,7 +1343,8 @@ function generateBlogIndex(posts) {
 console.log('🚀 Generating Team Build Pro blog...\n');
 
 // Create blog directory if it doesn't exist
-const blogDir = '/Users/sscott/tbp/web/blog';
+const rootDir = path.resolve(__dirname, '..');
+const blogDir = path.join(rootDir, 'web', 'blog');
 if (!fs.existsSync(blogDir)) {
   fs.mkdirSync(blogDir, { recursive: true });
   console.log(`✓ Created /blog directory\n`);
@@ -1359,7 +1360,7 @@ blogPosts.forEach(post => {
 
 // Generate blog index page
 const blogIndexHtml = generateBlogIndex(blogPosts);
-const indexOutputPath = '/Users/sscott/tbp/web/blog.html';
+const indexOutputPath = path.join(rootDir, 'web', 'blog.html');
 fs.writeFileSync(indexOutputPath, blogIndexHtml, 'utf8');
 console.log(`\n✓ Generated blog.html index page (${blogIndexHtml.length} chars)`);
 
