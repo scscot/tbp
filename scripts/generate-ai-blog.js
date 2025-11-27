@@ -360,6 +360,90 @@ The output must be valid JSON that can be parsed directly.
 IMPORTANT: The "content" field should contain article body HTML only, not a full HTML page.`;
 }
 
+// Blog index update helper function - adds new blog card to ES/PT blog.html
+function updateBlogIndex(blogIndexPath, translatedBlogPost, lang) {
+  if (!fs.existsSync(blogIndexPath)) {
+    console.log(`${colors.yellow}⚠️  Blog index not found: ${blogIndexPath}${colors.reset}`);
+    return false;
+  }
+
+  let blogIndexContent = fs.readFileSync(blogIndexPath, 'utf8');
+
+  // Check if blog post already exists in index
+  if (blogIndexContent.includes(`/blog/${translatedBlogPost.slug}.html`)) {
+    console.log(`${colors.cyan}  Blog post already in ${lang.toUpperCase()} blog index, skipping...${colors.reset}`);
+    return true;
+  }
+
+  // Format date in target language
+  const dateObj = new Date(translatedBlogPost.publishDate);
+  const formattedDate = lang === 'es'
+    ? dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+    : dateObj.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Category badge text
+  const categoryBadges = {
+    es: {
+      'Recruiting Tips': 'CONSEJOS DE RECLUTAMIENTO',
+      'Product Updates': 'ACTUALIZACIONES DE PRODUCTO',
+      'Tutorials': 'TUTORIALES'
+    },
+    pt: {
+      'Recruiting Tips': 'DICAS DE RECRUTAMENTO',
+      'Product Updates': 'ATUALIZAÇÕES DO PRODUTO',
+      'Tutorials': 'TUTORIAIS'
+    }
+  };
+
+  const featuredBadge = lang === 'es' ? 'DESTACADO' : 'DESTAQUE';
+  const readMoreText = lang === 'es' ? 'Leer Artículo →' : 'Ler Artigo →';
+  const byText = lang === 'es' ? 'Por' : 'Por';
+
+  // Truncate excerpt to ~120 chars for card display
+  let excerpt = translatedBlogPost.excerpt || '';
+  if (excerpt.length > 120) {
+    excerpt = excerpt.substring(0, 117) + '...';
+  }
+
+  // Create the blog card HTML
+  const blogCardHTML = `
+          <a href="/blog/${translatedBlogPost.slug}.html" class="blog-card" data-category="${translatedBlogPost.category}">
+            <div class="card-content">
+              <span class="category-badge featured-badge">${featuredBadge}</span>
+              <h3>${translatedBlogPost.title}</h3>
+              <p>${excerpt}</p>
+              <div class="meta">
+                <span>${formattedDate}</span>
+                <span>•</span>
+                <span>${byText} ${translatedBlogPost.author || 'Team Build Pro'}</span>
+              </div>
+              <span class="read-more">${readMoreText}</span>
+            </div>
+          </a>
+`;
+
+  // Find the blog-grid div and insert the new card right after it
+  const blogGridMarker = '<div class="blog-grid" id="blog-grid">';
+  const insertPosition = blogIndexContent.indexOf(blogGridMarker);
+
+  if (insertPosition === -1) {
+    console.log(`${colors.yellow}⚠️  Could not find blog-grid in ${blogIndexPath}${colors.reset}`);
+    return false;
+  }
+
+  // Insert the new blog card right after the blog-grid opening tag
+  const insertPoint = insertPosition + blogGridMarker.length;
+  blogIndexContent =
+    blogIndexContent.slice(0, insertPoint) +
+    blogCardHTML +
+    blogIndexContent.slice(insertPoint);
+
+  fs.writeFileSync(blogIndexPath, blogIndexContent, 'utf8');
+  console.log(`${colors.green}  ✅ Updated ${lang.toUpperCase()} blog index${colors.reset}`);
+
+  return true;
+}
+
 // Sitemap update helper function
 function updateSitemap(sitemapPath, blogPost, lang) {
   const baseUrl = lang === 'en' ? 'https://teambuildpro.com'
@@ -456,7 +540,6 @@ function sanitizeContent(content) {
 function generateTranslatedBlogHTML(blogPost, lang) {
   const baseUrl = lang === 'es' ? 'https://es.teambuildpro.com' : 'https://pt.teambuildpro.com';
   const langCode = lang === 'es' ? 'es' : 'pt';
-  const langName = lang === 'es' ? 'Spanish' : 'Portuguese';
 
   // Sanitize content to remove any nested HTML documents
   const cleanContent = sanitizeContent(blogPost.content);
@@ -467,45 +550,85 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     ? dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
     : dateObj.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Read more text
-  const readMoreText = lang === 'es' ? 'Leer Más →' : 'Ler Mais →';
-  const backToBlogText = lang === 'es' ? '← Volver al Blog' : '← Voltar ao Blog';
-  const relatedPostsText = lang === 'es' ? 'Artículos Relacionados' : 'Artigos Relacionados';
-  const byText = lang === 'es' ? 'Por' : 'Por';
+  // Localized strings
+  const strings = lang === 'es' ? {
+    home: 'Inicio',
+    blog: 'Blog',
+    faq: 'FAQ',
+    contact: 'Contacto',
+    books: 'Libros',
+    screenshots: 'Capturas',
+    pricing: 'Precios',
+    shareArticle: 'Comparte este artículo',
+    shareTwitter: 'Compartir en Twitter',
+    shareLinkedIn: 'Compartir en LinkedIn',
+    shareFacebook: 'Compartir en Facebook',
+    ctaTitle: 'Comienza a Construir tu Equipo con IA',
+    ctaDesc: 'Descarga Team Build Pro y ofrece a tus prospectos una experiencia de construcción de equipos de 30 días antes de unirse',
+    privacyPolicy: 'Política de Privacidad',
+    termsOfService: 'Términos de Servicio',
+    allRightsReserved: 'Todos los derechos reservados.',
+    openMenu: 'Abrir menú',
+    categoryBadge: blogPost.category === 'Recruiting Tips' ? 'CONSEJOS DE RECLUTAMIENTO' :
+                   blogPost.category === 'Product Updates' ? 'ACTUALIZACIONES DE PRODUCTO' : 'TUTORIALES'
+  } : {
+    home: 'Início',
+    blog: 'Blog',
+    faq: 'FAQ',
+    contact: 'Contato',
+    books: 'Livros',
+    screenshots: 'Capturas',
+    pricing: 'Preços',
+    shareArticle: 'Compartilhe este artigo',
+    shareTwitter: 'Compartilhar no Twitter',
+    shareLinkedIn: 'Compartilhar no LinkedIn',
+    shareFacebook: 'Compartilhar no Facebook',
+    ctaTitle: 'Comece a Construir sua Equipe com IA',
+    ctaDesc: 'Baixe o Team Build Pro e ofereça aos seus prospects uma experiência de construção de equipe de 30 dias antes de se juntarem',
+    privacyPolicy: 'Política de Privacidade',
+    termsOfService: 'Termos de Serviço',
+    allRightsReserved: 'Todos os Direitos Reservados.',
+    openMenu: 'Abrir menu',
+    categoryBadge: blogPost.category === 'Recruiting Tips' ? 'DICAS DE RECRUTAMENTO' :
+                   blogPost.category === 'Product Updates' ? 'ATUALIZAÇÕES DO PRODUTO' : 'TUTORIAIS'
+  };
+
+  const encodedTitle = encodeURIComponent(blogPost.title);
+  const encodedUrl = encodeURIComponent(`${baseUrl}/blog/${blogPost.slug}.html`);
 
   const html = `<!DOCTYPE html>
 <html lang="${langCode}" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${blogPost.title} - Team Build Pro</title>
+  <title>${blogPost.title} | Team Build Pro Blog</title>
   <meta name="description" content="${blogPost.metaDescription}" />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${baseUrl}/blog/${blogPost.slug}.html" />
 
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="${blogPost.title}" />
+  <meta property="og:title" content="${blogPost.title} | Team Build Pro Blog" />
   <meta property="og:description" content="${blogPost.metaDescription}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="${baseUrl}/blog/${blogPost.slug}.html" />
   <meta property="og:image" content="${baseUrl}/assets/icons/team-build-pro.png" />
   <meta property="og:site_name" content="Team Build Pro" />
-  <meta property="article:published_time" content="${blogPost.publishDate}T00:00:00Z" />
-  <meta property="article:author" content="${blogPost.author}" />
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${blogPost.title}" />
   <meta name="twitter:description" content="${blogPost.metaDescription}" />
   <meta name="twitter:image" content="${baseUrl}/assets/icons/team-build-pro.png" />
+  <meta name="twitter:site" content="@teambuildpro" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="icon" href="/assets/icons/team-build-pro.png" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="/css/blog-post.css" />
+  <link rel="stylesheet" href="/css/downline-animation.css" />
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -516,7 +639,7 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     "description": "${blogPost.metaDescription}",
     "author": {
       "@type": "Organization",
-      "name": "${blogPost.author}"
+      "name": "Team Build Pro"
     },
     "publisher": {
       "@type": "Organization",
@@ -526,8 +649,12 @@ function generateTranslatedBlogHTML(blogPost, lang) {
         "url": "${baseUrl}/assets/icons/team-build-pro.png"
       }
     },
-    "datePublished": "${blogPost.publishDate}T00:00:00Z",
-    "url": "${baseUrl}/blog/${blogPost.slug}.html"
+    "datePublished": "${blogPost.publishDate}",
+    "dateModified": "${blogPost.publishDate}",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "${baseUrl}/blog/${blogPost.slug}.html"
+    }
   }
   </script>
 
@@ -537,25 +664,88 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-G4E4TBBPZ7');
+
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        if (data.ip === '76.33.111.72') {
+          gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+        } else {
+          gtag('config', 'G-G4E4TBBPZ7');
+        }
+      })
+      .catch(() => {
+        gtag('config', 'G-G4E4TBBPZ7');
+      });
   </script>
+
+  <style>
+    .blog-wrapper{padding:60px 0}
+    .blog-wrapper .container{max-width:800px;margin:0 auto;padding:0 20px}
+    .blog-wrapper h1{font-size:2.5rem;font-weight:900;margin-bottom:1rem;color:#1e293b;line-height:1.2}
+    .blog-wrapper h2{font-size:2rem;font-weight:700;margin:2.5rem 0 1rem;color:#1e293b}
+    .blog-wrapper h3{font-size:1.5rem;font-weight:700;margin:2rem 0 1rem;color:#1e293b}
+    .blog-wrapper .eyebrow{display:inline-block;font-weight:700;letter-spacing:.08em;font-size:.8rem;text-transform:uppercase;color:#667eea;margin-bottom:12px}
+    .blog-wrapper .meta{color:#64748b;font-size:0.95rem;margin-bottom:2rem;display:flex;gap:16px;align-items:center}
+    .blog-wrapper p{line-height:1.8;color:#475569;margin-bottom:1.5rem;font-size:1.1rem}
+    .blog-wrapper ul, .blog-wrapper ol{line-height:1.8;color:#475569;margin:1.5rem 0;padding-left:1.5rem}
+    .blog-wrapper li{margin:8px 0}
+    .breadcrumb{font-size:0.875rem;color:#64748b;margin-bottom:1.5rem}
+    .breadcrumb a{color:#667eea;text-decoration:none;transition:color 0.2s}
+    .breadcrumb a:hover{color:#764ba2}
+    .note{background:#f9fafb;border-left:4px solid #667eea;padding:16px 20px;border-radius:8px;margin:1.5rem 0}
+    .note strong{color:#1e293b}
+    .cta-inline{color:#667eea;font-weight:600;text-decoration:none;transition:color 0.2s}
+    .cta-inline:hover{color:#764ba2}
+    .checklist{list-style:none;padding-left:0}
+    .checklist li{padding-left:28px;position:relative;margin:12px 0}
+    .checklist li:before{content:"✓";position:absolute;left:0;color:#667eea;font-weight:bold;font-size:1.2rem}
+    .divider{height:1px;background:#e5e7eb;margin:3rem 0}
+    .social-share{margin:3rem 0;padding:1.5rem;background:#f9fafb;border-radius:12px;text-align:center}
+    .social-share h3{margin-top:0;font-size:1.1rem;color:#1e293b}
+    .social-share .share-buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:1rem}
+    .social-share .share-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;transition:all 0.2s;font-size:0.95rem}
+    .share-btn.twitter{background:#1DA1F2;color:#fff}
+    .share-btn.twitter:hover{background:#1a8cd8}
+    .share-btn.linkedin{background:#0A66C2;color:#fff}
+    .share-btn.linkedin:hover{background:#004182}
+    .share-btn.facebook{background:#1877F2;color:#fff}
+    .share-btn.facebook:hover{background:#0d65d9}
+    .cta-section{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:1rem;padding:2.5rem 2rem;margin:3rem 0;text-align:center;color:white}
+    .cta-section h2{color:white;font-size:1.75rem;margin-bottom:0.5rem}
+    .cta-section p{color:rgba(255,255,255,0.95);font-size:1.125rem;margin-bottom:1.5rem}
+    .download-buttons{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+    .store-badge{display:inline-flex;align-items:center;justify-content:center;transition:transform 0.2s}
+    .store-badge:hover{transform:translateY(-2px)}
+    .store-badge img{height:60px;width:auto;display:block}
+    @media (max-width: 768px){
+      .blog-wrapper h1{font-size:2rem}
+      .blog-wrapper h2{font-size:1.75rem}
+      .blog-wrapper p{font-size:1.05rem}
+      .social-share .share-buttons{flex-direction:column}
+      .share-btn{width:100%;justify-content:center}
+    }
+  </style>
 </head>
 <body>
-
   <!-- Header -->
   <header class="header">
     <nav class="nav container">
-      <a href="${baseUrl}" class="logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+      <a href="/" class="logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
         <span>Team Build Pro</span>
       </a>
-      <button id="menu-btn" class="menu-btn" aria-label="${lang === 'es' ? 'Abrir menú' : 'Abrir menu'}" aria-haspopup="true" aria-expanded="false">
+      <button id="menu-btn" class="menu-btn" aria-label="${strings.openMenu}" aria-haspopup="true" aria-expanded="false">
         <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="/blog.html" role="menuitem">Blog</a>
-        <a href="/faq.html" role="menuitem">FAQ</a>
-        <a href="${baseUrl}/contact_us.html" role="menuitem">${lang === 'es' ? 'Contacto' : 'Contato'}</a>
+        <a href="/" role="menuitem">${strings.home}</a>
+        <a href="/#screenshots" role="menuitem">${strings.screenshots}</a>
+        <a href="/#pricing" role="menuitem">${strings.pricing}</a>
+        <a href="/faq.html" role="menuitem">${strings.faq}</a>
+        <a href="/blog.html" role="menuitem">${strings.blog}</a>
+        <a href="/books.html" role="menuitem">${strings.books}</a>
+        <a href="/contact_us.html" role="menuitem">${strings.contact}</a>
       </div>
     </nav>
     <div class="language-switcher header-language-switcher">
@@ -567,51 +757,85 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     </div>
   </header>
 
-  <!-- Blog Post -->
-  <article class="blog-post">
-    <div class="container" style="max-width:800px">
+  <main class="blog-wrapper">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">${strings.home}</a> / <a href="/blog.html">${strings.blog}</a> / <span>${blogPost.title}</span>
+      </nav>
 
-      <a href="/blog.html" class="back-link">${backToBlogText}</a>
+      <span class="eyebrow">${strings.categoryBadge}</span>
+      <h1>${blogPost.title}</h1>
 
-      <header class="post-header">
-        <h1>${blogPost.title}</h1>
-        <div class="post-meta">
-          <span class="author">${byText} ${blogPost.author}</span>
-          <span class="date">${formattedDate}</span>
-          <span class="category">${blogPost.category}</span>
-        </div>
-      </header>
-
-      <div class="post-content">
-        ${cleanContent}
+      <div class="meta">
+        <span>Por ${blogPost.author || 'Team Build Pro'}</span>
+        <span>•</span>
+        <span>${formattedDate}</span>
       </div>
 
+      <article>
+        ${cleanContent}
+      </article>
+
+      <!-- Social Sharing -->
+      <div class="social-share">
+        <h3>${strings.shareArticle}</h3>
+        <div class="share-buttons">
+          <a href="https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}" target="_blank" class="share-btn twitter">
+            <span>𝕏</span> ${strings.shareTwitter}
+          </a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" class="share-btn linkedin">
+            <span>in</span> ${strings.shareLinkedIn}
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" class="share-btn facebook">
+            <span>f</span> ${strings.shareFacebook}
+          </a>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <h2>${strings.ctaTitle}</h2>
+        <p>${strings.ctaDesc}</p>
+        <div class="download-buttons">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="store-badge">
+            <img src="/assets/images/app_store_badges/black.svg" alt="Download on App Store">
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" class="store-badge">
+            <img src="/assets/images/Google-Play.png" alt="Get it on Google Play">
+          </a>
+        </div>
+      </section>
+
     </div>
-  </article>
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-        <span>Team Build Pro</span>
+    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
+      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. ${strings.allRightsReserved}</p>
+      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
+        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">${strings.privacyPolicy}</a>
+        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">${strings.termsOfService}</a>
+        <a href="/faq.html" style="color:#667eea;text-decoration:none">${strings.faq}</a>
+        <a href="/contact_us.html" style="color:#667eea;text-decoration:none">${strings.contact}</a>
+        <a href="/blog.html" style="color:#667eea;text-decoration:none">${strings.blog}</a>
       </div>
-      <div class="footer-links">
-        <a href="/faq.html">FAQ</a>
-        <a href="${baseUrl}/contact_us.html">${lang === 'es' ? 'Contacto' : 'Contato'}</a>
-        <a href="${baseUrl}/privacy_policy.html">${lang === 'es' ? 'Política de Privacidad' : 'Política de Privacidade'}</a>
-        <a href="${baseUrl}/terms_of_service.html">${lang === 'es' ? 'Términos de Servicio' : 'Termos de Serviço'}</a>
-      </div>
-      <p>&copy; 2025 Team Build Pro. ${lang === 'es' ? 'Todos los derechos reservados.' : 'Todos os Direitos Reservados.'}</p>
     </div>
   </footer>
 
+  <!-- Mobile Menu Script -->
   <script>
-    document.getElementById('menu-btn').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !isExpanded);
-      menu.style.display = isExpanded ? 'none' : 'flex';
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('open');
+        });
+      }
     });
   </script>
 
@@ -879,6 +1103,10 @@ async function processImport(importFile) {
       const spanishSitemapPath = path.join(__dirname, '..', 'web-es', 'sitemap.xml');
       updateSitemap(spanishSitemapPath, blogPost, 'es');
 
+      // Update Spanish blog index
+      const spanishBlogIndexPath = path.join(__dirname, '..', 'web-es', 'blog.html');
+      updateBlogIndex(spanishBlogIndexPath, spanishTranslation, 'es');
+
     } catch (error) {
       console.error(`${colors.yellow}⚠️  Error with Spanish translation: ${error.message}${colors.reset}`);
       console.log(`${colors.cyan}  Falling back to manual translation workflow...${colors.reset}`);
@@ -907,6 +1135,10 @@ async function processImport(importFile) {
       // Update Portuguese sitemap
       const portugueseSitemapPath = path.join(__dirname, '..', 'web-pt', 'sitemap.xml');
       updateSitemap(portugueseSitemapPath, blogPost, 'pt');
+
+      // Update Portuguese blog index
+      const portugueseBlogIndexPath = path.join(__dirname, '..', 'web-pt', 'blog.html');
+      updateBlogIndex(portugueseBlogIndexPath, portugueseTranslation, 'pt');
 
     } catch (error) {
       console.error(`${colors.yellow}⚠️  Error with Portuguese translation: ${error.message}${colors.reset}`);
@@ -1044,6 +1276,10 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     // Update Spanish sitemap
     const spanishSitemapPath = path.join(__dirname, '..', 'web-es', 'sitemap.xml');
     updateSitemap(spanishSitemapPath, blogPost, 'es');
+
+    // Update Spanish blog index
+    const spanishBlogIndexPath = path.join(__dirname, '..', 'web-es', 'blog.html');
+    updateBlogIndex(spanishBlogIndexPath, spanishTranslation, 'es');
     console.log('');
   } catch (error) {
     console.error(`${colors.yellow}⚠️  Spanish translation failed: ${error.message}${colors.reset}`);
@@ -1070,6 +1306,10 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     // Update Portuguese sitemap
     const portugueseSitemapPath = path.join(__dirname, '..', 'web-pt', 'sitemap.xml');
     updateSitemap(portugueseSitemapPath, blogPost, 'pt');
+
+    // Update Portuguese blog index
+    const portugueseBlogIndexPath = path.join(__dirname, '..', 'web-pt', 'blog.html');
+    updateBlogIndex(portugueseBlogIndexPath, portugueseTranslation, 'pt');
     console.log('');
   } catch (error) {
     console.error(`${colors.yellow}⚠️  Portuguese translation failed: ${error.message}${colors.reset}`);

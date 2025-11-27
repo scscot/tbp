@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-24
+**Last Updated**: 2025-11-27
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -48,24 +48,29 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── services/          # Business logic (auth, IAP, network, FCM)
 │   └── models/            # Data models
 ├── functions/             # Firebase Cloud Functions (Node.js)
+├── scripts/               # Automation scripts
+│   ├── generate-ai-blog.js  # AI blog generation (Claude CLI)
+│   └── generate-blog.js     # Legacy blog generation
+├── .github/workflows/     # GitHub Actions automation
+│   └── weekly-blog.yml    # Twice-weekly blog automation (Mon/Thu 10am PST)
 ├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
 │   ├── companies/        # Company-specific recruiting guides (120+ pages)
-│   └── blog/             # Blog posts (6 articles)
+│   └── blog/             # Blog posts (7 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (6 translated posts)
+│   ├── blog/             # Spanish blog (7 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (6 translated posts)
+│   ├── blog/             # Portuguese blog (7 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -192,13 +197,14 @@ All three main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 6 blog posts:
+- `/blog/` - 7 blog posts:
   - ai-automation-transforms-direct-sales.html
   - ai-recruiting-best-practices-2025.html
   - ai-recruiting-platforms-failing-direct-sales.html
   - qualify-new-recruits-30-days.html
   - team-build-pro-november-2025-update.html
   - young-living-recruiting-strategies.html
+  - ai-network-marketing-corporate-field-leaders-use.html
 - `/companies.html` - 120+ company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
@@ -213,7 +219,7 @@ All three main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 6 translated blog posts (same titles as EN)
+- `/blog/` - 7 translated blog posts (same titles as EN)
 - `/contact_us.html` - Spanish contact form
 - `/privacy_policy.html` - Spanish privacy policy
 - `/terms_of_service.html` - Spanish terms of service
@@ -225,7 +231,7 @@ All three main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 6 translated blog posts (same titles as EN)
+- `/blog/` - 7 translated blog posts (same titles as EN)
 - `/contact_us.html` - Portuguese contact form
 - `/privacy_policy.html` - Portuguese privacy policy
 - `/terms_of_service.html` - Portuguese terms of service
@@ -516,6 +522,14 @@ git add . && git commit -m "message" && git push
 - `reset_failed_contacts.js` - Alternative reset script for email campaign recovery
 - `mark-contacts-for-resend.js` - Mark all contacts sent before Nov 12, 2025 for Android launch resend campaign
 
+### Utility Scripts (scripts/)
+- `generate-ai-blog.js` - AI-powered blog generation using Claude CLI
+  - `--title "Title"` - Generate blog with specific title (EN, ES, PT)
+  - `--research` - Research mode: analyze trends and recommend topics
+  - `--full-auto` - Full automation: research, generate, deploy, notify
+  - `--notify-email=EMAIL` - Recipient for notification emails
+- `generate-blog.js` - Legacy blog generation (static template approach)
+
 ---
 
 ## 🔄 Recent Major Changes (as of Nov 2025)
@@ -728,6 +742,53 @@ git add . && git commit -m "message" && git push
    - Robots.txt files for all four sites (EN, ES, PT, stephenscott.us)
    - Proper canonical URL implementation across all sites
    - Google Analytics integration with internal IP filtering (76.33.111.72)
+
+### Week of Nov 27
+40. ✅ **New Blog Post: AI Network Marketing for Corporate & Field Leaders**:
+   - Created ai-network-marketing-corporate-field-leaders-use.html for all three languages
+   - English: web/blog/ai-network-marketing-corporate-field-leaders-use.html
+   - Spanish: web-es/blog/ai-network-marketing-corporate-field-leaders-use.html
+   - Portuguese: web-pt/blog/ai-network-marketing-corporate-field-leaders-use.html
+   - Topic: How corporate executives and field leaders use AI for network marketing
+   - Fully translated content (not just machine translation)
+
+41. ✅ **ES/PT Blog Header/Footer Fixes**:
+   - Fixed minimal header/footer issue on ES/PT blog posts
+   - Previous: Blog posts had minimal navigation (logo only)
+   - Fixed: Full navigation matching homepage (hamburger menu, mobile menu, language switcher)
+   - Updated generate-ai-blog.js with proper ES/PT header/footer templates
+   - All existing and new blog posts now have consistent navigation across languages
+
+42. ✅ **Email Campaign Gmail Distribution Fix**:
+   - Identified issue: gmail.com contacts had high `randomIndex` values (0.82-0.95)
+   - Non-gmail contacts had low values (0.14-0.22), causing gmail to be stuck at back of queue
+   - Re-randomized 1,005 unsent contacts in Firestore with `Math.random()` values
+   - Verified fix: gmail addresses now evenly distributed (15 of first 20 contacts are gmail)
+   - Email campaign now properly includes gmail.com addresses in each batch
+
+43. ✅ **Automated Blog Generation Pipeline (GitHub Actions)**:
+   - Created fully automated blog generation system running twice weekly
+   - Schedule: Every Monday and Thursday at 10am PST (cron: '0 18 * * 1,4')
+   - Workflow file: `.github/workflows/weekly-blog.yml`
+   - **Pipeline stages**:
+     1. Research: Claude CLI analyzes industry trends from BusinessForHome.org, Direct Selling News, social media
+     2. Topic Selection: AI recommends 3-5 topics with relevance scores, selects top-scoring topic
+     3. Generation: Creates blog post in EN, ES, PT using existing generate-ai-blog.js
+     4. Deploy: Auto-deploys to Firebase Hosting (all three language sites)
+     5. Notify: Sends email notification via Mailgun with results
+   - **New script flags added to generate-ai-blog.js**:
+     - `--research`: Research mode - analyze trends and recommend topics
+     - `--full-auto`: Full automation mode - research, generate, deploy, notify
+     - `--notify-email=EMAIL`: Recipient for notification emails (default: scscot@gmail.com)
+   - **Generated files**:
+     - `scripts/blog-recommendations.json`: Research results with topic recommendations
+     - `scripts/blog-response.json`: Blog generation response data
+   - **Required GitHub Secrets**:
+     - ANTHROPIC_API_KEY: For Claude CLI blog generation
+     - MAILGUN_API_KEY: For email notifications
+     - FIREBASE_SERVICE_ACCOUNT: For Firebase deployment
+   - **Manual trigger**: Supports workflow_dispatch for testing
+   - **Auto-commit**: Generated blog files committed back to repository by GitHub Actions bot
 
 ---
 
