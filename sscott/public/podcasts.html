@@ -140,8 +140,42 @@
       transform: translateX(4px);
     }
 
+    .podcast-card-embedded {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .podcast-header {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .podcast-player {
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 500px;
+      }
+    }
+
+    .podcast-cta {
+      cursor: pointer;
+      border: none;
+    }
+
     @media (max-width: 768px) {
-      .podcast-card {
+      .podcast-card,
+      .podcast-header {
         flex-direction: column;
         gap: 0;
       }
@@ -160,8 +194,27 @@
       .podcast-card-description {
         font-size: 0.875rem;
       }
+
+      .podcast-player iframe {
+        height: 350px;
+      }
     }
   </style>
+
+  <script>
+    function togglePlayer(playerId) {
+      const player = document.getElementById(playerId);
+      const button = event.target;
+
+      if (player.style.display === 'none') {
+        player.style.display = 'block';
+        button.textContent = 'Hide Player';
+      } else {
+        player.style.display = 'none';
+        button.textContent = 'Listen Now!';
+      }
+    }
+  </script>
 
   <script type="application/ld+json">
   {
@@ -228,105 +281,98 @@
             Join hosts Mike and Wendy as they explore my books through engaging audiobook-style podcast discussions.
           </p>
 
-          <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem;">
-            <div class="card podcast-card">
-              <div class="podcast-card-image-wrapper">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/8f/11/7e/8f117ee5-25a8-c632-a0d5-8d1f14e72343/mza_9818174482973419331.jpg/600x600bb.webp"
-                     alt="AI in Affiliate Network Marketing Podcast"
-                     class="podcast-card-image">
-              </div>
-              <div class="podcast-card-content">
-                <h3 class="podcast-card-title">AI in Network Marketing</h3>
-                <p class="podcast-card-description">
-                  A profound exploration of The 2024-2025 Beginner's Guide to AI in Affiliate & Network Marketing,
-                  breaking down complex AI concepts with practical marketing strategies.
-                </p>
-                <div class="podcast-meta">
-                  <span class="podcast-badge podcast-badge-episodes">2 episodes</span>
-                  <span class="podcast-badge podcast-badge-category">Marketing</span>
-                  <span class="podcast-badge">Updated Weekly</span>
+          <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 3rem;">
+            <!-- Podcast 1: AI in Network Marketing -->
+            <div class="card podcast-card-embedded">
+              <div class="podcast-header">
+                <div class="podcast-card-image-wrapper">
+                  <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/8f/11/7e/8f117ee5-25a8-c632-a0d5-8d1f14e72343/mza_9818174482973419331.jpg/600x600bb.webp"
+                       alt="AI in Affiliate Network Marketing Podcast"
+                       class="podcast-card-image">
                 </div>
-                <a href="https://podcasts.apple.com/us/podcast/id1777598538"
-                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
-              </div>
-            </div>
-
-            <div class="card podcast-card">
-              <div class="podcast-card-image-wrapper">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/cf/8b/90/cf8b90c3-94c9-7e35-e305-c6d5a10c02f5/mza_13603824014364253135.jpg/600x600bb.webp"
-                     alt="Divine Conversations Podcast"
-                     class="podcast-card-image">
-              </div>
-              <div class="podcast-card-content">
-                <h3 class="podcast-card-title">Divine Conversations</h3>
-                <p class="podcast-card-description">
-                  Exploring interfaith dialogue through six spiritual traditions, examining global challenges
-                  from religious freedom to environmental responsibility and technology ethics.
-                </p>
-                <div class="podcast-meta">
-                  <span class="podcast-badge podcast-badge-episodes">23 episodes</span>
-                  <span class="podcast-badge podcast-badge-category">Religion & Spirituality</span>
-                  <span class="podcast-badge">Weekly</span>
+                <div class="podcast-card-content">
+                  <h3 class="podcast-card-title">AI in Network Marketing</h3>
+                  <p class="podcast-card-description">
+                    A profound exploration of The 2024-2025 Beginner's Guide to AI in Affiliate & Network Marketing,
+                    breaking down complex AI concepts with practical marketing strategies.
+                  </p>
+                  <div class="podcast-meta">
+                    <span class="podcast-badge podcast-badge-episodes">2 episodes</span>
+                    <span class="podcast-badge podcast-badge-category">Marketing</span>
+                    <span class="podcast-badge">Updated Weekly</span>
+                  </div>
+                  <button class="btn podcast-cta" onclick="togglePlayer('player1')">Listen Now!</button>
                 </div>
-                <a href="https://podcasts.apple.com/us/podcast/id1778070747"
-                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+              </div>
+              <div id="player1" class="podcast-player" style="display: none;">
+                <iframe height="450" width="100%" title="AI in Network Marketing Podcast"
+                  src="https://embed.podcasts.apple.com/us/podcast/deep-dive-ai-in-affiliate-network-marketing/id1777598538?theme=auto"
+                  allow="autoplay *; encrypted-media *; clipboard-write"
+                  style="border: 0; border-radius: 12px; width: 100%; height: 450px;">
+                </iframe>
               </div>
             </div>
 
-            <div class="card podcast-card">
-              <div class="podcast-card-image-wrapper">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/45/40/11/454011d3-bef2-d75f-57ee-9e93e80c7d3f/mza_17478888898460370579.png/600x600bb.webp"
-                     alt="Stop Sabotaging Your Best Life Podcast"
-                     class="podcast-card-image">
-              </div>
-              <div class="podcast-card-content">
-                <h3 class="podcast-card-title">Stop Sabotaging Your Best Life</h3>
-                <p class="podcast-card-description">
-                  Transformative strategies to overcome self-doubt and build resilience. Covering decision-making,
-                  purpose, relationships, gratitude, and personal growth.
-                </p>
-                <div class="podcast-meta">
-                  <span class="podcast-badge podcast-badge-episodes">10 episodes</span>
-                  <span class="podcast-badge podcast-badge-category">Mental Health & Self-Improvement</span>
-                  <span class="podcast-badge">Weekly</span>
+            <!-- Podcast 2: Divine Conversations -->
+            <div class="card podcast-card-embedded">
+              <div class="podcast-header">
+                <div class="podcast-card-image-wrapper">
+                  <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/cf/8b/90/cf8b90c3-94c9-7e35-e305-c6d5a10c02f5/mza_13603824014364253135.jpg/600x600bb.webp"
+                       alt="Divine Conversations Podcast"
+                       class="podcast-card-image">
                 </div>
-                <a href="https://podcasts.apple.com/us/podcast/id1777623309"
-                   class="btn podcast-cta" target="_blank" rel="noopener">Listen on Apple Podcasts</a>
+                <div class="podcast-card-content">
+                  <h3 class="podcast-card-title">Divine Conversations</h3>
+                  <p class="podcast-card-description">
+                    Exploring interfaith dialogue through six spiritual traditions, examining global challenges
+                    from religious freedom to environmental responsibility and technology ethics.
+                  </p>
+                  <div class="podcast-meta">
+                    <span class="podcast-badge podcast-badge-episodes">23 episodes</span>
+                    <span class="podcast-badge podcast-badge-category">Religion & Spirituality</span>
+                    <span class="podcast-badge">Weekly</span>
+                  </div>
+                  <button class="btn podcast-cta" onclick="togglePlayer('player2')">Listen Now!</button>
+                </div>
+              </div>
+              <div id="player2" class="podcast-player" style="display: none;">
+                <iframe height="450" width="100%" title="Divine Conversations Podcast"
+                  src="https://embed.podcasts.apple.com/us/podcast/deep-dive-divine-conversations/id1778070747?theme=auto"
+                  allow="autoplay *; encrypted-media *; clipboard-write"
+                  style="border: 0; border-radius: 12px; width: 100%; height: 450px;">
+                </iframe>
               </div>
             </div>
-          </div>
 
-          <h2>Listen Now</h2>
-          <p style="font-size: 1.125rem; color: var(--color-text-light); margin-bottom: 2rem;">
-            Stream episodes directly or subscribe on your favorite podcast platform.
-          </p>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-            <div>
-              <iframe height="450" width="100%" title="AI in Network Marketing Podcast"
-                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-ai-in-affiliate-network-marketing/id1777598538?theme=auto"
-                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-                allow="autoplay *; encrypted-media *; clipboard-write"
-                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
-              </iframe>
-            </div>
-
-            <div>
-              <iframe height="450" width="100%" title="Divine Conversations Podcast"
-                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-divine-conversations/id1778070747?theme=auto"
-                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-                allow="autoplay *; encrypted-media *; clipboard-write"
-                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
-              </iframe>
-            </div>
-
-            <div>
-              <iframe height="450" width="100%" title="Stop Sabotaging Your Best Life Podcast"
-                src="https://embed.podcasts.apple.com/us/podcast/deep-dive-stop-sabotaging-your-best-life/id1777623309?theme=auto"
-                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-                allow="autoplay *; encrypted-media *; clipboard-write"
-                style="border: 0; border-radius: 12px; width: 100%; height: 450px; max-width: 660px;">
-              </iframe>
+            <!-- Podcast 3: Stop Sabotaging Your Best Life -->
+            <div class="card podcast-card-embedded">
+              <div class="podcast-header">
+                <div class="podcast-card-image-wrapper">
+                  <img src="https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/45/40/11/454011d3-bef2-d75f-57ee-9e93e80c7d3f/mza_17478888898460370579.png/600x600bb.webp"
+                       alt="Stop Sabotaging Your Best Life Podcast"
+                       class="podcast-card-image">
+                </div>
+                <div class="podcast-card-content">
+                  <h3 class="podcast-card-title">Stop Sabotaging Your Best Life</h3>
+                  <p class="podcast-card-description">
+                    Transformative strategies to overcome self-doubt and build resilience. Covering decision-making,
+                    purpose, relationships, gratitude, and personal growth.
+                  </p>
+                  <div class="podcast-meta">
+                    <span class="podcast-badge podcast-badge-episodes">10 episodes</span>
+                    <span class="podcast-badge podcast-badge-category">Mental Health & Self-Improvement</span>
+                    <span class="podcast-badge">Weekly</span>
+                  </div>
+                  <button class="btn podcast-cta" onclick="togglePlayer('player3')">Listen Now!</button>
+                </div>
+              </div>
+              <div id="player3" class="podcast-player" style="display: none;">
+                <iframe height="450" width="100%" title="Stop Sabotaging Your Best Life Podcast"
+                  src="https://embed.podcasts.apple.com/us/podcast/deep-dive-stop-sabotaging-your-best-life/id1777623309?theme=auto"
+                  allow="autoplay *; encrypted-media *; clipboard-write"
+                  style="border: 0; border-radius: 12px; width: 100%; height: 450px;">
+                </iframe>
+              </div>
             </div>
           </div>
 
