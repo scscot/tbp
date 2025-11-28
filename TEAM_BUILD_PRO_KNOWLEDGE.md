@@ -965,6 +965,56 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Topic: Balancing AI automation with authentic human connection in recruiting
    - All three versions deployed with matching UI templates
 
+### Week of Nov 28
+48. ✅ **Stephen Scott Blog Generator (generate-sscott-blog.js)**:
+   - Created new automated blog generation script for stephenscott.us
+   - Located at: `scripts/generate-sscott-blog.js`
+   - Uses Anthropic Claude API directly (not CLI)
+   - **Modes**:
+     - `--full-auto`: Research trends → generate blog → deploy → email notification
+     - `--research`: Analyze industry trends and save recommendations
+     - `--generate "Title"`: Generate blog from specific title
+   - Auto-updates blog index (`sscott/public/blog.html`) and sitemap (`sscott/public/sitemap.xml`)
+   - Sends email notifications via Mailgun
+   - Valid categories: Recruiting Tips, Product Updates, Tutorials
+
+49. ✅ **Firebase cleanUrls Fix for stephenscott.us**:
+   - Changed `cleanUrls: true` to `cleanUrls: false` in firebase.json for sscott target
+   - Previous behavior: Firebase stripped `.html` extensions and redirected
+   - Fixed behavior: URLs now serve with `.html` extensions matching sitemap
+   - Important for SEO consistency between internal links, canonical URLs, and sitemap
+
+50. ✅ **Comprehensive SEO Audit & Fixes for stephenscott.us**:
+   - Fixed all internal navigation links to include `.html` extensions (20 files)
+   - Fixed canonical URLs to include `.html` extensions (all pages)
+   - Fixed og:url tags to include `.html` extensions (all pages)
+   - Updated generate-sscott-blog.js template with `.html` extensions
+   - Created missing author images for social sharing:
+     - `assets/images/stephen-scott-og.jpg` (1200x630px, SS logo design)
+     - `assets/images/stephen-scott-about.jpg`
+     - `assets/images/stephen-scott-twitter.jpg`
+   - Removed dead `generate-sitemap` script reference from sscott/package.json
+
+51. ✅ **Comprehensive SEO Audit & Fixes for Team Build Pro Sites (web/, web-es/, web-pt/)**:
+   - **web/ (English)**:
+     - Fixed `books.html` canonical (had trailing slash `/books/` instead of `/books.html`)
+     - Fixed inconsistent `www.` prefix in canonical/og:url tags (contact_us, privacy_policy, terms_of_service)
+     - Added missing canonical tag to `faq.html`
+     - Added missing canonical tag to `companies.html`
+     - Fixed 114 company pages with wrong og:url path (`/learning/` → `/companies/`)
+   - **web-es/ (Spanish)**:
+     - Added missing canonical tag to `faq.html`
+   - **web-pt/ (Portuguese)**:
+     - Added missing canonical tag to `faq.html`
+   - All sites verified: hreflang tags, robots.txt, sitemaps, CSS/image references
+
+52. ✅ **SEO Best Practices Documentation**:
+   - Canonical URLs: Tells search engines the "official" version of a page
+   - Prevents duplicate content penalties from multiple URL variations
+   - Consolidates link equity to single URL
+   - Controls what appears in search results
+   - After SEO fixes, sitemaps should be resubmitted to Google Search Console
+
 ---
 
 ## 📞 Contact & Support
