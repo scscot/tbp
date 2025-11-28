@@ -7,7 +7,6 @@
     "migrate": "node scripts/wordpress-migration.js",
     "download-images": "node scripts/download-book-images.js",
     "update-book-images": "node scripts/update-book-images.js",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
     "optimize-images": "node scripts/optimize-images.js",
     "scrape-amazon": "node scrape-amazon-covers.js",
     "serve": "cd .. && firebase serve --only hosting:sscott",

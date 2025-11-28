@@ -16,10 +16,10 @@
   <title>Podcasts & Audiobook Series | Stephen Scott on AI, Spirituality & Personal Growth</title>
   <meta name="description" content="Listen to Stephen Scott's audiobook podcast series with hosts Mike and Wendy. Deep dives into AI in network marketing, interfaith dialogue, and personal transformation. 35 episodes across 3 series.">
 
-  <link rel="canonical" href="https://www.stephenscott.us/podcasts">
+  <link rel="canonical" href="https://www.stephenscott.us/podcasts.html">
 
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.stephenscott.us/podcasts">
+  <meta property="og:url" content="https://www.stephenscott.us/podcasts.html">
   <meta property="og:title" content="Podcasts & Audiobook Series | Stephen Scott">
   <meta property="og:description" content="Listen to Stephen Scott's audiobook podcast series. Deep dives into AI, spirituality, and personal growth. 35 episodes across 3 series.">
 
@@ -234,15 +234,27 @@
   <nav class="main-nav">
     <div class="container">
       <a href="/" class="logo">Stephen Scott</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
-        <li><a href="/books">Books</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/podcasts" style="color: var(--color-primary);">Podcasts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/books.html">Books</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/podcasts.html" style="color: var(--color-primary);">Podcasts</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li class="nav-cta"><a href="https://teambuildpro.com" target="_blank" rel="noopener">Try Team Build Pro</a></li>
       </ul>
     </div>
   </nav>
+  <script>
+    document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
 
   <main>
     <section class="section">
@@ -437,19 +449,19 @@
           <div class="card">
             <h3>AI Implementation Strategies</h3>
             <p>Practical guides for network marketers ready to leverage artificial intelligence in their business.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
 
           <div class="card">
             <h3>Personal Growth Insights</h3>
             <p>Reflections on fear, uncertainty, transformation, and becoming the person you're meant to be.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
 
           <div class="card">
             <h3>Tech Entrepreneur Journey</h3>
             <p>Lessons learned building Team Build Pro, choosing tech stacks, and creating products people love.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
         </div>
       </div>
@@ -460,11 +472,11 @@
     <div class="container">
       <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
       <p>
-        <a href="/books">Books</a> •
-        <a href="/blog">Blog</a> •
-        <a href="/podcasts">Podcasts</a> •
-        <a href="/about">About</a> •
-        <a href="/contact">Contact</a>
+        <a href="/books.html">Books</a> •
+        <a href="/blog.html">Blog</a> •
+        <a href="/podcasts.html">Podcasts</a> •
+        <a href="/about.html">About</a> •
+        <a href="/contact.html">Contact</a>
       </p></div>
   </footer>
 </body>

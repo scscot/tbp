@@ -76,15 +76,27 @@
   <nav class="main-nav">
     <div class="container">
       <a href="/" class="logo">Stephen Scott</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
-        <li><a href="/books">Books</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/podcasts">Podcasts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/books.html">Books</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/podcasts.html">Podcasts</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li class="nav-cta"><a href="https://teambuildpro.com" target="_blank" rel="noopener">Try Team Build Pro</a></li>
       </ul>
     </div>
   </nav>
+  <script>
+    document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
 
   <main>
     <section class="hero">
@@ -92,7 +104,7 @@
         <h1>Empowering Network Marketers with AI</h1>
         <p>Author, tech entrepreneur, and creator of Team Build Pro. Helping direct sales professionals leverage artificial intelligence to build thriving teams and transform lives.</p>
         <div class="cta-buttons">
-          <a href="/books" class="btn btn-secondary">Explore My Books</a>
+          <a href="/books.html" class="btn btn-secondary">Explore My Books</a>
           <a href="https://teambuildpro.com" class="btn btn-secondary" target="_blank" rel="noopener">Try Team Build Pro</a>
         </div>
       </div>
@@ -108,7 +120,7 @@
               <h3>How To Grow Your Network Marketing Business Using AI</h3>
               <p>The definitive guide to leveraging artificial intelligence in network marketing. Learn proven strategies to automate prospecting, personalize outreach, and scale your team.</p>
               <p class="book-price">$12.95</p>
-              <a href="/books/how-to-grow-your-network-marketing-business-using-ai" class="btn">Learn More</a>
+              <a href="/books/how-to-grow-your-network-marketing-business-using-ai.html" class="btn">Learn More</a>
             </div>
           </div>
 
@@ -118,7 +130,7 @@
               <h3>AI - Your Gateway to a Better Life</h3>
               <p>Discover how artificial intelligence can transform every aspect of your life. From productivity to personal growth, unlock AI's potential for positive change.</p>
               <p class="book-price">$12.95</p>
-              <a href="/books/ai-your-gateway-to-a-better-life" class="btn">Learn More</a>
+              <a href="/books/ai-your-gateway-to-a-better-life.html" class="btn">Learn More</a>
             </div>
           </div>
 
@@ -128,12 +140,12 @@
               <h3>The Art of Mastering Fear and Uncertainty</h3>
               <p>Practical strategies for overcoming fear, embracing uncertainty, and stepping into your full potential. Transform anxiety into action.</p>
               <p class="book-price">$12.95</p>
-              <a href="/books/the-art-of-mastering-fear-and-uncertainty" class="btn">Learn More</a>
+              <a href="/books/the-art-of-mastering-fear-and-uncertainty.html" class="btn">Learn More</a>
             </div>
           </div>
         </div>
         <p style="text-align: center; margin-top: 2rem;">
-          <a href="/books" class="cta-link">View All 14 Books →</a>
+          <a href="/books.html" class="cta-link">View All 14 Books →</a>
         </p>
       </div>
     </section>
@@ -155,23 +167,23 @@
           <div class="card">
             <h3>AI in Network Marketing</h3>
             <p>Explore how artificial intelligence is revolutionizing direct sales and network marketing in 2025.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
 
           <div class="card">
             <h3>Personal Growth</h3>
             <p>Insights on self-improvement, overcoming fear, and becoming the best version of yourself.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
 
           <div class="card">
             <h3>Spirituality & Transformation</h3>
             <p>Reflections on inner peace, spiritual growth, and finding meaning in a complex world.</p>
-            <a href="/blog" class="cta-link">Read Articles →</a>
+            <a href="/blog.html" class="cta-link">Read Articles →</a>
           </div>
         </div>
         <p style="text-align: center; margin-top: 2rem;">
-          <a href="/blog" class="cta-link">Read All Posts →</a>
+          <a href="/blog.html" class="cta-link">Read All Posts →</a>
         </p>
       </div>
     </section>
@@ -183,7 +195,7 @@
           <p>Stephen Scott is a technology entrepreneur and author who bridges the worlds of artificial intelligence and network marketing. With 14 published books across multiple languages, he helps professionals leverage AI to build thriving businesses and transform lives.</p>
           <p>As the creator of <a href="https://teambuildpro.com">Team Build Pro</a>, Stephen has built an AI-powered platform used by network marketers worldwide to manage teams, track growth, and automate communications in English, Spanish, Portuguese, and Tagalog.</p>
           <p>His books cover AI implementation, network marketing strategies, personal development, and spirituality. Stephen's unique perspective comes from real-world experience building technology products that solve meaningful problems for entrepreneurs.</p>
-          <a href="/about" class="btn">Learn More About Stephen</a>
+          <a href="/about.html" class="btn">Learn More About Stephen</a>
         </div>
       </div>
     </section>
@@ -193,7 +205,7 @@
         <div style="max-width: 600px; margin: 0 auto; text-align: center;">
           <h2>Work with Stephen</h2>
           <p>Interested in collaborating, speaking engagements, or book inquiries? Get in touch.</p>
-          <a href="/contact" class="btn">Contact Stephen</a>
+          <a href="/contact.html" class="btn">Contact Stephen</a>
         </div>
       </div>
     </section>
@@ -203,11 +215,11 @@
     <div class="container">
       <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
       <p>
-        <a href="/books">Books</a> •
-        <a href="/blog">Blog</a> •
-        <a href="/podcasts">Podcasts</a> •
-        <a href="/about">About</a> •
-        <a href="/contact">Contact</a>
+        <a href="/books.html">Books</a> •
+        <a href="/blog.html">Blog</a> •
+        <a href="/podcasts.html">Podcasts</a> •
+        <a href="/about.html">About</a> •
+        <a href="/contact.html">Contact</a>
       </p></div>
   </footer>
 </body>

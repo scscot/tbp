@@ -242,10 +242,10 @@ function generateBlogHTML(blogPost) {
 
   <title>${blogPost.title} | Stephen Scott</title>
   <meta name="description" content="${blogPost.metaDescription}">
-  <link rel="canonical" href="${baseUrl}/blog/${blogPost.slug}">
+  <link rel="canonical" href="${baseUrl}/blog/${blogPost.slug}.html">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${baseUrl}/blog/${blogPost.slug}">
+  <meta property="og:url" content="${baseUrl}/blog/${blogPost.slug}.html">
   <meta property="og:title" content="${blogPost.title} | Stephen Scott">
   <meta property="og:description" content="${blogPost.metaDescription}">
   <meta property="og:image" content="${baseUrl}/assets/images/stephen-scott-about.jpg">
@@ -327,11 +327,11 @@ function generateBlogHTML(blogPost) {
     <div class="container">
       <a href="/" class="logo">Stephen Scott</a>
       <ul class="nav-links">
-        <li><a href="/books">Books</a></li>
-        <li><a href="/blog" style="color: var(--color-primary);">Blog</a></li>
-        <li><a href="/podcasts">Podcasts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/books.html">Books</a></li>
+        <li><a href="/blog.html" style="color: var(--color-primary);">Blog</a></li>
+        <li><a href="/podcasts.html">Podcasts</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -339,7 +339,7 @@ function generateBlogHTML(blogPost) {
   <main class="blog-wrapper">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a> / <a href="/blog">Blog</a> / <span>${blogPost.title}</span>
+        <a href="/">Home</a> / <a href="/blog.html">Blog</a> / <span>${blogPost.title}</span>
       </nav>
 
       <span class="eyebrow">${categoryBadge}</span>
@@ -383,11 +383,11 @@ function generateBlogHTML(blogPost) {
     <div class="container">
       <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
       <p>
-        <a href="/books">Books</a> &bull;
-        <a href="/blog">Blog</a> &bull;
-        <a href="/podcasts">Podcasts</a> &bull;
-        <a href="/about">About</a> &bull;
-        <a href="/contact">Contact</a>
+        <a href="/books.html">Books</a> &bull;
+        <a href="/blog.html">Blog</a> &bull;
+        <a href="/podcasts.html">Podcasts</a> &bull;
+        <a href="/about.html">About</a> &bull;
+        <a href="/contact.html">Contact</a>
       </p>
     </div>
   </footer>

@@ -16,10 +16,10 @@
   <title>Contact Stephen Scott | Speaking, Collaborations & Book Inquiries</title>
   <meta name="description" content="Get in touch with Stephen Scott for speaking engagements, collaboration opportunities, book inquiries, or questions about Team Build Pro. Professional author and technology entrepreneur available for select projects.">
 
-  <link rel="canonical" href="https://www.stephenscott.us/contact">
+  <link rel="canonical" href="https://www.stephenscott.us/contact.html">
 
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.stephenscott.us/contact">
+  <meta property="og:url" content="https://www.stephenscott.us/contact.html">
   <meta property="og:title" content="Contact Stephen Scott">
   <meta property="og:description" content="Speaking engagements, collaborations, and book inquiries. Contact Stephen Scott for professional opportunities.">
 
@@ -50,15 +50,27 @@
   <nav class="main-nav">
     <div class="container">
       <a href="/" class="logo">Stephen Scott</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
-        <li><a href="/books">Books</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/podcasts">Podcasts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact" style="color: var(--color-primary);">Contact</a></li>
+        <li><a href="/books.html">Books</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/podcasts.html">Podcasts</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html" style="color: var(--color-primary);">Contact</a></li>
+        <li class="nav-cta"><a href="https://teambuildpro.com" target="_blank" rel="noopener">Try Team Build Pro</a></li>
       </ul>
     </div>
   </nav>
+  <script>
+    document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
 
   <main>
     <section class="section">
@@ -194,11 +206,11 @@
     <div class="container">
       <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
       <p>
-        <a href="/books">Books</a> •
-        <a href="/blog">Blog</a> •
-        <a href="/podcasts">Podcasts</a> •
-        <a href="/about">About</a> •
-        <a href="/contact">Contact</a>
+        <a href="/books.html">Books</a> •
+        <a href="/blog.html">Blog</a> •
+        <a href="/podcasts.html">Podcasts</a> •
+        <a href="/about.html">About</a> •
+        <a href="/contact.html">Contact</a>
       </p></div>
   </footer>
 </body>

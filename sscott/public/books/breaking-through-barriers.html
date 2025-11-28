@@ -16,10 +16,10 @@
   <title>Breaking Through: Overcoming Deep-Seated Barriers to Achieve Authentic Success | Stephen Scott</title>
   <meta name="description" content="Uncover the keys to breaking through internal barriers and achieving true success with Stephen Scott’s powerful guide. Learn to overcome self-sabotage, redef...">
 
-  <link rel="canonical" href="https://www.stephenscott.us/books/breaking-through-barriers">
+  <link rel="canonical" href="https://www.stephenscott.us/books/breaking-through-barriers.html">
 
   <meta property="og:type" content="book">
-  <meta property="og:url" content="https://www.stephenscott.us/books/breaking-through-barriers">
+  <meta property="og:url" content="https://www.stephenscott.us/books/breaking-through-barriers.html">
   <meta property="og:title" content="Breaking Through: Overcoming Deep-Seated Barriers to Achieve Authentic Success">
   <meta property="og:description" content="Uncover the keys to breaking through internal barriers and achieving true success with Stephen Scott’s powerful guide. Learn to overcome self-sabotage, redef">
   <meta property="og:image" content="/assets/images/books/breaking-through-barriers.jpg">
@@ -61,15 +61,27 @@
   <nav class="main-nav">
     <div class="container">
       <a href="/" class="logo">Stephen Scott</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
-        <li><a href="/books" style="color: var(--color-primary);">Books</a></li>
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/podcasts">Podcasts</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/books.html" style="color: var(--color-primary);">Books</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/podcasts.html">Podcasts</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li class="nav-cta"><a href="https://teambuildpro.com" target="_blank" rel="noopener">Try Team Build Pro</a></li>
       </ul>
     </div>
   </nav>
+  <script>
+    document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
 
   <main>
     <section class="section">
@@ -83,7 +95,7 @@
               <h1>Breaking Through: Overcoming Deep-Seated Barriers to Achieve Authentic Success</h1>
               <p style="font-size: 2rem; font-weight: 700; color: var(--color-accent); margin: 1rem 0;">$12.95</p>
               <a href="https://www.amazon.com/dp/B0DJJNXLR9" class="btn" target="_blank" rel="noopener">Buy on Amazon</a>
-              <p style="margin-top: 2rem; color: var(--color-text-light);">by <a href="/about">Stephen Scott</a></p>
+              <p style="margin-top: 2rem; color: var(--color-text-light);">by <a href="/about.html">Stephen Scott</a></p>
             </div>
           </div>
 
@@ -109,7 +121,7 @@ This book is a must-read for anyone ready to break free from old patterns, embra
       <div class="container">
         <h2 class="section-title">More Books by Stephen Scott</h2>
         <p style="text-align: center; margin-bottom: 2rem;">
-          <a href="/books" class="btn btn-secondary">View All Books</a>
+          <a href="/books.html" class="btn btn-secondary">View All Books</a>
         </p>
       </div>
     </section>
@@ -119,11 +131,11 @@ This book is a must-read for anyone ready to break free from old patterns, embra
     <div class="container">
       <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
       <p>
-        <a href="/books">Books</a> •
-        <a href="/blog">Blog</a> •
-        <a href="/podcasts">Podcasts</a> •
-        <a href="/about">About</a> •
-        <a href="/contact">Contact</a>
+        <a href="/books.html">Books</a> •
+        <a href="/blog.html">Blog</a> •
+        <a href="/podcasts.html">Podcasts</a> •
+        <a href="/about.html">About</a> •
+        <a href="/contact.html">Contact</a>
       </p></div>
   </footer>
 </body>
