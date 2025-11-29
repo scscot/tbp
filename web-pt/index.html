@@ -255,17 +255,8 @@
                     </div>
 
                     <div class="hero-buttons">
-                        <div class="download-buttons" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px;">
-                            <a href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622"
-                               class="app-store-badge primary"
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               aria-label="Baixar na App Store">
-                                <img src="assets/images/app_store_badges/black.svg"
-                                     alt="Baixar na App Store"
-                                     style="height: 60px; width: auto;" />
-                            </a>
-                            <span id="google-play-button-placeholder"></span>
+                        <div class="download-buttons" id="download-container" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px;">
+                            <!-- Dynamically populated based on device detection -->
                         </div>
                     </div>
 
@@ -273,6 +264,20 @@
                         <span class="trial-badge" data-dynamic="trial-note" aria-label="Oferta de teste">
                             Teste grátis de 30 dias · $4.99/mês · Cancele a qualquer momento
                         </span>
+                    </div>
+
+                    <!-- App Store Rating Badge -->
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622"
+                           onclick="trackDownloadClick('app_store', false, 'hero_rating_badge'); openAppOrStore(); return false;"
+                           rel="noopener"
+                           style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 8px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.2); transition: background 0.2s; cursor: pointer;"
+                           onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'"
+                           onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'"
+                           aria-label="Ver na App Store">
+                            <span style="color: #FFD700; font-size: 16px;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span style="color: #FFFFFF; font-size: 14px; font-weight: 500;">5 Estrelas na App Store</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -759,17 +764,8 @@
             <div class="container">
                 <h2>Pronto para Construir Seu Império?</h2>
                 <p>Junte-se a milhares de profissionais que estão construindo suas equipes mais rápido do que nunca. Comece seu teste gratuito de 30 dias hoje.</p>
-                <div class="download-buttons" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 2rem;">
-                    <a href="https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622"
-                       class="app-store-badge primary"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       aria-label="Baixar na App Store">
-                        <img src="assets/images/app_store_badges/black.svg"
-                             alt="Baixar na App Store"
-                             style="height: 60px; width: auto;" />
-                    </a>
-                    <span id="cta-google-play-button-placeholder"></span>
+                <div class="download-buttons" id="cta-download-container" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 2rem;">
+                    <!-- Dynamically populated based on device detection -->
                 </div>
             </div>
         </section>
@@ -861,6 +857,119 @@
                 }
             });
         });
+
+        // ============================================================================
+        // DEVICE DETECTION & UTILITIES
+        // ============================================================================
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        function getDeviceType() {
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+            const isAndroid = /Android/.test(userAgent);
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
+            return {
+                isIOS,
+                isAndroid,
+                isMobile,
+                isDesktop: !isMobile
+            };
+        }
+
+        // ============================================================================
+        // GOOGLE ANALYTICS EVENT TRACKING
+        // ============================================================================
+
+        function trackDownloadClick(platform, isPrimary, location = 'hero') {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download_button_click', {
+                    'platform': platform,
+                    'button_position': isPrimary ? 'primary' : 'secondary',
+                    'button_location': location,
+                    'device_type': getDeviceType().isMobile ? 'mobile' : 'desktop',
+                    'language': 'pt',
+                    'timestamp': new Date().toISOString()
+                });
+                console.log(`📊 GA Event: download_button_click | ${platform} | ${location} | ${isPrimary ? 'primary' : 'secondary'}`);
+            }
+        }
+
+        // ============================================================================
+        // UNIVERSAL LINK HANDLER (iOS App Opening)
+        // ============================================================================
+
+        (function () {
+            if (typeof window.openAppOrStore === 'function') return;
+
+            window.openAppOrStore = function openAppOrStore() {
+                const APP_STORE_URL = 'https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622';
+
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+                if (!isIOS) {
+                    window.location.href = APP_STORE_URL;
+                    return;
+                }
+
+                const url = new URL(location.href);
+                url.searchParams.delete('_ul');
+                const params = url.search || '';
+                const sep = params ? '&' : '?';
+                const UNIVERSAL_LINK = 'https://teambuildpro.com/claim.html' + params + sep + '_ul=1';
+
+                console.log('🔗 Navigating to UL:', UNIVERSAL_LINK);
+                window.location.href = UNIVERSAL_LINK;
+            };
+        })();
+
+        // ============================================================================
+        // DYNAMIC CTA BUTTON CREATION
+        // ============================================================================
+
+        async function createAppStoreBadge(isPrimary = true) {
+            const appStoreUrl = 'https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622';
+            return `
+                <a href="${appStoreUrl}" class="app-store-badge ${isPrimary ? 'primary' : 'secondary'}" onclick="trackDownloadClick('app_store', ${isPrimary}, 'hero'); openAppOrStore(); return false;" rel="noopener" style="display: inline-block; vertical-align: top;">
+                    <img src="assets/images/app_store_badges/black.svg"
+                         alt="Baixar na App Store" style="height: 60px; width: auto;" />
+                </a>
+            `;
+        }
+
+        async function setupDownloadButtons() {
+            const primaryContainer = document.getElementById('download-container');
+            if (!primaryContainer) return;
+
+            const device = getDeviceType();
+
+            primaryContainer.style.display = 'flex';
+            primaryContainer.style.flexWrap = 'wrap';
+            primaryContainer.style.justifyContent = 'center';
+            primaryContainer.style.alignItems = 'center';
+            primaryContainer.style.gap = '12px';
+
+            const googlePlayHtml = await createGooglePlayButton();
+
+            if (device.isIOS) {
+                primaryContainer.innerHTML = await createAppStoreBadge(true) + googlePlayHtml;
+            } else if (device.isAndroid) {
+                primaryContainer.innerHTML = googlePlayHtml + await createAppStoreBadge(false);
+            } else {
+                primaryContainer.innerHTML = await createAppStoreBadge(true) + googlePlayHtml;
+            }
+        }
+
+        async function setupBottomCTAs() {
+            const ctaContainer = document.getElementById('cta-download-container');
+            if (!ctaContainer) return;
+
+            const googlePlayHtml = await createGooglePlayButton();
+            ctaContainer.innerHTML = await createAppStoreBadge(true) + googlePlayHtml;
+        }
 
         // ============================================================================
         // REFERRAL LOGIC & DYNAMIC QUERY STRING FUNCTIONALITY
@@ -1063,6 +1172,7 @@
             return `
                 <a href="${playStoreUrl}"
                    class="google-play-badge"
+                   onclick="trackDownloadClick('google_play', true, 'hero');"
                    target="_blank"
                    rel="noopener noreferrer"
                    aria-label="Disponível no Google Play">
@@ -1074,6 +1184,10 @@
         }
 
         async function initializePage() {
+            // Setup dynamic download buttons with device detection
+            await setupDownloadButtons();
+            await setupBottomCTAs();
+
             const referralInfo = getReferralInfo();
 
             const googlePlayButtonHtml = await createGooglePlayButton();
