@@ -136,6 +136,8 @@ class _ShareScreenState extends State<ShareScreen>
       baseDomain = 'https://es.teambuildpro.com';
     } else if (selectedLanguage == 'pt') {
       baseDomain = 'https://pt.teambuildpro.com';
+    } else if (selectedLanguage == 'de') {
+      baseDomain = 'https://de.teambuildpro.com';
     }
 
     final referralParam = isPartner ? 'ref' : 'new';

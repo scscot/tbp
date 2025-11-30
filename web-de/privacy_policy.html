@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Datenschutzrichtlinie | Team Build Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Überprüfen Sie die Datenschutzrichtlinie von Team Build Pro, um zu verstehen, wie wir Ihre persönlichen Daten in Übereinstimmung mit den Apple App Store Richtlinien und Datenschutzgesetzen erfassen, verwenden und schützen.">
+    <link rel="canonical" href="https://de.teambuildpro.com/privacy_policy.html" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://de.teambuildpro.com/privacy_policy.html" />
+    <meta property="og:title" content="Datenschutzrichtlinie | Team Build Pro" />
+    <meta property="og:description"
+        content="Überprüfen Sie die Datenschutzrichtlinie von Team Build Pro, um zu verstehen, wie wir Ihre persönlichen Daten in Übereinstimmung mit den Apple App Store Richtlinien und Datenschutzgesetzen erfassen, verwenden und schützen." />
+    <meta property="og:image" content="https://de.teambuildpro.com/assets/images/social-preview.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://de.teambuildpro.com/privacy_policy.html" />
+    <meta property="twitter:title" content="Datenschutzrichtlinie | Team Build Pro" />
+    <meta property="twitter:description"
+        content="Überprüfen Sie die Datenschutzrichtlinie von Team Build Pro, um zu verstehen, wie wir Ihre persönlichen Daten in Übereinstimmung mit den Apple App Store Richtlinien und Datenschutzgesetzen erfassen, verwenden und schützen." />
+    <meta property="twitter:image" content="https://de.teambuildpro.com/assets/images/social-preview.jpg" />
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png" />
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4E4TBBPZ7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+
+  function isBot() {
+    const botPatterns = [
+      /bot/i, /crawler/i, /spider/i, /crawling/i,
+      /headless/i, /phantom/i, /selenium/i, /webdriver/i,
+      /googlebot/i, /bingbot/i, /slurp/i, /duckduckbot/i,
+      /baiduspider/i, /yandexbot/i, /facebookexternalhit/i,
+      /linkedinbot/i, /twitter/i, /pinterest/i,
+      /whatsapp/i, /telegram/i,
+      /uptimerobot/i, /monitor/i, /pingdom/i, /statuscake/i,
+      /sitechecker/i, /seo/i
+    ];
+    const ua = navigator.userAgent;
+    return botPatterns.some(pattern => pattern.test(ua)) ||
+           !navigator.webdriver === false;
+  }
+
+
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.ip === '76.33.111.72') {
+                    gtag('config', 'G-G4E4TBBPZ7', { 'traffic_type': 'internal' });
+                } else {
+                    gtag('config', 'G-G4E4TBBPZ7');
+                }
+            })
+            .catch(() => {
+                gtag('config', 'G-G4E4TBBPZ7');
+            });
+    </script>
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+                <span>Team Build Pro</span>
+            </a>
+
+            <!-- Sandwich Menu Button -->
+            <button id="menu-btn" class="menu-btn" aria-label="Menü öffnen" aria-haspopup="true" aria-expanded="false">
+                <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+            </button>
+            <!-- Dropdown Menu -->
+            <div id="mobile-menu" class="mobile-menu" role="menu">
+                <a href="/#screenshots" role="menuitem">Screenshots</a>
+                <a href="/#pricing" role="menuitem">Preise</a>
+                <a href="/#faq" role="menuitem">FAQ</a>
+                <a href="/blog.html" role="menuitem">Blog</a>
+                <a href="/contact_us.html" role="menuitem">Kontakt</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-icon">🔒</div>
+            <h1 class="hero-title">Datenschutzrichtlinie</h1>
+            <p class="hero-subtitle">Letzte Aktualisierung: <span id="lastUpdated"></span></p>
+        </div>
+
+        <!-- Important Notice -->
+        <div class="highlight-box success">
+            <div class="highlight-header">
+                <div class="highlight-icon success">🛡️</div>
+                <div class="highlight-title success">Ihre Privatsphäre ist wichtig</div>
+            </div>
+            <div class="highlight-content">
+                Team Build Pro ist dem Schutz Ihrer Privatsphäre und persönlichen Daten verpflichtet. Diese Richtlinie erklärt,
+                wie wir Ihre Daten als Teil unserer professionellen Networking-Plattform erfassen, verwenden und schützen,
+                in Übereinstimmung mit den Apple App Store Richtlinien und geltenden Datenschutzgesetzen.
+            </div>
+        </div>
+
+        <!-- Information We Collect -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">ℹ️</div>
+                <h2 class="section-title">1. Informationen, die wir erfassen</h2>
+            </div>
+            <div class="section-content">Wir erfassen die folgenden Arten von Informationen:
+
+                Persönliche Daten:
+                • Name (Vor- und Nachname)
+                • E-Mail-Adresse
+                • Profilfoto (optional)
+                • Land/Standortinformationen
+
+                Kontoinformationen:
+                • Benutzerauthentifizierungsdaten (verwaltet von Firebase Auth)
+                • Kontopräferenzen und -einstellungen
+                • Empfehlungscodes und Teamstruktur-Daten
+
+                Nutzungsinformationen:
+                • App-Nutzungsanalysen (nicht personenbezogen)
+                • Geräteinformationen (iOS-Version, Gerätetyp)
+                • Absturzberichte und Leistungsdaten
+
+                Kommunikationsdaten:
+                • Über unser internes Nachrichtensystem gesendete Nachrichten
+                • Netzwerkkommunikation und -interaktionen
+                • Benachrichtigungen und Warnungen, die Sie erhalten</div>
+        </div>
+
+        <!-- How We Use Your Information -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">⚙️</div>
+                <h2 class="section-title">2. Wie wir Ihre Informationen verwenden</h2>
+            </div>
+            <div class="section-content">Wir verwenden Ihre Informationen für folgende Zwecke:
+
+                Diensterbringung:
+                • Erstellung und Verwaltung Ihres Networking-Kontos
+                • Aktivierung von Networking-Funktionen und -Features
+                • Ermöglichung der Kommunikation zwischen Teammitgliedern
+                • Senden wichtiger Benachrichtigungen über Ihr Konto und Netzwerk
+
+                App-Verbesserung:
+                • Analyse der App-Nutzung zur Verbesserung der Funktionalität
+                • Behebung von Fehlern und Verbesserung der Benutzererfahrung
+                • Entwicklung neuer Features basierend auf Benutzeranforderungen
+
+                Rechtliche Compliance:
+                • Einhaltung geltender Gesetze und Vorschriften
+                • Beantwortung rechtlicher Anfragen bei Bedarf
+                • Schutz vor Betrug und Missbrauch</div>
+        </div>
+
+        <!-- Information Sharing -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">🔗</div>
+                <h2 class="section-title">3. Weitergabe und Offenlegung von Informationen</h2>
+            </div>
+            <div class="section-content">Wir verkaufen Ihre persönlichen Daten nicht. Wir können Informationen in diesen
+                begrenzten Fällen weitergeben:
+
+                Innerhalb Ihres Netzwerks:
+                • Ihr Name und Profilfoto sind für Ihre Teammitglieder sichtbar
+                • Netzwerkbeziehungen werden innerhalb Ihrer Teamstruktur geteilt
+
+                Dienstleister:
+                • Firebase (Google) für Authentifizierungs- und Datenbankdienste
+                • Apple für In-App-Käufe und Abonnements
+                • Cloud Functions für App-Funktionalität
+
+                Rechtliche Anforderungen:
+                • Wenn durch Gesetz oder rechtliches Verfahren erforderlich
+                • Zum Schutz unserer Rechte oder der Sicherheit der Benutzer
+                • Im Falle einer Geschäftsübertragung oder Fusion
+
+                Wir teilen Ihre E-Mail-Adresse oder persönlichen Kontaktinformationen niemals mit anderen Benutzern oder Dritten zu
+                Marketingzwecken.</div>
+        </div>
+
+        <!-- Data Security -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">🔐</div>
+                <h2 class="section-title">4. Datensicherheit</h2>
+            </div>
+            <div class="section-content">Wir implementieren branchenübliche Sicherheitsmaßnahmen:
+
+                Technische Schutzmaßnahmen:
+                • Datenverschlüsselung bei Übertragung und Speicherung
+                • Sicheres Firebase-Authentifizierungssystem
+                • Regelmäßige Sicherheitsupdates und -überwachung
+
+                Zugriffskontrollen:
+                • Eingeschränkter Zugriff auf persönliche Daten nur für autorisiertes Personal
+                • Multi-Faktor-Authentifizierung für administrativen Zugriff
+                • Regelmäßige Sicherheitsaudits und -bewertungen
+
+                Datenaufbewahrung:
+                • Wir bewahren Ihre Daten nur so lange auf, wie für die Diensterbringung erforderlich
+                • Sie können jederzeit eine Kontolöschung anfordern
+                • Gelöschte Konten werden innerhalb von 30 Tagen dauerhaft entfernt</div>
+        </div>
+
+        <!-- Your Rights and Choices -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">👤</div>
+                <h2 class="section-title">5. Ihre Rechte und Wahlmöglichkeiten</h2>
+            </div>
+            <div class="section-content">Sie haben folgende Rechte in Bezug auf Ihre persönlichen Daten:
+
+                Zugriff und Kontrolle:
+                • Ihre Profilinformationen anzeigen und aktualisieren
+                • Ihre persönlichen Daten herunterladen
+                • Ihr Konto und zugehörige Daten löschen
+
+                Datenschutzeinstellungen:
+                • Kontrollieren, wer Ihre Profilinformationen sehen kann
+                • Benachrichtigungspräferenzen verwalten
+                • Nicht-wesentliche Kommunikation abbestellen
+
+                Datenportabilität:
+                • Ihre Teamstruktur-Daten exportieren
+                • Ihre Informationen zu einem anderen Dienst übertragen (wenn zutreffend)
+
+                Kontolöschungsrechte:
+                • Vollständige Kontolöschung über den Profil-Bildschirm anfordern
+                • Alle persönlichen Daten werden innerhalb von 30 Tagen dauerhaft gelöscht
+                • Netzwerkbeziehungen werden nur für Geschäftskontinuität aufbewahrt
+                • Löschung ist irreversibel und entspricht dem DSGVO-"Recht auf Vergessenwerden"
+
+                Um diese Rechte auszuüben, kontaktieren Sie uns unter privacy@teambuildpro.com oder nutzen Sie die In-App-Einstellungen.</div>
+        </div>
+
+        <!-- Apple-Specific Privacy -->
+        <div class="highlight-box neutral">
+            <div class="highlight-header">
+                <div class="highlight-icon neutral">🍎</div>
+                <div class="highlight-title neutral">Apple-Datenschutz-Compliance</div>
+            </div>
+            <div class="highlight-content">
+                Diese professionelle Networking-App entspricht den Datenschutzanforderungen des Apple App Store. Wir verwenden
+                Apples In-App-Kaufsystem für Abonnements und erfassen keine Zahlungsinformationen direkt. Alle Datenerfassungen
+                sind transparent und erfolgen mit Ihrer Zustimmung.
+            </div>
+        </div>
+
+        <!-- Children's Privacy -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">👶</div>
+                <h2 class="section-title">6. Datenschutz für Kinder</h2>
+            </div>
+            <div class="section-content">Team Build Pro richtet sich an ein allgemeines Publikum und ist nicht für
+                Personen unter 18 Jahren bestimmt. Wir erfassen wissentlich keine persönlichen Daten von Minderjährigen unter 18 Jahren.
+
+                Wenn wir feststellen, dass wir Informationen von einer Person unter 18 Jahren erfasst haben:
+                • Werden wir die Informationen sofort löschen
+                • Das Konto schließen
+                • Eltern/Erziehungsberechtigte benachrichtigen, wenn möglich
+
+                Eltern, die glauben, dass ihr Kind Informationen bereitgestellt hat, sollten sich umgehend an privacy@teambuildpro.com
+                wenden.</div>
+        </div>
+
+        <!-- International Users -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">🌍</div>
+                <h2 class="section-title">7. Internationale Datenübertragungen</h2>
+            </div>
+            <div class="section-content">Team Build Pro ist weltweit verfügbar. Ihre Informationen können übertragen werden
+                und verarbeitet werden in:
+
+                • Vereinigte Staaten (Firebase/Google-Server)
+                • Anderen Ländern, in denen unsere Dienstleister tätig sind
+
+                Wir stellen sicher, dass angemessene Schutzmaßnahmen für internationale Übertragungen vorhanden sind:
+                • Standardvertragsklauseln
+                • Angemessenheitsbeschlüsse, wo zutreffend
+                • Ihre ausdrückliche Zustimmung zur Übertragung
+
+                Alle Übertragungen entsprechen den geltenden Datenschutzgesetzen, einschließlich DSGVO und CCPA.</div>
+        </div>
+
+        <!-- Updates to Policy -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">🔄</div>
+                <h2 class="section-title">8. Änderungen dieser Datenschutzrichtlinie</h2>
+            </div>
+            <div class="section-content">Wir können diese Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. Wenn wir Änderungen vornehmen:
+
+                • Werden wir Sie über die App benachrichtigen
+                • Das Datum der "Letzten Aktualisierung" aktualisieren
+                • Wesentliche Änderungen erfordern Ihre Zustimmung
+                • Sie können die aktuelle Richtlinie jederzeit in der App einsehen
+
+                Die weitere Nutzung der App nach Änderungen gilt als Annahme der aktualisierten Richtlinie.</div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-section">
+            <div class="contact-icon">📧</div>
+            <h2 class="contact-title">Kontaktieren Sie uns</h2>
+            <p class="contact-subtitle">Fragen zu dieser Datenschutzrichtlinie?</p>
+            <a href="mailto:privacy@teambuildpro.com?subject=Datenschutzrichtlinie Anfrage" class="contact-button">
+                <span>✉️</span>
+                <span>privacy@teambuildpro.com</span>
+            </a>
+            <div class="contact-info">
+                Team Build Pro<br>
+                Datenschutzbeauftragter<br>
+                Antwort innerhalb von 48 Stunden
+            </div>
+        </div>
+
+
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+                <span>Team Build Pro</span>
+            </div>
+            <div class="footer-links">
+                <a href="/#pricing">Preise</a>
+                <a href="/faq.html">FAQ</a>
+                <a href="/contact_us.html">Kontakt</a>
+                <a href="/privacy_policy.html">Datenschutzrichtlinie</a>
+                <a href="/terms_of_service.html">Nutzungsbedingungen</a>
+            </div>
+            <p>&copy; <span id="currentYear"></span> Team Build Pro. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set current date and year
+        document.addEventListener('DOMContentLoaded', function () {
+            const now = new Date();
+            const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}`;
+            document.getElementById('lastUpdated').textContent = formattedDate;
+            document.getElementById('currentYear').textContent = now.getFullYear();
+        });
+    </script>
+
+    <script>
+        // Sandwich Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = menuBtn.querySelector('.material-symbols-outlined');
+
+        menuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', isOpen);
+            menuIcon.textContent = isOpen ? 'close' : 'menu';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+                if (mobileMenu.classList.contains('open')) {
+                    mobileMenu.classList.remove('open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    menuIcon.textContent = 'menu';
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
