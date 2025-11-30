@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-27
+**Last Updated**: 2025-11-30
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -16,6 +16,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | **Main Website (EN)** | https://teambuildpro.com | Primary landing page, SEO hub, conversion funnel |
 | **Spanish Website** | https://es.teambuildpro.com | Spanish-speaking market acquisition |
 | **Portuguese Website** | https://pt.teambuildpro.com | Brazilian/Portuguese market acquisition |
+| **German Website** | https://de.teambuildpro.com | German-speaking market acquisition |
 | **iOS App** | https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622 | iPhone/iPad distribution |
 | **Android App** | https://play.google.com/store/apps/details?id=com.scott.ultimatefix | Android distribution |
 | **Author Website** | https://www.stephenscott.us | Thought leadership, book sales, credibility |
@@ -36,10 +37,12 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 ├─────────────────────────────────────────────────────────────────────────┤
 │  teambuildpro.com ◄──► es.teambuildpro.com ◄──► pt.teambuildpro.com   │
 │         │                      │                        │               │
-│    120+ Company           Localized              Localized             │
-│    Landing Pages          Content                Content               │
+│         └──────────────► de.teambuildpro.com ◄─────────┘               │
 │         │                      │                        │               │
-│    Blog (8 posts)         Blog (8 posts)        Blog (8 posts)        │
+│    120+ Company           Localized              Localized             │
+│    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
+│         │                      │                        │               │
+│    Blog (8 posts)         Blog (8 posts each)   Blog (8 posts each)   │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -67,8 +70,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Hero animation and CTA buttons directing to app stores
 - Trust signals: privacy policy, terms, professional design
 
-**2. Multilingual Websites (ES/PT)**
-- Capture Spanish and Portuguese-speaking markets (Brazil, Latin America, Spain)
+**2. Multilingual Websites (ES/PT/DE)**
+- Capture Spanish, Portuguese, and German-speaking markets (Brazil, Latin America, Spain, Germany, Austria, Switzerland)
 - Full content parity with English site
 - Language-specific referral links from app share screen
 - SEO-optimized with hreflang tags for international ranking
@@ -76,8 +79,12 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 **3. Stephen Scott Author Website (stephenscott.us)**
 - Establishes creator credibility through 13 published books
 - Podcast presence builds thought leadership
-- Cross-links to Team Build Pro app
+- Cross-links to Team Build Pro app from book pages (especially AI/MLM books)
 - Professional bio builds trust for app purchase decisions
+- Dedicated blog with AI-powered content generation (`scripts/generate-sscott-blog.js`)
+- Books like "How to Grow Your Network Marketing Business Using AI" link directly to Team Build Pro as the implementation tool
+- Author website blog posts can reference and link to Team Build Pro features
+- Bidirectional SEO benefit: author credibility boosts app trust, app success boosts author authority
 
 **4. Company Landing Pages (120+ pages)**
 - Target long-tail keywords: "AI recruiting for [Company Name]"
@@ -88,7 +95,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 **5. Blog Content Strategy**
 - Twice-weekly automated publishing (Mon/Thu)
 - Topics: AI recruiting, direct sales best practices, industry trends
-- Available in EN, ES, PT for global reach
+- Available in EN, ES, PT, DE for global reach (4 languages)
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
@@ -108,7 +115,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 |--------|---------------|--------|
 | Email Open Rate | 30.9% | 25%+ |
 | Email Click Rate | 5.5% | 3%+ |
-| Website Languages | 3 (EN, ES, PT) | 4 (add DE) |
+| Website Languages | 4 (EN, ES, PT, DE) | 4 |
 | Blog Posts (per language) | 8 | 15+ |
 | Company Landing Pages | 120+ | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
@@ -119,9 +126,20 @@ All ecosystem components are interconnected:
 - **Website → App Stores**: Direct download links on every page
 - **App → Websites**: Share screen generates language-specific referral URLs
 - **Author Site → App**: Book pages link to Team Build Pro as the "tool that implements the strategies"
+- **Author Site Blog → TBP Blog**: Topic coordination, cross-referencing for SEO authority
 - **Email → Website → App**: Landing page routing for analytics and retargeting
 - **Blog → App**: Every post includes "Get the App" CTA sections
 - **Company Pages → App**: Tailored messaging for each company's audience
+
+### Stephen Scott Author Site Integration
+
+The stephenscott.us website serves as the credibility and thought leadership hub:
+- **Book Catalog**: 13 books with 5 specifically about AI/MLM that reference Team Build Pro
+- **MLM AI Book Series**: Available in English, Spanish, Portuguese, German, Hindi, Japanese
+- **Blog**: Separate blog generation system (`scripts/generate-sscott-blog.js`) for author-specific content
+- **Podcast Page**: Establishes authority through media appearances
+- **Contact Integration**: Cloud Function (submitStephenScottContact) for lead capture
+- **SEO Synergy**: Author domain authority supports Team Build Pro app credibility
 
 ---
 
@@ -193,6 +211,13 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   ├── blog/             # Portuguese blog (8 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
+├── web-de/                # German website (de.teambuildpro.com)
+│   ├── index.html        # German homepage (3x2 screenshot grid)
+│   ├── faq.html          # German FAQ
+│   ├── books.html        # German books page
+│   ├── blog/             # German blog (8 translated posts)
+│   ├── sitemap.xml       # German sitemap
+│   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
 │   ├── public/           # Author site pages (migrated from Dreamhost to Firebase)
 │   │   ├── index.html   # Author homepage
@@ -230,7 +255,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - `?new=ABC` = Prospect view (considering joining referrer's opportunity)
 - `?ref=ABC` = Professional view (existing team member)
 - Referral codes map to Firebase UIDs via `referralCodes` collection
-- Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese)
+- Language-specific domains: es.teambuildpro.com (Spanish), pt.teambuildpro.com (Portuguese), de.teambuildpro.com (German)
 - Share screen uses language selection to route to appropriate domain
 
 ---
@@ -273,22 +298,23 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 
 ### Multi-Language Website Architecture
 
-#### Hosting Structure (4 Sites)
+#### Hosting Structure (5 Sites)
 - **English**: teambuildpro.com (web/) - Primary site
 - **Spanish**: es.teambuildpro.com (web-es/) - Complete Spanish translation
 - **Portuguese**: pt.teambuildpro.com (web-pt/) - Complete Portuguese translation
+- **German**: de.teambuildpro.com (web-de/) - Complete German translation
 - **Author**: stephenscott.us (sscott/) - Stephen Scott author website (migrated from Dreamhost)
-- **Firebase Hosting**: Four separate targets (main, es, pt, sscott) with individual configs
+- **Firebase Hosting**: Five separate targets (main, es, pt, de, sscott) with individual configs
 
 #### Language Switcher Implementation
 - **Location**: Top-right of header on all pages
-- **Functionality**: Switches between EN/ES/PT versions
+- **Functionality**: Switches between EN/ES/PT/DE versions
 - **Query String Preservation**: Maintains `?new=` and `?ref=` parameters across language switches
 - **Mobile Optimized**: Responsive positioning for all screen sizes
 - **Smart Routing**: Directs to corresponding page in target language
 
-#### Complete Content Parity (EN, ES, PT)
-All three main sites have identical structure:
+#### Complete Content Parity (EN, ES, PT, DE)
+All four main sites have identical structure:
 - Homepage with hero animation
 - FAQ page (8 questions)
 - Books landing page with localized covers
@@ -300,7 +326,7 @@ All three main sites have identical structure:
 - Robots.txt for search engine directives
 
 #### SEO Optimization
-- **Hreflang Tags**: Cross-reference all language versions
+- **Hreflang Tags**: Cross-reference all language versions (EN/ES/PT/DE)
 - **Localized Sitemaps**: Comprehensive page listing for each site
 - **Robots.txt**: Custom directives per language
 - **Meta Tags**: Language-specific titles and descriptions
@@ -359,6 +385,19 @@ All three main sites have identical structure:
 - `/sitemap.xml` - Portuguese sitemap with hreflang tags
 - `/robots.txt` - Portuguese search directives
 
+### German Site (web-de/ - de.teambuildpro.com)
+- `/` - German homepage with hero animation (3x2 screenshot grid layout)
+- `/faq.html` - German FAQ (8 questions with accordion)
+- `/books.html` - German books page (MLM-Cover-DE.jpg)
+- `/blog.html` - German blog index
+- `/blog/` - 8 translated blog posts (same titles as EN)
+- `/contact_us.html` - German contact form
+- `/claim.html` - German claim/verification page
+- `/privacy_policy.html` - German privacy policy (Datenschutzrichtlinie)
+- `/terms_of_service.html` - German terms of service (Nutzungsbedingungen)
+- `/sitemap.xml` - German sitemap with hreflang tags
+- `/robots.txt` - German search directives
+
 ### Stephen Scott Author Website (sscott/ - stephenscott.us)
 - `/` - Author homepage (professional portfolio)
 - `/about.html` - About Stephen Scott (253 lines)
@@ -389,7 +428,7 @@ All three main sites have identical structure:
 ## 🤖 Bot Detection & Traffic Analysis
 
 ### Comprehensive Bot Filtering System
-- **Implementation**: JavaScript bot detection across all sites (EN, ES, PT, Author)
+- **Implementation**: JavaScript bot detection across all sites (EN, ES, PT, DE, Author)
 - **Detection Method**: Browser fingerprinting, behavior analysis, known bot signatures
 - **Scripts**: add-bot-detection.js, fix-bot-detection.js deployed site-wide
 - **Purpose**: Filter bot traffic from analytics for accurate user metrics
@@ -667,10 +706,11 @@ After cleaning invalid emails from the database, current metrics from the past 2
 
 ### Utility Scripts (scripts/)
 - `generate-ai-blog.js` - AI-powered blog generation using Claude CLI
-  - `--title "Title"` - Generate blog with specific title (EN, ES, PT)
+  - `--title "Title"` - Generate blog with specific title (EN, ES, PT, DE)
   - `--research` - Research mode: analyze trends and recommend topics
   - `--full-auto` - Full automation: research, generate, deploy, notify
   - `--notify-email=EMAIL` - Recipient for notification emails
+  - Generates 4 language versions: English, Spanish, Portuguese, German
 - `generate-blog.js` - Legacy blog generation (static template approach)
 
 ---
@@ -879,10 +919,10 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Verified with flutter analyze - no issues
 
 39. ✅ **SEO & Cross-Site Integration**:
-   - Hreflang tags linking all language versions (EN/ES/PT)
+   - Hreflang tags linking all language versions (EN/ES/PT/DE)
    - Simplified EN sitemap.xml to essential pages only
-   - Complete sitemaps for ES and PT sites with cross-references
-   - Robots.txt files for all four sites (EN, ES, PT, stephenscott.us)
+   - Complete sitemaps for ES, PT, and DE sites with cross-references
+   - Robots.txt files for all five sites (EN, ES, PT, DE, stephenscott.us)
    - Proper canonical URL implementation across all sites
    - Google Analytics integration with internal IP filtering (76.33.111.72)
 
@@ -916,8 +956,8 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - **Pipeline stages**:
      1. Research: Claude CLI analyzes industry trends from BusinessForHome.org, Direct Selling News, social media
      2. Topic Selection: AI recommends 3-5 topics with relevance scores, selects top-scoring topic
-     3. Generation: Creates blog post in EN, ES, PT using existing generate-ai-blog.js
-     4. Deploy: Auto-deploys to Firebase Hosting (all three language sites)
+     3. Generation: Creates blog post in EN, ES, PT, DE using generate-ai-blog.js
+     4. Deploy: Auto-deploys to Firebase Hosting (all four language sites)
      5. Notify: Sends email notification via Mailgun with results
    - **New script flags added to generate-ai-blog.js**:
      - `--research`: Research mode - analyze trends and recommend topics
@@ -1014,6 +1054,62 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Consolidates link equity to single URL
    - Controls what appears in search results
    - After SEO fixes, sitemaps should be resubmitted to Google Search Console
+
+### Week of Nov 30
+53. ✅ **German Website (web-de/) Launch**:
+   - Created complete German website at de.teambuildpro.com
+   - Full content translation: index.html, faq.html, books.html, blog.html, contact_us.html, claim.html
+   - Legal pages: privacy_policy.html (Datenschutzrichtlinie), terms_of_service.html (Nutzungsbedingungen)
+   - 8 blog posts translated to German (same slugs as EN/ES/PT)
+   - Custom 3x2 grid layout for app screenshots (6 screenshots, CSS override)
+   - sitemap.xml and robots.txt with proper hreflang tags
+   - Firebase hosting target: "de" pointing to web-de/
+   - Deployed to de.teambuildpro.com
+
+54. ✅ **German Blog Automation Support**:
+   - Modified `scripts/generate-ai-blog.js` for German (DE) support
+   - Added German language name and de.teambuildpro.com base URL in translation prompts
+   - Added German date formatting (de-DE locale) in updateBlogIndex and generateTranslatedBlogHTML
+   - Added German category badges: RECRUITING-TIPPS, PRODUKT-UPDATES, TUTORIALS
+   - Added German featured badge (EMPFOHLEN) and read more text (Artikel lesen →)
+   - Added German "by" text (Von)
+   - Added complete German localized strings for HTML generation (navigation, sharing, CTA, footer)
+   - Added Step 6/7 German translation in runFullAutomation workflow
+   - Updated output summary to include German file path
+   - Updated `.github/workflows/weekly-blog.yml`:
+     - Added web-de/blog/*.html to git add
+     - Added web-de/blog.html to git add
+     - Added web-de/sitemap.xml to git add
+     - Added scripts/german-translation.json to git add
+
+55. ✅ **Share Screen German Domain Routing**:
+   - Modified `lib/screens/share_screen.dart` for German referral links
+   - Added German domain routing in `_buildTargetedLink()` method
+   - German messages now route to de.teambuildpro.com instead of teambuildpro.com
+   - Pattern: `https://de.teambuildpro.com/?new=ABC` for German language selection
+
+56. ✅ **Google Play Console Subtitles (80 chars)**:
+   - Added Google Subtitle field to all App Store Description documents
+   - Google Play allows 80 characters vs App Store's 30-character limit
+   - Keyword-optimized subtitles for better discoverability:
+     - EN: "AI-Powered MLM & Direct Sales Recruiting App | Downline Builder & Team Tracker" (79 chars)
+     - ES: "App de Reclutamiento MLM y Ventas Directas con IA | Constructor de Equipo" (73 chars)
+     - PT: "App de Recrutamento MLM e Vendas Diretas com IA | Construtor de Equipe" (70 chars)
+     - DE: "KI-gestützte MLM & Direktvertrieb Recruiting-App | Downline & Team Builder" (75 chars)
+   - Updated documents/App_Store_Description.md, _ES.md, _PT.md, _DE.md
+
+57. ✅ **Android Build v1.0.70+100**:
+   - Created new Android App Bundle (AAB) release
+   - Build size: 53MB
+   - Tree-shaking applied: MaterialIcons reduced by 98.9%
+   - Ready for Google Play Console upload
+
+58. ✅ **App Store Localizations Submitted**:
+   - Submitted localizations to both Google Play Console and App Store Connect
+   - German (de-DE): Team Build Pro: KI Team
+   - Portuguese (pt-BR): Team Build Pro: IA Equipe
+   - Spanish (es-419 Latin America): Team Build Pro: IA Equipo
+   - All localized metadata: app name, subtitle/short description, full description, keywords
 
 ---
 
