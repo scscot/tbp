@@ -332,8 +332,8 @@ async function callClaudeForTranslation(prompt, languageName) {
 
 // Translation helper function - generates translation prompt for Claude Code
 function generateTranslationPrompt(blogPost, targetLang) {
-  const langName = targetLang === 'es' ? 'Spanish' : 'Portuguese';
-  const baseUrl = targetLang === 'es' ? 'es.teambuildpro.com' : 'pt.teambuildpro.com';
+  const langName = targetLang === 'es' ? 'Spanish' : targetLang === 'de' ? 'German' : 'Portuguese';
+  const baseUrl = targetLang === 'es' ? 'es.teambuildpro.com' : targetLang === 'de' ? 'de.teambuildpro.com' : 'pt.teambuildpro.com';
 
   return `Translate the following blog post to ${langName} with cultural adaptation.
 
@@ -379,6 +379,8 @@ function updateBlogIndex(blogIndexPath, translatedBlogPost, lang) {
   const dateObj = new Date(translatedBlogPost.publishDate);
   const formattedDate = lang === 'es'
     ? dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+    : lang === 'de'
+    ? dateObj.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' })
     : dateObj.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
 
   // Category badge text
@@ -388,6 +390,11 @@ function updateBlogIndex(blogIndexPath, translatedBlogPost, lang) {
       'Product Updates': 'ACTUALIZACIONES DE PRODUCTO',
       'Tutorials': 'TUTORIALES'
     },
+    de: {
+      'Recruiting Tips': 'RECRUITING-TIPPS',
+      'Product Updates': 'PRODUKT-UPDATES',
+      'Tutorials': 'TUTORIALS'
+    },
     pt: {
       'Recruiting Tips': 'DICAS DE RECRUTAMENTO',
       'Product Updates': 'ATUALIZAÇÕES DO PRODUTO',
@@ -395,9 +402,9 @@ function updateBlogIndex(blogIndexPath, translatedBlogPost, lang) {
     }
   };
 
-  const featuredBadge = lang === 'es' ? 'DESTACADO' : 'DESTAQUE';
-  const readMoreText = lang === 'es' ? 'Leer Artículo →' : 'Ler Artigo →';
-  const byText = lang === 'es' ? 'Por' : 'Por';
+  const featuredBadge = lang === 'es' ? 'DESTACADO' : lang === 'de' ? 'EMPFOHLEN' : 'DESTAQUE';
+  const readMoreText = lang === 'es' ? 'Leer Artículo →' : lang === 'de' ? 'Artikel lesen →' : 'Ler Artigo →';
+  const byText = lang === 'es' ? 'Por' : lang === 'de' ? 'Von' : 'Por';
 
   // Truncate excerpt to ~120 chars for card display
   let excerpt = translatedBlogPost.excerpt || '';
@@ -538,8 +545,8 @@ function sanitizeContent(content) {
 
 // Generate HTML for translated blog post
 function generateTranslatedBlogHTML(blogPost, lang) {
-  const baseUrl = lang === 'es' ? 'https://es.teambuildpro.com' : 'https://pt.teambuildpro.com';
-  const langCode = lang === 'es' ? 'es' : 'pt';
+  const baseUrl = lang === 'es' ? 'https://es.teambuildpro.com' : lang === 'de' ? 'https://de.teambuildpro.com' : 'https://pt.teambuildpro.com';
+  const langCode = lang === 'es' ? 'es' : lang === 'de' ? 'de' : 'pt';
 
   // Sanitize content to remove any nested HTML documents
   const cleanContent = sanitizeContent(blogPost.content);
@@ -548,6 +555,8 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   const dateObj = new Date(blogPost.publishDate);
   const formattedDate = lang === 'es'
     ? dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+    : lang === 'de'
+    ? dateObj.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' })
     : dateObj.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
 
   // Localized strings
@@ -571,6 +580,26 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     openMenu: 'Abrir menú',
     categoryBadge: blogPost.category === 'Recruiting Tips' ? 'CONSEJOS DE RECLUTAMIENTO' :
                    blogPost.category === 'Product Updates' ? 'ACTUALIZACIONES DE PRODUCTO' : 'TUTORIALES'
+  } : lang === 'de' ? {
+    home: 'Startseite',
+    blog: 'Blog',
+    faq: 'FAQ',
+    contact: 'Kontakt',
+    books: 'Bücher',
+    screenshots: 'Screenshots',
+    pricing: 'Preise',
+    shareArticle: 'Diesen Artikel teilen',
+    shareTwitter: 'Auf Twitter teilen',
+    shareLinkedIn: 'Auf LinkedIn teilen',
+    shareFacebook: 'Auf Facebook teilen',
+    ctaTitle: 'Starten Sie mit KI, Ihr Team aufzubauen',
+    ctaDesc: 'Laden Sie Team Build Pro herunter und bieten Sie Ihren Prospects eine 30-Tage-Erfahrung des Team Building, bevor sie beitreten',
+    privacyPolicy: 'Datenschutzrichtlinie',
+    termsOfService: 'Nutzungsbedingungen',
+    allRightsReserved: 'Alle Rechte vorbehalten.',
+    openMenu: 'Menü öffnen',
+    categoryBadge: blogPost.category === 'Recruiting Tips' ? 'RECRUITING-TIPPS' :
+                   blogPost.category === 'Product Updates' ? 'PRODUKT-UPDATES' : 'TUTORIALS'
   } : {
     home: 'Início',
     blog: 'Blog',
@@ -1175,7 +1204,7 @@ async function processImport(importFile) {
 // Full automation mode - generates blog in all languages with a single command
 async function runFullAutomation(title, category, keywords, extraNotes) {
   console.log(`\n${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}`);
-  console.log(`${colors.bright}${colors.green}   FULL AUTOMATION MODE - Generating blog in EN, ES, PT${colors.reset}`);
+  console.log(`${colors.bright}${colors.green}   FULL AUTOMATION MODE - Generating blog in EN, ES, PT, DE${colors.reset}`);
   console.log(`${colors.bright}${colors.blue}═══════════════════════════════════════════════════════════════════${colors.reset}\n`);
 
   console.log(`${colors.cyan}Title:${colors.reset} ${title}`);
@@ -1187,7 +1216,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   const slug = generateSlug(title);
 
   // Step 1: Generate blog content via Claude
-  console.log(`${colors.bright}${colors.yellow}Step 1/6:${colors.reset} Generating blog content via Claude API...`);
+  console.log(`${colors.bright}${colors.yellow}Step 1/7:${colors.reset} Generating blog content via Claude API...`);
   console.log(`${colors.cyan}  This may take 1-2 minutes...${colors.reset}\n`);
 
   const blogPrompt = generateBlogPromptPlain(title, category, keywords, extraNotes);
@@ -1211,7 +1240,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   }
 
   // Step 2: Validate blog content
-  console.log(`${colors.bright}${colors.yellow}Step 2/6:${colors.reset} Validating blog content...`);
+  console.log(`${colors.bright}${colors.yellow}Step 2/7:${colors.reset} Validating blog content...`);
   const errors = validateBlogPost(blogPost);
   if (errors.length > 0) {
     console.error(`${colors.yellow}⚠️  Validation warnings (${errors.length}):${colors.reset}`);
@@ -1227,7 +1256,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   console.log(`${colors.cyan}  Saved raw response to: scripts/blog-response.json${colors.reset}\n`);
 
   // Step 3: Add to generate-blog.js and generate English HTML
-  console.log(`${colors.bright}${colors.yellow}Step 3/6:${colors.reset} Adding blog to database and generating English HTML...`);
+  console.log(`${colors.bright}${colors.yellow}Step 3/7:${colors.reset} Adding blog to database and generating English HTML...`);
 
   const generateBlogPath = path.join(__dirname, 'generate-blog.js');
   let generateBlogContent = fs.readFileSync(generateBlogPath, 'utf8');
@@ -1258,7 +1287,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   updateSitemap(englishSitemapPath, blogPost, 'en');
 
   // Step 4: Generate Spanish translation
-  console.log(`${colors.bright}${colors.yellow}Step 4/6:${colors.reset} Generating Spanish translation...`);
+  console.log(`${colors.bright}${colors.yellow}Step 4/7:${colors.reset} Generating Spanish translation...`);
   const spanishPrompt = generateTranslationPrompt(blogPost, 'es');
 
   try {
@@ -1288,7 +1317,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   }
 
   // Step 5: Generate Portuguese translation
-  console.log(`${colors.bright}${colors.yellow}Step 5/6:${colors.reset} Generating Portuguese translation...`);
+  console.log(`${colors.bright}${colors.yellow}Step 5/7:${colors.reset} Generating Portuguese translation...`);
   const portuguesePrompt = generateTranslationPrompt(blogPost, 'pt');
 
   try {
@@ -1317,8 +1346,38 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     fs.writeFileSync(path.join(__dirname, 'portuguese-translation-prompt.txt'), portuguesePrompt, 'utf8');
   }
 
-  // Step 6: Summary
-  console.log(`${colors.bright}${colors.yellow}Step 6/6:${colors.reset} Complete!\n`);
+  // Step 6: Generate German translation
+  console.log(`${colors.bright}${colors.yellow}Step 6/7:${colors.reset} Generating German translation...`);
+  const germanPrompt = generateTranslationPrompt(blogPost, 'de');
+
+  try {
+    const germanTranslation = await callClaudeForTranslation(germanPrompt, 'German');
+    const germanTransFile = path.join(__dirname, 'german-translation.json');
+    fs.writeFileSync(germanTransFile, JSON.stringify(germanTranslation, null, 2), 'utf8');
+    console.log(`${colors.green}  ✅ German translation received${colors.reset}`);
+
+    // Generate German HTML
+    const germanHTML = generateTranslatedBlogHTML(germanTranslation, 'de');
+    const germanPath = path.join(__dirname, '..', 'web-de', 'blog', `${blogPost.slug}.html`);
+    fs.writeFileSync(germanPath, germanHTML, 'utf8');
+    console.log(`${colors.green}  ✅ German blog created: web-de/blog/${blogPost.slug}.html${colors.reset}`);
+
+    // Update German sitemap
+    const germanSitemapPath = path.join(__dirname, '..', 'web-de', 'sitemap.xml');
+    updateSitemap(germanSitemapPath, blogPost, 'de');
+
+    // Update German blog index
+    const germanBlogIndexPath = path.join(__dirname, '..', 'web-de', 'blog.html');
+    updateBlogIndex(germanBlogIndexPath, germanTranslation, 'de');
+    console.log('');
+  } catch (error) {
+    console.error(`${colors.yellow}⚠️  German translation failed: ${error.message}${colors.reset}`);
+    console.log(`${colors.cyan}  Saved prompt to scripts/german-translation-prompt.txt for manual retry${colors.reset}\n`);
+    fs.writeFileSync(path.join(__dirname, 'german-translation-prompt.txt'), germanPrompt, 'utf8');
+  }
+
+  // Step 7: Summary
+  console.log(`${colors.bright}${colors.yellow}Step 7/7:${colors.reset} Complete!\n`);
 
   console.log(`${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}`);
   console.log(`${colors.bright}${colors.green}   BLOG GENERATION COMPLETE${colors.reset}`);
@@ -1328,6 +1387,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   console.log(`  ${colors.cyan}English:${colors.reset}    web/blog/${blogPost.slug}.html`);
   console.log(`  ${colors.cyan}Spanish:${colors.reset}    web-es/blog/${blogPost.slug}.html`);
   console.log(`  ${colors.cyan}Portuguese:${colors.reset} web-pt/blog/${blogPost.slug}.html`);
+  console.log(`  ${colors.cyan}German:${colors.reset}     web-de/blog/${blogPost.slug}.html`);
 
   console.log(`\n${colors.bright}Blog summary:${colors.reset}`);
   console.log(`  Title: ${blogPost.title}`);

@@ -73,12 +73,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Add all generated blog files
-          git add web/blog/*.html web-es/blog/*.html web-pt/blog/*.html
-          git add web/blog.html web-es/blog.html web-pt/blog.html
-          git add web/sitemap.xml web-es/sitemap.xml web-pt/sitemap.xml
+          git add web/blog/*.html web-es/blog/*.html web-pt/blog/*.html web-de/blog/*.html
+          git add web/blog.html web-es/blog.html web-pt/blog.html web-de/blog.html
+          git add web/sitemap.xml web-es/sitemap.xml web-pt/sitemap.xml web-de/sitemap.xml
           git add scripts/generate-blog.js
           git add scripts/blog-response.json scripts/blog-recommendations.json || true
-          git add scripts/spanish-translation.json scripts/portuguese-translation.json || true
+          git add scripts/spanish-translation.json scripts/portuguese-translation.json scripts/german-translation.json || true
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
