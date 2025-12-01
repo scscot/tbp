@@ -1,0 +1,64 @@
+{
+  "lastUpdated": "2025-11-30T00:00:00Z",
+  "totalCompanies": 114,
+  "languages": {
+    "es": {
+      "completed": [
+        "herbalife", "amway", "doterra", "young-living", "nu-skin",
+        "4life", "arbonne", "forever-living", "lifewave", "isagenix",
+        "3-international", "acn", "amare", "ambit-energy", "aplgo",
+        "arieyl", "asea-global", "atomy", "avon", "be",
+        "beachbody", "beautycounter", "bode-pro", "bravenly-global", "bydzyne",
+        "chogan-group", "coway", "crowd1", "cutco", "duolife",
+        "dxn", "enagic", "exp-realty", "faberlic", "farmasi",
+        "fm-world", "greenway-global", "grupo-hinode", "hc-wellness", "healy",
+        "ibuumerang", "igenius-global", "immunotec", "incruises", "it-works",
+        "jeunesse", "jifu", "juice-plus", "kannaway", "le-vel",
+        "legalshield", "lifevantage", "limelife-alcone", "livegood", "lr-world",
+        "luume", "mannatech", "market-america", "mary-kay", "mavie-global",
+        "melaleuca", "modere", "monat", "mydailychoice", "natures-sunshine",
+        "neolife", "neora", "neumi", "newulife", "nikken",
+        "omnilife", "one-more-international", "optavia", "opulence-global", "oriflame",
+        "pampered-chef", "paparazzi", "partylite", "pawtree", "plexus",
+        "pm-international", "primerica", "princess-house", "pruvit", "purium",
+        "q-sciences", "qnet", "quiari", "rain-international", "riman",
+        "rodan-fields", "scentsy", "seacret", "sendoutcards", "senegence",
+        "shaklee", "soluni", "stella-dot", "superpatch", "total-life-changes",
+        "touchstone-essentials", "tranont", "tupperware", "unicity", "usana",
+        "valentus", "velovita", "vestige", "vida-divina", "vital-health-global",
+        "vorwerk", "xyngular", "youngevity", "younique"
+      ],
+      "inProgress": [],
+      "remaining": []
+    },
+    "pt": {
+      "completed": [],
+      "inProgress": [],
+      "remaining": []
+    },
+    "de": {
+      "completed": [],
+      "inProgress": [],
+      "remaining": []
+    }
+  },
+  "allCompanies": [
+    "3-international", "4life", "acn", "amare", "ambit-energy", "amway", "aplgo", "arbonne",
+    "arieyl", "asea-global", "atomy", "avon", "be", "beachbody", "beautycounter", "bode-pro",
+    "bravenly-global", "bydzyne", "chogan-group", "coway", "crowd1", "cutco", "doterra", "duolife",
+    "dxn", "enagic", "exp-realty", "faberlic", "farmasi", "fm-world", "forever-living",
+    "greenway-global", "grupo-hinode", "hc-wellness", "healy", "herbalife", "ibuumerang",
+    "igenius-global", "immunotec", "incruises", "isagenix", "it-works", "jeunesse", "jifu",
+    "juice-plus", "kannaway", "le-vel", "legalshield", "lifevantage", "lifewave", "limelife-alcone",
+    "livegood", "lr-world", "luume", "mannatech", "market-america", "mary-kay", "mavie-global",
+    "melaleuca", "modere", "monat", "mydailychoice", "natures-sunshine", "neolife", "neora",
+    "neumi", "newulife", "nikken", "nu-skin", "omnilife", "one-more-international", "optavia",
+    "opulence-global", "oriflame", "pampered-chef", "paparazzi", "partylite", "pawtree", "plexus",
+    "pm-international", "primerica", "princess-house", "pruvit", "purium", "q-sciences", "qnet",
+    "quiari", "rain-international", "riman", "rodan-fields", "scentsy", "seacret", "sendoutcards",
+    "senegence", "shaklee", "soluni", "stella-dot", "superpatch", "total-life-changes",
+    "touchstone-essentials", "tranont", "tupperware", "unicity", "usana", "valentus", "velovita",
+    "vestige", "vida-divina", "vital-health-global", "vorwerk", "xyngular", "young-living",
+    "youngevity", "younique"
+  ]
+}

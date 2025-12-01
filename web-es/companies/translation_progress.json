@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "total_companies": 114,
+    "completed": 5,
+    "in_progress": 0,
+    "failed": 0,
+    "last_updated": "2025-11-30"
+  },
+  "completed": [
+    "ai-recruiting-herbalife.html",
+    "ai-recruiting-amway.html",
+    "ai-recruiting-doterra.html",
+    "ai-recruiting-young-living.html",
+    "ai-recruiting-nu-skin.html"
+  ],
+  "failed": []
+}
