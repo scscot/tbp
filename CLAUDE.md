@@ -1151,6 +1151,41 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Navigation fully localized (Startseite, Screenshots, Preise, FAQ, Bücher, Kontakt)
    - Breadcrumbs properly translated (Recruiting-Leitfäden, Guias de Recrutamento)
 
+63. ✅ **URL Consistency Fix (books/ → books.html)**:
+   - Fixed 281 files across all sites with `href="/books/"` → `href="/books.html"`
+   - Fixed og:url and canonical URLs in web/books.html and web/books/index.html
+   - Ensures consistent URL structure without trailing slashes
+
+64. ✅ **Comprehensive Internal Link Audit & Fixes**:
+   - Audited all internal links across EN, ES, PT, and DE websites
+   - Fixed blog post link: `30-day-pre-qualification-system.html` → `qualify-new-recruits-30-days.html` (all 4 sites)
+   - Fixed 14 broken company cross-reference links in EN/ES (mapped to existing companies):
+     - gold-canyon → scentsy, celebrating-home → pampered-chef, ctfo → kannaway
+     - hempworx → kannaway, natura → avon, organo-gold → dxn
+     - origami-owl → paparazzi, powur → ambit-energy, rainbow-vacuum → vorwerk
+     - southwestern-advantage → cutco, tlc → total-life-changes, utility-warehouse → ambit-energy
+   - Fixed 37 broken company cross-references in PT site (mapped to existing PT companies)
+   - Fixed 2 broken company cross-references in DE site (enagic → herbalife, pampered-chef → vorwerk)
+   - Removed non-existent blog-post.css references from ES/PT/DE blog posts
+   - Fixed relative `index.html` → `/` in privacy/terms pages
+
+65. ✅ **German Book Cover (MLM-Cover-DE.jpg)**:
+   - Added high-resolution German book cover (1200x1920 pixels, 447KB)
+   - Source: `/Users/sscott/Downloads/MLM Cover DE.png` converted to JPEG at 95% quality
+   - Removed incorrect MLM-Cover-ES.jpg that was in web-de folder
+   - Cover displays properly on de.teambuildpro.com/books.html
+
+66. ✅ **Sandwich Menu Consistency (ES/PT/DE)**:
+   - Added missing "Books" link to all three non-EN sites:
+     - ES: Libros → /books.html
+     - PT: Livros → /books.html
+     - DE: Bücher → /books.html
+   - Fixed contact links from absolute URLs to relative paths
+     - Was: `https://es.teambuildpro.com/contact_us.html`
+     - Now: `/contact_us.html`
+   - All sandwich menus now match EN site structure with 6 items:
+     Screenshots, Pricing, FAQ, Blog, Books, Contact
+
 ---
 
 ## 📞 Contact & Support
