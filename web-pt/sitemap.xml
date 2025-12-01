@@ -157,4 +157,13 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://pt.teambuildpro.com/blog/ai-10x-your-mlm-recruiting-results-2025-field.html</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
