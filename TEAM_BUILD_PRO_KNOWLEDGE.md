@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-11-30
+**Last Updated**: 2025-12-01
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -367,10 +367,12 @@ All four main sites have identical structure:
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
 - `/blog/` - 8 translated blog posts (same titles as EN)
+- `/companies.html` - Company recruiting guides index (114 companies with pagination)
+- `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
 - `/privacy_policy.html` - Spanish privacy policy
 - `/terms_of_service.html` - Spanish terms of service
-- `/sitemap.xml` - Spanish sitemap with hreflang tags
+- `/sitemap.xml` - Spanish sitemap with hreflang tags (includes all company pages)
 - `/robots.txt` - Spanish search directives
 
 ### Portuguese Site (web-pt/ - pt.teambuildpro.com)
@@ -379,10 +381,12 @@ All four main sites have identical structure:
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
 - `/blog/` - 8 translated blog posts (same titles as EN)
+- `/companies.html` - Company recruiting guides index (39 companies with pagination)
+- `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
 - `/privacy_policy.html` - Portuguese privacy policy
 - `/terms_of_service.html` - Portuguese terms of service
-- `/sitemap.xml` - Portuguese sitemap with hreflang tags
+- `/sitemap.xml` - Portuguese sitemap with hreflang tags (includes all company pages)
 - `/robots.txt` - Portuguese search directives
 
 ### German Site (web-de/ - de.teambuildpro.com)
@@ -391,11 +395,13 @@ All four main sites have identical structure:
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
 - `/blog/` - 8 translated blog posts (same titles as EN)
+- `/companies.html` - Company recruiting guides index (20 companies with pagination)
+- `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
 - `/claim.html` - German claim/verification page
 - `/privacy_policy.html` - German privacy policy (Datenschutzrichtlinie)
 - `/terms_of_service.html` - German terms of service (Nutzungsbedingungen)
-- `/sitemap.xml` - German sitemap with hreflang tags
+- `/sitemap.xml` - German sitemap with hreflang tags (includes all company pages)
 - `/robots.txt` - German search directives
 
 ### Stephen Scott Author Website (sscott/ - stephenscott.us)
@@ -1110,6 +1116,40 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Portuguese (pt-BR): Team Build Pro: IA Equipe
    - Spanish (es-419 Latin America): Team Build Pro: IA Equipo
    - All localized metadata: app name, subtitle/short description, full description, keywords
+
+### Week of Dec 1
+59. ✅ **Multi-Locale Company Pages Index (companies.html)**:
+   - Created `web-es/companies.html` with all 114 Spanish company cards and pagination (20 per page, 6 pages)
+   - Created `web-pt/companies.html` with all 39 Portuguese company cards and pagination
+   - Created `web-de/companies.html` with all 20 German company cards and pagination
+   - All pages feature:
+     - Client-side JavaScript pagination
+     - Language switcher preserving query strings
+     - Consistent header/footer navigation
+     - Bot detection and Google Analytics integration
+     - Responsive grid layout (3 columns → 2 → 1 on mobile)
+
+60. ✅ **Footer Consistency Update (All Locales)**:
+   - Standardized footer links across all ES, PT, and DE pages
+   - Added missing "Books" and "Recruiting Guides" links to all locale footers
+   - Updated footer link text for consistency:
+     - ES: Precios, Preguntas Frecuentes, Libros, Guías de Reclutamiento, Contacto, Política de Privacidad, Términos de Servicio
+     - PT: Preços, Perguntas Frequentes, Livros, Guias de Recrutamento, Contato, Política de Privacidade, Termos de Serviço
+     - DE: Preise, Häufige Fragen, Bücher, Recruiting-Leitfäden, Kontakt, Datenschutzrichtlinie, Nutzungsbedingungen
+   - Updated all main pages: index.html, faq.html, books.html, blog.html, contact_us.html, privacy_policy.html, terms_of_service.html
+
+61. ✅ **Sitemap Updates for Company Pages**:
+   - Added `companies.html` index page to DE sitemap with hreflang tags
+   - Added `companies.html` + 75 company page entries to ES sitemap
+   - PT sitemap already had all 39 company pages + companies.html
+   - All sitemaps now include proper cross-locale hreflang references
+
+62. ✅ **Translation Quality Audit (PT & DE Company Pages)**:
+   - Verified high-quality translations on sample company pages (Herbalife, Vorwerk)
+   - PT pages: Proper Portuguese terminology (Recrutamento, Guias, Construção de Equipes)
+   - DE pages: Proper German terminology (KI-Recruiting, Vertriebspartner, Teamaufbau)
+   - Navigation fully localized (Startseite, Screenshots, Preise, FAQ, Bücher, Kontakt)
+   - Breadcrumbs properly translated (Recruiting-Leitfäden, Guias de Recrutamento)
 
 ---
 
