@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-01
+**Last Updated**: 2025-12-02
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1185,6 +1185,53 @@ After cleaning invalid emails from the database, current metrics from the past 2
      - Now: `/contact_us.html`
    - All sandwich menus now match EN site structure with 6 items:
      Screenshots, Pricing, FAQ, Blog, Books, Contact
+
+### Week of Dec 2
+67. ✅ **App Version 1.0.70+100 Approved (iOS & Android)**:
+   - Both App Store Connect and Google Play Console approved the localized build
+   - Live production servers now include full ES, PT, DE localizations
+   - App names localized: "Team Build Pro: IA Equipo" (ES), "Team Build Pro: IA Equipe" (PT), "Team Build Pro: KI Team" (DE)
+   - All localized metadata, subtitles, descriptions, and keywords now live
+
+68. ✅ **Email Campaign A/B Test Disabled**:
+   - Disabled A/B testing in favor of Version A ('initial') template only
+   - Version A (personal style): 8.3% open rate, 2.1% failure rate
+   - Version B (marketing style): 2.4% open rate, 28.6% failure rate
+   - Analysis: Personal email style significantly outperforms marketing-style templates
+   - Updated `functions/email-campaign-functions.js` and `functions/email-campaign-functions-yahoo.js`
+   - Both now use hardcoded `templateVersion = 'initial'` instead of random selection
+
+69. ✅ **SMTP Email Validation System**:
+   - Created `scripts/smtp-validate-emails.js` using deep-email-validator (Node.js)
+   - Features: Progress saving/resume, rate limiting, categorization (valid/invalid/unverifiable)
+   - Validated 18,334 Gmail addresses:
+     - Valid: 16,364 (89.3%)
+     - Invalid: 0 (0%)
+     - Unverifiable: 1,970 (10.7%) - includes typos and non-existent accounts
+   - Discovery: Gmail allows SMTP verification, but Yahoo/AOL/Live.com block it
+   - Output: `emails/smtp_validated/valid_emails.csv` (Firestore-ready format)
+
+70. ✅ **Firestore Email Import Script**:
+   - Created `scripts/import-validated-emails.js` for importing validated emails
+   - Imports to `emailCampaigns/master/contacts` collection
+   - Generates `randomIndex` (0-1) for queue ordering to ensure even distribution
+   - Sets `sent=false`, `status='pending'` for new contacts
+   - Skips contacts that already exist (preserves sent status)
+   - Successfully imported 13,298 new SMTP-validated contacts
+   - Total contacts in Firestore: 17,913 (13,953 unsent)
+
+71. ✅ **Email Campaign Batch Size Increases**:
+   - Main campaign: 15 → 75 emails per batch
+   - Yahoo campaign: 5 → 10 emails per batch
+   - Updated `functions/.env.teambuilder-plus-fe74d`:
+     - `EMAIL_CAMPAIGN_BATCH_SIZE=75`
+     - `EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO=10`
+   - Daily capacity increased: ~450 main + ~60 Yahoo = ~510 emails/day
+   - Estimated completion: ~27 days for remaining 13,953 unsent contacts
+
+72. ✅ **Knowledge Base Update (Dec 2 Session)**:
+   - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-72)
+   - Copied to CLAUDE.md for AI assistant context
 
 ---
 
