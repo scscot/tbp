@@ -1657,6 +1657,7 @@ async function runFullAutoMode(emailTo) {
         <li><a href="https://teambuildpro.com/blog/${blogPost.slug}.html">English</a></li>
         <li><a href="https://es.teambuildpro.com/blog/${blogPost.slug}.html">Spanish</a></li>
         <li><a href="https://pt.teambuildpro.com/blog/${blogPost.slug}.html">Portuguese</a></li>
+        <li><a href="https://de.teambuildpro.com/blog/${blogPost.slug}.html">German</a></li>
       </ul>
     ` : '<p>No blog was generated.</p>'}
     ${errors.length > 0 ? `
@@ -1682,6 +1683,7 @@ Published URLs:
 - English: https://teambuildpro.com/blog/${blogPost.slug}.html
 - Spanish: https://es.teambuildpro.com/blog/${blogPost.slug}.html
 - Portuguese: https://pt.teambuildpro.com/blog/${blogPost.slug}.html
+- German: https://de.teambuildpro.com/blog/${blogPost.slug}.html
 ` : 'No blog was generated.'}
 ${errors.length > 0 ? `Errors: ${errors.join(', ')}` : ''}
 `;

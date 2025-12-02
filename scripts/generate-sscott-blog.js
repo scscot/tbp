@@ -189,9 +189,9 @@ CONTENT STRUCTURE:
 8. CTA Section (after divider) - Reference Team Build Pro and Stephen's books
 
 INTERNAL LINKING:
-- Link to /books when mentioning books or resources
-- Link to /about when mentioning Stephen Scott's background
-- Link to other blog posts if relevant (use /blog/slug format)
+- Link to /books.html when mentioning books or resources
+- Link to /about.html when mentioning Stephen Scott's background
+- Link to other blog posts if relevant (use /blog/slug.html format)
 - Link to https://teambuildpro.com when mentioning the app
 
 OUTPUT FORMAT:
@@ -221,7 +221,7 @@ function generateBlogHTML(blogPost) {
   const dateObj = new Date(blogPost.publishDate);
   const formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const encodedTitle = encodeURIComponent(blogPost.title);
-  const encodedUrl = encodeURIComponent(`${baseUrl}/blog/${blogPost.slug}`);
+  const encodedUrl = encodeURIComponent(`${baseUrl}/blog/${blogPost.slug}.html`);
 
   const categoryBadge = blogPost.category === 'Recruiting Tips' ? 'RECRUITING TIPS' :
                         blogPost.category === 'Product Updates' ? 'PRODUCT UPDATES' : 'TUTORIALS';
@@ -266,7 +266,7 @@ function generateBlogHTML(blogPost) {
     "author": {
       "@type": "Person",
       "name": "Stephen Scott",
-      "url": "${baseUrl}/about"
+      "url": "${baseUrl}/about.html"
     },
     "publisher": {
       "@type": "Person",
@@ -276,7 +276,7 @@ function generateBlogHTML(blogPost) {
     "dateModified": "${blogPost.publishDate}",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "${baseUrl}/blog/${blogPost.slug}"
+      "@id": "${baseUrl}/blog/${blogPost.slug}.html"
     }
   }
   </script>
@@ -403,7 +403,7 @@ function updateBlogIndex(blogIndexPath, blogPost) {
 
   let blogIndexContent = fs.readFileSync(blogIndexPath, 'utf8');
 
-  if (blogIndexContent.includes(`/blog/${blogPost.slug}`)) {
+  if (blogIndexContent.includes(`/blog/${blogPost.slug}.html`)) {
     console.log(`${colors.cyan}  Blog post already in blog index, skipping...${colors.reset}`);
     return true;
   }
@@ -417,7 +417,7 @@ function updateBlogIndex(blogIndexPath, blogPost) {
   }
 
   const blogCardHTML = `
-          <a href="/blog/${blogPost.slug}" class="blog-card card" data-category="${blogPost.category}">
+          <a href="/blog/${blogPost.slug}.html" class="blog-card card" data-category="${blogPost.category}">
             <div class="card-content">
               <span class="category-badge">${blogPost.category.toUpperCase()}</span>
               <h3>${blogPost.title}</h3>
@@ -459,14 +459,14 @@ function updateSitemap(sitemapPath, blogPost) {
 
   let sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
 
-  if (sitemapContent.includes(`${baseUrl}/blog/${blogPost.slug}`)) {
+  if (sitemapContent.includes(`${baseUrl}/blog/${blogPost.slug}.html`)) {
     console.log(`${colors.cyan}  Blog post already in sitemap, skipping...${colors.reset}`);
     return true;
   }
 
   const blogEntry = `
   <url>
-    <loc>${baseUrl}/blog/${blogPost.slug}</loc>
+    <loc>${baseUrl}/blog/${blogPost.slug}.html</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -712,13 +712,13 @@ async function runFullAutoMode(emailTo) {
       <ul>
         <li><strong>Title:</strong> ${blogPost.title}</li>
         <li><strong>Category:</strong> ${blogPost.category}</li>
-        <li><strong>URL:</strong> <a href="https://www.stephenscott.us/blog/${blogPost.slug}">View Blog</a></li>
+        <li><strong>URL:</strong> <a href="https://www.stephenscott.us/blog/${blogPost.slug}.html">View Blog</a></li>
       </ul>
     ` : '<p>No blog was generated.</p>'}
     ${errors.length > 0 ? `<h3>Errors:</h3><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}
   `;
 
-  const textBody = `Stephen Scott Blog - ${status}\nTitle: ${blogPost ? blogPost.title : 'None'}\nURL: https://www.stephenscott.us/blog/${blogPost ? blogPost.slug : ''}`;
+  const textBody = `Stephen Scott Blog - ${status}\nTitle: ${blogPost ? blogPost.title : 'None'}\nURL: https://www.stephenscott.us/blog/${blogPost ? blogPost.slug + '.html' : ''}`;
 
   await sendEmailNotification(
     `[Blog Bot] ${status}: ${blogPost ? blogPost.title : 'Automation Run'}`,
@@ -730,7 +730,7 @@ async function runFullAutoMode(emailTo) {
   console.log(`\n${colors.bright}${colors.green}FULL AUTOMATION COMPLETE - ${status}${colors.reset}\n`);
 
   if (blogPost) {
-    console.log(`${colors.bright}Published:${colors.reset} https://www.stephenscott.us/blog/${blogPost.slug}`);
+    console.log(`${colors.bright}Published:${colors.reset} https://www.stephenscott.us/blog/${blogPost.slug}.html`);
   }
   console.log('');
 
