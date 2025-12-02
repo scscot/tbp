@@ -11,6 +11,9 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
-    "axios": "^1.11.0"
+    "axios": "^1.11.0",
+    "csv-parse": "^6.1.0",
+    "csv-stringify": "^6.6.0",
+    "deep-email-validator": "^0.1.21"
   }
 }
