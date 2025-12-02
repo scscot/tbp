@@ -21,10 +21,10 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const selectedSubject = `The Recruiting App Built for Direct Sales`;
   // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
 
-  // A/B Testing: Alternate between 'initial' and 'initial_1' template versions
-  // Even index -> initial (soft, humble approach)
-  // Odd index -> initial_1 (direct, benefit-focused approach)
-  const templateVersion = index % 2 === 0 ? 'initial' : 'initial_1';
+  // A/B Test DISABLED (Dec 2025): Version A ('initial') won decisively
+  // - Version A: 8.3% open rate, 2.1% failure rate
+  // - Version B: 2.4% open rate, 28.6% failure rate (deliverability issues)
+  const templateVersion = 'initial';
 
   form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -122,8 +122,7 @@ const sendHourlyEmailCampaign = onSchedule({
           mailgunId: result.id || ''
         });
 
-        const templateUsed = i % 2 === 0 ? 'initial' : 'initial_1';
-        console.log(`✅ Sent to ${contact.email} [${templateUsed}]: ${result.id}`);
+        console.log(`✅ Sent to ${contact.email} [initial]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {
