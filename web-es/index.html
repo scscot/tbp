@@ -982,15 +982,28 @@
             const urlParams = new URLSearchParams(window.location.search);
             const newProspectCode = urlParams.get("new");
             const partnerCode = urlParams.get("ref");
-            const targetingParam = urlParams.get("t");
+            const targetingParam = urlParams.get("t") || "1";
 
+            let referralInfo = null;
             if (newProspectCode && isValidReferralCode(newProspectCode)) {
-                return { code: newProspectCode, type: "new", targeting: targetingParam };
+                referralInfo = { code: newProspectCode, type: "new", targeting: targetingParam };
+            } else if (partnerCode && isValidReferralCode(partnerCode)) {
+                referralInfo = { code: partnerCode, type: "partner", targeting: targetingParam };
             }
-            if (partnerCode && isValidReferralCode(partnerCode)) {
-                return { code: partnerCode, type: "partner", targeting: targetingParam };
+
+            // Store in sessionStorage for cross-page persistence
+            if (referralInfo) {
+                try {
+                    sessionStorage.setItem('tbp_referral', JSON.stringify({
+                        ...referralInfo,
+                        capturedAt: Date.now()
+                    }));
+                } catch (e) {
+                    console.warn('[TBP] Could not store referral in sessionStorage:', e);
+                }
             }
-            return null;
+
+            return referralInfo;
         }
 
         function isValidReferralCode(code) {

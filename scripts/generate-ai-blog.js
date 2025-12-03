@@ -868,6 +868,8 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     });
   </script>
 
+  <!-- Referral Tracking -->
+  <script src="/js/referral-tracking.js"></script>
 </body>
 </html>`;
 
