@@ -17,7 +17,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | **Spanish Website** | https://es.teambuildpro.com | Spanish-speaking market acquisition |
 | **Portuguese Website** | https://pt.teambuildpro.com | Brazilian/Portuguese market acquisition |
 | **German Website** | https://de.teambuildpro.com | German-speaking market acquisition |
-| **iOS App** | https://apps.apple.com/us/app/team-build-pro-ai-recruiting/id6751211622 | iPhone/iPad distribution |
+| **iOS App** | https://apps.apple.com/us/app/id6751211622 | iPhone/iPad distribution |
 | **Android App** | https://play.google.com/store/apps/details?id=com.scott.ultimatefix | Android distribution |
 | **Author Website** | https://www.stephenscott.us | Thought leadership, book sales, credibility |
 | **Legacy Brand** | https://www.teambuildingproject.com | Historical brand, redirects to main site |
@@ -506,7 +506,7 @@ All four main sites have identical structure:
 **Status**: LIVE on both iOS App Store and Google Play Store (as of Nov 2025)
 
 ### App Store URLs
-- **iOS**: https://apps.apple.com/us/app/team-build-pro-ai-team-builder/id6751211622
+- **iOS**: https://apps.apple.com/us/app/id6751211622 (simplified URL without app name slug)
 - **Android**: https://play.google.com/store/apps/details?id=com.scott.ultimatefix
 - **Website**: https://teambuildpro.com
 
@@ -1229,8 +1229,48 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Daily capacity increased: ~450 main + ~60 Yahoo = ~510 emails/day
    - Estimated completion: ~27 days for remaining 13,953 unsent contacts
 
-72. ✅ **Knowledge Base Update (Dec 2 Session)**:
-   - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-72)
+72. ✅ **Cross-Page Referral Tracking for Google Play Attribution**:
+   - Added `referral-tracking.js` to blog posts and company pages
+   - Captures referral codes from URL parameters (?new= or ?ref=)
+   - Mints referral tokens via `issueReferralV2` Cloud Function
+   - Updates Google Play links with `referrer` parameter for attribution
+   - Uses sessionStorage for cross-page persistence within browser session
+
+73. ✅ **Site-Wide Top Invite Bar**:
+   - Extended referral-tracking.js to show sponsor info on ALL pages
+   - Creates dynamic "Invited by [Name]" bar with sponsor avatar
+   - Reads from sessionStorage (same key as index.html inline code)
+   - Added to 328 files: books, faq, contact, companies, blog, privacy, terms pages
+   - Localized labels for all 4 languages:
+     - EN: "Invited by" / "Recommended by"
+     - ES: "Invitado por" / "Recomendado por"
+     - PT: "Convidado por" / "Recomendado por"
+     - DE: "Eingeladen von" / "Empfohlen von"
+
+74. ✅ **Localized Referral Tracking Scripts**:
+   - Created `web-es/js/referral-tracking.js` (Spanish labels)
+   - Created `web-pt/js/referral-tracking.js` (Portuguese labels)
+   - Created `web-de/js/referral-tracking.js` (German labels)
+   - All scripts maintain same functionality as EN version
+   - sessionStorage keys match for cross-domain consistency
+
+75. ✅ **App Store URL Standardization**:
+   - Changed all App Store URLs to simplified format: `https://apps.apple.com/us/app/id6751211622`
+   - Previous formats had app name slug which could change
+   - Updated 328 files across all 4 sites (EN/ES/PT/DE)
+   - 927 URL occurrences standardized
+   - Benefits: Future-proof, consistent, shorter, easier to maintain
+   - Google Play URLs unchanged: `https://play.google.com/store/apps/details?id=com.scott.ultimatefix`
+
+76. ✅ **Comprehensive Website Audit**:
+   - Audited referral-tracking.js presence on all pages across EN/ES/PT/DE
+   - Verified CTA buttons (App Store + Google Play links) on all pages
+   - Confirmed invite bar CSS exists in all 4 css/style.css files
+   - Verified sessionStorage key consistency (`tbp_referral`)
+   - All localized labels verified correct
+
+77. ✅ **Knowledge Base Update (Dec 2 Session)**:
+   - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-77)
    - Copied to CLAUDE.md for AI assistant context
 
 ---

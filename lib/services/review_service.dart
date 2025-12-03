@@ -24,7 +24,7 @@ class ReviewService {
       debugPrint(
           'REVIEW: Checking criteria - directSponsors: $directSponsorCount, hasPrompted: $hasPromptedForReview');
 
-      if (directSponsorCount >= 3 && !hasPromptedForReview) {
+      if (directSponsorCount >= 2 && !hasPromptedForReview) {
         debugPrint('✅ REVIEW: User eligible for review prompt');
 
         await Future.delayed(const Duration(seconds: 2));
