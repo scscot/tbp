@@ -5,14 +5,23 @@
  * and dynamically updates Google Play Store links with the referrer parameter
  * for attribution tracking.
  *
+ * Also displays the Top Invite Bar showing sponsor name and avatar across all pages.
+ *
  * Works across all pages: blog posts, company pages, etc.
  * Uses sessionStorage to persist referral data within the browser session.
  */
 (function() {
   'use strict';
 
+  // Localized labels (DE version)
+  const LABELS = {
+    invited: 'Eingeladen von',
+    recommended: 'Empfohlen von'
+  };
+
   const STORAGE_KEY = 'tbp_referral';
   const TOKEN_KEY = 'tbp_referral_token';
+  const SPONSOR_KEY = 'tbp_sponsor_data';
   const TBP_FN_BASE = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net';
 
   /**
@@ -149,6 +158,113 @@
   }
 
   /**
+   * Create and insert the Top Invite Bar HTML element
+   */
+  function createInviteBarElement() {
+    if (document.getElementById('top-invite-bar')) return null; // Already exists
+
+    const bar = document.createElement('div');
+    bar.id = 'top-invite-bar';
+    bar.className = 'top-invite-bar';
+    document.body.insertBefore(bar, document.body.firstChild);
+    return bar;
+  }
+
+  /**
+   * Fetch sponsor data from Cloud Function
+   */
+  async function fetchSponsorData(referralCode) {
+    try {
+      const url = `${TBP_FN_BASE}/getUserByReferralCode?code=${referralCode}`;
+      const response = await fetch(url);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (err) {
+      console.warn('[TBP Referral] Sponsor fetch failed:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Get cached sponsor data or fetch from API
+   */
+  async function getSponsorData(referralCode) {
+    // Check cache first
+    try {
+      const cached = sessionStorage.getItem(SPONSOR_KEY);
+      if (cached) {
+        const data = JSON.parse(cached);
+        if (data.code === referralCode) {
+          console.log('[TBP Referral] Using cached sponsor data');
+          return data;
+        }
+      }
+    } catch (err) {
+      console.warn('[TBP Referral] Error reading sponsor cache:', err);
+    }
+
+    // Fetch from API
+    const userData = await fetchSponsorData(referralCode);
+    if (userData && userData.firstName) {
+      const sponsorData = {
+        code: referralCode,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        photoUrl: userData.photoUrl || userData.photoURL || userData.profilePhotoUrl || null,
+        bizOppName: userData.bizOppName || null
+      };
+      try {
+        sessionStorage.setItem(SPONSOR_KEY, JSON.stringify(sponsorData));
+      } catch (err) {
+        console.warn('[TBP Referral] Error caching sponsor data:', err);
+      }
+      return sponsorData;
+    }
+    return null;
+  }
+
+  /**
+   * Show the Top Invite Bar with sponsor info
+   */
+  async function showInviteBar() {
+    const referral = getStoredReferral();
+    if (!referral) {
+      console.log('[TBP Referral] No stored referral, invite bar not shown');
+      return;
+    }
+
+    const sponsor = await getSponsorData(referral.code);
+    if (!sponsor) {
+      console.log('[TBP Referral] Could not fetch sponsor data');
+      return;
+    }
+
+    const bar = createInviteBarElement();
+    if (!bar) {
+      console.log('[TBP Referral] Invite bar already exists');
+      return;
+    }
+
+    const label = (referral.type === 'partner') ? LABELS.recommended : LABELS.invited;
+    const fullName = `${sponsor.firstName} ${sponsor.lastName}`;
+    const avatarUrl = sponsor.photoUrl || '/assets/images/default_avatar.png';
+
+    bar.innerHTML = `
+      <img src="${avatarUrl}" alt="${fullName}" class="top-invite-avatar"
+           onerror="this.src='/assets/images/default_avatar.png';">
+      <span class="top-invite-text">${label} ${fullName}</span>
+    `;
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      bar.classList.add('visible');
+      bar.style.top = '0';
+    });
+
+    console.log('[TBP Referral] Invite bar shown for:', fullName);
+  }
+
+  /**
    * Initialize referral tracking
    */
   function init() {
@@ -157,6 +273,9 @@
 
     // Update Google Play links with referrer if we have a stored referral
     updateGooglePlayLinks();
+
+    // Show the Top Invite Bar if we have a stored referral
+    showInviteBar();
   }
 
   // Initialize when DOM is ready
