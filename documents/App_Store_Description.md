@@ -2,7 +2,7 @@ App Store URL: https://apps.apple.com/us/app/team-build-pro-direct-sales/id67512
 App Name: Team Build Pro: AI Recruiting
 Subtitle: Direct Sales Downline Builder
 Google Subtitle: AI-Powered MLM & Direct Sales Recruiting App | Downline Builder & Team Tracker
-Keywords: mlm,network marketing,ai recruiting,downline,direct sales,team builder,prospect,coach,pre-build
+Keywords: mlm app,network marketing,ai recruiting,downline tracker,direct sales,team builder,prospecting
 
 -----------
 
