@@ -15,16 +15,17 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "notify.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Updated Nov 2025: Aligned with new "AI Recruiting" positioning
-  // Subject line optimized to avoid spam triggers and improve deliverability
-  // Removed MLM terminology ("downline") which was causing spam filter issues
-  const selectedSubject = `The Recruiting App Built for Direct Sales`;
-  // Previous: `${contact.firstName}, build your downline with AI-powered tools.` (0.69% open rate - spam filtered)
+  // A/B Test ENABLED (Dec 2025): Testing 'initial' vs 'initial_2'
+  // - 'initial': Original version with general subject line
+  // - 'initial_2': New version focused on momentum/friction problem
+  // Use index to alternate 50/50 between versions
+  const useVersionB = index % 2 === 1;
+  const templateVersion = useVersionB ? 'initial_2' : 'initial';
 
-  // A/B Test DISABLED (Dec 2025): Version A ('initial') won decisively
-  // - Version A: 8.3% open rate, 2.1% failure rate
-  // - Version B: 2.4% open rate, 28.6% failure rate (deliverability issues)
-  const templateVersion = 'initial';
+  // Subject lines per version
+  const selectedSubject = useVersionB
+    ? `${contact.firstName}, a quick note about momentum`
+    : `The Recruiting App Built for Direct Sales`;
 
   form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -33,7 +34,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'campaign');
   form.append('t:version', templateVersion);
-  form.append('o:tag', 'winning_combination');
+  form.append('o:tag', 'ab_test_dec2025');
   form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
