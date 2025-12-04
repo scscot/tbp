@@ -67,6 +67,19 @@ jobs:
           # Run the full automation script
           node scripts/generate-ai-blog.js --full-auto --notify-email="$NOTIFY_EMAIL"
 
+      - name: Deploy to Firebase Hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          # Set up Firebase credentials
+          echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/firebase-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
+
+          # Deploy all hosting targets (EN, ES, PT, DE)
+          firebase deploy --only hosting:main,hosting:es,hosting:pt,hosting:de --project teambuilder-plus-fe74d
+
+          echo "Firebase Hosting deployment complete"
+
       - name: Commit generated files
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
