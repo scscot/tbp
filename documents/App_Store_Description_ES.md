@@ -1,8 +1,8 @@
 App Store URL: https://apps.apple.com/us/app/team-build-pro-direct-sales/id6751211622
-App Name: Team Build Pro: IA Equipo
+App Name: Team Build Pro: AI Recruiting
 Subtítulo: Reclutamiento Ventas Directas
-Google Subtítulo: App de Reclutamiento MLM y Ventas Directas con IA | Constructor de Equipo
-Keywords: mlm app,network marketing,reclutamiento ia,multinivel,ventas directas,downline,prospección
+Google Subtítulo: Herramientas de reclutamiento IA: 16 mensajes, coaching 24/7 y seguimiento
+Keywords: multinivel,venta,directa,reclutamiento,prospectos,construir,equipo,seguimiento,crm,coach,downline,ai
 Texto Promocional: Para profesionales creciendo sus equipos, y prospectos que pre-construyen antes de unirse. Coach IA 24/7, seguimiento en tiempo real. Prueba gratis 30 días.
 
 -----------

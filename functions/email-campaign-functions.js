@@ -15,17 +15,17 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "notify.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // A/B Test ENABLED (Dec 2025): Testing 'initial' vs 'initial_2'
-  // - 'initial': Original version with general subject line
-  // - 'initial_2': New version focused on momentum/friction problem
-  // Use index to alternate 50/50 between versions
-  const useVersionB = index % 2 === 1;
-  const templateVersion = useVersionB ? 'initial_2' : 'initial';
+  // A/B/C Test ENABLED (Dec 2025): Testing version_1 vs version_2 vs version_3
+  // - version_1: Pain point focus (momentum/stalling)
+  // - version_2: AI-driven guidance focus
+  // - version_3: Leader time protection focus
+  // Use index for 33/33/33 split across three versions
+  const versionIndex = index % 3;
+  const templateVersions = ['version_1', 'version_2', 'version_3'];
+  const templateVersion = templateVersions[versionIndex];
 
-  // Subject lines per version
-  const selectedSubject = useVersionB
-    ? `${contact.firstName}, a quick note about momentum`
-    : `The Recruiting App Built for Direct Sales`;
+  // Same subject line for all versions (isolate body copy testing)
+  const selectedSubject = `The Recruiting App Built for Direct Sales`;
 
   form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -34,7 +34,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'campaign');
   form.append('t:version', templateVersion);
-  form.append('o:tag', 'ab_test_dec2025');
+  form.append('o:tag', 'abc_test_dec2025');
   form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');

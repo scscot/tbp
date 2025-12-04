@@ -1,8 +1,8 @@
 App Store URL: https://apps.apple.com/us/app/team-build-pro-direct-sales/id6751211622
-App Name: Team Build Pro: KI Team
-Untertitel: Direktvertrieb Team-Builder
-Google Untertitel: KI-gestützte MLM & Direktvertrieb Recruiting-App | Downline & Team Builder
-Keywords: mlm app,network marketing,ki recruiting,downline tracker,direktvertrieb,team builder,akquise
+App Name: Team Build Pro: AI Recruiting
+Untertitel: Teamaufbau im Direktvertrieb
+Google Untertitel: KI-Recruiting-Tools: 16 Nachrichten, 24/7-Coaching und Downline-Tracking
+Keywords: direktvertrieb,networkmarketing,vertriebsteam,akquise,kontakte,followup,coach,verkauf,geschäft,ki,ai
 Werbetext: Für Profis, die ihre Teams ausbauen, und Interessenten, die vor dem Beitritt vorbauen. 24/7 KI-Coach, Echtzeit-Tracking. 30 Tage kostenlos testen.
 
 -----------
