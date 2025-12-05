@@ -148,9 +148,9 @@
 </head>
 <body>
   <!-- Header -->
-    <header class="header">
+  <header class="header">
     <nav class="nav container">
-      <a href="https://de.teambuildpro.com" class="logo">
+      <a href="/" class="logo">
         <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
         <span>Team Build Pro</span>
       </a>
@@ -158,9 +158,13 @@
         <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/" role="menuitem">Startseite</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Preise</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
-        <a href="https://de.teambuildpro.com/contact_us.html" role="menuitem">Kontakt</a>
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/books.html" role="menuitem">Bücher</a>
+        <a href="/contact_us.html" role="menuitem">Kontakt</a>
       </div>
     </nav>
     <div class="language-switcher header-language-switcher">
@@ -350,7 +354,27 @@
             <img src="/assets/images/Google-Play.png" alt="Bei Google Play herunterladen">
           </a>
         </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
+      <div class="footer-links">
+        <a href="/#pricing">Preise</a>
+        <a href="/faq.html">Häufige Fragen</a>
+        <a href="/books.html">Bücher</a>
+        <a href="/companies.html">Recruiting-Leitfäden</a>
+        <a href="/contact_us.html">Kontakt</a>
+        <a href="/privacy_policy.html">Datenschutzrichtlinie</a>
+        <a href="/terms_of_service.html">Nutzungsbedingungen</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. Alle Rechte vorbehalten.</p>
+    </div>
   </footer>
 
   <!-- Mobile Menu Script -->
@@ -366,9 +390,15 @@
           mobileMenu.classList.toggle('active');
         });
       }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
     });
   </script>
 
-<script src="/js/referral-tracking.js"></script>
+  <script src="/js/referral-tracking.js"></script>
 </body>
 </html>

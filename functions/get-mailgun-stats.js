@@ -80,8 +80,8 @@ async function getMailgunStats() {
     console.log('📋 Campaign Tag Statistics:');
     console.log('-'.repeat(60));
 
-    // Get stats by tag
-    const tags = ['winning_combination', '2version', 'launch_campaign_2025', 'launch_campaign_test'];
+    // Get stats by tag - A/B/C Test (Dec 2025)
+    const tags = ['version_1', 'version_2', 'version_3', 'abc_test_dec2025', 'yahoo_abc_test_dec2025'];
 
     for (const tag of tags) {
       try {
@@ -98,17 +98,30 @@ async function getMailgunStats() {
 
         if (tagStatsResponse.data && tagStatsResponse.data.stats) {
           const tagStats = tagStatsResponse.data.stats;
+
+          // Aggregate stats from array (API returns hourly breakdown)
+          let totals = { accepted: 0, delivered: 0, failed: 0, opened: 0, clicked: 0 };
+
+          tagStats.forEach(hourStat => {
+            if (hourStat.accepted) totals.accepted += hourStat.accepted.total || 0;
+            if (hourStat.delivered) totals.delivered += hourStat.delivered.total || 0;
+            if (hourStat.failed) {
+              totals.failed += (hourStat.failed.permanent?.total || 0) + (hourStat.failed.temporary?.total || 0);
+            }
+            if (hourStat.opened) totals.opened += hourStat.opened.total || 0;
+            if (hourStat.clicked) totals.clicked += hourStat.clicked.total || 0;
+          });
+
           console.log(`\n   Tag: "${tag}"`);
           console.log(`   ${'─'.repeat(55)}`);
 
-          if (tagStats.accepted) console.log(`     Accepted: ${tagStats.accepted.total || 0}`);
-          if (tagStats.delivered) console.log(`     Delivered: ${tagStats.delivered.total || 0}`);
-          if (tagStats.failed) {
-            const failedTotal = (tagStats.failed.permanent?.total || 0) + (tagStats.failed.temporary?.total || 0);
-            console.log(`     Failed: ${failedTotal}`);
-          }
-          if (tagStats.opened) console.log(`     Opened: ${tagStats.opened.total || 0}`);
-          if (tagStats.clicked) console.log(`     Clicked: ${tagStats.clicked.total || 0}`);
+          const openRate = totals.delivered > 0 ? ((totals.opened / totals.delivered) * 100).toFixed(1) : 0;
+          const clickRate = totals.delivered > 0 ? ((totals.clicked / totals.delivered) * 100).toFixed(1) : 0;
+
+          console.log(`     Delivered: ${totals.delivered}`);
+          console.log(`     Opened: ${totals.opened} (${openRate}%)`);
+          console.log(`     Clicked: ${totals.clicked} (${clickRate}%)`);
+          console.log(`     Failed: ${totals.failed}`);
         }
       } catch (tagError) {
         if (tagError.response && tagError.response.status === 404) {

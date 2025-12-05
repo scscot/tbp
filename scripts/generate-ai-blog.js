@@ -563,11 +563,13 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   const strings = lang === 'es' ? {
     home: 'Inicio',
     blog: 'Blog',
-    faq: 'FAQ',
+    faq: 'Preguntas Frecuentes',
     contact: 'Contacto',
     books: 'Libros',
     screenshots: 'Capturas',
     pricing: 'Precios',
+    recruitingGuides: 'Guías de Reclutamiento',
+    createdBy: 'Creado por Stephen Scott',
     shareArticle: 'Comparte este artículo',
     shareTwitter: 'Compartir en Twitter',
     shareLinkedIn: 'Compartir en LinkedIn',
@@ -583,11 +585,13 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   } : lang === 'de' ? {
     home: 'Startseite',
     blog: 'Blog',
-    faq: 'FAQ',
+    faq: 'Häufige Fragen',
     contact: 'Kontakt',
     books: 'Bücher',
     screenshots: 'Screenshots',
     pricing: 'Preise',
+    recruitingGuides: 'Recruiting-Leitfäden',
+    createdBy: 'Erstellt von Stephen Scott',
     shareArticle: 'Diesen Artikel teilen',
     shareTwitter: 'Auf Twitter teilen',
     shareLinkedIn: 'Auf LinkedIn teilen',
@@ -603,11 +607,13 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   } : {
     home: 'Início',
     blog: 'Blog',
-    faq: 'FAQ',
+    faq: 'Perguntas Frequentes',
     contact: 'Contato',
     books: 'Livros',
     screenshots: 'Capturas',
     pricing: 'Preços',
+    recruitingGuides: 'Guias de Recrutamento',
+    createdBy: 'Criado por Stephen Scott',
     shareArticle: 'Compartilhe este artigo',
     shareTwitter: 'Compartilhar no Twitter',
     shareLinkedIn: 'Compartilhar no LinkedIn',
@@ -783,6 +789,8 @@ function generateTranslatedBlogHTML(blogPost, lang) {
       ${lang === 'es' ? '<span class="lang-link active" lang="es">Español</span>' : '<a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>'}
       <span class="lang-separator">|</span>
       ${lang === 'pt' ? '<span class="lang-link active" lang="pt">Português</span>' : '<a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>'}
+      <span class="lang-separator">|</span>
+      ${lang === 'de' ? '<span class="lang-link active" lang="de">Deutsch</span>' : '<a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>'}
     </div>
   </header>
 
@@ -838,17 +846,22 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
-      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. ${strings.allRightsReserved}</p>
-      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
-        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">${strings.privacyPolicy}</a>
-        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">${strings.termsOfService}</a>
-        <a href="/faq.html" style="color:#667eea;text-decoration:none">${strings.faq}</a>
-        <a href="/contact_us.html" style="color:#667eea;text-decoration:none">${strings.contact}</a>
-        <a href="/blog.html" style="color:#667eea;text-decoration:none">${strings.blog}</a>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
+      <div class="footer-links">
+        <a href="/#pricing">${strings.pricing}</a>
+        <a href="/faq.html">${strings.faq}</a>
+        <a href="/books.html">${strings.books}</a>
+        <a href="/companies.html">${strings.recruitingGuides}</a>
+        <a href="/contact_us.html">${strings.contact}</a>
+        <a href="/privacy_policy.html">${strings.privacyPolicy}</a>
+        <a href="/terms_of_service.html">${strings.termsOfService}</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. ${strings.allRightsReserved}</p>
     </div>
   </footer>
 
@@ -862,13 +875,18 @@ function generateTranslatedBlogHTML(blogPost, lang) {
         menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('open');
+          mobileMenu.classList.toggle('active');
         });
+      }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
       }
     });
   </script>
 
-  <!-- Referral Tracking -->
   <script src="/js/referral-tracking.js"></script>
 </body>
 </html>`;

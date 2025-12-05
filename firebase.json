@@ -204,6 +204,64 @@
                         }
                     ]
                 }
+            ],
+            "rewrites": [
+                {
+                    "source": "/podcast/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/tag/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/category/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/series/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/cart/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/checkout/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/my-account/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/product-category/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/product-tag/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/feed/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/authors/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/author/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/page/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/comments/**",
+                    "destination": "/404.html"
+                }
             ]
         },
         {

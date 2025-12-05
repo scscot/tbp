@@ -68,9 +68,11 @@
 </head>
 <body>
 
+  
+  <!-- Header -->
   <header class="header">
     <nav class="nav container">
-      <a href="https://de.teambuildpro.com" class="logo">
+      <a href="/" class="logo">
         <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
         <span>Team Build Pro</span>
       </a>
@@ -78,9 +80,13 @@
         <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
       </button>
       <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/" role="menuitem">Startseite</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Preise</a>
         <a href="/faq.html" role="menuitem">FAQ</a>
-        <a href="https://de.teambuildpro.com/contact_us.html" role="menuitem">Kontakt</a>
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/books.html" role="menuitem">Bücher</a>
+        <a href="/contact_us.html" role="menuitem">Kontakt</a>
       </div>
     </nav>
     <div class="language-switcher header-language-switcher">
@@ -257,7 +263,6 @@
 
     </div>
   </article>
-
   <footer class="footer">
     <div class="container">
       <div class="footer-logo">
@@ -265,24 +270,40 @@
         <span>Team Build Pro</span>
       </div>
       <div class="footer-links">
-        <a href="/faq.html">FAQ</a>
-        <a href="https://de.teambuildpro.com/contact_us.html">Kontakt</a>
-        <a href="https://de.teambuildpro.com/privacy_policy.html">Datenschutzrichtlinie</a>
-        <a href="https://de.teambuildpro.com/terms_of_service.html">Nutzungsbedingungen</a>
+        <a href="/#pricing">Preise</a>
+        <a href="/faq.html">Häufige Fragen</a>
+        <a href="/books.html">Bücher</a>
+        <a href="/companies.html">Recruiting-Leitfäden</a>
+        <a href="/contact_us.html">Kontakt</a>
+        <a href="/privacy_policy.html">Datenschutzrichtlinie</a>
+        <a href="/terms_of_service.html">Nutzungsbedingungen</a>
       </div>
-      <p>&copy; 2025 Team Build Pro. Alle Rechte vorbehalten.</p>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. Alle Rechte vorbehalten.</p>
     </div>
   </footer>
 
+  <!-- Mobile Menu Script -->
   <script>
-    document.getElementById('menu-btn').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !isExpanded);
-      menu.style.display = isExpanded ? 'none' : 'flex';
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('active');
+        });
+      }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
     });
   </script>
 
-<script src="/js/referral-tracking.js"></script>
+  <script src="/js/referral-tracking.js"></script>
 </body>
 </html>

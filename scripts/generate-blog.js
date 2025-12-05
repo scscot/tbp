@@ -1028,6 +1028,15 @@ function generateBlogPost(post) {
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
+    <div class="language-switcher header-language-switcher">
+      <span class="lang-link active" lang="en">English</span>
+      <span class="lang-separator">|</span>
+      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+      <span class="lang-separator">|</span>
+      <a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+    </div>
   </header>
 
   <main class="blog-wrapper">
@@ -1085,17 +1094,22 @@ function generateBlogPost(post) {
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
-      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. All rights reserved.</p>
-      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
-        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">Privacy Policy</a>
-        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">Terms of Service</a>
-        <a href="/faq.html" style="color:#667eea;text-decoration:none">FAQ</a>
-        <a href="/contact_us.html" style="color:#667eea;text-decoration:none">Contact</a>
-        <a href="/blog.html" style="color:#667eea;text-decoration:none">Blog</a>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books.html">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
     </div>
   </footer>
 
@@ -1109,12 +1123,19 @@ function generateBlogPost(post) {
         menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('open');
+          mobileMenu.classList.toggle('active');
         });
+      }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
       }
     });
   </script>
 
+  <script src="/js/referral-tracking.js"></script>
 </body>
 </html>`;
 }
@@ -1273,6 +1294,15 @@ function generateBlogIndex(posts) {
         <a href="/contact_us.html" role="menuitem">Contact Us</a>
       </div>
     </nav>
+    <div class="language-switcher header-language-switcher">
+      <span class="lang-link active" lang="en">English</span>
+      <span class="lang-separator">|</span>
+      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+      <span class="lang-separator">|</span>
+      <a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+    </div>
   </header>
 
   <!-- Hero Section -->
@@ -1317,17 +1347,23 @@ function generateBlogIndex(posts) {
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="max-width:1200px;margin:0 auto;padding:40px 20px;text-align:center;color:#64748b">
-      <p style="margin:0 0 16px 0">&copy; 2025 Team Build Pro. All rights reserved.</p>
-      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:0.9rem">
-        <a href="/privacy_policy.html" style="color:#667eea;text-decoration:none">Privacy Policy</a>
-        <a href="/terms_of_service.html" style="color:#667eea;text-decoration:none">Terms of Service</a>
-        <a href="/faq.html" style="color:#667eea;text-decoration:none">FAQ</a>
-        <a href="/contact_us.html" style="color:#667eea;text-decoration:none">Contact</a>
-        <a href="/blog.html" style="color:#667eea;text-decoration:none">Blog</a>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
       </div>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books.html">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
+      <p style="margin-top: 8px; font-size: 0.85rem;"><a href="https://www.stephenscott.us" rel="author" style="color: #888;">Created by Stephen Scott</a></p>
     </div>
   </footer>
 
@@ -1362,12 +1398,19 @@ function generateBlogIndex(posts) {
         menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('open');
+          mobileMenu.classList.toggle('active');
         });
+      }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
       }
     });
   </script>
 
+  <script src="/js/referral-tracking.js"></script>
 </body>
 </html>`;
 }
