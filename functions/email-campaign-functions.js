@@ -25,7 +25,9 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const templateVersion = templateVersions[versionIndex];
 
   // Same subject line for all versions (isolate body copy testing)
-  const selectedSubject = `The Recruiting App Built for Direct Sales`;
+
+  const selectedSubject = `${contact.firstName }, a quick note about momentum`;
+  // const selectedSubject = `The Recruiting App Built for Direct Sales`;
 
   form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
