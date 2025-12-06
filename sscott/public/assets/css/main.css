@@ -302,10 +302,12 @@ img {
 @media (max-width: 767px) {
   .main-nav .container {
     height: 60px;
+    position: relative;
   }
 
   .main-nav .logo {
     font-size: 1rem;
+    flex-shrink: 0;
   }
 
   .main-nav .logo::before {
@@ -316,7 +318,9 @@ img {
   }
 
   .mobile-menu-toggle {
-    display: flex;
+    display: flex !important;
+    order: 2;
+    flex-shrink: 0;
   }
 
   .nav-links {
@@ -332,12 +336,13 @@ img {
     gap: 0.25rem;
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
-    display: none;
+    display: none !important;
     animation: slideDown 0.3s ease;
+    z-index: 1000;
   }
 
   .nav-links.active {
-    display: flex;
+    display: flex !important;
   }
 
   @keyframes slideDown {

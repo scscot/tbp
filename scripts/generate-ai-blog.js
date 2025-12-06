@@ -46,6 +46,29 @@ const extraNotes = [positionalNotes, flagNotes].filter(Boolean).join(' ');
 // Valid categories
 const validCategories = ['Recruiting Tips', 'Product Updates', 'Tutorials'];
 
+// Get existing blog posts to avoid duplicate topics
+function getExistingBlogs(blogDir) {
+  try {
+    const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.html') && f !== 'index.html');
+    const blogs = [];
+
+    for (const file of files) {
+      const content = fs.readFileSync(path.join(blogDir, file), 'utf8');
+      const titleMatch = content.match(/<title>([^<|]+)/);
+      if (titleMatch) {
+        blogs.push({
+          slug: file.replace('.html', ''),
+          title: titleMatch[1].trim()
+        });
+      }
+    }
+    return blogs;
+  } catch (error) {
+    console.log(`${colors.yellow}Warning: Could not read existing blogs: ${error.message}${colors.reset}`);
+    return [];
+  }
+}
+
 // Helper to strip ANSI color codes from text
 function stripAnsiColors(text) {
   return text.replace(/\x1b\[[0-9;]*m/g, '');
@@ -1421,7 +1444,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
 }
 
 // Generate research prompt for trend analysis
-function generateResearchPrompt() {
+function generateResearchPrompt(existingBlogs = []) {
   const today = new Date();
   const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
   const dateRange = `${oneWeekAgo.toISOString().split('T')[0]} to ${today.toISOString().split('T')[0]}`;
@@ -1451,6 +1474,17 @@ TEAM BUILD PRO POSITIONING:
 - Focus: Practical, field-level advice (not corporate/vendor perspective)
 - Target audience: Direct sales professionals and network marketers
 - Differentiator: 30-day pre-qualification approach, 16 pre-written messages, AI Coach
+
+EXISTING BLOG POSTS (DO NOT DUPLICATE):
+The following blogs have already been published. Do NOT recommend topics that are too similar unless you're proposing an explicit "update" or "2025/2026 edition":
+
+${existingBlogs.length > 0 ? existingBlogs.map(b => `- "${b.title}" (${b.slug})`).join('\n') : '(No existing blogs found)'}
+
+UNIQUENESS RULES:
+1. Avoid topics with >70% keyword overlap with existing posts
+2. If recommending an update to an existing post, prefix title with "[UPDATE]" and reference the original
+3. Prefer fresh angles, new trends, or different audiences than covered before
+4. It's OK to cover similar themes if the angle is substantially different
 
 OUTPUT FORMAT:
 Return a JSON object with exactly this structure:
@@ -1501,7 +1535,14 @@ async function runResearchMode() {
   console.log(`${colors.cyan}Researching direct sales, network marketing, MLM, AI, and recruiting trends...${colors.reset}`);
   console.log(`${colors.cyan}This may take 2-3 minutes...${colors.reset}\n`);
 
-  const researchPrompt = generateResearchPrompt();
+  // Get existing blogs to avoid duplicate topics
+  const blogDir = path.join(__dirname, '..', 'web', 'blog');
+  const existingBlogs = getExistingBlogs(blogDir);
+  if (existingBlogs.length > 0) {
+    console.log(`${colors.cyan}Found ${existingBlogs.length} existing blog posts to check against${colors.reset}\n`);
+  }
+
+  const researchPrompt = generateResearchPrompt(existingBlogs);
 
   const promptLogFile = path.join(__dirname, 'last-research-prompt.txt');
   fs.writeFileSync(promptLogFile, researchPrompt, 'utf8');
@@ -1561,7 +1602,7 @@ async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
   const FormData = require('form-data');
 
   const mailgunApiKey = process.env.MAILGUN_API_KEY;
-  const mailgunDomain = 'notify.teambuildpro.com';
+  const mailgunDomain = 'mailer.teambuildpro.com';
 
   if (!mailgunApiKey) {
     console.log(`${colors.yellow}⚠️  MAILGUN_API_KEY not set, skipping email notification${colors.reset}`);
@@ -1570,7 +1611,7 @@ async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
 
   try {
     const form = new FormData();
-    form.append('from', 'Team Build Pro Blog Bot <blog@notify.teambuildpro.com>');
+    form.append('from', 'Team Build Pro Blog Bot <blog@mailer.teambuildpro.com>');
     form.append('to', toEmail);
     form.append('subject', subject);
     form.append('html', htmlBody);

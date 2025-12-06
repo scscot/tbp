@@ -10,33 +10,30 @@ const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { defaul
 const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "notify.teambuildpro.com" });
+const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuildpro.com" });
 
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // A/B/C Test ENABLED (Dec 2025): Testing version_1 vs version_2 vs version_3
+  // A/B/C Test DISABLED (Dec 5, 2025): Reverted to 'initial' template
+  // Test showed 0.8% open rate vs 30.9% with 'initial' template
+  // Kept for reference:
   // - version_1: Pain point focus (momentum/stalling)
   // - version_2: AI-driven guidance focus
   // - version_3: Leader time protection focus
-  // Use index for 33/33/33 split across three versions
-  const versionIndex = index % 3;
-  const templateVersions = ['version_1', 'version_2', 'version_3'];
-  const templateVersion = templateVersions[versionIndex];
+  const templateVersion = 'initial';
 
-  // Same subject line for all versions (isolate body copy testing)
+  // Personalized subject line - proven to increase open rates
+  const selectedSubject = `${contact.firstName}, AI recruiting tool you might find useful`;
 
-  const selectedSubject = `${contact.firstName }, a quick note about momentum`;
-  // const selectedSubject = `The Recruiting App Built for Direct Sales`;
-
-  form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
+  form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', selectedSubject);
 
-  form.append('template', 'campaign');
+  form.append('template', 'mailer');
   form.append('t:version', templateVersion);
-  form.append('o:tag', 'abc_test_dec2025');
+  form.append('o:tag', 'initial_reverted');
   form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
@@ -226,10 +223,10 @@ const sendAndroidLaunchCampaign = onSchedule({
         const selectedSubject = `The Recruiting App Built for Direct Sales`;
         const selectedVersion = 'initial';
 
-        form.append('from', 'Stephen Scott <ss@notify.teambuildpro.com>');
+        form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
         form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
         form.append('subject', selectedSubject);
-        form.append('template', 'campaign');
+        form.append('template', 'mailer');
         form.append('t:version', selectedVersion);
         form.append('o:tag', 'android_launch');
         form.append('o:tag', selectedVersion);

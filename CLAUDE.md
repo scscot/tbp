@@ -555,8 +555,8 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Template Name**: `campaign`
 - **Template Version**: `initial`
 - **Subject Line**: `The Recruiting App Built for Direct Sales`
-- **From**: `Stephen Scott <ss@notify.teambuildpro.com>`
-- **Domain**: notify.teambuildpro.com
+- **From**: `Stephen Scott <ss@mailer.teambuildpro.com>`
+- **Domain**: mailer.teambuildpro.com
 - **Tracking**: Opens, clicks, and delivery status enabled
 
 ### Main Campaign (Mailgun - Automated)
@@ -1272,6 +1272,39 @@ After cleaning invalid emails from the database, current metrics from the past 2
 77. ✅ **Knowledge Base Update (Dec 2 Session)**:
    - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-77)
    - Copied to CLAUDE.md for AI assistant context
+
+### Week of Dec 5
+78. ✅ **Google Search Console Cleanup for stephenscott.us**:
+   - Problem: ~1,030 legacy WordPress URLs still indexed in Google
+   - Added 21 Disallow rules to `sscott/public/robots.txt`:
+     - /podcast/, /tag/, /category/, /series/, /shop/, /cart/
+     - /checkout/, /my-account/, /product/, /product-category/
+     - /product-tag/, /feed/, /authors/, /author/, /page/
+     - /wp-content/, /wp-admin/, /wp-includes/, /?p=, /?page_id=, /comments/
+   - Added 14 rewrites to `firebase.json` (sscott target) serving 404.html
+   - Note: /shop/ and /product/ handled by existing 301 redirects
+   - Rewrites isolated to sscott target only (won't affect other Firebase-hosted sites)
+
+79. ✅ **DNS Fix for stephenscott.us**:
+   - Problem: Google Search Console showing "Invalid server SSL certificate" error
+   - Cause: DNS had two A records - old Dreamhost IP (67.205.5.234) and Firebase IP (199.36.158.100)
+   - Solution: Removed Dreamhost IP from DNS records
+   - Verification: `curl -sI https://stephenscott.us` returns HTTP/2 200
+   - Canonical Domain: Confirmed www.stephenscott.us is used throughout (canonical URLs, og:url, sitemap)
+
+80. ✅ **Email A/B/C Test Tracking**:
+   - Purpose: Track performance of 3 email template versions
+   - Tags: version_1, version_2, version_3 (vs previous 2version tag)
+   - Modified: `functions/get-mailgun-stats.js` to query version-specific tags
+   - Results: 225 emails sent (75 per version), version_2 showing 1.3% open rate
+   - Decision: Reverted to 'initial' template version based on early performance data
+
+81. ✅ **Project Archive Script**:
+   - Created: `scripts/create-project-zip.sh`
+   - Purpose: Create shareable archive of websites and app code
+   - Output: `~/Desktop/TeamBuildPro-WebsitesAndApp.zip` (~316MB)
+   - Includes: web/, web-es/, web-pt/, web-de/, sscott/, lib/, assets/, functions/, configs
+   - Excludes: node_modules, build artifacts, secrets, .git, scripts/
 
 ---
 

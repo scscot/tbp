@@ -555,8 +555,8 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Template Name**: `campaign`
 - **Template Version**: `initial`
 - **Subject Line**: `The Recruiting App Built for Direct Sales`
-- **From**: `Stephen Scott <ss@notify.teambuildpro.com>`
-- **Domain**: notify.teambuildpro.com
+- **From**: `Stephen Scott <ss@mailer.teambuildpro.com>`
+- **Domain**: mailer.teambuildpro.com
 - **Tracking**: Opens, clicks, and delivery status enabled
 
 ### Main Campaign (Mailgun - Automated)
