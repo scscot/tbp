@@ -433,6 +433,54 @@
                     ]
                 }
             ]
+        },
+        {
+            "target": "scott-net",
+            "public": "scott-net/public",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "cleanUrls": false,
+            "trailingSlash": false,
+            "redirects": [
+                {
+                    "source": "/",
+                    "destination": "https://www.stephenscott.us/",
+                    "type": 301
+                },
+                {
+                    "source": "/books",
+                    "destination": "https://www.stephenscott.us/books.html",
+                    "type": 301
+                },
+                {
+                    "source": "/about-me",
+                    "destination": "https://www.stephenscott.us/about.html",
+                    "type": 301
+                },
+                {
+                    "source": "/podcasts",
+                    "destination": "https://www.stephenscott.us/podcasts.html",
+                    "type": 301
+                },
+                {
+                    "source": "/blog",
+                    "destination": "https://www.stephenscott.us/blog.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact",
+                    "destination": "https://www.stephenscott.us/contact.html",
+                    "type": 301
+                },
+                {
+                    "source": "/**",
+                    "destination": "https://www.stephenscott.us/",
+                    "type": 301
+                }
+            ]
         }
     ]
 }

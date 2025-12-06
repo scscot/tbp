@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-02
+**Last Updated**: 2025-12-06
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1305,6 +1305,40 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Output: `~/Desktop/TeamBuildPro-WebsitesAndApp.zip` (~316MB)
    - Includes: web/, web-es/, web-pt/, web-de/, sscott/, lib/, assets/, functions/, configs
    - Excludes: node_modules, build artifacts, secrets, .git, scripts/
+
+### Week of Dec 6
+82. ✅ **stephen-scott.net Domain Consolidation**:
+   - Analyzed stephen-scott.net (DreamHost WordPress) vs stephenscott.us (Firebase)
+   - Decision: 301 Redirect all traffic to stephenscott.us (consolidate redundant author sites)
+   - Benefits: SEO authority consolidation, eliminate WordPress maintenance, ~$10-15/month savings
+   - Legacy files on DreamHost determined obsolete (SendGrid scripts replaced by Mailgun, CSV leads in Firestore)
+
+83. ✅ **Firebase Hosting for stephen-scott.net Redirects**:
+   - Created `scott-net/public/` directory with fallback index.html
+   - Added `scott-net` hosting target to `firebase.json` with 301 redirects:
+     - `/` → `https://www.stephenscott.us/`
+     - `/books` → `https://www.stephenscott.us/books.html`
+     - `/about-me` → `https://www.stephenscott.us/about.html`
+     - `/podcasts` → `https://www.stephenscott.us/podcasts.html`
+     - `/blog` → `https://www.stephenscott.us/blog.html`
+     - `/contact` → `https://www.stephenscott.us/contact.html`
+     - `/**` (catch-all) → `https://www.stephenscott.us/`
+   - Added `scott-net` target mapping to `.firebaserc` → `scott-net` Firebase site
+   - Deployed successfully: `firebase deploy --only hosting:scott-net`
+   - All redirects verified working via curl tests
+
+84. ✅ **stephen-scott.net Custom Domain Configuration**:
+   - Added stephen-scott.net to Firebase Hosting console
+   - SSL certificate minting in progress
+   - Next steps: Update DNS at DreamHost, verify SSL, test live redirects, cancel DreamHost hosting
+
+85. ✅ **stephenscott.us Sitemap Update**:
+   - Updated `sscott/public/sitemap.xml` with current lastmod dates (2025-12-06)
+   - Verified all 21 URLs match actual files on disk:
+     - 6 main pages (home, about, books, blog, podcasts, contact)
+     - 13 book pages (all MLM AI translations + personal development books)
+     - 2 blog posts (ai-revolutionizing-lead-generation, ai-powered-crm-systems)
+   - Clean XML structure with proper priority and changefreq values
 
 ---
 

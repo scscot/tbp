@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://www.stephenscott.us/</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,111 +11,111 @@
   <!-- Main Pages -->
   <url>
     <loc>https://www.stephenscott.us/about.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/books.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/blog.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/podcasts.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/contact.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Individual Book Pages -->
   <url>
+    <loc>https://www.stephenscott.us/books/ai-your-gateway-to-a-better-life.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.stephenscott.us/books/how-to-grow-your-network-marketing-business-using-ai.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/the-art-of-mastering-fear-and-uncertainty.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/mlm-ai-german.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/mlm-ai-portugues.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/mlm-ai-japanese.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/mlm-ai-hindi.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/mlm-ai-espanol.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/books/ai-beginners-guide-2024-2025.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/the-art-of-mastering-fear-and-uncertainty.html</loc>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/books/stop-sabotaging-your-life.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/books/breaking-through-barriers.html</loc>
-    <lastmod>2025-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.stephenscott.us/books/divine-conversations.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.stephenscott.us/books/thrive-within.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.stephenscott.us/books/ai-your-gateway-to-a-better-life.html</loc>
-    <lastmod>2025-12-01</lastmod>
+    <loc>https://www.stephenscott.us/books/divine-conversations.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/mlm-ai-espanol.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/mlm-ai-portugues.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/mlm-ai-german.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/mlm-ai-hindi.html</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.stephenscott.us/books/mlm-ai-japanese.html</loc>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -127,13 +127,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
-
   <url>
     <loc>https://www.stephenscott.us/blog/ai-powered-crm-systems-revolutionizing-network.html</loc>
     <lastmod>2025-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
 </urlset>
