@@ -39,6 +39,9 @@
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+
   <!-- JSON-LD Structured Data for Book -->
   <script type="application/ld+json">
   {
@@ -138,26 +141,9 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <nav class="nav container">
-      <a href="/" class="logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
-        <span>Team Build Pro</span>
-      </a>
-      <button id="menu-btn" class="menu-btn" aria-label="Abrir menú" aria-haspopup="true" aria-expanded="false">
-        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
-      </button>
-      <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="/" role="menuitem">Inicio</a>
-        <a href="/#screenshots" role="menuitem">Capturas de Pantalla</a>
-        <a href="/#pricing" role="menuitem">Precios</a>
-        <a href="/faq.html" role="menuitem">FAQ</a>
-        <a href="/books.html" role="menuitem">Libros</a>
-        <a href="/contact_us.html" role="menuitem">Contacto</a>
-      </div>
-    </nav>
-  </header>
+    <!-- Header (rendered by components.js) -->
+    <div id="tbp-header"></div>
+
 
   <!-- Hero Section -->
   <section class="books-hero">
@@ -248,27 +234,9 @@
 
     </div>
   </section>
+    <!-- Footer (rendered by components.js) -->
+    <div id="tbp-footer"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-        <span>Team Build Pro</span>
-      </div>
-      <div class="footer-links">
-        <a href="/#pricing">Precios</a>
-        <a href="/faq.html">Preguntas Frecuentes</a>
-        <a href="/books.html">Libros</a>
-        <a href="/companies.html">Guías de Reclutamiento</a>
-        <a href="/contact_us.html">Contacto</a>
-        <a href="/privacy_policy.html">Política de Privacidad</a>
-        <a href="/terms_of_service.html">Términos de Servicio</a>
-      </div>
-
-      <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos los Derechos Reservados.</p>
-    </div>
-  </footer>
 
   <!-- JavaScript for Mobile Menu -->
   <script>

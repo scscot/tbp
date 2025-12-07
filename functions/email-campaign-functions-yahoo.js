@@ -15,15 +15,13 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // A/B/C Test DISABLED (Dec 5, 2025): Reverted to 'initial' template
-  // Test showed 0.8% open rate vs 30.9% with 'initial' template
-  // Kept for reference:
-  // - version_1: Pain point focus (momentum/stalling)
-  // - version_2: AI-driven guidance focus
-  // - version_3: Leader time protection focus
-  const templateVersion = 'initial';
+  // A/B Test (Dec 7, 2025): Testing click_driver vs initial
+  // - initial: Current template (47.6% open, 0% click)
+  // - click_driver: Problem-focused opening, bullet points, prominent CTA
+  // 50/50 split based on index position
+  const templateVersion = (index % 2 === 0) ? 'initial' : 'click_driver';
 
-  // Personalized subject line - proven to increase open rates
+  // Personalized subject line - proven to increase open rates (47.6%)
   const selectedSubject = `${contact.firstName}, AI recruiting tool you might find useful`;
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
@@ -33,7 +31,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'mailer');
   form.append('t:version', templateVersion);
-  form.append('o:tag', 'yahoo_initial_reverted');
+  form.append('o:tag', 'yahoo_ab_test_dec2025');
   form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');

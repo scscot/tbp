@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comienza Tu Camino | Team Build Pro</title>
+    <meta name="description" content="Comienza tu camino en ventas directas con apoyo y orientacion. Guiones claros, herramientas utiles y guia paso a paso. Aprende a tu propio ritmo.">
+    <meta name="keywords" content="comenzar ventas directas, app MLM principiantes, guia marketing de red, herramientas apoyo ventas directas">
+    <meta name="author" content="Team Build Pro">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://es.teambuildpro.com/prospects.html" />
+    <!-- Hreflang tags for multilingual SEO -->
+    <link rel="alternate" hreflang="en" href="https://teambuildpro.com/prospects.html" />
+    <link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/prospects.html" />
+    <link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/prospects.html" />
+    <link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/prospects.html" />
+    <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/prospects.html" />
+    <meta property="og:title" content="Comienza Tu Camino | Team Build Pro">
+    <meta property="og:description" content="Comienza tu camino en ventas directas con apoyo y orientacion. Guiones claros, herramientas utiles y guia paso a paso.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://es.teambuildpro.com/prospects.html">
+    <meta property="og:image" content="https://es.teambuildpro.com/assets/icons/team-build-pro.png">
+    <meta property="og:site_name" content="Team Build Pro">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Comienza Tu Camino | Team Build Pro">
+    <meta name="twitter:description" content="Comienza tu camino en ventas directas con apoyo y orientacion.">
+    <meta name="twitter:image" content="https://es.teambuildpro.com/assets/icons/team-build-pro.png">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+
+    <style>
+        /* Hero Section - Soft, welcoming gradient */
+        .hero-prospects {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
+            padding: 5rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-prospects::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(20, 184, 166, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-prospects h1 {
+            color: #ffffff;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-prospects .subline {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.15rem;
+            max-width: 550px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: #ffffff;
+            color: #0f766e;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-primary:hover {
+            background: #f0fdfa;
+            transform: translateY(-2px);
+        }
+
+        .cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Section Styles */
+        .section-support {
+            padding: 5rem 0;
+            background: #ffffff;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 3-Column Support Grid */
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .support-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        .support-item {
+            text-align: center;
+        }
+
+        .support-item .phone-frame {
+            background: #0f172a;
+            border-radius: 2rem;
+            padding: 0.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .support-item .phone-frame img {
+            width: 100%;
+            border-radius: 1.5rem;
+        }
+
+        .support-item h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .support-item p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* No Confusion Section */
+        .section-clarity {
+            padding: 5rem 0;
+            background: #f0fdfa;
+        }
+
+        .clarity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .clarity-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .clarity-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .clarity-content p {
+            color: #64748b;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .clarity-image .phone-frame {
+            background: #0f172a;
+            border-radius: 2rem;
+            padding: 0.5rem;
+            max-width: 280px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .clarity-image .phone-frame img {
+            width: 100%;
+            border-radius: 1.5rem;
+        }
+
+        /* Better Start Section */
+        .section-start {
+            padding: 5rem 0;
+            background: #ffffff;
+        }
+
+        .start-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .start-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .start-grid .start-image {
+                order: -1;
+            }
+        }
+
+        .start-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .start-content p {
+            color: #64748b;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .start-image .phone-frame {
+            background: #0f172a;
+            border-radius: 2rem;
+            padding: 0.5rem;
+            max-width: 280px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .start-image .phone-frame img {
+            width: 100%;
+            border-radius: 1.5rem;
+        }
+
+        /* Download Section */
+        .section-download {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            text-align: center;
+        }
+
+        .section-download h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-download p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-badges a img {
+            height: 50px;
+        }
+
+        .trial-note {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4E4TBBPZ7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-G4E4TBBPZ7');
+    </script>
+</head>
+
+<body>
+    <!-- Header (rendered by components.js) -->
+    <div id="tbp-header"></div>
+
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-prospects">
+            <div class="container">
+                <h1 id="hero-headline">Considerando Unirte a <span id="bizOppName" style="color: #fbbf24;"></span>?</h1>
+                <p class="subline" id="hero-subline" style="font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 700;">Pre-construye tu equipo ANTES de unirte!</p>
+                <p class="subline" id="hero-subline-2">Comienza el Dia 1 con impulso.</p>
+
+                <div class="hero-cta-buttons">
+                    <a href="#download" class="cta-primary" id="cta-primary">
+                        <span class="material-symbols-outlined">download</span>
+                        Comenzar Gratis
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 1: Construye Tu Equipo Antes de Unirte -->
+        <section class="section-support">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Construye Tu Equipo Antes de Unirte</h2>
+                    <p>Comienza con impulso. Ve resultados reales antes de comprometerte.</p>
+                </div>
+
+                <div class="support-grid">
+                    <div class="support-item">
+                        <div class="phone-frame">
+                            <img src="assets/images/screenshots/tbp3-es.jpg" alt="Mensajes con IA" onerror="this.style.display='none'">
+                        </div>
+                        <h3>La IA Escribe Tus Mensajes</h3>
+                        <p>8 mensajes de reclutamiento con IA abordan cada objecion—desde escepticos hasta profesionales ocupados. Solo personaliza y envia.</p>
+                    </div>
+                    <div class="support-item">
+                        <div class="phone-frame">
+                            <img src="assets/images/screenshots/tbp1-es.jpg" alt="Rastrea Tu Equipo" onerror="this.style.display='none'">
+                        </div>
+                        <h3>Ve Resultados Primero</h3>
+                        <p>Rastrea quienes estan interesados antes de comprometerte. Observa crecer tu equipo y sabe que estas construyendo algo real.</p>
+                    </div>
+                    <div class="support-item">
+                        <div class="phone-frame">
+                            <img src="assets/images/screenshots/tbp5-es.jpg" alt="Coach de IA" onerror="this.style.display='none'">
+                        </div>
+                        <h3>Coaching 24/7</h3>
+                        <p>Nunca te sientas perdido. Tu Coach de IA responde cualquier pregunta sobre reclutamiento y construccion de tu negocio, en cualquier momento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: No Confusion -->
+        <section class="section-clarity">
+            <div class="container">
+                <div class="clarity-grid">
+                    <div class="clarity-content">
+                        <h2>Sin Confusion, Solo Claridad</h2>
+                        <p>Ve exactamente donde estas y que hacer despues. La app muestra tu progreso y sugiere tu siguiente paso, aprende a tu propio ritmo.</p>
+                        <p>Sin agobio, sin presion. Solo orientacion clara cuando la necesitas.</p>
+                    </div>
+                    <div class="clarity-image">
+                        <div class="phone-frame">
+                            <img src="assets/screenshots/dashboard.png" alt="Panel Claro" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: A Better Start -->
+        <section class="section-start">
+            <div class="container">
+                <div class="start-grid">
+                    <div class="start-image">
+                        <div class="phone-frame">
+                            <img src="assets/screenshots/library.png" alt="Biblioteca de Recursos" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="start-content">
+                        <h2>Una Mejor Forma de Empezar</h2>
+                        <p>La mayoria de las personas se sienten perdidas en sus primeras semanas. Tu no. La app te da estructura sin agobio.</p>
+                        <p>Construye confianza paso a paso. Todo lo que necesitas, nada que no.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Download Section -->
+        <section class="section-download" id="download">
+            <div class="container">
+                <h2>Comienza con Apoyo</h2>
+                <p>Descarga Team Build Pro y explora a tu propio ritmo.</p>
+
+                <div class="download-badges">
+                    <a href="https://apps.apple.com/us/app/id6751211622"
+                       onclick="openAppOrStore('ios'); return false;"
+                       rel="noopener"
+                       id="ios-download-footer">
+                        <img src="assets/images/app_store_badges/black.svg" alt="Descargar en App Store">
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix"
+                       onclick="openAppOrStore('android'); return false;"
+                       rel="noopener"
+                       id="android-download-footer">
+                        <img src="assets/images/Google-Play.png" alt="Disponible en Google Play">
+                    </a>
+                </div>
+
+                <p class="trial-note">Prueba gratis de 30 dias · $4.99/mes · Cancela cuando quieras</p>
+            </div>
+        </section>
+    </main>
+    <!-- Footer (rendered by components.js) -->
+    <div id="tbp-footer"></div>
+
+
+    <script>
+        // ============================================================================
+        // REFERRAL SYSTEM INTEGRATION
+        // URL parameters contain TBP UID, not bizOppName - must fetch from API
+        // ============================================================================
+
+        function isValidReferralCode(code) {
+            return (
+                code &&
+                code.trim().length >= 3 &&
+                code.length <= 50 &&
+                !/[:/\\]/.test(code) &&
+                !/^(file|C:)/.test(code)
+            );
+        }
+
+        function getReferralInfo() {
+            if (window.location.protocol === "file:") return null;
+            const urlParams = new URLSearchParams(window.location.search);
+            const newProspectCode = urlParams.get("new");
+            const partnerCode = urlParams.get("ref");
+
+            if (newProspectCode && isValidReferralCode(newProspectCode)) {
+                return { code: newProspectCode, type: "new" };
+            } else if (partnerCode && isValidReferralCode(partnerCode)) {
+                return { code: partnerCode, type: "partner" };
+            }
+            return null;
+        }
+
+        async function fetchUserData(referralCode) {
+            try {
+                const url = `https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getUserByReferralCode?code=${referralCode}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error("Sponsor not found or server error:", response.status);
+                    return null;
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                return null;
+            }
+        }
+
+        // Create the top invite bar showing referrer info
+        function createInviteSection(firstName, lastName, referralType, bizOppName, photoUrl) {
+            const avatarUrl = photoUrl || 'assets/images/default_avatar.png';
+            const referrerFullName = `${firstName} ${lastName}`;
+
+            // Create top fixed invite bar
+            const topInviteBar = document.getElementById('top-invite-bar');
+            if (topInviteBar) {
+                // For prospects page, always show "Invitado por"
+                const label = 'Invitado por';
+                topInviteBar.innerHTML = `
+                    <img src="${avatarUrl}" alt="${referrerFullName}" class="top-invite-avatar" onerror="this.src='assets/images/default_avatar.png';">
+                    <span class="top-invite-text">${label} ${referrerFullName}</span>
+                `;
+                topInviteBar.classList.add('visible');
+            }
+        }
+
+        async function initializePage() {
+            const referralInfo = getReferralInfo();
+
+            // This page REQUIRES ?new= parameter - redirect to index.html if not present
+            if (!referralInfo || referralInfo.type !== "new") {
+                // If ?ref= is present, redirect to professionals page
+                if (referralInfo && referralInfo.type === "partner") {
+                    window.location.href = `/professionals.html?ref=${referralInfo.code}`;
+                } else {
+                    // No valid referral - redirect to main homepage
+                    window.location.href = '/';
+                }
+                return;
+            }
+
+            // ?new= is present - fetch user data to get bizOppName
+            const userData = await fetchUserData(referralInfo.code);
+
+            if (userData) {
+                const bizOppName = userData.bizOppName || 'su oportunidad';
+
+                // Update bizOppName span in hero headline
+                document.getElementById('bizOppName').textContent = bizOppName;
+
+                // Show top invite bar with referrer info
+                if (userData.firstName && userData.lastName) {
+                    const photoUrl = userData.photoUrl || userData.photoURL || userData.profilePhotoUrl || null;
+                    createInviteSection(
+                        userData.firstName,
+                        userData.lastName,
+                        referralInfo.type,
+                        bizOppName,
+                        photoUrl
+                    );
+                }
+
+                console.log(`[prospects.html] Personalizado para ${bizOppName}`);
+            }
+        }
+
+        // ============================================================================
+        // LOGO LINK - Keep users in their audience context
+        // ============================================================================
+        function setupLogoLink() {
+            const logoLink = document.getElementById('logo-link');
+            if (logoLink) {
+                logoLink.href = '/prospects.html' + window.location.search;
+            }
+
+            // Store referral context in sessionStorage for cross-page persistence
+            const referralInfo = getReferralInfo();
+            if (referralInfo) {
+                try {
+                    sessionStorage.setItem('tbp_referral', JSON.stringify({
+                        ...referralInfo,
+                        capturedAt: Date.now()
+                    }));
+                } catch (e) {
+                    console.warn('[TBP] Could not store referral in sessionStorage:', e);
+                }
+            }
+        }
+        setupLogoLink();
+
+        // Initialize on page load
+        // ============================================================================
+        // OPEN APP OR FALL BACK TO APP STORE
+        // ============================================================================
+        function openAppOrStore(platform) {
+            const APP_STORE_URL = 'https://apps.apple.com/us/app/id6751211622';
+            const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.scott.ultimatefix';
+
+            // Check if on iOS (including iPad desktop mode)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isAndroid = /Android/.test(navigator.userAgent);
+
+            // If user clicked Android button, go to Play Store
+            if (platform === 'android') {
+                window.location.href = PLAY_STORE_URL;
+                return;
+            }
+
+            // If user clicked iOS button
+            if (platform === 'ios') {
+                if (!isIOS) {
+                    // Desktop or Android - go straight to App Store
+                    window.location.href = APP_STORE_URL;
+                    return;
+                }
+
+                // On iOS - try Universal Link handoff via /claim.html
+                const url = new URL(location.href);
+                url.searchParams.delete('_ul');
+                const params = url.search || '';
+                const sep = params ? '&' : '?';
+                const UNIVERSAL_LINK = 'https://es.teambuildpro.com/claim.html' + params + sep + '_ul=1';
+
+                console.log('Navigating to UL:', UNIVERSAL_LINK);
+                window.location.href = UNIVERSAL_LINK;
+            }
+        }
+
+        initializePage();
+    </script>
+</body>
+</html>

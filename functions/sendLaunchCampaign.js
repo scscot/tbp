@@ -1,14 +1,14 @@
 const { onRequest } = require('firebase-functions/v2/https');
-const { defineSecret, defineString } = require('firebase-functions/params');
+const { defineString } = require('firebase-functions/params');
 const admin = require('firebase-admin');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-// Define Mailgun API key secret and domain
-const mailgunApiKey = defineSecret('MAILGUN_API_KEY');
-const mailgunDomain = defineString('MAILGUN_DOMAIN', { default: 'info.teambuildpro.com' });
+// Define Mailgun API key and domain from environment variables
+const mailgunApiKey = defineString('MAILGUN_API_KEY');
+const mailgunDomain = defineString('MAILGUN_DOMAIN', { default: 'mailer.teambuildpro.com' });
 
 // Load the email template
 const templatePath = path.join(__dirname, 'email_templates/launch_campaign_mailgun.html');
@@ -26,7 +26,6 @@ exports.sendLaunchCampaign = onRequest(
   {
     cors: true,
     region: 'us-central1',
-    secrets: [mailgunApiKey],
     timeoutSeconds: 540, // 9 minutes for large campaigns
     memory: '1GiB',
   },

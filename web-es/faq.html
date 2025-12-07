@@ -91,6 +91,9 @@
 
     <link rel="stylesheet" href="css/style.css" />
 
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+
     <!-- FAQ Schema Markup -->
     <script type="application/ld+json">
     {
@@ -183,28 +186,9 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav container">
-            <a href="https://es.teambuildpro.com" class="logo">
-                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro"
-                    style="width: 32px; height: 32px; border-radius: 50%;">
-                <span>Team Build Pro</span>
-            </a>
-            <!-- Sandwich Menu Button -->
-            <button id="menu-btn" class="menu-btn" aria-label="Abrir menú" aria-haspopup="true" aria-expanded="false">
-                <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
-            </button>
-            <!-- Dropdown Menu -->
-            <div id="mobile-menu" class="mobile-menu" role="menu">
-                <a href="/#screenshots" role="menuitem">Capturas</a>
-                <a href="/#pricing" role="menuitem">Precios</a>
-                <a href="/faq.html" role="menuitem">FAQ</a>
-                <a href="/blog.html" role="menuitem">Blog</a>
-                <a href="/contact_us.html" role="menuitem">Contáctanos</a>
-            </div>
-        </nav>
-    </header>
+    <!-- Header (rendered by components.js) -->
+    <div id="tbp-header"></div>
+
 
     <main>
         <!-- Hero Section -->
@@ -964,31 +948,12 @@
             </div>
         </section>
     </main>
+    <!-- Footer (rendered by components.js) -->
+    <div id="tbp-footer"></div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-logo">
-                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro"
-                    style="width: 32px; height: 32px; border-radius: 50%;">
-                <span>Team Build Pro</span>
-            </div>
-            <div class="footer-links">
-                <a href="/#pricing">Precios</a>
-                <a href="/faq.html">Preguntas Frecuentes</a>
-                <a href="/books.html">Libros</a>
-                <a href="/companies.html">Guías de Reclutamiento</a>
-                <a href="/contact_us.html">Contacto</a>
-                <a href="/privacy_policy.html">Política de Privacidad</a>
-                <a href="/terms_of_service.html">Términos de Servicio</a>
-            </div>
-            <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos los Derechos Reservados.</p>
-        </div>
-    </footer>
 
     <script>
         // Set current year
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
 
         // FAQ Toggle functionality
         function toggleFAQ(button) {

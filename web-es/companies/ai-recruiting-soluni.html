@@ -32,6 +32,9 @@
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
@@ -113,26 +116,9 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <nav class="nav container">
-      <a href="/" class="logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
-        <span>Team Build Pro</span>
-      </a>
-      <button id="menu-btn" class="menu-btn" aria-label="Abrir menú" aria-haspopup="true" aria-expanded="false">
-        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
-      </button>
-      <div id="mobile-menu" class="mobile-menu" role="menu">
-        <a href="/" role="menuitem">Inicio</a>
-        <a href="/#screenshots" role="menuitem">Capturas</a>
-        <a href="/#pricing" role="menuitem">Precios</a>
-        <a href="/faq.html" role="menuitem">FAQ</a>
-        <a href="/books.html" role="menuitem">Libros</a>
-        <a href="/contact_us.html" role="menuitem">Contacto</a>
-      </div>
-    </nav>
-  </header>
+    <!-- Header (rendered by components.js) -->
+    <div id="tbp-header"></div>
+
 
   <main class="learning-wrapper">
     <div class="container">
@@ -331,25 +317,9 @@
       <a href="/" class="cta-button">Obtén Coach AI + Herramientas de Construcción de Equipo<br>¡Prueba Gratis por 30 Días!</a>
     </div>
   </section>
+    <!-- Footer (rendered by components.js) -->
+    <div id="tbp-footer"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">
-        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
-        <span>Team Build Pro</span>
-      </div>
-      <div class="footer-links">
-        <a href="/#pricing">Precios</a>
-        <a href="/faq.html">FAQ</a>
-        <a href="/books.html">Libros</a>
-        <a href="/contact_us.html">Contacto</a>
-        <a href="/privacy_policy.html">Política de Privacidad</a>
-        <a href="/terms_of_service.html">Términos de Servicio</a>
-      </div>
-      <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos los Derechos Reservados.</p>
-    </div>
-  </footer>
 
   <script>
     const menuBtn = document.getElementById('menu-btn');
@@ -366,8 +336,6 @@
         menuBtn.setAttribute('aria-expanded', 'false');
       }
     });
-
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     const toggleBtn = document.getElementById('toggle-roadmap-btn');
     const collapsibleItems = document.querySelectorAll('.collapsible-item');

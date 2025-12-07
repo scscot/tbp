@@ -42,6 +42,9 @@
     <!-- Google Material Symbols -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
     <!-- Favicons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
@@ -95,28 +98,9 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav container">
-            <a href="/" class="logo">
-                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-                <span>Team Build Pro</span>
-            </a>
+    <!-- Header (rendered by components.js) -->
+    <div id="tbp-header"></div>
 
-            <!-- Sandwich Menu Button -->
-            <button id="menu-btn" class="menu-btn" aria-label="Abrir menu" aria-haspopup="true" aria-expanded="false">
-                <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
-            </button>
-            <!-- Dropdown Menu -->
-            <div id="mobile-menu" class="mobile-menu" role="menu">
-                <a href="/#screenshots" role="menuitem">Capturas de Tela</a>
-                <a href="/#pricing" role="menuitem">Preços</a>
-                <a href="/#faq" role="menuitem">Perguntas Frequentes</a>
-                <a href="/blog.html" role="menuitem">Blog</a>
-                <a href="/contact_us.html" role="menuitem">Fale Conosco</a>
-            </div>
-        </nav>
-    </header>
 
 
     <!-- Main Content -->
@@ -386,26 +370,9 @@
 
 
     </div>
+    <!-- Footer (rendered by components.js) -->
+    <div id="tbp-footer"></div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-logo">
-                <img src="assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-                <span>Team Build Pro</span>
-            </div>
-            <div class="footer-links">
-                <a href="/#pricing">Preços</a>
-                <a href="/faq.html">Perguntas Frequentes</a>
-                <a href="/books.html">Livros</a>
-                <a href="/companies.html">Guias de Recrutamento</a>
-                <a href="/contact_us.html">Contato</a>
-                <a href="/privacy_policy.html">Política de Privacidade</a>
-                <a href="/terms_of_service.html">Termos de Serviço</a>
-            </div>
-            <p>&copy; <span id="currentYear"></span> Team Build Pro. Todos os Direitos Reservados.</p>
-        </div>
-    </footer>
 
     <script>
         // Set current date

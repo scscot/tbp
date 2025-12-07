@@ -80,8 +80,8 @@ async function getMailgunStats() {
     console.log('📋 Campaign Tag Statistics:');
     console.log('-'.repeat(60));
 
-    // Get stats by tag - A/B/C Test (Dec 2025)
-    const tags = ['version_1', 'version_2', 'version_3', 'abc_test_dec2025', 'yahoo_abc_test_dec2025'];
+    // Get stats by tag - A/B Test (Dec 2025)
+    const tags = ['initial', 'click_driver', 'ab_test_dec2025', 'yahoo_ab_test_dec2025'];
 
     for (const tag of tags) {
       try {

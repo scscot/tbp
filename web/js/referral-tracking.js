@@ -158,11 +158,14 @@
   }
 
   /**
-   * Create and insert the Top Invite Bar HTML element
+   * Get or create the Top Invite Bar HTML element
    */
-  function createInviteBarElement() {
-    if (document.getElementById('top-invite-bar')) return null; // Already exists
+  function getOrCreateInviteBarElement() {
+    // Check if element already exists (created by components.js or in HTML)
+    const existing = document.getElementById('top-invite-bar');
+    if (existing) return existing;
 
+    // Create if doesn't exist
     const bar = document.createElement('div');
     bar.id = 'top-invite-bar';
     bar.className = 'top-invite-bar';
@@ -239,9 +242,9 @@
       return;
     }
 
-    const bar = createInviteBarElement();
+    const bar = getOrCreateInviteBarElement();
     if (!bar) {
-      console.log('[TBP Referral] Invite bar already exists');
+      console.log('[TBP Referral] Could not get or create invite bar element');
       return;
     }
 
