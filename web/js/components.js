@@ -33,7 +33,6 @@
     // =========================================================================
     const translations = {
         en: {
-            screenshots: 'Screenshots',
             pricing: 'Pricing',
             faq: 'FAQ',
             blog: 'Blog',
@@ -43,10 +42,10 @@
             privacyPolicy: 'Privacy Policy',
             termsOfService: 'Terms of Service',
             copyright: 'Team Build Pro. All Rights Reserved.',
-            langName: 'English'
+            langName: 'English',
+            subtitle: 'AI Downline Builder'
         },
         es: {
-            screenshots: 'Capturas',
             pricing: 'Precios',
             faq: 'Preguntas Frecuentes',
             blog: 'Blog',
@@ -56,10 +55,10 @@
             privacyPolicy: 'Política de Privacidad',
             termsOfService: 'Términos de Servicio',
             copyright: 'Team Build Pro. Todos los derechos reservados.',
-            langName: 'Español'
+            langName: 'Español',
+            subtitle: 'Constructor de Redes con IA'
         },
         pt: {
-            screenshots: 'Capturas',
             pricing: 'Preços',
             faq: 'Perguntas Frequentes',
             blog: 'Blog',
@@ -69,10 +68,10 @@
             privacyPolicy: 'Política de Privacidade',
             termsOfService: 'Termos de Serviço',
             copyright: 'Team Build Pro. Todos os direitos reservados.',
-            langName: 'Português'
+            langName: 'Português',
+            subtitle: 'Construtor de Equipes com IA'
         },
         de: {
-            screenshots: 'Screenshots',
             pricing: 'Preise',
             faq: 'Häufige Fragen',
             blog: 'Blog',
@@ -82,7 +81,8 @@
             privacyPolicy: 'Datenschutzrichtlinie',
             termsOfService: 'Nutzungsbedingungen',
             copyright: 'Team Build Pro. Alle Rechte vorbehalten.',
-            langName: 'Deutsch'
+            langName: 'Deutsch',
+            subtitle: 'KI-Downline-Builder'
         }
     };
 
@@ -192,7 +192,10 @@
         <nav class="nav container">
             <a href="${logoLink}" class="logo" id="tbp-logo-link">
                 <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-                <span>Team Build Pro</span>
+                <span style="display: flex; flex-direction: column; line-height: 1.2;">
+                    <span>Team Build Pro</span>
+                    <span style="font-size: 0.80rem; color: #ffffff;">${t.subtitle}</span>
+                </span>
             </a>
             <!-- Sandwich Menu Button -->
             <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
@@ -200,9 +203,8 @@
             </button>
             <!-- Dropdown Menu -->
             <div id="mobile-menu" class="mobile-menu" role="menu">
-                <a href="/#screenshots" role="menuitem">${t.screenshots}</a>
-                <a href="/#pricing" role="menuitem">${t.pricing}</a>
                 <a href="/faq.html" role="menuitem">${t.faq}</a>
+                <a href="/pricing.html" role="menuitem">${t.pricing}</a>
                 <a href="/blog.html" role="menuitem">${t.blog}</a>
                 <a href="/books.html" role="menuitem">${t.books}</a>
                 <a href="/contact_us.html" role="menuitem">${t.contact}</a>
@@ -229,13 +231,13 @@
                 <span>Team Build Pro</span>
             </div>
             <div class="footer-links">
-                <a href="/#pricing">${t.pricing}</a>
                 <a href="/faq.html">${t.faq}</a>
+                <a href="/pricing.html">${t.pricing}</a>
                 <a href="/books.html">${t.books}</a>
                 <a href="/companies.html">${t.recruitingGuides}</a>
-                <a href="/contact_us.html">${t.contact}</a>
                 <a href="/privacy_policy.html">${t.privacyPolicy}</a>
                 <a href="/terms_of_service.html">${t.termsOfService}</a>
+                <a href="/contact_us.html">${t.contact}</a>
             </div>
             <p>&copy; ${year} ${t.copyright}</p>
         </div>
