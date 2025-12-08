@@ -75,6 +75,25 @@ jobs:
           echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/firebase-key.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
 
+          # Create .firebaserc with target mappings (file is gitignored)
+          cat > .firebaserc << 'EOF'
+          {
+            "projects": {
+              "default": "teambuilder-plus-fe74d"
+            },
+            "targets": {
+              "teambuilder-plus-fe74d": {
+                "hosting": {
+                  "main": ["teambuilder-plus-fe74d"],
+                  "es": ["tbp-es"],
+                  "pt": ["tbp-pt"],
+                  "de": ["tbp-de"]
+                }
+              }
+            }
+          }
+          EOF
+
           # Deploy all hosting targets (EN, ES, PT, DE)
           firebase deploy --only hosting:main,hosting:es,hosting:pt,hosting:de --project teambuilder-plus-fe74d
 
