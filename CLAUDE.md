@@ -51,8 +51,8 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **24/7 AI Coach** for instant recruiting guidance in 4 languages
 - **4 languages supported**: English, Spanish (Español), Portuguese (Português), German (Deutsch)
 - **4 direct sponsors + 20 total downline members** = qualification milestones
-- **120+ countries supported** with timezone-aware features
-- **100+ direct sales companies** compatible
+- **Available worldwide** wherever App Store and Google Play operate (with timezone-aware features)
+- **Works with any direct sales company** (company-agnostic platform)
 - **$4.99/month** after 30-day free trial
 - **70% performance improvement** through client-side caching
 

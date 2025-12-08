@@ -15,6 +15,118 @@ const colors = {
   magenta: '\x1b[35m'
 };
 
+// ===== TEAM BUILD PRO VALIDATION UTILITIES =====
+// Load and extract facts from all sources of truth for TBP-related blogs
+
+// Load and extract Team Build Pro facts from all sources
+function loadTeamBuildProFacts() {
+  const facts = {
+    claudeMd: loadClaudeMdSections(),
+    faq: loadWebsitePage('faq.html'),
+    privacyPolicy: loadWebsitePage('privacy_policy.html'),
+    termsOfService: loadWebsitePage('terms_of_service.html')
+  };
+
+  return facts;
+}
+
+// Load sections from CLAUDE.md
+function loadClaudeMdSections() {
+  const claudeMdPath = path.join(__dirname, '..', 'CLAUDE.md');
+  if (!fs.existsSync(claudeMdPath)) {
+    console.log(`${colors.yellow}Warning: CLAUDE.md not found${colors.reset}`);
+    return null;
+  }
+
+  const content = fs.readFileSync(claudeMdPath, 'utf8');
+
+  return {
+    coreIdentity: extractMarkdownSection(content, '## 🎯 Core Product Identity', '##'),
+    statistics: extractMarkdownSection(content, '## 📊 Critical Statistics', '##'),
+    messaging: extractMarkdownSection(content, '## 💬 Messaging & Positioning', '##'),
+    appStoreListing: extractMarkdownSection(content, '## 📱 App Store Listing', '##'),
+    criticalDonts: extractMarkdownSection(content, '## 🚨 Critical Don\'ts', '##')
+  };
+}
+
+// Extract a section from markdown content
+function extractMarkdownSection(content, startMarker, endMarker) {
+  const startIndex = content.indexOf(startMarker);
+  if (startIndex === -1) return '';
+
+  const afterStart = content.substring(startIndex);
+  const nextSection = afterStart.indexOf(endMarker, startMarker.length);
+
+  if (nextSection === -1) return afterStart;
+  return afterStart.substring(0, nextSection).trim();
+}
+
+// Load and extract text from website HTML pages
+function loadWebsitePage(filename) {
+  const filePath = path.join(__dirname, '..', 'web', filename);
+  if (!fs.existsSync(filePath)) {
+    console.log(`${colors.yellow}Warning: ${filename} not found${colors.reset}`);
+    return null;
+  }
+
+  const html = fs.readFileSync(filePath, 'utf8');
+  return extractTextFromHTML(html);
+}
+
+// Extract readable text from HTML
+function extractTextFromHTML(html) {
+  // Remove script and style tags
+  let text = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+  text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+
+  // Remove HTML tags but preserve structure
+  text = text.replace(/<h[1-6][^>]*>/gi, '\n### ');
+  text = text.replace(/<\/h[1-6]>/gi, '\n');
+  text = text.replace(/<li[^>]*>/gi, '\n- ');
+  text = text.replace(/<p[^>]*>/gi, '\n');
+  text = text.replace(/<br\s*\/?>/gi, '\n');
+  text = text.replace(/<[^>]+>/g, ' ');
+
+  // Clean up whitespace and HTML entities
+  text = text.replace(/&nbsp;/g, ' ');
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&quot;/g, '"');
+  text = text.replace(/&#39;/g, "'");
+  text = text.replace(/\s+/g, ' ');
+  text = text.replace(/\n\s+/g, '\n');
+
+  return text.trim();
+}
+
+// Validate generated content for suspicious/fabricated features
+function validateGeneratedContent(content) {
+  const suspiciousTerms = [
+    'E2E encryption', 'end-to-end encryption', 'biometric',
+    'AI Script Generator', 'Script Generator button',
+    'voice recognition', 'facial recognition',
+    'blockchain', 'cryptocurrency',
+    'video conferencing', 'screen sharing',
+    '120+ countries', '100+ companies'
+  ];
+
+  const warnings = [];
+  for (const term of suspiciousTerms) {
+    if (content.toLowerCase().includes(term.toLowerCase())) {
+      warnings.push(`Content mentions "${term}" - verify this feature exists`);
+    }
+  }
+
+  if (warnings.length > 0) {
+    console.log(`\n${colors.yellow}VALIDATION WARNINGS:${colors.reset}`);
+    warnings.forEach(w => console.log(`  ${colors.yellow}* ${w}${colors.reset}`));
+  }
+
+  return warnings;
+}
+// ===== END TEAM BUILD PRO VALIDATION UTILITIES =====
+
 // Parse command line arguments
 const args = process.argv.slice(2);
 const nonFlagArgs = args.filter(arg => !arg.startsWith('--'));
@@ -169,8 +281,46 @@ function generateBlogPromptPlain(title, category, keywords, extraNotes) {
   const date = getTodayDate();
   const extraSection = extraNotes ? `\nADDITIONAL CONTEXT / ANGLE:\n${extraNotes}\n` : '';
 
-  return `Generate a comprehensive, SEO-optimized blog post for Stephen Scott's website (stephenscott.us) with the following requirements:
+  // Check if this blog topic relates to TBP/direct sales and needs validation
+  const isRelevantTopic = /team build pro|direct sales|network marketing|mlm|ai recruit|downline|upline/i.test(title + ' ' + (keywords || ''));
 
+  // Build TBP validation section if topic is relevant
+  let validationSection = '';
+  if (isRelevantTopic) {
+    const tbpFacts = loadTeamBuildProFacts();
+    if (tbpFacts && tbpFacts.claudeMd) {
+      validationSection = `
+TEAM BUILD PRO FACTS (USE ONLY THESE - DO NOT FABRICATE FEATURES):
+If you mention Team Build Pro in this article, only reference features documented below.
+
+=== FROM CLAUDE.MD (Product Identity) ===
+${tbpFacts.claudeMd.coreIdentity || ''}
+
+${tbpFacts.claudeMd.statistics || ''}
+
+${tbpFacts.claudeMd.messaging || ''}
+
+=== FROM FAQ PAGE (Features & How It Works) ===
+${tbpFacts.faq ? tbpFacts.faq.substring(0, 3000) : ''}
+
+=== FROM PRIVACY POLICY (Data & Security) ===
+${tbpFacts.privacyPolicy ? tbpFacts.privacyPolicy.substring(0, 1500) : ''}
+
+CRITICAL VALIDATION RULES:
+- Only reference Team Build Pro features documented in the sources above
+- Never invent new features, buttons, or capabilities
+- Use exact statistics (75% quit rate, 16 messages, 4 languages, etc.)
+- Do not claim security features not documented (no E2E encryption, no biometric auth)
+- App works with ANY direct sales company (company-agnostic)
+- Available wherever App Store and Google Play operate (NOT "120+ countries")
+- Core features: 16 pre-written messages, AI Coach, downline tracking, 30-day free trial, $4.99/month
+
+`;
+    }
+  }
+
+  return `Generate a comprehensive, SEO-optimized blog post for Stephen Scott's website (stephenscott.us) with the following requirements:
+${validationSection}
 TITLE: "${title}"
 CATEGORY: ${category}
 TARGET KEYWORDS: ${keywords || 'ai recruiting, direct sales, team building, network marketing'}${extraSection}SLUG: ${slug}
@@ -626,6 +776,12 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     console.log(`${colors.yellow}  Warnings: ${errors.join(', ')}${colors.reset}\n`);
   } else {
     console.log(`${colors.green}  Validation passed${colors.reset}\n`);
+  }
+
+  // Validate for suspicious/fabricated TBP features
+  const contentWarnings = validateGeneratedContent(blogPost.content || '');
+  if (contentWarnings.length > 0) {
+    console.log(`${colors.yellow}  Review generated content for potentially fabricated features${colors.reset}\n`);
   }
 
   const blogResponseFile = path.join(__dirname, 'sscott-blog-response.json');

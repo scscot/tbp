@@ -69,6 +69,118 @@ function getExistingBlogs(blogDir) {
   }
 }
 
+// ===== TEAM BUILD PRO VALIDATION UTILITIES =====
+// Load and extract facts from all sources of truth
+
+// Load and extract Team Build Pro facts from all sources
+function loadTeamBuildProFacts() {
+  const facts = {
+    claudeMd: loadClaudeMdSections(),
+    faq: loadWebsitePage('faq.html'),
+    privacyPolicy: loadWebsitePage('privacy_policy.html'),
+    termsOfService: loadWebsitePage('terms_of_service.html')
+  };
+
+  return facts;
+}
+
+// Load sections from CLAUDE.md
+function loadClaudeMdSections() {
+  const claudeMdPath = path.join(__dirname, '..', 'CLAUDE.md');
+  if (!fs.existsSync(claudeMdPath)) {
+    console.log(`${colors.yellow}Warning: CLAUDE.md not found${colors.reset}`);
+    return null;
+  }
+
+  const content = fs.readFileSync(claudeMdPath, 'utf8');
+
+  return {
+    coreIdentity: extractMarkdownSection(content, '## 🎯 Core Product Identity', '##'),
+    statistics: extractMarkdownSection(content, '## 📊 Critical Statistics', '##'),
+    messaging: extractMarkdownSection(content, '## 💬 Messaging & Positioning', '##'),
+    appStoreListing: extractMarkdownSection(content, '## 📱 App Store Listing', '##'),
+    criticalDonts: extractMarkdownSection(content, '## 🚨 Critical Don\'ts', '##')
+  };
+}
+
+// Extract a section from markdown content
+function extractMarkdownSection(content, startMarker, endMarker) {
+  const startIndex = content.indexOf(startMarker);
+  if (startIndex === -1) return '';
+
+  const afterStart = content.substring(startIndex);
+  const nextSection = afterStart.indexOf(endMarker, startMarker.length);
+
+  if (nextSection === -1) return afterStart;
+  return afterStart.substring(0, nextSection).trim();
+}
+
+// Load and extract text from website HTML pages
+function loadWebsitePage(filename) {
+  const filePath = path.join(__dirname, '..', 'web', filename);
+  if (!fs.existsSync(filePath)) {
+    console.log(`${colors.yellow}Warning: ${filename} not found${colors.reset}`);
+    return null;
+  }
+
+  const html = fs.readFileSync(filePath, 'utf8');
+  return extractTextFromHTML(html);
+}
+
+// Extract readable text from HTML
+function extractTextFromHTML(html) {
+  // Remove script and style tags
+  let text = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+  text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+
+  // Remove HTML tags but preserve structure
+  text = text.replace(/<h[1-6][^>]*>/gi, '\n### ');
+  text = text.replace(/<\/h[1-6]>/gi, '\n');
+  text = text.replace(/<li[^>]*>/gi, '\n- ');
+  text = text.replace(/<p[^>]*>/gi, '\n');
+  text = text.replace(/<br\s*\/?>/gi, '\n');
+  text = text.replace(/<[^>]+>/g, ' ');
+
+  // Clean up whitespace and HTML entities
+  text = text.replace(/&nbsp;/g, ' ');
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&quot;/g, '"');
+  text = text.replace(/&#39;/g, "'");
+  text = text.replace(/\s+/g, ' ');
+  text = text.replace(/\n\s+/g, '\n');
+
+  return text.trim();
+}
+
+// Validate generated content for suspicious/fabricated features
+function validateGeneratedContent(content) {
+  const suspiciousTerms = [
+    'E2E encryption', 'end-to-end encryption', 'biometric',
+    'AI Script Generator', 'Script Generator button',
+    'voice recognition', 'facial recognition',
+    'blockchain', 'cryptocurrency',
+    'video conferencing', 'screen sharing',
+    '120+ countries', '100+ companies'
+  ];
+
+  const warnings = [];
+  for (const term of suspiciousTerms) {
+    if (content.toLowerCase().includes(term.toLowerCase())) {
+      warnings.push(`Content mentions "${term}" - verify this feature exists`);
+    }
+  }
+
+  if (warnings.length > 0) {
+    console.log(`\n${colors.yellow}⚠️  VALIDATION WARNINGS:${colors.reset}`);
+    warnings.forEach(w => console.log(`  ${colors.yellow}• ${w}${colors.reset}`));
+  }
+
+  return warnings;
+}
+// ===== END TEAM BUILD PRO VALIDATION UTILITIES =====
+
 // Helper to strip ANSI color codes from text
 function stripAnsiColors(text) {
   return text.replace(/\x1b\[[0-9;]*m/g, '');
@@ -144,12 +256,50 @@ function generateBlogPromptPlain(title, category, keywords, extraNotes) {
   const slug = generateSlug(title);
   const date = getTodayDate();
 
+  // Load TBP facts from all sources of truth
+  const tbpFacts = loadTeamBuildProFacts();
+
   const extraSection = extraNotes
     ? `\nADDITIONAL CONTEXT / ANGLE:\n${extraNotes}\n`
     : '';
 
-  return `Generate a comprehensive, SEO-optimized blog post for Team Build Pro with the following requirements:
+  // Build TBP validation section from multiple sources
+  let validationSection = '';
+  if (tbpFacts) {
+    validationSection = `
+=== TEAM BUILD PRO FACTS (USE ONLY THESE - DO NOT FABRICATE FEATURES) ===
 
+FROM CLAUDE.MD (Product Identity):
+${tbpFacts.claudeMd?.coreIdentity || 'Not available'}
+
+FROM CLAUDE.MD (Critical Statistics):
+${tbpFacts.claudeMd?.statistics || 'Not available'}
+
+FROM CLAUDE.MD (Messaging & Positioning):
+${tbpFacts.claudeMd?.messaging || 'Not available'}
+
+FROM FAQ PAGE (Features & How It Works):
+${tbpFacts.faq ? tbpFacts.faq.substring(0, 3000) + '...' : 'Not available'}
+
+FROM PRIVACY POLICY (Data & Security):
+${tbpFacts.privacyPolicy ? tbpFacts.privacyPolicy.substring(0, 2000) + '...' : 'Not available'}
+
+CRITICAL VALIDATION RULES:
+- Only reference features documented in the sources above
+- Never invent new features, buttons, or capabilities
+- Use exact statistics (75% quit rate, 16 messages, 4 languages, etc.)
+- Do not claim security features not documented (no E2E encryption, no biometric auth)
+- App works with ANY direct sales company (company-agnostic)
+- Available worldwide wherever App Store and Google Play operate
+- Core features: 16 pre-written messages, AI Coach, downline tracking, 30-day free trial, $4.99/month
+
+=== END TEAM BUILD PRO FACTS ===
+
+`;
+  }
+
+  return `Generate a comprehensive, SEO-optimized blog post for Team Build Pro with the following requirements:
+${validationSection}
 TITLE: "${title}"
 CATEGORY: ${category}
 TARGET KEYWORDS: ${keywords || 'ai recruiting, direct sales, team building, network marketing'}${extraSection}SLUG: ${slug}
@@ -1274,6 +1424,11 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     const response = await callClaudeWithStdin(blogPrompt, 'blog generation', 300000);
     blogPost = extractJsonFromResponse(response);
     console.log(`${colors.green}  ✅ Blog content generated successfully${colors.reset}\n`);
+
+    // Validate generated content for suspicious/fabricated features
+    if (blogPost.content) {
+      validateGeneratedContent(blogPost.content);
+    }
   } catch (error) {
     console.error(`${colors.yellow}❌ Error generating blog content: ${error.message}${colors.reset}`);
     console.log(`\n${colors.cyan}Tip: Try running the prompt manually:${colors.reset}`);
@@ -1449,8 +1604,32 @@ function generateResearchPrompt(existingBlogs = []) {
   const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
   const dateRange = `${oneWeekAgo.toISOString().split('T')[0]} to ${today.toISOString().split('T')[0]}`;
 
-  return `You are a research analyst specializing in direct sales, network marketing, MLM, AI technology, and recruiting trends.
+  // Load TBP facts for context
+  const tbpFacts = loadTeamBuildProFacts();
 
+  // Build TBP context section
+  let tbpContext = '';
+  if (tbpFacts && tbpFacts.claudeMd) {
+    tbpContext = `
+ABOUT TEAM BUILD PRO (for context when recommending topics):
+${tbpFacts.claudeMd.coreIdentity || ''}
+
+KEY FEATURES TO REFERENCE IN BLOG TOPICS:
+${tbpFacts.claudeMd.statistics || ''}
+
+IMPORTANT: When recommending blog topics, ensure they align with Team Build Pro's actual capabilities:
+- 16 pre-written messages (8 for recruiting + 8 for partners)
+- AI Coach for 24/7 recruiting guidance
+- Downline tracking and qualification milestones
+- Works with ANY direct sales company (company-agnostic)
+- 30-day pre-qualification approach
+- $4.99/month after 30-day free trial
+
+`;
+  }
+
+  return `You are a research analyst specializing in direct sales, network marketing, MLM, AI technology, and recruiting trends.
+${tbpContext}
 TASK: Conduct deep research on what's being discussed in the direct sales/network marketing/MLM industry within the past week (${dateRange}). Identify trending topics, emerging narratives, and content gaps that would make excellent blog topics for Team Build Pro.
 
 RESEARCH SOURCES TO ANALYZE:
