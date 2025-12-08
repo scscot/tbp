@@ -18,11 +18,11 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // A/B Test (Dec 7, 2025): Testing click_driver vs initial
   // - initial: Current template (47.6% open, 0% click)
   // - click_driver: Problem-focused opening, bullet points, prominent CTA
-  // 50/50 split based on index position
-  const templateVersion = (index % 2 === 0) ? 'initial' : 'click_driver';
+  // 75/25 split: click_driver (indices 1,2,3) vs initial (index 0)
+  const templateVersion = (index % 4 === 0) ? 'initial' : 'click_driver';
 
-  // Personalized subject line - proven to increase open rates (47.6%)
-  const selectedSubject = `${contact.firstName}, AI recruiting tool you might find useful`;
+  // Non-personalized subject line - proven 47.6% open rate
+  const selectedSubject = `The Recruiting App Built for Direct Sales`;
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
