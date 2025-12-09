@@ -2327,7 +2327,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String shareProspectNotSalespersonMessage(Object business, Object link) {
-    return '¿No es un \"vendedor natural\"? Está bien. Tiene un Coach de IA.\n\nTeam Build Pro le ayuda a pre-construir su equipo de $business con IA que redacta sus mensajes, programa sus seguimientos y rastrea el interés de todos.\n\nEs como tener un asistente de reclutamiento que nunca duerme. Usted se enfoca en las relaciones. La IA maneja el resto.\n\nComience a construir antes de unirse: $link\n\nNo necesita una \"personalidad de ventas\". Necesita herramientas inteligentes. Ahora las tiene.';
+    return '¿No es un \"vendedor natural\"? Está bien. Tiene un Coach de IA.\n\nTeam Build Pro le ayuda a pre-construir su equipo de $business con IA que le apoya en cada paso:\n\n- 16 mensajes de reclutamiento pre-escritos listos para personalizar\n- Asesoría de IA 24/7 para cualquier pregunta de reclutamiento\n- Rastree sus prospectos y su nivel de interés\n- Construya confianza con mensajes comprobados\n\nUsted se enfoca en las relaciones. La IA maneja el resto.\n\nComience a construir antes de unirse: $link\n\nNo necesita una \"personalidad de ventas\". Necesita herramientas inteligentes. Ahora las tiene.';
   }
 
   @override
@@ -2361,7 +2361,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String shareProspectGeneralInvitationMessage(Object business, Object link) {
-    return '¿Pensando en $business? Aquí hay una forma más inteligente de empezar.\n\nTeam Build Pro le permite construir su equipo ANTES de unirse oficialmente. Un Coach de IA le ayuda a:\n\n- Redactar mensajes de reclutamiento personalizados\n- Programar seguimientos automáticamente\n- Rastrear quién está interesado y listo\n- Construir impulso real sin riesgo\n\nAsí que cuando se una a $business, no estará empezando desde cero. Lanzará con personas que ya le esperan.\n\nVea cómo funciona: $link\n\nEl Día 1 no es un comienzo en frío. Es un comienzo en marcha.';
+    return '¿Pensando en $business? Aquí hay una forma más inteligente de empezar.\n\nTeam Build Pro le permite construir su equipo ANTES de unirse oficialmente. Un Coach de IA le ayuda a:\n\n- 16 mensajes de reclutamiento pre-escritos listos para compartir\n- Rastrear quién está interesado y listo\n- Obtener asesoría de IA 24/7 para preguntas de reclutamiento\n- Construir impulso real sin riesgo\n\nAsí que cuando se una a $business, no estará empezando desde cero. Lanzará con personas que ya le esperan.\n\nVea cómo funciona: $link\n\nEl Día 1 no es un comienzo en frío. Es un comienzo en marcha.';
   }
 
   @override
@@ -2378,7 +2378,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String shareProspectSocialAnxietyMessage(Object business, Object link) {
-    return '¿Considerando $business pero incómodo con conversaciones difíciles? No está solo.\n\nTeam Build Pro le permite construir su equipo de $business ANTES de unirse oficialmente - en línea, a su propio ritmo, donde se siente cómodo.\n\nEl Coach de IA:\n- Redacta mensajes de reclutamiento para usted\n- Sugiere a quién contactar después\n- Rastrea respuestas y participación\n- Guía cada conversación paso a paso\n\nSin llamadas en frío. Sin presentaciones incómodas cara a cara. Solo conexiones genuinas en línea guiadas por IA.\n\nUsted construye impulso real sin riesgo. Así que cuando se una a $business, estará lanzando con personas que ya le esperan.\n\nComience a construir en sus términos: $link';
+    return '¿Considerando $business pero incómodo con conversaciones difíciles? No está solo.\n\nTeam Build Pro le permite construir su equipo de $business ANTES de unirse oficialmente - en línea, a su propio ritmo, donde se siente cómodo.\n\nEl Coach de IA:\n- 16 mensajes pre-escritos - sin más \"¿qué digo?\"\n- Rastree prospectos a su propio ritmo\n- Obtenga asesoría de IA 24/7 cuando la necesite\n- Construya su red en línea, cómodamente\n\nSin llamadas en frío. Sin presentaciones incómodas cara a cara. Solo conexiones genuinas en línea guiadas por IA.\n\nUsted construye impulso real sin riesgo. Así que cuando se una a $business, estará lanzando con personas que ya le esperan.\n\nComience a construir en sus términos: $link';
   }
 
   @override
@@ -2394,7 +2394,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String shareProspectTimeConstrainedMessage(Object business, Object link) {
-    return '¿Interesado en $business pero no puede dedicar horas de tiempo completo? No las necesita.\n\nTeam Build Pro le permite construir su equipo de $business ANTES de unirse oficialmente - en los huecos de su vida ocupada.\n\n¿Café de la mañana? ¿Descanso para almorzar? ¿Tiempo libre nocturno? El Coach de IA se adapta a su horario:\n- Redacta mensajes de reclutamiento para usted\n- Programa seguimientos automáticamente\n- Le recuerda cuándo es momento de comunicarse\n- Rastrea todo para que el impulso nunca se detenga\n\nTrabaje 15 minutos aquí, 20 minutos allá. La IA hace que cada minuto cuente.\n\nAsí que cuando se una a $business, estará lanzando con personas que ya esperan - no empezando desde cero.\n\nVea cómo encaja en su vida: $link';
+    return '¿Interesado en $business pero no puede dedicar horas de tiempo completo? No las necesita.\n\nTeam Build Pro le permite construir su equipo de $business ANTES de unirse oficialmente - en los huecos de su vida ocupada.\n\n¿Café de la mañana? ¿Descanso para almorzar? ¿Tiempo libre nocturno? El Coach de IA se adapta a su horario:\n- 16 mensajes pre-escritos listos para enviar en cualquier momento\n- Rastree todos sus prospectos en un solo lugar\n- Obtenga asesoría de IA cuando tenga unos minutos\n- Vea su progreso e impulso crecer\n\nTrabaje 15 minutos aquí, 20 minutos allá. La IA hace que cada minuto cuente.\n\nAsí que cuando se una a $business, estará lanzando con personas que ya esperan - no empezando desde cero.\n\nVea cómo encaja en su vida: $link';
   }
 
   @override
@@ -2442,7 +2442,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerWarmMarketExhaustedMessage(Object business, Object link) {
-    return '¿Su equipo de $business agotó su mercado cálido? ¿Cansado de verlos perseguir leads que los ignoran?\n\nDé a toda su organización de $business un compañero de reclutamiento de IA.\n\nTeam Build Pro funciona para cada persona en su equipo:\n- Redacta sus mensajes de reclutamiento\n- Programa sus seguimientos perfectamente\n- Rastrea el interés de prospectos automáticamente\n- Asesora cada conversación\n\nSus prospectos pre-construyen equipos ANTES de unirse - lanzando con impulso, no desde cero.\n\nTodo su equipo de $business obtiene la misma ventaja de IA. Verdadera duplicación a escala.\n\nEmpodere a su equipo: $link\n\nDeje de verlos perseguir. Comience a verlos tener éxito.';
+    return '¿Su equipo de $business agotó su mercado cálido? ¿Cansado de verlos perseguir leads que los ignoran?\n\nDé a toda su organización de $business un compañero de reclutamiento de IA.\n\nTeam Build Pro funciona para cada persona en su equipo:\n- 16 mensajes pre-escritos eliminan el \"¿qué digo?\"\n- Rastrean el interés y participación de prospectos\n- Coach de IA 24/7 responde sus preguntas\n- Todos duplican el mismo sistema probado\n\nSus prospectos pre-construyen equipos ANTES de unirse - lanzando con impulso, no desde cero.\n\nTodo su equipo de $business obtiene la misma ventaja de IA. Verdadera duplicación a escala.\n\nEmpodere a su equipo: $link\n\nDeje de verlos perseguir. Comience a verlos tener éxito.';
   }
 
   @override
@@ -2460,7 +2460,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String sharePartnerExpensiveSystemFatigueMessage(
       Object business, Object link) {
-    return '¿Su equipo de $business quemando dinero en leads, embudos y sistemas que no se duplican?\n\nTeam Build Pro da a toda su organización de $business herramientas de reclutamiento de IA - integradas. Sin costos extras. Sin configuración compleja.\n\nCada persona en su equipo obtiene:\n- Mensajes de reclutamiento redactados por IA\n- Programación automática de seguimientos\n- Rastreo de participación en tiempo real\n- Asesoría de conversación paso a paso\n\nSus prospectos pre-construyen equipos ANTES de unirse. Su equipo de $business duplica las mismas herramientas de IA exactas. Todos ganan.\n\nUn sistema simple. Resultados reales.\n\nEmpodere a su equipo: $link\n\nDeje de pagar de más. Comience a escalar inteligentemente.';
+    return '¿Su equipo de $business quemando dinero en leads, embudos y sistemas que no se duplican?\n\nTeam Build Pro da a toda su organización de $business herramientas de reclutamiento de IA - integradas. Sin costos extras. Sin configuración compleja.\n\nCada persona en su equipo obtiene:\n- 16 mensajes de reclutamiento pre-escritos\n- Rastreo de participación en tiempo real\n- Coach de IA 24/7 para asesoría\n- Un sistema simple que se duplica\n\nSus prospectos pre-construyen equipos ANTES de unirse. Su equipo de $business duplica las mismas herramientas de IA exactas. Todos ganan.\n\nUn sistema simple. Resultados reales.\n\nEmpodere a su equipo: $link\n\nDeje de pagar de más. Comience a escalar inteligentemente.';
   }
 
   @override
@@ -2492,7 +2492,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerGeneralTeamToolMessage(Object business, Object link) {
-    return 'Su equipo de $business merece una verdadera ventaja competitiva.\n\nTeam Build Pro da a toda su organización de $business herramientas de reclutamiento de IA que realmente se duplican:\n\n- Redactar mensajes de reclutamiento personalizados\n- Programar seguimientos automáticamente\n- Rastrear participación de prospectos en tiempo real\n- Asesorar cada conversación paso a paso\n\nLos prospectos de su equipo pre-construyen sus equipos ANTES de unirse. Sus socios duplican las mismas herramientas de IA exactas. Todos en su organización de $business crecen más rápido.\n\nDé a su equipo la ventaja de IA: $link\n\nAsí es como los líderes modernos escalan sus equipos.';
+    return 'Su equipo de $business merece una verdadera ventaja competitiva.\n\nTeam Build Pro da a toda su organización de $business herramientas de reclutamiento de IA que realmente se duplican:\n\n- 16 mensajes de reclutamiento pre-escritos para cualquier situación\n- Rastrear participación de prospectos en tiempo real\n- Coach de IA 24/7 para asesoría de reclutamiento\n- Verdadera duplicación - todos obtienen las mismas herramientas\n\nLos prospectos de su equipo pre-construyen sus equipos ANTES de unirse. Sus socios duplican las mismas herramientas de IA exactas. Todos en su organización de $business crecen más rápido.\n\nDé a su equipo la ventaja de IA: $link\n\nAsí es como los líderes modernos escalan sus equipos.';
   }
 
   @override
@@ -2509,7 +2509,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerRetentionCrisisMessage(Object business, Object link) {
-    return '¿Viendo a su equipo de $business renunciar antes de tener éxito?\n\nEl 75% abandona en su primer año - usualmente porque se sienten perdidos, sin apoyo o abrumados.\n\nTeam Build Pro cambia eso para toda su organización de $business. Cada persona en su equipo obtiene un Coach de IA que:\n- Los guía a través de cada conversación de reclutamiento\n- Rastrea su progreso y celebra victorias\n- Les recuerda qué hacer a continuación\n- Mantiene el impulso cuando la motivación baja\n\nNunca están solos. Siempre saben su próximo paso. Se mantienen comprometidos por más tiempo.\n\nSu equipo de $business finalmente tiene el apoyo que necesita para tener éxito.\n\nEmpodere a su equipo: $link\n\nDeje de verlos renunciar. Comience a verlos ganar.';
+    return '¿Viendo a su equipo de $business renunciar antes de tener éxito?\n\nEl 75% abandona en su primer año - usualmente porque se sienten perdidos, sin apoyo o abrumados.\n\nTeam Build Pro cambia eso para toda su organización de $business. Cada persona en su equipo obtiene un Coach de IA que:\n- Responde sus preguntas de reclutamiento 24/7\n- Rastrea su progreso y celebra victorias\n- Proporciona 16 mensajes pre-escritos para confianza\n- Mantiene el impulso cuando la motivación baja\n\nNunca están solos. Siempre saben su próximo paso. Se mantienen comprometidos por más tiempo.\n\nSu equipo de $business finalmente tiene el apoyo que necesita para tener éxito.\n\nEmpodere a su equipo: $link\n\nDeje de verlos renunciar. Comience a verlos ganar.';
   }
 
   @override
@@ -2525,7 +2525,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerSkillGapTeamMessage(Object business, Object link) {
-    return 'La mayoría de su equipo de $business no son vendedores naturales. Eso los ha estado frenando.\n\nTeam Build Pro convierte a sus socios de $business sin ventas en reclutadores seguros:\n- Redacta sus mensajes de reclutamiento por ellos\n- Sugiere exactamente a quién contactar después\n- Los asesora a través de cada conversación\n- Rastrea el progreso para que vean impulso real\n\nSus introvertidos, sus trabajadores a tiempo parcial, sus personas de \"no soy bueno en ventas\" - todos en su organización de $business obtienen la misma ventaja de IA.\n\nFinalmente, todo su equipo puede duplicar su éxito.\n\nEmpodere a todos: $link\n\nNo necesita un equipo de vendedores. Necesita un equipo con IA.';
+    return 'La mayoría de su equipo de $business no son vendedores naturales. Eso los ha estado frenando.\n\nTeam Build Pro convierte a sus socios de $business sin ventas en reclutadores seguros:\n- 16 mensajes de reclutamiento pre-escritos listos para enviar\n- Rastrean prospectos y ven impulso real\n- Coach de IA 24/7 para asesoría y apoyo\n- Todos usan el mismo sistema probado\n\nSus introvertidos, sus trabajadores a tiempo parcial, sus personas de \"no soy bueno en ventas\" - todos en su organización de $business obtienen la misma ventaja de IA.\n\nFinalmente, todo su equipo puede duplicar su éxito.\n\nEmpodere a todos: $link\n\nNo necesita un equipo de vendedores. Necesita un equipo con IA.';
   }
 
   @override
@@ -2542,7 +2542,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerRecruitmentFatigueMessage(Object business, Object link) {
-    return '¿Su equipo de $business agotado del reclutamiento constante? ¿Los seguimientos interminables? ¿El rastreo manual?\n\nLa IA de Team Build Pro maneja el trabajo para toda su organización de $business.\n\nPara cada persona en su equipo, la IA:\n- Programa seguimientos automáticamente\n- Rastrea cada prospecto y su estado\n- Les recuerda cuándo comunicarse\n- Los asesora sobre qué decir después\n\nUsted se mantiene enfocado en el liderazgo. Su equipo de $business se mantiene productivo sin agotarse.\n\nLa IA nunca se cansa. El impulso de su equipo nunca se detiene.\n\nEmpodere el crecimiento sostenible: $link\n\nCrecimiento sin el agotamiento. Finalmente.';
+    return '¿Su equipo de $business agotado del reclutamiento constante? ¿Los seguimientos interminables? ¿El rastreo manual?\n\nLa IA de Team Build Pro maneja el trabajo para toda su organización de $business.\n\nPara cada persona en su equipo, la IA:\n- Proporciona 16 mensajes de reclutamiento pre-escritos\n- Rastrea cada prospecto y su estado\n- Responde preguntas de reclutamiento 24/7\n- Mantiene a todos enfocados en lo que funciona\n\nUsted se mantiene enfocado en el liderazgo. Su equipo de $business se mantiene productivo sin agotarse.\n\nLa IA nunca se cansa. El impulso de su equipo nunca se detiene.\n\nEmpodere el crecimiento sostenible: $link\n\nCrecimiento sin el agotamiento. Finalmente.';
   }
 
   @override
@@ -2558,7 +2558,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String sharePartnerAvailabilityGapMessage(Object business, Object link) {
-    return 'Su equipo de $business le necesita. Pero usted no puede estar disponible 24/7.\n\nTeam Build Pro da a toda su organización de $business un Coach de IA que siempre está activo.\n\nMientras duerme, trabaja en su trabajo diurno o pasa tiempo con la familia, la IA:\n- Guía a su equipo a través de conversaciones de reclutamiento\n- Responde sus preguntas de \"¿qué hago ahora?\"\n- Rastrea su progreso y los mantiene motivados\n- Asegura que nada se pierda\n\nSu equipo de $business obtiene apoyo exactamente cuando lo necesita - no solo cuando usted está disponible.\n\nUsted se mantiene enfocado en el liderazgo. La IA maneja la asesoría diaria.\n\nEmpodere a su equipo: $link\n\nFinalmente, su equipo crece sin necesitarle cada minuto.';
+    return 'Su equipo de $business le necesita. Pero usted no puede estar disponible 24/7.\n\nTeam Build Pro da a toda su organización de $business un Coach de IA que siempre está activo.\n\nMientras duerme, trabaja en su trabajo diurno o pasa tiempo con la familia, la IA:\n- Responde sus preguntas de reclutamiento en cualquier momento\n- Proporciona 16 mensajes pre-escritos listos para usar\n- Rastrea su progreso y los mantiene motivados\n- Asegura que nada se pierda\n\nSu equipo de $business obtiene apoyo exactamente cuando lo necesita - no solo cuando usted está disponible.\n\nUsted se mantiene enfocado en el liderazgo. La IA maneja la asesoría diaria.\n\nEmpodere a su equipo: $link\n\nFinalmente, su equipo crece sin necesitarle cada minuto.';
   }
 
   @override

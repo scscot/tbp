@@ -2344,7 +2344,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String shareProspectNotSalespersonMessage(Object business, Object link) {
-    return 'Kein \"natürlicher Verkäufer\"? Das ist okay. Sie haben einen KI-Coach.\n\nTeam Build Pro hilft Ihnen, Ihr $business-Team mit KI vorzubauen, die Ihre Nachrichten entwirft, Ihre Follow-ups plant und das Interesse aller verfolgt.\n\nEs ist wie ein Rekrutierungs-Assistent, der nie schläft. Sie konzentrieren sich auf Beziehungen. Die KI übernimmt den Rest.\n\nBeginnen Sie mit dem Aufbau, bevor Sie überhaupt beitreten: $link\n\nSie brauchen keine \"Verkaufspersönlichkeit\". Sie brauchen smarte Tools. Jetzt haben Sie sie.';
+    return 'Kein \"natürlicher Verkäufer\"? Das ist okay. Sie haben einen KI-Coach.\n\nTeam Build Pro hilft Ihnen, Ihr $business-Team vorzubauen mit:\n- 16 vorgefertigten Recruiting-Nachrichten zum Anpassen\n- 24/7 KI-Beratung für alle Recruiting-Fragen\n- Kandidaten und deren Interessengrad verfolgen\n- Selbstvertrauen durch bewährte Botschaften aufbauen\n\nEs ist wie ein Recruiting-Assistent, der nie schläft. Sie konzentrieren sich auf Beziehungen. Die KI übernimmt den Rest.\n\nBeginnen Sie mit dem Aufbau, bevor Sie überhaupt beitreten: $link\n\nSie brauchen keine \"Verkaufspersönlichkeit\". Sie brauchen smarte Tools. Jetzt haben Sie sie.';
   }
 
   @override
@@ -2378,7 +2378,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String shareProspectGeneralInvitationMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach? Hier ist ein intelligenterer Start.\n\nTeam Build Pro lässt Sie Ihr Team aufbauen, BEVOR Sie offiziell beitreten. Ein KI-Coach hilft Ihnen:\n\n- Personalisierte Recruiting-Nachrichten entwerfen\n- Follow-ups automatisch planen\n- Verfolgen, wer interessiert und bereit ist\n- Echte Dynamik risikofrei aufbauen\n\nWenn Sie dann $business beitreten, starten Sie nicht bei Null. Sie starten mit Menschen, die bereits auf Sie warten.\n\nSehen Sie, wie es funktioniert: $link\n\nTag 1 ist kein Kaltstart. Es ist ein fliegender Start.';
+    return 'Denken Sie über $business nach? Hier ist ein intelligenterer Start.\n\nTeam Build Pro lässt Sie Ihr Team aufbauen, BEVOR Sie offiziell beitreten. Ein KI-Coach hilft Ihnen:\n\n- 16 vorgefertigte Recruiting-Nachrichten zum Teilen\n- Verfolgen, wer interessiert und bereit ist\n- 24/7 KI-Coaching für Recruiting-Fragen\n- Echte Dynamik risikofrei aufbauen\n\nWenn Sie dann $business beitreten, starten Sie nicht bei Null. Sie starten mit Menschen, die bereits auf Sie warten.\n\nSehen Sie, wie es funktioniert: $link\n\nTag 1 ist kein Kaltstart. Es ist ein fliegender Start.';
   }
 
   @override
@@ -2395,7 +2395,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String shareProspectSocialAnxietyMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach, aber fühlen sich bei schwierigen Gesprächen unwohl? Sie sind nicht allein.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - online, in Ihrem eigenen Tempo, wo es sich angenehm anfühlt.\n\nDer KI-Coach:\n- Entwirft Recruiting-Nachrichten für Sie\n- Schlägt vor, wen Sie als Nächstes kontaktieren\n- Verfolgt Antworten und Engagement\n- Führt Sie Schritt für Schritt durch jedes Gespräch\n\nKeine Kaltakquise. Keine peinlichen persönlichen Pitches. Nur echte Online-Verbindungen, geführt von KI.\n\nSie bauen risikofrei echte Dynamik auf. Wenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits auf Sie warten.\n\nBeginnen Sie nach Ihren Bedingungen: $link';
+    return 'Denken Sie über $business nach, aber fühlen sich bei schwierigen Gesprächen unwohl? Sie sind nicht allein.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - online, in Ihrem eigenen Tempo, wo es sich angenehm anfühlt.\n\nDer KI-Coach:\n- 16 vorgefertigte Nachrichten - kein peinliches \"Was sage ich?\"\n- Kandidaten in Ihrem eigenen Tempo verfolgen\n- 24/7 KI-Beratung, wenn Sie sie brauchen\n- Ihr Netzwerk online aufbauen, bequem\n\nKeine Kaltakquise. Keine peinlichen persönlichen Pitches. Nur echte Online-Verbindungen, geführt von KI.\n\nSie bauen risikofrei echte Dynamik auf. Wenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits auf Sie warten.\n\nBeginnen Sie nach Ihren Bedingungen: $link';
   }
 
   @override
@@ -2411,7 +2411,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String shareProspectTimeConstrainedMessage(Object business, Object link) {
-    return 'Interessiert an $business, aber können keine Vollzeitstunden aufbringen? Das müssen Sie nicht.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - in den Lücken Ihres geschäftigen Lebens.\n\nMorgenkaffee? Mittagspause? Abendzeit? Der KI-Coach arbeitet um Ihren Zeitplan herum:\n- Entwirft Recruiting-Nachrichten für Sie\n- Plant Follow-ups automatisch\n- Erinnert Sie, wenn es Zeit ist, sich zu melden\n- Verfolgt alles, damit die Dynamik nie stoppt\n\nArbeiten Sie 15 Minuten hier, 20 Minuten dort. Die KI lässt jede Minute zählen.\n\nWenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits warten - nicht bei Null.\n\nSehen Sie, wie es in Ihr Leben passt: $link';
+    return 'Interessiert an $business, aber können keine Vollzeitstunden aufbringen? Das müssen Sie nicht.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - in den Lücken Ihres geschäftigen Lebens.\n\nMorgenkaffee? Mittagspause? Abendzeit? Der KI-Coach arbeitet um Ihren Zeitplan herum:\n- 16 vorgefertigte Nachrichten, jederzeit versandbereit\n- Alle Kandidaten an einem Ort verfolgen\n- KI-Beratung, wenn Sie ein paar Minuten haben\n- Ihren Fortschritt und wachsende Dynamik sehen\n\nArbeiten Sie 15 Minuten hier, 20 Minuten dort. Die KI lässt jede Minute zählen.\n\nWenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits warten - nicht bei Null.\n\nSehen Sie, wie es in Ihr Leben passt: $link';
   }
 
   @override
@@ -2460,7 +2460,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerWarmMarketExhaustedMessage(Object business, Object link) {
-    return 'Ihr $business-Team hat den warmen Markt ausgeschöpft? Müde, sie Leads nachjagen zu sehen, die sie ghosten?\n\nGeben Sie Ihrer gesamten $business-Organisation einen KI-Recruiting-Begleiter.\n\nTeam Build Pro funktioniert für jede Person in Ihrem Team:\n- Entwirft ihre Recruiting-Nachrichten\n- Plant ihre Follow-ups perfekt\n- Verfolgt Kandidateninteresse automatisch\n- Coacht jedes Gespräch\n\nIhre Kandidaten bauen Teams vor, BEVOR sie beitreten - starten mit Dynamik, nicht von Null.\n\nIhr gesamtes $business-Team erhält denselben KI-Vorteil. Echte Duplikation im großen Maßstab.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf, ihnen beim Jagen zuzusehen. Fangen Sie an, ihnen beim Gewinnen zuzusehen.';
+    return 'Ihr $business-Team hat den warmen Markt ausgeschöpft? Müde, sie Leads nachjagen zu sehen, die sie ghosten?\n\nGeben Sie Ihrer gesamten $business-Organisation einen KI-Recruiting-Begleiter.\n\nTeam Build Pro funktioniert für jede Person in Ihrem Team:\n- 16 vorgefertigte Nachrichten - kein \"Was sage ich?\"\n- Kandidateninteresse und Engagement verfolgen\n- 24/7 KI-Coach beantwortet ihre Fragen\n- Alle duplizieren dasselbe bewährte System\n\nIhre Kandidaten bauen Teams vor, BEVOR sie beitreten - starten mit Dynamik, nicht von Null.\n\nIhr gesamtes $business-Team erhält denselben KI-Vorteil. Echte Duplikation im großen Maßstab.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf, ihnen beim Jagen zuzusehen. Fangen Sie an, ihnen beim Gewinnen zuzusehen.';
   }
 
   @override
@@ -2478,7 +2478,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String sharePartnerExpensiveSystemFatigueMessage(
       Object business, Object link) {
-    return 'Ihr $business-Team verbrennt Geld für Leads, Funnels und Systeme, die sich nicht duplizieren?\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation KI-Recruiting-Tools - direkt integriert. Keine Extrakosten. Kein komplexes Setup.\n\nJede Person in Ihrem Team erhält:\n- KI-entworfene Recruiting-Nachrichten\n- Automatisierte Follow-up-Planung\n- Echtzeit-Engagement-Tracking\n- Schritt-für-Schritt-Gesprächscoaching\n\nIhre Kandidaten bauen Teams vor, BEVOR sie beitreten. Ihr $business-Team dupliziert exakt dieselben KI-Tools. Alle gewinnen.\n\nEin einfaches System. Echte Ergebnisse.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf zu viel zu zahlen. Fangen Sie an, smart zu skalieren.';
+    return 'Ihr $business-Team verbrennt Geld für Leads, Funnels und Systeme, die sich nicht duplizieren?\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation KI-Recruiting-Tools - direkt integriert. Keine Extrakosten. Kein komplexes Setup.\n\nJede Person in Ihrem Team erhält:\n- 16 vorgefertigte Recruiting-Nachrichten\n- Echtzeit-Engagement-Tracking\n- 24/7 KI-Coach für Beratung\n- Ein einfaches System, das dupliziert\n\nIhre Kandidaten bauen Teams vor, BEVOR sie beitreten. Ihr $business-Team dupliziert exakt dieselben KI-Tools. Alle gewinnen.\n\nEin einfaches System. Echte Ergebnisse.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf zu viel zu zahlen. Fangen Sie an, smart zu skalieren.';
   }
 
   @override
@@ -2511,7 +2511,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerGeneralTeamToolMessage(Object business, Object link) {
-    return 'Ihr $business-Team verdient einen echten Wettbewerbsvorteil.\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation KI-Recruiting-Tools, die sich tatsächlich duplizieren:\n\n- Personalisierte Recruiting-Nachrichten entwerfen\n- Follow-ups automatisch planen\n- Kandidaten-Engagement in Echtzeit verfolgen\n- Jedes Gespräch Schritt für Schritt coachen\n\nDie Kandidaten Ihres Teams bauen ihre Teams vor, BEVOR sie beitreten. Ihre Partner duplizieren exakt dieselben KI-Tools. Alle in Ihrer $business-Organisation wachsen schneller.\n\nGeben Sie Ihrem Team den KI-Vorteil: $link\n\nSo skalieren moderne Führungskräfte ihre Teams.';
+    return 'Ihr $business-Team verdient einen echten Wettbewerbsvorteil.\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation KI-Recruiting-Tools, die sich tatsächlich duplizieren:\n\n- 16 vorgefertigte Recruiting-Nachrichten für jede Situation\n- Kandidaten-Engagement in Echtzeit verfolgen\n- 24/7 KI-Coach für Recruiting-Beratung\n- Echte Duplikation - alle erhalten dieselben Tools\n\nDie Kandidaten Ihres Teams bauen ihre Teams vor, BEVOR sie beitreten. Ihre Partner duplizieren exakt dieselben KI-Tools. Alle in Ihrer $business-Organisation wachsen schneller.\n\nGeben Sie Ihrem Team den KI-Vorteil: $link\n\nSo skalieren moderne Führungskräfte ihre Teams.';
   }
 
   @override
@@ -2527,7 +2527,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerRetentionCrisisMessage(Object business, Object link) {
-    return 'Sehen Sie zu, wie Ihr $business-Team aufgibt, bevor es Erfolg hat?\n\n75% steigen im ersten Jahr aus - normalerweise, weil sie sich verloren, nicht unterstützt oder überfordert fühlen.\n\nTeam Build Pro ändert das für Ihre gesamte $business-Organisation. Jede Person in Ihrem Team erhält einen KI-Coach, der:\n- Sie durch jedes Recruiting-Gespräch führt\n- Ihren Fortschritt verfolgt und Erfolge feiert\n- Sie daran erinnert, was als Nächstes zu tun ist\n- Die Dynamik aufrechterhält, wenn die Motivation sinkt\n\nSie sind nie allein. Sie wissen immer ihren nächsten Schritt. Sie bleiben länger engagiert.\n\nIhr $business-Team hat endlich die Unterstützung, die es zum Erfolg braucht.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf zuzusehen, wie sie aufgeben. Fangen Sie an zuzusehen, wie sie gewinnen.';
+    return 'Sehen Sie zu, wie Ihr $business-Team aufgibt, bevor es Erfolg hat?\n\n75% steigen im ersten Jahr aus - normalerweise, weil sie sich verloren, nicht unterstützt oder überfordert fühlen.\n\nTeam Build Pro ändert das für Ihre gesamte $business-Organisation. Jede Person in Ihrem Team erhält einen KI-Coach, der:\n- Recruiting-Fragen jederzeit beantwortet\n- 16 vorgefertigte Nachrichten zum Teilen bereitstellt\n- Ihren Fortschritt verfolgt und Erfolge feiert\n- Die Dynamik mit konsistentem Unterstützung aufrechterhält\n\nSie sind nie allein. Sie wissen immer ihren nächsten Schritt. Sie bleiben länger engagiert.\n\nIhr $business-Team hat endlich die Unterstützung, die es zum Erfolg braucht.\n\nStärken Sie Ihr Team: $link\n\nHören Sie auf zuzusehen, wie sie aufgeben. Fangen Sie an zuzusehen, wie sie gewinnen.';
   }
 
   @override
@@ -2543,7 +2543,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerSkillGapTeamMessage(Object business, Object link) {
-    return 'Die meisten in Ihrem $business-Team sind keine geborenen Verkäufer. Das hat sie zurückgehalten.\n\nTeam Build Pro verwandelt Ihre $business-Partner ohne Verkaufserfahrung in selbstbewusste Recruiter:\n- Entwirft ihre Recruiting-Nachrichten für sie\n- Schlägt genau vor, wen sie als Nächstes kontaktieren\n- Coacht sie durch jedes Gespräch\n- Verfolgt den Fortschritt, damit sie echte Dynamik sehen\n\nIhre Introvertierten, Ihre Teilzeitkräfte, Ihre \"Ich bin nicht gut im Verkauf\"-Leute - alle in Ihrer $business-Organisation erhalten denselben KI-Vorteil.\n\nEndlich kann Ihr gesamtes Team Ihren Erfolg duplizieren.\n\nStärken Sie alle: $link\n\nSie brauchen kein Team von Verkäufern. Sie brauchen ein Team mit KI.';
+    return 'Die meisten in Ihrem $business-Team sind keine geborenen Verkäufer. Das hat sie zurückgehalten.\n\nTeam Build Pro verwandelt Ihre $business-Partner ohne Verkaufserfahrung in selbstbewusste Recruiter:\n- 16 vorgefertigte Recruiting-Nachrichten zum Senden\n- Kandidaten verfolgen und echte Dynamik sehen\n- 24/7 KI-Coach für Beratung und Unterstützung\n- Alle nutzen dasselbe bewährte System\n\nIhre Introvertierten, Ihre Teilzeitkräfte, Ihre \"Ich bin nicht gut im Verkauf\"-Leute - alle in Ihrer $business-Organisation erhalten denselben KI-Vorteil.\n\nEndlich kann Ihr gesamtes Team Ihren Erfolg duplizieren.\n\nStärken Sie alle: $link\n\nSie brauchen kein Team von Verkäufern. Sie brauchen ein Team mit KI.';
   }
 
   @override
@@ -2560,7 +2560,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerRecruitmentFatigueMessage(Object business, Object link) {
-    return 'Ihr $business-Team ausgebrannt vom ständigen Recruiting? Die endlosen Follow-ups? Das manuelle Tracking?\n\nDie KI von Team Build Pro übernimmt die Arbeit für Ihre gesamte $business-Organisation.\n\nFür jede Person in Ihrem Team plant die KI:\n- Follow-ups automatisch\n- Verfolgt jeden Kandidaten und seinen Status\n- Erinnert sie, wann sie sich melden sollen\n- Coacht sie, was sie als Nächstes sagen\n\nSie bleiben auf Führung fokussiert. Ihr $business-Team bleibt produktiv, ohne auszubrennen.\n\nDie KI wird nie müde. Die Dynamik Ihres Teams stoppt nie.\n\nStärken Sie nachhaltiges Wachstum: $link\n\nWachstum ohne Burnout. Endlich.';
+    return 'Ihr $business-Team ausgebrannt vom ständigen Recruiting? Die endlosen Follow-ups? Das manuelle Tracking?\n\nDie KI von Team Build Pro übernimmt die Arbeit für Ihre gesamte $business-Organisation.\n\nFür jede Person in Ihrem Team bietet die KI:\n- 16 vorgefertigte Recruiting-Nachrichten\n- Jeden Kandidaten und seinen Status verfolgen\n- Recruiting-Fragen 24/7 beantworten\n- Alle auf das fokussieren, was funktioniert\n\nSie bleiben auf Führung fokussiert. Ihr $business-Team bleibt produktiv, ohne auszubrennen.\n\nDie KI wird nie müde. Die Dynamik Ihres Teams stoppt nie.\n\nStärken Sie nachhaltiges Wachstum: $link\n\nWachstum ohne Burnout. Endlich.';
   }
 
   @override
@@ -2576,7 +2576,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sharePartnerAvailabilityGapMessage(Object business, Object link) {
-    return 'Ihr $business-Team braucht Sie. Aber Sie können nicht 24/7 verfügbar sein.\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation einen KI-Coach, der immer aktiv ist.\n\nWährend Sie schlafen, Ihrem Tagesjob nachgehen oder Zeit mit der Familie verbringen, macht die KI:\n- Führt Ihr Team durch Recruiting-Gespräche\n- Beantwortet ihre \"Was mache ich als Nächstes?\"-Fragen\n- Verfolgt ihren Fortschritt und hält sie motiviert\n- Stellt sicher, dass nichts durchs Raster fällt\n\nIhr $business-Team erhält Unterstützung genau dann, wenn es sie braucht - nicht nur, wenn Sie verfügbar sind.\n\nSie bleiben auf Führung fokussiert. Die KI übernimmt das tägliche Coaching.\n\nStärken Sie Ihr Team: $link\n\nEndlich wächst Ihr Team, ohne Sie jede Minute zu brauchen.';
+    return 'Ihr $business-Team braucht Sie. Aber Sie können nicht 24/7 verfügbar sein.\n\nTeam Build Pro gibt Ihrer gesamten $business-Organisation einen KI-Coach, der immer aktiv ist.\n\nWährend Sie schlafen, Ihrem Tagesjob nachgehen oder Zeit mit der Familie verbringen, bietet die KI:\n- Recruiting-Fragen jederzeit beantworten\n- 16 vorgefertigte Nachrichten, sofort einsatzbereit\n- Ihren Fortschritt verfolgen und sie motiviert halten\n- Sicherstellen, dass nichts durchs Raster fällt\n\nIhr $business-Team erhält Unterstützung genau dann, wenn es sie braucht - nicht nur, wenn Sie verfügbar sind.\n\nSie bleiben auf Führung fokussiert. Die KI übernimmt das tägliche Coaching.\n\nStärken Sie Ihr Team: $link\n\nEndlich wächst Ihr Team, ohne Sie jede Minute zu brauchen.';
   }
 
   @override

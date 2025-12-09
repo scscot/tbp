@@ -4003,7 +4003,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectNotSalespersonMessage.
   ///
   /// In en, this message translates to:
-  /// **'Not a \"natural salesperson\"? Considering {business} but worried about the recruiting part?\n\nYou don\'t need a sales personality. You just need smart AI tools.\n\nTeam Build Pro lets you build your {business} team BEFORE you join - with an AI Coach that:\n\n- Drafts your recruiting messages for you\n- Schedules follow-ups automatically\n- Tracks who\'s interested\n- Coaches every conversation\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on genuine relationships. The AI handles the awkward sales stuff.\n\nStart building before you even join: {link}'**
+  /// **'Not a \"natural salesperson\"? Considering {business} but worried about the recruiting part?\n\nYou don\'t need a sales personality. You just need smart AI tools.\n\nTeam Build Pro lets you build your {business} team BEFORE you join - with an AI Coach that:\n\n- 16 pre-written recruiting messages ready to customize\n- 24/7 AI guidance for any recruiting question\n- Track your prospects and their interest level\n- Build confidence with proven messaging\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on genuine relationships. The AI handles the awkward sales stuff.\n\nStart building before you even join: {link}'**
   String shareProspectNotSalespersonMessage(Object business, Object link);
 
   /// No description provided for @shareProspectHopeAfterDisappointmentTitle.
@@ -4052,7 +4052,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectGeneralInvitationMessage.
   ///
   /// In en, this message translates to:
-  /// **'Thinking about {business}? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track who\'s interested and ready\n- Build real momentum risk-free\n\nSo when you do join {business}, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: {link}\n\nDay 1 isn\'t a cold start. It\'s a running start.'**
+  /// **'Thinking about {business}? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- 16 pre-written recruiting messages ready to share\n- Track who\'s interested and ready\n- Get 24/7 AI coaching for recruiting questions\n- Build real momentum risk-free\n\nSo when you do join {business}, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: {link}\n\nDay 1 isn\'t a cold start. It\'s a running start.'**
   String shareProspectGeneralInvitationMessage(Object business, Object link);
 
   /// No description provided for @shareProspectSocialAnxietyTitle.
@@ -4076,7 +4076,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectSocialAnxietyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Considering {business} but uncomfortable with awkward conversations? You\'re not alone.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - online, at your own pace, where it feels comfortable.\n\nThe AI Coach:\n- Drafts recruiting messages for you\n- Suggests who to contact next\n- Tracks responses and engagement\n- Guides every conversation step-by-step\n\nNo cold calls. No awkward face-to-face pitches. Just genuine online connections guided by AI.\n\nYou build real momentum risk-free. So when you do join {business}, you\'re launching with people already waiting for you.\n\nStart building on your terms: {link}'**
+  /// **'Considering {business} but uncomfortable with awkward conversations? You\'re not alone.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - online, at your own pace, where it feels comfortable.\n\nThe AI Coach:\n- 16 pre-written messages - no awkward \"what do I say?\"\n- Track prospects at your own pace\n- Get 24/7 AI guidance when you need it\n- Build your network online, comfortably\n\nNo cold calls. No awkward face-to-face pitches. Just genuine online connections guided by AI.\n\nYou build real momentum risk-free. So when you do join {business}, you\'re launching with people already waiting for you.\n\nStart building on your terms: {link}'**
   String shareProspectSocialAnxietyMessage(Object business, Object link);
 
   /// No description provided for @shareProspectTimeConstrainedTitle.
@@ -4100,7 +4100,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectTimeConstrainedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Interested in {business} but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- Drafts recruiting messages for you\n- Schedules follow-ups automatically\n- Reminds you when it\'s time to reach out\n- Tracks everything so momentum never stops\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join {business}, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: {link}'**
+  /// **'Interested in {business} but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- 16 pre-written messages ready to send anytime\n- Track all your prospects in one place\n- Get AI guidance whenever you have a few minutes\n- See your progress and momentum grow\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join {business}, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: {link}'**
   String shareProspectTimeConstrainedMessage(Object business, Object link);
 
   /// No description provided for @shareProspectFinancialRiskAverseTitle.
@@ -4172,7 +4172,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerWarmMarketExhaustedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your {business} team tapped out their warm market? Tired of watching them chase leads that ghost them?\n\nGive your entire {business} organization an AI recruiting companion.\n\nTeam Build Pro works for every person on your team:\n- Drafts their recruiting messages\n- Times their follow-ups perfectly\n- Tracks prospect interest automatically\n- Coaches every conversation\n\nTheir prospects pre-build teams BEFORE joining - launching with momentum, not from zero.\n\nYour entire {business} team gets the same AI advantage. True duplication at scale.\n\nEmpower your team: {link}\n\nStop watching them chase. Start watching them succeed.'**
+  /// **'Your {business} team tapped out their warm market? Tired of watching them chase leads that ghost them?\n\nGive your entire {business} organization an AI recruiting companion.\n\nTeam Build Pro works for every person on your team:\n- 16 pre-written messages eliminate \"what do I say?\"\n- Track prospect interest and engagement\n- 24/7 AI Coach answers their questions\n- Everyone duplicates the same proven system\n\nTheir prospects pre-build teams BEFORE joining - launching with momentum, not from zero.\n\nYour entire {business} team gets the same AI advantage. True duplication at scale.\n\nEmpower your team: {link}\n\nStop watching them chase. Start watching them succeed.'**
   String sharePartnerWarmMarketExhaustedMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerExpensiveSystemFatigueTitle.
@@ -4196,7 +4196,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerExpensiveSystemFatigueMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your {business} team burning money on leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro gives your entire {business} organization AI recruiting tools - built right in. No extra costs. No complex setup.\n\nEvery person on your team gets:\n- AI-drafted recruiting messages\n- Automated follow-up scheduling\n- Real-time engagement tracking\n- Step-by-step conversation coaching\n\nTheir prospects pre-build teams BEFORE joining. Your {business} team duplicates the exact same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nEmpower your team: {link}\n\nStop overpaying. Start scaling smart.'**
+  /// **'Your {business} team burning money on leads, funnels, and systems that don\'t duplicate?\n\nTeam Build Pro gives your entire {business} organization AI recruiting tools - built right in. No extra costs. No complex setup.\n\nEvery person on your team gets:\n- 16 pre-written recruiting messages\n- Real-time engagement tracking\n- 24/7 AI Coach for guidance\n- One simple system that duplicates\n\nTheir prospects pre-build teams BEFORE joining. Your {business} team duplicates the exact same AI tools. Everyone wins.\n\nOne simple system. Real results.\n\nEmpower your team: {link}\n\nStop overpaying. Start scaling smart.'**
   String sharePartnerExpensiveSystemFatigueMessage(
       Object business, Object link);
 
@@ -4245,7 +4245,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerGeneralTeamToolMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your {business} team deserves a real competitive edge.\n\nTeam Build Pro gives your entire {business} organization AI recruiting tools that actually duplicate:\n\n- Draft personalized recruiting messages\n- Schedule follow-ups automatically\n- Track prospect engagement in real-time\n- Coach every conversation step-by-step\n\nYour team\'s prospects pre-build their teams BEFORE joining. Your partners duplicate the exact same AI tools. Everyone in your {business} organization grows faster.\n\nGive your team the AI advantage: {link}\n\nThis is how modern leaders scale their teams.'**
+  /// **'Your {business} team deserves a real competitive edge.\n\nTeam Build Pro gives your entire {business} organization AI recruiting tools that actually duplicate:\n\n- 16 pre-written recruiting messages for any situation\n- Track prospect engagement in real-time\n- 24/7 AI Coach for recruiting guidance\n- True duplication - everyone gets the same tools\n\nYour team\'s prospects pre-build their teams BEFORE joining. Your partners duplicate the exact same AI tools. Everyone in your {business} organization grows faster.\n\nGive your team the AI advantage: {link}\n\nThis is how modern leaders scale their teams.'**
   String sharePartnerGeneralTeamToolMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerRetentionCrisisTitle.
@@ -4269,7 +4269,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerRetentionCrisisMessage.
   ///
   /// In en, this message translates to:
-  /// **'Watching your {business} team quit before they succeed?\n\n75% drop out in their first year - usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that for your entire {business} organization. Every person on your team gets an AI Coach that:\n- Guides them through every recruiting conversation\n- Tracks their progress and celebrates wins\n- Reminds them what to do next\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nYour {business} team finally has the support they need to succeed.\n\nEmpower your team: {link}\n\nStop watching them quit. Start watching them win.'**
+  /// **'Watching your {business} team quit before they succeed?\n\n75% drop out in their first year - usually because they feel lost, unsupported, or overwhelmed.\n\nTeam Build Pro changes that for your entire {business} organization. Every person on your team gets an AI Coach that:\n- Answers their recruiting questions 24/7\n- Tracks their progress and celebrates wins\n- Provides 16 pre-written messages for confidence\n- Keeps momentum going when motivation dips\n\nThey\'re never alone. They always know their next step. They stay engaged longer.\n\nYour {business} team finally has the support they need to succeed.\n\nEmpower your team: {link}\n\nStop watching them quit. Start watching them win.'**
   String sharePartnerRetentionCrisisMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerSkillGapTeamTitle.
@@ -4293,7 +4293,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerSkillGapTeamMessage.
   ///
   /// In en, this message translates to:
-  /// **'Most of your {business} team aren\'t natural salespeople. That\'s been holding them back.\n\nTeam Build Pro turns your non-sales {business} partners into confident recruiters:\n- Drafts their recruiting messages for them\n- Suggests exactly who to contact next\n- Coaches them through every conversation\n- Tracks progress so they see real momentum\n\nYour introverts, your part-timers, your \"I\'m not good at sales\" people - everyone in your {business} organization gets the same AI advantage.\n\nFinally, your entire team can duplicate your success.\n\nEmpower everyone: {link}\n\nYou don\'t need a team of salespeople. You need a team with AI.'**
+  /// **'Most of your {business} team aren\'t natural salespeople. That\'s been holding them back.\n\nTeam Build Pro turns your non-sales {business} partners into confident recruiters:\n- 16 pre-written recruiting messages ready to send\n- Track prospects and see real momentum\n- 24/7 AI Coach for guidance and support\n- Everyone uses the same proven system\n\nYour introverts, your part-timers, your \"I\'m not good at sales\" people - everyone in your {business} organization gets the same AI advantage.\n\nFinally, your entire team can duplicate your success.\n\nEmpower everyone: {link}\n\nYou don\'t need a team of salespeople. You need a team with AI.'**
   String sharePartnerSkillGapTeamMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerRecruitmentFatigueTitle.
@@ -4317,7 +4317,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerRecruitmentFatigueMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your {business} team burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind for your entire {business} organization.\n\nFor every person on your team, the AI:\n- Schedules follow-ups automatically\n- Tracks every prospect and their status\n- Reminds them when to reach out\n- Coaches them on what to say next\n\nYou stay focused on leadership. Your {business} team stays productive without burning out.\n\nThe AI never gets tired. Your team\'s momentum never stops.\n\nEmpower sustainable growth: {link}\n\nGrowth without the burnout. Finally.'**
+  /// **'Your {business} team burned out from constant recruiting? The endless follow-ups? The manual tracking?\n\nTeam Build Pro\'s AI handles the grind for your entire {business} organization.\n\nFor every person on your team, the AI:\n- Provides 16 pre-written recruiting messages\n- Tracks every prospect and their status\n- Answers recruiting questions 24/7\n- Keeps everyone focused on what works\n\nYou stay focused on leadership. Your {business} team stays productive without burning out.\n\nThe AI never gets tired. Your team\'s momentum never stops.\n\nEmpower sustainable growth: {link}\n\nGrowth without the burnout. Finally.'**
   String sharePartnerRecruitmentFatigueMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerAvailabilityGapTitle.
@@ -4341,7 +4341,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePartnerAvailabilityGapMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your {business} team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your entire {business} organization an AI Coach that\'s always on.\n\nWhile you sleep, work your day job, or spend time with family, the AI:\n- Guides your team through recruiting conversations\n- Answers their \"what do I do next?\" questions\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\nYour {business} team gets support exactly when they need it - not just when you\'re available.\n\nYou stay focused on leadership. The AI handles daily coaching.\n\nEmpower your team: {link}\n\nFinally, your team grows without needing you every minute.'**
+  /// **'Your {business} team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your entire {business} organization an AI Coach that\'s always on.\n\nWhile you sleep, work your day job, or spend time with family, the AI:\n- Answers their recruiting questions anytime\n- Provides 16 pre-written messages ready to use\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\nYour {business} team gets support exactly when they need it - not just when you\'re available.\n\nYou stay focused on leadership. The AI handles daily coaching.\n\nEmpower your team: {link}\n\nFinally, your team grows without needing you every minute.'**
   String sharePartnerAvailabilityGapMessage(Object business, Object link);
 
   /// No description provided for @homepageDemoCredentialsNotAvailable.
