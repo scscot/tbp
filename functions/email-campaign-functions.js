@@ -15,10 +15,11 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 8, 2025: Using 100% curiosity_gap to gather initial data
-  // Previous A/B test (Dec 7): click_driver 51.2% open, initial 47.4% open, both 0% click
-  // New approach: Curiosity-driven copy with corporate branded header, prominent CTA button
-  const templateVersion = 'curiosity_gap';
+  // Dec 9, 2025: 50/50 A/B test between curiosity_gap and click_driver
+  // Now that click tracking is enabled, we can properly measure CTR
+  // - curiosity_gap: Short, mysterious, video CTA, branded header
+  // - click_driver: Longer, explanatory, text link CTA, plain format
+  const templateVersion = (index % 2 === 0) ? 'curiosity_gap' : 'click_driver';
 
   // Non-personalized subject line - proven 47.6% open rate
   const selectedSubject = `The Recruiting App Built for Direct Sales`;
@@ -119,7 +120,7 @@ const sendHourlyEmailCampaign = onSchedule({
           mailgunId: result.id || ''
         });
 
-        console.log(`✅ Sent to ${contact.email} [${(i % 2 === 0) ? 'initial' : 'click_driver'}]: ${result.id}`);
+        console.log(`✅ Sent to ${contact.email} [${(i % 2 === 0) ? 'curiosity_gap' : 'click_driver'}]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {
