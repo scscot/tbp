@@ -22,8 +22,8 @@ async function sendTestEmail() {
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   form.append('subject', selectedSubject);
 
-  form.append('template', 'campaign');
-  form.append('t:version', selectedVersion);
+  form.append('template', 'mailer');
+  form.append('t:version', 'curiosity_gap');
   form.append('o:tag', 'test_email');
   form.append('o:tag', selectedVersion);
   form.append('o:tracking', 'yes');
