@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-06
+**Last Updated**: 2025-12-08
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -347,6 +347,16 @@ git add . && git commit -m "message" && git push
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 8
+- **HeyGen Video Scripts**: Created localized video scripts for Professionals and Prospects landing pages in ES, PT, DE
+- **Video Embedding (All Sites)**: Embedded TBP_Professionals.mp4 and TBP_Prospects.mp4 videos on all 4 locale sites
+  - Files: index.html, professionals.html, prospects.html (EN, ES, PT, DE = 12 pages)
+  - Video paths: `/assets/videos/TBP_Professionals.mp4` and `/assets/videos/TBP_Prospects.mp4`
+  - CSS: `.section-video`, `.video-headline`, `.video-container`, `.video-subtext`
+- **Video Thumbnails**: Added `poster="/assets/videos/Thumbnail.png"` attribute to all 12 video elements
+  - Custom thumbnail image displays before video plays
+  - Thumbnail.png copied to all 4 locale assets/videos/ folders
 
 ### Week of Dec 6
 - **Email A/B Testing**: Added click_driver.html template with prominent CTAs; 50/50 distribution between 'initial' and 'click_driver'

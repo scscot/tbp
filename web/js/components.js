@@ -192,9 +192,9 @@
         <nav class="nav container">
             <a href="${logoLink}" class="logo" id="tbp-logo-link">
                 <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
-                <span style="display: flex; flex-direction: column; line-height: 1.2;">
-                    <span>Team Build Pro</span>
-                    <span style="font-size: 0.80rem; color: #ffffff;">${t.subtitle}</span>
+                <span class="logo-text-group">
+                    <span class="logo-title">Team Build Pro</span>
+                    <span class="logo-subtitle">${t.subtitle}</span>
                 </span>
             </a>
             <!-- Sandwich Menu Button -->

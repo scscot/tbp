@@ -15,11 +15,10 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // A/B Test (Dec 7, 2025): Testing click_driver vs initial
-  // - initial: Current template (47.6% open, 0% click)
-  // - click_driver: Problem-focused opening, bullet points, prominent CTA
-  // 75/25 split: click_driver (indices 1,2,3) vs initial (index 0)
-  const templateVersion = (index % 4 === 0) ? 'initial' : 'click_driver';
+  // Dec 8, 2025: Using 100% curiosity_gap to gather initial data
+  // Previous A/B test (Dec 7): click_driver 51.2% open, initial 47.4% open, both 0% click
+  // New approach: Curiosity-driven copy with corporate branded header, prominent CTA button
+  const templateVersion = 'curiosity_gap';
 
   // Non-personalized subject line - proven 47.6% open rate
   const selectedSubject = `The Recruiting App Built for Direct Sales`;

@@ -1281,7 +1281,7 @@ div.section .section-header {
         display: flex;
         justify-content: center;
         width: 100%;
-        margin: 8px 0;
+        margin: 2px 0 4px 0;
         gap: 0.4rem;
     }
 
@@ -1297,8 +1297,8 @@ div.section .section-header {
 @media (max-width: 480px) {
     .header-language-switcher {
         gap: 0.3rem;
-        margin-top: 6px;
-        margin-bottom: 6px;
+        margin-top: 0;
+        margin-bottom: 4px;
     }
 
     .lang-link {
@@ -1307,5 +1307,53 @@ div.section .section-header {
 
     .lang-separator {
         font-size: 0.85rem;
+    }
+}
+
+/* ===== LOGO TEXT STYLES ===== */
+/* Override minified .logo span styles with more specific selectors */
+.logo .logo-text-group {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.logo span.logo-title {
+    font-weight: 700;
+    font-size: 1.1rem !important;
+    color: #ffffff;
+}
+
+.logo span.logo-subtitle {
+    font-size: 0.75rem !important;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .logo .logo-text-group {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .logo span.logo-title {
+        font-size: 1.25rem !important;
+    }
+
+    .logo span.logo-subtitle {
+        display: block !important;
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .logo span.logo-title {
+        font-size: 1.2rem !important;
+    }
+
+    .logo span.logo-subtitle {
+        font-size: 0.8rem !important;
     }
 }
