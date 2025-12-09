@@ -17,6 +17,7 @@ import '../screens/member_detail_screen.dart';
 import '../widgets/header_widgets.dart';
 import '../widgets/localized_text.dart';
 import '../config/app_colors.dart';
+import '../services/admin_settings_service.dart';
 
 enum ViewMode { grid, list, analytics }
 
@@ -70,6 +71,7 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   // Business opportunity name
   String _bizOppName = 'biz_opp';
+  final AdminSettingsService _adminSettingsService = AdminSettingsService();
 
   // Pagination state
   bool _hasMoreData = false;
@@ -189,12 +191,13 @@ class _NetworkScreenState extends State<NetworkScreen>
       _levelOffset = userModel.level;
     }
 
-    _fetchBizOppName();
+    await _fetchBizOppName();
 
     await _fetchData();
   }
 
-  void _fetchBizOppName() {
+  Future<void> _fetchBizOppName() async {
+    // First try the Provider (works for admin users)
     final adminSettings = Provider.of<AdminSettingsModel?>(context, listen: false);
 
     if (adminSettings?.bizOpp != null && adminSettings!.bizOpp!.isNotEmpty) {
@@ -206,9 +209,51 @@ class _NetworkScreenState extends State<NetworkScreen>
           debugPrint('🔍 BIZ_OPP: Set from AdminSettings Provider: $_bizOppName');
         }
       }
-    } else {
+      return;
+    }
+
+    // For non-admin users, fetch from their upline_admin's settings
+    try {
+      final authUser = FirebaseAuth.instance.currentUser;
+      if (authUser == null) return;
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(authUser.uid)
+          .get();
+
+      if (!userDoc.exists || !mounted) return;
+
+      final userData = userDoc.data();
+      final userRole = userData?['role'] as String?;
+
+      // Determine admin UID based on user role
+      final adminUid = userRole == 'admin'
+          ? authUser.uid
+          : userData?['upline_admin'] as String?;
+
+      if (adminUid != null && adminUid.isNotEmpty) {
+        final bizOpp = await _adminSettingsService.getBizOppName(
+          adminUid,
+          fallback: 'your opportunity'
+        );
+
+        if (mounted && _bizOppName != bizOpp) {
+          setState(() {
+            _bizOppName = bizOpp;
+          });
+          if (kDebugMode) {
+            debugPrint('🔍 BIZ_OPP: Set from AdminSettingsService: $_bizOppName');
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          debugPrint('🔍 BIZ_OPP: No upline_admin found, using default: $_bizOppName');
+        }
+      }
+    } catch (e) {
       if (kDebugMode) {
-        debugPrint('🔍 BIZ_OPP: AdminSettings Provider has no bizOpp, using default: $_bizOppName');
+        debugPrint('❌ BIZ_OPP: Error fetching biz_opp name: $e');
       }
     }
   }
@@ -569,8 +614,6 @@ class _NetworkScreenState extends State<NetworkScreen>
 
   @override
   Widget build(BuildContext context) {
-    _fetchBizOppName();
-
     return Scaffold(
       appBar: AppScreenBar(title: context.l10n?.networkTitle ?? 'Your Global Team', appId: widget.appId),
       body: Column(
