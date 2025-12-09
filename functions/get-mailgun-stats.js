@@ -9,6 +9,48 @@ const mailgunConfig = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
 const MAILGUN_API_KEY = mailgunConfig.api_key;
 const MAILGUN_DOMAIN = mailgunConfig.domain;
 
+/**
+ * Extract campaign tags dynamically from email-campaign-functions.js and email-campaign-functions-yahoo.js
+ * This ensures stats always reflect the current A/B test configuration
+ */
+function extractCampaignTags() {
+  const tags = new Set();
+
+  const campaignFiles = [
+    path.join(__dirname, 'email-campaign-functions.js'),
+    path.join(__dirname, 'email-campaign-functions-yahoo.js')
+  ];
+
+  for (const filePath of campaignFiles) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+
+      // Extract tags from form.append('o:tag', 'tagname') patterns
+      const tagMatches = content.matchAll(/form\.append\s*\(\s*['"]o:tag['"]\s*,\s*['"]([^'"]+)['"]\s*\)/g);
+      for (const match of tagMatches) {
+        tags.add(match[1]);
+      }
+
+      // Extract template versions from templateVersion ternary patterns
+      // e.g., const templateVersion = (index % 2 === 0) ? 'curiosity_gap' : 'click_driver';
+      const versionMatches = content.matchAll(/templateVersion\s*=\s*[^?]+\?\s*['"]([^'"]+)['"]\s*:\s*['"]([^'"]+)['"]/g);
+      for (const match of versionMatches) {
+        tags.add(match[1]); // First option (e.g., curiosity_gap)
+        tags.add(match[2]); // Second option (e.g., click_driver)
+      }
+    } catch (err) {
+      console.warn(`⚠️  Could not read ${path.basename(filePath)}: ${err.message}`);
+    }
+  }
+
+  // Convert to array and sort for consistent ordering
+  // Put campaign tags first (ab_test_*, yahoo_*), then version tags
+  const campaignTags = [...tags].filter(t => t.includes('_test_') || t.includes('_launch'));
+  const versionTags = [...tags].filter(t => !t.includes('_test_') && !t.includes('_launch'));
+
+  return [...campaignTags.sort(), ...versionTags.sort()];
+}
+
 async function getMailgunStats() {
   try {
     const mailgunBaseUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
@@ -80,8 +122,10 @@ async function getMailgunStats() {
     console.log('📋 Campaign Tag Statistics:');
     console.log('-'.repeat(60));
 
-    // Get stats by tag - A/B Test (Dec 2025)
-    const tags = ['initial', 'click_driver', 'ab_test_dec2025', 'yahoo_ab_test_dec2025'];
+    // Dynamically extract tags from email campaign function files
+    const tags = extractCampaignTags();
+    console.log(`   (Tags extracted from campaign files: ${tags.join(', ')})`);
+    console.log('');
 
     for (const tag of tags) {
       try {
