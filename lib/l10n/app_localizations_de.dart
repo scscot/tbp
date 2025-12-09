@@ -1776,7 +1776,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get eligibilityLabelDirectSponsors => 'Direkte Sponsoren';
 
   @override
-  String get eligibilityLabelTotalTeam => 'Gesamte Teammitglieder';
+  String get eligibilityLabelTotalTeam => 'Gesamtes Team';
 
   @override
   String get eligibilityCurrentCountsTitle => 'IHRE AKTUELLEN TEAMZAHLEN';
@@ -1785,7 +1785,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get eligibilityCurrentDirectSponsors => 'Direkte Sponsoren';
 
   @override
-  String get eligibilityCurrentTotalTeam => 'Gesamte Teammitglieder';
+  String get eligibilityCurrentTotalTeam => 'Gesamtes Team';
 
   @override
   String get eligibilityProcessTitle => 'DER PROZESS';

@@ -306,7 +306,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                           icon: Icons.hub,
                           value:
                               AppConstants.projectWideTotalTeamMin.toString(),
-                          label: context.l10n?.eligibilityLabelTotalTeam ?? 'Total Team Members',
+                          label: context.l10n?.eligibilityLabelTotalTeam ?? 'Total Team',
                         ),
                       ],
                     ),
@@ -344,7 +344,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                         _buildMetricCard(
                           icon: Icons.hub,
                           value: _currentTotalCount.toString(),
-                          label: context.l10n?.eligibilityCurrentTotalTeam ?? 'Total Team Members',
+                          label: context.l10n?.eligibilityCurrentTotalTeam ?? 'Total Team',
                         ),
                       ],
                     ),

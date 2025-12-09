@@ -3043,7 +3043,7 @@ abstract class AppLocalizations {
   /// Label for total team metric
   ///
   /// In en, this message translates to:
-  /// **'Total Team Members'**
+  /// **'Total Team'**
   String get eligibilityLabelTotalTeam;
 
   /// Title for current counts section
@@ -3061,7 +3061,7 @@ abstract class AppLocalizations {
   /// Current total team label
   ///
   /// In en, this message translates to:
-  /// **'Total Team Members'**
+  /// **'Total Team'**
   String get eligibilityCurrentTotalTeam;
 
   /// Title for process section

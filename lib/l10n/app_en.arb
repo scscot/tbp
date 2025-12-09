@@ -2934,7 +2934,7 @@
     "description": "Label for direct sponsors metric",
     "maxLength": 22
   },
-  "eligibilityLabelTotalTeam": "Total Team Members",
+  "eligibilityLabelTotalTeam": "Total Team",
   "@eligibilityLabelTotalTeam": {
     "description": "Label for total team metric",
     "maxLength": 28
@@ -2949,7 +2949,7 @@
     "description": "Current direct sponsors label",
     "maxLength": 22
   },
-  "eligibilityCurrentTotalTeam": "Total Team Members",
+  "eligibilityCurrentTotalTeam": "Total Team",
   "@eligibilityCurrentTotalTeam": {
     "description": "Current total team label",
     "maxLength": 28
