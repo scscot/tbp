@@ -1009,9 +1009,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       controller: _bizOppRefUrlController,
                       decoration: InputDecoration(
                         labelText: context.l10n?.editProfileReferralLinkField ?? 'Enter Your Referral Link',
-                        helperText: _baseUrl != null
-                            ? '${(context.l10n?.editProfileReferralLinkHelper ?? 'Must start with').toString()} $_baseUrl\n${(context.l10n?.editProfileReferralLinkHelper ?? 'This cannot be changed once set').toString()}'
-                            : (context.l10n?.editProfileReferralLinkHelper ?? 'This cannot be changed once set').toString(),
+                        helperText: context.l10n?.editProfileReferralLinkHelper(_bizOppName) ?? 'Enter the referral link from your $_bizOppName sponsor',
                         hintText: _baseUrl != null
                             ? 'e.g., ${_baseUrl}your_username_here'
                             : null,
@@ -1078,7 +1076,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                     fontWeight: FontWeight.bold),
                               ),
                               content: Text(
-                                (context.l10n?.editProfileDialogImportantMessage ?? 'You must enter the exact referral link you received from $_bizOppName. This will ensure your team members that join $_bizOppName are automatically placed in your $_bizOppName team.').toString(),
+                                context.l10n?.editProfileDialogImportantMessage(_bizOppName) ?? 'You must enter the exact referral link you received from your $_bizOppName sponsor.',
                                 style: const TextStyle(
                                     fontSize: 16, color: Colors.black),
                               ),

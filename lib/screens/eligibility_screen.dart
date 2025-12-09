@@ -116,8 +116,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           const SizedBox(height: 12),
           Text(
             _isQualified
-                ? (context.l10n?.eligibilityHeroMessageQualified ?? 'Incredible work! You\'ve built your foundational team and unlocked the $_bizOpp opportunity. Continue growing your network to help others achieve the same success.').toString()
-                : (context.l10n?.eligibilityHeroMessageNotQualified ?? 'You\'re on your way! Every professional you connect with builds momentum for your future launch in the $_bizOpp opportunity. Keep sharing to reach your goals!').toString(),
+                ? (context.l10n?.eligibilityHeroMessageQualified(_bizOpp) ?? 'Incredible work! You\'ve built your foundational team and unlocked the $_bizOpp opportunity. Continue growing your network to help others achieve the same success.')
+                : (context.l10n?.eligibilityHeroMessageNotQualified(_bizOpp) ?? 'You\'re on your way! Every professional you connect with builds momentum for your future launch in the $_bizOpp opportunity. Keep sharing to reach your goals!'),
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textInverse.withValues(alpha: 0.9),
@@ -392,7 +392,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                       step: 1,
                       title: context.l10n?.eligibilityProcessStep1Title ?? 'INVITE - Build Your Foundation',
                       description:
-                          (context.l10n?.eligibilityProcessStep1Description ?? 'Connect with like-minded professionals open to exploring $_bizOpp .').toString(),
+                          context.l10n?.eligibilityProcessStep1Description(_bizOpp) ?? 'Connect with like-minded professionals open to exploring $_bizOpp.',
                       icon: Icons.connect_without_contact,
                     ),
                     _buildProcessStep(
@@ -406,7 +406,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
                       step: 3,
                       title: context.l10n?.eligibilityProcessStep3Title ?? 'PARTNER - Launch with Success',
                       description:
-                          (context.l10n?.eligibilityProcessStep3Description ?? 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.').toString(),
+                          context.l10n?.eligibilityProcessStep3Description(_bizOpp) ?? 'Team members receive an invitation to join $_bizOpp upon achieving key growth targets.',
                       icon: Icons.handshake,
                     ),
                   ],
