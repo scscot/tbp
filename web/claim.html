@@ -166,7 +166,24 @@
           await navigator.clipboard.writeText(payload);
           copied = true;
           console.log('[claim] clipboard.writeText() succeeded');
-          tbpLog('web_claim_autocopy');
+
+          // CRITICAL: Verify clipboard was actually written before redirecting
+          // iOS UIPasteboard is asynchronous - we need to confirm the write flushed
+          await new Promise(resolve => setTimeout(resolve, 100)); // Small delay for flush
+          try {
+            const verification = await navigator.clipboard.readText();
+            if (verification !== payload) {
+              console.log('[claim] clipboard verification failed - mismatch');
+              copied = false;
+            } else {
+              console.log('[claim] clipboard verification succeeded');
+            }
+          } catch (verifyErr) {
+            // Read might fail due to permissions, but write may still have worked
+            console.log('[claim] clipboard verification read failed (may be OK):', verifyErr.message);
+          }
+
+          if (copied) tbpLog('web_claim_autocopy');
         } catch (err) {
           console.log('[claim] clipboard.writeText() failed:', err);
           // Try legacy fallback
@@ -219,33 +236,21 @@
             location.replace(APP_STORE_URL);
           };
 
-          // Delayed retry: some iOS versions allow clipboard writes after page settles
-          setTimeout(async () => {
-            if (!copied) {
-              try {
-                await navigator.clipboard.writeText(payload);
-                copied = true;
-                console.log('[claim] delayed retry succeeded - auto-proceeding');
-                location.replace(APP_STORE_URL);
-              } catch (_) {
-                console.log('[claim] delayed retry also failed');
-              }
-            }
-          }, 1500);
-
-          return; // Wait for user to tap button (or delayed retry to succeed)
+          return; // Wait for user to tap button
         }
       }
 
       // Successfully copied (or no token) - proceed to the App Store
-      console.log('[claim] success => redirecting to App Store');
+      // CRITICAL: Use 2000ms delay to ensure iOS has time to flush clipboard to disk
+      // iOS UIPasteboard write is asynchronous and can be interrupted by navigation
+      console.log('[claim] success => redirecting to App Store in 2s');
       statusEl.textContent = 'Opening App Store…';
-      setTimeout(()=> location.replace(APP_STORE_URL), 600);
+      setTimeout(()=> location.replace(APP_STORE_URL), 2000);
     } catch (e) {
       console.error('[claim] error:', e);
       // Fail-safe: still send them to the store
       statusEl.textContent = 'Opening App Store…';
-      setTimeout(()=> location.replace(APP_STORE_URL), 600);
+      setTimeout(()=> location.replace(APP_STORE_URL), 2000);
     }
   }
   run();

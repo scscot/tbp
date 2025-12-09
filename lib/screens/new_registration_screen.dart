@@ -492,7 +492,12 @@ class _NewRegistrationScreenState extends State<NewRegistrationScreen> {
                 final data = jsonDecode(response.body);
                 final sponsorName = '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}'.trim();
 
-                _sponsorName = sponsorName;
+                // Update state and trigger UI rebuild for sponsor banner
+                if (mounted) {
+                  setState(() {
+                    _sponsorName = sponsorName;
+                  });
+                }
 
                 // Update SessionManager with sponsor name
                 await SessionManager.instance.setReferralData(

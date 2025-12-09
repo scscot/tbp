@@ -15,6 +15,7 @@ const corsHandler = cors({
     'https://www.teambuildpro.com',
     'https://es.teambuildpro.com',
     'https://pt.teambuildpro.com',
+    'https://de.teambuildpro.com',
     /^http:\/\/localhost(:\d+)?$/,
     /^http:\/\/127\.0\.0\.1(:\d+)?$/
   ],
