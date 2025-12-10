@@ -20,8 +20,12 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Note: 'simple' template had inflated open rates due to Gmail image pre-fetch
   const templateVersion = 'initial';
 
-  // Non-personalized subject line - proven 47.6% open rate
-  const selectedSubject = `The Recruiting App Built for Direct Sales`;
+  // Alternate between two subject lines for A/B testing
+  const subjectLines = [
+    'Building Your Downline With AI',
+    'The Recruiting App Built for Direct Sales'
+  ];
+  const selectedSubject = subjectLines[index % 2];
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
