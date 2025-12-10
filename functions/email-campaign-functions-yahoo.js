@@ -15,9 +15,10 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 9, 2025: Switched to 'simple' version only
-  // Image-based template with app screenshot - tested and delivered to inbox
-  const templateVersion = 'simple';
+  // Dec 9, 2025: Reverted to 'initial' version only
+  // Simple text-based template - best click rate (3.7%) and reliable inbox delivery
+  // Note: 'simple' template had inflated open rates due to Gmail image pre-fetch
+  const templateVersion = 'initial';
 
   // Non-personalized subject line - proven 47.6% open rate
   const selectedSubject = `The Recruiting App Built for Direct Sales`;
@@ -29,7 +30,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
 
   form.append('template', 'mailer');
   form.append('t:version', templateVersion);
-  form.append('o:tag', 'yahoo_simple_campaign');
+  form.append('o:tag', 'yahoo_initial_campaign');
   form.append('o:tag', templateVersion);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
@@ -116,7 +117,7 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
           mailgunId: result.id || ''
         });
 
-        console.log(`✅ Sent to ${contact.email} [simple]: ${result.id}`);
+        console.log(`✅ Sent to ${contact.email} [initial]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {
