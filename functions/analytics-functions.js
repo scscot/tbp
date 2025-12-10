@@ -342,8 +342,22 @@ const getMemberDetails = onCall({ region: "us-central1" }, async (request) => {
 
     const memberData = memberDoc.data();
 
-    // Check if the member is in the user's network
-    if (!memberData.upline_refs || !memberData.upline_refs.includes(userId)) {
+    // Check if the member is in the user's network (either direction)
+    // 1. Downline: member has userId in their upline_refs (you're above them)
+    // 2. Upline: userId has member in their upline_refs (they're above you - sponsor/team leader)
+    const isDownline = memberData.upline_refs && memberData.upline_refs.includes(userId);
+
+    let isUpline = false;
+    if (!isDownline) {
+      // Check if the requested member is in the current user's upline
+      const currentUserDoc = await db.collection("users").doc(userId).get();
+      if (currentUserDoc.exists) {
+        const currentUserData = currentUserDoc.data();
+        isUpline = currentUserData.upline_refs && currentUserData.upline_refs.includes(memberId);
+      }
+    }
+
+    if (!isDownline && !isUpline) {
       throw new HttpsError("permission-denied", "You don't have permission to view this member's details.");
     }
 

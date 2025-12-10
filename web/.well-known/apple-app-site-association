@@ -32,6 +32,12 @@
             }
           },
           {
+            "/": "/claim",
+            "query": {
+              "new": "*"
+            }
+          },
+          {
             "/": "/claim.html",
             "query": {
               "ref": "*"
@@ -41,6 +47,12 @@
             "/": "/claim.html",
             "query": {
               "token": "*"
+            }
+          },
+          {
+            "/": "/claim.html",
+            "query": {
+              "new": "*"
             }
           }
         ]

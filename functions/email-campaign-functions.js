@@ -14,11 +14,10 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
-
-  // Dec 9, 2025: Reverted to 'initial' version only
-  // Simple text-based template - best click rate (3.7%) and reliable inbox delivery
-  // Note: 'simple' template had inflated open rates due to Gmail image pre-fetch
-  const templateVersion = 'initial';
+  // Dec 10, 2025: A/B testing between 'initial' and 'simple' templates
+  // Using GA4 UTM tracking to measure actual click-through (Mailgun stats unreliable due to Gmail pre-fetch)
+  const templateVersions = ['initial', 'simple'];
+  const templateVersion = templateVersions[index % 2];
 
   // Alternate between two subject lines for A/B testing
   const subjectLines = [
@@ -39,10 +38,16 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
+  // Dec 10, 2025: Added UTM parameters for GA4 tracking
+  // Mailgun open/click tracking is unreliable due to Gmail pre-fetching
   form.append('h:X-Mailgun-Variables', JSON.stringify({
     first_name: contact.firstName,
     last_name: contact.lastName,
-    email: contact.email
+    email: contact.email,
+    utm_source: 'mailgun',
+    utm_medium: 'email',
+    utm_campaign: 'initial_campaign',
+    utm_content: templateVersion
   }));
 
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
@@ -123,7 +128,8 @@ const sendHourlyEmailCampaign = onSchedule({
           mailgunId: result.id || ''
         });
 
-        console.log(`✅ Sent to ${contact.email} [initial]: ${result.id}`);
+        const usedTemplate = ['initial', 'simple'][i % 2];
+        console.log(`✅ Sent to ${contact.email} [${usedTemplate}]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {

@@ -6,6 +6,7 @@
   "scripts": {
     "fetch": "node fetch-ga4-data.js",
     "fetch-combined": "node fetch-combined-analytics.js",
+    "fetch-email": "node fetch-email-campaign-analytics.js",
     "setup": "echo 'Run: npm install && follow README.md for authentication setup'"
   },
   "dependencies": {

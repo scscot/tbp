@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-08
+**Last Updated**: 2025-12-10
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -219,20 +219,23 @@ All four main sites have identical structure:
 ### Campaign Architecture Overview
 
 **Mailgun Configuration:**
-- **Template Name**: `campaign`
-- **Template Versions**: `initial` (personal style), `click_driver` (CTA-focused)
-- **Subject Line**: `The Recruiting App Built for Direct Sales`
-- **From**: `Stephen Scott <ss@mailer.teambuildpro.com>`
-- **Domain**: mailer.teambuildpro.com
-- **Tracking**: Opens, clicks, and delivery status enabled
+- **Template Name**: `mailer`
+- **Template Versions**: `initial` (text-based personal style), `simple` (image-based with hero)
+- **Subject Lines (A/B)**: Alternates between two subject lines per batch
+  - "Building Your Downline With AI"
+  - "The Recruiting App Built for Direct Sales"
+- **From**: `Stephen Scott <stephen@mailer.teambuildpro.com>`
+- **Domain**: mailer.teambuildpro.com (warmup started Dec 5, 2025)
+- **Tracking**: UTM parameters for GA4 (Mailgun open tracking unreliable due to Gmail pre-fetch)
 
 ### Main Campaign (Mailgun - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
 - **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (even hours)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
-- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 6)
-- **A/B Testing**: 50/50 alternating between 'initial' and 'click_driver' templates
+- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 12)
+- **A/B Testing**: 50/50 alternating between `initial` and `simple` templates
+- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=initial_campaign`, `utm_content=[template]`
 
 ### Yahoo Campaign (Mailgun - Automated)
 - **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
@@ -240,6 +243,8 @@ All four main sites have identical structure:
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
 - **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (currently 6)
+- **A/B Testing**: Same as main campaign (initial/simple templates)
+- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=yahoo_campaign`, `utm_content=[template]`
 
 ### Mailgun Event Sync (Automated)
 - **Function**: `syncMailgunEvents`
@@ -247,10 +252,18 @@ All four main sites have identical structure:
 - **Schedule**: 10 minutes after each campaign window
 - **Event Types**: delivered, failed, opened, clicked
 
+### Email Analytics (GA4)
+- **Script**: `analytics/fetch-email-campaign-analytics.js`
+- **Purpose**: Track actual email click-through via GA4 (bypasses Gmail pre-fetch inflation)
+- **Run Command**: `GOOGLE_APPLICATION_CREDENTIALS="../secrets/ga4-service-account.json" npm run fetch-email`
+- **Filters**: `utm_source=mailgun` to isolate email traffic
+- **Reports**: Campaign overview, template A/B results, daily trends, landing page performance
+
 ### Email Strategy
 1. **Landing Page CTA** (not direct app store links) - enables analytics/retargeting
 2. **Subtle Text Links** (not buttons) - less "markety" for pitch-fatigued audience
 3. **Personal, Simple Style** - builds trust through restraint
+4. **GA4 for True Metrics** - Mailgun open rates inflated by Gmail security pre-fetch (80-95% fake opens)
 
 ---
 
@@ -341,12 +354,31 @@ git add . && git commit -m "message" && git push
 
 ### Utility Scripts
 - `scripts/generate-ai-blog.js` - AI blog generation (Claude CLI)
-- `functions/get-mailgun-stats.js` - Mailgun statistics
+- `scripts/cleanup_caches.sh` - Comprehensive dev cache cleanup (Xcode, Flutter, CocoaPods, Gradle, simulators)
+- `functions/get-mailgun-stats.js` - Mailgun statistics by tag
 - `functions/count-todays-emails.js` - Daily email counts
+- `analytics/fetch-email-campaign-analytics.js` - GA4 email campaign performance report
 
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 10
+- **Email Campaign UTM Tracking**: Added GA4 UTM parameters to bypass unreliable Mailgun open tracking
+  - Mailgun templates (`initial`, `simple`) updated with dynamic UTM variables
+  - Cloud Functions pass `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` to templates
+  - Gmail pre-fetches tracking pixels causing 80-95% fake open rates - now using GA4 for true metrics
+- **Email A/B Testing Restored**: Switched back to `initial` vs `simple` template testing (was initially/click_driver)
+- **GA4 Email Analytics Script**: Created `analytics/fetch-email-campaign-analytics.js`
+  - Filters by `utm_source=mailgun` to isolate email traffic
+  - Reports template A/B results via `utm_content` dimension
+  - Run: `GOOGLE_APPLICATION_CREDENTIALS="../secrets/ga4-service-account.json" npm run fetch-email`
+- **Batch Size Increase**: Main campaign increased from 10 to 12 per batch (domain warmup progressing)
+- **Disk Cleanup Script Enhanced**: Updated `scripts/cleanup_caches.sh` with additional cleanup routines
+  - Added Xcode DocumentationCache, CoreDeviceService cache, Archives cleanup
+  - Added Homebrew cache cleanup, leftover DMG removal
+  - Added simulator erase to clear MobileAsset (Siri/TTS) data
+  - Added Flutter dependency restoration (flutter clean, pub get, pod install)
 
 ### Week of Dec 8
 - **HeyGen Video Scripts**: Created localized video scripts for Professionals and Prospects landing pages in ES, PT, DE
