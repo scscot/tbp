@@ -285,6 +285,12 @@ All four main sites have identical structure:
 - **Portuguese**: Team Build Pro: IA Equipe
 - **German**: Team Build Pro: KI Team
 
+### App Preview Videos (iOS)
+- **3 preview videos** per localization (EN, ES, PT, DE = 12 total)
+- **Format**: 886x1920 (6.7" iPhone portrait), H.264 baseline, 30fps
+- **Audio**: Silent AAC track (required by App Store)
+- **Source script**: `scripts/export-photos-for-appstore.sh`
+
 ---
 
 ## Development Workflow
@@ -364,6 +370,11 @@ git add . && git commit -m "message" && git push
 ## Recent Updates (December 2025)
 
 ### Week of Dec 10
+- **App Store Preview Videos**: Added 3 preview videos to each iOS localization (EN, ES, PT, DE = 12 total)
+  - Format: 886x1920 (6.7" iPhone), H.264 baseline, 30fps, silent AAC audio track
+  - Created `scripts/export-photos-for-appstore.sh` for video conversion
+  - App Store requires audio track (even silent) or shows "corrupted audio" error
+- **GA4 Internal Traffic Filter**: Updated IPv6 filter from `2603` to `2603:8000:7ff0:4830` (household /64 prefix)
 - **Email Campaign UTM Tracking**: Added GA4 UTM parameters to bypass unreliable Mailgun open tracking
   - Mailgun templates (`initial`, `simple`) updated with dynamic UTM variables
   - Cloud Functions pass `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` to templates
