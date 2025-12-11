@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:ultimatefix/screens/how_it_works_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/message_center_screen.dart';
-import '../screens/share_screen.dart';
+import '../screens/share_new_screen.dart';
+import '../screens/share_prospect_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/platform_management_screen.dart';
 import '../screens/notifications_screen.dart';
@@ -302,6 +303,18 @@ class NavigationShellState extends State<NavigationShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Get current user to determine which share screen to show
+    final user = Provider.of<UserModel?>(context);
+
+    // Determine if user is a prospect (no biz_opp_ref_url and role=user)
+    final bool isProspect = user != null &&
+        (user.bizOppRefUrl == null || user.bizOppRefUrl!.isEmpty) &&
+        user.role == 'user';
+
+    // Select appropriate share screen based on user status
+    final Widget shareScreen = isProspect
+        ? ShareProspectScreen(appId: widget.appId)
+        : ShareNewScreen(appId: widget.appId);
 
     return PopScope(
       canPop: false,
@@ -332,7 +345,7 @@ class NavigationShellState extends State<NavigationShell> {
             ),
             _buildTabNavigator(
               2,
-              ShareScreen(appId: widget.appId),
+              shareScreen,
             ),
             _buildTabNavigator(
               3,

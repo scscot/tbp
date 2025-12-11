@@ -16,7 +16,8 @@ import 'subscription_screen_enhanced.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'faq_screen.dart';
 import 'chatbot_screen.dart';
-import 'share_screen.dart';
+import 'share_new_screen.dart';
+import 'share_prospect_screen.dart';
 import 'network_screen.dart';
 import 'message_center_screen.dart';
 import 'notifications_screen.dart';
@@ -939,9 +940,17 @@ class _DashboardScreenState extends State<DashboardScreen>
               name: DashboardAnalytics.dashCtaTap,
               parameters: {'cta': 'grow_team', 'locale': Localizations.localeOf(context).toLanguageTag()},
             );
+            // Route based on user status:
+            // - Prospect users (no biz_opp_ref_url, role=user) go directly to ShareProspectScreen
+            // - Professional users (has biz_opp_ref_url) or Admins go to ShareNewScreen hub
+            final bool isProspect = (user.bizOppRefUrl == null || user.bizOppRefUrl!.isEmpty) && user.role == 'user';
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ShareScreen(appId: widget.appId)),
+              MaterialPageRoute(
+                builder: (context) => isProspect
+                    ? ShareProspectScreen(appId: widget.appId)
+                    : ShareNewScreen(appId: widget.appId),
+              ),
             );
           },
         ),
