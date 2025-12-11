@@ -33,9 +33,6 @@
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
-    <!-- Shared Header/Footer Components -->
-    <script src="/js/components.js"></script>
-
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
@@ -101,9 +98,36 @@
   </style>
 </head>
 <body>
-    <!-- Header (rendered by components.js) -->
-    <div id="tbp-header"></div>
-
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="/" class="logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
+        <span>Team Build Pro</span>
+      </a>
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+      </button>
+      <div id="mobile-menu" class="mobile-menu" role="menu">
+        <a href="/" role="menuitem">Home</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Pricing</a>
+        <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/books.html" role="menuitem">Books</a>
+        <a href="/contact_us.html" role="menuitem">Contact Us</a>
+      </div>
+    </nav>
+    <div class="language-switcher header-language-switcher">
+      <span class="lang-link active" lang="en">English</span>
+      <span class="lang-separator">|</span>
+      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+      <span class="lang-separator">|</span>
+      <a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+    </div>
+  </header>
 
   <!-- Hero Section -->
   <section class="blog-hero">
@@ -128,13 +152,27 @@
       <!-- Blog Grid -->
       <div class="blog-grid" id="blog-grid">
         
+          <a href="/blog/death-cold-messaging-direct-sales-recruiting-needs.html" class="blog-card" data-category="Recruiting Tips">
+            <div class="card-content">
+              <span class="category-badge ">RECRUITING TIPS</span>
+              <h3>The Death of Cold Messaging: Why Direct Sales Recruiting Needs a 30-Day Warm-Up in 2025</h3>
+              <p>Cold messaging is failing in direct sales. Discover why 30-day warm-up sequences are replacing spam tactics with authentic relationship buil...</p>
+              <div class="meta">
+                <span>December 11, 2025</span>
+                <span>•</span>
+                <span>By Team Build Pro</span>
+              </div>
+              <span class="read-more">Read Article →</span>
+            </div>
+          </a>
+        
           <a href="/blog/ai-revolutionizing-mlm-recruiting-5-tools-network.html" class="blog-card" data-category="Recruiting Tips">
             <div class="card-content">
               <span class="category-badge ">RECRUITING TIPS</span>
               <h3>How AI is Revolutionizing MLM Recruiting: 5 Tools Every Network Marketer Needs in 2025</h3>
               <p>Discover the 5 AI-powered tools transforming MLM recruiting in 2025. From automated pre-qualification to smart follow-up sequences, boost yo...</p>
               <div class="meta">
-                <span>December 3, 2025</span>
+                <span>December 4, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -148,7 +186,7 @@
               <h3>How AI Can 10X Your MLM Recruiting Results in 2025: A Field Guide</h3>
               <p>Discover how AI-powered recruiting tools are revolutionizing MLM success rates. Get actionable strategies to automate follow-ups and boost c...</p>
               <div class="meta">
-                <span>November 30, 2025</span>
+                <span>December 1, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -162,7 +200,7 @@
               <h3>AI in Network Marketing Isn't Just for Corporate: How Field Leaders Can Actually Use It</h3>
               <p>Corporate AI tools grab headlines, but field leaders need practical systems they control. Here's how to leverage AI without waiting for your...</p>
               <div class="meta">
-                <span>November 26, 2025</span>
+                <span>November 27, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -176,7 +214,7 @@
               <h3>How to Use AI for MLM Recruiting Without Losing the Human Touch</h3>
               <p>Discover how to leverage AI recruiting tools while maintaining authentic relationships that drive real MLM success. Get the balance right....</p>
               <div class="meta">
-                <span>November 26, 2025</span>
+                <span>November 27, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -190,7 +228,7 @@
               <h3>The New Tech Divide in Direct Sales: Why AI Platforms Aren't Solving the Recruiting Problem</h3>
               <p>AI recruiting tools promise efficiency but deliver empty pipelines. Discover why speed-focused platforms fail and how pre-qualification beat...</p>
               <div class="meta">
-                <span>November 21, 2025</span>
+                <span>November 22, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -204,7 +242,7 @@
               <h3>Team Build Pro App Update: New Features for November 2025</h3>
               <p>Exciting new updates to Team Build Pro! We've added AI-powered recruiting scripts, enhanced milestone notifications, and 50+ new company-spe...</p>
               <div class="meta">
-                <span>November 1, 2025</span>
+                <span>November 2, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -218,7 +256,7 @@
               <h3>AI Recruiting Best Practices for Direct Sales in 2025</h3>
               <p>Discover how artificial intelligence is revolutionizing recruiting in direct sales. Learn proven strategies to leverage AI tools, automate f...</p>
               <div class="meta">
-                <span>October 31, 2025</span>
+                <span>November 1, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -232,7 +270,7 @@
               <h3>How to Qualify New Recruits in 30 Days with Team Build Pro</h3>
               <p>Stop recruiting people who quit in 90 days. Learn the proven 30-day pre-qualification system that helps prospects build teams before joining...</p>
               <div class="meta">
-                <span>October 27, 2025</span>
+                <span>October 28, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -246,7 +284,7 @@
               <h3>5 Ways AI Automation Transforms Direct Sales Recruiting</h3>
               <p>AI isn't just a buzzword—it's fundamentally changing how top recruiters operate. Discover 5 specific ways AI automation saves time, increase...</p>
               <div class="meta">
-                <span>October 24, 2025</span>
+                <span>October 25, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -260,7 +298,7 @@
               <h3>Company Spotlight: Top AI Recruiting Strategies for Young Living Distributors</h3>
               <p>Young Living essential oils distributors face unique recruiting challenges. Learn specific AI-powered strategies to overcome the 'oils are e...</p>
               <div class="meta">
-                <span>October 21, 2025</span>
+                <span>October 22, 2025</span>
                 <span>•</span>
                 <span>By Team Build Pro</span>
               </div>
@@ -272,9 +310,26 @@
 
     </div>
   </section>
-    <!-- Footer (rendered by components.js) -->
-    <div id="tbp-footer"></div>
 
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
+      </div>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books.html">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
+      <p style="margin-top: 8px; font-size: 0.85rem;"><a href="https://www.stephenscott.us" rel="author" style="color: #888;">Created by Stephen Scott</a></p>
+    </div>
+  </footer>
 
   <!-- Category Filter Script -->
   <script>
@@ -301,6 +356,15 @@
           });
         });
       });
+
+      // Mobile menu
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('active');
+        });
+      }
 
       // Set current year
       const yearSpan = document.getElementById('currentYear');

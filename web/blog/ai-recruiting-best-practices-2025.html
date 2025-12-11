@@ -32,9 +32,6 @@
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
 
-    <!-- Shared Header/Footer Components -->
-    <script src="/js/components.js"></script>
-
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
@@ -141,9 +138,36 @@
   </style>
 </head>
 <body>
-    <!-- Header (rendered by components.js) -->
-    <div id="tbp-header"></div>
-
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="/" class="logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
+        <span>Team Build Pro</span>
+      </a>
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+      </button>
+      <div id="mobile-menu" class="mobile-menu" role="menu">
+        <a href="/" role="menuitem">Home</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Pricing</a>
+        <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/books.html" role="menuitem">Books</a>
+        <a href="/contact_us.html" role="menuitem">Contact Us</a>
+      </div>
+    </nav>
+    <div class="language-switcher header-language-switcher">
+      <span class="lang-link active" lang="en">English</span>
+      <span class="lang-separator">|</span>
+      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+      <span class="lang-separator">|</span>
+      <a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+    </div>
+  </header>
 
   <main class="blog-wrapper">
     <div class="container">
@@ -157,7 +181,7 @@
       <div class="meta">
         <span>By Team Build Pro</span>
         <span>•</span>
-        <span>October 31, 2025</span>
+        <span>November 1, 2025</span>
       </div>
 
       <article>
@@ -292,15 +316,40 @@
   
 
     </div>
-    <!-- Footer (rendered by components.js) -->
-    <div id="tbp-footer"></div>
+  </main>
 
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
+      </div>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books.html">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
+    </div>
+  </footer>
 
   <!-- Mobile Menu Script -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const menuBtn = document.getElementById('menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('active');
+        });
+      }
 
       // Set current year
       const yearSpan = document.getElementById('currentYear');
