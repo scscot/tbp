@@ -6,7 +6,7 @@ import '../widgets/header_widgets.dart';
 import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../widgets/localized_text.dart';
-import 'share_prospect_screen.dart';
+import 'share_prospect_screen1.dart';
 import 'share_partner_screen.dart';
 
 class ShareNewScreen extends StatefulWidget {
@@ -175,10 +175,11 @@ class _ShareNewScreenState extends State<ShareNewScreen>
 
     return GestureDetector(
       onTap: () {
+        // Routes to Persona 2 (Sponsor/Recruiter) messages for users who HAVE joined
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ShareProspectScreen(appId: widget.appId),
+            builder: (context) => ShareProspectScreen1(appId: widget.appId),
           ),
         );
       },

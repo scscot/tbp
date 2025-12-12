@@ -3973,13 +3973,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectPastStrugglesSubject.
   ///
   /// In en, this message translates to:
-  /// **'Try Something Differently This Time'**
-  String get shareProspectPastStrugglesSubject;
+  /// **'Thinking About {business} Again? Found a Different Approach'**
+  String shareProspectPastStrugglesSubject(Object business);
 
   /// No description provided for @shareProspectPastStrugglesMessage.
   ///
   /// In en, this message translates to:
-  /// **'Been burned before in direct sales? Past attempts at {business} or similar businesses left you stuck at zero?\n\nThis time, start smarter.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join. The AI Coach drafts your messages, times your follow-ups, and tracks who\'s interested.\n\nSo you don\'t start from scratch. You launch with real people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: {link}\n\nYou deserve a real shot this time.'**
+  /// **'I know we\'ve both had some rough experiences with direct sales before. {business} keeps coming up, and I\'ve been hesitant too.\n\nBut I found something different - an app called Team Build Pro that lets you build a team BEFORE actually joining anything. The idea is you can see if you can actually recruit people before investing.\n\nIt has AI coaching and pre-written messages so you don\'t have to figure everything out alone.\n\nI\'m trying it out myself. If you\'re still curious about {business}, this might be worth a look:\n\n{link}\n\nFigured we could explore this together and see if it\'s any different this time.'**
   String shareProspectPastStrugglesMessage(Object business, Object link);
 
   /// No description provided for @shareProspectNotSalespersonTitle.
@@ -3997,13 +3997,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectNotSalespersonSubject.
   ///
   /// In en, this message translates to:
-  /// **'Build Your Team Without Being \"Salesy\"'**
+  /// **'Found Something for Non-Salespeople Like Us'**
   String get shareProspectNotSalespersonSubject;
 
   /// No description provided for @shareProspectNotSalespersonMessage.
   ///
   /// In en, this message translates to:
-  /// **'Not a \"natural salesperson\"? Considering {business} but worried about the recruiting part?\n\nYou don\'t need a sales personality. You just need smart AI tools.\n\nTeam Build Pro lets you build your {business} team BEFORE you join - with an AI Coach that:\n\n- 16 pre-written recruiting messages ready to customize\n- 24/7 AI guidance for any recruiting question\n- Track your prospects and their interest level\n- Build confidence with proven messaging\n\nIt\'s like having a recruiting assistant who never sleeps. You focus on genuine relationships. The AI handles the awkward sales stuff.\n\nStart building before you even join: {link}'**
+  /// **'You know I\'m not a natural salesperson. That\'s why I\'ve always hesitated with things like {business}.\n\nI found this app called Team Build Pro that\'s designed for people like us. It has 16 pre-written messages and an AI Coach, so you don\'t have to come up with sales pitches on your own.\n\nThe cool part? You can build a team BEFORE joining any opportunity. So you can see if you\'re actually comfortable with the recruiting part without committing first.\n\nI\'m testing it out myself. Thought you might relate:\n\n{link}\n\nMaybe we\'re not as \"non-salesy\" as we think - we just needed the right tools.'**
   String shareProspectNotSalespersonMessage(Object business, Object link);
 
   /// No description provided for @shareProspectHopeAfterDisappointmentTitle.
@@ -4021,13 +4021,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectHopeAfterDisappointmentSubject.
   ///
   /// In en, this message translates to:
-  /// **'Try With Real Support This Time'**
-  String get shareProspectHopeAfterDisappointmentSubject;
+  /// **'Another Look at {business}? This Time With a Safety Net'**
+  String shareProspectHopeAfterDisappointmentSubject(Object business);
 
   /// No description provided for @shareProspectHopeAfterDisappointmentMessage.
   ///
   /// In en, this message translates to:
-  /// **'Been burned before? Promised the world by {business} or other opportunities, then left starting from zero?\n\nThis time is different.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join. The AI Coach drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches every step.\n\nYou gain real momentum before Day 1. No hype. No empty promises. Just AI-powered tools that actually work.\n\nSee how: {link}\n\nYou deserve a system that sets you up to win.'**
+  /// **'I know you\'ve been burned before. Me too. The promises of {business} and other opportunities that never panned out.\n\nI found something that feels different - not another opportunity, but a tool. Team Build Pro lets you build a team BEFORE joining anything. You can see actual results before investing.\n\nNo hype. Just an AI Coach, pre-written messages, and a way to track real progress.\n\nI\'m exploring it myself because I\'m tired of starting from zero every time:\n\n{link}\n\nIf it doesn\'t work, at least we\'ll know before putting money in. Thought you might want to try alongside me.'**
   String shareProspectHopeAfterDisappointmentMessage(
       Object business, Object link);
 
@@ -4046,13 +4046,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectGeneralInvitationSubject.
   ///
   /// In en, this message translates to:
-  /// **'Build Your Team Before Joining'**
-  String get shareProspectGeneralInvitationSubject;
+  /// **'Exploring {business}? Found Something Interesting'**
+  String shareProspectGeneralInvitationSubject(Object business);
 
   /// No description provided for @shareProspectGeneralInvitationMessage.
   ///
   /// In en, this message translates to:
-  /// **'Thinking about {business}? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- 16 pre-written recruiting messages ready to share\n- Track who\'s interested and ready\n- Get 24/7 AI coaching for recruiting questions\n- Build real momentum risk-free\n\nSo when you do join {business}, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: {link}\n\nDay 1 isn\'t a cold start. It\'s a running start.'**
+  /// **'Hey! I\'ve been looking into {business} and found something that caught my attention.\n\nThere\'s an app called Team Build Pro that lets you build a team BEFORE you officially join any opportunity. The idea is you can test the waters and build momentum without committing first.\n\nIt has:\n- 16 pre-written recruiting messages\n- An AI Coach for guidance\n- A way to track who\'s interested\n\nI\'m exploring it myself. Thought you might want to check it out too since I know you\'ve been curious about {business}.\n\nTake a look: {link}\n\nNo pressure - just sharing what I found.'**
   String shareProspectGeneralInvitationMessage(Object business, Object link);
 
   /// No description provided for @shareProspectSocialAnxietyTitle.
@@ -4070,13 +4070,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectSocialAnxietySubject.
   ///
   /// In en, this message translates to:
-  /// **'Build Your Team Without Awkward Conversations'**
+  /// **'Building a Network Without the Awkward Conversations'**
   String get shareProspectSocialAnxietySubject;
 
   /// No description provided for @shareProspectSocialAnxietyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Considering {business} but uncomfortable with awkward conversations? You\'re not alone.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - online, at your own pace, where it feels comfortable.\n\nThe AI Coach:\n- 16 pre-written messages - no awkward \"what do I say?\"\n- Track prospects at your own pace\n- Get 24/7 AI guidance when you need it\n- Build your network online, comfortably\n\nNo cold calls. No awkward face-to-face pitches. Just genuine online connections guided by AI.\n\nYou build real momentum risk-free. So when you do join {business}, you\'re launching with people already waiting for you.\n\nStart building on your terms: {link}'**
+  /// **'The reason I\'ve never gone all-in on {business} or similar? The thought of awkward sales conversations makes me cringe.\n\nI found Team Build Pro - it lets you build a team online, at your own pace, with pre-written messages. No cold calls, no face-to-face pitches.\n\nAnd here\'s the thing: you can do all this BEFORE joining any opportunity. So you can build confidence and see if it works for you without the pressure.\n\nI\'m trying it myself. Figured you might appreciate the low-pressure approach too:\n\n{link}\n\nWe can build networks without being \"that person\" at parties.'**
   String shareProspectSocialAnxietyMessage(Object business, Object link);
 
   /// No description provided for @shareProspectTimeConstrainedTitle.
@@ -4094,13 +4094,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectTimeConstrainedSubject.
   ///
   /// In en, this message translates to:
-  /// **'Build Your Team in the Gaps'**
-  String get shareProspectTimeConstrainedSubject;
+  /// **'Exploring {business} in Spare Moments'**
+  String shareProspectTimeConstrainedSubject(Object business);
 
   /// No description provided for @shareProspectTimeConstrainedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Interested in {business} but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- 16 pre-written messages ready to send anytime\n- Track all your prospects in one place\n- Get AI guidance whenever you have a few minutes\n- See your progress and momentum grow\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join {business}, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: {link}'**
+  /// **'I know you\'re as busy as I am. That\'s always been the excuse for not exploring things like {business}.\n\nI found Team Build Pro - you can build a team in small chunks of time. 15 minutes here, 20 minutes there. The AI Coach and pre-written messages make it efficient.\n\nBest part? You do this BEFORE joining any opportunity. So you can test it around your schedule without commitment.\n\nI\'m trying it during lunch breaks and coffee time:\n\n{link}\n\nIf it works for someone as time-crunched as us, might be worth exploring together.'**
   String shareProspectTimeConstrainedMessage(Object business, Object link);
 
   /// No description provided for @shareProspectFinancialRiskAverseTitle.
@@ -4118,13 +4118,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectFinancialRiskAverseSubject.
   ///
   /// In en, this message translates to:
-  /// **'See Results Before Investing'**
-  String get shareProspectFinancialRiskAverseSubject;
+  /// **'Testing {business} Without Financial Risk First'**
+  String shareProspectFinancialRiskAverseSubject(Object business);
 
   /// No description provided for @shareProspectFinancialRiskAverseMessage.
   ///
   /// In en, this message translates to:
-  /// **'Considering {business} but worried about losing money? Smart.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - so you see real results before investing heavily.\n\nStart for free. Test the AI recruiting system. Track your actual progress in real-time:\n- See who\'s interested in joining your team\n- Watch your momentum build\n- Prove the system works for you\n\nOnly \$4.99/month once you\'re ready to invite prospects. No expensive lead funnels. No complex systems.\n\nWhen you finally join {business}, you\'re launching with people already waiting - not risking everything on zero momentum.\n\nSee proof first: {link}'**
+  /// **'The thing that\'s always stopped me from {business}? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$4.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n{link}\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.'**
   String shareProspectFinancialRiskAverseMessage(Object business, Object link);
 
   /// No description provided for @shareProspectSkepticalRealistTitle.
@@ -4142,14 +4142,207 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectSkepticalRealistSubject.
   ///
   /// In en, this message translates to:
-  /// **'No Hype. Track Your Real Progress'**
-  String get shareProspectSkepticalRealistSubject;
+  /// **'No Hype - Just Testing {business} the Smart Way'**
+  String shareProspectSkepticalRealistSubject(Object business);
 
   /// No description provided for @shareProspectSkepticalRealistMessage.
   ///
   /// In en, this message translates to:
-  /// **'Considering {business} but tired of empty promises and hype?\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join - and shows you real metrics every step of the way.\n\nNo fluff. No exaggeration. Your dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI Coach recommends\n\nYou see exactly where you stand before joining {business}. No surprises. No false hope. Just data.\n\nWhen you finally do join, you\'re launching with proof - not blind faith.\n\nSee the transparency: {link}'**
+  /// **'I\'m as skeptical as you are. Every {business} pitch sounds the same - \"life-changing income!\" Yeah, right.\n\nI found Team Build Pro - not another opportunity, just a tool. It shows you real metrics: who you\'ve contacted, who\'s interested, your actual progress. No fluff.\n\nAnd you can do all this BEFORE joining anything. Data before decisions.\n\nI\'m testing it to see if the numbers actually work:\n\n{link}\n\nNo promises. No hype. Just let me know if the data looks interesting to you.'**
   String shareProspectSkepticalRealistMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2GeneralInvitationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'General Invitation'**
+  String get shareProspect2GeneralInvitationTitle;
+
+  /// No description provided for @shareProspect2GeneralInvitationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A versatile message for any prospect situation'**
+  String get shareProspect2GeneralInvitationDescription;
+
+  /// No description provided for @shareProspect2GeneralInvitationSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Your {business} Team Before Day 1'**
+  String shareProspect2GeneralInvitationSubject(Object business);
+
+  /// No description provided for @shareProspect2GeneralInvitationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking about joining {business}? I want to share something that can give you a real advantage.\n\nTeam Build Pro lets you build your team BEFORE you officially join. So when you start with me, you\'re not starting from zero - you launch with people already waiting.\n\nThe app includes:\n- 16 pre-written recruiting messages ready to share\n- 24/7 AI Coach for recruiting questions\n- Real-time tracking of who\'s interested\n\nI\'ve seen what happens when new team members start cold. This changes that.\n\nCheck it out: {link}\n\nWhen you\'re ready to join my {business} team, you\'ll hit the ground running.'**
+  String shareProspect2GeneralInvitationMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2PastStrugglesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Addressing Past Struggles'**
+  String get shareProspect2PastStrugglesTitle;
+
+  /// No description provided for @shareProspect2PastStrugglesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect for prospects who have tried before and struggled'**
+  String get shareProspect2PastStrugglesDescription;
+
+  /// No description provided for @shareProspect2PastStrugglesSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'This Time Will Be Different - Here\'s Why'**
+  String get shareProspect2PastStrugglesSubject;
+
+  /// No description provided for @shareProspect2PastStrugglesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I know you\'ve struggled before with direct sales. Past attempts at {business} or similar opportunities left you starting from zero.\n\nThat\'s exactly why I want you on my team - and why I\'m sharing Team Build Pro with you.\n\nIt lets you build your {business} team BEFORE you officially join. With 16 pre-written messages and an AI Coach walking you through every step, you won\'t be alone this time.\n\nI\'ll be your sponsor AND you\'ll have AI support 24/7.\n\nSee how it works: {link}\n\nYou deserve a real shot. Let me help you get it right this time.'**
+  String shareProspect2PastStrugglesMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2NotSalespersonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For Non-Sales Minded'**
+  String get shareProspect2NotSalespersonTitle;
+
+  /// No description provided for @shareProspect2NotSalespersonDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Great for people who don\'t see themselves as \"salespeople\"'**
+  String get shareProspect2NotSalespersonDescription;
+
+  /// No description provided for @shareProspect2NotSalespersonSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Join My {business} Team - No Sales Personality Required'**
+  String shareProspect2NotSalespersonSubject(Object business);
+
+  /// No description provided for @shareProspect2NotSalespersonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a natural salesperson? That\'s okay - you don\'t need to be to succeed on my team.\n\nTeam Build Pro gives you 16 pre-written recruiting messages and an AI Coach. You focus on genuine relationships. The AI handles the \"sales stuff.\"\n\nAnd here\'s the best part: you can build your team BEFORE joining {business}. Build confidence with the tools first.\n\nI\'ll guide you as your sponsor, and the AI coaches you 24/7.\n\nStart building: {link}\n\nIt\'s like having a recruiting assistant who never sleeps. Join my team and let the tools work for you.'**
+  String shareProspect2NotSalespersonMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2HopeAfterDisappointmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hope After Disappointment'**
+  String get shareProspect2HopeAfterDisappointmentTitle;
+
+  /// No description provided for @shareProspect2HopeAfterDisappointmentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal for prospects burned by previous opportunities'**
+  String get shareProspect2HopeAfterDisappointmentDescription;
+
+  /// No description provided for @shareProspect2HopeAfterDisappointmentSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Join My {business} Team With Real Support This Time'**
+  String shareProspect2HopeAfterDisappointmentSubject(Object business);
+
+  /// No description provided for @shareProspect2HopeAfterDisappointmentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I know you\'ve been burned before. Empty promises, zero support, starting from scratch.\n\nThat\'s not how I run my team.\n\nTeam Build Pro lets you build your {business} team BEFORE you officially join. Real momentum before Day 1. No hype - just AI-powered tools that actually work.\n\nI\'ll be your sponsor, the AI Coach guides you 24/7, and you\'ll have pre-written messages ready to go.\n\nSee how: {link}\n\nYou deserve a system that sets you up to win. I want you on my team.'**
+  String shareProspect2HopeAfterDisappointmentMessage(
+      Object business, Object link);
+
+  /// No description provided for @shareProspect2SocialAnxietyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoiding Awkward Conversations'**
+  String get shareProspect2SocialAnxietyTitle;
+
+  /// No description provided for @shareProspect2SocialAnxietyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect for introverts or those uncomfortable with face-to-face recruiting'**
+  String get shareProspect2SocialAnxietyDescription;
+
+  /// No description provided for @shareProspect2SocialAnxietySubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Your {business} Team Without Awkward Conversations'**
+  String shareProspect2SocialAnxietySubject(Object business);
+
+  /// No description provided for @shareProspect2SocialAnxietyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncomfortable with awkward sales conversations? I get it. That\'s why I use Team Build Pro with my team.\n\nIt lets you build your {business} network online, at your own pace:\n- 16 pre-written messages - no \"what do I say?\"\n- Build prospects at your own pace\n- 24/7 AI guidance when you need it\n\nNo cold calls. No face-to-face pitches required. And you can start building BEFORE you join.\n\nStart on your terms: {link}\n\nWhen you join my team, you\'ll have real momentum from people you recruited comfortably online.'**
+  String shareProspect2SocialAnxietyMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2TimeConstrainedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For Busy Professionals'**
+  String get shareProspect2TimeConstrainedTitle;
+
+  /// No description provided for @shareProspect2TimeConstrainedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal for prospects juggling job, family, and other commitments'**
+  String get shareProspect2TimeConstrainedDescription;
+
+  /// No description provided for @shareProspect2TimeConstrainedSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Your {business} Team in the Gaps of Your Life'**
+  String shareProspect2TimeConstrainedSubject(Object business);
+
+  /// No description provided for @shareProspect2TimeConstrainedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I know you\'re busy. That\'s actually why {business} could work for you - and why I want you on my team.\n\nTeam Build Pro lets you build your team BEFORE you officially join - in small pockets of time. Morning coffee. Lunch break. Evening downtime.\n\nThe AI Coach and 16 pre-written messages make every minute count:\n- Track all prospects in one place\n- Get AI guidance whenever you have a few minutes\n- See your momentum grow\n\nSee how it fits your life: {link}\n\nWhen you\'re ready to join my team, you won\'t be starting from zero. You\'ll launch with people already waiting.'**
+  String shareProspect2TimeConstrainedMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2FinancialRiskAverseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Afraid of Losing Money'**
+  String get shareProspect2FinancialRiskAverseTitle;
+
+  /// No description provided for @shareProspect2FinancialRiskAverseDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Great for prospects worried about financial risk'**
+  String get shareProspect2FinancialRiskAverseDescription;
+
+  /// No description provided for @shareProspect2FinancialRiskAverseSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'See Results Before Investing in {business}'**
+  String shareProspect2FinancialRiskAverseSubject(Object business);
+
+  /// No description provided for @shareProspect2FinancialRiskAverseMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Worried about losing money? Smart. That\'s why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your {business} team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who\'s interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly \$4.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: {link}\n\nWhen you finally join my {business} team, you\'re launching with people already waiting - not risking everything on hope.'**
+  String shareProspect2FinancialRiskAverseMessage(Object business, Object link);
+
+  /// No description provided for @shareProspect2SkepticalRealistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Me Proof'**
+  String get shareProspect2SkepticalRealistTitle;
+
+  /// No description provided for @shareProspect2SkepticalRealistDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect for prospects burned by false promises'**
+  String get shareProspect2SkepticalRealistDescription;
+
+  /// No description provided for @shareProspect2SkepticalRealistSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'No Hype. Real Metrics. Join My {business} Team.'**
+  String shareProspect2SkepticalRealistSubject(Object business);
+
+  /// No description provided for @shareProspect2SkepticalRealistMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tired of empty promises? Me too. That\'s why I run my {business} team differently.\n\nTeam Build Pro shows you real metrics every step:\n- How many people you\'ve contacted\n- Who\'s responded and interested\n- Your actual progress toward qualification\n- Next steps the AI recommends\n\nNo fluff. No exaggeration. Just data. And you can do all this BEFORE joining.\n\nSee the transparency: {link}\n\nWhen you join my team, you\'ll launch with proof - not blind faith. That\'s the only way I do business.'**
+  String shareProspect2SkepticalRealistMessage(Object business, Object link);
 
   /// No description provided for @sharePartnerWarmMarketExhaustedTitle.
   ///

@@ -229,14 +229,14 @@ class _ShareScreenState extends State<ShareScreen>
       'general_invitation': {
         'title': context.l10n?.shareProspectGeneralInvitationTitle ?? 'General Invitation',
         'description': context.l10n?.shareProspectGeneralInvitationDescription ?? 'A versatile message for any prospect situation',
-        'subject': context.l10n?.shareProspectGeneralInvitationSubject ?? 'Build Your Team Before Joining $_bizOppName',
+        'subject': context.l10n?.shareProspectGeneralInvitationSubject(_bizOppName) ?? 'Build Your Team Before Joining $_bizOppName',
         'message': (context.l10n?.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Thinking about $_bizOppName? Here\'s a smarter way to start.\n\nTeam Build Pro lets you build your team BEFORE you officially join. An AI Coach helps you:\n\n- 16 pre-written recruiting messages ready to share\n- Track who\'s interested and ready\n- Get 24/7 AI coaching for recruiting questions\n- Build real momentum risk-free\n\nSo when you do join $_bizOppName, you\'re not starting from zero. You launch with people already waiting for you.\n\nSee how it works: $_prospectReferralLink\n\nDay 1 isn\'t a cold start. It\'s a running start.'),
       },
       'past_struggles': {
         'title': context.l10n?.shareProspectPastStrugglesTitle ?? 'Addressing Past Struggles',
         'description': context.l10n?.shareProspectPastStrugglesDescription ?? 'Perfect for prospects who have tried before and struggled',
-        'subject': context.l10n?.shareProspectPastStrugglesSubject ?? 'Try $_bizOppName Differently This Time',
+        'subject': context.l10n?.shareProspectPastStrugglesSubject(_bizOppName) ?? 'Try $_bizOppName Differently This Time',
         'message': (context.l10n?.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Been burned before in direct sales? Past attempts at $_bizOppName or similar businesses left you stuck at zero?\n\nThis time, start smarter.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. Choose from 16 pre-written recruiting messages, track who\'s interested, and get 24/7 AI coaching support.\n\nSo you don\'t start from scratch. You launch with real people already waiting for you.\n\nThe AI walks you through every step. You won\'t be alone.\n\nSee how it works: $_prospectReferralLink\n\nYou deserve a real shot this time.'),
       },
@@ -250,7 +250,7 @@ class _ShareScreenState extends State<ShareScreen>
       'hope_after_disappointment': {
         'title': context.l10n?.shareProspectHopeAfterDisappointmentTitle ?? 'Hope After Disappointment',
         'description': context.l10n?.shareProspectHopeAfterDisappointmentDescription ?? 'Ideal for prospects burned by previous opportunities',
-        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject ?? 'Try $_bizOppName With Real Support This Time',
+        'subject': context.l10n?.shareProspectHopeAfterDisappointmentSubject(_bizOppName) ?? 'Try $_bizOppName With Real Support This Time',
         'message': (context.l10n?.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Been burned before? Promised the world by $_bizOppName or other opportunities, then left starting from zero?\n\nThis time is different.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join. The AI Coach drafts your recruiting messages, times your follow-ups, tracks who\'s interested, and coaches every step.\n\nYou gain real momentum before Day 1. No hype. No empty promises. Just AI-powered tools that actually work.\n\nSee how: $_prospectReferralLink\n\nYou deserve a system that sets you up to win.'),
       },
@@ -264,21 +264,21 @@ class _ShareScreenState extends State<ShareScreen>
       'time_constrained': {
         'title': context.l10n?.shareProspectTimeConstrainedTitle ?? 'For Busy Professionals',
         'description': context.l10n?.shareProspectTimeConstrainedDescription ?? 'Ideal for prospects juggling job, family, and other commitments',
-        'subject': context.l10n?.shareProspectTimeConstrainedSubject ?? 'Build Your $_bizOppName Team in the Gaps',
+        'subject': context.l10n?.shareProspectTimeConstrainedSubject(_bizOppName) ?? 'Build Your $_bizOppName Team in the Gaps',
         'message': (context.l10n?.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Interested in $_bizOppName but can\'t dedicate full-time hours? You don\'t need to.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - in the gaps of your busy life.\n\nMorning coffee? Lunch break? Evening downtime? The AI Coach works around your schedule:\n- 16 pre-written messages ready to send anytime\n- Track all your prospects in one place\n- Get AI guidance whenever you have a few minutes\n- See your progress and momentum grow\n\nWork 15 minutes here, 20 minutes there. The AI makes every minute count.\n\nSo when you do join $_bizOppName, you\'re launching with people already waiting - not starting from zero.\n\nSee how it fits your life: $_prospectReferralLink'),
       },
       'financial_risk_averse': {
         'title': context.l10n?.shareProspectFinancialRiskAverseTitle ?? 'Afraid of Losing Money',
         'description': context.l10n?.shareProspectFinancialRiskAverseDescription ?? 'Great for prospects worried about financial risk',
-        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject ?? 'See Results Before Investing in $_bizOppName',
+        'subject': context.l10n?.shareProspectFinancialRiskAverseSubject(_bizOppName) ?? 'See Results Before Investing in $_bizOppName',
         'message': (context.l10n?.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Considering $_bizOppName but worried about losing money? Smart.\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - so you see real results before investing heavily.\n\nStart for free. Test the AI recruiting system. Track your actual progress in real-time:\n- See who\'s interested in joining your team\n- Watch your momentum build\n- Prove the system works for you\n\nOnly \$4.99/month once you\'re ready to invite prospects. No expensive lead funnels. No complex systems.\n\nWhen you finally join $_bizOppName, you\'re launching with people already waiting - not risking everything on zero momentum.\n\nSee proof first: $_prospectReferralLink'),
       },
       'skeptical_realist': {
         'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',
         'description': context.l10n?.shareProspectSkepticalRealistDescription ?? 'Perfect for prospects burned by false promises',
-        'subject': context.l10n?.shareProspectSkepticalRealistSubject ?? 'No Hype. Track Your Real $_bizOppName Progress',
+        'subject': context.l10n?.shareProspectSkepticalRealistSubject(_bizOppName) ?? 'No Hype. Track Your Real $_bizOppName Progress',
         'message': (context.l10n?.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? '') ??
             'Considering $_bizOppName but tired of empty promises and hype?\n\nTeam Build Pro lets you build your $_bizOppName team BEFORE you officially join - and shows you real metrics every step of the way.\n\nNo fluff. No exaggeration. Your dashboard tracks:\n- How many people you\'ve contacted\n- Who\'s responded and who\'s interested\n- Your actual momentum toward qualification (4 direct + 20 total)\n- Next steps the AI Coach recommends\n\nYou see exactly where you stand before joining $_bizOppName. No surprises. No false hope. Just data.\n\nWhen you finally do join, you\'re launching with proof - not blind faith.\n\nSee the transparency: $_prospectReferralLink'),
       },
@@ -290,13 +290,13 @@ class _ShareScreenState extends State<ShareScreen>
       'general_invitation': {
         'title': l10n.shareProspectGeneralInvitationTitle,
         'description': l10n.shareProspectGeneralInvitationDescription,
-        'subject': l10n.shareProspectGeneralInvitationSubject,
+        'subject': l10n.shareProspectGeneralInvitationSubject(_bizOppName),
         'message': l10n.shareProspectGeneralInvitationMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'past_struggles': {
         'title': l10n.shareProspectPastStrugglesTitle,
         'description': l10n.shareProspectPastStrugglesDescription,
-        'subject': l10n.shareProspectPastStrugglesSubject,
+        'subject': l10n.shareProspectPastStrugglesSubject(_bizOppName),
         'message': l10n.shareProspectPastStrugglesMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'not_salesperson': {
@@ -308,7 +308,7 @@ class _ShareScreenState extends State<ShareScreen>
       'hope_after_disappointment': {
         'title': l10n.shareProspectHopeAfterDisappointmentTitle,
         'description': l10n.shareProspectHopeAfterDisappointmentDescription,
-        'subject': l10n.shareProspectHopeAfterDisappointmentSubject,
+        'subject': l10n.shareProspectHopeAfterDisappointmentSubject(_bizOppName),
         'message': l10n.shareProspectHopeAfterDisappointmentMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'social_anxiety': {
@@ -320,19 +320,19 @@ class _ShareScreenState extends State<ShareScreen>
       'time_constrained': {
         'title': l10n.shareProspectTimeConstrainedTitle,
         'description': l10n.shareProspectTimeConstrainedDescription,
-        'subject': l10n.shareProspectTimeConstrainedSubject,
+        'subject': l10n.shareProspectTimeConstrainedSubject(_bizOppName),
         'message': l10n.shareProspectTimeConstrainedMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'financial_risk_averse': {
         'title': l10n.shareProspectFinancialRiskAverseTitle,
         'description': l10n.shareProspectFinancialRiskAverseDescription,
-        'subject': l10n.shareProspectFinancialRiskAverseSubject,
+        'subject': l10n.shareProspectFinancialRiskAverseSubject(_bizOppName),
         'message': l10n.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
       'skeptical_realist': {
         'title': l10n.shareProspectSkepticalRealistTitle,
         'description': l10n.shareProspectSkepticalRealistDescription,
-        'subject': l10n.shareProspectSkepticalRealistSubject,
+        'subject': l10n.shareProspectSkepticalRealistSubject(_bizOppName),
         'message': l10n.shareProspectSkepticalRealistMessage(_bizOppName, _prospectReferralLink ?? ''),
       },
     };

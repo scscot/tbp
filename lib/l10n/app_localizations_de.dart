@@ -2322,29 +2322,29 @@ class AppLocalizationsDe extends AppLocalizations {
       'Perfekt für Kandidaten, die es schon einmal versucht haben und Schwierigkeiten hatten';
 
   @override
-  String get shareProspectPastStrugglesSubject =>
-      'Ein smarterer Weg, dieses Mal zu starten';
-
-  @override
-  String shareProspectPastStrugglesMessage(Object business, Object link) {
-    return 'Wenn vergangene Versuche Sie bei Null ohne Dynamik zurückließen, hier ist ein smarterer Pfad.\n\nDer KI-Coach von Team Build Pro hilft Ihnen, Ihr $business-Team vorzubauen, bevor Sie überhaupt beitreten.\n\nEr entwirft Ihre Nachrichten, plant Ihre Follow-ups und verfolgt, wer interessiert ist - damit Sie dieses Mal nicht von vorne anfangen. Sie starten mit Leuten, die bereits auf Sie warten.\n\nDie KI führt Sie durch jeden Schritt. Sie werden nicht allein sein.\n\nSehen Sie, wie es funktioniert: $link\n\nSie verdienen dieses Mal eine echte Chance.';
+  String shareProspectPastStrugglesSubject(Object business) {
+    return 'Denken Sie wieder über $business nach? Habe einen anderen Ansatz gefunden';
   }
 
   @override
-  String get shareProspectNotSalespersonTitle =>
-      'Sie können ein erfolgreiches Team aufbauen';
+  String shareProspectPastStrugglesMessage(Object business, Object link) {
+    return 'Ich weiß, wir beide haben schlechte Erfahrungen mit Direktvertrieb gemacht. $business taucht immer wieder auf, und ich habe auch gezögert.\n\nAber ich habe etwas anderes gefunden - eine App namens Team Build Pro, die Sie ein Team aufbauen lässt, BEVOR Sie überhaupt irgendwo einsteigen. Die Idee ist, dass Sie sehen können, ob Sie tatsächlich Leute rekrutieren können, bevor Sie investieren.\n\nEs hat KI-Coaching und vorgefertigte Nachrichten, sodass Sie nicht alles allein herausfinden müssen.\n\nIch probiere es selbst aus. Wenn Sie immer noch neugierig auf $business sind, könnte es einen Blick wert sein:\n\n$link\n\nDachte, wir könnten das gemeinsam erkunden und sehen, ob es diesmal anders ist.';
+  }
+
+  @override
+  String get shareProspectNotSalespersonTitle => 'Für Nicht-Verkäufer';
 
   @override
   String get shareProspectNotSalespersonDescription =>
-      'Team Build Pro wurde für Fachleute entwickelt, die ein Netzwerk aufbauen möchten, ohne aggressive Verkaufstaktiken anzuwenden. Unsere Plattform konzentriert sich auf authentische Beziehungen und organisches Wachstum.';
+      'Großartig für Leute, die sich nicht als \"Verkäufer\" sehen';
 
   @override
   String get shareProspectNotSalespersonSubject =>
-      'Sie müssen kein \"Verkäufer\" sein';
+      'Etwas für Nicht-Verkäufer wie uns gefunden';
 
   @override
   String shareProspectNotSalespersonMessage(Object business, Object link) {
-    return 'Kein \"natürlicher Verkäufer\"? Das ist okay. Sie haben einen KI-Coach.\n\nTeam Build Pro hilft Ihnen, Ihr $business-Team vorzubauen mit:\n- 16 vorgefertigten Recruiting-Nachrichten zum Anpassen\n- 24/7 KI-Beratung für alle Recruiting-Fragen\n- Kandidaten und deren Interessengrad verfolgen\n- Selbstvertrauen durch bewährte Botschaften aufbauen\n\nEs ist wie ein Recruiting-Assistent, der nie schläft. Sie konzentrieren sich auf Beziehungen. Die KI übernimmt den Rest.\n\nBeginnen Sie mit dem Aufbau, bevor Sie überhaupt beitreten: $link\n\nSie brauchen keine \"Verkaufspersönlichkeit\". Sie brauchen smarte Tools. Jetzt haben Sie sie.';
+    return 'Sie wissen, ich bin kein geborener Verkäufer. Deshalb habe ich immer bei Dingen wie $business gezögert.\n\nIch habe diese App namens Team Build Pro gefunden, die für Leute wie uns gemacht ist. Sie hat 16 vorgefertigte Nachrichten und einen KI-Coach, sodass Sie keine Verkaufstexte selbst erstellen müssen.\n\nDas Coole daran? Sie können ein Team aufbauen, BEVOR Sie irgendeiner Gelegenheit beitreten. So können Sie sehen, ob Sie sich wirklich wohl fühlen mit dem Recruiting-Teil, ohne sich vorher zu verpflichten.\n\nIch teste es selbst. Dachte, Sie würden sich damit identifizieren:\n\n$link\n\nVielleicht sind wir nicht so \"nicht-verkäuferisch\" wie wir dachten - wir brauchten nur die richtigen Tools.';
   }
 
   @override
@@ -2356,13 +2356,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ideal für Kandidaten, die von früheren Gelegenheiten enttäuscht wurden';
 
   @override
-  String get shareProspectHopeAfterDisappointmentSubject =>
-      'Ein smarterer Weg, dieses Mal zu starten';
+  String shareProspectHopeAfterDisappointmentSubject(Object business) {
+    return 'Noch ein Blick auf $business? Diesmal mit Sicherheitsnetz';
+  }
 
   @override
   String shareProspectHopeAfterDisappointmentMessage(
       Object business, Object link) {
-    return 'Schon mal enttäuscht worden? Die Welt versprochen, dann bei Null anfangen gelassen?\n\nDieses Mal ist anders. Der KI-Coach von Team Build Pro hilft Ihnen, Ihr $business-Team vorzubauen, bevor Sie beitreten.\n\nEr entwirft Ihre Rekrutierungsnachrichten, plant Ihre Follow-ups, verfolgt, wer interessiert ist, und coacht Sie bei den nächsten Schritten. Sie gewinnen echte Dynamik vor Tag 1.\n\nKein Hype. Keine leeren Versprechen. Nur KI-gestützte Tools, die funktionieren.\n\nSehen Sie wie: $link\n\nSie verdienen ein System, das Sie tatsächlich zum Erfolg führt.';
+    return 'Ich weiß, Sie wurden schon mal enttäuscht. Ich auch. Die Versprechen von $business und anderen Gelegenheiten, die sich nie erfüllt haben.\n\nIch habe etwas gefunden, das sich anders anfühlt - keine weitere Gelegenheit, sondern ein Tool. Team Build Pro lässt Sie ein Team aufbauen, BEVOR Sie irgendwo einsteigen. Sie können echte Ergebnisse sehen, bevor Sie investieren.\n\nKein Hype. Nur ein KI-Coach, vorgefertigte Nachrichten und eine Möglichkeit, echten Fortschritt zu verfolgen.\n\nIch erkunde es selbst, weil ich es leid bin, jedes Mal bei Null anzufangen:\n\n$link\n\nWenn es nicht funktioniert, wissen wir es wenigstens, bevor wir Geld reinstecken. Dachte, Sie möchten es vielleicht mit mir zusammen ausprobieren.';
   }
 
   @override
@@ -2373,17 +2374,18 @@ class AppLocalizationsDe extends AppLocalizations {
       'Eine vielseitige Nachricht für jede Kandidatensituation';
 
   @override
-  String get shareProspectGeneralInvitationSubject =>
-      'Bauen Sie Ihr Team auf, bevor Sie beitreten';
+  String shareProspectGeneralInvitationSubject(Object business) {
+    return '$business erkunden? Habe etwas Interessantes gefunden';
+  }
 
   @override
   String shareProspectGeneralInvitationMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach? Hier ist ein intelligenterer Start.\n\nTeam Build Pro lässt Sie Ihr Team aufbauen, BEVOR Sie offiziell beitreten. Ein KI-Coach hilft Ihnen:\n\n- 16 vorgefertigte Recruiting-Nachrichten zum Teilen\n- Verfolgen, wer interessiert und bereit ist\n- 24/7 KI-Coaching für Recruiting-Fragen\n- Echte Dynamik risikofrei aufbauen\n\nWenn Sie dann $business beitreten, starten Sie nicht bei Null. Sie starten mit Menschen, die bereits auf Sie warten.\n\nSehen Sie, wie es funktioniert: $link\n\nTag 1 ist kein Kaltstart. Es ist ein fliegender Start.';
+    return 'Hey! Ich habe mich über $business informiert und etwas gefunden, das meine Aufmerksamkeit erregt hat.\n\nEs gibt eine App namens Team Build Pro, die Sie ein Team aufbauen lässt, BEVOR Sie offiziell irgendeiner Gelegenheit beitreten. Die Idee ist, dass Sie das Wasser testen und Schwung aufbauen können, ohne sich vorher zu verpflichten.\n\nEs hat:\n- 16 vorgefertigte Recruiting-Nachrichten\n- Einen KI-Coach zur Anleitung\n- Eine Möglichkeit zu verfolgen, wer interessiert ist\n\nIch erkunde es selbst. Dachte, Sie möchten es auch sehen, da ich weiß, dass Sie neugierig auf $business waren.\n\nSchauen Sie mal: $link\n\nKein Druck - teile nur, was ich gefunden habe.';
   }
 
   @override
   String get shareProspectSocialAnxietyTitle =>
-      'Unbeholfene Gespräche vermeiden';
+      'Unangenehme Gespräche vermeiden';
 
   @override
   String get shareProspectSocialAnxietyDescription =>
@@ -2391,11 +2393,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shareProspectSocialAnxietySubject =>
-      'Bauen Sie Ihr Team ohne peinliche Gespräche auf';
+      'Ein Netzwerk aufbauen ohne die unangenehmen Gespräche';
 
   @override
   String shareProspectSocialAnxietyMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach, aber fühlen sich bei schwierigen Gesprächen unwohl? Sie sind nicht allein.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - online, in Ihrem eigenen Tempo, wo es sich angenehm anfühlt.\n\nDer KI-Coach:\n- 16 vorgefertigte Nachrichten - kein peinliches \"Was sage ich?\"\n- Kandidaten in Ihrem eigenen Tempo verfolgen\n- 24/7 KI-Beratung, wenn Sie sie brauchen\n- Ihr Netzwerk online aufbauen, bequem\n\nKeine Kaltakquise. Keine peinlichen persönlichen Pitches. Nur echte Online-Verbindungen, geführt von KI.\n\nSie bauen risikofrei echte Dynamik auf. Wenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits auf Sie warten.\n\nBeginnen Sie nach Ihren Bedingungen: $link';
+    return 'Der Grund, warum ich nie voll bei $business oder ähnlichem eingestiegen bin? Der Gedanke an unangenehme Verkaufsgespräche lässt mich erschaudern.\n\nIch habe Team Build Pro gefunden - es lässt Sie ein Team online aufbauen, in Ihrem eigenen Tempo, mit vorgefertigten Nachrichten. Keine Kaltakquise, keine persönlichen Pitches.\n\nUnd hier ist das Wichtige: Sie können all das tun, BEVOR Sie irgendeiner Gelegenheit beitreten. So können Sie Selbstvertrauen aufbauen und sehen, ob es für Sie funktioniert, ohne den Druck.\n\nIch probiere es selbst aus. Dachte, Sie würden den drucklosen Ansatz auch schätzen:\n\n$link\n\nWir können Netzwerke aufbauen, ohne \"diese Person\" auf Partys zu sein.';
   }
 
   @override
@@ -2406,12 +2408,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ideal für Kandidaten, die Job, Familie und andere Verpflichtungen jonglieren';
 
   @override
-  String get shareProspectTimeConstrainedSubject =>
-      'Bauen Sie Ihr Team in den Lücken auf';
+  String shareProspectTimeConstrainedSubject(Object business) {
+    return '$business in freien Momenten erkunden';
+  }
 
   @override
   String shareProspectTimeConstrainedMessage(Object business, Object link) {
-    return 'Interessiert an $business, aber können keine Vollzeitstunden aufbringen? Das müssen Sie nicht.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - in den Lücken Ihres geschäftigen Lebens.\n\nMorgenkaffee? Mittagspause? Abendzeit? Der KI-Coach arbeitet um Ihren Zeitplan herum:\n- 16 vorgefertigte Nachrichten, jederzeit versandbereit\n- Alle Kandidaten an einem Ort verfolgen\n- KI-Beratung, wenn Sie ein paar Minuten haben\n- Ihren Fortschritt und wachsende Dynamik sehen\n\nArbeiten Sie 15 Minuten hier, 20 Minuten dort. Die KI lässt jede Minute zählen.\n\nWenn Sie dann $business beitreten, starten Sie mit Menschen, die bereits warten - nicht bei Null.\n\nSehen Sie, wie es in Ihr Leben passt: $link';
+    return 'Ich weiß, Sie sind genauso beschäftigt wie ich. Das war immer die Ausrede, Dinge wie $business nicht zu erkunden.\n\nIch habe Team Build Pro gefunden - Sie können ein Team in kleinen Zeitabschnitten aufbauen. 15 Minuten hier, 20 Minuten dort. Der KI-Coach und vorgefertigte Nachrichten machen es effizient.\n\nDas Beste daran? Sie tun dies, BEVOR Sie irgendeiner Gelegenheit beitreten. So können Sie es um Ihren Zeitplan herum testen, ohne Verpflichtung.\n\nIch probiere es während der Mittagspausen und Kaffeezeit aus:\n\n$link\n\nWenn es für jemanden so zeitgepresst wie uns funktioniert, könnte es sich lohnen, es gemeinsam zu erkunden.';
   }
 
   @override
@@ -2423,12 +2426,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Großartig für Kandidaten, die sich vor finanziellem Risiko sorgen';
 
   @override
-  String get shareProspectFinancialRiskAverseSubject =>
-      'Sehen Sie Ergebnisse, bevor Sie investieren';
+  String shareProspectFinancialRiskAverseSubject(Object business) {
+    return '$business ohne finanzielles Risiko erst mal testen';
+  }
 
   @override
   String shareProspectFinancialRiskAverseMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach, aber sorgen sich, Geld zu verlieren? Klug.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - damit Sie echte Ergebnisse sehen, bevor Sie stark investieren.\n\nStarten Sie kostenlos. Testen Sie das KI-Recruiting-System. Verfolgen Sie Ihren tatsächlichen Fortschritt in Echtzeit:\n- Sehen Sie, wer daran interessiert ist, Ihrem Team beizutreten\n- Beobachten Sie, wie Ihre Dynamik wächst\n- Beweisen Sie, dass das System für Sie funktioniert\n\nNur 4,99 €/Monat, sobald Sie bereit sind, Kandidaten einzuladen. Keine teuren Lead-Funnels. Keine komplexen Systeme.\n\nWenn Sie schließlich $business beitreten, starten Sie mit Menschen, die bereits warten - nicht alles auf Null-Dynamik riskierend.\n\nSehen Sie zuerst Beweise: $link';
+    return 'Was mich immer von $business abgehalten hat? Ich hasse es, Geld für Dinge zu verlieren, die nicht funktionieren.\n\nIch habe Team Build Pro gefunden - es lässt Sie ein Team aufbauen, BEVOR Sie irgendeiner Gelegenheit beitreten. Sie können echte Ergebnisse sehen, bevor Sie in irgendetwas investieren.\n\nDie App kostet nur 4,99 €/Monat nach einer kostenlosen Testversion. Viel weniger als blind in eine Gelegenheit einzusteigen.\n\nIch teste es, um zu sehen, ob ich tatsächlich Leute rekrutieren kann, bevor ich einsteige:\n\n$link\n\nDachte, Sie würden den risikoarmen Ansatz auch schätzen. Beweise sehen, bevor echtes Geld ausgegeben wird.';
   }
 
   @override
@@ -2439,12 +2443,155 @@ class AppLocalizationsDe extends AppLocalizations {
       'Perfekt für Kandidaten, die von falschen Versprechen enttäuscht wurden';
 
   @override
-  String get shareProspectSkepticalRealistSubject =>
-      'Kein Hype. Verfolgen Sie Ihren echten Fortschritt';
+  String shareProspectSkepticalRealistSubject(Object business) {
+    return 'Kein Hype - Nur $business auf smarte Weise testen';
+  }
 
   @override
   String shareProspectSkepticalRealistMessage(Object business, Object link) {
-    return 'Denken Sie über $business nach, aber müde von leeren Versprechen und Hype?\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten - und zeigt Ihnen bei jedem Schritt echte Metriken.\n\nKein Geschwätz. Keine Übertreibung. Ihr Dashboard verfolgt:\n- Wie viele Menschen Sie kontaktiert haben\n- Wer geantwortet hat und wer interessiert ist\n- Ihre tatsächliche Dynamik zur Qualifikation (4 direkte + 20 gesamt)\n- Nächste Schritte, die der KI-Coach empfiehlt\n\nSie sehen genau, wo Sie stehen, bevor Sie $business beitreten. Keine Überraschungen. Keine falsche Hoffnung. Nur Daten.\n\nWenn Sie schließlich beitreten, starten Sie mit Beweisen - nicht mit blindem Glauben.\n\nSehen Sie die Transparenz: $link';
+    return 'Ich bin genauso skeptisch wie Sie. Jeder $business-Pitch klingt gleich - \"lebensveränderndes Einkommen!\" Ja, klar.\n\nIch habe Team Build Pro gefunden - keine weitere Gelegenheit, nur ein Tool. Es zeigt Ihnen echte Metriken: wen Sie kontaktiert haben, wer interessiert ist, Ihren tatsächlichen Fortschritt. Kein Geschwätz.\n\nUnd Sie können all das tun, BEVOR Sie irgendwo einsteigen. Daten vor Entscheidungen.\n\nIch teste es, um zu sehen, ob die Zahlen tatsächlich funktionieren:\n\n$link\n\nKeine Versprechen. Kein Hype. Lassen Sie mich nur wissen, ob die Daten für Sie interessant aussehen.';
+  }
+
+  @override
+  String get shareProspect2GeneralInvitationTitle => 'Allgemeine Einladung';
+
+  @override
+  String get shareProspect2GeneralInvitationDescription =>
+      'Eine vielseitige Nachricht für jede Kandidatensituation';
+
+  @override
+  String shareProspect2GeneralInvitationSubject(Object business) {
+    return 'Bauen Sie Ihr $business-Team vor Tag 1 auf';
+  }
+
+  @override
+  String shareProspect2GeneralInvitationMessage(Object business, Object link) {
+    return 'Denken Sie darüber nach, bei $business einzusteigen? Ich möchte etwas teilen, das Ihnen einen echten Vorteil geben kann.\n\nTeam Build Pro lässt Sie Ihr Team aufbauen, BEVOR Sie offiziell beitreten. Wenn Sie dann mit mir starten, fangen Sie nicht bei Null an - Sie starten mit Leuten, die bereits warten.\n\nDie App enthält:\n- 16 vorgefertigte Recruiting-Nachrichten zum Teilen\n- 24/7 KI-Coach für Recruiting-Fragen\n- Echtzeit-Verfolgung, wer interessiert ist\n\nIch habe gesehen, was passiert, wenn neue Teammitglieder kalt starten. Das hier ändert das.\n\nSchauen Sie es sich an: $link\n\nWenn Sie bereit sind, meinem $business-Team beizutreten, werden Sie durchstarten.';
+  }
+
+  @override
+  String get shareProspect2PastStrugglesTitle =>
+      'Vergangene Schwierigkeiten ansprechen';
+
+  @override
+  String get shareProspect2PastStrugglesDescription =>
+      'Perfekt für Kandidaten, die es schon einmal versucht haben und Schwierigkeiten hatten';
+
+  @override
+  String get shareProspect2PastStrugglesSubject =>
+      'Diesmal wird es anders - Hier ist warum';
+
+  @override
+  String shareProspect2PastStrugglesMessage(Object business, Object link) {
+    return 'Ich weiß, Sie hatten früher Schwierigkeiten mit Direktvertrieb. Vergangene Versuche mit $business oder ähnlichen Gelegenheiten haben Sie bei Null gelassen.\n\nGenau deshalb möchte ich Sie in meinem Team - und deshalb teile ich Team Build Pro mit Ihnen.\n\nEs lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten. Mit 16 vorgefertigten Nachrichten und einem KI-Coach, der Sie bei jedem Schritt führt, werden Sie diesmal nicht allein sein.\n\nIch werde Ihr Sponsor sein UND Sie haben 24/7 KI-Unterstützung.\n\nSehen Sie, wie es funktioniert: $link\n\nSie verdienen eine echte Chance. Lassen Sie mich Ihnen helfen, es diesmal richtig zu machen.';
+  }
+
+  @override
+  String get shareProspect2NotSalespersonTitle => 'Für Nicht-Verkäufer';
+
+  @override
+  String get shareProspect2NotSalespersonDescription =>
+      'Großartig für Leute, die sich nicht als \"Verkäufer\" sehen';
+
+  @override
+  String shareProspect2NotSalespersonSubject(Object business) {
+    return 'Treten Sie meinem $business-Team bei - Keine Verkäuferpersönlichkeit nötig';
+  }
+
+  @override
+  String shareProspect2NotSalespersonMessage(Object business, Object link) {
+    return 'Kein geborener Verkäufer? Das ist okay - Sie müssen keiner sein, um in meinem Team erfolgreich zu sein.\n\nTeam Build Pro gibt Ihnen 16 vorgefertigte Recruiting-Nachrichten und einen KI-Coach. Sie konzentrieren sich auf echte Beziehungen. Die KI übernimmt das \"Verkaufszeug\".\n\nUnd hier ist das Beste: Sie können Ihr Team aufbauen, BEVOR Sie $business beitreten. Bauen Sie erst Selbstvertrauen mit den Tools auf.\n\nIch werde Sie als Ihr Sponsor führen, und die KI berät Sie 24/7.\n\nFangen Sie an aufzubauen: $link\n\nEs ist wie ein Recruiting-Assistent, der nie schläft. Treten Sie meinem Team bei und lassen Sie die Tools für Sie arbeiten.';
+  }
+
+  @override
+  String get shareProspect2HopeAfterDisappointmentTitle =>
+      'Hoffnung nach Enttäuschung';
+
+  @override
+  String get shareProspect2HopeAfterDisappointmentDescription =>
+      'Ideal für Kandidaten, die von früheren Gelegenheiten enttäuscht wurden';
+
+  @override
+  String shareProspect2HopeAfterDisappointmentSubject(Object business) {
+    return 'Treten Sie meinem $business-Team mit echtem Support diesmal bei';
+  }
+
+  @override
+  String shareProspect2HopeAfterDisappointmentMessage(
+      Object business, Object link) {
+    return 'Ich weiß, Sie wurden schon mal enttäuscht. Leere Versprechen, null Support, bei Null anfangen.\n\nSo führe ich mein Team nicht.\n\nTeam Build Pro lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell beitreten. Echte Dynamik vor Tag 1. Kein Hype - nur KI-gestützte Tools, die tatsächlich funktionieren.\n\nIch werde Ihr Sponsor sein, der KI-Coach führt Sie 24/7, und Sie haben vorgefertigte Nachrichten bereit.\n\nSehen Sie wie: $link\n\nSie verdienen ein System, das Sie zum Gewinnen aufstellt. Ich möchte Sie in meinem Team.';
+  }
+
+  @override
+  String get shareProspect2SocialAnxietyTitle =>
+      'Unangenehme Gespräche vermeiden';
+
+  @override
+  String get shareProspect2SocialAnxietyDescription =>
+      'Perfekt für Introvertierte oder solche, die sich bei persönlicher Rekrutierung unwohl fühlen';
+
+  @override
+  String shareProspect2SocialAnxietySubject(Object business) {
+    return 'Bauen Sie Ihr $business-Team ohne unangenehme Gespräche auf';
+  }
+
+  @override
+  String shareProspect2SocialAnxietyMessage(Object business, Object link) {
+    return 'Unwohl bei unangenehmen Verkaufsgesprächen? Verstehe ich. Deshalb nutze ich Team Build Pro mit meinem Team.\n\nEs lässt Sie Ihr $business-Netzwerk online aufbauen, in Ihrem eigenen Tempo:\n- 16 vorgefertigte Nachrichten - kein \"Was sage ich?\"\n- Kandidaten in Ihrem eigenen Tempo aufbauen\n- 24/7 KI-Anleitung, wenn Sie sie brauchen\n\nKeine Kaltakquise. Keine persönlichen Pitches nötig. Und Sie können anfangen aufzubauen, BEVOR Sie beitreten.\n\nStarten Sie nach Ihren Bedingungen: $link\n\nWenn Sie meinem Team beitreten, haben Sie echte Dynamik von Leuten, die Sie bequem online rekrutiert haben.';
+  }
+
+  @override
+  String get shareProspect2TimeConstrainedTitle =>
+      'Für vielbeschäftigte Profis';
+
+  @override
+  String get shareProspect2TimeConstrainedDescription =>
+      'Ideal für Kandidaten, die Job, Familie und andere Verpflichtungen jonglieren';
+
+  @override
+  String shareProspect2TimeConstrainedSubject(Object business) {
+    return 'Bauen Sie Ihr $business-Team in den Lücken Ihres Lebens auf';
+  }
+
+  @override
+  String shareProspect2TimeConstrainedMessage(Object business, Object link) {
+    return 'Ich weiß, Sie sind beschäftigt. Eigentlich deshalb könnte $business für Sie funktionieren - und deshalb möchte ich Sie in meinem Team.\n\nTeam Build Pro lässt Sie Ihr Team aufbauen, BEVOR Sie offiziell beitreten - in kleinen Zeitabschnitten. Morgenkaffee. Mittagspause. Abendfreizeit.\n\nDer KI-Coach und 16 vorgefertigte Nachrichten lassen jede Minute zählen:\n- Alle Kandidaten an einem Ort verfolgen\n- KI-Anleitung bekommen, wenn Sie ein paar Minuten haben\n- Sehen Sie Ihre Dynamik wachsen\n\nSehen Sie, wie es in Ihr Leben passt: $link\n\nWenn Sie bereit sind, meinem Team beizutreten, fangen Sie nicht bei Null an. Sie starten mit Leuten, die bereits warten.';
+  }
+
+  @override
+  String get shareProspect2FinancialRiskAverseTitle =>
+      'Angst, Geld zu verlieren';
+
+  @override
+  String get shareProspect2FinancialRiskAverseDescription =>
+      'Großartig für Kandidaten, die sich vor finanziellem Risiko sorgen';
+
+  @override
+  String shareProspect2FinancialRiskAverseSubject(Object business) {
+    return 'Sehen Sie Ergebnisse, bevor Sie in $business investieren';
+  }
+
+  @override
+  String shareProspect2FinancialRiskAverseMessage(
+      Object business, Object link) {
+    return 'Besorgt, Geld zu verlieren? Klug. Deshalb empfehle ich Team Build Pro jedem, der meinem Team beitritt.\n\nEs lässt Sie Ihr $business-Team aufbauen, BEVOR Sie offiziell investieren - so sehen Sie zuerst echte Ergebnisse.\n\nVerfolgen Sie Ihren tatsächlichen Fortschritt:\n- Wer interessiert ist beizutreten\n- Ihre wachsende Dynamik\n- Beweis, dass das System für Sie funktioniert\n\nNur 4,99 €/Monat nach einer kostenlosen Testversion. Viel weniger Risiko als blind einzusteigen.\n\nSehen Sie zuerst Beweise: $link\n\nWenn Sie schließlich meinem $business-Team beitreten, starten Sie mit Leuten, die bereits warten - nicht alles auf Hoffnung riskierend.';
+  }
+
+  @override
+  String get shareProspect2SkepticalRealistTitle => 'Zeigen Sie mir Beweise';
+
+  @override
+  String get shareProspect2SkepticalRealistDescription =>
+      'Perfekt für Kandidaten, die von falschen Versprechen enttäuscht wurden';
+
+  @override
+  String shareProspect2SkepticalRealistSubject(Object business) {
+    return 'Kein Hype. Echte Metriken. Treten Sie meinem $business-Team bei.';
+  }
+
+  @override
+  String shareProspect2SkepticalRealistMessage(Object business, Object link) {
+    return 'Müde von leeren Versprechen? Ich auch. Deshalb führe ich mein $business-Team anders.\n\nTeam Build Pro zeigt Ihnen echte Metriken bei jedem Schritt:\n- Wie viele Leute Sie kontaktiert haben\n- Wer geantwortet hat und interessiert ist\n- Ihr tatsächlicher Fortschritt zur Qualifikation\n- Nächste Schritte, die die KI empfiehlt\n\nKein Geschwätz. Keine Übertreibung. Nur Daten. Und Sie können all das tun, BEVOR Sie beitreten.\n\nSehen Sie die Transparenz: $link\n\nWenn Sie meinem Team beitreten, starten Sie mit Beweisen - nicht mit blindem Glauben. Das ist die einzige Art, wie ich Geschäfte mache.';
   }
 
   @override
