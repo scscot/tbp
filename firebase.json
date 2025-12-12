@@ -56,13 +56,7 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [
-                {
-                    "source": "/index.html",
-                    "destination": "/",
-                    "type": 301
-                }
-            ],
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",
@@ -306,13 +300,7 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [
-                {
-                    "source": "/index.html",
-                    "destination": "/",
-                    "type": 301
-                }
-            ],
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",
@@ -352,13 +340,7 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [
-                {
-                    "source": "/index.html",
-                    "destination": "/",
-                    "type": 301
-                }
-            ],
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",
@@ -398,13 +380,7 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [
-                {
-                    "source": "/index.html",
-                    "destination": "/",
-                    "type": 301
-                }
-            ],
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",

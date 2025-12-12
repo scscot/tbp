@@ -1357,3 +1357,125 @@ div.section .section-header {
         font-size: 0.8rem !important;
     }
 }
+
+/* ===== VIDEO LIGHTBOX STYLES ===== */
+.video-lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-lightbox.active {
+    display: flex;
+}
+
+.video-lightbox-content {
+    position: relative;
+    max-width: 800px;
+    width: 90%;
+}
+
+.video-lightbox video {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.video-lightbox-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.video-lightbox-close:hover {
+    opacity: 1;
+}
+
+.video-thumbnail {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    margin: 1.25rem 0;
+}
+
+.video-thumbnail img {
+    max-width: 280px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-thumbnail:hover img {
+    transform: scale(1.03);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.video-thumbnail .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.video-thumbnail:hover .play-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-thumbnail .play-icon::after {
+    content: '';
+    border-style: solid;
+    border-width: 14px 0 14px 22px;
+    border-color: transparent transparent transparent #667eea;
+    margin-left: 5px;
+}
+
+.video-caption {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .video-thumbnail img {
+        max-width: 220px;
+    }
+
+    .video-thumbnail .play-icon {
+        width: 52px;
+        height: 52px;
+    }
+
+    .video-thumbnail .play-icon::after {
+        border-width: 11px 0 11px 18px;
+        margin-left: 4px;
+    }
+
+    .video-lightbox-close {
+        top: -40px;
+        font-size: 32px;
+    }
+}

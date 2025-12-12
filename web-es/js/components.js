@@ -174,14 +174,21 @@
         const logoLink = getLogoLink();
         const year = new Date().getFullYear();
 
-        // Build language switcher with proper active state
-        const langSwitcher = Object.keys(domains).map(lang => {
-            if (lang === locale) {
-                return `<span class="lang-link active" lang="${lang}">${translations[lang].langName}</span>`;
-            } else {
-                return `<a href="${buildLangLink(lang)}" hreflang="${lang}" lang="${lang}" class="lang-link">${translations[lang].langName}</a>`;
-            }
-        }).join('<span class="lang-separator">|</span>');
+        // Check which languages are available for this page
+        const availableLangsAttr = document.documentElement.getAttribute('data-available-langs');
+        const availableLangs = availableLangsAttr ? availableLangsAttr.split(',') : Object.keys(domains);
+
+        // Build language switcher with proper active state (only show available languages)
+        const langLinks = Object.keys(domains)
+            .filter(lang => availableLangs.includes(lang))
+            .map(lang => {
+                if (lang === locale) {
+                    return `<span class="lang-link active" lang="${lang}">${translations[lang].langName}</span>`;
+                } else {
+                    return `<a href="${buildLangLink(lang)}" hreflang="${lang}" lang="${lang}" class="lang-link">${translations[lang].langName}</a>`;
+                }
+            });
+        const langSwitcher = langLinks.join('<span class="lang-separator">|</span>');
 
         return `
     <!-- Top Invite Bar (populated by JavaScript when referral exists) -->
@@ -245,6 +252,76 @@
     }
 
     // =========================================================================
+    // VIDEO LIGHTBOX
+    // =========================================================================
+    function initVideoLightbox() {
+        const lightbox = document.getElementById('video-lightbox');
+        if (!lightbox) {
+            console.log('Video lightbox: no lightbox element found');
+            return;
+        }
+
+        const video = lightbox.querySelector('video');
+        const closeBtn = lightbox.querySelector('.video-lightbox-close');
+        const thumbnails = document.querySelectorAll('.video-thumbnail');
+        const textLinks = document.querySelectorAll('.video-text-link');
+
+        console.log('Video lightbox init:', {
+            lightbox: !!lightbox,
+            video: !!video,
+            closeBtn: !!closeBtn,
+            textLinks: textLinks.length
+        });
+
+        if (!video || !closeBtn) {
+            console.log('Video lightbox: missing video or close button');
+            return;
+        }
+
+        // Open lightbox on thumbnail click
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                lightbox.classList.add('active');
+                video.play().catch(() => {}); // Handle autoplay restrictions
+            });
+        });
+
+        // Open lightbox on text link click
+        textLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                lightbox.classList.add('active');
+                video.play().catch(() => {}); // Handle autoplay restrictions
+            });
+        });
+
+        // Close on X button
+        closeBtn.addEventListener('click', function() {
+            closeLightbox();
+        });
+
+        // Close on backdrop click
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            video.pause();
+            video.currentTime = 0;
+        }
+    }
+
+    // =========================================================================
     // INITIALIZATION
     // =========================================================================
     function initComponents() {
@@ -283,6 +360,9 @@
         if (footerPlaceholder) {
             footerPlaceholder.outerHTML = renderFooter();
         }
+
+        // Initialize video lightbox
+        initVideoLightbox();
     }
 
     // Initialize on DOM ready

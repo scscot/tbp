@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-10
+**Last Updated**: 2025-12-12
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -368,6 +368,22 @@ git add . && git commit -m "message" && git push
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 12
+- **Video Lightbox on Company Pages**: Added "Watch 60-Second Video" text link to all 3 CTAs on 287 company pages
+  - Clicking link opens modal lightbox with TBP_Professionals.mp4 video
+  - Localized link text: EN "Watch 60-Second Video", ES "Ver Video de 60 Segundos", PT "Assistir Vídeo de 60 Segundos", DE "60-Sekunden-Video ansehen"
+  - CSS in `web/css/style.css`, JS in `web/js/components.js`
+  - Scripts: `scripts/add-video-lightbox.js`, `scripts/fix-video-lightbox.js`, `scripts/add-video-link-all-ctas.js`
+- **Smart Language Switcher**: Fixed language switcher to only show links for pages that actually exist
+  - Added `data-available-langs` attribute to all company page `<html>` tags (e.g., `data-available-langs="en,es,pt"`)
+  - Updated `components.js` to filter language options based on this attribute
+  - Prevents 404 errors when PT (39 pages) or DE (20 pages) don't have all EN/ES company pages (114 each)
+  - Script: `scripts/add-available-langs.js`
+- **SEO Meta Description Update**: Updated meta descriptions on all 287 company pages
+  - Changed from generic "AI recruiting playbook..." to benefit-focused "Grow your {Company} team with AI..."
+  - Script: `scripts/update-meta-descriptions.js`
+- **Firebase Redirect Fix**: Removed broken redirect rules from firebase.json that caused infinite `.html.html.html...` loops
 
 ### Week of Dec 10
 - **App Store Preview Videos**: Added 3 preview videos to each iOS localization (EN, ES, PT, DE = 12 total)
