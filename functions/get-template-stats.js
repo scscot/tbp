@@ -34,8 +34,8 @@ async function getStats() {
   }
 
   // Check stats by common tags used in the campaigns
-  // A/B Test versions: 'initial' vs 'initial_1'
-  const tags = ['initial', 'initial_1', 'winning_combination', 'yahoo_campaign', 'android_launch'];
+  // Dec 11, 2025: A/B Test versions: 'cold_reconnect' vs 'cold_button'
+  const tags = ['cold_reconnect', 'cold_button', 'initial_campaign', 'yahoo_initial_campaign', 'android_launch', 'initial', 'simple'];
 
   console.log('📈 Stats by Campaign Tag (Last 24 Hours):');
   console.log('-'.repeat(55));

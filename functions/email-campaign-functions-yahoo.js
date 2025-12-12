@@ -15,15 +15,15 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 10, 2025: A/B testing between 'initial' and 'simple' templates
-  // Using GA4 UTM tracking to measure actual click-through (Mailgun stats unreliable due to Gmail pre-fetch)
-  const templateVersions = ['initial', 'simple'];
+  // Dec 11, 2025: A/B testing between 'cold_reconnect' (text link) and 'cold_button' (button CTA)
+  // Templates optimized for cold, decade-old contact list per Joe's recommendations
+  const templateVersions = ['cold_reconnect', 'cold_button'];
   const templateVersion = templateVersions[index % 2];
 
   // Alternate between two subject lines for A/B testing
   const subjectLines = [
-    'Building Your Downline With AI',
-    'The Recruiting App Built for Direct Sales'
+    'The Recruiting App Built for Direct Sales',
+    'Building Your Downline With AI'
   ];
   const selectedSubject = subjectLines[index % 2];
 
@@ -127,7 +127,7 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
           mailgunId: result.id || ''
         });
 
-        const usedTemplate = ['initial', 'simple'][i % 2];
+        const usedTemplate = ['cold_reconnect', 'cold_button'][i % 2];
         console.log(`✅ Sent to ${contact.email} [${usedTemplate}]: ${result.id}`);
         sent++;
 
