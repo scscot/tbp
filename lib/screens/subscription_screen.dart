@@ -303,7 +303,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   String get _platformSubscriptionText {
-    return context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$4.99/month';
+    return context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$6.99/month';
   }
 
   @override
@@ -358,7 +358,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] ==
                                         'trial'
-                                    ? (context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$4.99/month')
+                                    ? (context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$6.99/month')
                                     : _platformSubscriptionText,
                                 style: const TextStyle(
                                   fontSize: 16,

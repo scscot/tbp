@@ -11,7 +11,7 @@ const faqData = [
     id: 'what_is_tbp',
     question: 'What is Team Build Pro?',
     answer:
-      'Team Build Pro is a SaaS software tool that helps professionals build teams BEFORE joining business opportunities. We charge $4.99/month - we are NOT a business opportunity or MLM. Think of us like LinkedIn for direct sales professionals.',
+      'Team Build Pro is a SaaS software tool that helps professionals build teams BEFORE joining business opportunities. We charge $6.99/month - we are NOT a business opportunity or MLM. Think of us like LinkedIn for direct sales professionals.',
     keywords: ['team build pro', 'what is', 'software', 'saas', 'tool'],
     category: 'business_model',
   },
@@ -27,7 +27,7 @@ const faqData = [
     id: 'after_qualification',
     question: 'What happens after I qualify?',
     answer:
-      'After qualifying with 4 direct sponsors and 20 total team members, you receive invitations to legitimate business opportunities. Your Team Build Pro network becomes your foundation - ready to join opportunities with an established team. You can continue growing your Team Build Pro network, support your team members, and evaluate which business opportunities align with your goals. Your subscription continues at $4.99/month to maintain access to your network and team building tools.',
+      'After qualifying with 4 direct sponsors and 20 total team members, you receive invitations to legitimate business opportunities. Your Team Build Pro network becomes your foundation - ready to join opportunities with an established team. You can continue growing your Team Build Pro network, support your team members, and evaluate which business opportunities align with your goals. Your subscription continues at $6.99/month to maintain access to your network and team building tools.',
     keywords: ['after qualify', 'post qualification', 'once qualified', 'what happens', 'what next', 'qualified now what'],
     category: 'getting_started',
   },
@@ -35,7 +35,7 @@ const faqData = [
     id: 'not_mlm',
     question: 'How is this different from an MLM?',
     answer:
-      'Team Build Pro is NOT an MLM. Key differences: You pay us monthly ($4.99), we never pay you. No income opportunities. No recruitment commissions. We are a software tool, not a business opportunity. Use us to build your foundation, then join legitimate opportunities.',
+      'Team Build Pro is NOT an MLM. Key differences: You pay us monthly ($6.99), we never pay you. No income opportunities. No recruitment commissions. We are a software tool, not a business opportunity. Use us to build your foundation, then join legitimate opportunities.',
     keywords: ['mlm', 'network marketing', 'difference', 'not mlm', 'business opportunity'],
     category: 'business_model',
   },
@@ -152,7 +152,7 @@ const faqData = [
     id: 'free_trial',
     question: 'How does the free trial work?',
     answer:
-      '30-day free trial with full access to all premium features. No credit card required to start. Trial begins when you create your account. After 30 days, subscription automatically begins at $4.99/month unless cancelled.',
+      '30-day free trial with full access to all premium features. No credit card required to start. Trial begins when you create your account. After 30 days, subscription automatically begins at $6.99/month unless cancelled.',
     keywords: ['free trial', '30 days', 'no credit card', 'trial period', 'premium features'],
     category: 'pricing_billing',
   },

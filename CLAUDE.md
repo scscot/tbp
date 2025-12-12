@@ -53,7 +53,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **4 direct sponsors + 20 total downline members** = qualification milestones
 - **Available worldwide** wherever App Store and Google Play operate (with timezone-aware features)
 - **Works with any direct sales company** (company-agnostic platform)
-- **$4.99/month** after 30-day free trial
+- **$6.99/month** after 30-day free trial
 - **70% performance improvement** through client-side caching
 
 ---
@@ -208,7 +208,7 @@ All four main sites have identical structure:
 
 ### SEO & Meta Tags
 - Title: "AI Downline Builder - Recruit Smarter, Build Faster"
-- Description: "Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after."
+- Description: "Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $6.99/mo after."
 - Hreflang tags linking all language versions
 - JSON-LD schemas for organization and app
 
@@ -453,7 +453,7 @@ git add . && git commit -m "message" && git push
 ## Business Model
 
 **NOT a business opportunity** - Team Build Pro is a B2B SaaS tool:
-- **Revenue Model**: Subscription ($4.99/month after 30-day trial)
+- **Revenue Model**: Subscription ($6.99/month after 30-day trial)
 - **Target Market**: Direct sales professionals and their prospects
 - **Competitive Advantage**: Only platform enabling pre-building teams before joining
 - **Distribution**: iOS App Store, Google Play Store

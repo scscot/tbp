@@ -3521,7 +3521,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kein vorheriges Abonnement zum Wiederherstellen gefunden.';
 
   @override
-  String get subscriptionSubscribeButton => 'Jetzt abonnieren - \$4.99/Monat';
+  String get subscriptionSubscribeButton => 'Jetzt abonnieren - \$6.99/Monat';
 
   @override
   String get subscriptionRestoreButton =>

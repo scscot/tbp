@@ -420,7 +420,7 @@ List<FAQItem> _privacySecurityFAQs(BuildContext context) => [
 
 List<FAQItem> _pricingFAQs(BuildContext context) => [
   FAQItem(
-    question: context.l10n?.faqQ25 ?? 'Is \$4.99/month worth it compared to free alternatives?',
+    question: context.l10n?.faqQ25 ?? 'Is \$6.99/month worth it compared to free alternatives?',
     answer: context.l10n?.faqA25 ?? 'Free tools aren\'t built for the direct sales industry and lack crucial features like qualification tracking, business opportunity integration, and team analytics. For less than the cost of a coffee, you get professional-grade team building tools that can transform your business.',
   ),
   FAQItem(

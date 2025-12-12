@@ -2415,7 +2415,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String shareProspectFinancialRiskAverseMessage(Object business, Object link) {
-    return 'Lo que siempre me ha detenido de $business? Odio perder dinero en cosas que no funcionan.\n\nEncontré Team Build Pro - te permite construir un equipo ANTES de unirte a cualquier oportunidad. Puedes ver resultados reales antes de invertir en nada.\n\nLa app cuesta solo \$4.99/mes después de una prueba gratis. Mucho menos que comprar una oportunidad a ciegas.\n\nLo estoy probando para ver si realmente puedo reclutar personas primero:\n\n$link\n\nPensé que apreciarías el enfoque de bajo riesgo también. Ver pruebas antes de gastar dinero real.';
+    return 'Lo que siempre me ha detenido de $business? Odio perder dinero en cosas que no funcionan.\n\nEncontré Team Build Pro - te permite construir un equipo ANTES de unirte a cualquier oportunidad. Puedes ver resultados reales antes de invertir en nada.\n\nLa app cuesta solo \$6.99/mes después de una prueba gratis. Mucho menos que comprar una oportunidad a ciegas.\n\nLo estoy probando para ver si realmente puedo reclutar personas primero:\n\n$link\n\nPensé que apreciarías el enfoque de bajo riesgo también. Ver pruebas antes de gastar dinero real.';
   }
 
   @override
@@ -2555,7 +2555,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String shareProspect2FinancialRiskAverseMessage(
       Object business, Object link) {
-    return '¿Preocupado por perder dinero? Inteligente. Por eso recomiendo Team Build Pro a todos los que se unen a mi equipo.\n\nTe permite construir tu equipo de $business ANTES de invertir oficialmente - así ves resultados reales primero.\n\nRastrea tu progreso real:\n- Quién está interesado en unirse\n- Tu impulso creciendo\n- Prueba de que el sistema funciona para ti\n\nSolo \$4.99/mes después de una prueba gratis. Mucho menos riesgo que lanzarte a ciegas.\n\nVe la prueba primero: $link\n\nCuando finalmente te unas a mi equipo de $business, lanzarás con personas ya esperando - no arriesgando todo en esperanza.';
+    return '¿Preocupado por perder dinero? Inteligente. Por eso recomiendo Team Build Pro a todos los que se unen a mi equipo.\n\nTe permite construir tu equipo de $business ANTES de invertir oficialmente - así ves resultados reales primero.\n\nRastrea tu progreso real:\n- Quién está interesado en unirse\n- Tu impulso creciendo\n- Prueba de que el sistema funciona para ti\n\nSolo \$6.99/mes después de una prueba gratis. Mucho menos riesgo que lanzarte a ciegas.\n\nVe la prueba primero: $link\n\nCuando finalmente te unas a mi equipo de $business, lanzarás con personas ya esperando - no arriesgando todo en esperanza.';
   }
 
   @override
@@ -3501,7 +3501,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se encontró ninguna suscripción anterior para restaurar.';
 
   @override
-  String get subscriptionSubscribeButton => 'Suscribirse Ahora - \$4.99/mes';
+  String get subscriptionSubscribeButton => 'Suscribirse Ahora - \$6.99/mes';
 
   @override
   String get subscriptionRestoreButton => 'Restaurar Suscripción Anterior';
@@ -4142,7 +4142,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqQ25 =>
-      '¿Vale la pena \$4.99/mes en comparación con alternativas gratuitas?';
+      '¿Vale la pena \$6.99/mes en comparación con alternativas gratuitas?';
 
   @override
   String get faqA25 =>

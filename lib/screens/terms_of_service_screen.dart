@@ -135,14 +135,14 @@ These Terms constitute a legally binding agreement between you and Team Build Pr
 • Systematic networking frameworks
 • Communication and collaboration features
 
-The platform operates on a subscription model with a 30-day free trial, followed by a monthly fee of \$4.99 (subject to change with notice).''',
+The platform operates on a subscription model with a 30-day free trial, followed by a monthly fee of \$6.99 (subject to change with notice).''',
             ),
 
             _buildSection(
               context.l10n?.termsSection3Title ?? '3. SUBSCRIPTION TERMS',
               context.l10n?.termsSection3Content ?? '''BILLING AND PAYMENT:
 • 30-day free trial for new users
-• Monthly subscription fee of \$4.99 after trial period
+• Monthly subscription fee of \$6.99 after trial period
 • Automatic renewal unless cancelled
 • Payment charged to your selected payment method
 • Subscription rates subject to change with 30 days notice

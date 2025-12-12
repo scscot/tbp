@@ -2984,7 +2984,7 @@
   "subscriptionOkButton": "OK",
   "subscriptionRestoredSuccess": "✅ Assinatura restaurada com sucesso!",
   "subscriptionNoPreviousFound": "Nenhuma assinatura anterior encontrada para restaurar.",
-  "subscriptionSubscribeButton": "Assinar Agora - $4.99/mês",
+  "subscriptionSubscribeButton": "Assinar Agora - $6.99/mês",
   "subscriptionRestoreButton": "Restaurar Assinatura Anterior",
   "subscriptionLegalNotice": "Ao assinar, você concorda com nossos Termos de Serviço e Política de Privacidade.",
   "subscriptionTermsLink": "Termos de Serviço",
@@ -3438,7 +3438,7 @@
   "@faqQ18": {
     "description": "FAQ question 18"
   },
-  "faqA18": "Oferecemos uma avaliação gratuita de 30 dias, após a qual o Team Build Pro custa $4.99 USD por mês ou $49.99 USD por ano (economize 17%). Os preços podem variar por região devido a taxas de câmbio e impostos locais.",
+  "faqA18": "Oferecemos uma avaliação gratuita de 30 dias, após a qual o Team Build Pro custa $6.99 USD por mês ou $69.99 USD por ano (economize 17%). Os preços podem variar por região devido a taxas de câmbio e impostos locais.",
   "@faqA18": {
     "description": "FAQ answer 18"
   },

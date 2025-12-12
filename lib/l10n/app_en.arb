@@ -3738,7 +3738,7 @@
   "shareProspectFinancialRiskAverseTitle": "Afraid of Losing Money",
   "shareProspectFinancialRiskAverseDescription": "Great for prospects worried about financial risk",
   "shareProspectFinancialRiskAverseSubject": "Testing {business} Without Financial Risk First",
-  "shareProspectFinancialRiskAverseMessage": "The thing that's always stopped me from {business}? I hate losing money on things that don't work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just $4.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI'm testing it to see if I can actually recruit people first:\n\n{link}\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.",
+  "shareProspectFinancialRiskAverseMessage": "The thing that's always stopped me from {business}? I hate losing money on things that don't work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just $6.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI'm testing it to see if I can actually recruit people first:\n\n{link}\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.",
   "shareProspectSkepticalRealistTitle": "Show Me Proof",
   "shareProspectSkepticalRealistDescription": "Perfect for prospects burned by false promises",
   "shareProspectSkepticalRealistSubject": "No Hype - Just Testing {business} the Smart Way",
@@ -3771,7 +3771,7 @@
   "shareProspect2FinancialRiskAverseTitle": "Afraid of Losing Money",
   "shareProspect2FinancialRiskAverseDescription": "Great for prospects worried about financial risk",
   "shareProspect2FinancialRiskAverseSubject": "See Results Before Investing in {business}",
-  "shareProspect2FinancialRiskAverseMessage": "Worried about losing money? Smart. That's why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your {business} team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who's interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly $4.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: {link}\n\nWhen you finally join my {business} team, you're launching with people already waiting - not risking everything on hope.",
+  "shareProspect2FinancialRiskAverseMessage": "Worried about losing money? Smart. That's why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your {business} team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who's interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly $6.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: {link}\n\nWhen you finally join my {business} team, you're launching with people already waiting - not risking everything on hope.",
   "shareProspect2SkepticalRealistTitle": "Show Me Proof",
   "shareProspect2SkepticalRealistDescription": "Perfect for prospects burned by false promises",
   "shareProspect2SkepticalRealistSubject": "No Hype. Real Metrics. Join My {business} Team.",
@@ -4126,7 +4126,7 @@
   "subscriptionOkButton": "OK",
   "subscriptionRestoredSuccess": "✅ Subscription restored successfully!",
   "subscriptionNoPreviousFound": "No previous subscription found to restore.",
-  "subscriptionSubscribeButton": "Subscribe Now - $4.99/month",
+  "subscriptionSubscribeButton": "Subscribe Now - $6.99/month",
   "subscriptionRestoreButton": "Restore Previous Subscription",
   "subscriptionLegalNotice": "By subscribing, you agree to our Terms of Service and Privacy Policy.",
   "subscriptionTermsLink": "Terms of Service",
@@ -4624,7 +4624,7 @@
   "@faqA24": {
     "description": "FAQ answer 24"
   },
-  "faqQ25": "Is $4.99/month worth it compared to free alternatives?",
+  "faqQ25": "Is $6.99/month worth it compared to free alternatives?",
   "@faqQ25": {
     "description": "FAQ question 25"
   },

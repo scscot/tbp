@@ -3487,7 +3487,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Nenhuma assinatura anterior encontrada para restaurar.';
 
   @override
-  String get subscriptionSubscribeButton => 'Assinar Agora - \$4.99/mês';
+  String get subscriptionSubscribeButton => 'Assinar Agora - \$6.99/mês';
 
   @override
   String get subscriptionRestoreButton => 'Restaurar Assinatura Anterior';
@@ -4077,7 +4077,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get faqA18 =>
-      'Oferecemos uma avaliação gratuita de 30 dias, após a qual o Team Build Pro custa \$4.99 USD por mês ou \$49.99 USD por ano (economize 17%). Os preços podem variar por região devido a taxas de câmbio e impostos locais.';
+      'Oferecemos uma avaliação gratuita de 30 dias, após a qual o Team Build Pro custa \$6.99 USD por mês ou \$69.99 USD por ano (economize 17%). Os preços podem variar por região devido a taxas de câmbio e impostos locais.';
 
   @override
   String get faqQ19 => 'Existe um período de avaliação gratuito?';

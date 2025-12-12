@@ -269,7 +269,7 @@ class _ShareProspectScreenState extends State<ShareProspectScreen>
         'description': context.l10n?.shareProspectFinancialRiskAverseDescription ?? 'Great for prospects worried about financial risk',
         'subject': context.l10n?.shareProspectFinancialRiskAverseSubject(_bizOppName) ?? 'Testing $_bizOppName Without Financial Risk First',
         'message': (context.l10n?.shareProspectFinancialRiskAverseMessage(_bizOppName, _prospectReferralLink ?? '') ??
-            'The thing that\'s always stopped me from $_bizOppName? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$4.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n$_prospectReferralLink\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.'),
+            'The thing that\'s always stopped me from $_bizOppName? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$6.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n$_prospectReferralLink\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.'),
       },
       'skeptical_realist': {
         'title': context.l10n?.shareProspectSkepticalRealistTitle ?? 'Show Me Proof',

@@ -2382,7 +2382,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String shareProspectFinancialRiskAverseMessage(Object business, Object link) {
-    return 'The thing that\'s always stopped me from $business? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$4.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n$link\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.';
+    return 'The thing that\'s always stopped me from $business? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$6.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n$link\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.';
   }
 
   @override
@@ -2521,7 +2521,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String shareProspect2FinancialRiskAverseMessage(
       Object business, Object link) {
-    return 'Worried about losing money? Smart. That\'s why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your $business team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who\'s interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly \$4.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: $link\n\nWhen you finally join my $business team, you\'re launching with people already waiting - not risking everything on hope.';
+    return 'Worried about losing money? Smart. That\'s why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your $business team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who\'s interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly \$6.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: $link\n\nWhen you finally join my $business team, you\'re launching with people already waiting - not risking everything on hope.';
   }
 
   @override
@@ -3446,7 +3446,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No previous subscription found to restore.';
 
   @override
-  String get subscriptionSubscribeButton => 'Subscribe Now - \$4.99/month';
+  String get subscriptionSubscribeButton => 'Subscribe Now - \$6.99/month';
 
   @override
   String get subscriptionRestoreButton => 'Restore Previous Subscription';
@@ -4079,7 +4079,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqQ25 =>
-      'Is \$4.99/month worth it compared to free alternatives?';
+      'Is \$6.99/month worth it compared to free alternatives?';
 
   @override
   String get faqA25 =>

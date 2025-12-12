@@ -4124,7 +4124,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspectFinancialRiskAverseMessage.
   ///
   /// In en, this message translates to:
-  /// **'The thing that\'s always stopped me from {business}? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$4.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n{link}\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.'**
+  /// **'The thing that\'s always stopped me from {business}? I hate losing money on things that don\'t work out.\n\nI found Team Build Pro - it lets you build a team BEFORE joining any opportunity. You can see actual results before investing in anything.\n\nThe app is just \$6.99/month after a free trial. Way less than buying into an opportunity blind.\n\nI\'m testing it to see if I can actually recruit people first:\n\n{link}\n\nThought you might appreciate the low-risk approach too. See proof before spending real money.'**
   String shareProspectFinancialRiskAverseMessage(Object business, Object link);
 
   /// No description provided for @shareProspectSkepticalRealistTitle.
@@ -4317,7 +4317,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareProspect2FinancialRiskAverseMessage.
   ///
   /// In en, this message translates to:
-  /// **'Worried about losing money? Smart. That\'s why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your {business} team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who\'s interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly \$4.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: {link}\n\nWhen you finally join my {business} team, you\'re launching with people already waiting - not risking everything on hope.'**
+  /// **'Worried about losing money? Smart. That\'s why I recommend Team Build Pro to everyone joining my team.\n\nIt lets you build your {business} team BEFORE you officially invest - so you see real results first.\n\nTrack your actual progress:\n- Who\'s interested in joining\n- Your momentum building\n- Proof the system works for you\n\nOnly \$6.99/month after a free trial. Way less risk than jumping in blind.\n\nSee proof first: {link}\n\nWhen you finally join my {business} team, you\'re launching with people already waiting - not risking everything on hope.'**
   String shareProspect2FinancialRiskAverseMessage(Object business, Object link);
 
   /// No description provided for @shareProspect2SkepticalRealistTitle.
@@ -5872,7 +5872,7 @@ abstract class AppLocalizations {
   /// Subscribe button text
   ///
   /// In en, this message translates to:
-  /// **'Subscribe Now - \$4.99/month'**
+  /// **'Subscribe Now - \$6.99/month'**
   String get subscriptionSubscribeButton;
 
   /// Restore subscription button text
@@ -6946,7 +6946,7 @@ abstract class AppLocalizations {
   /// FAQ question 25
   ///
   /// In en, this message translates to:
-  /// **'Is \$4.99/month worth it compared to free alternatives?'**
+  /// **'Is \$6.99/month worth it compared to free alternatives?'**
   String get faqQ25;
 
   /// FAQ answer 25

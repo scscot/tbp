@@ -325,11 +325,11 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
 
   String get _platformSubscriptionText {
     if (Platform.isIOS) {
-      return 'Subscribe - \$4.99/month';
+      return 'Subscribe - \$6.99/month';
     } else if (Platform.isAndroid) {
-      return 'Subscribe - \$4.99/month';
+      return 'Subscribe - \$6.99/month';
     } else {
-      return 'Subscribe - \$4.99/month';
+      return 'Subscribe - \$6.99/month';
     }
   }
 
@@ -385,7 +385,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
                             : Text(
                                 subscriptionStatus?['subscriptionStatus'] ==
                                         'trial'
-                                    ? (context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$4.99/month')
+                                    ? (context.l10n?.subscriptionSubscribeButton ?? 'Subscribe Now - \$6.99/month')
                                     : _platformSubscriptionText,
                                 style: const TextStyle(
                                   fontSize: 16,

@@ -196,7 +196,7 @@ EXAMPLE CORRECT FORMAT:
 EXAMPLE WRONG FORMAT:
 "Visit the Team tab. {"action": {"route": "/team", "params": {}}}"
 
-CONTEXT: Team Build Pro is a SaaS tool ($4.99/month) that helps professionals build teams BEFORE joining business opportunities. It's NOT an MLM - users pay us, we don't pay them.`;
+CONTEXT: Team Build Pro is a SaaS tool ($6.99/month) that helps professionals build teams BEFORE joining business opportunities. It's NOT an MLM - users pay us, we don't pay them.`;
 }
 
 exports.chatbot = onRequest(
