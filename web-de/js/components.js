@@ -160,11 +160,17 @@
 
     /**
      * Build language switcher link preserving query string
+     * Note: Strips 'ref' and 'new' params to avoid triggering Universal Links
+     * (referral context is already preserved in sessionStorage)
      */
     function buildLangLink(targetLocale) {
         const currentPath = window.location.pathname;
-        const currentSearch = window.location.search;
-        return domains[targetLocale] + currentPath + currentSearch;
+        const params = new URLSearchParams(window.location.search);
+        // Remove referral params that trigger Universal Links
+        params.delete('ref');
+        params.delete('new');
+        const cleanSearch = params.toString();
+        return domains[targetLocale] + currentPath + (cleanSearch ? '?' + cleanSearch : '');
     }
 
     // =========================================================================
