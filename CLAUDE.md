@@ -373,6 +373,25 @@ git add . && git commit -m "message" && git push
 ## Recent Updates (December 2025)
 
 ### Week of Dec 13
+- **Podcast Automation for Blogs**: Added ElevenLabs TTS podcast generation to blog automation pipeline
+  - New scripts: `scripts/generate-podcasts.js` (main engine), `scripts/podcast-config.js` (voice settings)
+  - Integration with `generate-ai-blog.js` - automatically generates podcasts after blog creation
+  - Languages: EN, ES, PT only until Jan 13, 2026 credit reset (DE pending)
+  - ElevenLabs Creator tier: 140,000 chars/month, ~4,500 chars per podcast
+  - Audio files uploaded to Firebase Storage: `gs://teambuilder-plus-fe74d.appspot.com/podcasts/[lang]/[slug].mp3`
+  - Podcast player CSS added to all 4 locale stylesheets
+  - GitHub Actions workflow updated with ELEVENLABS_API_KEY secret
+- **Hero Section Text Update**: Updated hero subline messaging on index.html and professionals.html (all 4 locales)
+  - New: "Prospects pre-build teams before joining. Professionals give their team AI-powered duplication tools. Everyone builds momentum."
+  - Translations provided for ES, PT, DE
+- **Balanced Hero Headlines**: Added `<br class="desktop-only">` for balanced 2-line layout on desktop
+  - Break point after "with/con/com/mit" to emphasize "AI tools" on line 2
+  - CSS hides break on mobile (<768px) for natural word wrapping
+- **Language Switcher Universal Links Fix**: Fixed language switcher triggering app instead of website navigation
+  - Root cause: `?ref=` and `?new=` params in language links matched Universal Links pattern
+  - Solution: `buildLangLink()` in components.js now strips these params (referral context preserved in sessionStorage)
+- **Mobile Menu Fix**: Fixed non-responsive hamburger menu in EN blog.html
+  - Changed `classList.toggle('active')` to `classList.toggle('open')` to match CSS selector
 - **teambuildingproject.com Content Hub**: Transformed legacy brand site from simple landing page into SEO content property
   - Created 5 evergreen pillar pages focused on "Timeless Team-Building Wisdom" (Est. 2009 heritage)
   - Pages: `why-recruits-quit.html`, `five-principles.html`, `duplication-problem.html`, `success-timeline.html`, `building-trust.html`
