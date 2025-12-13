@@ -1409,7 +1409,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   const slug = generateSlug(title);
 
   // Step 1: Generate blog content via Claude
-  console.log(`${colors.bright}${colors.yellow}Step 1/7:${colors.reset} Generating blog content via Claude API...`);
+  console.log(`${colors.bright}${colors.yellow}Step 1/8:${colors.reset} Generating blog content via Claude API...`);
   console.log(`${colors.cyan}  This may take 1-2 minutes...${colors.reset}\n`);
 
   const blogPrompt = generateBlogPromptPlain(title, category, keywords, extraNotes);
@@ -1438,7 +1438,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   }
 
   // Step 2: Validate blog content
-  console.log(`${colors.bright}${colors.yellow}Step 2/7:${colors.reset} Validating blog content...`);
+  console.log(`${colors.bright}${colors.yellow}Step 2/8:${colors.reset} Validating blog content...`);
   const errors = validateBlogPost(blogPost);
   if (errors.length > 0) {
     console.error(`${colors.yellow}⚠️  Validation warnings (${errors.length}):${colors.reset}`);
@@ -1454,7 +1454,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   console.log(`${colors.cyan}  Saved raw response to: scripts/blog-response.json${colors.reset}\n`);
 
   // Step 3: Add to generate-blog.js and generate English HTML
-  console.log(`${colors.bright}${colors.yellow}Step 3/7:${colors.reset} Adding blog to database and generating English HTML...`);
+  console.log(`${colors.bright}${colors.yellow}Step 3/8:${colors.reset} Adding blog to database and generating English HTML...`);
 
   const generateBlogPath = path.join(__dirname, 'generate-blog.js');
   let generateBlogContent = fs.readFileSync(generateBlogPath, 'utf8');
@@ -1485,7 +1485,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   updateSitemap(englishSitemapPath, blogPost, 'en');
 
   // Step 4: Generate Spanish translation
-  console.log(`${colors.bright}${colors.yellow}Step 4/7:${colors.reset} Generating Spanish translation...`);
+  console.log(`${colors.bright}${colors.yellow}Step 4/8:${colors.reset} Generating Spanish translation...`);
   const spanishPrompt = generateTranslationPrompt(blogPost, 'es');
 
   try {
@@ -1515,7 +1515,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   }
 
   // Step 5: Generate Portuguese translation
-  console.log(`${colors.bright}${colors.yellow}Step 5/7:${colors.reset} Generating Portuguese translation...`);
+  console.log(`${colors.bright}${colors.yellow}Step 5/8:${colors.reset} Generating Portuguese translation...`);
   const portuguesePrompt = generateTranslationPrompt(blogPost, 'pt');
 
   try {
@@ -1545,7 +1545,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   }
 
   // Step 6: Generate German translation
-  console.log(`${colors.bright}${colors.yellow}Step 6/7:${colors.reset} Generating German translation...`);
+  console.log(`${colors.bright}${colors.yellow}Step 6/8:${colors.reset} Generating German translation...`);
   const germanPrompt = generateTranslationPrompt(blogPost, 'de');
 
   try {
@@ -1574,8 +1574,35 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
     fs.writeFileSync(path.join(__dirname, 'german-translation-prompt.txt'), germanPrompt, 'utf8');
   }
 
-  // Step 7: Summary
-  console.log(`${colors.bright}${colors.yellow}Step 7/7:${colors.reset} Complete!\n`);
+  // Step 7: Generate podcasts for all languages
+  console.log(`${colors.bright}${colors.yellow}Step 7/8:${colors.reset} Generating podcasts for all languages...`);
+
+  try {
+    const { generatePodcastForLanguage } = require('./generate-podcasts');
+
+    // Generate podcasts for EN, ES, PT (DE disabled until Jan 13, 2026 credit reset)
+    const podcastResults = {};
+    for (const lang of ['en', 'es', 'pt']) {
+      try {
+        console.log(`${colors.cyan}  Generating ${lang.toUpperCase()} podcast...${colors.reset}`);
+        const result = await generatePodcastForLanguage(blogPost.slug, lang);
+        podcastResults[lang] = result;
+        console.log(`${colors.green}  ✓ ${lang.toUpperCase()} podcast generated${colors.reset}`);
+      } catch (podcastError) {
+        console.log(`${colors.yellow}  ⚠️  ${lang.toUpperCase()} podcast failed: ${podcastError.message}${colors.reset}`);
+        podcastResults[lang] = { success: false, error: podcastError.message };
+      }
+    }
+
+    // Summary of podcast generation
+    const successCount = Object.values(podcastResults).filter(r => r.success).length;
+    console.log(`${colors.green}  ✓ Generated ${successCount}/3 podcasts${colors.reset}\n`);
+  } catch (podcastModuleError) {
+    console.log(`${colors.yellow}  ⚠️  Podcast generation skipped: ${podcastModuleError.message}${colors.reset}\n`);
+  }
+
+  // Step 8: Summary
+  console.log(`${colors.bright}${colors.yellow}Step 8/8:${colors.reset} Complete!\n`);
 
   console.log(`${colors.bright}${colors.green}═══════════════════════════════════════════════════════════════════${colors.reset}`);
   console.log(`${colors.bright}${colors.green}   BLOG GENERATION COMPLETE${colors.reset}`);
