@@ -1573,3 +1573,10 @@ div.section .section-header {
         font-size: 0.8rem;
     }
 }
+
+/* Desktop-only line break for balanced hero headlines */
+@media (max-width: 768px) {
+    br.desktop-only {
+        display: none;
+    }
+}
