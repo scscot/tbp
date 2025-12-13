@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-12
+**Last Updated**: 2025-12-13
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -20,7 +20,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | **iOS App** | https://apps.apple.com/us/app/id6751211622 | iPhone/iPad distribution |
 | **Android App** | https://play.google.com/store/apps/details?id=com.scott.ultimatefix | Android distribution |
 | **Author Website** | https://www.stephenscott.us | Thought leadership, book sales, credibility |
-| **Legacy Brand** | https://www.teambuildingproject.com | Historical brand, redirects to main site |
+| **Legacy Brand** | https://teambuildingproject.com | Content hub with evergreen pillar pages on team-building principles |
 
 ### Cross-Linking Strategy
 
@@ -28,6 +28,7 @@ All ecosystem components are interconnected:
 - **Website → App Stores**: Direct download links on every page
 - **App → Websites**: Share screen generates language-specific referral URLs
 - **Author Site → App**: Book pages link to Team Build Pro as the "tool that implements the strategies"
+- **Legacy Brand → App**: teambuildingproject.com pillar pages include CTAs to Team Build Pro
 - **Email → Website → App**: Landing page routing for analytics and retargeting
 - **Blog → App**: Every post includes "Get the App" CTA sections
 - **Company Pages → App**: Tailored messaging for each company's audience
@@ -95,6 +96,8 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── web-de/                # German website (de.teambuildpro.com)
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
 ├── scott-net/             # stephen-scott.net redirect site
+├── tbp-project/           # teambuildingproject.com content hub
+│   └── public/           # Static site with pillar pages
 ├── analytics/             # Analytics workspace (GA4 + Mailgun)
 └── documents/            # Documentation and metadata
 ```
@@ -369,6 +372,19 @@ git add . && git commit -m "message" && git push
 
 ## Recent Updates (December 2025)
 
+### Week of Dec 13
+- **teambuildingproject.com Content Hub**: Transformed legacy brand site from simple landing page into SEO content property
+  - Created 5 evergreen pillar pages focused on "Timeless Team-Building Wisdom" (Est. 2009 heritage)
+  - Pages: `why-recruits-quit.html`, `five-principles.html`, `duplication-problem.html`, `success-timeline.html`, `building-trust.html`
+  - Each page includes CTA boxes linking to Team Build Pro app
+  - Shared CSS (`css/style.css`) with consistent navigation and styling
+  - Updated homepage with "Team Building Insights" section listing all articles
+- **Legacy URL Cleanup**: Configured robots.txt and firebase.json to handle ~106 legacy WordPress URLs
+  - Added Disallow rules for `/blog/`, `/category/`, `/tag/`, `/page/`, `/wp-content/`, etc.
+  - Created custom 404.html page with `noindex, nofollow` meta tag
+  - Added rewrites in firebase.json to serve 404 for legacy URL patterns
+  - Sitemap updated with 6 valid pages only
+
 ### Week of Dec 12
 - **Video Lightbox on Company Pages**: Added "Watch 60-Second Video" text link to all 3 CTAs on 287 company pages
   - Clicking link opens modal lightbox with TBP_Professionals.mp4 video
@@ -461,3 +477,6 @@ git add . && git commit -m "message" && git push
 ---
 
 *This knowledge base should be referenced at the start of each new AI assistant session to maintain context and understanding of Team Build Pro.*
+- reminde me on January 13, 2026 to do the following: After Jan 13, 2026:
+  - Re-enable DE in the loop
+  - Backfill all existing blogs with podcasts

@@ -211,7 +211,7 @@
             <!-- Dropdown Menu -->
             <div id="mobile-menu" class="mobile-menu" role="menu">
                 <a href="/faq.html" role="menuitem">${t.faq}</a>
-                <a href="/pricing.html" role="menuitem">${t.pricing}</a>
+                <a href="/#pricing" role="menuitem">${t.pricing}</a>
                 <a href="/blog.html" role="menuitem">${t.blog}</a>
                 <a href="/books.html" role="menuitem">${t.books}</a>
                 <a href="/contact_us.html" role="menuitem">${t.contact}</a>
@@ -239,7 +239,7 @@
             </div>
             <div class="footer-links">
                 <a href="/faq.html">${t.faq}</a>
-                <a href="/pricing.html">${t.pricing}</a>
+                <a href="/#pricing">${t.pricing}</a>
                 <a href="/books.html">${t.books}</a>
                 <a href="/companies.html">${t.recruitingGuides}</a>
                 <a href="/privacy_policy.html">${t.privacyPolicy}</a>

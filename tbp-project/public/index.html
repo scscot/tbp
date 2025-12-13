@@ -24,176 +24,93 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            color: #1e293b;
-        }
-
-        main {
-            max-width: 540px;
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .established {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .tagline {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            color: #475569;
-            margin-bottom: 1rem;
-        }
-
-        .evolution {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 2.5rem;
-        }
-
-        .cta-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 3rem;
-        }
-
-        .cta-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-            transition: all 0.2s ease;
-            border: 1px solid #e2e8f0;
-        }
-
-        .cta-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: #cbd5e1;
-        }
-
-        .cta-card.primary {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            border: none;
-        }
-
-        .cta-card.primary:hover {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-        }
-
-        .cta-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            opacity: 0.8;
-            margin-bottom: 0.25rem;
-        }
-
-        .cta-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .cta-description {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .arrow {
-            transition: transform 0.2s ease;
-        }
-
-        .cta-card:hover .arrow {
-            transform: translateX(4px);
-        }
-
-        footer {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 1.75rem;
-            }
-
-            .tagline {
-                font-size: 1rem;
-            }
-
-            .cta-card {
-                padding: 1.25rem;
-            }
-
-            .cta-title {
-                font-size: 1.125rem;
-            }
-        }
-    </style>
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <main>
-        <h1 class="logo">The Team Building Project</h1>
-        <p class="established">Est. 2009 &middot; A Stephen Scott Brand</p>
-
-        <p class="tagline">
-            For 15+ years, we've helped direct sales professionals build winning teams through books, training, and innovative tools.
-        </p>
-
-        <p class="evolution">We've evolved. Our mission hasn't.</p>
-
-        <div class="cta-section">
-            <a href="https://teambuildpro.com" class="cta-card primary">
-                <div class="cta-label">Build Your Team with AI</div>
-                <div class="cta-title">
-                    Team Build Pro App
-                    <span class="arrow">&rarr;</span>
-                </div>
-                <div class="cta-description">
-                    Prospects pre-build teams before joining. Professionals give their team AI-powered duplication tools. Everyone builds momentum.
-                </div>
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                The Team Building Project
+                <span>Est. 2009</span>
             </a>
+            <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+                &#9776;
+            </button>
+            <ul class="nav-links">
+                <li><a href="why-recruits-quit.html">Why Recruits Quit</a></li>
+                <li><a href="five-principles.html">5 Principles</a></li>
+                <li><a href="https://teambuildpro.com" class="external">Team Build Pro</a></li>
+                <li><a href="https://www.stephenscott.us/books.html" class="external">Books</a></li>
+            </ul>
+        </div>
+    </nav>
 
-            <a href="https://www.stephenscott.us/books.html" class="cta-card">
+    <main class="home-main">
+        <div class="home-content">
+            <h1 class="home-logo">The Team Building Project</h1>
+            <p class="home-established">Est. 2009 &middot; A Stephen Scott Brand</p>
+
+            <p class="home-tagline">
+                For 15+ years, we've helped direct sales professionals build winning teams through books, training, and innovative tools.
+            </p>
+
+            <p class="home-evolution">We've evolved. Our mission hasn't.</p>
+
+            <div class="cta-section">
+                <a href="https://teambuildpro.com" class="cta-card primary">
+                    <div class="cta-label">Build Your Team with AI</div>
+                    <div class="cta-title">
+                        Team Build Pro App
+                        <span class="arrow">&rarr;</span>
+                    </div>
+                    <div class="cta-description">
+                        Prospects pre-build teams before joining. Professionals give their team AI-powered duplication tools. Everyone builds momentum.
+                    </div>
+                </a>
+            </div>
+
+            <section class="articles-section">
+                <h2>Team Building Insights</h2>
+                <p class="articles-intro">Timeless principles from 15+ years of building direct sales teams.</p>
+                <ul class="articles-list">
+                    <li>
+                        <a href="why-recruits-quit.html">
+                            <span class="article-link-title">Why 75% of Recruits Quit in Their First Year</span>
+                            <span class="article-link-desc">The cold-start problem and what the successful 25% do differently.</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="five-principles.html">
+                            <span class="article-link-title">The 5 Principles of Building a Lasting Team</span>
+                            <span class="article-link-desc">The fundamentals that separate teams that last from teams that don't.</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="duplication-problem.html">
+                            <span class="article-link-title">The Duplication Problem (And How We Solved It)</span>
+                            <span class="article-link-desc">Why most teams can't duplicate and the systematic approach that fixes it.</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="success-timeline.html">
+                            <span class="article-link-title">From Zero to Leader: The Real Timeline</span>
+                            <span class="article-link-desc">Honest expectations for months 1-3, 4-12, and beyond.</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="building-trust.html">
+                            <span class="article-link-title">Building Trust Before Asking for Business</span>
+                            <span class="article-link-desc">The relationship-first approach that actually works.</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <a href="https://www.stephenscott.us/books.html" class="cta-card books-card">
                 <div class="cta-label">Explore the Books</div>
                 <div class="cta-title">
                     Stephen Scott Books
@@ -206,8 +123,12 @@
         </div>
     </main>
 
-    <footer>
+    <footer class="site-footer">
         &copy; 2009&ndash;2025 Stephen Scott. All rights reserved.
+        &middot;
+        <a href="https://teambuildpro.com/privacy_policy.html">Privacy</a>
+        &middot;
+        <a href="https://teambuildpro.com/terms_of_service.html">Terms</a>
     </footer>
 </body>
 </html>

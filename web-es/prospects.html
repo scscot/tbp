@@ -300,7 +300,75 @@
             border-radius: 1.5rem;
         }
 
-        /* Download Section */
+        
+        /* Pricing Section */
+        .section-pricing {
+            padding: 4rem 0;
+            background: #f8fafc;
+        }
+
+        .pricing-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #7c3aed;
+            margin: 1rem 0;
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .pricing-card .trial {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+            text-align: left;
+        }
+
+        .pricing-card li {
+            padding: 0.5rem 0;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-card li .material-symbols-outlined {
+            color: #10b981;
+            font-size: 1.25rem;
+        }
+
+/* Download Section */
         .section-download {
             padding: 5rem 0;
             background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
@@ -493,6 +561,32 @@
         </section>
 
 
+
+        <!-- Section 4: Pricing -->
+        <section class="section-pricing" id="pricing">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Precios Simples y Transparentes</h2>
+                    <p>Un plan. Todo incluido. Sin cargos ocultos.</p>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Team Build Pro</h3>
+                    <span class="trial">Prueba Gratis 30 Días</span>
+                    <div class="price">$6.99<span>/mes</span></div>
+                    <ul>
+                        <li><span class="material-symbols-outlined">check_circle</span> 16 Mensajes de Reclutamiento Pre-Escritos</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Coach de Reclutamiento IA 24/7</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Prospectos y Seguimientos Ilimitados</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Panel de Progreso del Equipo</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Funciona con Cualquier Empresa</li>
+                    </ul>
+                    <a href="#download" class="cta-primary" style="width: 100%; justify-content: center;">
+                        Comenzar Prueba Gratis
+                    </a>
+                </div>
+            </div>
+        </section>
 
         <!-- Download Section -->
         <section class="section-download" id="download">

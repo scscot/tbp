@@ -288,6 +288,56 @@
                         }
                     ]
                 }
+            ],
+            "rewrites": [
+                {
+                    "source": "/blog/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/category/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/tag/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/page/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-content/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-includes/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-admin/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/feed/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/author/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/archives/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/comments/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/trackback/**",
+                    "destination": "/404.html"
+                }
             ]
         },
         {
