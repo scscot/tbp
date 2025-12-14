@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-13
+**Last Updated**: 2025-12-14
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -372,13 +372,47 @@ git add . && git commit -m "message" && git push
 
 ## Recent Updates (December 2025)
 
+### Week of Dec 14
+- **App Store CTA Sponsor Tracking**: Added Universal Link fallback to preserve sponsor info on blog/company pages
+  - Added `openAppOrStore()` function to `components.js` with locale-aware routing
+  - Updated 330 blog/company pages with `onclick="openAppOrStore('ios'); return false;"` handlers
+  - iOS users redirected through `/claim.html` to preserve `?ref=`/`?new=` params
+  - Script: `scripts/add-app-store-onclick.js` for future maintenance
+  - Updated `scripts/generate-ai-blog.js` to include onclick handlers in new blog CTAs
+- **Language Switcher Sponsor Preservation**: Fixed sponsor referral loss when switching languages
+  - Problem: `sessionStorage` doesn't work across subdomains, and `ref`/`new` params were being stripped
+  - Solution: Keep `ref`/`new` params in URL, use `/index.html` instead of `/` to bypass Universal Links
+  - `checkReferralRouting()` in index.html handles redirect to correct page (professionals/prospects)
+- **AASA Files for Locale Sites**: Added `apple-app-site-association` to ES, PT, DE sites
+  - Enables Universal Link support on all locale domains
+  - Required for `openAppOrStore()` locale-aware routing to work properly
+- **Internal Link Audit**: Created comprehensive link validation tool
+  - New script: `scripts/audit-internal-links.js` - scans all 4 locales (382 HTML files, 9,368 links)
+  - Fixed broken link in EN blog: `30-day-pre-qualification-system.html` → `qualify-new-recruits-30-days.html`
+  - Skips backup files (`*-back.html`, `*-test.html`, etc.)
+- **Header Standardization**: Converted `web/blog.html` to use `components.js`
+  - Removed inline header with "Screenshots" menu item
+  - All 4 locale blog pages now use consistent `components.js` header/footer
+  - Removed duplicate mobile menu JavaScript from ES, PT, DE blog pages
+- **Podcast SEO Schema**: Added AudioObject schema.org structured data
+  - `PODCAST_SCHEMA_JSON_LD` generator in `scripts/podcast-config.js`
+  - Auto-injects JSON-LD schema into `<head>` when podcasts are generated
+  - Enables Google rich snippets and audio-enhanced search results
+- **Firebase Storage Bucket Fix**: Corrected bucket name in podcast-config.js
+  - Changed from `.appspot.com` to `.firebasestorage.app`
+- **Generated Podcasts**: Created podcasts for 2 most recent blogs
+  - "The Death of Cold Messaging" and "How AI is Revolutionizing MLM Recruiting"
+  - Generated in EN, ES, PT (DE pending Jan 13 credit reset)
+- **Cleanup**: Removed obsolete `index-back.html` backup files from all 4 locales
+- **Synced components.js**: Ensured all locale sites have updated `components.js` with latest fixes
+
 ### Week of Dec 13
 - **Podcast Automation for Blogs**: Added ElevenLabs TTS podcast generation to blog automation pipeline
   - New scripts: `scripts/generate-podcasts.js` (main engine), `scripts/podcast-config.js` (voice settings)
   - Integration with `generate-ai-blog.js` - automatically generates podcasts after blog creation
   - Languages: EN, ES, PT only until Jan 13, 2026 credit reset (DE pending)
   - ElevenLabs Creator tier: 140,000 chars/month, ~4,500 chars per podcast
-  - Audio files uploaded to Firebase Storage: `gs://teambuilder-plus-fe74d.appspot.com/podcasts/[lang]/[slug].mp3`
+  - Audio files uploaded to Firebase Storage: `gs://teambuilder-plus-fe74d.firebasestorage.app/podcasts/[lang]/[slug].mp3`
   - Podcast player CSS added to all 4 locale stylesheets
   - GitHub Actions workflow updated with ELEVENLABS_API_KEY secret
 - **Hero Section Text Update**: Updated hero subline messaging on index.html and professionals.html (all 4 locales)
@@ -389,7 +423,7 @@ git add . && git commit -m "message" && git push
   - CSS hides break on mobile (<768px) for natural word wrapping
 - **Language Switcher Universal Links Fix**: Fixed language switcher triggering app instead of website navigation
   - Root cause: `?ref=` and `?new=` params in language links matched Universal Links pattern
-  - Solution: `buildLangLink()` in components.js now strips these params (referral context preserved in sessionStorage)
+  - Initial solution: Strip params (superseded by Dec 14 fix that preserves params using `/index.html` path)
 - **Mobile Menu Fix**: Fixed non-responsive hamburger menu in EN blog.html
   - Changed `classList.toggle('active')` to `classList.toggle('open')` to match CSS selector
 - **teambuildingproject.com Content Hub**: Transformed legacy brand site from simple landing page into SEO content property
