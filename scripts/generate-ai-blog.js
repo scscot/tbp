@@ -1007,10 +1007,10 @@ function generateTranslatedBlogHTML(blogPost, lang) {
         <h2>${strings.ctaTitle}</h2>
         <p>${strings.ctaDesc}</p>
         <div class="download-buttons">
-          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="store-badge">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" onclick="openAppOrStore('ios'); return false;" class="store-badge">
             <img src="/assets/images/app_store_badges/black.svg" alt="Download on App Store">
           </a>
-          <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" class="store-badge">
+          <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" onclick="openAppOrStore('android'); return false;" class="store-badge">
             <img src="/assets/images/Google-Play.png" alt="Get it on Google Play">
           </a>
         </div>
@@ -1060,6 +1060,7 @@ function generateTranslatedBlogHTML(blogPost, lang) {
     });
   </script>
 
+  <script src="/js/components.js"></script>
   <script src="/js/referral-tracking.js"></script>
 </body>
 </html>`;
