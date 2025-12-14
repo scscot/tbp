@@ -15,17 +15,18 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 11, 2025: A/B testing between 'cold_reconnect' (text link) and 'cold_button' (button CTA)
-  // Templates optimized for cold, decade-old contact list per Joe's recommendations
-  const templateVersions = ['cold_reconnect', 'cold_button'];
-  const templateVersion = templateVersions[index % 2];
+  // Dec 14, 2025: Using 100% cold_reconnect (text-link) - winner of A/B test
+  // cold_reconnect: 2.22% CTR, cold_button: 0% CTR over 180 emails
+  const templateVersion = 'cold_reconnect';
 
-  // Alternate between two subject lines for A/B testing
+  // Continue A/B testing subject lines (now isolated from template variable)
   const subjectLines = [
     'The Recruiting App Built for Direct Sales',
     'Building Your Downline With AI'
   ];
-  const selectedSubject = subjectLines[index % 2];
+  const subjectIndex = index % 2;
+  const selectedSubject = subjectLines[subjectIndex];
+  const subjectTag = subjectIndex === 0 ? 'subject_recruiting_app' : 'subject_downline_ai';
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -36,6 +37,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('t:version', templateVersion);
   form.append('o:tag', 'yahoo_initial_campaign');
   form.append('o:tag', templateVersion);
+  form.append('o:tag', subjectTag);
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
@@ -48,7 +50,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
     utm_source: 'mailgun',
     utm_medium: 'email',
     utm_campaign: 'yahoo_campaign',
-    utm_content: templateVersion
+    utm_content: subjectTag
   }));
 
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
