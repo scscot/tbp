@@ -416,6 +416,15 @@ git add . && git commit -m "message" && git push
   - Generated in EN, ES, PT (DE pending Jan 13 credit reset)
 - **Cleanup**: Removed obsolete `index-back.html` backup files from all 4 locales
 - **Synced components.js**: Ensured all locale sites have updated `components.js` with latest fixes
+- **FAQ Audit & Corrections**: Audited all FAQ content for accuracy across web and app
+  - Web FAQ (all 4 locales): Changed "8 pre-written messages" → "16 pre-written messages" (11 locations per file)
+  - Removed false "web companion" claim from devices FAQ
+  - Added 4-language localization info to international support FAQ
+  - Softened 39% statistic claim (was "39% fail due to lack of support")
+  - Updated JSON-LD FAQ schema in all locale files
+  - App FAQ (EN, ES): Added 4-language info to `faqA17`, removed "web companion" from `faqA18`
+  - Updated `faq_screen.dart` fallback text to match
+  - Note: PT/DE app FAQs have different structure with language support in separate `faqA12` question
 
 ### Week of Dec 13
 - **Podcast Automation for Blogs**: Added ElevenLabs TTS podcast generation to blog automation pipeline
