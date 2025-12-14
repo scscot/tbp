@@ -152,7 +152,7 @@ async function checkUplineMilestone(userId, userData) {
     // Send notification if a milestone was reached
     if (notificationContent) {
       console.log(`MILESTONE UPLINE: Creating notification for ${userId} - ${notificationContent.subtype}`);
-      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
+      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}`;
 
       const result = await createNotification({
         userId,
@@ -1419,7 +1419,7 @@ const notifyOnMilestoneReached = onDocumentUpdated("users/{userId}", async (even
         return;
       }
 
-      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}_${Date.now()}`;
+      const notifId = `milestone_${notificationContent.subtype}_${directMin}_${userId}`;
 
       const result = await createNotification({
         userId,
