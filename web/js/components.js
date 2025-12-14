@@ -159,21 +159,24 @@
     }
 
     /**
-     * Build language switcher link preserving query string
-     * Note: Strips 'ref' and 'new' params to avoid triggering Universal Links
-     * (referral context is already preserved in sessionStorage)
-     * Adds _web=1 to prevent iOS/macOS from opening app via Universal Links
+     * Build language switcher link preserving sponsor referral across domains
+     * - Keeps ref/new params to preserve sponsor tracking
+     * - Uses /index.html instead of / to bypass Universal Links (AASA only matches /)
+     * - checkReferralRouting() in index.html will redirect to correct page
      */
     function buildLangLink(targetLocale) {
-        const currentPath = window.location.pathname;
+        let targetPath = window.location.pathname;
         const params = new URLSearchParams(window.location.search);
-        // Remove referral params that trigger Universal Links
-        params.delete('ref');
-        params.delete('new');
-        // Add _web param to prevent Universal Links from triggering
-        params.set('_web', '1');
-        const cleanSearch = params.toString();
-        return domains[targetLocale] + currentPath + '?' + cleanSearch;
+
+        // If on homepage with ref/new params, use /index.html to bypass Universal Links
+        // (AASA matches "/" but not "/index.html")
+        const hasReferral = params.has('ref') || params.has('new');
+        if (targetPath === '/' && hasReferral) {
+            targetPath = '/index.html';
+        }
+
+        const queryString = params.toString();
+        return domains[targetLocale] + targetPath + (queryString ? '?' + queryString : '');
     }
 
     // =========================================================================
