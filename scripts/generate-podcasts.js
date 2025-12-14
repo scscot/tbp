@@ -30,7 +30,8 @@ const {
   FIREBASE_STORAGE_BUCKET,
   PODCAST_SCRIPT_PROMPT,
   PODCAST_PLAYER_HTML,
-  PODCAST_TRACKING_SCRIPT
+  PODCAST_TRACKING_SCRIPT,
+  PODCAST_SCHEMA_JSON_LD
 } = require('./podcast-config');
 
 // Load Anthropic API key from secrets file or environment
@@ -290,7 +291,7 @@ async function uploadToFirebaseStorage(localPath, slug, lang) {
 }
 
 /**
- * Update blog HTML to include podcast player
+ * Update blog HTML to include podcast player and SEO schema
  */
 function updateBlogWithPlayer(htmlPath, audioUrl, slug, lang) {
   if (!fs.existsSync(htmlPath)) {
@@ -306,8 +307,31 @@ function updateBlogWithPlayer(htmlPath, audioUrl, slug, lang) {
     return true;
   }
 
+  // Extract title and description for schema
+  const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i) ||
+                     html.match(/<title>([^<|]+)/i);
+  const title = titleMatch ? titleMatch[1].trim() : slug.replace(/-/g, ' ');
+
+  const descMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
+  const description = descMatch ? descMatch[1] : null;
+
+  // Extract publish date if available
+  const dateMatch = html.match(/<time[^>]*datetime=["']([^"']+)["']/i) ||
+                    html.match(/<meta\s+property=["']article:published_time["']\s+content=["']([^"']+)["']/i);
+  const publishDate = dateMatch ? dateMatch[1].split('T')[0] : new Date().toISOString().split('T')[0];
+
   // Generate player HTML
   const playerHtml = PODCAST_PLAYER_HTML(audioUrl, lang, slug);
+
+  // Generate JSON-LD schema for SEO
+  const schemaHtml = PODCAST_SCHEMA_JSON_LD({
+    audioUrl,
+    title,
+    description,
+    slug,
+    lang,
+    publishDate
+  });
 
   // Find insertion point: after the hero section / h1, before the article content
   // Look for the article opening tag
@@ -329,6 +353,15 @@ function updateBlogWithPlayer(htmlPath, audioUrl, slug, lang) {
   } else {
     console.log(`${colors.yellow}  ⚠ Could not find <article> tag in ${htmlPath}${colors.reset}`);
     return false;
+  }
+
+  // Add JSON-LD schema to <head> if not present
+  if (!html.includes('AudioObject') && !html.includes('podcast-schema')) {
+    const headClosePos = html.indexOf('</head>');
+    if (headClosePos !== -1) {
+      html = html.slice(0, headClosePos) + schemaHtml + html.slice(headClosePos);
+      console.log(`${colors.green}  ✓ Added podcast AudioObject schema${colors.reset}`);
+    }
   }
 
   // Add tracking script if not present

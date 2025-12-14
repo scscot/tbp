@@ -161,6 +161,47 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 `;
 
+// JSON-LD Schema generator for podcast SEO
+const PODCAST_SCHEMA_JSON_LD = (options) => {
+  const {
+    audioUrl,
+    title,
+    description,
+    slug,
+    lang = 'en',
+    publishDate = new Date().toISOString().split('T')[0],
+    duration = 'PT5M' // ISO 8601 duration format (5 minutes)
+  } = options;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "AudioObject",
+    "name": `Listen: ${title}`,
+    "description": description || `Audio version of "${title}" from the Team Build Pro blog`,
+    "contentUrl": audioUrl,
+    "encodingFormat": "audio/mpeg",
+    "duration": duration,
+    "uploadDate": publishDate,
+    "inLanguage": lang,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Team Build Pro",
+      "url": "https://teambuildpro.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
+      }
+    }
+  };
+
+  return `
+<!-- Podcast Audio Schema for SEO -->
+<script type="application/ld+json">
+${JSON.stringify(schema, null, 2)}
+</script>
+`;
+};
+
 module.exports = {
   ELEVENLABS_API_KEY,
   ELEVENLABS_BASE_URL,
@@ -171,5 +212,6 @@ module.exports = {
   FIREBASE_STORAGE_BUCKET,
   PODCAST_SCRIPT_PROMPT,
   PODCAST_PLAYER_HTML,
-  PODCAST_TRACKING_SCRIPT
+  PODCAST_TRACKING_SCRIPT,
+  PODCAST_SCHEMA_JSON_LD
 };
