@@ -159,18 +159,24 @@
     }
 
     /**
-     * Build language switcher link preserving query string
-     * Note: Strips 'ref' and 'new' params to avoid triggering Universal Links
-     * (referral context is already preserved in sessionStorage)
+     * Build language switcher link preserving sponsor referral across domains
+     * - Keeps ref/new params to preserve sponsor tracking
+     * - Uses /index.html instead of / to bypass Universal Links (AASA only matches /)
+     * - checkReferralRouting() in index.html will redirect to correct page
      */
     function buildLangLink(targetLocale) {
-        const currentPath = window.location.pathname;
+        let targetPath = window.location.pathname;
         const params = new URLSearchParams(window.location.search);
-        // Remove referral params that trigger Universal Links
-        params.delete('ref');
-        params.delete('new');
-        const cleanSearch = params.toString();
-        return domains[targetLocale] + currentPath + (cleanSearch ? '?' + cleanSearch : '');
+
+        // If on homepage with ref/new params, use /index.html to bypass Universal Links
+        // (AASA matches "/" but not "/index.html")
+        const hasReferral = params.has('ref') || params.has('new');
+        if (targetPath === '/' && hasReferral) {
+            targetPath = '/index.html';
+        }
+
+        const queryString = params.toString();
+        return domains[targetLocale] + targetPath + (queryString ? '?' + queryString : '');
     }
 
     // =========================================================================
@@ -371,6 +377,46 @@
         initVideoLightbox();
     }
 
+    // ============================================================================
+    // APP STORE LINK HANDLER
+    // Handles App Store/Play Store clicks with Universal Link fallback for iOS
+    // ============================================================================
+    function openAppOrStore(platform) {
+        const APP_STORE_URL = 'https://apps.apple.com/us/app/id6751211622';
+        const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.scott.ultimatefix';
+
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (platform === 'android') {
+            window.location.href = PLAY_STORE_URL;
+            return;
+        }
+
+        if (platform === 'ios') {
+            if (!isIOS) {
+                window.location.href = APP_STORE_URL;
+                return;
+            }
+
+            // On iOS - try Universal Link handoff via /claim.html
+            // This preserves sponsor referral info through the app install flow
+            const url = new URL(location.href);
+            url.searchParams.delete('_ul');
+            const params = url.search || '';
+            const sep = params ? '&' : '?';
+
+            // Use locale-appropriate domain for Universal Link
+            const domain = window.location.hostname.includes('es.') ? 'https://es.teambuildpro.com' :
+                          window.location.hostname.includes('pt.') ? 'https://pt.teambuildpro.com' :
+                          window.location.hostname.includes('de.') ? 'https://de.teambuildpro.com' :
+                          'https://teambuildpro.com';
+
+            const UNIVERSAL_LINK = domain + '/claim.html' + params + sep + '_ul=1';
+            window.location.href = UNIVERSAL_LINK;
+        }
+    }
+
     // Initialize on DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initComponents);
@@ -378,10 +424,12 @@
         initComponents();
     }
 
-    // Expose for debugging
+    // Expose globally for onclick handlers and debugging
+    window.openAppOrStore = openAppOrStore;
     window.TBPComponents = {
         locale: locale,
         getReferralInfo: getReferralInfo,
-        getLogoLink: getLogoLink
+        getLogoLink: getLogoLink,
+        openAppOrStore: openAppOrStore
     };
 })();
