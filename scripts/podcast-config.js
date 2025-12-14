@@ -59,7 +59,7 @@ const PODCAST_LABELS = {
 };
 
 // Firebase Storage bucket for podcast files
-const FIREBASE_STORAGE_BUCKET = 'teambuilder-plus-fe74d.appspot.com';
+const FIREBASE_STORAGE_BUCKET = 'teambuilder-plus-fe74d.firebasestorage.app';
 
 // Podcast script generation prompt template
 const PODCAST_SCRIPT_PROMPT = (blogContent, lang = 'en') => {

@@ -131,6 +131,30 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
+
+<!-- Podcast Audio Schema for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AudioObject",
+  "name": "Listen: Cómo la IA Está Revolucionando el Reclutamiento MLM: 5 Herramientas Esenciales para Todo Networker en 2025",
+  "description": "Descubre 5 herramientas de IA para reclutamiento MLM que aumentan las conversiones 300%. Aprende cómo la automatización transforma la prospección en mercadeo en red.",
+  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/es/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3",
+  "encodingFormat": "audio/mpeg",
+  "duration": "PT5M",
+  "uploadDate": "2025-12-14",
+  "inLanguage": "es",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Team Build Pro",
+    "url": "https://teambuildpro.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
+    }
+  }
+}
+</script>
 </head>
 <body>
     <!-- Header (rendered by components.js) -->
@@ -153,6 +177,22 @@
       </div>
 
       <article>
+
+<!-- Podcast Player Section -->
+<div class="podcast-player-section">
+  <div class="podcast-player-wrapper">
+    <span class="podcast-icon">🎧</span>
+    <div class="podcast-info">
+      <span class="podcast-label">Escucha este artículo</span>
+      <span class="podcast-duration">5 min</span>
+    </div>
+    <audio controls preload="metadata" class="podcast-audio" data-slug="ai-revolutionizing-mlm-recruiting-5-tools-network" data-lang="es">
+      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/es/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+</div>
+
         <p>Has dedicado horas perfeccionando el mensaje de prospección ideal, solo para ver cómo el 90% de tus prospectos te ignoran después del contacto inicial. ¿Te suena familiar? Si aún estás calificando prospectos manualmente y enviando seguimientos genéricos, estás librando una batalla cuesta arriba que los networkers exitosos abandonaron hace años.</p>
 
 <p>La cruda realidad es que los métodos tradicionales de reclutamiento MLM están fallando a un ritmo sin precedentes. Mientras tú quemas tu lista de contactos con tácticas obsoletas, los líderes de ingresos están aprovechando sistemas impulsados por IA que automáticamente identifican prospectos serios, nutren relaciones y convierten leads mientras duermen. La brecha entre reclutadores con IA y enfoques tradicionales nunca ha sido mayor.</p>
@@ -410,5 +450,52 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
+
+<script>
+// Podcast tracking for GA4
+document.addEventListener('DOMContentLoaded', function() {
+  const audioElements = document.querySelectorAll('.podcast-audio');
+  audioElements.forEach(function(audio) {
+    const slug = audio.dataset.slug || 'unknown';
+    const lang = audio.dataset.lang || 'en';
+
+    audio.addEventListener('play', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'podcast_play', {
+          'event_category': 'engagement',
+          'event_label': slug,
+          'language': lang
+        });
+      }
+    });
+
+    audio.addEventListener('ended', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'podcast_complete', {
+          'event_category': 'engagement',
+          'event_label': slug,
+          'language': lang
+        });
+      }
+    });
+
+    // Track 50% completion
+    let halfTracked = false;
+    audio.addEventListener('timeupdate', function() {
+      if (!halfTracked && audio.currentTime > audio.duration / 2) {
+        halfTracked = true;
+        if (typeof gtag === 'function') {
+          gtag('event', 'podcast_halfway', {
+            'event_category': 'engagement',
+            'event_label': slug,
+            'language': lang
+          });
+        }
+      }
+    });
+  });
+});
+</script>
+
 </body>
 </html>

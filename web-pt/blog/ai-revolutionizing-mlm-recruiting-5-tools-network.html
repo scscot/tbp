@@ -131,6 +131,30 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
+
+<!-- Podcast Audio Schema for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AudioObject",
+  "name": "Listen: Como a IA está Revolucionando o Recrutamento em MMN: 5 Ferramentas Essenciais para Todo Profissional de Marketing de Rede em 2025",
+  "description": "Descubra 5 ferramentas de IA para recrutamento em MMN que aumentam as taxas de conversão em 300%. Saiba como a automação no marketing de rede transforma a prospecção em 2025.",
+  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/pt/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3",
+  "encodingFormat": "audio/mpeg",
+  "duration": "PT5M",
+  "uploadDate": "2025-12-14",
+  "inLanguage": "pt",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Team Build Pro",
+    "url": "https://teambuildpro.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
+    }
+  }
+}
+</script>
 </head>
 <body>
     <!-- Header (rendered by components.js) -->
@@ -153,6 +177,22 @@
       </div>
 
       <article>
+
+<!-- Podcast Player Section -->
+<div class="podcast-player-section">
+  <div class="podcast-player-wrapper">
+    <span class="podcast-icon">🎧</span>
+    <div class="podcast-info">
+      <span class="podcast-label">Ouça este artigo</span>
+      <span class="podcast-duration">5 min</span>
+    </div>
+    <audio controls preload="metadata" class="podcast-audio" data-slug="ai-revolutionizing-mlm-recruiting-5-tools-network" data-lang="pt">
+      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/pt/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+</div>
+
         <p>Você passou horas criando a mensagem de prospecção perfeita, apenas para ver 90% dos seus prospects te ignorarem após o contato inicial. Parece familiar? Se você ainda está qualificando prospects manualmente e enviando acompanhamentos genéricos, está lutando uma batalha perdida que profissionais de marketing de rede bem-sucedidos abandonaram há anos.</p>
 
 <p>A realidade é que os métodos tradicionais de recrutamento em MMN estão falhando em níveis sem precedentes. Enquanto você está esgotando sua lista de contatos com táticas ultrapassadas, os grandes líderes estão utilizando sistemas baseados em IA que automaticamente identificam prospects sérios, nutrem relacionamentos e convertem leads enquanto dormem. A diferença entre recrutadores que usam IA e abordagens tradicionais nunca foi tão grande.</p>
@@ -412,5 +452,52 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
+
+<script>
+// Podcast tracking for GA4
+document.addEventListener('DOMContentLoaded', function() {
+  const audioElements = document.querySelectorAll('.podcast-audio');
+  audioElements.forEach(function(audio) {
+    const slug = audio.dataset.slug || 'unknown';
+    const lang = audio.dataset.lang || 'en';
+
+    audio.addEventListener('play', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'podcast_play', {
+          'event_category': 'engagement',
+          'event_label': slug,
+          'language': lang
+        });
+      }
+    });
+
+    audio.addEventListener('ended', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'podcast_complete', {
+          'event_category': 'engagement',
+          'event_label': slug,
+          'language': lang
+        });
+      }
+    });
+
+    // Track 50% completion
+    let halfTracked = false;
+    audio.addEventListener('timeupdate', function() {
+      if (!halfTracked && audio.currentTime > audio.duration / 2) {
+        halfTracked = true;
+        if (typeof gtag === 'function') {
+          gtag('event', 'podcast_halfway', {
+            'event_category': 'engagement',
+            'event_label': slug,
+            'language': lang
+          });
+        }
+      }
+    });
+  });
+});
+</script>
+
 </body>
 </html>
