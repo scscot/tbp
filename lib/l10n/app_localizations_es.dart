@@ -4089,14 +4089,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get faqA17 =>
-      '¡Sí! Team Build Pro funciona en más de 120 países con características conscientes de la zona horaria. Puedes construir un equipo verdaderamente global, y nuestro sistema maneja diferentes zonas horarias para notificaciones e informes.';
+      '¡Sí! Team Build Pro funciona en más de 120 países con características conscientes de la zona horaria. La aplicación está completamente localizada en 4 idiomas: inglés, español, portugués y alemán. Puedes construir un equipo verdaderamente global, y nuestro sistema maneja diferentes zonas horarias para notificaciones e informes.';
 
   @override
   String get faqQ18 => '¿En qué dispositivos funciona?';
 
   @override
   String get faqA18 =>
-      'Team Build Pro está disponible en dispositivos iOS (iPhone/iPad) y Android, con un complemento web para características adicionales. Todo se sincroniza en todos tus dispositivos.';
+      'Team Build Pro está disponible en dispositivos iOS (iPhone/iPad) y Android. Todo se sincroniza en todos tus dispositivos.';
 
   @override
   String get faqQ19 => '¿Qué pasa si no soy experto en tecnología?';

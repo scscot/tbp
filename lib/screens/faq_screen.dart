@@ -383,11 +383,11 @@ List<FAQItem> _teamBuildingFAQs(BuildContext context) => [
 List<FAQItem> _globalFeaturesFAQs(BuildContext context) => [
   FAQItem(
     question: context.l10n?.faqQ17 ?? 'Does this work internationally?',
-    answer: context.l10n?.faqA17 ?? 'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.',
+    answer: context.l10n?.faqA17 ?? 'Yes! Team Build Pro works in 120+ countries with timezone-aware features. The app is fully localized in 4 languages: English, Spanish, Portuguese, and German. You can build a truly global team, and our system handles different time zones for notifications and reporting.',
   ),
   FAQItem(
     question: context.l10n?.faqQ18 ?? 'What devices does it work on?',
-    answer: context.l10n?.faqA18 ?? 'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.',
+    answer: context.l10n?.faqA18 ?? 'Team Build Pro is available on iOS (iPhone/iPad) and Android devices. Everything syncs across all your devices.',
   ),
   FAQItem(
     question: context.l10n?.faqQ19 ?? 'What if I\'m not tech-savvy?',

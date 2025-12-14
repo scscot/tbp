@@ -6856,7 +6856,7 @@ abstract class AppLocalizations {
   /// FAQ answer 17
   ///
   /// In en, this message translates to:
-  /// **'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.'**
+  /// **'Yes! Team Build Pro works in 120+ countries with timezone-aware features. The app is fully localized in 4 languages: English, Spanish, Portuguese, and German. You can build a truly global team, and our system handles different time zones for notifications and reporting.'**
   String get faqA17;
 
   /// FAQ question 18
@@ -6868,7 +6868,7 @@ abstract class AppLocalizations {
   /// FAQ answer 18
   ///
   /// In en, this message translates to:
-  /// **'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.'**
+  /// **'Team Build Pro is available on iOS (iPhone/iPad) and Android devices. Everything syncs across all your devices.'**
   String get faqA18;
 
   /// FAQ question 19

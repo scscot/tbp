@@ -4026,14 +4026,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqA17 =>
-      'Yes! Team Build Pro works in 120+ countries with timezone-aware features. You can build a truly global team, and our system handles different time zones for notifications and reporting.';
+      'Yes! Team Build Pro works in 120+ countries with timezone-aware features. The app is fully localized in 4 languages: English, Spanish, Portuguese, and German. You can build a truly global team, and our system handles different time zones for notifications and reporting.';
 
   @override
   String get faqQ18 => 'What devices does it work on?';
 
   @override
   String get faqA18 =>
-      'Team Build Pro is available on iOS (iPhone/iPad) and Android devices, with a web companion for additional features. Everything syncs across all your devices.';
+      'Team Build Pro is available on iOS (iPhone/iPad) and Android devices. Everything syncs across all your devices.';
 
   @override
   String get faqQ19 => 'What if I\'m not tech-savvy?';
