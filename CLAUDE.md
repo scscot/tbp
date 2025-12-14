@@ -373,6 +373,17 @@ git add . && git commit -m "message" && git push
 ## Recent Updates (December 2025)
 
 ### Week of Dec 14
+- **Profile Completion Reminder Notifications**: Added automated push reminders for incomplete profiles
+  - New scheduled function: `sendProfileCompletionReminders` (runs hourly)
+  - Sends reminders at 24h, 72h, and 7 days after registration
+  - Targets users where `isProfileComplete !== true`
+  - Tracks sent reminders via `profile_reminder_24h`, `profile_reminder_72h`, `profile_reminder_168h` flags
+  - Deep links to `/edit-profile` route on notification tap
+  - Added translations for EN, ES, PT, DE in `functions/translations.js`
+- **Beta Testing Cleanup**: Removed 10 beta/demo functions from Firebase (Google Play beta complete)
+  - Deleted: `grantBetaTesterLifetimeAccess`, `revokeBetaTesterLifetimeAccess`, `getBetaTesterStats`, `generateBetaTesterCSVs`, `addToDemoLeads`, `appendDemoEmail`, `addToDemoQueue`, `getDemoCount`, `sendDemoInvitation`, `sendDemoNotification`
+  - Function files preserved in codebase for reference
+  - Removed exports from `functions/index.js`
 - **App Store CTA Sponsor Tracking**: Added Universal Link fallback to preserve sponsor info on blog/company pages
   - Added `openAppOrStore()` function to `components.js` with locale-aware routing
   - Updated 330 blog/company pages with `onclick="openAppOrStore('ios'); return false;"` handlers
