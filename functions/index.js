@@ -133,15 +133,6 @@ const {
 } = require('./email-campaign-functions-yahoo');
 
 // ==============================
-// Import Beta Tester Functions
-// ==============================
-const {
-  grantBetaTesterLifetimeAccess,
-  revokeBetaTesterLifetimeAccess,
-  getBetaTesterStats,
-} = require('./beta-tester-functions');
-
-// ==============================
 // Import Admin Functions
 // ==============================
 const {
@@ -169,9 +160,6 @@ const {
   sendDailyAccountDeletionSummary,
   cleanupExecutionFuses,
 
-  // Beta testing management
-  generateBetaTesterCSVs,
-
   // Debug and testing functions
   resetMilestoneFuse,
   resetMilestoneFuses,
@@ -182,7 +170,6 @@ const {
 // ==============================
 // Import Campaign Functions (external modules)
 // ==============================
-const { sendDemoInvitation } = require('./sendDemoInvitation');
 const { sendLaunchCampaign } = require('./sendLaunchCampaign');
 const { chatbot } = require('./chatbot');
 const { setup_faq } = require('./setup_faq');
@@ -193,12 +180,6 @@ const { setup_faq } = require('./setup_faq');
 const { submitContactForm } = require('./submitContactForm');
 const { submitContactFormHttp } = require('./submitContactFormHttp');
 const { submitStephenScottContact } = require('./submitStephenScottContact');
-// const { addToInternalTesting } = require('./addToInternalTesting'); // Disabled - using CSV approach instead
-const { addToDemoLeads } = require('./addToDemoLeads');
-const { getDemoCount } = require('./getDemoCount');
-const { appendDemoEmail } = require('./appendDemoEmail');
-const { addToDemoQueue } = require('./addToDemoQueue');
-const { sendDemoNotification } = require('./sendDemoNotification');
 
 // ==============================
 // Import Analytics Events Functions
@@ -295,9 +276,6 @@ module.exports = {
   sendDailyAccountDeletionSummary,
   cleanupExecutionFuses,
 
-  // Beta testing management
-  generateBetaTesterCSVs,
-
   // Debug and testing functions
   resetMilestoneFuse,
   resetMilestoneFuses,
@@ -305,7 +283,6 @@ module.exports = {
   pingUsersTrigger,
 
   // ========== CAMPAIGN FUNCTIONS ==========
-  sendDemoInvitation,
   sendLaunchCampaign,
   chatbot,
   setup_faq,
@@ -320,23 +297,10 @@ module.exports = {
   sendAndroidLaunchCampaignYahoo,
   syncMailgunEventsYahoo,
 
-  // ========== BETA TESTER FUNCTIONS ==========
-  grantBetaTesterLifetimeAccess,
-  revokeBetaTesterLifetimeAccess,
-  getBetaTesterStats,
-
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,
   submitContactFormHttp,
   submitStephenScottContact,
-
-  // ========== INTERNAL TESTING FUNCTIONS ==========
-  // addToInternalTesting, // Disabled - using CSV approach instead
-  addToDemoLeads,
-  getDemoCount,
-  appendDemoEmail,
-  addToDemoQueue,
-  sendDemoNotification,
 
   // ========== ANALYTICS FUNCTIONS ==========
   tbpEventLog,
