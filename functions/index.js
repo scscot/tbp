@@ -78,6 +78,7 @@ const {
   sendDailyTeamGrowthNotifications,
   cleanupStaleFcmTokens,
   sendBizOppReminderNotifications,
+  sendProfileCompletionReminders,
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,
@@ -259,6 +260,7 @@ module.exports = {
   sendLaunchNotificationConfirmation,
   cleanupStaleFcmTokens,
   sendBizOppReminderNotifications,
+  sendProfileCompletionReminders,
 
   // ========== ANALYTICS FUNCTIONS ==========
   getNetwork,

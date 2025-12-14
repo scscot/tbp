@@ -2722,6 +2722,118 @@ const sendBizOppReminderNotifications = onSchedule(
   }
 );
 
+/**
+ * Hourly scheduled function to send reminder notifications to users
+ * who registered but haven't completed their profile setup
+ *
+ * Sends reminders at:
+ * - 24 hours after registration
+ * - 72 hours after registration
+ * - 7 days after registration
+ *
+ * Deep links users directly to edit_profile_screen when they tap the notification
+ */
+const sendProfileCompletionReminders = onSchedule(
+  {
+    schedule: '0 * * * *', // Every hour
+    timeZone: 'UTC',
+    region: 'us-central1',
+  },
+  async (event) => {
+    logger.info('📬 PROFILE REMINDERS: Starting profile completion reminder check');
+
+    const now = new Date(event.scheduleTime);
+
+    const reminderIntervals = [
+      { hours: 24, label: '24-hour' },
+      { hours: 72, label: '72-hour' },
+      { hours: 168, label: '7-day' }
+    ];
+
+    let totalReminders = 0;
+
+    try {
+      for (const interval of reminderIntervals) {
+        const windowStart = new Date(now.getTime() - (interval.hours * 60 * 60 * 1000) - (30 * 60 * 1000));
+        const windowEnd = new Date(now.getTime() - (interval.hours * 60 * 60 * 1000) + (30 * 60 * 1000));
+
+        logger.info(`📬 PROFILE REMINDERS: Checking ${interval.label} window: ${windowStart.toISOString()} to ${windowEnd.toISOString()}`);
+
+        // Query users who registered in this window
+        const usersSnapshot = await db.collection('users')
+          .where('createdAt', '>=', windowStart)
+          .where('createdAt', '<=', windowEnd)
+          .get();
+
+        logger.info(`📬 PROFILE REMINDERS: Found ${usersSnapshot.size} users in ${interval.label} window`);
+
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          const userId = userDoc.id;
+
+          // Skip if profile is already complete
+          if (userData.isProfileComplete === true) {
+            logger.info(`📬 PROFILE REMINDERS: Skipping user ${userId} - profile already complete`);
+            continue;
+          }
+
+          // Skip if this reminder was already sent
+          const reminderKey = `profile_reminder_${interval.hours}h`;
+          if (userData[reminderKey] === true) {
+            logger.info(`📬 PROFILE REMINDERS: Skipping user ${userId} - ${interval.label} reminder already sent`);
+            continue;
+          }
+
+          const userLang = userData.preferredLanguage || 'en';
+
+          let titleKey, bodyKey;
+          if (interval.hours === 24) {
+            titleKey = 'profileReminder24hTitle';
+            bodyKey = 'profileReminder24hMessage';
+          } else if (interval.hours === 72) {
+            titleKey = 'profileReminder72hTitle';
+            bodyKey = 'profileReminder72hMessage';
+          } else {
+            titleKey = 'profileReminder168hTitle';
+            bodyKey = 'profileReminder168hMessage';
+          }
+
+          const title = getNotificationText(titleKey, userLang);
+          const body = getNotificationText(bodyKey, userLang);
+
+          try {
+            await createNotification({
+              userId,
+              type: 'profile_reminder',
+              title,
+              body,
+              docFields: {
+                reminderType: interval.label,
+                route: '/edit-profile',
+                route_params: JSON.stringify({ action: 'complete_profile' })
+              }
+            });
+
+            await db.collection('users').doc(userId).update({
+              [reminderKey]: true
+            });
+
+            totalReminders++;
+            logger.info(`📬 PROFILE REMINDERS: Sent ${interval.label} reminder to user ${userId}`);
+          } catch (error) {
+            logger.error(`📬 PROFILE REMINDERS: Error sending reminder to user ${userId}:`, error);
+          }
+        }
+      }
+
+      logger.info(`📬 PROFILE REMINDERS: Completed - sent ${totalReminders} reminders`);
+    } catch (error) {
+      logger.error('❌ PROFILE REMINDERS: Critical failure:', error);
+      throw error;
+    }
+  }
+);
+
 // ==============================
 // Exports
 // ==============================
@@ -2767,6 +2879,7 @@ module.exports = {
   sendDailyTeamGrowthNotifications,
   cleanupStaleFcmTokens,
   sendBizOppReminderNotifications,
+  sendProfileCompletionReminders,
 
   // Launch campaign functions
   sendLaunchNotificationConfirmation,

@@ -29,6 +29,14 @@ const translations = {
     bizOppReminder72hMessage: "Complete your {bizName} registration to unlock team building. Click here to learn more!",
     bizOppReminder168hTitle: "Final Reminder",
     bizOppReminder168hMessage: "Your {bizName} registration is still incomplete. Add your referral link now! Click here to learn more!",
+
+    // Profile completion reminders
+    profileReminder24hTitle: "Complete Your Profile",
+    profileReminder24hMessage: "You're almost there! Add your photo and location to start building your team with Team Build Pro.",
+    profileReminder72hTitle: "Your Team is Waiting!",
+    profileReminder72hMessage: "Complete your profile setup to unlock all Team Build Pro features and start recruiting.",
+    profileReminder168hTitle: "Don't Miss Out!",
+    profileReminder168hMessage: "Your profile is incomplete. Finish setup now to access AI recruiting tools and build your downline!",
   },
 
   es: {
@@ -61,6 +69,14 @@ const translations = {
     bizOppReminder72hMessage: "Completa tu registro en {bizName} para desbloquear la construcción de equipos. ¡Haz clic aquí para obtener más información!",
     bizOppReminder168hTitle: "Recordatorio Final",
     bizOppReminder168hMessage: "Tu registro en {bizName} aún está incompleto. ¡Agrega tu enlace de referencia ahora! ¡Haz clic aquí para obtener más información!",
+
+    // Profile completion reminders
+    profileReminder24hTitle: "Completa Tu Perfil",
+    profileReminder24hMessage: "¡Ya casi llegas! Agrega tu foto y ubicación para comenzar a construir tu equipo con Team Build Pro.",
+    profileReminder72hTitle: "¡Tu Equipo Te Espera!",
+    profileReminder72hMessage: "Completa la configuración de tu perfil para desbloquear todas las funciones de Team Build Pro y comenzar a reclutar.",
+    profileReminder168hTitle: "¡No Te Lo Pierdas!",
+    profileReminder168hMessage: "Tu perfil está incompleto. ¡Termina la configuración ahora para acceder a herramientas de reclutamiento con IA y construir tu red!",
   },
 
   pt: {
@@ -93,6 +109,14 @@ const translations = {
     bizOppReminder72hMessage: "Complete seu registro em {bizName} para desbloquear a construção de equipes. Clique aqui para saber mais!",
     bizOppReminder168hTitle: "Lembrete Final",
     bizOppReminder168hMessage: "Seu registro em {bizName} ainda está incompleto. Adicione seu link de referência agora! Clique aqui para saber mais!",
+
+    // Profile completion reminders
+    profileReminder24hTitle: "Complete Seu Perfil",
+    profileReminder24hMessage: "Você está quase lá! Adicione sua foto e localização para começar a construir sua equipe com o Team Build Pro.",
+    profileReminder72hTitle: "Sua Equipe Está Esperando!",
+    profileReminder72hMessage: "Complete a configuração do seu perfil para desbloquear todos os recursos do Team Build Pro e começar a recrutar.",
+    profileReminder168hTitle: "Não Perca!",
+    profileReminder168hMessage: "Seu perfil está incompleto. Termine a configuração agora para acessar ferramentas de recrutamento com IA e construir sua rede!",
   },
 
   de: {
@@ -125,6 +149,14 @@ const translations = {
     bizOppReminder72hMessage: "Schließen Sie Ihre {bizName}-Registrierung ab, um den Teamaufbau freizuschalten. Klicken Sie hier, um mehr zu erfahren!",
     bizOppReminder168hTitle: "Letzte Erinnerung",
     bizOppReminder168hMessage: "Ihre {bizName}-Registrierung ist noch unvollständig. Fügen Sie jetzt Ihren Empfehlungslink hinzu! Klicken Sie hier, um mehr zu erfahren!",
+
+    // Profile completion reminders
+    profileReminder24hTitle: "Vervollständigen Sie Ihr Profil",
+    profileReminder24hMessage: "Sie sind fast da! Fügen Sie Ihr Foto und Ihren Standort hinzu, um mit Team Build Pro Ihr Team aufzubauen.",
+    profileReminder72hTitle: "Ihr Team Wartet!",
+    profileReminder72hMessage: "Schließen Sie Ihre Profileinrichtung ab, um alle Team Build Pro-Funktionen freizuschalten und mit dem Recruiting zu beginnen.",
+    profileReminder168hTitle: "Verpassen Sie Es Nicht!",
+    profileReminder168hMessage: "Ihr Profil ist unvollständig. Schließen Sie die Einrichtung jetzt ab, um auf KI-Recruiting-Tools zuzugreifen und Ihr Netzwerk aufzubauen!",
   },
 };
 
