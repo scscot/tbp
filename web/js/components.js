@@ -162,6 +162,7 @@
      * Build language switcher link preserving query string
      * Note: Strips 'ref' and 'new' params to avoid triggering Universal Links
      * (referral context is already preserved in sessionStorage)
+     * Adds _web=1 to prevent iOS/macOS from opening app via Universal Links
      */
     function buildLangLink(targetLocale) {
         const currentPath = window.location.pathname;
@@ -169,8 +170,10 @@
         // Remove referral params that trigger Universal Links
         params.delete('ref');
         params.delete('new');
+        // Add _web param to prevent Universal Links from triggering
+        params.set('_web', '1');
         const cleanSearch = params.toString();
-        return domains[targetLocale] + currentPath + (cleanSearch ? '?' + cleanSearch : '');
+        return domains[targetLocale] + currentPath + '?' + cleanSearch;
     }
 
     // =========================================================================
