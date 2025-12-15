@@ -248,36 +248,12 @@ async function getGA4EmailTraffic() {
       { name: 'screenPageViews' }
     ],
     dimensionFilter: {
-      orGroup: {
-        expressions: [
-          {
-            filter: {
-              fieldName: 'sessionSource',
-              stringFilter: {
-                matchType: 'EXACT',
-                value: 'email'
-              }
-            }
-          },
-          {
-            filter: {
-              fieldName: 'sessionMedium',
-              stringFilter: {
-                matchType: 'CONTAINS',
-                value: 'email'
-              }
-            }
-          },
-          {
-            filter: {
-              fieldName: 'sessionCampaignName',
-              stringFilter: {
-                matchType: 'CONTAINS',
-                value: 'launch_nov2025'
-              }
-            }
-          }
-        ]
+      filter: {
+        fieldName: 'sessionSource',
+        stringFilter: {
+          value: 'mailgun',
+          matchType: 'EXACT'
+        }
       }
     },
     orderBys: [
@@ -327,6 +303,17 @@ function formatGA4Response(response) {
 function analyzeEmailFunnel(mailgunData, ga4EmailData) {
   console.log('🔍 Analyzing email-to-web conversion funnel...');
 
+  // Helper to sum from data array when totals unavailable
+  const sumMetric = (data, metric) => (data || []).reduce((sum, row) => sum + (row[metric] || 0), 0);
+  const avgMetric = (data, metric) => (data || []).length > 0 ? sumMetric(data, metric) / data.length : 0;
+
+  // Get GA4 metrics from totals or sum from data
+  const ga4Sessions = ga4EmailData.totals.sessions || sumMetric(ga4EmailData.data, 'sessions');
+  const ga4ActiveUsers = ga4EmailData.totals.activeUsers || sumMetric(ga4EmailData.data, 'activeUsers');
+  const ga4NewUsers = ga4EmailData.totals.newUsers || sumMetric(ga4EmailData.data, 'newUsers');
+  const ga4EngagementRate = ga4EmailData.totals.engagementRate || avgMetric(ga4EmailData.data, 'engagementRate');
+  const ga4PageViews = ga4EmailData.totals.screenPageViews || sumMetric(ga4EmailData.data, 'screenPageViews');
+
   const analysis = {
     emailPerformance: {
       emailsSent: mailgunData.summary.delivered || 0,
@@ -337,11 +324,11 @@ function analyzeEmailFunnel(mailgunData, ga4EmailData) {
       clickToOpenRate: mailgunData.summary.clickToOpenRate
     },
     websiteTraffic: {
-      totalSessions: ga4EmailData.totals.sessions || 0,
-      activeUsers: ga4EmailData.totals.activeUsers || 0,
-      newUsers: ga4EmailData.totals.newUsers || 0,
-      avgEngagementRate: ga4EmailData.totals.engagementRate || 0,
-      pageViews: ga4EmailData.totals.screenPageViews || 0
+      totalSessions: ga4Sessions,
+      activeUsers: ga4ActiveUsers,
+      newUsers: ga4NewUsers,
+      avgEngagementRate: ga4EngagementRate,
+      pageViews: ga4PageViews
     },
     funnelMetrics: {},
     insights: []
@@ -350,7 +337,7 @@ function analyzeEmailFunnel(mailgunData, ga4EmailData) {
   // Calculate funnel conversion rates
   const emailsSent = mailgunData.summary.delivered || 0;
   const emailClicks = mailgunData.summary.uniqueClicks || 0;
-  const websiteSessions = ga4EmailData.totals.sessions || 0;
+  const websiteSessions = ga4Sessions;
 
   if (emailsSent > 0) {
     analysis.funnelMetrics = {
@@ -463,14 +450,24 @@ async function fetchCombinedAnalytics() {
     console.log(`Unsubscribed:         ${mailgunCampaignData.summary.unsubscribed}`);
     console.log(`Spam Complaints:      ${mailgunCampaignData.summary.complained}`);
 
+    // Sum from data array if totals not available
+    const sumMetric = (data, metric) => data.reduce((sum, row) => sum + (row[metric] || 0), 0);
+    const avgMetric = (data, metric) => data.length > 0 ? sumMetric(data, metric) / data.length : 0;
+
+    const sessions = ga4EmailTraffic.totals.sessions || sumMetric(ga4EmailTraffic.data, 'sessions');
+    const activeUsers = ga4EmailTraffic.totals.activeUsers || sumMetric(ga4EmailTraffic.data, 'activeUsers');
+    const newUsers = ga4EmailTraffic.totals.newUsers || sumMetric(ga4EmailTraffic.data, 'newUsers');
+    const pageViews = ga4EmailTraffic.totals.screenPageViews || sumMetric(ga4EmailTraffic.data, 'screenPageViews');
+    const engagementRate = ga4EmailTraffic.totals.engagementRate || avgMetric(ga4EmailTraffic.data, 'engagementRate');
+
     console.log('\n═══════════════════════════════════════════════════════════');
     console.log('🌐 WEBSITE TRAFFIC FROM EMAIL');
     console.log('═══════════════════════════════════════════════════════════');
-    console.log(`Sessions:             ${ga4EmailTraffic.totals.sessions || 0}`);
-    console.log(`Active Users:         ${ga4EmailTraffic.totals.activeUsers || 0}`);
-    console.log(`New Users:            ${ga4EmailTraffic.totals.newUsers || 0}`);
-    console.log(`Page Views:           ${ga4EmailTraffic.totals.screenPageViews || 0}`);
-    console.log(`Avg Engagement Rate:  ${((ga4EmailTraffic.totals.engagementRate || 0) * 100).toFixed(2)}%`);
+    console.log(`Sessions:             ${sessions}`);
+    console.log(`Active Users:         ${activeUsers}`);
+    console.log(`New Users:            ${newUsers}`);
+    console.log(`Page Views:           ${pageViews}`);
+    console.log(`Avg Engagement Rate:  ${(engagementRate * 100).toFixed(2)}%`);
 
     console.log('\n═══════════════════════════════════════════════════════════');
     console.log('🎯 KEY INSIGHTS');
