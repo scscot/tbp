@@ -136,30 +136,6 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
-
-<!-- Podcast Audio Schema for SEO -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AudioObject",
-  "name": "Listen: How AI is Revolutionizing MLM Recruiting: 5 Tools Every Network Marketer Needs in 2025",
-  "description": "Discover 5 AI MLM recruiting tools that increase conversion rates by 300%. Learn how network marketing automation transforms prospecting in 2025.",
-  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3",
-  "encodingFormat": "audio/mpeg",
-  "duration": "PT5M",
-  "uploadDate": "2025-12-14",
-  "inLanguage": "en",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Team Build Pro",
-    "url": "https://teambuildpro.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
-    }
-  }
-}
-</script>
 </head>
 <body>
   <!-- Header -->
@@ -209,22 +185,6 @@
       </div>
 
       <article>
-
-<!-- Podcast Player Section -->
-<div class="podcast-player-section">
-  <div class="podcast-player-wrapper">
-    <span class="podcast-icon">🎧</span>
-    <div class="podcast-info">
-      <span class="podcast-label">Listen to this article</span>
-      <span class="podcast-duration">5 min</span>
-    </div>
-    <audio controls preload="metadata" class="podcast-audio" data-slug="ai-revolutionizing-mlm-recruiting-5-tools-network" data-lang="en">
-      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/ai-revolutionizing-mlm-recruiting-5-tools-network.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-</div>
-
         <p>You've spent hours crafting the perfect prospecting message, only to watch 90% of your leads ghost you after the initial contact. Sound familiar? If you're still manually qualifying prospects and sending generic follow-ups, you're fighting an uphill battle that successful network marketers abandoned years ago.</p>
 
 <p>The harsh reality is that traditional MLM recruiting methods are failing at an unprecedented rate. While you're burning through your contact list with outdated tactics, top earners are leveraging AI-powered systems that automatically identify serious prospects, nurture relationships, and convert leads while they sleep. The gap between AI-powered recruiters and traditional approaches has never been wider.</p>
@@ -453,7 +413,7 @@
         <h2>Start Building Your Team with AI</h2>
         <p>Download Team Build Pro and give your prospects a 30-day team building experience before they join</p>
         <div class="download-buttons">
-          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" onclick="openAppOrStore('ios'); return false;" class="store-badge">
+          <a href="https://apps.apple.com/app/team-build-pro/id6751211622" class="store-badge">
             <img src="/assets/images/app_store_badges/black.svg" alt="Download on App Store">
           </a>
           <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix" class="store-badge">
@@ -535,52 +495,5 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
-
-<script>
-// Podcast tracking for GA4
-document.addEventListener('DOMContentLoaded', function() {
-  const audioElements = document.querySelectorAll('.podcast-audio');
-  audioElements.forEach(function(audio) {
-    const slug = audio.dataset.slug || 'unknown';
-    const lang = audio.dataset.lang || 'en';
-
-    audio.addEventListener('play', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_play', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    audio.addEventListener('ended', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_complete', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    // Track 50% completion
-    let halfTracked = false;
-    audio.addEventListener('timeupdate', function() {
-      if (!halfTracked && audio.currentTime > audio.duration / 2) {
-        halfTracked = true;
-        if (typeof gtag === 'function') {
-          gtag('event', 'podcast_halfway', {
-            'event_category': 'engagement',
-            'event_label': slug,
-            'language': lang
-          });
-        }
-      }
-    });
-  });
-});
-</script>
-
 </body>
 </html>

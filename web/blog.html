@@ -8,12 +8,6 @@
   <meta name="keywords" content="ai recruiting blog,direct sales tips,network marketing strategies,mlm blog,team building advice" />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://teambuildpro.com/blog.html" />
-  <!-- Hreflang tags for multilingual SEO -->
-  <link rel="alternate" hreflang="en" href="https://teambuildpro.com/blog.html" />
-  <link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/blog.html" />
-  <link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/blog.html" />
-  <link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/blog.html" />
-  <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/blog.html" />
 
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="Team Build Pro Blog - AI Recruiting & Direct Sales Tips" />
@@ -38,9 +32,6 @@
   <link rel="apple-touch-icon" href="/assets/icons/team-build-pro.png" />
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/downline-animation.css" />
-
-  <!-- Shared Header/Footer Components -->
-  <script src="/js/components.js"></script>
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -107,8 +98,36 @@
   </style>
 </head>
 <body>
-  <!-- Header (rendered by components.js) -->
-  <div id="tbp-header"></div>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="/" class="logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro">
+        <span>Team Build Pro</span>
+      </a>
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+        <span aria-hidden="true" style="font-size:2rem;color:#ffffff">☰</span>
+      </button>
+      <div id="mobile-menu" class="mobile-menu" role="menu">
+        <a href="/" role="menuitem">Home</a>
+        <a href="/#screenshots" role="menuitem">Screenshots</a>
+        <a href="/#pricing" role="menuitem">Pricing</a>
+        <a href="/faq.html" role="menuitem">FAQ</a>
+        <a href="/blog.html" role="menuitem">Blog</a>
+        <a href="/books.html" role="menuitem">Books</a>
+        <a href="/contact_us.html" role="menuitem">Contact Us</a>
+      </div>
+    </nav>
+    <div class="language-switcher header-language-switcher">
+      <span class="lang-link active" lang="en">English</span>
+      <span class="lang-separator">|</span>
+      <a href="https://es.teambuildpro.com/" hreflang="es" lang="es" class="lang-link">Español</a>
+      <span class="lang-separator">|</span>
+      <a href="https://pt.teambuildpro.com/" hreflang="pt" lang="pt" class="lang-link">Português</a>
+      <span class="lang-separator">|</span>
+      <a href="https://de.teambuildpro.com/" hreflang="de" lang="de" class="lang-link">Deutsch</a>
+    </div>
+  </header>
 
   <!-- Hero Section -->
   <section class="blog-hero">
@@ -132,6 +151,20 @@
 
       <!-- Blog Grid -->
       <div class="blog-grid" id="blog-grid">
+        
+          <a href="/blog/30-day-pre-qualification-beats-traditional-mlm.html" class="blog-card" data-category="Recruiting Tips">
+            <div class="card-content">
+              <span class="category-badge ">RECRUITING TIPS</span>
+              <h3>Why 30-Day Pre-Qualification Beats Traditional MLM Recruiting: 2025 Retention Data</h3>
+              <p>75% of MLM recruits quit in their first year. Learn how 30-day pre-qualification builds commitment and increases 90-day retention by 340%....</p>
+              <div class="meta">
+                <span>December 15, 2025</span>
+                <span>•</span>
+                <span>By Team Build Pro</span>
+              </div>
+              <span class="read-more">Read Article →</span>
+            </div>
+          </a>
         
           <a href="/blog/death-cold-messaging-direct-sales-recruiting-needs.html" class="blog-card" data-category="Recruiting Tips">
             <div class="card-content">
@@ -292,14 +325,33 @@
     </div>
   </section>
 
-  <!-- Footer (rendered by components.js) -->
-  <div id="tbp-footer"></div>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/icons/team-build-pro.png" alt="Team Build Pro" style="width: 32px; height: 32px; border-radius: 50%;">
+        <span>Team Build Pro</span>
+      </div>
+      <div class="footer-links">
+        <a href="/#pricing">Pricing</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/books.html">Books</a>
+        <a href="/companies.html">Recruiting Guides</a>
+        <a href="/contact_us.html">Contact</a>
+        <a href="/privacy_policy.html">Privacy Policy</a>
+        <a href="/terms_of_service.html">Terms of Service</a>
+      </div>
+      <p>&copy; <span id="currentYear"></span> Team Build Pro. All Rights Reserved.</p>
+      <p style="margin-top: 8px; font-size: 0.85rem;"><a href="https://www.stephenscott.us" rel="author" style="color: #888;">Created by Stephen Scott</a></p>
+    </div>
+  </footer>
 
   <!-- Category Filter Script -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const categoryBtns = document.querySelectorAll('.category-btn');
       const blogCards = document.querySelectorAll('.blog-card');
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
 
       // Category filtering
       categoryBtns.forEach(btn => {
@@ -318,6 +370,21 @@
           });
         });
       });
+
+      // Mobile menu
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+          const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+          menuBtn.setAttribute('aria-expanded', !isExpanded);
+          mobileMenu.classList.toggle('active');
+        });
+      }
+
+      // Set current year
+      const yearSpan = document.getElementById('currentYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
     });
   </script>
 
