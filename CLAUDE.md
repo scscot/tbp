@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-14
+**Last Updated**: 2025-12-16
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -371,6 +371,21 @@ git add . && git commit -m "message" && git push
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 16
+- **Push Notifications Enabled**: Activated push notification delivery via Firebase config
+  - Changed `notifications.enable_trigger` from `"false"` to `"true"`
+  - Changed `notifications.delivery_mode` from `"helper"` to `"trigger"`
+  - All notification triggers now send push notifications immediately
+- **GA4 Combined Analytics Fix**: Fixed `analytics/fetch-combined-analytics.js` filter mismatch
+  - Changed filter from `sessionSource=email` to `sessionSource=mailgun`
+  - Changed campaign filter from `launch_nov2025` to `initial_campaign`
+  - Added fallback to sum from data array when GA4 API returns empty `totals` object
+- **Firestore Monitor Fixed Costs**: Added monthly fixed costs display to `web/firestore-monitor.html`
+  - Claude Code: $100.00/month
+  - ElevenLabs: $22.00/month
+  - Total fixed costs: $122.00/month
+  - New stat cards show fixed costs and total monthly cost (Firestore + fixed)
 
 ### Week of Dec 14
 - **Profile Completion Reminder Notifications**: Added automated push reminders for incomplete profiles
