@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free AI Script Generator | Team Build Pro</title>
+    <meta name="description" content="Generate personalized recruiting scripts for any direct sales company. Free AI-powered tool for network marketers. Cold outreach, follow-ups, objection handling.">
+    <meta name="keywords" content="AI recruiting scripts, MLM scripts, network marketing messages, direct sales scripts, recruiting templates, cold outreach scripts">
+    <meta name="author" content="Team Build Pro">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://teambuildpro.com/scripts.html" />
+    <!-- Hreflang tags for multilingual SEO -->
+    <link rel="alternate" hreflang="en" href="https://teambuildpro.com/scripts.html" />
+    <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/scripts.html" />
+    <meta property="og:title" content="Free AI Script Generator | Team Build Pro">
+    <meta property="og:description" content="Generate personalized recruiting scripts for any direct sales company. Free AI-powered tool for network marketers.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teambuildpro.com/scripts.html">
+    <meta property="og:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
+    <meta property="og:site_name" content="Team Build Pro">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free AI Script Generator | Team Build Pro">
+    <meta name="twitter:description" content="Generate personalized recruiting scripts for any direct sales company. Free AI-powered tool.">
+    <meta name="twitter:image" content="https://teambuildpro.com/assets/icons/team-build-pro.png">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+
+    <style>
+        /* Hero Section */
+        .hero-scripts {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 0 6rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-scripts::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-scripts h1 {
+            color: #ffffff;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            line-height: 1.15;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-scripts .subline {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Generator Card */
+        .generator-section {
+            max-width: 600px;
+            margin: -3rem auto 3rem;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .generator-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a2e;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #ffffff;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        #generate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        #generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Result Area */
+        .result-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .result-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .copy-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-button:hover {
+            background: #e5e7eb;
+        }
+
+        .copy-button.copied {
+            background: #d1fae5;
+            border-color: #34d399;
+            color: #059669;
+        }
+
+        .script-output {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: #1a1a2e;
+        }
+
+        /* Features Section */
+        .features-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .features-section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #1a1a2e;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 1.5rem;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #ffffff;
+        }
+
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a2e;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.9375rem;
+        }
+
+        /* App Promo Section */
+        .app-promo-section {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            padding: 4rem 2rem;
+        }
+
+        .promo-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .promo-content h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .promo-content p {
+            color: #ffffff;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .app-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .app-badges a img {
+            height: 48px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero-scripts {
+                padding: 3rem 1rem 5rem;
+            }
+
+            .generator-card {
+                padding: 1.5rem;
+            }
+
+            .app-badges a img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="tbp-header"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-scripts">
+        <div class="container">
+            <h1>Free AI Script Generator</h1>
+            <p class="subline">Generate personalized recruiting scripts for any direct sales company in seconds</p>
+        </div>
+    </section>
+
+    <!-- Generator Section -->
+    <section class="generator-section">
+        <div class="generator-card">
+            <form id="script-form">
+                <div class="form-group">
+                    <label for="company">Your Company</label>
+                    <select id="company" required>
+                        <option value="">Select your company...</option>
+                        <option value="4Life">4Life</option>
+                        <option value="Advocare">Advocare</option>
+                        <option value="Ambit Energy">Ambit Energy</option>
+                        <option value="Amway">Amway</option>
+                        <option value="Arbonne">Arbonne</option>
+                        <option value="ASEA">ASEA</option>
+                        <option value="Avon">Avon</option>
+                        <option value="Beachbody">Beachbody</option>
+                        <option value="Beautycounter">Beautycounter</option>
+                        <option value="BELLAME">BELLAME</option>
+                        <option value="Bemer">Bemer</option>
+                        <option value="Color Street">Color Street</option>
+                        <option value="Cutco">Cutco</option>
+                        <option value="doTERRA">doTERRA</option>
+                        <option value="Enagic">Enagic</option>
+                        <option value="Epicure">Epicure</option>
+                        <option value="Farmasi">Farmasi</option>
+                        <option value="Forever Living">Forever Living</option>
+                        <option value="Gano Excel">Gano Excel</option>
+                        <option value="Herbalife">Herbalife</option>
+                        <option value="Immunotec">Immunotec</option>
+                        <option value="Isagenix">Isagenix</option>
+                        <option value="It Works!">It Works!</option>
+                        <option value="Juice Plus">Juice Plus</option>
+                        <option value="Kyani">Kyani</option>
+                        <option value="LE-VEL Thrive">LE-VEL Thrive</option>
+                        <option value="LegalShield">LegalShield</option>
+                        <option value="Lifewave">Lifewave</option>
+                        <option value="Lilla Rose">Lilla Rose</option>
+                        <option value="LiveGood">LiveGood</option>
+                        <option value="Mannatech">Mannatech</option>
+                        <option value="Market America">Market America</option>
+                        <option value="Mary Kay">Mary Kay</option>
+                        <option value="Melaleuca">Melaleuca</option>
+                        <option value="Modere">Modere</option>
+                        <option value="Monat">Monat</option>
+                        <option value="Nature's Sunshine">Nature's Sunshine</option>
+                        <option value="Neora">Neora</option>
+                        <option value="Norwex">Norwex</option>
+                        <option value="Nu Skin">Nu Skin</option>
+                        <option value="Optavia">Optavia</option>
+                        <option value="Origami Owl">Origami Owl</option>
+                        <option value="Pampered Chef">Pampered Chef</option>
+                        <option value="Paparazzi">Paparazzi</option>
+                        <option value="Plexus">Plexus</option>
+                        <option value="Primerica">Primerica</option>
+                        <option value="Princess House">Princess House</option>
+                        <option value="Pruvit">Pruvit</option>
+                        <option value="Pure Romance">Pure Romance</option>
+                        <option value="Purium">Purium</option>
+                        <option value="Rain International">Rain International</option>
+                        <option value="Rodan + Fields">Rodan + Fields</option>
+                        <option value="Scentsy">Scentsy</option>
+                        <option value="Scout & Cellar">Scout & Cellar</option>
+                        <option value="Shaklee">Shaklee</option>
+                        <option value="SeneGence">SeneGence</option>
+                        <option value="Stream Energy">Stream Energy</option>
+                        <option value="Sunrider">Sunrider</option>
+                        <option value="Team National">Team National</option>
+                        <option value="Thirty-One Gifts">Thirty-One Gifts</option>
+                        <option value="Touchstone Crystal">Touchstone Crystal</option>
+                        <option value="Tranont">Tranont</option>
+                        <option value="Traveling Vineyard">Traveling Vineyard</option>
+                        <option value="Tupperware">Tupperware</option>
+                        <option value="USANA">USANA</option>
+                        <option value="Utility Warehouse">Utility Warehouse</option>
+                        <option value="Vasayo">Vasayo</option>
+                        <option value="Vida Divina">Vida Divina</option>
+                        <option value="Visalus">Visalus</option>
+                        <option value="WFG">WFG</option>
+                        <option value="Xyngular">Xyngular</option>
+                        <option value="Young Living">Young Living</option>
+                        <option value="Younique">Younique</option>
+                        <option value="Zija">Zija</option>
+                        <option value="Zinzino">Zinzino</option>
+                        <option value="Zurvita">Zurvita</option>
+                        <option value="Other">Other (specify below)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="other-company-group" style="display: none;">
+                    <label for="other-company">Company Name</label>
+                    <input type="text" id="other-company" placeholder="Enter your company name">
+                </div>
+
+                <div class="form-group">
+                    <label for="scenario">Message Type</label>
+                    <select id="scenario" required>
+                        <option value="">Select message type...</option>
+                        <option value="cold-outreach">Cold Outreach (New Contact)</option>
+                        <option value="warm-market">Warm Market (Friend/Family)</option>
+                        <option value="follow-up">Follow-Up Message</option>
+                        <option value="objection-time">Objection: "I don't have time"</option>
+                        <option value="objection-money">Objection: "I don't have money"</option>
+                        <option value="objection-mlm">Objection: "Is this MLM?"</option>
+                        <option value="objection-tried">Objection: "I've tried this before"</option>
+                        <option value="reconnect">Re-Engage Old Contact</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tone">Tone</label>
+                    <select id="tone">
+                        <option value="friendly">Friendly & Casual</option>
+                        <option value="professional">Professional</option>
+                        <option value="curious">Curiosity-Building</option>
+                        <option value="story">Story-Based</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="generate-btn">
+                    <span class="btn-text">Generate Script</span>
+                    <span class="btn-loading" style="display: none;">
+                        <svg class="spinner" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="31.4" stroke-dashoffset="10"></circle>
+                        </svg>
+                        Generating...
+                    </span>
+                </button>
+            </form>
+
+            <div id="result" class="result-area" style="display: none;">
+                <div class="result-header">
+                    <h3>Your Script</h3>
+                    <button id="copy-btn" class="copy-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+                <div id="script-output" class="script-output"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>Why Use This Tool?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <h3>AI-Powered</h3>
+                <p>Scripts crafted by advanced AI trained on successful recruiting conversations</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <h3>Instant Results</h3>
+                <p>Get personalized scripts in seconds, not hours</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3>Team Friendly</h3>
+                <p>Share this tool with your team for consistent messaging</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Promo Section -->
+    <section class="app-promo-section">
+        <div class="promo-content">
+            <h2>Want More Recruiting Power?</h2>
+            <p>Team Build Pro gives you 16 pre-written messages, a 24/7 AI Coach, and tools to track your entire downline. Start your free 30-day trial.</p>
+            <div class="app-badges">
+                <a href="https://apps.apple.com/us/app/id6751211622"
+                   onclick="openAppOrStore('ios'); return false;"
+                   rel="noopener">
+                    <img src="/assets/images/app_store_badges/black.svg" alt="Download on App Store">
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.scott.ultimatefix"
+                   onclick="openAppOrStore('android'); return false;"
+                   rel="noopener">
+                    <img src="/assets/images/Google-Play.png" alt="Get it on Google Play">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="tbp-footer"></div>
+
+    <!-- Script Generator Logic -->
+    <script>
+    (function() {
+        'use strict';
+
+        // Cloud Function endpoint
+        const API_ENDPOINT = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/generateRecruitingScript';
+
+        // DOM Elements
+        const form = document.getElementById('script-form');
+        const companySelect = document.getElementById('company');
+        const otherCompanyGroup = document.getElementById('other-company-group');
+        const otherCompanyInput = document.getElementById('other-company');
+        const scenarioSelect = document.getElementById('scenario');
+        const toneSelect = document.getElementById('tone');
+        const generateBtn = document.getElementById('generate-btn');
+        const btnText = generateBtn.querySelector('.btn-text');
+        const btnLoading = generateBtn.querySelector('.btn-loading');
+        const resultArea = document.getElementById('result');
+        const scriptOutput = document.getElementById('script-output');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Show/hide "Other company" input
+        companySelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                otherCompanyGroup.style.display = 'block';
+                otherCompanyInput.required = true;
+            } else {
+                otherCompanyGroup.style.display = 'none';
+                otherCompanyInput.required = false;
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get form values
+            let company = companySelect.value;
+            if (company === 'Other') {
+                company = otherCompanyInput.value.trim();
+                if (!company) {
+                    alert('Please enter your company name');
+                    return;
+                }
+            }
+
+            const scenario = scenarioSelect.value;
+            const tone = toneSelect.value;
+
+            if (!company || !scenario) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Show loading state
+            setLoading(true);
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        company: company,
+                        scenario: scenario,
+                        tone: tone
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('HTTP error: ' + response.status);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Display the script with branding
+                displayScript(data.script);
+
+            } catch (error) {
+                console.error('Error generating script:', error);
+                alert('Sorry, there was an error generating your script. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Copy to clipboard
+        copyBtn.addEventListener('click', function() {
+            const textToCopy = scriptOutput.innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show copied state
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+                } catch (e) {
+                    alert('Failed to copy. Please select the text manually.');
+                }
+                document.body.removeChild(textarea);
+            });
+        });
+
+        // Set loading state
+        function setLoading(isLoading) {
+            generateBtn.disabled = isLoading;
+            btnText.style.display = isLoading ? 'none' : 'inline';
+            btnLoading.style.display = isLoading ? 'inline-flex' : 'none';
+        }
+
+        // Display the generated script
+        function displayScript(script) {
+            // Create the branded output
+            const brandedScript = script + '\n\n---\nPowered by Team Build Pro\nDownload free: teambuildpro.com';
+
+            scriptOutput.textContent = brandedScript;
+            resultArea.style.display = 'block';
+
+            // Scroll to result
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+    })();
+    </script>
+</body>
+
+</html>

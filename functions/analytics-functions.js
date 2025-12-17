@@ -16,6 +16,16 @@ const {
 } = require('./shared/utilities');
 
 const { getTimezoneFromLocation } = require('./timezone_mapping');
+const { defineSecret } = require('firebase-functions/params');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+
+// App Store Connect API secrets
+const ascKeyId = defineSecret('ASC_KEY_ID');
+const ascIssuerId = defineSecret('ASC_ISSUER_ID');
+const ascPrivateKey = defineSecret('ASC_PRIVATE_KEY');
+const openaiApiKey = defineSecret('OPENAI_API_KEY');
+const OpenAI = require('openai');
 
 // ==============================
 // Helper Functions
@@ -727,6 +737,592 @@ const getFirestoreMetrics = onRequest({
   } catch (error) {
     logger.error('Error getting Firestore metrics:', error);
     return res.status(500).json({ error: 'Failed to get metrics' });
+  }
+});
+
+/**
+ * Get App Store Connect analytics metrics
+ * Password-protected endpoint for the appstore-monitor dashboard
+ */
+const getAppStoreMetrics = onRequest({
+  region: "us-central1",
+  cors: true,
+  timeoutSeconds: 120,
+  memory: '512MiB',
+  secrets: [ascKeyId, ascIssuerId, ascPrivateKey, openaiApiKey]
+}, async (req, res) => {
+  try {
+    // Simple password check for monitoring access
+    const { password } = req.query;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+
+    if (!password || password !== MONITORING_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // App Store Connect constants
+    const ASC_APP_ID = '6751211622'; // Team Build Pro iOS app ID
+    const ASC_BASE_URL = 'https://api.appstoreconnect.apple.com/v1';
+
+    // Generate JWT token for App Store Connect API
+    function generateASCToken() {
+      const privateKey = ascPrivateKey.value();
+      // Handle base64-encoded private key (for Cloud Functions secrets)
+      let decodedKey;
+      try {
+        decodedKey = Buffer.from(privateKey, 'base64').toString('utf8');
+        // Verify it looks like a PEM key
+        if (!decodedKey.includes('-----BEGIN PRIVATE KEY-----')) {
+          decodedKey = privateKey; // Not base64, use as-is
+        }
+      } catch {
+        decodedKey = privateKey;
+      }
+
+      const now = Math.floor(Date.now() / 1000);
+      const payload = {
+        iss: ascIssuerId.value(),
+        iat: now,
+        exp: now + (20 * 60), // 20 minutes (Apple max)
+        aud: 'appstoreconnect-v1'
+      };
+
+      return jwt.sign(payload, decodedKey, {
+        algorithm: 'ES256',
+        header: {
+          alg: 'ES256',
+          kid: ascKeyId.value(),
+          typ: 'JWT'
+        }
+      });
+    }
+
+    // Make authenticated request to App Store Connect API
+    async function ascRequest(endpoint, method = 'GET', data = null, params = {}) {
+      const token = generateASCToken();
+      const url = `${ASC_BASE_URL}${endpoint}`;
+
+      try {
+        let response;
+        if (method === 'POST') {
+          response = await axios.post(url, data, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        } else {
+          response = await axios.get(url, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            params
+          });
+        }
+        return response.data;
+      } catch (error) {
+        if (error.response) {
+          logger.error(`ASC API Error: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+        }
+        throw error;
+      }
+    }
+
+    // Fetch app info
+    async function getAppInfo() {
+      const response = await ascRequest(`/apps/${ASC_APP_ID}`);
+      const app = response.data;
+      return {
+        id: app.id,
+        name: app.attributes.name,
+        bundleId: app.attributes.bundleId,
+        sku: app.attributes.sku
+      };
+    }
+
+    // Fetch recent app versions
+    async function getAppVersions() {
+      const response = await ascRequest(
+        `/apps/${ASC_APP_ID}/appStoreVersions`,
+        'GET',
+        null,
+        { limit: 5 }
+      );
+      return response.data.map(v => ({
+        id: v.id,
+        versionString: v.attributes.versionString,
+        platform: v.attributes.platform,
+        appStoreState: v.attributes.appStoreState,
+        releaseType: v.attributes.releaseType,
+        createdDate: v.attributes.createdDate
+      }));
+    }
+
+    // Fetch customer reviews
+    async function getCustomerReviews() {
+      const response = await ascRequest(
+        `/apps/${ASC_APP_ID}/customerReviews`,
+        'GET',
+        null,
+        { sort: '-createdDate', limit: 10 }
+      );
+
+      const reviews = response.data.map(r => ({
+        id: r.id,
+        rating: r.attributes.rating,
+        title: r.attributes.title,
+        body: r.attributes.body,
+        reviewerNickname: r.attributes.reviewerNickname,
+        territory: r.attributes.territory,
+        createdDate: r.attributes.createdDate
+      }));
+
+      // Calculate rating distribution
+      const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      let totalRating = 0;
+      reviews.forEach(r => {
+        ratingDistribution[r.rating]++;
+        totalRating += r.rating;
+      });
+
+      return {
+        reviews,
+        totalReviews: reviews.length,
+        averageRating: reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 'N/A',
+        ratingDistribution
+      };
+    }
+
+    // Get analytics report summary (available report types)
+    async function getAnalyticsReportSummary() {
+      let requestId;
+
+      // First, try to get existing report requests for this app
+      try {
+        const existingRequests = await ascRequest(
+          `/apps/${ASC_APP_ID}/analyticsReportRequests`,
+          'GET',
+          null,
+          { 'filter[accessType]': 'ONGOING' }
+        );
+
+        if (existingRequests.data && existingRequests.data.length > 0) {
+          // Use existing request
+          requestId = existingRequests.data[0].id;
+        }
+      } catch (error) {
+        // If the filter doesn't work, try without filter
+        logger.info('Could not filter existing requests, will try creating new one');
+      }
+
+      // If no existing request found, create a new one
+      if (!requestId) {
+        try {
+          const reportRequest = await ascRequest('/analyticsReportRequests', 'POST', {
+            data: {
+              type: 'analyticsReportRequests',
+              attributes: {
+                accessType: 'ONGOING'
+              },
+              relationships: {
+                app: {
+                  data: {
+                    type: 'apps',
+                    id: ASC_APP_ID
+                  }
+                }
+              }
+            }
+          });
+          requestId = reportRequest.data.id;
+        } catch (error) {
+          if (error.response && error.response.status === 409) {
+            // Conflict - request already exists, fetch it
+            const existingRequests = await ascRequest(
+              `/apps/${ASC_APP_ID}/analyticsReportRequests`
+            );
+            if (existingRequests.data && existingRequests.data.length > 0) {
+              requestId = existingRequests.data[0].id;
+            }
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      if (!requestId) {
+        return {
+          requestId: null,
+          totalReports: 0,
+          categories: {},
+          reportTypes: []
+        };
+      }
+
+      // Get available report types
+      const reportsResponse = await ascRequest(
+        `/analyticsReportRequests/${requestId}/reports`,
+        'GET',
+        null,
+        { limit: 50 }
+      );
+
+      const reportTypes = reportsResponse.data.map(r => ({
+        id: r.id,
+        name: r.attributes.name,
+        category: r.attributes.category
+      }));
+
+      // Group by category
+      const categories = {};
+      reportTypes.forEach(r => {
+        categories[r.category] = (categories[r.category] || 0) + 1;
+      });
+
+      return {
+        requestId,
+        totalReports: reportTypes.length,
+        categories,
+        reportTypes
+      };
+    }
+
+    // Get actual metrics data from specific reports
+    async function getActualMetrics(reportRequestId, reportTypes) {
+      const metrics = {
+        downloads: { total: 0, byTerritory: {}, bySource: {}, daily: [] },
+        engagement: { totalImpressions: 0, totalPageViews: 0, conversionRate: 0, byTerritory: {}, pageViewsByTerritory: {} },
+        sessions: { totalSessions: 0, averageDuration: 0, activeDevices: 0 },
+        dataAvailable: false,
+        message: null
+      };
+
+      if (!reportRequestId || !reportTypes || reportTypes.length === 0) {
+        metrics.message = 'No analytics report request available';
+        return metrics;
+      }
+
+      // Find key reports
+      const downloadsReport = reportTypes.find(r => r.name === 'App Downloads Detailed' || r.name === 'App Downloads Standard');
+      const engagementReport = reportTypes.find(r => r.name === 'App Store Discovery and Engagement Detailed' || r.name === 'App Store Discovery and Engagement Standard');
+      const sessionsReport = reportTypes.find(r => r.name === 'App Sessions Detailed' || r.name === 'App Sessions Standard');
+
+      // Fetch report instances and data
+      async function fetchReportData(reportId, reportName) {
+        try {
+          // Get report instances (last 30 days of data)
+          // Correct endpoint: /analyticsReports/{id}/instances
+          const instancesResponse = await ascRequest(
+            `/analyticsReports/${reportId}/instances`,
+            'GET',
+            null,
+            { limit: 30 }
+          );
+
+          if (!instancesResponse.data || instancesResponse.data.length === 0) {
+            logger.info(`No instances available for ${reportName} - data may take 24-48 hours to appear`);
+            return null;
+          }
+
+          logger.info(`Found ${instancesResponse.data.length} instances for ${reportName}`);
+
+          // Get the most recent instance with data
+          const instances = instancesResponse.data;
+          let reportData = [];
+
+          for (const instance of instances.slice(0, 7)) { // Last 7 days
+            try {
+              // Get the download URL for this instance
+              // Correct endpoint: /analyticsReportInstances/{id}/segments
+              const segmentsResponse = await ascRequest(
+                `/analyticsReportInstances/${instance.id}/segments`,
+                'GET',
+                null,
+                { limit: 10 }
+              );
+
+              if (segmentsResponse.data && segmentsResponse.data.length > 0) {
+                for (const segment of segmentsResponse.data) {
+                  if (segment.attributes && segment.attributes.url) {
+                    // Download the actual data
+                    const dataResponse = await axios.get(segment.attributes.url, {
+                      responseType: 'text',
+                      decompress: true
+                    });
+
+                    // Parse TSV data
+                    const lines = dataResponse.data.split('\n');
+                    if (lines.length > 1) {
+                      const headers = lines[0].split('\t');
+                      for (let i = 1; i < lines.length; i++) {
+                        if (lines[i].trim()) {
+                          const values = lines[i].split('\t');
+                          const row = {};
+                          headers.forEach((h, idx) => {
+                            row[h.trim()] = values[idx] ? values[idx].trim() : '';
+                          });
+                          row._date = instance.attributes?.processingDate || '';
+                          reportData.push(row);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (instanceError) {
+              logger.warn(`Could not fetch instance data: ${instanceError.message}`);
+            }
+          }
+
+          return reportData;
+        } catch (error) {
+          logger.warn(`Could not fetch ${reportName}: ${error.message}`);
+          return null;
+        }
+      }
+
+      // Fetch downloads data
+      if (downloadsReport) {
+        const downloadData = await fetchReportData(downloadsReport.id, 'Downloads');
+        if (downloadData && downloadData.length > 0) {
+          metrics.dataAvailable = true;
+
+          downloadData.forEach(row => {
+            const count = parseInt(row['Total Downloads'] || row['Downloads'] || row['First Time Downloads'] || '0', 10);
+            metrics.downloads.total += count;
+
+            // By territory
+            const territory = row['Territory'] || row['Storefront'] || 'Unknown';
+            metrics.downloads.byTerritory[territory] = (metrics.downloads.byTerritory[territory] || 0) + count;
+
+            // By source
+            const source = row['Source Type'] || row['Source'] || 'Unknown';
+            metrics.downloads.bySource[source] = (metrics.downloads.bySource[source] || 0) + count;
+
+            // Daily
+            if (row._date) {
+              const existing = metrics.downloads.daily.find(d => d.date === row._date);
+              if (existing) {
+                existing.count += count;
+              } else {
+                metrics.downloads.daily.push({ date: row._date, count });
+              }
+            }
+          });
+        }
+      }
+
+      // Fetch engagement data
+      if (engagementReport) {
+        const engagementData = await fetchReportData(engagementReport.id, 'Engagement');
+        if (engagementData && engagementData.length > 0) {
+          metrics.dataAvailable = true;
+
+          engagementData.forEach(row => {
+            const impressions = parseInt(row['Impressions'] || row['Total Impressions'] || '0', 10);
+            const pageViews = parseInt(row['Product Page Views'] || row['Page Views'] || '0', 10);
+
+            metrics.engagement.totalImpressions += impressions;
+            metrics.engagement.totalPageViews += pageViews;
+
+            const territory = row['Territory'] || row['Storefront'] || 'Unknown';
+            metrics.engagement.byTerritory[territory] = (metrics.engagement.byTerritory[territory] || 0) + impressions;
+            metrics.engagement.pageViewsByTerritory[territory] = (metrics.engagement.pageViewsByTerritory[territory] || 0) + pageViews;
+          });
+
+          // Calculate conversion rate
+          if (metrics.engagement.totalImpressions > 0 && metrics.downloads.total > 0) {
+            metrics.engagement.conversionRate = ((metrics.downloads.total / metrics.engagement.totalImpressions) * 100).toFixed(2);
+          }
+        }
+      }
+
+      // Fetch sessions data
+      if (sessionsReport) {
+        const sessionsData = await fetchReportData(sessionsReport.id, 'Sessions');
+        if (sessionsData && sessionsData.length > 0) {
+          metrics.dataAvailable = true;
+
+          sessionsData.forEach(row => {
+            const sessions = parseInt(row['Sessions'] || row['Total Sessions'] || '0', 10);
+            const devices = parseInt(row['Active Devices'] || row['Unique Devices'] || '0', 10);
+
+            metrics.sessions.totalSessions += sessions;
+            metrics.sessions.activeDevices += devices;
+          });
+        }
+      }
+
+      // Add helpful message when data not available
+      if (!metrics.dataAvailable) {
+        metrics.message = 'Analytics Reports API data not yet available. The API requires 24-48 hours to populate after initial request. Real-time data is available in App Store Connect web dashboard.';
+      }
+
+      return metrics;
+    }
+
+    // Generate AI-powered observations and recommendations
+    async function generateObservationsAndRecommendations(data) {
+      try {
+        const openai = new OpenAI({
+          apiKey: openaiApiKey.value(),
+        });
+
+        // Prepare context for AI
+        const context = {
+          appName: data.appInfo?.name || 'Team Build Pro',
+          currentVersion: data.versions?.[0]?.versionString || 'Unknown',
+          averageRating: data.reviews?.averageRating || 'N/A',
+          totalReviews: data.reviews?.totalReviews || 0,
+          recentReview: data.reviews?.reviews?.[0] || null,
+          downloads: data.actualMetrics?.downloads || {},
+          engagement: data.actualMetrics?.engagement || {},
+          sessions: data.actualMetrics?.sessions || {},
+          metricsAvailable: data.actualMetrics?.dataAvailable || false
+        };
+
+        const prompt = `You are an App Store optimization expert analyzing data for "${context.appName}" (iOS app).
+
+Current Data:
+- App Version: ${context.currentVersion}
+- Average Rating: ${context.averageRating}/5 (${context.totalReviews} reviews)
+- Recent Review: ${context.recentReview ? `"${context.recentReview.title}" - ${context.recentReview.rating}/5 stars` : 'None'}
+${context.metricsAvailable ? `
+- Total Downloads (7 days): ${context.downloads.total || 0}
+- Top Download Territories: ${Object.entries(context.downloads.byTerritory || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t, c]) => `${t}: ${c}`).join(', ') || 'N/A'}
+- Download Sources: ${Object.entries(context.downloads.bySource || {}).map(([s, c]) => `${s}: ${c}`).join(', ') || 'N/A'}
+- App Store Impressions: ${context.engagement.impressions || 0}
+- Product Page Views: ${context.engagement.pageViews || 0}
+- Conversion Rate: ${context.engagement.conversionRate || 'N/A'}%
+- Total Sessions: ${context.sessions.total || 0}
+- Active Devices: ${context.sessions.activeDevices || 0}
+` : '- Detailed metrics not yet available (new app or insufficient data)'}
+
+Based on this data, provide:
+1. **Key Observations** (3-5 bullet points about the current state)
+2. **Strengths** (2-3 things going well)
+3. **Areas for Improvement** (2-3 actionable items)
+4. **Recommended Actions** (3-5 specific, prioritized recommendations for the next 30 days)
+
+Focus on ASO (App Store Optimization), user acquisition, and retention. Be specific and actionable. Keep the total response under 500 words.`;
+
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'You are an expert mobile app growth consultant specializing in App Store optimization and user acquisition. Provide concise, actionable insights.' },
+            { role: 'user', content: prompt }
+          ],
+          max_tokens: 800,
+          temperature: 0.7
+        });
+
+        const analysis = completion.choices[0]?.message?.content || 'Analysis not available.';
+
+        return {
+          generatedAt: new Date().toISOString(),
+          analysis,
+          inputMetrics: {
+            rating: context.averageRating,
+            reviews: context.totalReviews,
+            downloads: context.downloads.total || 0,
+            impressions: context.engagement.impressions || 0,
+            conversionRate: context.engagement.conversionRate || 'N/A'
+          }
+        };
+      } catch (error) {
+        logger.error('Error generating AI analysis:', error);
+        return {
+          generatedAt: new Date().toISOString(),
+          analysis: 'AI analysis temporarily unavailable. Please try again later.',
+          error: error.message
+        };
+      }
+    }
+
+    // Get performance metrics (if available)
+    async function getPerformanceMetrics() {
+      try {
+        const response = await ascRequest(
+          `/apps/${ASC_APP_ID}/perfPowerMetrics`,
+          'GET',
+          null,
+          { 'filter[deviceType]': 'iPhone', 'filter[metricType]': 'HANG' }
+        );
+        return {
+          productData: response.productData || [],
+          insights: response.insights || { trendingUp: [], regressions: [] },
+          version: response.version || '1.0.0'
+        };
+      } catch (error) {
+        // Performance metrics may not be available for all apps
+        return {
+          productData: [],
+          insights: { trendingUp: [], regressions: [] },
+          version: '1.0.0'
+        };
+      }
+    }
+
+    // Gather all metrics
+    logger.info('Fetching App Store Connect metrics...');
+
+    const [appInfo, versions, reviews, analyticsReports, performanceMetrics] = await Promise.all([
+      getAppInfo(),
+      getAppVersions(),
+      getCustomerReviews(),
+      getAnalyticsReportSummary(),
+      getPerformanceMetrics()
+    ]);
+
+    // Fetch actual report data (downloads, engagement, sessions)
+    logger.info('Fetching actual analytics report data...');
+    let actualMetrics = null;
+    if (analyticsReports.requestId && analyticsReports.reportTypes) {
+      actualMetrics = await getActualMetrics(analyticsReports.requestId, analyticsReports.reportTypes);
+    }
+
+    // Generate AI-powered observations and recommendations
+    logger.info('Generating AI observations and recommendations...');
+    let observations = null;
+    try {
+      observations = await generateObservationsAndRecommendations({
+        appInfo,
+        versions,
+        reviews,
+        actualMetrics,
+        performanceMetrics
+      });
+    } catch (aiError) {
+      logger.error('Failed to generate AI observations:', aiError);
+      observations = {
+        error: 'Failed to generate observations',
+        details: aiError.message
+      };
+    }
+
+    const metrics = {
+      generatedAt: new Date().toISOString(),
+      ios: {
+        appInfo,
+        versions,
+        reviews,
+        analyticsReports,
+        actualMetrics,
+        performanceMetrics,
+        observations
+      }
+    };
+
+    logger.info('App Store Connect metrics fetched successfully');
+    res.json(metrics);
+
+  } catch (error) {
+    logger.error('Error getting App Store metrics:', error);
+    return res.status(500).json({
+      error: 'Failed to get App Store metrics',
+      details: error.message
+    });
   }
 });
 
@@ -1606,6 +2202,7 @@ module.exports = {
 
   // System metrics functions
   getFirestoreMetrics,
+  getAppStoreMetrics,
 
   // Team management analytics
   recalculateTeamCounts,

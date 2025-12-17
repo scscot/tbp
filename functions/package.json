@@ -18,6 +18,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@googleapis/admin": "^27.0.0",
     "@googleapis/androidpublisher": "^29.3.0",
     "@sendgrid/mail": "^8.1.5",

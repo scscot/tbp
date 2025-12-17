@@ -101,6 +101,7 @@ const {
 
   // System metrics
   getFirestoreMetrics,
+  getAppStoreMetrics,
 
   // Team management
   recalculateTeamCounts,
@@ -195,6 +196,13 @@ const {
 } = require('./monitoring-functions');
 
 // ==============================
+// Import Script Generator Functions
+// ==============================
+const {
+  generateRecruitingScript,
+} = require('./script-generator-functions');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -252,6 +260,7 @@ module.exports = {
   checkUserSubscriptionStatus,
   getMilestoneFuseStatus,
   getFirestoreMetrics,
+  getAppStoreMetrics,
   recalculateTeamCounts,
   deleteNonAdminUsers,
   cleanupOrphanedUsers,
@@ -308,6 +317,9 @@ module.exports = {
   // ========== MONITORING FUNCTIONS ==========
   monitoringHealthCheck,
   getMonitoringDashboard,
+
+  // ========== SCRIPT GENERATOR FUNCTIONS ==========
+  generateRecruitingScript,
 };
 
 // ==============================

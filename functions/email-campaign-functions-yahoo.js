@@ -15,18 +15,37 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 14, 2025: Using 100% cold_reconnect (text-link) - winner of A/B test
-  // cold_reconnect: 2.22% CTR, cold_button: 0% CTR over 180 emails
-  const templateVersion = 'cold_reconnect';
+  // Dec 17, 2025: Switched to 'scripts' template to promote AI Script Generator tool
+  // Links to teambuildpro.com/scripts.html with UTM tracking
+  const templateVersion = 'scripts';
 
-  // Continue A/B testing subject lines (now isolated from template variable)
-  const subjectLines = [
-    'The Recruiting App Built for Direct Sales',
-    'Building Your Downline With AI'
+  // Dec 17, 2025: New subject lines promoting the AI Script Generator
+  // 4-way rotation for A/B/C/D testing, avoiding spam trigger words like "free"
+  const subjectTags = [
+    'subject_built_tool',
+    'subject_never_struggle',
+    'subject_ai_wrote',
+    'subject_what_to_say'
   ];
-  const subjectIndex = index % 2;
-  const selectedSubject = subjectLines[subjectIndex];
-  const subjectTag = subjectIndex === 0 ? 'subject_recruiting_app' : 'subject_downline_ai';
+  const subjectIndex = index % 4;
+  const subjectTag = subjectTags[subjectIndex];
+
+  // Build subject line (some include first name personalization)
+  let selectedSubject;
+  switch (subjectIndex) {
+    case 0:
+      selectedSubject = `${contact.firstName}, I built you a recruiting tool`;
+      break;
+    case 1:
+      selectedSubject = 'Never struggle with recruiting messages again';
+      break;
+    case 2:
+      selectedSubject = `${contact.firstName}, AI just wrote your next message`;
+      break;
+    case 3:
+      selectedSubject = 'What to say when recruiting (solved)';
+      break;
+  }
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -129,8 +148,7 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
           mailgunId: result.id || ''
         });
 
-        const usedTemplate = ['cold_reconnect', 'cold_button'][i % 2];
-        console.log(`✅ Sent to ${contact.email} [${usedTemplate}]: ${result.id}`);
+        console.log(`✅ Sent to ${contact.email} [scripts]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {

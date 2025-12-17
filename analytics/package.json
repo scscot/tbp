@@ -7,11 +7,14 @@
     "fetch": "node fetch-ga4-data.js",
     "fetch-combined": "node fetch-combined-analytics.js",
     "fetch-email": "node fetch-email-campaign-analytics.js",
+    "fetch-appstore": "node fetch-appstore-analytics.js",
     "setup": "echo 'Run: npm install && follow README.md for authentication setup'"
   },
   "dependencies": {
     "@google-analytics/data": "^4.0.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.0"
   },
   "author": "Stephen Scott",
   "license": "UNLICENSED"
