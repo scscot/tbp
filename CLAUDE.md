@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-16
+**Last Updated**: 2025-12-17
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -198,6 +198,7 @@ All four main sites have identical structure:
 ### Key Pages (All Languages)
 - `/` - Homepage
 - `/faq.html` - Dynamic FAQ
+- `/scripts.html` - Free AI Script Generator tool
 - `/books.html` - Books landing page
 - `/blog.html` - Blog index
 - `/professionals.html` - For direct sales reps
@@ -223,10 +224,11 @@ All four main sites have identical structure:
 
 **Mailgun Configuration:**
 - **Template Name**: `mailer`
-- **Template Versions**: `initial` (text-based personal style), `simple` (image-based with hero)
-- **Subject Lines (A/B)**: Alternates between two subject lines per batch
-  - "Building Your Downline With AI"
-  - "The Recruiting App Built for Direct Sales"
+- **Template Versions**: `cold_reconnect` (reconnection-focused), `scripts` (AI tool promotion)
+- **A/B Testing**: 50/50 split between templates (even=cold_reconnect, odd=scripts)
+- **Subject Lines**: Template-specific rotation
+  - cold_reconnect: "The Recruiting App Built for Direct Sales", "Building Your Downline With AI"
+  - scripts: 4-way personalized rotation (AI tool-focused)
 - **From**: `Stephen Scott <stephen@mailer.teambuildpro.com>`
 - **Domain**: mailer.teambuildpro.com (warmup started Dec 5, 2025)
 - **Tracking**: UTM parameters for GA4 (Mailgun open tracking unreliable due to Gmail pre-fetch)
@@ -236,8 +238,8 @@ All four main sites have identical structure:
 - **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (even hours)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
-- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 12)
-- **A/B Testing**: 50/50 alternating between `initial` and `simple` templates
+- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 20)
+- **A/B Testing**: 50/50 alternating between `cold_reconnect` and `scripts` templates
 - **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=initial_campaign`, `utm_content=[template]`
 
 ### Yahoo Campaign (Mailgun - Automated)
@@ -246,7 +248,7 @@ All four main sites have identical structure:
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
 - **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (currently 6)
-- **A/B Testing**: Same as main campaign (initial/simple templates)
+- **A/B Testing**: Same as main campaign (cold_reconnect/scripts templates)
 - **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=yahoo_campaign`, `utm_content=[template]`
 
 ### Mailgun Event Sync (Automated)
@@ -371,6 +373,27 @@ git add . && git commit -m "message" && git push
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 17
+- **Email Campaign A/B Testing (cold_reconnect vs scripts)**: Implemented 50/50 template split
+  - Even indices → `cold_reconnect` with original subject lines that achieved 6.2% CTR
+  - Odd indices → `scripts` template with 4-way subject line rotation
+  - Subject lines for cold_reconnect: "The Recruiting App Built for Direct Sales", "Building Your Downline With AI"
+  - Subject lines for scripts: personalized AI tool-focused messages
+  - Both main campaign and Yahoo campaign updated
+- **Scripts Page (AI Script Generator)**: Enhanced free tool page across all locales
+  - Changed company dropdown to free-text input (supports any direct sales company)
+  - Added "Free Scripts" link to header and footer menus via `components.js`
+  - Created localized scripts.html for ES, PT, DE with translated UI
+  - Fixed tone dropdown translations (Friendly & Casual → localized versions)
+- **SEO Optimization for scripts.html**: Full multilingual SEO setup
+  - Fixed hreflang tags in ES, PT, DE (added all 4 locale cross-references)
+  - Fixed x-default to point to EN version (was incorrectly pointing to self)
+  - Added scripts.html to all 4 sitemaps with full hreflang links
+  - Priority 0.9 (same as FAQ page)
+- **Mailgun Template Created**: New `scripts` template version promoting AI Script Generator
+  - CTA links to `/scripts.html` with UTM tracking
+  - Personal, conversational tone matching cold_reconnect style
 
 ### Week of Dec 16
 - **Push Notifications Enabled**: Activated push notification delivery via Firebase config
