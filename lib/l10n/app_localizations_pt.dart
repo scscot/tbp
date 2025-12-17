@@ -2700,6 +2700,24 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get sharePartnerAiScriptGeneratorTitle =>
+      'Compartilhar Gerador de Scripts IA';
+
+  @override
+  String get sharePartnerAiScriptGeneratorDescription =>
+      'Dê à sua equipe uma ferramenta gratuita de scripts de recrutamento com IA';
+
+  @override
+  String sharePartnerAiScriptGeneratorSubject(Object business) {
+    return 'Ferramenta de IA Gratuita para o Recrutamento da Sua Equipe $business';
+  }
+
+  @override
+  String sharePartnerAiScriptGeneratorMessage(Object business, Object link) {
+    return 'Quer ajudar sua equipe $business a recrutar de forma mais eficaz?\n\nCompartilhe este Gerador de Scripts IA gratuito com eles. Sem cadastro necessário - ele cria mensagens de recrutamento personalizadas para qualquer cenário em segundos.\n\nSua equipe pode gerar scripts para:\n- Prospecção fria\n- Acompanhamentos\n- Tratamento de objeções (sem tempo, sem dinheiro, isso é MLM?)\n- Reconectar com contatos antigos\n\nCompartilhe com sua equipe: $link\n\nÉ uma vitória fácil - dê a eles ferramentas de IA que os ajudam a ter sucesso.';
+  }
+
+  @override
   String get homepageDemoCredentialsNotAvailable =>
       'Credenciais de demonstração não disponíveis';
 

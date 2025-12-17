@@ -2727,6 +2727,23 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get sharePartnerAiScriptGeneratorTitle => 'KI-Skript-Generator teilen';
+
+  @override
+  String get sharePartnerAiScriptGeneratorDescription =>
+      'Geben Sie Ihrem Team ein kostenloses KI-Recruiting-Skript-Tool';
+
+  @override
+  String sharePartnerAiScriptGeneratorSubject(Object business) {
+    return 'Kostenloses KI-Tool für das Recruiting Ihres $business-Teams';
+  }
+
+  @override
+  String sharePartnerAiScriptGeneratorMessage(Object business, Object link) {
+    return 'Möchten Sie Ihrem $business-Team helfen, effektiver zu rekrutieren?\n\nTeilen Sie diesen kostenlosen KI-Skript-Generator mit ihnen. Keine Anmeldung erforderlich - er erstellt personalisierte Recruiting-Nachrichten für jedes Szenario in Sekunden.\n\nIhr Team kann Skripte generieren für:\n- Kaltakquise\n- Follow-ups\n- Einwandbehandlung (keine Zeit, kein Geld, ist das MLM?)\n- Alte Kontakte reaktivieren\n\nMit Ihrem Team teilen: $link\n\nEin einfacher Gewinn - geben Sie ihnen KI-Tools, die ihnen zum Erfolg verhelfen.';
+  }
+
+  @override
   String get homepageDemoCredentialsNotAvailable =>
       'Demo-Zugangsdaten nicht verfügbar';
 

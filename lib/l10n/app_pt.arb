@@ -2762,6 +2762,21 @@
   "sharePartnerAvailabilityGapDescription": "Ideal para líderes que não podem estar constantemente disponíveis para sua equipe",
   "sharePartnerAvailabilityGapSubject": "Sua Equipe Cresce Mesmo Quando Você Não Está Lá",
   "sharePartnerAvailabilityGapMessage": "Sua equipe {business} precisa de você. Mas você não pode estar disponível 24/7.\n\nO Team Build Pro dá à sua organização {business} inteira um Coach de IA que está sempre ativo.\n\nEnquanto você dorme, trabalha no seu emprego diurno ou passa tempo com a família, a IA:\n- Responde perguntas de recrutamento a qualquer momento\n- Fornece 16 mensagens pré-escritas prontas para usar\n- Rastreia seu progresso e os mantém motivados\n- Garante que nada caia pelas rachaduras\n\nSua equipe {business} obtém apoio exatamente quando precisa - não apenas quando você está disponível.\n\nVocê permanece focado em liderança. A IA cuida do coaching diário.\n\nEmpodere sua equipe: {link}\n\nFinalmente, sua equipe cresce sem precisar de você a cada minuto.",
+  "sharePartnerAiScriptGeneratorTitle": "Compartilhar Gerador de Scripts IA",
+  "sharePartnerAiScriptGeneratorDescription": "Dê à sua equipe uma ferramenta gratuita de scripts de recrutamento com IA",
+  "sharePartnerAiScriptGeneratorSubject": "Ferramenta de IA Gratuita para o Recrutamento da Sua Equipe {business}",
+  "@sharePartnerAiScriptGeneratorSubject": {
+    "placeholders": {
+      "business": {}
+    }
+  },
+  "sharePartnerAiScriptGeneratorMessage": "Quer ajudar sua equipe {business} a recrutar de forma mais eficaz?\n\nCompartilhe este Gerador de Scripts IA gratuito com eles. Sem cadastro necessário - ele cria mensagens de recrutamento personalizadas para qualquer cenário em segundos.\n\nSua equipe pode gerar scripts para:\n- Prospecção fria\n- Acompanhamentos\n- Tratamento de objeções (sem tempo, sem dinheiro, isso é MLM?)\n- Reconectar com contatos antigos\n\nCompartilhe com sua equipe: {link}\n\nÉ uma vitória fácil - dê a eles ferramentas de IA que os ajudam a ter sucesso.",
+  "@sharePartnerAiScriptGeneratorMessage": {
+    "placeholders": {
+      "business": {},
+      "link": {}
+    }
+  },
   "homepageDemoCredentialsNotAvailable": "Credenciais de demonstração não disponíveis",
   "homepageDemoLoginFailed": "Login de demonstração falhou: {error}",
   "homepageDemoLoginFailedGeneric": "Login de demonstração falhou. Por favor, tente novamente.",

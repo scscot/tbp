@@ -29,6 +29,7 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
   UserModel? _currentUser;
   bool _isLoading = true;
   String? _partnerReferralLink;
+  String? _scriptsReferralLink;
   String _bizOppName = 'your opportunity'; // Default fallback
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -118,6 +119,8 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
     if (_currentUser != null) {
       _partnerReferralLink =
           'https://teambuildpro.com/?ref=${_currentUser!.referralCode}';
+      _scriptsReferralLink =
+          'https://teambuildpro.com/scripts.html?ref=${_currentUser!.referralCode}';
     }
   }
 
@@ -138,6 +141,25 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
     final referralCode = _currentUser!.referralCode;
 
     return '$baseDomain/?ref=$referralCode';
+  }
+
+  // Build targeted scripts link with language-specific domain
+  String _buildScriptsLink(String messageKey) {
+    final selectedLanguage = _selectedLanguages[messageKey];
+
+    // Determine base domain based on selected language
+    String baseDomain = 'https://teambuildpro.com';
+    if (selectedLanguage == 'es') {
+      baseDomain = 'https://es.teambuildpro.com';
+    } else if (selectedLanguage == 'pt') {
+      baseDomain = 'https://pt.teambuildpro.com';
+    } else if (selectedLanguage == 'de') {
+      baseDomain = 'https://de.teambuildpro.com';
+    }
+
+    final referralCode = _currentUser!.referralCode;
+
+    return '$baseDomain/scripts.html?ref=$referralCode';
   }
 
   Future<void> _composeEmail({
@@ -280,6 +302,13 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
             'Empower your team: $_partnerReferralLink\n\n'
             'Finally, your team grows without needing you every minute.'),
       },
+      'ai_script_generator': {
+        'title': context.l10n?.sharePartnerAiScriptGeneratorTitle ?? 'Share AI Script Generator',
+        'description': context.l10n?.sharePartnerAiScriptGeneratorDescription ?? 'Give your team a free AI recruiting script tool',
+        'subject': context.l10n?.sharePartnerAiScriptGeneratorSubject(_bizOppName) ?? 'Free AI Tool for Your $_bizOppName Team\'s Recruiting',
+        'message': (context.l10n?.sharePartnerAiScriptGeneratorMessage(_bizOppName, _scriptsReferralLink ?? '') ??
+            'Want to help your $_bizOppName team recruit more effectively?\n\nShare this free AI Script Generator with them. No signup required - it creates personalized recruiting messages for any scenario in seconds.\n\nYour team can generate scripts for:\n- Cold outreach\n- Follow-ups\n- Objection handling (no time, no money, is this MLM?)\n- Re-engaging old contacts\n\nShare with your team: $_scriptsReferralLink\n\nIt\'s an easy win - give them AI tools that help them succeed.'),
+      },
     };
   }
 
@@ -333,6 +362,12 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
         'subject': l10n.sharePartnerAvailabilityGapSubject,
         'message': l10n.sharePartnerAvailabilityGapMessage(_bizOppName, _partnerReferralLink ?? ''),
       },
+      'ai_script_generator': {
+        'title': l10n.sharePartnerAiScriptGeneratorTitle,
+        'description': l10n.sharePartnerAiScriptGeneratorDescription,
+        'subject': l10n.sharePartnerAiScriptGeneratorSubject(_bizOppName),
+        'message': l10n.sharePartnerAiScriptGeneratorMessage(_bizOppName, _scriptsReferralLink ?? ''),
+      },
     };
   }
 
@@ -364,8 +399,17 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
         final selectedMessage = messages[messageKey];
 
         if (selectedMessage != null) {
-          final targetedLink = _buildTargetedLink(messageKey);
-          final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+          String messageBody;
+          String targetedLink;
+
+          // Handle AI Script Generator specially - it uses scripts.html link
+          if (messageKey == 'ai_script_generator') {
+            targetedLink = _buildScriptsLink(messageKey);
+            messageBody = selectedMessage['message']!.replaceAll(_scriptsReferralLink ?? '', targetedLink);
+          } else {
+            targetedLink = _buildTargetedLink(messageKey);
+            messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+          }
 
           if (kDebugMode) {
             debugPrint('📧 SHARE_PARTNER_SCREEN: Composing email (lang: $selectedLanguage) with targeted link: $targetedLink');
@@ -381,8 +425,17 @@ class _SharePartnerScreenState extends State<SharePartnerScreen>
         final selectedMessage = messages[messageKey];
 
         if (selectedMessage != null) {
-          final targetedLink = _buildTargetedLink(messageKey);
-          final messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+          String messageBody;
+          String targetedLink;
+
+          // Handle AI Script Generator specially - it uses scripts.html link
+          if (messageKey == 'ai_script_generator') {
+            targetedLink = _buildScriptsLink(messageKey);
+            messageBody = selectedMessage['message']!.replaceAll(_scriptsReferralLink ?? '', targetedLink);
+          } else {
+            targetedLink = _buildTargetedLink(messageKey);
+            messageBody = selectedMessage['message']!.replaceAll(_partnerReferralLink!, targetedLink);
+          }
 
           if (kDebugMode) {
             debugPrint('📧 SHARE_PARTNER_SCREEN: Composing email with targeted link: $targetedLink');

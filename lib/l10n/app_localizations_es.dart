@@ -2708,6 +2708,24 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get sharePartnerAiScriptGeneratorTitle =>
+      'Compartir Generador de Guiones IA';
+
+  @override
+  String get sharePartnerAiScriptGeneratorDescription =>
+      'Dé a su equipo una herramienta gratuita de guiones de reclutamiento de IA';
+
+  @override
+  String sharePartnerAiScriptGeneratorSubject(Object business) {
+    return 'Herramienta IA Gratuita para el Reclutamiento de Su Equipo de $business';
+  }
+
+  @override
+  String sharePartnerAiScriptGeneratorMessage(Object business, Object link) {
+    return '¿Quiere ayudar a su equipo de $business a reclutar más efectivamente?\n\nComparta este Generador de Guiones IA gratuito con ellos. No requiere registro - crea mensajes de reclutamiento personalizados para cualquier escenario en segundos.\n\nSu equipo puede generar guiones para:\n- Acercamiento en frío\n- Seguimientos\n- Manejo de objeciones (no tengo tiempo, no tengo dinero, ¿es esto MLM?)\n- Reconectar con contactos antiguos\n\nComparta con su equipo: $link\n\nEs una victoria fácil - déles herramientas de IA que les ayuden a tener éxito.';
+  }
+
+  @override
   String get homepageDemoCredentialsNotAvailable =>
       'Credenciales de demostración no disponibles';
 

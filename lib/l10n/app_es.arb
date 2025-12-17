@@ -2734,6 +2734,21 @@
   "sharePartnerAvailabilityGapDescription": "Ideal para líderes que no pueden estar constantemente disponibles para su equipo",
   "sharePartnerAvailabilityGapSubject": "Su Equipo Crece Incluso Cuando Usted No Está Allí",
   "sharePartnerAvailabilityGapMessage": "Su equipo de {business} le necesita. Pero usted no puede estar disponible 24/7.\n\nTeam Build Pro da a toda su organización de {business} un Coach de IA que siempre está activo.\n\nMientras duerme, trabaja en su trabajo diurno o pasa tiempo con la familia, la IA:\n- Responde sus preguntas de reclutamiento en cualquier momento\n- Proporciona 16 mensajes pre-escritos listos para usar\n- Rastrea su progreso y los mantiene motivados\n- Asegura que nada se pierda\n\nSu equipo de {business} obtiene apoyo exactamente cuando lo necesita - no solo cuando usted está disponible.\n\nUsted se mantiene enfocado en el liderazgo. La IA maneja la asesoría diaria.\n\nEmpodere a su equipo: {link}\n\nFinalmente, su equipo crece sin necesitarle cada minuto.",
+  "sharePartnerAiScriptGeneratorTitle": "Compartir Generador de Guiones IA",
+  "sharePartnerAiScriptGeneratorDescription": "Dé a su equipo una herramienta gratuita de guiones de reclutamiento de IA",
+  "sharePartnerAiScriptGeneratorSubject": "Herramienta IA Gratuita para el Reclutamiento de Su Equipo de {business}",
+  "@sharePartnerAiScriptGeneratorSubject": {
+    "placeholders": {
+      "business": {}
+    }
+  },
+  "sharePartnerAiScriptGeneratorMessage": "¿Quiere ayudar a su equipo de {business} a reclutar más efectivamente?\n\nComparta este Generador de Guiones IA gratuito con ellos. No requiere registro - crea mensajes de reclutamiento personalizados para cualquier escenario en segundos.\n\nSu equipo puede generar guiones para:\n- Acercamiento en frío\n- Seguimientos\n- Manejo de objeciones (no tengo tiempo, no tengo dinero, ¿es esto MLM?)\n- Reconectar con contactos antiguos\n\nComparta con su equipo: {link}\n\nEs una victoria fácil - déles herramientas de IA que les ayuden a tener éxito.",
+  "@sharePartnerAiScriptGeneratorMessage": {
+    "placeholders": {
+      "business": {},
+      "link": {}
+    }
+  },
   "homepageDemoCredentialsNotAvailable": "Credenciales de demostración no disponibles",
   "homepageDemoLoginFailed": "Inicio de sesión de demostración falló: {error}",
   "homepageDemoLoginFailedGeneric": "Inicio de sesión de demostración falló. Por favor, inténtelo de nuevo.",

@@ -2673,6 +2673,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get sharePartnerAiScriptGeneratorTitle => 'Share AI Script Generator';
+
+  @override
+  String get sharePartnerAiScriptGeneratorDescription =>
+      'Give your team a free AI recruiting script tool';
+
+  @override
+  String sharePartnerAiScriptGeneratorSubject(Object business) {
+    return 'Free AI Tool for Your $business Team\'s Recruiting';
+  }
+
+  @override
+  String sharePartnerAiScriptGeneratorMessage(Object business, Object link) {
+    return 'Want to help your $business team recruit more effectively?\n\nShare this free AI Script Generator with them. No signup required - it creates personalized recruiting messages for any scenario in seconds.\n\nYour team can generate scripts for:\n- Cold outreach\n- Follow-ups\n- Objection handling (no time, no money, is this MLM?)\n- Re-engaging old contacts\n\nShare with your team: $link\n\nIt\'s an easy win - give them AI tools that help them succeed.';
+  }
+
+  @override
   String get homepageDemoCredentialsNotAvailable =>
       'Demo credentials not available';
 

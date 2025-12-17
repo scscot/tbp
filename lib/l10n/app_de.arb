@@ -3758,6 +3758,21 @@
   "sharePartnerAvailabilityGapDescription": "Ideal für Führungskräfte, die nicht ständig für ihr Team verfügbar sein können",
   "sharePartnerAvailabilityGapSubject": "Ihr Team wächst, auch wenn Sie nicht da sind",
   "sharePartnerAvailabilityGapMessage": "Ihr {business}-Team braucht Sie. Aber Sie können nicht 24/7 verfügbar sein.\n\nTeam Build Pro gibt Ihrer gesamten {business}-Organisation einen KI-Coach, der immer aktiv ist.\n\nWährend Sie schlafen, Ihrem Tagesjob nachgehen oder Zeit mit der Familie verbringen, bietet die KI:\n- Recruiting-Fragen jederzeit beantworten\n- 16 vorgefertigte Nachrichten, sofort einsatzbereit\n- Ihren Fortschritt verfolgen und sie motiviert halten\n- Sicherstellen, dass nichts durchs Raster fällt\n\nIhr {business}-Team erhält Unterstützung genau dann, wenn es sie braucht - nicht nur, wenn Sie verfügbar sind.\n\nSie bleiben auf Führung fokussiert. Die KI übernimmt das tägliche Coaching.\n\nStärken Sie Ihr Team: {link}\n\nEndlich wächst Ihr Team, ohne Sie jede Minute zu brauchen.",
+  "sharePartnerAiScriptGeneratorTitle": "KI-Skript-Generator teilen",
+  "sharePartnerAiScriptGeneratorDescription": "Geben Sie Ihrem Team ein kostenloses KI-Recruiting-Skript-Tool",
+  "sharePartnerAiScriptGeneratorSubject": "Kostenloses KI-Tool für das Recruiting Ihres {business}-Teams",
+  "@sharePartnerAiScriptGeneratorSubject": {
+    "placeholders": {
+      "business": {}
+    }
+  },
+  "sharePartnerAiScriptGeneratorMessage": "Möchten Sie Ihrem {business}-Team helfen, effektiver zu rekrutieren?\n\nTeilen Sie diesen kostenlosen KI-Skript-Generator mit ihnen. Keine Anmeldung erforderlich - er erstellt personalisierte Recruiting-Nachrichten für jedes Szenario in Sekunden.\n\nIhr Team kann Skripte generieren für:\n- Kaltakquise\n- Follow-ups\n- Einwandbehandlung (keine Zeit, kein Geld, ist das MLM?)\n- Alte Kontakte reaktivieren\n\nMit Ihrem Team teilen: {link}\n\nEin einfacher Gewinn - geben Sie ihnen KI-Tools, die ihnen zum Erfolg verhelfen.",
+  "@sharePartnerAiScriptGeneratorMessage": {
+    "placeholders": {
+      "business": {},
+      "link": {}
+    }
+  },
   "homepageDemoCredentialsNotAvailable": "Demo-Zugangsdaten nicht verfügbar",
   "homepageDemoLoginFailed": "Demo-Anmeldung fehlgeschlagen: {error}",
   "homepageDemoLoginFailedGeneric": "Demo-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",

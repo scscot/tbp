@@ -4537,6 +4537,30 @@ abstract class AppLocalizations {
   /// **'Your {business} team needs you. But you can\'t be available 24/7.\n\nTeam Build Pro gives your entire {business} organization an AI Coach that\'s always on.\n\nWhile you sleep, work your day job, or spend time with family, the AI:\n- Answers their recruiting questions anytime\n- Provides 16 pre-written messages ready to use\n- Tracks their progress and keeps them motivated\n- Ensures nothing falls through the cracks\n\nYour {business} team gets support exactly when they need it - not just when you\'re available.\n\nYou stay focused on leadership. The AI handles daily coaching.\n\nEmpower your team: {link}\n\nFinally, your team grows without needing you every minute.'**
   String sharePartnerAvailabilityGapMessage(Object business, Object link);
 
+  /// No description provided for @sharePartnerAiScriptGeneratorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share AI Script Generator'**
+  String get sharePartnerAiScriptGeneratorTitle;
+
+  /// No description provided for @sharePartnerAiScriptGeneratorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your team a free AI recruiting script tool'**
+  String get sharePartnerAiScriptGeneratorDescription;
+
+  /// No description provided for @sharePartnerAiScriptGeneratorSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Free AI Tool for Your {business} Team\'s Recruiting'**
+  String sharePartnerAiScriptGeneratorSubject(Object business);
+
+  /// No description provided for @sharePartnerAiScriptGeneratorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to help your {business} team recruit more effectively?\n\nShare this free AI Script Generator with them. No signup required - it creates personalized recruiting messages for any scenario in seconds.\n\nYour team can generate scripts for:\n- Cold outreach\n- Follow-ups\n- Objection handling (no time, no money, is this MLM?)\n- Re-engaging old contacts\n\nShare with your team: {link}\n\nIt\'s an easy win - give them AI tools that help them succeed.'**
+  String sharePartnerAiScriptGeneratorMessage(Object business, Object link);
+
   /// No description provided for @homepageDemoCredentialsNotAvailable.
   ///
   /// In en, this message translates to:
