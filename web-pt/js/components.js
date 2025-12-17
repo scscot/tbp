@@ -35,6 +35,7 @@
         en: {
             pricing: 'Pricing',
             faq: 'FAQ',
+            freeScripts: 'Free Scripts',
             blog: 'Blog',
             books: 'Books',
             contact: 'Contact Us',
@@ -48,6 +49,7 @@
         es: {
             pricing: 'Precios',
             faq: 'Preguntas Frecuentes',
+            freeScripts: 'Scripts Gratis',
             blog: 'Blog',
             books: 'Libros',
             contact: 'Contacto',
@@ -61,6 +63,7 @@
         pt: {
             pricing: 'Preços',
             faq: 'Perguntas Frequentes',
+            freeScripts: 'Scripts Grátis',
             blog: 'Blog',
             books: 'Livros',
             contact: 'Contato',
@@ -74,6 +77,7 @@
         de: {
             pricing: 'Preise',
             faq: 'Häufige Fragen',
+            freeScripts: 'Kostenlose Scripts',
             blog: 'Blog',
             books: 'Bücher',
             contact: 'Kontakt',
@@ -223,6 +227,7 @@
             <!-- Dropdown Menu -->
             <div id="mobile-menu" class="mobile-menu" role="menu">
                 <a href="/faq.html" role="menuitem">${t.faq}</a>
+                <a href="/scripts.html" role="menuitem">${t.freeScripts}</a>
                 <a href="/#pricing" role="menuitem">${t.pricing}</a>
                 <a href="/blog.html" role="menuitem">${t.blog}</a>
                 <a href="/books.html" role="menuitem">${t.books}</a>
@@ -251,6 +256,7 @@
             </div>
             <div class="footer-links">
                 <a href="/faq.html">${t.faq}</a>
+                <a href="/scripts.html">${t.freeScripts}</a>
                 <a href="/#pricing">${t.pricing}</a>
                 <a href="/books.html">${t.books}</a>
                 <a href="/companies.html">${t.recruitingGuides}</a>
