@@ -26,6 +26,18 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/faq.html" />
   </url>
 
+  <!-- Scripts Page (AI Script Generator) -->
+  <url>
+    <loc>https://es.teambuildpro.com/scripts.html</loc>
+    <lastmod>2025-12-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://teambuildpro.com/scripts.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/scripts.html" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/scripts.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/scripts.html" />
+  </url>
+
   <!-- Blog Page -->
   <url>
     <loc>https://es.teambuildpro.com/blog.html</loc>
