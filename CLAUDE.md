@@ -375,6 +375,21 @@ git add . && git commit -m "message" && git push
 ## Recent Updates (December 2025)
 
 ### Week of Dec 17
+- **Scripts Page Abuse Prevention**: Added 3-layer protection against bots and overuse (all 4 locales)
+  - Layer 1: Honeypot field (hidden input that bots fill, humans don't see)
+  - Layer 2: Client-side rate limiting via localStorage (15 requests/day, resets daily)
+  - Layer 3: Server-side IP rate limiting via Firestore (20 requests/day/IP)
+  - IP addresses hashed with Base64 for privacy before storing
+  - Localized rate limit messages for EN, ES, PT, DE
+- **Scripts Page Share Feature**: Added "Share this tool with your team" button (all 4 locales)
+  - Web Share API on mobile (native share sheet)
+  - Clipboard fallback on desktop with toast notification
+  - UTM tracking: `?utm_source=share&utm_medium=referral&utm_campaign=script_generator`
+  - Localized button text and toast messages
+- **Scripts Page Referral Tracking**: Added sponsor display for referral links (all 4 locales)
+  - Added `referral-tracking.js` to scripts.html pages
+  - Blue invite bar shows sponsor name/avatar when accessed via `?new=` or `?ref=` links
+  - App store CTAs preserve sponsor attribution through install flow
 - **Email Campaign A/B Testing (cold_reconnect vs scripts)**: Implemented 50/50 template split
   - Even indices → `cold_reconnect` with original subject lines that achieved 6.2% CTR
   - Odd indices → `scripts` template with 4-way subject line rotation
