@@ -172,10 +172,9 @@
         let targetPath = window.location.pathname;
         const params = new URLSearchParams(window.location.search);
 
-        // If on homepage with ref/new params, use /index.html to bypass Universal Links
+        // For homepage navigation, always use /index.html to bypass Universal Links
         // (AASA matches "/" but not "/index.html")
-        const hasReferral = params.has('ref') || params.has('new');
-        if (targetPath === '/' && hasReferral) {
+        if (targetPath === '/' || targetPath === '/index.html') {
             targetPath = '/index.html';
         }
 

@@ -306,6 +306,154 @@
             height: 48px;
         }
 
+        /* Autocomplete Styles */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .suggestions-dropdown.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.highlighted {
+            background: #f0f4ff;
+        }
+
+        .suggestion-item.highlighted {
+            background: #e0e7ff;
+        }
+
+        .suggestion-match {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .no-results {
+            padding: 0.75rem 1rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .autocomplete-wrapper input.has-value {
+            border-color: #34d399;
+        }
+
+        .autocomplete-wrapper input.has-error {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .company-error {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .company-error.visible {
+            display: block;
+        }
+
+        /* Honeypot - hidden from humans */
+        .form-hp {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            height: 0;
+            width: 0;
+            z-index: -1;
+        }
+
+        /* Rate limit message */
+        .rate-limit-message {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #92400e;
+        }
+
+        .rate-limit-message strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Share button */
+        .share-tool {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: transparent;
+            border: none;
+            color: #667eea;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .share-tool:hover {
+            color: #764ba2;
+        }
+
+        .share-tool svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .share-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .share-toast.visible {
+            opacity: 1;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .hero-scripts {
@@ -339,9 +487,25 @@
     <section class="generator-section">
         <div class="generator-card">
             <form id="script-form">
+                <!-- Rate limit message (shown when limit reached) -->
+                <div id="rate-limit-msg" class="rate-limit-message" style="display: none;">
+                    <strong>Límite diario alcanzado</strong>
+                    <span>¡Vuelve mañana para más scripts gratis!</span>
+                </div>
+
+                <!-- Honeypot field - hidden from humans, bots will fill it -->
+                <div class="form-hp" aria-hidden="true">
+                    <label for="website">Website</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
                 <div class="form-group">
                     <label for="company">Tu Empresa</label>
-                    <input type="text" id="company" required placeholder="ej., Amway, doTERRA, Herbalife, Young Living">
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="company" required placeholder="Comienza a escribir el nombre de tu empresa..." autocomplete="off">
+                        <div id="company-suggestions" class="suggestions-dropdown"></div>
+                    </div>
+                    <div id="company-error" class="company-error">Por favor selecciona una empresa válida de la lista de sugerencias</div>
                 </div>
 
                 <div class="form-group">
@@ -377,6 +541,17 @@
                         </svg>
                         Generando...
                     </span>
+                </button>
+
+                <button type="button" id="share-btn" class="share-tool">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Comparte esta herramienta con tu equipo
                 </button>
             </form>
 
@@ -459,17 +634,105 @@
     <!-- Footer -->
     <div id="tbp-footer"></div>
 
+    <!-- Toast notification for sharing -->
+    <div id="share-toast" class="share-toast">¡Enlace copiado al portapapeles!</div>
+
     <!-- Script Generator Logic -->
     <script>
     (function() {
         'use strict';
 
+        // Company list from Business For Home (700+ companies)
+        const COMPANIES = [
+            "3 International", "4Life", "7k Metals", "ACN", "Acti-Labs", "Activz Global", "Adornable.u", "Adriatikus Group", "Aerus", "AGOA Home",
+            "Agravitae", "AirRose", "AKMOS", "Akuna Health Products", "ALEONN", "All Dazzle", "Alliance In Motion", "Allysian Sciences", "Aloette Cosmetics", "Alovéa",
+            "Alphay International", "Aluva", "Amakha Paris", "Amare Global", "Ambit Energy", "AMC International", "AmeriPlan USA", "Amore Pacific", "Amway", "Ann Summers",
+            "Anovite", "Anran", "APLGO", "Aqua Source UK", "Arbonne International", "Ardyss", "Arego Life", "Arieyl", "Aromatic 89", "Arsoa Honsha",
+            "Arvea Nature", "Ascendra International", "Ascira", "Asclepius Wellness", "ASEA", "Asia Herbal Biotech", "Asili Global", "ASR4YOU", "ATA", "Athenas Home",
+            "Atomy", "Audere", "Australiana Life", "Auvoria Prime", "Avena Original", "Avon", "Awakend", "AXXA GLOBAL", "Ayucell", "Azenka",
+            "Azuli Skye", "B-Epic", "Baadraan Network", "Barefoot Books", "BE Club", "Be Live", "Beachbody", "BearCere Ju", "Beauty Society", "BeCAUSE Cosmetics",
+            "Belcorp", "Bella Grace", "Bella Modi", "Bellame", "Beneve", "Bessemer", "Best World Lifestyle", "BestLife Worldwide", "Betterware de Mexico", "Betterway",
+            "Beyond Slim", "Beyuna", "BF Suma", "bHIP Global", "BIO4", "Bioheal Colombia", "Bioliffe moringa", "Bioreigns", "Biotonus USA", "Bioulife",
+            "Bitles", "BLEN", "Blezi Cosmetics", "Bode Pro", "Body Wise Int.", "Bodylogic Nutrition", "Bofrost", "Boisset Wine", "Bomb Party", "Bon Cook",
+            "Bonvera", "Bravenly Global", "Breathless Wines", "Bryte Lyfe", "ByDzyne", "C1", "Cabi Online", "Calerie", "Cambridge Diet", "CannaGlobe",
+            "Cap Beauty Cosmetics", "Captain Tortue Group", "Carico International", "Celadon Road", "Celebrating Home", "Celframe", "Celion", "Cellagon", "Cellements", "Cellis Health",
+            "Cerule", "Cevitalis", "Chalk Couture", "Chalky & Company", "Chandeal Co.", "Charle Corp.", "Charlie Lounge", "Chogan", "CILI", "ClearUnited",
+            "Close To My Heart", "Cognoa International", "Collect Direct", "Color Me Beautiful", "Colway", "Compelling Creations", "Conklin Company", "Coral Club International", "Corvive", "Cosway",
+            "Coway", "CR World", "Creative Memories", "CTFO", "Culbeans", "Cutco", "Daisy Blue Naturals", "Damsel in Defense", "DBM Global", "Deesse International",
+            "Delta Digital", "Destander International", "Destina 1 Int.", "Diana Co.", "Dignity Organic Sanitary Pads", "doTERRA", "Dr. Juchheim Cosmetics", "DreamTrips", "Dub Nutrition", "Dudley Products",
+            "Duolife", "DVLOP", "DXN Global", "Dyna Maxx", "E. Excel", "E.P.I.C", "Eaconomy", "Eazyways", "Edmark International", "El Recetario",
+            "Elevitea", "Elken", "Elomir", "Eminence Organic", "Emris", "Enagic", "Energetix", "Energymax", "Eniva", "Enzacta",
+            "Epic Trading", "Eqology", "Essante Organics", "Essens", "Essential Bodywear", "Eternal Spirit Beauty", "EV International", "Evergreen Life Products", "EVO GLOBAL", "Evolution Network",
+            "Evomel Bee Life", "Exialoe", "eXp Realty", "Faberlic", "Fair Network", "Family First Life", "Farmasi", "Fifth Avenue Collection", "FireFlies", "FirstFitness Nutrition",
+            "Fitteam Global", "Flavon Group", "FM World", "For Days Co.", "For You", "Forever Living Products", "Freeko", "Frequense", "FTR Global", "Fúmée Perfume & Cosmetics",
+            "Fun Stampers Journey", "Future Global Vision", "Futures Luume", "Fuxion", "Gano Excel", "Gelmoment", "Genistar", "Genlife", "Giffarine", "Glaze Trading India",
+            "Global Domains International", "Globallee", "GNG", "Gofinity", "Gold Canyon", "Golden Days China", "GOVVI", "Gracewear", "GreatLife Worldwide", "Green Compass Global",
+            "GreenChoyce", "Greenway Global", "H2O at Home", "Ha-Ra", "Hai-O", "Haka Kunz", "Hawaii Balsamics", "HB Naturals", "HC Wellness", "Healthgarde International",
+            "HealthSync Global", "HealthyHome", "Healy World", "Hegemon Group", "Heim & Haus", "HempMate", "Herbalife", "Hibody", "Hinode Cosméticos", "Homm Bitkisel",
+            "HPH", "HTE USA", "Hugh & Grace", "Hülsa", "Hy Cite", "i9life", "IAM Worldwide", "iBuumerang", "IDLife", "iEvolution",
+            "iGenius", "iHealth Global", "iHub Global", "Illuminent", "IMC", "Immunotec", "Impact Global", "Imuni", "iN8 Network", "INBS",
+            "InCruises", "INETWORK2U", "Infinitus", "Initial Outfitters", "Inkavida", "Innov8tive Nutrition", "INNOVA", "inqten", "Inspiranza Designs", "Inspire",
+            "Inuka Fragrances", "ION Savings", "IPRO Network", "Isagenix", "Ismerely", "It Works!", "J. Hilburn", "JapanLife Co.", "Java Momma", "JBloom Designs",
+            "JennaZ", "Jerelia", "Jeunesse", "Jewel Pads", "Jewelry in Candles", "Jifu", "Jordan Essentials", "Joy Main Int.", "JR Watkins", "Juara Skincare",
+            "Juice Plus+", "Jump To Health", "Just International", "Juuva", "Kalaia", "Kangmei", "Kangzen", "Kannaway", "Kara Vita", "Kirby Company",
+            "Kitchen Fair Mexico", "KK Assuran", "Kleo Kolor", "Koyo-Sha", "Kuailian", "KZ1", "L Bri Pure Natural", "Lavylites", "Le-Vel", "Legacy Global",
+            "LegalShield", "Lemongrass Spa", "Levarti", "LG Household & Health Care", "Life Abundance", "Life Activated Brands", "Life Leadership", "Life Plus", "Life Wise", "LifePharm",
+            "LifeRegen", "LifeVantage", "LifeWave", "Lilla Rose", "LimeLife by Alcone", "Liv Labs", "LiveGood", "LivElite", "LivePURE", "Longrich",
+            "Lorde and Belle", "Lorraine Lea Linen", "LoveBiome", "LOVEWINX", "Lovvare", "LR Health & Beauty", "LuLaRoe", "LumiVitae", "LunaMD", "LurraLife",
+            "Lux International", "Magnabilities", "Magnessa", "Magnetix Wellness", "Make Wellness", "Mango + Moose", "Mannatech", "Market America", "Maruko", "Mary Kay",
+            "MaVie Global", "Max International", "Maxener Wellness", "Measure & Made", "Mediterranean Luxury", "Melaleuca", "MetalStacks", "Metrin", "MI Lifestyle", "Miessence",
+            "Miglio", "Miki Corp.", "MINED", "MiraBurst", "MKX Network", "Modere", "ModiCare", "Monat Global", "Monevis", "Mons Pura",
+            "MpgXtreme", "Muscari International", "Musthave Global", "MWR Financial", "MWR Life", "My Lifestyle Company", "MyDailyChoice", "myEcon", "MyTravelVentures", "N8 Essentials",
+            "Nafis Network", "Naris Cosmetics", "National Wealth Center", "Natura and Co", "Natura Vitalis", "Natural Glow Int", "Naturally Plus", "NaturDay", "Nature's Sunshine", "Nefful",
+            "Nelo Life", "Neofin Technologies", "NeoLife", "Neora", "Netsurf Network", "Neumi", "NeutroWay", "NéVetica", "New Earth", "New Era Health",
+            "New Hope Global", "New Image Group", "New U Life", "Newgen Direct", "NeXarise", "Next International", "Nexus Rewards", "NHT Global", "Nikken", "Nippon Menard Cosmetics",
+            "Noevir", "Nomades Collection", "Noonday Collection", "NortheStar", "Norwex", "Novae", "Novalya", "Nowsite", "Nu Skin", "NücleoGenex",
+            "Nudrate", "Nui Social", "NüSpira", "Nutonic", "Nutrimetics", "Nuvo Olive Oil", "Nuyugen", "NVU", "NYR Organic", "O Boticario",
+            "Oben Nutrition", "Odecent", "oHHo", "Olbali", "Olive Tree People", "Olixfit", "Omnilife", "One More International", "Onehope Wine", "Optavia",
+            "Optidee", "Opulence Global", "Opulenza Designs", "Organo", "Oriflame", "Origami Owl", "OXO Global", "Pampered Chef", "Panberes", "Paparazzi Accessories",
+            "Parinam Health", "Park Lane Jewelry", "Pars Newshanik", "Partner.Co", "PartyLite", "PawTree", "Pelle Naturale", "Perfect China", "Perfectly Posh", "PHP Agency",
+            "PhytoScience", "Pieroth Wein", "Pink Zebra", "PlanNet Marketing", "PlayCare Health", "Plennia Wellness", "Plexus Worldwide", "Plunder Design", "PM-International", "Pola",
+            "Polishop", "Pomifera", "Powur", "Premier Designs", "Premier Financial Alliance", "Prife International", "PrimeMyBody", "Primerica", "Princess House", "Pro Financial Group",
+            "Proceller8", "Prowin", "Pruvit", "Pur Attitude", "Pure Heaven", "Pure Natures Design", "Pure Romance", "Purium", "QN Europe", "QNet",
+            "QSciences", "Quanjian", "QuiAri", "Qyral", "Racco Cosmeticos", "Radiantly You", "Rain International", "Ramissio", "RBC Life Sciences", "RCM Marketing",
+            "Reach Solar", "REAL Brokerage", "Real Time Pain Relief", "ReaTure Organics", "Red Aspen", "Regal Ware", "RegenaLife", "Reico Vital", "Reliv International", "Rena Ware International",
+            "Revital U", "Revv Naturals", "Rexair", "RIMAN", "Ringana", "Risen Live", "Riseoo", "RMCL Universe", "Root Wellness", "Royale Business Club",
+            "Ruby Ribbon", "Rut Essentials", "Saba", "Sabika", "Saladmaster", "Sami Direct", "Sanki Global", "Santemorr", "Sarso biznet", "Save Club",
+            "Savings Highway", "Savvi", "Scent Team", "Scentsy", "Scout and Cellar", "Seacret Direct", "Send Out Cards", "SeneGence", "Sevinity", "SF Suite",
+            "Shaklee", "Shine Cosmetics", "Shoply", "Shopping Nation", "ShopWithMe", "Siberian Health", "Sibu Beauty", "Signature HomeStyles", "Silk Oil of Morocco", "Silver Icing",
+            "Simply Naturals", "Simply Said", "SimplyFun", "SimplyHealth24", "SINERGIFY WORLD", "Sisel International", "Skypex", "Smart+", "Snep International", "sōl People",
+            "Soluni", "Solvasa Beauty", "Somnvie", "Sonrich Asia", "Sorgenta", "Soteria", "Soul Purpose", "Southwestern Advantage", "SOUVRE", "SPX Nutrition",
+            "Stampin' Up!", "Steeped Tea", "Stella & Dot", "Stemtech", "Style Dots LLC", "Successmore", "Sunhope", "Sunrider International", "Sunrun", "SuperLife World",
+            "Surge 365", "Swag OÜ", "SwissJust", "Synergy International", "Taksoo", "Talk Fusion", "Tastefully Simple", "Tava Lifestyle", "Tealightful", "TeleSon Vertriebs",
+            "TENLEAD Biotech", "Teoma", "Thanks AI", "The Coastal Shopping Club", "The Code", "The Happy Co.", "The Maira Co.", "The Pink Millionaire Club", "The Spellbound Co.", "The Strange Apothecary",
+            "The Super Patch Company", "THREE International", "Thrive Life", "Tiande", "Tiens", "TMC The Members Club", "Tocara", "TOP Bal", "Top Balance", "Toptime Consumer",
+            "Toribelle Cosmetics", "Total Life Changes", "Touchstone Crystal", "Touchstone Essentials", "Tranont", "Traveling Vineyard", "Travorium", "Tre Venti Global", "Trevo", "Trinti Communications",
+            "Trivita", "True Nordic", "TruIQ Global", "truu", "Truvy", "TRVL Ventures", "TTS International", "U-Numera", "Ultrra", "Unicity",
+            "Univera", "Universe Academy", "Unrivaled Candles", "UP! ESSÊNCIA", "Upshoot", "UR Worth IT", "USANA", "Usborne Books", "Utility Warehouse", "Uzesta",
+            "VA-Life", "Vabo-N", "Valentus", "Vegas Cosmetics", "Velovita", "Vertera", "Vestige Marketing", "Vfinity", "VIABLE", "ViaVeta",
+            "VIC BEAUTY", "Victoria Benelux", "Vida Divina", "Vidafy Global", "Vieroots Wellness", "VIIVA", "Visi", "Vital Health Global", "VitaMist Spray Vitamins", "VIV",
+            "Viviane Skincare", "Vivint Smart Home", "Vivri", "Vorwerk", "Voxx Life", "VYVO", "Wellness BioSciences", "WellnessPro", "Wellstar", "Welltures Global",
+            "WEWE Global", "Wildtree", "WIN Worldwide", "WineShop At Home", "Winlife Global", "World Book", "World Financial Group", "Xcelerate", "Xelliss", "Xendurance",
+            "Xooma Worldwide", "xosialX", "Xpirient", "Xyngenta", "Xyngular", "Yanbal International", "Yanoli", "Yoli", "Yolllo", "YOR Health",
+            "Young Living", "Youngevity", "Younique", "Zermat Int.", "Zeta Group", "Zhulian Marketing", "Zilis", "Zinzino", "Zurvita"
+        ];
+
         // Cloud Function endpoint
         const API_ENDPOINT = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/generateRecruitingScript';
+
+        // Rate limiting configuration
+        const DAILY_LIMIT = 15;
+        const RATE_LIMIT_KEY = 'tbp_script_gen';
+
+        // Share configuration
+        const SHARE_URL = 'https://es.teambuildpro.com/scripts.html?utm_source=share&utm_medium=referral&utm_campaign=script_generator';
+        const SHARE_TITLE = 'Generador de Scripts con IA Gratis para Ventas Directas';
+        const SHARE_TEXT = '¡Mira esta herramienta gratuita de IA que genera scripts de reclutamiento personalizados para cualquier empresa de ventas directas!';
 
         // DOM Elements
         const form = document.getElementById('script-form');
         const companyInput = document.getElementById('company');
+        const suggestionsDropdown = document.getElementById('company-suggestions');
         const scenarioSelect = document.getElementById('scenario');
         const toneSelect = document.getElementById('tone');
         const generateBtn = document.getElementById('generate-btn');
@@ -478,18 +741,288 @@
         const resultArea = document.getElementById('result');
         const scriptOutput = document.getElementById('script-output');
         const copyBtn = document.getElementById('copy-btn');
+        const companyError = document.getElementById('company-error');
+        const honeypotField = document.getElementById('website');
+        const rateLimitMsg = document.getElementById('rate-limit-msg');
+        const shareBtn = document.getElementById('share-btn');
+        const shareToast = document.getElementById('share-toast');
+
+        // Rate limiting functions
+        function getRateLimitData() {
+            try {
+                const data = JSON.parse(localStorage.getItem(RATE_LIMIT_KEY) || '{}');
+                const today = new Date().toDateString();
+                if (data.date !== today) {
+                    return { date: today, count: 0 };
+                }
+                return data;
+            } catch (e) {
+                return { date: new Date().toDateString(), count: 0 };
+            }
+        }
+
+        function incrementRateLimit() {
+            const data = getRateLimitData();
+            data.count++;
+            localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(data));
+            return data.count;
+        }
+
+        function isRateLimited() {
+            const data = getRateLimitData();
+            return data.count >= DAILY_LIMIT;
+        }
+
+        function checkAndShowRateLimit() {
+            if (isRateLimited()) {
+                rateLimitMsg.style.display = 'block';
+                generateBtn.disabled = true;
+                generateBtn.style.opacity = '0.5';
+                return true;
+            }
+            return false;
+        }
+
+        // Check rate limit on page load
+        checkAndShowRateLimit();
+
+        // Share functionality
+        function showToast(message) {
+            shareToast.textContent = message;
+            shareToast.classList.add('visible');
+            setTimeout(() => {
+                shareToast.classList.remove('visible');
+            }, 3000);
+        }
+
+        async function shareToolLink() {
+            // Try Web Share API first (mobile)
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: SHARE_TITLE,
+                        text: SHARE_TEXT,
+                        url: SHARE_URL
+                    });
+                    return;
+                } catch (err) {
+                    // User cancelled or error - fall through to clipboard
+                    if (err.name === 'AbortError') return;
+                }
+            }
+
+            // Fallback to clipboard
+            try {
+                await navigator.clipboard.writeText(SHARE_URL);
+                showToast('¡Enlace copiado al portapapeles!');
+            } catch (err) {
+                // Final fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = SHARE_URL;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('¡Enlace copiado al portapapeles!');
+                } catch (e) {
+                    showToast('No se pudo copiar el enlace');
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Share button click handler
+        shareBtn.addEventListener('click', shareToolLink);
+
+        // Helper function to validate company
+        function isValidCompany(value) {
+            return COMPANIES.some(c => c.toLowerCase() === value.toLowerCase());
+        }
+
+        // Helper function to show/hide company error
+        function showCompanyError(show) {
+            if (show) {
+                companyError.classList.add('visible');
+                companyInput.classList.add('has-error');
+                companyInput.classList.remove('has-value');
+            } else {
+                companyError.classList.remove('visible');
+                companyInput.classList.remove('has-error');
+            }
+        }
+
+        // Autocomplete state
+        let highlightedIndex = -1;
+        let currentMatches = [];
+        let selectedCompany = '';
+
+        // Fuzzy match function
+        function fuzzyMatch(str, pattern) {
+            const strLower = str.toLowerCase();
+            const patternLower = pattern.toLowerCase();
+            if (strLower.includes(patternLower)) {
+                return { match: true, score: strLower.indexOf(patternLower) === 0 ? 2 : 1 };
+            }
+            const words = strLower.split(/\s+/);
+            const patternChars = patternLower.split('');
+            let charIndex = 0;
+            for (const word of words) {
+                if (charIndex < patternChars.length && word.startsWith(patternChars[charIndex])) {
+                    charIndex++;
+                }
+            }
+            if (charIndex === patternChars.length) {
+                return { match: true, score: 0.5 };
+            }
+            return { match: false, score: 0 };
+        }
+
+        // Get matching companies
+        function getMatches(query) {
+            if (!query || query.length < 1) return [];
+            const matches = [];
+            for (const company of COMPANIES) {
+                const result = fuzzyMatch(company, query);
+                if (result.match) {
+                    matches.push({ company, score: result.score });
+                }
+            }
+            matches.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.company.localeCompare(b.company);
+            });
+            return matches.slice(0, 12).map(m => m.company);
+        }
+
+        // Highlight matching text
+        function highlightMatch(company, query) {
+            const lowerCompany = company.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            const index = lowerCompany.indexOf(lowerQuery);
+            if (index >= 0) {
+                return company.substring(0, index) +
+                    '<span class="suggestion-match">' + company.substring(index, index + query.length) + '</span>' +
+                    company.substring(index + query.length);
+            }
+            return company;
+        }
+
+        // Render suggestions
+        function renderSuggestions(matches, query) {
+            if (matches.length === 0) {
+                if (query.length >= 2) {
+                    suggestionsDropdown.innerHTML = '<div class="no-results">No se encontraron empresas</div>';
+                    suggestionsDropdown.classList.add('active');
+                } else {
+                    suggestionsDropdown.classList.remove('active');
+                }
+                return;
+            }
+            suggestionsDropdown.innerHTML = matches.map((company, index) =>
+                `<div class="suggestion-item${index === highlightedIndex ? ' highlighted' : ''}" data-index="${index}">${highlightMatch(company, query)}</div>`
+            ).join('');
+            suggestionsDropdown.classList.add('active');
+        }
+
+        // Select a company
+        function selectCompany(company) {
+            selectedCompany = company;
+            companyInput.value = company;
+            companyInput.classList.add('has-value');
+            suggestionsDropdown.classList.remove('active');
+            highlightedIndex = -1;
+        }
+
+        // Input event handler
+        companyInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            selectedCompany = '';
+            companyInput.classList.remove('has-value');
+            showCompanyError(false); // Clear any error when user types
+            highlightedIndex = -1;
+            currentMatches = getMatches(query);
+            renderSuggestions(currentMatches, query);
+        });
+
+        // Focus event
+        companyInput.addEventListener('focus', function() {
+            const query = this.value.trim();
+            if (query.length >= 1) {
+                currentMatches = getMatches(query);
+                renderSuggestions(currentMatches, query);
+            }
+        });
+
+        // Keyboard navigation
+        companyInput.addEventListener('keydown', function(e) {
+            if (!suggestionsDropdown.classList.contains('active')) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                highlightedIndex = Math.min(highlightedIndex + 1, currentMatches.length - 1);
+                renderSuggestions(currentMatches, this.value.trim());
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                highlightedIndex = Math.max(highlightedIndex - 1, -1);
+                renderSuggestions(currentMatches, this.value.trim());
+            } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+                e.preventDefault();
+                selectCompany(currentMatches[highlightedIndex]);
+            } else if (e.key === 'Escape') {
+                suggestionsDropdown.classList.remove('active');
+                highlightedIndex = -1;
+            }
+        });
+
+        // Click on suggestion
+        suggestionsDropdown.addEventListener('click', function(e) {
+            const item = e.target.closest('.suggestion-item');
+            if (item) {
+                const index = parseInt(item.dataset.index);
+                selectCompany(currentMatches[index]);
+            }
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-wrapper')) {
+                suggestionsDropdown.classList.remove('active');
+                highlightedIndex = -1;
+            }
+        });
 
         // Form submission
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Honeypot check - if filled, silently reject (bot detected)
+            if (honeypotField && honeypotField.value) {
+                console.log('Form submission blocked');
+                return;
+            }
+
+            // Rate limit check
+            if (checkAndShowRateLimit()) {
+                return;
+            }
 
             // Get form values
             const company = companyInput.value.trim();
             const scenario = scenarioSelect.value;
             const tone = toneSelect.value;
 
-            if (!company || !scenario) {
-                alert('Please fill in all required fields');
+            // Validate company is from the list
+            if (!company || !isValidCompany(company)) {
+                showCompanyError(true);
+                companyInput.focus();
+                // Scroll to the error if needed
+                companyInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            if (!scenario) {
+                alert('Por favor selecciona un tipo de mensaje');
                 return;
             }
 
@@ -519,12 +1052,18 @@
                     throw new Error(data.error);
                 }
 
+                // Increment rate limit on successful generation
+                const newCount = incrementRateLimit();
+                if (newCount >= DAILY_LIMIT) {
+                    checkAndShowRateLimit();
+                }
+
                 // Display the script with branding
                 displayScript(data.script);
 
             } catch (error) {
                 console.error('Error generating script:', error);
-                alert('Sorry, there was an error generating your script. Please try again.');
+                alert('Lo sentimos, hubo un error al generar tu script. Por favor intenta de nuevo.');
             } finally {
                 setLoading(false);
             }
@@ -585,6 +1124,9 @@
 
     })();
     </script>
+
+    <!-- Referral tracking for sponsor display and app store attribution -->
+    <script src="/js/referral-tracking.js"></script>
 </body>
 
 </html>

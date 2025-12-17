@@ -6,6 +6,11 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const Anthropic = require('@anthropic-ai/sdk');
+const { getFirestore, FieldValue, Timestamp } = require('firebase-admin/firestore');
+
+// Rate limiting configuration
+const IP_DAILY_LIMIT = 20; // Max requests per IP per day
+const RATE_LIMIT_COLLECTION = 'scriptGeneratorRateLimits';
 
 // Define the secret for the API key
 const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
@@ -81,6 +86,32 @@ const generateRecruitingScript = onRequest(
     }
 
     try {
+      // Server-side IP rate limiting
+      const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+                       req.headers['x-real-ip'] ||
+                       req.connection?.remoteAddress ||
+                       'unknown';
+
+      // Hash the IP for privacy (simple hash)
+      const ipHash = Buffer.from(clientIP).toString('base64').replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const rateLimitDocId = `${ipHash}_${today}`;
+
+      const db = getFirestore();
+      const rateLimitRef = db.collection(RATE_LIMIT_COLLECTION).doc(rateLimitDocId);
+      const rateLimitDoc = await rateLimitRef.get();
+
+      if (rateLimitDoc.exists) {
+        const data = rateLimitDoc.data();
+        if (data.count >= IP_DAILY_LIMIT) {
+          res.status(429).json({
+            error: 'Daily limit reached. Please try again tomorrow.',
+            retryAfter: 'tomorrow'
+          });
+          return;
+        }
+      }
+
       const { company, scenario, tone = 'friendly' } = req.body;
 
       // Validate required fields
@@ -104,9 +135,20 @@ const generateRecruitingScript = onRequest(
       const scenarioConfig = SCENARIOS[scenario];
       const toneInstruction = TONES[tone];
 
-      // Build the prompt
+      // Build the prompt with company-specific knowledge
       const prompt = `You are an expert direct sales recruiter helping someone with their ${company} business.
 
+IMPORTANT: Use your knowledge about ${company} to make this message specific and authentic. Consider:
+- What products or services does ${company} offer?
+- Who is their ideal customer or target market?
+- What makes ${company} unique in their industry?
+- What's the company culture or community like?
+
+If you know specific details about ${company} (their flagship products, wellness/beauty/financial focus, founding story, etc.), weave those naturally into the message to make it feel authentic and knowledgeable.
+
+If you're not familiar with ${company}, write a professional message that could apply to any quality direct sales company without making up specific details.
+
+Scenario: ${scenarioConfig.name}
 ${scenarioConfig.instruction}
 
 Tone: ${toneInstruction}
@@ -119,6 +161,7 @@ Requirements:
 - Don't mention specific compensation or income claims
 - Don't use phrases like "life-changing" or "ground floor opportunity"
 - Sound like a real person texting, not a marketing template
+- If referencing products, mention real ${company} products you're confident about
 
 Generate only the message text, no quotes or explanations.`;
 
@@ -140,6 +183,27 @@ Generate only the message text, no quotes or explanations.`;
 
       // Extract the text from the response
       const scriptText = message.content[0].text.trim();
+
+      // Log company usage and increment rate limit (non-blocking)
+      try {
+        const companyKey = company.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+        // Increment IP rate limit
+        await rateLimitRef.set({
+          count: FieldValue.increment(1),
+          lastRequest: FieldValue.serverTimestamp(),
+          date: today,
+        }, { merge: true });
+
+        // Log company usage
+        await db.collection('scriptGeneratorStats').doc('companyUsage').set({
+          [companyKey]: FieldValue.increment(1),
+          _lastUpdated: FieldValue.serverTimestamp(),
+        }, { merge: true });
+      } catch (logError) {
+        // Don't fail the request if logging fails
+        console.error('Failed to log usage:', logError);
+      }
 
       res.status(200).json({
         script: scriptText,
