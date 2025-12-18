@@ -133,23 +133,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://www.stephenscott.us/blog/complete-guide-ai-powered-presentation-tools.html</loc>
     <lastmod>2025-12-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
-
   <url>
     <loc>https://www.stephenscott.us/blog/7-network-marketing-business-goals-direct-seller.html</loc>
     <lastmod>2025-12-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
-
   <url>
     <loc>https://www.stephenscott.us/blog/5-ai-chatbot-scripts-convert-cold-prospects-into.html</loc>
     <lastmod>2025-12-16</lastmod>
@@ -157,4 +152,11 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Podcast RSS Feed -->
+  <url>
+    <loc>https://www.stephenscott.us/podcast/feed.xml</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

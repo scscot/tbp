@@ -15,36 +15,20 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuil
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
 
-  // Dec 17, 2025: A/B test between cold_reconnect and scripts templates
-  // Even indices (0, 2, 4...) = cold_reconnect (proven 6.2% click rate)
-  // Odd indices (1, 3, 5...) = scripts (new AI Script Generator promo)
-  const isScriptsTemplate = index % 2 === 1;
-  const templateVersion = isScriptsTemplate ? 'scripts' : 'cold_reconnect';
+  // Dec 17, 2025: Using scripts template only (AI Script Generator promo)
+  // Routes to teambuildpro.com/scripts.html for GA4 tracking
+  const templateVersion = 'scripts';
 
-  let selectedSubject;
-  let subjectTag;
-
-  if (isScriptsTemplate) {
-    // Scripts template: AI tool-focused subject lines (4-way rotation)
-    const scriptsSubjectIndex = Math.floor(index / 2) % 4;
-    const scriptsSubjects = [
-      { subject: `${contact.firstName}, I built you a recruiting tool`, tag: 'subject_built_tool' },
-      { subject: 'Never struggle with recruiting messages again', tag: 'subject_never_struggle' },
-      { subject: `${contact.firstName}, AI just wrote your next message`, tag: 'subject_ai_wrote' },
-      { subject: 'What to say when recruiting (solved)', tag: 'subject_what_to_say' }
-    ];
-    selectedSubject = scriptsSubjects[scriptsSubjectIndex].subject;
-    subjectTag = scriptsSubjects[scriptsSubjectIndex].tag;
-  } else {
-    // Cold_reconnect template: ORIGINAL subject lines that achieved 6.2% CTR
-    const reconnectSubjectIndex = Math.floor(index / 2) % 2;
-    const reconnectSubjects = [
-      { subject: 'The Recruiting App Built for Direct Sales', tag: 'subject_recruiting_app' },
-      { subject: 'Building Your Downline With AI', tag: 'subject_downline_ai' }
-    ];
-    selectedSubject = reconnectSubjects[reconnectSubjectIndex].subject;
-    subjectTag = reconnectSubjects[reconnectSubjectIndex].tag;
-  }
+  // Scripts template: AI tool-focused subject lines (4-way rotation)
+  const subjectIndex = index % 4;
+  const subjects = [
+    { subject: `${contact.firstName}, I built you a recruiting tool`, tag: 'subject_built_tool' },
+    { subject: 'Never struggle with recruiting messages again', tag: 'subject_never_struggle' },
+    { subject: `${contact.firstName}, AI just wrote your next message`, tag: 'subject_ai_wrote' },
+    { subject: 'What to say when recruiting (solved)', tag: 'subject_what_to_say' }
+  ];
+  const selectedSubject = subjects[subjectIndex].subject;
+  const subjectTag = subjects[subjectIndex].tag;
 
   form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
@@ -147,8 +131,7 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
           mailgunId: result.id || ''
         });
 
-        const templateLabel = i % 2 === 1 ? 'scripts' : 'cold_reconnect';
-        console.log(`✅ Sent to ${contact.email} [${templateLabel}]: ${result.id}`);
+        console.log(`✅ Sent to ${contact.email} [scripts]: ${result.id}`);
         sent++;
 
         if (sent < unsentSnapshot.size) {

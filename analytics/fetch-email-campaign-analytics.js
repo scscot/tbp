@@ -53,21 +53,21 @@ async function fetchEmailCampaignAnalytics() {
       console.log('No email campaign traffic detected in this period.');
     }
 
-    // Template Performance (A/B Test Results)
-    console.log('\n📧 TEMPLATE A/B TEST RESULTS (utm_content)');
+    // Subject Line Performance (scripts template only)
+    console.log('\n📧 SUBJECT LINE PERFORMANCE (scripts template)');
     console.log('-'.repeat(40));
     if (templatePerformance.data.length > 0) {
-      console.log('Template'.padEnd(20) + 'Sessions'.padEnd(12) + 'Users'.padEnd(10) + 'Engagement');
-      console.log('-'.repeat(52));
+      console.log('Subject Tag'.padEnd(24) + 'Sessions'.padEnd(12) + 'Users'.padEnd(10) + 'Engagement');
+      console.log('-'.repeat(56));
       templatePerformance.data.forEach(row => {
-        const template = (row.sessionManualAdContent || '(not set)').padEnd(20);
+        const subjectTag = (row.sessionManualAdContent || '(not set)').padEnd(24);
         const sessions = String(row.sessions || 0).padEnd(12);
         const users = String(row.activeUsers || 0).padEnd(10);
         const engagement = ((row.engagementRate || 0) * 100).toFixed(1) + '%';
-        console.log(`${template}${sessions}${users}${engagement}`);
+        console.log(`${subjectTag}${sessions}${users}${engagement}`);
       });
     } else {
-      console.log('No template data available yet.');
+      console.log('No subject line data available yet.');
     }
 
     // Daily Trend

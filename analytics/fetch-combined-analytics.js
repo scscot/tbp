@@ -164,12 +164,14 @@ async function getMailgunCampaignStats() {
 
 /**
  * Fetch Mailgun tag statistics
+ * Dec 17, 2025: Updated to track scripts template subject line tags only
  */
 async function getMailgunTagStats() {
   console.log('🏷️  Fetching Mailgun tag statistics...');
 
   try {
-    const tags = ['winning_combination', '2version'];
+    // Scripts template subject line tags (4-way rotation)
+    const tags = ['subject_built_tool', 'subject_never_struggle', 'subject_ai_wrote', 'subject_what_to_say'];
     const tagStats = {};
 
     for (const tag of tags) {

@@ -201,10 +201,6 @@
             ],
             "rewrites": [
                 {
-                    "source": "/podcast/**",
-                    "destination": "/404.html"
-                },
-                {
                     "source": "/tag/**",
                     "destination": "/404.html"
                 },
@@ -254,6 +250,30 @@
                 },
                 {
                     "source": "/comments/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-content/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-admin/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-includes/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/wp-json/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/trackback/**",
+                    "destination": "/404.html"
+                },
+                {
+                    "source": "/xmlrpc.php",
                     "destination": "/404.html"
                 }
             ]
