@@ -1117,4 +1117,13 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://teambuildpro.com/blog/january-mlm-recruiting-blueprint-30-day-action.html</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
