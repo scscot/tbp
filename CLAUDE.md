@@ -48,7 +48,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ## Critical Statistics
 
 - **75% of recruits quit in their first year** (primary pain point)
-- **16 pre-written messages** (8 for recruiting prospects + 8 for existing business partners)
+- **17 pre-written messages** (8 for recruiting prospects + 9 for empowering partners)
 - **24/7 AI Coach** for instant recruiting guidance in 4 languages
 - **4 languages supported**: English, Spanish (Español), Portuguese (Português), German (Deutsch)
 - **4 direct sponsors + 20 total downline members** = qualification milestones
@@ -150,7 +150,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ### Key Messaging Points
 1. **NOT pitching a business opportunity** - it's the tool that fuels the one you have
 2. **Perpetual recruiting engine** - continues working after prospects join
-3. **16 pre-written messages** eliminate "what do I say?" anxiety
+3. **17 pre-written messages** eliminate "what do I say?" anxiety
 4. **24/7 AI Coach** provides instant guidance
 5. **Company-agnostic** - works with 100+ companies
 6. **Pre-building eliminates cold starts** - the #1 reason people quit
@@ -159,7 +159,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - ❌ "Proven" or "prove" (implies prospects must prove worthiness)
 - ❌ "Two separate downlines" (it's ONE continuous downline)
 - ❌ "90% quit rate" (accurate stat is 75%)
-- ❌ Generic "AI system" (be specific: 16 messages + AI Coach)
+- ❌ Generic "AI system" (be specific: 17 messages + AI Coach)
 
 ---
 
@@ -356,7 +356,7 @@ git add . && git commit -m "message" && git push
 - `lib/main.dart` - App initialization
 - `lib/services/auth_service.dart` - Authentication
 - `lib/services/network_service.dart` - Advanced caching
-- `lib/screens/share_screen.dart` - 16 pre-written messages
+- `lib/screens/share_screen.dart` - 17 pre-written messages (legacy, see share_partner_screen.dart and share_prospect_screen1.dart)
 - `lib/screens/dashboard_screen.dart` - Main dashboard
 - `lib/l10n/app_*.arb` - Localization files (EN, ES, PT, DE)
 - `functions/index.js` - All Cloud Functions
@@ -375,6 +375,16 @@ git add . && git commit -m "message" && git push
 ## Recent Updates (December 2025)
 
 ### Week of Dec 17
+- **AI Script Generator Share Message**: Added 9th message to SharePartnerScreen for professionals to share scripts.html with their team
+  - New localization keys: `sharePartnerAiScriptGenerator*` (Title, Description, Subject, Message)
+  - Added `_buildScriptsLink()` method for locale-aware scripts.html URLs with `?ref=` parameter
+  - Updated all 4 ARB files (EN, ES, PT, DE) with translated strings
+  - Ran `flutter gen-l10n` to regenerate AppLocalizations
+- **Differentiated Message Counts on Websites**: Updated message counts to reflect user-type-specific totals
+  - prospects.html (all 4 locales): Changed "17" to "8" (prospects only see 8 messages)
+  - index.html (all 4 locales): Added "Up to" before "17" (Hasta/Até/Bis zu) for general audience
+  - faq.html (all 4 locales): Updated to "17 messages (8 for recruiting + 9 for empowering)" with correct breakdown
+  - professionals.html and scripts.html: Kept at "17" (professionals see all messages)
 - **Scripts Page Abuse Prevention**: Added 3-layer protection against bots and overuse (all 4 locales)
   - Layer 1: Honeypot field (hidden input that bots fill, humans don't see)
   - Layer 2: Client-side rate limiting via localStorage (15 requests/day, resets daily)
