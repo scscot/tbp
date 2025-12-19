@@ -19,13 +19,14 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   // Routes to teambuildpro.com/scripts.html for GA4 tracking
   const templateVersion = 'scripts';
 
-  // Scripts template: AI tool-focused subject lines (4-way rotation)
+  // Scripts template: Branded subject lines (4-way rotation)
+  // Dec 18, 2025: Added "Team Build Pro" branding for credibility
   const subjectIndex = index % 4;
   const subjects = [
-    { subject: `${contact.firstName}, I built you a recruiting tool`, tag: 'subject_built_tool' },
-    { subject: 'Never struggle with recruiting messages again', tag: 'subject_never_struggle' },
-    { subject: `${contact.firstName}, AI just wrote your next message`, tag: 'subject_ai_wrote' },
-    { subject: 'What to say when recruiting (solved)', tag: 'subject_what_to_say' }
+    { subject: `${contact.firstName}, try Team Build Pro's AI Script Generator`, tag: 'subject_try_tbp' },
+    { subject: 'Team Build Pro: AI writes your recruiting messages', tag: 'subject_tbp_ai_writes' },
+    { subject: `${contact.firstName}, I built Team Build Pro for recruiters like you`, tag: 'subject_built_tbp' },
+    { subject: 'What to say when recruiting — Team Build Pro', tag: 'subject_what_to_say_tbp' }
   ];
   const selectedSubject = subjects[subjectIndex].subject;
   const subjectTag = subjects[subjectIndex].tag;
