@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-17
+**Last Updated**: 2025-12-20
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -224,14 +224,20 @@ All four main sites have identical structure:
 
 **Mailgun Configuration:**
 - **Template Name**: `mailer`
-- **Template Versions**: `cold_reconnect` (reconnection-focused), `scripts` (AI tool promotion)
-- **A/B Testing**: 50/50 split between templates (even=cold_reconnect, odd=scripts)
-- **Subject Lines**: Template-specific rotation
-  - cold_reconnect: "The Recruiting App Built for Direct Sales", "Building Your Downline With AI"
-  - scripts: 4-way personalized rotation (AI tool-focused)
+- **Template Version**: `initial` (personal, conversational style)
+- **Subject Line**: "The Recruiting App Built for Direct Sales"
 - **From**: `Stephen Scott <stephen@mailer.teambuildpro.com>`
 - **Domain**: mailer.teambuildpro.com (warmup started Dec 5, 2025)
 - **Tracking**: UTM parameters for GA4 (Mailgun open tracking unreliable due to Gmail pre-fetch)
+- **Seasonal Sign-off**: Automatic date-based greeting (see below)
+
+### Seasonal Sign-off Feature
+The `computeSeasonalSignoff()` function in `email-campaign-functions.js` adds date-based greetings:
+- **Dec 15 – Dec 31**: "Happy Holidays,"
+- **Jan 1 – Jan 15**: "Wishing you a great start to the year,"
+- **Otherwise**: No seasonal line
+- Timezone: America/Los_Angeles
+- Passed to Mailgun template as `{{seasonal_signoff}}` variable
 
 ### Main Campaign (Mailgun - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
@@ -239,8 +245,7 @@ All four main sites have identical structure:
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
 - **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 20)
-- **A/B Testing**: 50/50 alternating between `cold_reconnect` and `scripts` templates
-- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=initial_campaign`, `utm_content=[template]`
+- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=initial_campaign`, `utm_content=subject_recruiting_app`
 
 ### Yahoo Campaign (Mailgun - Automated)
 - **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
@@ -248,8 +253,7 @@ All four main sites have identical structure:
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
 - **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (currently 6)
-- **A/B Testing**: Same as main campaign (cold_reconnect/scripts templates)
-- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=yahoo_campaign`, `utm_content=[template]`
+- **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=yahoo_campaign`
 
 ### Mailgun Event Sync (Automated)
 - **Function**: `syncMailgunEvents`
@@ -373,6 +377,26 @@ git add . && git commit -m "message" && git push
 ---
 
 ## Recent Updates (December 2025)
+
+### Week of Dec 20
+- **Email Campaign Refactoring**: Major refactor of `functions/email-campaign-functions.js`
+  - Added `CAMPAIGN_CONFIGS` object for centralized campaign settings
+  - Created shared `processCampaignBatch()` function eliminating ~150 lines of duplication
+  - Unified `sendEmailViaMailgun()` to handle all campaign types via config
+  - Reduced file from 493 to 455 lines while improving maintainability
+  - Adding new campaigns now requires only a config entry + 10-line scheduled function
+- **Email Campaign Simplification**: Switched from A/B testing to single proven approach
+  - Template: `initial` (personal, conversational style)
+  - Subject: "The Recruiting App Built for Direct Sales"
+  - Removed 4-way subject rotation and template alternation
+- **Seasonal Sign-off Feature**: Added automatic date-based greetings to email campaigns
+  - New `computeSeasonalSignoff()` function in `email-campaign-functions.js`
+  - Dec 15 – Dec 31: "Happy Holidays,"
+  - Jan 1 – Jan 15: "Wishing you a great start to the year,"
+  - Otherwise: No seasonal line (empty string)
+  - Uses America/Los_Angeles timezone for date calculation
+  - Passed to Mailgun template as `{{seasonal_signoff}}` variable
+  - Mailgun `initial` template updated to render `{{seasonal_signoff}}<br>` above "— Stephen"
 
 ### Week of Dec 17
 - **AI Script Generator Share Message**: Added 9th message to SharePartnerScreen for professionals to share scripts.html with their team

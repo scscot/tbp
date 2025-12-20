@@ -9,15 +9,17 @@ const analyticsDataClient = new BetaAnalyticsDataClient();
 // Your GA4 Property ID (visible in GA4 Admin > Property Settings)
 const propertyId = '485651473'; // Update this with your actual property ID
 
-// Date range for analysis
-const startDate = '30daysAgo';
-const endDate = 'today';
+// Date range for analysis (can be overridden via command line args)
+const args = process.argv.slice(2);
+const startDate = args[0] || '30daysAgo';
+const endDate = args[1] || 'today';
 
 /**
  * Main function to fetch all GA4 reports
  */
 async function fetchAllReports() {
-  console.log('🔍 Fetching Google Analytics 4 data...\n');
+  console.log('🔍 Fetching Google Analytics 4 data...');
+  console.log(`📅 Date range: ${startDate} to ${endDate}\n`);
 
   const timestamp = new Date().toISOString().split('T')[0];
   const outputDir = path.join(__dirname, 'reports', timestamp);
@@ -32,6 +34,7 @@ async function fetchAllReports() {
     const [
       demographics,
       trafficSources,
+      emailCampaign,
       userBehavior,
       conversions,
       deviceInfo,
@@ -40,6 +43,7 @@ async function fetchAllReports() {
     ] = await Promise.all([
       getDemographics(),
       getTrafficSources(),
+      getEmailCampaignPerformance(),
       getUserBehavior(),
       getConversions(),
       getDeviceInfo(),
@@ -50,6 +54,7 @@ async function fetchAllReports() {
     // Save individual reports
     saveReport(outputDir, 'demographics', demographics);
     saveReport(outputDir, 'traffic-sources', trafficSources);
+    saveReport(outputDir, 'email-campaign', emailCampaign);
     saveReport(outputDir, 'user-behavior', userBehavior);
     saveReport(outputDir, 'conversions', conversions);
     saveReport(outputDir, 'device-info', deviceInfo);
@@ -60,6 +65,7 @@ async function fetchAllReports() {
     const summary = createSummary({
       demographics,
       trafficSources,
+      emailCampaign,
       userBehavior,
       conversions,
       deviceInfo,
@@ -122,7 +128,8 @@ async function getTrafficSources() {
     dimensions: [
       { name: 'sessionSource' },
       { name: 'sessionMedium' },
-      { name: 'sessionCampaignName' }
+      { name: 'sessionCampaignName' },
+      { name: 'sessionManualAdContent' }  // utm_content
     ],
     metrics: [
       { name: 'sessions' },
@@ -131,6 +138,45 @@ async function getTrafficSources() {
       { name: 'engagementRate' },
       { name: 'conversions' }
     ],
+    orderBys: [
+      { metric: { metricName: 'sessions' }, desc: true }
+    ],
+    limit: 50
+  });
+
+  return formatResponse(response);
+}
+
+/**
+ * Get email campaign performance (filtered by utm_source=mailgun)
+ */
+async function getEmailCampaignPerformance() {
+  console.log('📧 Fetching email campaign performance...');
+
+  const [response] = await analyticsDataClient.runReport({
+    property: `properties/${propertyId}`,
+    dateRanges: [{ startDate, endDate }],
+    dimensions: [
+      { name: 'sessionCampaignName' },
+      { name: 'sessionManualAdContent' },  // utm_content (subject tag)
+      { name: 'pagePath' }
+    ],
+    metrics: [
+      { name: 'sessions' },
+      { name: 'activeUsers' },
+      { name: 'newUsers' },
+      { name: 'engagementRate' },
+      { name: 'screenPageViews' }
+    ],
+    dimensionFilter: {
+      filter: {
+        fieldName: 'sessionSource',
+        stringFilter: {
+          value: 'mailgun',
+          matchType: 'EXACT'
+        }
+      }
+    },
     orderBys: [
       { metric: { metricName: 'sessions' }, desc: true }
     ],
@@ -329,6 +375,19 @@ function createSummary(reports) {
       totalConversions: reports.conversions.totals.conversions || 0,
       totalRevenue: reports.conversions.totals.totalRevenue || 0
     },
+    emailCampaign: {
+      totalSessions: reports.emailCampaign.totals.sessions || 0,
+      totalUsers: reports.emailCampaign.totals.activeUsers || 0,
+      engagementRate: reports.emailCampaign.totals.engagementRate || 0,
+      bySubject: reports.emailCampaign.data.slice(0, 10).map(e => ({
+        campaign: e.sessionCampaignName,
+        subjectTag: e.sessionManualAdContent,
+        landingPage: e.pagePath,
+        sessions: e.sessions,
+        users: e.activeUsers,
+        engagementRate: e.engagementRate
+      }))
+    },
     topCountries: reports.demographics.data.slice(0, 5).map(d => ({
       country: d.country,
       users: d.activeUsers,
@@ -337,6 +396,8 @@ function createSummary(reports) {
     topSources: reports.trafficSources.data.slice(0, 5).map(s => ({
       source: s.sessionSource,
       medium: s.sessionMedium,
+      campaign: s.sessionCampaignName,
+      utmContent: s.sessionManualAdContent,
       sessions: s.sessions,
       users: s.activeUsers
     })),
