@@ -136,6 +136,9 @@ jobs:
             Includes 3-language podcast episodes (EN, ES, PT)
 
             Co-Authored-By: Claude <noreply@anthropic.com>"
+
+            # Pull any remote changes and rebase our commit on top, then push
+            git pull --rebase origin main
             git push
           fi
 
