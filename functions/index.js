@@ -125,13 +125,11 @@ const {
 } = require('./email-campaign-functions');
 
 // ==============================
-// Import Yahoo Email Campaign Functions
+// Import Email Stats Functions
 // ==============================
 const {
-  sendHourlyEmailCampaignYahoo,
-  sendAndroidLaunchCampaignYahoo,
-  syncMailgunEventsYahoo
-} = require('./email-campaign-functions-yahoo');
+  getEmailCampaignStats,
+} = require('./email-stats-functions');
 
 // ==============================
 // Import Admin Functions
@@ -301,10 +299,8 @@ module.exports = {
   sendAndroidLaunchCampaign,
   syncMailgunEvents,
 
-  // Yahoo email campaign (scheduled)
-  sendHourlyEmailCampaignYahoo,
-  sendAndroidLaunchCampaignYahoo,
-  syncMailgunEventsYahoo,
+  // Email stats (HTTP endpoint)
+  getEmailCampaignStats,
 
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,

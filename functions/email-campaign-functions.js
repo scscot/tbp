@@ -205,7 +205,9 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
           batchId: batchId,
           [statusField]: 'sent',
           [errorField]: '',
-          [mailgunIdField]: result.id || ''
+          [mailgunIdField]: result.id || '',
+          templateVersion: config.templateVersion,
+          subjectTag: subjectTag
         };
 
         await doc.ref.update(updateData);
