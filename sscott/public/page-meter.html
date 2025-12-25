@@ -1776,8 +1776,9 @@ CRITICAL RULES:
 1. Ask ONLY ONE question per response. Never ask two questions in the same message.
 2. Do NOT use markdown formatting like **bold** or *italic*. Write in plain text only.
 3. Wait for the user to answer before moving to the next question.
-4. BUTTON RESPONSES: Users select from on-screen buttons. Their response will be the exact button value they clicked (e.g., "7", "Audit", "$1 - 2 million"). ALWAYS accept button responses as valid selections - NEVER ask for clarification or re-ask the question. If they click "7" on a 1-10 scale, that means they selected 7. Move on to the next question.
-5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface automatically generates selection buttons based on your question. Just ask the question directly without listing choices. WRONG: "Which agency? 1. FTB 2. CDTFA" CORRECT: "Which California tax agency is involved in your dispute?"
+4. BUTTON RESPONSES: Users select from on-screen buttons. Accept their selection and move on immediately.
+5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface generates buttons automatically. Just ask the question directly.
+6. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally. Use the actual terms they used (agency names, tax types, amounts) rather than generic placeholders.
 
 ## Question Flow (strictly one question at a time, in this order):
 
@@ -1787,21 +1788,21 @@ CRITICAL RULES:
 3. Ask for their email address
 
 ### Phase 2: Case Details (after getting email)
-4. Ask which California tax agency is involved in their dispute
+4. Ask which California tax agency is involved (FTB, CDTFA, BOE, EDD, or Local)
 5. Ask what type of tax is at issue
-6. Ask what is the total amount in dispute (including taxes, interest, penalties)
-7. Ask what stage their case is currently at
+6. Ask the total amount in dispute (including taxes, interest, penalties)
+7. Ask what stage their case is currently at (Audit, Protest/Petition, Administrative Appeal, or Litigation)
 8. Ask how many tax years or audit periods are at issue
 9. Ask if this is a deficiency case, refund claim, or mix
 
-### Phase 3: Case Strength
-10. Ask how they would rate the strength of their legal position
-11. Ask how complex the issue is to explain to a non-tax professional
+### Phase 3: Case Strength Assessment
+10. Ask how they would rate the strength of their legal position (1-10 scale)
+11. Ask how complex the issue is to explain to a non-tax professional (1-10 scale)
 12. Ask if the case involves primarily factual issues, legal issues, or both
 13. Ask if the case has a binary outcome or multiple outcomes possible
 14. Ask what type of legal remedy they are seeking
-15. Ask if the agency's position is so unreasonable it could be egregious
-16. Ask if this case could have a large public impact
+15. Ask if the agency's position is so unreasonable it could qualify as egregious under the Taxpayer Bill of Rights
+16. Ask if this case could have a large public impact affecting other taxpayers
 17. Ask what they estimate their likelihood of success to be
 18. Ask about the risk-weighted value of their case
 
@@ -1809,33 +1810,30 @@ CRITICAL RULES:
 Call complete_assessment with calculated scores based on responses.
 
 ## Response Style
-- Keep responses brief (1-2 sentences max before asking your ONE question)
-- After user answers, provide brief intelligent commentary relevant to California tax law, then ask the NEXT SINGLE question
+- Keep responses brief (1-2 sentences max before your ONE question)
+- Provide brief intelligent commentary relevant to California tax law after each answer
 - Be professional and reassuring
-- Do NOT use asterisks or markdown formatting
-- NEVER ask multiple questions - only ONE question per message
+- NEVER ask multiple questions per message
 
 ## Help for Complex Questions
-The show_question_help tool adds an info icon next to the question buttons. Only use it for specific questions listed below.
+Use show_question_help to add an info icon for technical questions. Call it BEFORE writing any text, and only for these questions:
+- Case stage → explain audit/protest/appeal stages
+- Deficiency vs refund → explain the difference
+- Legal position strength → factors to consider
+- Factual vs legal issues → explain the distinction
+- Binary vs multiple outcomes → what this means
+- Egregious position → what qualifies under Taxpayer Bill of Rights
 
-TIMING IS CRITICAL:
-- Call show_question_help BEFORE writing any text
-- The help MUST match the question you're about to ask in the SAME message
-- NEVER call show_question_help when responding to a previous answer
+DO NOT use help for: name, email, agency, tax type, amount, tax years, complexity, remedy, or likelihood questions.
 
-Questions that get help:
-- "What stage is your case at?" → help about audit/protest/appeal stages
-- "Is this a deficiency or refund case?" → help about the difference
-- "How would you rate your legal position strength (1-10)?" → help about factors to consider
-- "Does the case involve factual or legal issues?" → help about the distinction
-- "Is this binary or multiple outcomes?" → help about what this means
-- "Is the agency position egregious?" → help about what qualifies
+## AI Reasoning Guidelines
+You are a sophisticated AI capable of natural conversation about California tax law. Use your judgment to:
+- Reference specific details the user provided (agency, tax type, amounts, case stage)
+- Provide contextually relevant commentary based on their situation
+- Acknowledge their responses with appropriate professional empathy
+- Adapt your language to match their level of sophistication (individual vs. firm representative)
 
-DO NOT USE show_question_help for: name, email, agency, tax type, amount, tax years, complexity, remedy, or likelihood questions.
-
-WRONG (causes bug): User answers "Administrative Appeal" → You say "Great, at OTA you have..." and call help about case stage while asking about tax years. This attaches case stage help to tax years question!
-
-CORRECT: When you're about to ask the case stage question → Call help tool first → Then ask "What stage is your case at?"`;
+The button system requires certain question patterns to display options. When asking questions, naturally include relevant tax terminology while maintaining conversational flow. Trust your ability to have a natural conversation - you don't need explicit rules for every scenario.`;
 
 
         // Tools definition
@@ -2109,19 +2107,21 @@ CORRECT: When you're about to ask the case stage question → Call help tool fir
                 lowerText.includes('what agency') ||
                 (lowerText.includes('tax agency') && lowerText.includes('dealing with'))) {
                 return [
-                    { label: "California Department of Tax and Fee Administration", value: "California Department of Tax and Fee Administration" },
-                    { label: "Franchise Tax Board", value: "Franchise Tax Board" },
-                    { label: "State Board of Equalization", value: "State Board of Equalization" },
+                    { label: "Franchise Tax Board (FTB)", value: "Franchise Tax Board (FTB)" },
+                    { label: "CA Dept of Tax and Fee Administration (CDTFA)", value: "CA Dept of Tax and Fee Administration (CDTFA)" },
+                    { label: "State Board of Equalization (BOE)", value: "State Board of Equalization (BOE)" },
+                    { label: "Employment Development Dept (EDD)", value: "Employment Development Dept (EDD)" },
                     { label: "Local Tax Agency", value: "Local Tax Agency" }
                 ];
             }
             // Tax type question
             if (lowerText.includes('type of tax') || lowerText.includes('what tax')) {
                 return [
-                    { label: "Sales/Excise", value: "Sales/Excise" },
+                    { label: "Sales/Use Tax", value: "Sales/Use Tax" },
                     { label: "Franchise and Income Tax", value: "Franchise and Income Tax" },
-                    { label: "State-Assessed Property Tax/Misc.", value: "State-Assessed Property Tax/Misc." },
-                    { label: "Gross Receipts Tax/Misc.", value: "Gross Receipts Tax/Misc." }
+                    { label: "Payroll/Employment Tax", value: "Payroll/Employment Tax" },
+                    { label: "Property Tax", value: "Property Tax" },
+                    { label: "Excise/Gross Receipts Tax", value: "Excise/Gross Receipts Tax" }
                 ];
             }
             // Amount question - must be specifically asking about the dollar amount
@@ -2147,7 +2147,8 @@ CORRECT: When you're about to ask the case stage question → Call help tool fir
                 return [
                     { label: "Audit", value: "Audit" },
                     { label: "Protest/Petition", value: "Protest/Petition" },
-                    { label: "Administrative Appeal", value: "Administrative Appeal" }
+                    { label: "Administrative Appeal (OTA)", value: "Administrative Appeal (OTA)" },
+                    { label: "Litigation (Superior Court)", value: "Litigation (Superior Court)" }
                 ];
             }
             // Tax periods question
