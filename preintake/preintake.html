@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Litigation Power Meter - Dakessian Law</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0c1f3f;
+            --primary-blue: #1a3a5c;
+            --accent-gold: #c9a962;
+            --accent-gold-light: #e5d4a1;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --gradient-primary: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 50%, #0c1f3f 100%);
+            --gradient-gold: linear-gradient(135deg, #c9a962 0%, #e5d4a1 50%, #c9a962 100%);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(201, 169, 98, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-primary);
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Landing Screen Styles */
+        .screen {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Password Screen Styles */
+        #password-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .password-content {
+            max-width: 400px;
+        }
+
+        .password-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+        }
+
+        .password-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .password-input {
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: inherit;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .password-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-button:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .password-error {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+        }
+
+        #landing-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            background: var(--gradient-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #landing-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(201, 169, 98, 0.05) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .landing-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .logo {
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 60px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        .landing-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing-subheadline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(201, 169, 98, 0.5);
+        }
+
+        .cta-button svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover svg {
+            transform: translateX(5px);
+        }
+
+        .landing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            color: var(--accent-gold);
+        }
+
+        .feature h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .feature p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .disclaimer {
+            margin-top: 3rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Chat Screen Styles */
+        #chat-screen {
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .chat-header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+        }
+
+        .chat-main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .progress-sidebar {
+            width: 280px;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid var(--border-subtle);
+            overflow-y: auto;
+        }
+
+        .progress-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--bg-card);
+        }
+
+        .progress-step.completed .step-indicator {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .progress-step.completed .step-indicator svg {
+            display: block;
+        }
+
+        .step-indicator {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-indicator {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .step-indicator svg {
+            display: none;
+            width: 14px;
+            height: 14px;
+            color: white;
+        }
+
+        .step-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .progress-step.active .step-text,
+        .progress-step.completed .step-text {
+            color: var(--text-light);
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 80%;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .message.user .message-avatar {
+            background: var(--primary-blue);
+            color: var(--text-light);
+        }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            line-height: 1.6;
+        }
+
+        .message.assistant .message-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: var(--primary-blue);
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 1rem 1.25rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.1) 0%, rgba(201, 169, 98, 0.05) 100%);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-top: 0.75rem;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .insight-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+        }
+
+        .insight-card-content {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Response Buttons */
+        .response-options {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .response-button {
+            padding: 0.625rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 25px;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .response-button:hover {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .response-button:active {
+            transform: translateY(0);
+        }
+
+        .response-button.selected {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            pointer-events: none;
+        }
+
+        /* Info Help Button */
+        .info-help-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            color: #1a1f2e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            font-weight: bold;
+            font-style: italic;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-help-button:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* Help Modal */
+        .help-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .help-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-modal {
+            background: var(--primary-dark);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .help-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-modal-content {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .help-modal-close {
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .help-modal-close:hover {
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Video Introduction Link */
+        .video-intro-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .video-intro-link:hover {
+            color: #f0d060;
+        }
+
+        .video-intro-link svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Video Modal */
+        .video-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .video-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-modal {
+            background: var(--primary-dark);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+        }
+
+        .video-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .video-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .video-modal-close:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* Tooltips */
+        .tooltip-trigger {
+            color: var(--accent-gold);
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 2px;
+            cursor: help;
+            position: relative;
+        }
+
+        .tooltip-content {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-dark);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            width: max-content;
+            max-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--accent-gold);
+        }
+
+        .tooltip-trigger:hover .tooltip-content,
+        .tooltip-trigger:focus .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Video Embed */
+        .video-embed {
+            margin-top: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .video-embed iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .video-link:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-gold);
+        }
+
+        .video-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .chat-input-area {
+            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-confidentiality-notice {
+            max-width: 800px;
+            margin: 0.75rem auto 0;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 25px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: scale(1.1);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Loading Screen Styles */
+        #loading-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-content {
+            max-width: 500px;
+        }
+
+        .loading-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--accent-gold);
+        }
+
+        .loading-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .loading-stage {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+
+        .loading-stage.active {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .loading-stage.complete {
+            opacity: 0.6;
+        }
+
+        .loading-stage-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-stage.active .loading-stage-icon {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            animation: pulse-icon 1s ease-in-out infinite;
+        }
+
+        .loading-stage.complete .loading-stage-icon {
+            background: var(--success);
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .loading-stage-text {
+            text-align: left;
+        }
+
+        .loading-stage-text h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .loading-stage-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: var(--gradient-gold);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Results Screen Styles */
+        #results-screen {
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .results-header {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .results-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-subtitle {
+            color: var(--text-muted);
+        }
+
+        .results-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .gauge {
+            position: relative;
+            width: 280px;
+            height: 140px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .gauge-background {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 180deg,
+                transparent 0deg,
+                transparent 180deg
+            );
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+            transition: background 1.5s ease-out;
+        }
+
+        .gauge-inner {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: -100%;
+            background: var(--primary-dark);
+            border-radius: 50%;
+        }
+
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            height: 100px;
+            background: var(--text-light);
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(-90deg);
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 2px;
+        }
+
+        .gauge-needle::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: var(--text-light);
+            border-radius: 50%;
+        }
+
+        .gauge-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            min-height: 1.2em;
+            line-height: 1;
+            position: relative;
+            z-index: 10;
+        }
+
+        .gauge-label {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .score-category {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-gold);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-top: 1rem;
+        }
+
+        .subscores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subscore-card {
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .subscore-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .subscore-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .subscore-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .subscore-bar {
+            height: 8px;
+            background: var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .subscore-bar-fill {
+            height: 100%;
+            background: var(--gradient-gold);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .subscore-description {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .factors-section {
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .factors-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .factors-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .factor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .factor-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .factor-icon.positive { color: var(--success); }
+        .factor-icon.negative { color: var(--danger); }
+        .factor-icon.neutral { color: var(--warning); }
+
+        .factor-text {
+            font-size: 0.9rem;
+        }
+
+        .actions-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-button.primary {
+            background: var(--gradient-gold);
+            color: var(--primary-dark);
+            border: none;
+        }
+
+        .action-button.primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .action-button.secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .action-button.secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-gold);
+        }
+
+        .results-disclaimer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-main {
+                flex-direction: column;
+            }
+
+            .progress-sidebar {
+                width: 100%;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border-subtle);
+            }
+
+            .progress-steps {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 0.25rem;
+            }
+
+            .progress-step {
+                flex-direction: column;
+                padding: 0.5rem;
+                text-align: center;
+            }
+
+            .step-text {
+                font-size: 0.7rem;
+            }
+
+            .message {
+                max-width: 95%;
+            }
+
+            .gauge {
+                width: 220px;
+                height: 110px;
+            }
+
+            .gauge-needle {
+                height: 80px;
+            }
+
+            .gauge-score {
+                font-size: 3rem;
+            }
+
+            .video-intro-link {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: none;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div id="password-screen" class="screen active">
+        <div class="password-content">
+            <div class="password-logo">DAKESSIAN LAW</div>
+            <h1 class="password-title">Tax Litigation Power Meter</h1>
+            <p class="password-subtitle">This demo is password protected.<br>Please enter the access code to continue.</p>
+            <form class="password-form" onsubmit="checkPassword(event)">
+                <input type="password" id="password-input" class="password-input" placeholder="Enter password" autocomplete="off">
+                <button type="submit" class="password-button">Access Demo</button>
+                <p id="password-error" class="password-error">Incorrect password. Please try again.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Landing Screen -->
+    <div id="landing-screen" class="screen">
+        <div class="landing-content">
+            <div class="logo">
+                <div class="logo-text">DAKESSIAN LAW</div>
+            </div>
+            <h1 class="landing-headline">How Strong Is Your Case for California Tax Litigation?</h1>
+            <p class="landing-subheadline">
+                Our AI-powered Tax Litigation Power Meter analyzes your situation through a conversational assessment,
+                providing you with a comprehensive evaluation of your case's litigation potential.
+            </p>
+            <button class="cta-button" onclick="startAssessment()">
+                Start the Power Meter
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+            <div class="landing-features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <h3>Conversational</h3>
+                    <p>Natural dialogue that adapts to your situation</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3>Detailed Analysis</h3>
+                    <p>Multi-factor scoring across legal, procedural, and practical dimensions</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Contextual information as you answer questions</p>
+                </div>
+            </div>
+            <p class="disclaimer">
+                This tool provides a framework for understanding litigation potential and should not be construed as legal advice.
+                Use in consultation with qualified counsel to make informed decisions about your tax litigation strategy.
+            </p>
+        </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div id="chat-screen" class="screen">
+        <header class="chat-header">
+            <div class="chat-header-logo">DAKESSIAN LAW</div>
+            <div style="font-size: 0.875rem; color: var(--text-muted);">Tax Litigation Power Meter</div>
+        </header>
+        <div class="chat-main">
+            <aside class="progress-sidebar">
+                <div class="progress-title">Assessment Progress</div>
+                <div class="progress-steps">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-indicator">
+                            1
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Basic Information</span>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-indicator">
+                            2
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Nature of Dispute</span>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-indicator">
+                            3
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Financial Exposure</span>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-indicator">
+                            4
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Evidence Strength</span>
+                    </div>
+                    <div class="progress-step" data-step="5">
+                        <div class="step-indicator">
+                            5
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Procedural Posture</span>
+                    </div>
+                    <div class="progress-step" data-step="6">
+                        <div class="step-indicator">
+                            6
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">Goals & Risk</span>
+                    </div>
+                </div>
+
+                <!-- Video Introduction Link -->
+                <a class="video-intro-link" onclick="openVideoModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Video Introduction
+                </a>
+            </aside>
+            <div class="chat-area">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be inserted here -->
+                </div>
+                <div class="chat-input-area">
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Type your response..." onkeypress="handleKeyPress(event)">
+                        <button id="send-button" class="send-button" onclick="sendMessage()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="chat-confidentiality-notice">Your information is kept confidential. This tool uses AI to assist with your assessment and does not constitute legal advice or create an attorney-client relationship.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen">
+        <div class="loading-content">
+            <h2 class="loading-title">Analyzing Your Case</h2>
+            <div class="loading-stages">
+                <div class="loading-stage" data-stage="legal">
+                    <div class="loading-stage-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                        </svg>
+                    </div>
+                    <div class="loading-stage-text">
+                        <h4>Legal Strength Analysis</h4>
+                        <p>Evaluating merits and legal precedents</p>
+                    </div>
+                </div>
+                <div class="loading-stage" data-stage="procedural">
+                    <div class="loading-stage-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div class="loading-stage-text">
+                        <h4>Procedural Assessment</h4>
+                        <p>Reviewing case stage and posture</p>
+                    </div>
+                </div>
+                <div class="loading-stage" data-stage="practical">
+                    <div class="loading-stage-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="loading-stage-text">
+                        <h4>Practical Litigability</h4>
+                        <p>Calculating cost-benefit factors</p>
+                    </div>
+                </div>
+            </div>
+            <div class="loading-progress">
+                <div id="loading-progress-bar" class="loading-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <header class="results-header">
+            <div class="results-logo">DAKESSIAN LAW</div>
+            <h1 class="results-title">Your Case Assessment Results</h1>
+            <p class="results-subtitle">Tax Litigation Power Meter Analysis</p>
+        </header>
+        <div class="results-content">
+            <div class="gauge-container">
+                <div class="gauge">
+                    <div class="gauge-background"></div>
+                    <div class="gauge-inner"></div>
+                    <div id="gauge-needle" class="gauge-needle"></div>
+                </div>
+                <div id="gauge-score" class="gauge-score">0</div>
+                <div class="gauge-label">out of 100</div>
+                <div id="score-category" class="score-category">Calculating...</div>
+            </div>
+            <div class="subscores">
+                <div class="subscore-card">
+                    <div class="subscore-header">
+                        <span class="subscore-title">Legal Strength</span>
+                        <span id="legal-score" class="subscore-value">0</span>
+                    </div>
+                    <div class="subscore-bar">
+                        <div id="legal-bar" class="subscore-bar-fill"></div>
+                    </div>
+                    <p id="legal-description" class="subscore-description">Evaluates the merits of your legal position based on applicable law and precedent.</p>
+                </div>
+                <div class="subscore-card">
+                    <div class="subscore-header">
+                        <span class="subscore-title">Procedural Position</span>
+                        <span id="procedural-score" class="subscore-value">0</span>
+                    </div>
+                    <div class="subscore-bar">
+                        <div id="procedural-bar" class="subscore-bar-fill"></div>
+                    </div>
+                    <p id="procedural-description" class="subscore-description">Assesses your case's stage in the administrative process and procedural advantages.</p>
+                </div>
+                <div class="subscore-card">
+                    <div class="subscore-header">
+                        <span class="subscore-title">Practical Litigability</span>
+                        <span id="practical-score" class="subscore-value">0</span>
+                    </div>
+                    <div class="subscore-bar">
+                        <div id="practical-bar" class="subscore-bar-fill"></div>
+                    </div>
+                    <p id="practical-description" class="subscore-description">Weighs financial exposure against litigation costs and potential recovery.</p>
+                </div>
+            </div>
+            <div class="factors-section">
+                <h3 class="factors-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    Key Factors
+                </h3>
+                <ul id="factors-list" class="factors-list">
+                    <!-- Factors will be inserted here -->
+                </ul>
+            </div>
+            <div class="actions-section">
+                <a href="https://www.dakessianlaw.com/contact-us/" target="_blank" class="action-button primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Schedule a Consultation
+                </a>
+                <button class="action-button secondary" onclick="downloadReport()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download Report
+                </button>
+                <button class="action-button secondary" onclick="startOver()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Start Over
+                </button>
+            </div>
+        </div>
+        <p class="results-disclaimer">
+            This assessment is provided for informational purposes only and does not constitute legal advice.
+            The scores and analysis are generated based on the information you provided and general legal principles.
+            Every case is unique, and you should consult with a qualified tax attorney for advice specific to your situation.
+            Past results do not guarantee future outcomes.
+        </p>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal-overlay" class="help-modal-overlay" onclick="closeHelpModal(event)">
+        <div class="help-modal" onclick="event.stopPropagation()">
+            <div class="help-modal-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span id="help-modal-title-text">Help</span>
+            </div>
+            <div id="help-modal-content" class="help-modal-content"></div>
+            <button class="help-modal-close" onclick="closeHelpModal()">Got it</button>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="video-modal-overlay" class="video-modal-overlay" onclick="closeVideoModal(event)">
+        <div class="video-modal" onclick="event.stopPropagation()">
+            <div class="video-modal-header">
+                <div class="video-modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Introduction to the Power Meter
+                </div>
+                <button class="video-modal-close" onclick="closeVideoModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="video-container">
+                <iframe id="vimeo-player" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================================================
+        // TEMPLATE CONFIGURATION
+        // =============================================================================
+        // This configuration object contains all practice-area-specific content.
+        // To create a new intake for a different practice area, copy this template
+        // and modify the values below. The rest of the code remains unchanged.
+        // =============================================================================
+
+        const TEMPLATE_CONFIG = {
+            // --- PRACTICE AREA IDENTIFIER ---
+            practiceArea: 'tax-litigation',
+
+            // --- FIRM BRANDING ---
+            branding: {
+                firmName: 'DAKESSIAN LAW',
+                firmNameShort: 'DL',  // Used for chat avatar
+                logoUrl: null,  // Optional: URL to logo image
+                contactUrl: 'https://www.dakessianlaw.com/contact-us/',
+                videoUrl: 'https://player.vimeo.com/video/947213867?h=ec7f0d82e6&autoplay=1&title=0&byline=0&portrait=0',
+                colors: {
+                    primaryDark: '#0c1f3f',
+                    primaryBlue: '#1a3a5c',
+                    accentGold: '#c9a962',
+                    accentGoldLight: '#e5d4a1'
+                }
+            },
+
+            // --- PAGE CONTENT ---
+            content: {
+                pageTitle: 'Tax Litigation Power Meter - Dakessian Law',
+                productName: 'Tax Litigation Power Meter',
+                headline: 'How Strong Is Your Case for California Tax Litigation?',
+                subheadline: 'Our AI-powered Tax Litigation Power Meter analyzes your situation through a conversational assessment, providing you with a comprehensive evaluation of your case\'s litigation potential.',
+                ctaButtonText: 'Start the Power Meter',
+                analysisTitle: 'Analyzing Your Case',
+                videoModalTitle: 'Introduction to the Power Meter',
+
+                // Progress steps (ordered)
+                progressSteps: [
+                    'Basic Information',
+                    'Nature of Dispute',
+                    'Financial Exposure',
+                    'Evidence Strength',
+                    'Procedural Posture',
+                    'Goals & Risk'
+                ],
+
+                // Loading screen stages
+                loadingStages: [
+                    {
+                        key: 'legal',
+                        label: 'Legal Strength Analysis',
+                        description: 'Evaluating merits and legal precedents',
+                        icon: 'M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3'
+                    },
+                    {
+                        key: 'procedural',
+                        label: 'Procedural Assessment',
+                        description: 'Reviewing case stage and posture',
+                        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'
+                    },
+                    {
+                        key: 'practical',
+                        label: 'Practical Litigability',
+                        description: 'Calculating cost-benefit factors',
+                        icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                    }
+                ],
+
+                // Results subscores
+                subscores: [
+                    {
+                        id: 'legal',
+                        title: 'Legal Strength',
+                        description: 'Evaluates the merits of your legal position based on applicable law and precedent.'
+                    },
+                    {
+                        id: 'procedural',
+                        title: 'Procedural Position',
+                        description: 'Assesses your case\'s stage in the administrative process and procedural advantages.'
+                    },
+                    {
+                        id: 'practical',
+                        title: 'Practical Litigability',
+                        description: 'Weighs financial exposure against litigation costs and potential recovery.'
+                    }
+                ],
+
+                // Score category thresholds and labels
+                scoreCategories: [
+                    { minScore: 70, label: 'Strong Litigation Potential' },
+                    { minScore: 40, label: 'Moderate Litigation Potential' },
+                    { minScore: 0, label: 'Limited Litigation Potential' }
+                ],
+
+                // Disclaimers
+                disclaimers: {
+                    landing: 'This tool provides a framework for understanding litigation potential and should not be construed as legal advice. Use in consultation with qualified counsel to make informed decisions about your tax litigation strategy.',
+                    chat: 'Your information is kept confidential. This tool uses AI to assist with your assessment and does not constitute legal advice or create an attorney-client relationship.',
+                    results: 'This assessment is provided for informational purposes only and does not constitute legal advice. The scores and analysis are generated based on the information you provided and general legal principles. Every case is unique, and you should consult with a qualified tax attorney for advice specific to your situation. Past results do not guarantee future outcomes.'
+                },
+
+                // Password protection (set to null to disable)
+                demoPassword: 'DPM2025',
+                passwordSubtitle: 'This demo is password protected.<br>Please enter the access code to continue.'
+            },
+
+            // --- INITIAL CONVERSATION MESSAGE ---
+            initialMessage: "I'd like to use the Tax Litigation Power Meter to assess my California tax case. Please guide me through the assessment.",
+
+            // --- BUTTON DETECTION PATTERNS ---
+            // These patterns map AI question keywords to button options
+            // Each pattern: { keywords: [...], options: [{label, value}, ...] }
+            buttonPatterns: [
+                {
+                    // Firm/Company vs Individual
+                    keywords: ['firm', 'company', 'individual', 'representing'],
+                    matchAll: ['firm', 'individual'],  // Must contain both
+                    options: [
+                        { label: "Yes, I represent a firm/company", value: "Yes, I represent a firm/company" },
+                        { label: "No, I'm acting individually", value: "No, I'm acting individually" }
+                    ]
+                },
+                {
+                    // Agency selection
+                    keywords: ['which california tax agency', 'which agency', 'what agency', 'dealing with'],
+                    options: [
+                        { label: "Franchise Tax Board (FTB)", value: "Franchise Tax Board (FTB)" },
+                        { label: "CA Dept of Tax and Fee Administration (CDTFA)", value: "CA Dept of Tax and Fee Administration (CDTFA)" },
+                        { label: "State Board of Equalization (BOE)", value: "State Board of Equalization (BOE)" },
+                        { label: "Employment Development Dept (EDD)", value: "Employment Development Dept (EDD)" },
+                        { label: "Local Tax Agency", value: "Local Tax Agency" }
+                    ]
+                },
+                {
+                    // Tax type
+                    keywords: ['type of tax', 'what tax'],
+                    options: [
+                        { label: "Sales/Use Tax", value: "Sales/Use Tax" },
+                        { label: "Franchise and Income Tax", value: "Franchise and Income Tax" },
+                        { label: "Payroll/Employment Tax", value: "Payroll/Employment Tax" },
+                        { label: "Property Tax", value: "Property Tax" },
+                        { label: "Excise/Gross Receipts Tax", value: "Excise/Gross Receipts Tax" }
+                    ]
+                },
+                {
+                    // Amount in dispute
+                    keywords: ['amount', 'how much', 'dollar amount', 'at stake', 'financial exposure'],
+                    matchAny: ['in dispute', 'how much', 'dollar amount', 'at stake', 'total amount', 'financial exposure'],
+                    options: [
+                        { label: "Under $1 million", value: "Under $1 million" },
+                        { label: "$1 – 2 million", value: "$1 – 2 million" },
+                        { label: "$2 – 5 million", value: "$2 – 5 million" },
+                        { label: "$5 – 7.5 million", value: "$5 – 7.5 million" },
+                        { label: "$7.5 – 10 million", value: "$7.5 – 10 million" },
+                        { label: "$10 – 25 million", value: "$10 – 25 million" },
+                        { label: "$25 – 50 million", value: "$25 – 50 million" },
+                        { label: "$50 – 75 million", value: "$50 – 75 million" },
+                        { label: "$75 – 100 million", value: "$75 – 100 million" },
+                        { label: "Over $100 million", value: "Over $100 million" }
+                    ]
+                },
+                {
+                    // Case stage
+                    keywords: ['stage', 'where is your case', 'current status'],
+                    options: [
+                        { label: "Audit", value: "Audit" },
+                        { label: "Protest/Petition", value: "Protest/Petition" },
+                        { label: "Administrative Appeal (OTA)", value: "Administrative Appeal (OTA)" },
+                        { label: "Litigation (Superior Court)", value: "Litigation (Superior Court)" }
+                    ]
+                },
+                {
+                    // Tax periods
+                    keywords: ['tax year', 'tax period', 'audit period', 'how many year'],
+                    options: [
+                        { label: "1", value: "1" },
+                        { label: "2 to 5", value: "2 to 5" },
+                        { label: "5 or more", value: "5 or more" }
+                    ]
+                },
+                {
+                    // Deficiency vs Refund
+                    keywords: ['deficiency or refund', 'refund or deficiency', 'type of case', 'procedural posture'],
+                    options: [
+                        { label: "Deficiency", value: "Deficiency" },
+                        { label: "Mix", value: "Mix" },
+                        { label: "Refund", value: "Refund" }
+                    ]
+                },
+                {
+                    // Legal strength (1-10)
+                    keywords: ['strength', 'legal position', 'merits', 'how strong', 'scale'],
+                    matchAny: ['legal', 'position', 'merits', 'how strong'],
+                    options: [
+                        { label: "1 (Weakest)", value: "1" },
+                        { label: "2", value: "2" },
+                        { label: "3", value: "3" },
+                        { label: "4", value: "4" },
+                        { label: "5", value: "5" },
+                        { label: "6", value: "6" },
+                        { label: "7", value: "7" },
+                        { label: "8", value: "8" },
+                        { label: "9", value: "9" },
+                        { label: "10 (Strongest)", value: "10" }
+                    ]
+                },
+                {
+                    // Complexity (1-10)
+                    keywords: ['complex', 'technical', 'explain to someone'],
+                    options: [
+                        { label: "1 (Simple)", value: "1" },
+                        { label: "2", value: "2" },
+                        { label: "3", value: "3" },
+                        { label: "4", value: "4" },
+                        { label: "5", value: "5" },
+                        { label: "6", value: "6" },
+                        { label: "7", value: "7" },
+                        { label: "8", value: "8" },
+                        { label: "9", value: "9" },
+                        { label: "10 (Very Complex)", value: "10" }
+                    ]
+                },
+                {
+                    // Factual vs Legal
+                    keywords: ['factual', 'legal'],
+                    matchAll: ['factual', 'legal'],
+                    options: [
+                        { label: "Mostly Factual Issues", value: "Mostly Factual Issues" },
+                        { label: "Mix of Factual and Legal", value: "Mix of Factual and Legal" },
+                        { label: "Mostly Legal Issues", value: "Mostly Legal Issues" }
+                    ]
+                },
+                {
+                    // Binary vs Multiple outcomes
+                    keywords: ['binary', 'win or lose', 'multiple outcome'],
+                    options: [
+                        { label: "Binary", value: "Binary" },
+                        { label: "Multiple", value: "Multiple" }
+                    ]
+                },
+                {
+                    // Remedy type
+                    keywords: ['remedy', 'type of action', 'seeking'],
+                    options: [
+                        { label: "Refund", value: "Refund" },
+                        { label: "Writ", value: "Writ" },
+                        { label: "Declaratory relief – residency", value: "Declaratory relief – residency" },
+                        { label: "Declaratory relief – other", value: "Declaratory relief – other" },
+                        { label: "Reg challenge", value: "Reg challenge" },
+                        { label: "Class/rep action", value: "Class/rep action" }
+                    ]
+                },
+                {
+                    // Yes/No - Taxpayer Bill of Rights
+                    keywords: ['unreasonable', 'egregious', 'taxpayer bill of rights'],
+                    options: [
+                        { label: "No", value: "No" },
+                        { label: "Yes", value: "Yes" }
+                    ]
+                },
+                {
+                    // Yes/No - Large impact
+                    keywords: ['large', 'impact', 'public impact', 'broader impact', 'affect other taxpayers', 'widespread'],
+                    matchAny: ['large', 'public impact', 'broader impact'],
+                    options: [
+                        { label: "No", value: "No" },
+                        { label: "Yes", value: "Yes" }
+                    ]
+                },
+                {
+                    // Likelihood percentage
+                    keywords: ['likelihood', 'chance of success', 'odds'],
+                    options: [
+                        { label: "25%", value: "25%" },
+                        { label: "50%", value: "50%" },
+                        { label: "75%", value: "75%" }
+                    ]
+                },
+                {
+                    // Risk-weighted value
+                    keywords: ['risk-weighted', 'risk weighted', 'considering the likelihood'],
+                    options: [
+                        { label: "Over $2 million", value: "Over $2 million" },
+                        { label: "$1-2 million", value: "$1-2 million" },
+                        { label: "Under $1 million", value: "Under $1 million" }
+                    ]
+                }
+            ],
+
+            // --- SYSTEM PROMPT ---
+            // The AI instructions that define the intake specialist role and question flow
+            systemPrompt: `You are an expert tax litigation intake specialist for Dakessian Law. Guide users through a California tax case assessment.
+
+CRITICAL RULES:
+1. Ask ONLY ONE question per response. Never ask two questions in the same message.
+2. Do NOT use markdown formatting like **bold** or *italic*. Write in plain text only.
+3. Wait for the user to answer before moving to the next question.
+4. BUTTON RESPONSES: Users select from on-screen buttons. Accept their selection and move on immediately.
+5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface generates buttons automatically. Just ask the question directly.
+6. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally. Use the actual terms they used (agency names, tax types, amounts) rather than generic placeholders.
+
+## Question Flow (strictly one question at a time, in this order):
+
+### Phase 1: Basic Information
+1. Ask for their name
+2. Ask if they represent a firm/company or are acting individually
+3. Ask for their email address
+
+### Phase 2: Case Details (after getting email)
+4. Ask which California tax agency is involved (FTB, CDTFA, BOE, EDD, or Local)
+5. Ask what type of tax is at issue
+6. Ask the total amount in dispute (including taxes, interest, penalties)
+7. Ask what stage their case is currently at (Audit, Protest/Petition, Administrative Appeal, or Litigation)
+8. Ask how many tax years or audit periods are at issue
+9. Ask if this is a deficiency case, refund claim, or mix
+
+### Phase 3: Case Strength Assessment
+10. Ask how they would rate the strength of their legal position (1-10 scale)
+11. Ask how complex the issue is to explain to a non-tax professional (1-10 scale)
+12. Ask if the case involves primarily factual issues, legal issues, or both
+13. Ask if the case has a binary outcome or multiple outcomes possible
+14. Ask what type of legal remedy they are seeking
+15. Ask if the agency's position is so unreasonable it could qualify as egregious under the Taxpayer Bill of Rights
+16. Ask if this case could have a large public impact affecting other taxpayers
+17. Ask what they estimate their likelihood of success to be
+18. Ask about the risk-weighted value of their case
+
+### After All Questions
+Call complete_assessment with calculated scores based on responses.
+
+## Response Style
+- Keep responses brief (1-2 sentences max before your ONE question)
+- Provide brief intelligent commentary relevant to California tax law after each answer
+- Be professional and reassuring
+- NEVER ask multiple questions per message
+
+## Help for Complex Questions
+Use show_question_help to add an info icon for technical questions. Call it BEFORE writing any text, and only for these questions:
+- Case stage → explain audit/protest/appeal stages
+- Deficiency vs refund → explain the difference
+- Legal position strength → factors to consider
+- Factual vs legal issues → explain the distinction
+- Binary vs multiple outcomes → what this means
+- Egregious position → what qualifies under Taxpayer Bill of Rights
+
+DO NOT use help for: name, email, agency, tax type, amount, tax years, complexity, remedy, or likelihood questions.
+
+## AI Reasoning Guidelines
+You are a sophisticated AI capable of natural conversation about California tax law. Use your judgment to:
+- Reference specific details the user provided (agency, tax type, amounts, case stage)
+- Provide contextually relevant commentary based on their situation
+- Acknowledge their responses with appropriate professional empathy
+- Adapt your language to match their level of sophistication (individual vs. firm representative)
+
+The button system requires certain question patterns to display options. When asking questions, naturally include relevant tax terminology while maintaining conversational flow. Trust your ability to have a natural conversation - you don't need explicit rules for every scenario.`,
+
+            // --- TOOLS DEFINITION ---
+            // The Claude tools schema for data collection
+            tools: [
+                {
+                    name: "collect_basic_info",
+                    description: "Collect basic contact information from the user",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            name: { type: "string", description: "User's name" },
+                            firm: { type: "string", description: "Firm or company name (optional)" },
+                            email: { type: "string", description: "Email address" }
+                        },
+                        required: ["name", "email"]
+                    }
+                },
+                {
+                    name: "collect_dispute_info",
+                    description: "Collect information about the nature of the tax dispute",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            agency: {
+                                type: "string",
+                                enum: ["FTB", "CDTFA", "BOE", "Local"],
+                                description: "Tax agency involved"
+                            },
+                            tax_type: {
+                                type: "string",
+                                description: "Type of tax (income, sales, property, etc.)"
+                            },
+                            issue_description: { type: "string", description: "Brief description of the dispute" }
+                        },
+                        required: ["agency", "tax_type"]
+                    }
+                },
+                {
+                    name: "collect_financial_info",
+                    description: "Collect financial exposure information",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            amount: { type: "number", description: "Total amount in dispute (USD)" },
+                            is_refund: { type: "boolean", description: "True if seeking refund, false if deficiency" },
+                            includes_penalties: { type: "boolean", description: "Whether amount includes penalties" }
+                        },
+                        required: ["amount", "is_refund"]
+                    }
+                },
+                {
+                    name: "collect_evidence_info",
+                    description: "Collect information about evidence strength",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            documentation_quality: {
+                                type: "string",
+                                enum: ["excellent", "good", "fair", "poor"],
+                                description: "Quality of supporting documentation"
+                            },
+                            witnesses_available: { type: "boolean", description: "Whether witnesses are available" },
+                            prior_audit_history: {
+                                type: "string",
+                                enum: ["favorable", "neutral", "unfavorable", "none"],
+                                description: "History of prior audits on this issue"
+                            }
+                        },
+                        required: ["documentation_quality"]
+                    }
+                },
+                {
+                    name: "collect_procedural_info",
+                    description: "Collect procedural posture information",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            current_stage: {
+                                type: "string",
+                                enum: ["audit", "protest", "admin_appeal", "litigation"],
+                                description: "Current stage in the process"
+                            },
+                            tax_periods: { type: "number", description: "Number of tax years or periods at issue" },
+                            deadline_concerns: { type: "boolean", description: "Whether there are statute of limitations concerns" }
+                        },
+                        required: ["current_stage", "tax_periods"]
+                    }
+                },
+                {
+                    name: "collect_goals_info",
+                    description: "Collect information about client goals and risk tolerance",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            primary_goal: {
+                                type: "string",
+                                enum: ["full_resolution", "reduction", "delay", "precedent"],
+                                description: "Primary objective"
+                            },
+                            risk_tolerance: {
+                                type: "string",
+                                enum: ["aggressive", "moderate", "conservative"],
+                                description: "Risk tolerance level"
+                            },
+                            budget_available: { type: "boolean", description: "Whether budget is available for litigation" },
+                            timeline_flexible: { type: "boolean", description: "Whether timeline is flexible" }
+                        },
+                        required: ["primary_goal", "risk_tolerance"]
+                    }
+                },
+                {
+                    name: "show_insight",
+                    description: "Display a contextual insight card to the user",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            title: { type: "string", description: "Short title for the insight" },
+                            content: { type: "string", description: "The insight content to display" }
+                        },
+                        required: ["title", "content"]
+                    }
+                },
+                {
+                    name: "show_video",
+                    description: "Display a video link or embed to provide additional context or explanation",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            title: { type: "string", description: "Title/description for the video" },
+                            url: { type: "string", description: "Video URL (YouTube, Vimeo, or direct link)" },
+                            embed: { type: "boolean", description: "Whether to embed the video (true) or show as link (false). Default false." }
+                        },
+                        required: ["title", "url"]
+                    }
+                },
+                {
+                    name: "show_question_help",
+                    description: "Provide additional guidance for complex questions that non-attorneys may need help understanding. Use this when asking about technical tax or legal concepts like case stage, deficiency vs refund, legal position strength, egregious positions, or risk-weighted value.",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            help_title: {
+                                type: "string",
+                                description: "Short title for the help popup (e.g., 'Understanding Case Stage')"
+                            },
+                            help_content: {
+                                type: "string",
+                                description: "Plain language explanation (2-4 sentences) to help non-attorneys understand the question and what to consider when answering"
+                            }
+                        },
+                        required: ["help_title", "help_content"]
+                    }
+                },
+                {
+                    name: "complete_assessment",
+                    description: "Complete the assessment and generate final scores. Call this when all information has been collected.",
+                    input_schema: {
+                        type: "object",
+                        properties: {
+                            legal_strength_score: {
+                                type: "number",
+                                minimum: 0,
+                                maximum: 100,
+                                description: "Legal strength score (0-100)"
+                            },
+                            procedural_score: {
+                                type: "number",
+                                minimum: 0,
+                                maximum: 100,
+                                description: "Procedural position score (0-100)"
+                            },
+                            practical_score: {
+                                type: "number",
+                                minimum: 0,
+                                maximum: 100,
+                                description: "Practical litigability score (0-100)"
+                            },
+                            legal_explanation: { type: "string", description: "Explanation for legal strength score" },
+                            procedural_explanation: { type: "string", description: "Explanation for procedural score" },
+                            practical_explanation: { type: "string", description: "Explanation for practical score" },
+                            key_factors: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        factor: { type: "string" },
+                                        impact: { type: "string", enum: ["positive", "negative", "neutral"] }
+                                    }
+                                },
+                                description: "List of key factors affecting the case"
+                            },
+                            recommendation: { type: "string", description: "Overall recommendation summary" }
+                        },
+                        required: ["legal_strength_score", "procedural_score", "practical_score", "key_factors", "recommendation"]
+                    }
+                }
+            ]
+        };
+
+        // =============================================================================
+        // API CONFIGURATION (shared across all templates)
+        // =============================================================================
+        // Proxy server deployed on Google Cloud Run
+        const PROXY_URL = 'https://dpm-proxy-312163687148.us-central1.run.app/api/chat';
+        const MODEL = 'claude-sonnet-4-20250514';
+        const DEMO_PASSWORD = TEMPLATE_CONFIG.content.demoPassword;
+
+        // Rate limit retry configuration
+        const MAX_RETRIES = 3;
+        const INITIAL_RETRY_DELAY = 5000; // 5 seconds
+
+        // Password check
+        function checkPassword(event) {
+            event.preventDefault();
+            const input = document.getElementById('password-input');
+            const error = document.getElementById('password-error');
+
+            if (input.value === DEMO_PASSWORD) {
+                sessionStorage.setItem('dpm_authenticated', 'true');
+                showScreen('landing-screen');
+                error.classList.remove('show');
+            } else {
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Check if already authenticated on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('dpm_authenticated') === 'true') {
+                showScreen('landing-screen');
+            }
+        });
+
+        // State
+        let conversationHistory = [];
+        let collectedData = {};
+        let currentStep = 1;
+        let isProcessing = false;
+        let apiCallDepth = 0;  // Track nested API calls
+        let currentHelpContent = null;
+
+        // Help modal functions
+        function showHelpModal(title, content) {
+            document.getElementById('help-modal-title-text').textContent = title;
+            document.getElementById('help-modal-content').textContent = content;
+            document.getElementById('help-modal-overlay').classList.add('active');
+        }
+
+        function closeHelpModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('help-modal-overlay').classList.remove('active');
+            }
+        }
+
+        // Video modal functions
+        function openVideoModal() {
+            document.getElementById('vimeo-player').src = TEMPLATE_CONFIG.branding.videoUrl;
+            document.getElementById('video-modal-overlay').classList.add('active');
+        }
+
+        function closeVideoModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('video-modal-overlay').classList.remove('active');
+                // Stop the video by clearing the src
+                document.getElementById('vimeo-player').src = '';
+            }
+        }
+
+        // Use template config for SYSTEM_PROMPT and TOOLS
+        const SYSTEM_PROMPT = TEMPLATE_CONFIG.systemPrompt;
+        const TOOLS = TEMPLATE_CONFIG.tools;
+
+        // Screen management
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Start assessment
+        function startAssessment() {
+            showScreen('chat-screen');
+            conversationHistory = [];
+            collectedData = {};
+            currentStep = 1;
+            isProcessing = false;
+            apiCallDepth = 0;
+            currentHelpContent = null;
+            updateProgressSteps();
+
+            // Send initial message - add to history first!
+            const initialMessage = { role: "user", content: TEMPLATE_CONFIG.initialMessage };
+            conversationHistory.push(initialMessage);
+            sendToAPI(conversationHistory);
+        }
+
+        // Update progress steps
+        function updateProgressSteps() {
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Parse markdown (convert **text** to <strong>text</strong>)
+        function parseMarkdown(text) {
+            // Convert **text** to <strong>text</strong>
+            return text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        }
+
+        // Detect question type and return appropriate button options
+        // Uses TEMPLATE_CONFIG.buttonPatterns for practice-area-specific buttons
+        function detectQuestionButtons(text) {
+            // Extract only the question portion (last sentence ending with "?")
+            // This prevents commentary keywords from triggering wrong buttons
+            const questionMatch = text.match(/[^.!?]*\?[^.!?]*/g);
+
+            // CRITICAL: Only show buttons if there's an actual question in the text
+            // If no question mark, this is just commentary - no buttons needed
+            if (!questionMatch || questionMatch.length === 0) {
+                return null;
+            }
+
+            // Use the last question in the message
+            const questionText = questionMatch[questionMatch.length - 1];
+            const lowerText = questionText.toLowerCase();
+
+            // Iterate through button patterns from template config
+            for (const pattern of TEMPLATE_CONFIG.buttonPatterns) {
+                // Check if pattern has matchAll requirement (all keywords must be present)
+                if (pattern.matchAll) {
+                    const allMatch = pattern.matchAll.every(kw => lowerText.includes(kw));
+                    if (allMatch) {
+                        return pattern.options;
+                    }
+                }
+
+                // Check if pattern has matchAny requirement (at least one keyword must be present)
+                if (pattern.matchAny) {
+                    const anyMatch = pattern.matchAny.some(kw => lowerText.includes(kw));
+                    if (anyMatch) {
+                        // Also check if at least one main keyword is present
+                        const hasKeyword = pattern.keywords.some(kw => lowerText.includes(kw));
+                        if (hasKeyword) {
+                            return pattern.options;
+                        }
+                    }
+                    continue;  // Skip to next pattern if matchAny was specified but not matched
+                }
+
+                // Default: check if any keyword matches (for simple patterns)
+                if (!pattern.matchAll && !pattern.matchAny) {
+                    const hasKeyword = pattern.keywords.some(kw => lowerText.includes(kw));
+                    if (hasKeyword) {
+                        return pattern.options;
+                    }
+                }
+            }
+
+            return null; // No buttons detected
+        }
+
+        // Add message to chat
+        function addMessage(content, role, isTyping = false) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            const avatarText = role === 'assistant' ? TEMPLATE_CONFIG.branding.firmNameShort : 'You';
+            if (isTyping) {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${avatarText}</div>
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                `;
+                messageDiv.id = 'typing-indicator';
+            } else {
+                // Parse markdown and tooltips for assistant messages
+                let displayContent = content;
+                if (role === 'assistant') {
+                    displayContent = parseMarkdown(displayContent);
+                    displayContent = parseTooltips(displayContent);
+                }
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${avatarText}</div>
+                    <div class="message-content">${displayContent}</div>
+                `;
+
+                // Auto-detect and add buttons for assistant messages
+                if (role === 'assistant') {
+                    const detectedButtons = detectQuestionButtons(content);
+                    if (detectedButtons) {
+                        // Hide text input when buttons are shown
+                        document.querySelector('.chat-input-area').style.display = 'none';
+
+                        // Capture help content before the timeout (it may be cleared)
+                        const helpContent = currentHelpContent;
+                        currentHelpContent = null;
+
+                        setTimeout(() => {
+                            const messageContent = messageDiv.querySelector('.message-content');
+                            if (messageContent) {
+                                const optionsDiv = document.createElement('div');
+                                optionsDiv.className = 'response-options';
+
+                                // Add info help button if help content was provided
+                                detectedButtons.forEach(option => {
+                                    const button = document.createElement('button');
+                                    button.className = 'response-button';
+                                    button.textContent = option.label;
+                                    button.onclick = () => selectOption(button, option.value);
+                                    optionsDiv.appendChild(button);
+                                });
+
+                                // Add info help button at the end (right side)
+                                if (helpContent) {
+                                    const infoBtn = document.createElement('button');
+                                    infoBtn.className = 'info-help-button';
+                                    infoBtn.title = 'Click for help understanding this question';
+                                    infoBtn.textContent = 'i';
+                                    infoBtn.onclick = (e) => {
+                                        e.stopPropagation();
+                                        showHelpModal(helpContent.title, helpContent.content);
+                                    };
+                                    optionsDiv.appendChild(infoBtn);
+                                }
+                                messageContent.appendChild(optionsDiv);
+
+                                // Smooth scroll to bottom after buttons are rendered
+                                setTimeout(() => {
+                                    messagesContainer.scrollTo({
+                                        top: messagesContainer.scrollHeight,
+                                        behavior: 'smooth'
+                                    });
+                                }, 50);
+                            }
+                        }, 100);
+                    } else {
+                        // Show text input when no buttons (e.g., for results or custom input)
+                        document.querySelector('.chat-input-area').style.display = 'block';
+                    }
+                }
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            // Smooth scroll to bottom
+            messagesContainer.scrollTo({
+                top: messagesContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+            return messageDiv;
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        // Update typing indicator with a custom message (for rate limit retries)
+        function updateTypingMessage(message) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.innerHTML = `<span style="color: var(--accent-gold);">${message}</span>`;
+            }
+        }
+
+        // Add insight card
+        function addInsightCard(title, content) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const lastMessage = messagesContainer.querySelector('.message.assistant:last-of-type .message-content');
+            if (lastMessage) {
+                const insightDiv = document.createElement('div');
+                insightDiv.className = 'insight-card';
+                insightDiv.innerHTML = `
+                    <div class="insight-card-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        ${title}
+                    </div>
+                    <div class="insight-card-content">${parseTooltips(content)}</div>
+                `;
+                lastMessage.appendChild(insightDiv);
+            }
+        }
+
+        // Handle option button click
+        function selectOption(button, value) {
+            // Prevent rapid clicks while processing
+            if (isProcessing) {
+                return;
+            }
+
+            // Mark button as selected
+            button.classList.add('selected');
+
+            // Disable ALL response buttons on the page, not just this group
+            document.querySelectorAll('.response-button').forEach(btn => {
+                btn.disabled = true;
+                if (btn !== button) {
+                    btn.style.opacity = '0.4';
+                }
+            });
+
+            // Also disable info help buttons
+            document.querySelectorAll('.info-help-button').forEach(btn => {
+                btn.disabled = true;
+            });
+
+            // Send as user message
+            addMessage(value, 'user');
+            conversationHistory.push({ role: "user", content: value });
+            sendToAPI(conversationHistory);
+        }
+
+        // Add video link or embed
+        function addVideoLink(title, url, embed = false) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const lastMessage = messagesContainer.querySelector('.message.assistant:last-of-type .message-content');
+            if (lastMessage) {
+                if (embed && (url.includes('youtube.com') || url.includes('youtu.be'))) {
+                    // Extract YouTube video ID and embed
+                    const videoId = extractYouTubeId(url);
+                    if (videoId) {
+                        const videoDiv = document.createElement('div');
+                        videoDiv.className = 'video-embed';
+                        videoDiv.innerHTML = `
+                            <iframe src="https://www.youtube.com/embed/${videoId}"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        `;
+                        lastMessage.appendChild(videoDiv);
+                        return;
+                    }
+                }
+
+                // Show as link
+                const linkDiv = document.createElement('a');
+                linkDiv.className = 'video-link';
+                linkDiv.href = url;
+                linkDiv.target = '_blank';
+                linkDiv.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    ${title}
+                `;
+                lastMessage.appendChild(linkDiv);
+            }
+        }
+
+        // Extract YouTube video ID from URL
+        function extractYouTubeId(url) {
+            const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+            return match ? match[1] : null;
+        }
+
+        // Parse tooltip syntax: [[term||explanation]]
+        function parseTooltips(text) {
+            return text.replace(/\[\[([^\|]+)\|\|([^\]]+)\]\]/g, (match, term, explanation) => {
+                return `<span class="tooltip-trigger">${term}<span class="tooltip-content">${explanation}</span></span>`;
+            });
+        }
+
+        // Handle user input
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            if (!message || isProcessing) return;
+
+            input.value = '';
+            addMessage(message, 'user');
+
+            conversationHistory.push({ role: "user", content: message });
+            sendToAPI(conversationHistory);
+        }
+
+        // Send to API with automatic retry for rate limit errors
+        async function sendToAPI(messages, retryCount = 0) {
+            apiCallDepth++;
+            isProcessing = true;
+            document.getElementById('send-button').disabled = true;
+
+            // Show typing indicator while waiting for response
+            // Only on first attempt (not retries), and only if not already showing
+            if (retryCount === 0 && !document.getElementById('typing-indicator')) {
+                addMessage('', 'assistant', true);
+            }
+
+            try {
+                const response = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: MODEL,
+                        max_tokens: 4096,
+                        system: SYSTEM_PROMPT,
+                        tools: TOOLS,
+                        messages: messages
+                    })
+                });
+
+                // Handle rate limit (429) with automatic retry
+                if (response.status === 429 && retryCount < MAX_RETRIES) {
+                    const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount);
+                    const seconds = Math.ceil(delay / 1000);
+
+                    // Update typing indicator with wait message
+                    updateTypingMessage(`High demand - waiting ${seconds}s before retrying...`);
+
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return sendToAPI(messages, retryCount + 1);
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Anthropic API error response:', errorData);
+                    const errorMessage = errorData.error?.message || JSON.stringify(errorData);
+                    throw new Error(`API error ${response.status}: ${errorMessage}`);
+                }
+
+                const data = await response.json();
+                removeTypingIndicator();
+
+                await processResponse(data);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                console.error('Conversation history:', JSON.stringify(conversationHistory, null, 2));
+                removeTypingIndicator();
+                addMessage(`I apologize, but I encountered an error: ${error.message}. Please refresh and try again.`, 'assistant');
+            } finally {
+                apiCallDepth--;
+                // Only reset processing state when all nested calls complete
+                if (apiCallDepth === 0) {
+                    isProcessing = false;
+                    document.getElementById('send-button').disabled = false;
+                }
+            }
+        }
+
+        // Process API response
+        async function processResponse(data) {
+            let textContent = '';
+            let toolUses = [];
+
+            for (const block of data.content) {
+                if (block.type === 'text' && block.text) {
+                    textContent += block.text;
+                } else if (block.type === 'tool_use') {
+                    toolUses.push(block);
+                }
+            }
+
+            // Process tool uses FIRST (before displaying text) so that
+            // show_question_help sets currentHelpContent before addMessage captures it
+            const toolResults = [];
+            if (toolUses.length > 0) {
+                for (const tool of toolUses) {
+                    const result = processToolUse(tool);
+                    // Ensure result is never empty
+                    const safeResult = result || "Acknowledged";
+                    toolResults.push({
+                        type: "tool_result",
+                        tool_use_id: tool.id,
+                        content: safeResult
+                    });
+                }
+            }
+
+            // Display text response if any (now currentHelpContent is set)
+            if (textContent) {
+                addMessage(textContent, 'assistant');
+            }
+
+            // Filter out empty text blocks from content before adding to history
+            const filteredContent = data.content.filter(block => {
+                if (block.type === 'text') {
+                    return block.text && block.text.trim().length > 0;
+                }
+                return true; // Keep tool_use blocks
+            });
+
+            // Only add assistant response if there's actual content
+            if (filteredContent.length > 0) {
+                conversationHistory.push({ role: "assistant", content: filteredContent });
+            }
+
+            // Handle tool results
+            if (toolUses.length > 0) {
+                // If there's a complete_assessment, don't continue the conversation
+                const hasComplete = toolUses.some(t => t.name === 'complete_assessment');
+                if (hasComplete) {
+                    return;
+                }
+
+                // Continue conversation with tool results (only if we have results)
+                if (toolResults.length > 0) {
+                    conversationHistory.push({ role: "user", content: toolResults });
+                    await sendToAPI(conversationHistory);
+                }
+            }
+        }
+
+        // Process tool use
+        function processToolUse(tool) {
+            const { name, input } = tool;
+
+            switch (name) {
+                case 'collect_basic_info':
+                    collectedData.basic = input;
+                    if (currentStep === 1) { currentStep = 2; updateProgressSteps(); }
+                    return "Basic information collected successfully.";
+
+                case 'collect_dispute_info':
+                    collectedData.dispute = input;
+                    if (currentStep <= 2) { currentStep = 3; updateProgressSteps(); }
+                    return "Dispute information collected successfully.";
+
+                case 'collect_financial_info':
+                    collectedData.financial = input;
+                    if (currentStep <= 3) { currentStep = 4; updateProgressSteps(); }
+                    return "Financial information collected successfully.";
+
+                case 'collect_evidence_info':
+                    collectedData.evidence = input;
+                    if (currentStep <= 4) { currentStep = 5; updateProgressSteps(); }
+                    return "Evidence information collected successfully.";
+
+                case 'collect_procedural_info':
+                    collectedData.procedural = input;
+                    if (currentStep <= 5) { currentStep = 6; updateProgressSteps(); }
+                    return "Procedural information collected successfully.";
+
+                case 'collect_goals_info':
+                    collectedData.goals = input;
+                    currentStep = 7;
+                    updateProgressSteps();
+                    return "Goals information collected successfully.";
+
+                case 'show_insight':
+                    setTimeout(() => addInsightCard(input.title, input.content), 100);
+                    return "Insight displayed to user.";
+
+                case 'show_video':
+                    setTimeout(() => addVideoLink(input.title, input.url, input.embed), 100);
+                    return "Video displayed to user.";
+
+                case 'show_question_help':
+                    currentHelpContent = {
+                        title: input.help_title,
+                        content: input.help_content
+                    };
+                    return "Help content stored. Will display info icon with response buttons.";
+
+                case 'complete_assessment':
+                    collectedData.assessment = input;
+                    showLoadingScreen(input);
+                    return "Assessment complete.";
+
+                default:
+                    return "Tool not recognized.";
+            }
+        }
+
+        // Show loading screen and then results
+        function showLoadingScreen(assessment) {
+            showScreen('loading-screen');
+
+            const stages = ['legal', 'procedural', 'practical'];
+            let currentStage = 0;
+            let progress = 0;
+
+            const progressBar = document.getElementById('loading-progress-bar');
+
+            const stageInterval = setInterval(() => {
+                if (currentStage > 0) {
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage-1]}"]`).classList.remove('active');
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage-1]}"]`).classList.add('complete');
+                }
+
+                if (currentStage < stages.length) {
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage]}"]`).classList.add('active');
+                    currentStage++;
+                }
+            }, 1000);
+
+            const progressInterval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    clearInterval(stageInterval);
+                    setTimeout(() => showResults(assessment), 500);
+                }
+            }, 60);
+        }
+
+        // Show results
+        function showResults(assessment) {
+            showScreen('results-screen');
+
+            // Safely get scores with defaults
+            const legalScore = Number(assessment.legal_strength_score) || 0;
+            const proceduralScore = Number(assessment.procedural_score) || 0;
+            const practicalScore = Number(assessment.practical_score) || 0;
+
+            const totalScore = Math.round(
+                (legalScore * 0.4) +
+                (proceduralScore * 0.3) +
+                (practicalScore * 0.3)
+            );
+
+            // Immediately set the score (don't rely only on animation)
+            const gaugeScoreEl = document.getElementById('gauge-score');
+            if (gaugeScoreEl) {
+                gaugeScoreEl.textContent = '0';
+            }
+
+            // Animate gauge needle and arc
+            setTimeout(() => {
+                const needle = document.getElementById('gauge-needle');
+                const gaugeBackground = document.querySelector('.gauge-background');
+
+                // Needle rotation: -90deg (left) to +90deg (right)
+                const rotation = -90 + (totalScore / 100) * 180;
+                needle.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
+
+                // Arc fills from left to right to match needle
+                // Using 270deg start point (9 o'clock / left side)
+                // Score 0 = no fill, Score 100 = fills 180deg to right side
+                const arcDegrees = (totalScore / 100) * 180;
+                gaugeBackground.style.background = `conic-gradient(
+                    from 270deg,
+                    var(--danger) 0deg,
+                    var(--warning) ${Math.min(arcDegrees, 60)}deg,
+                    var(--success) ${Math.min(arcDegrees, 120)}deg,
+                    var(--success) ${arcDegrees}deg,
+                    transparent ${arcDegrees}deg,
+                    transparent 360deg
+                )`;
+            }, 100);
+
+            // Animate score counter with fallback
+            if (gaugeScoreEl && !isNaN(totalScore)) {
+                animateCounter('gauge-score', 0, totalScore, 1500);
+            } else if (gaugeScoreEl) {
+                gaugeScoreEl.textContent = totalScore || '0';
+            }
+
+            // Set category using template config thresholds
+            let category = TEMPLATE_CONFIG.content.scoreCategories[TEMPLATE_CONFIG.content.scoreCategories.length - 1].label;
+            for (const cat of TEMPLATE_CONFIG.content.scoreCategories) {
+                if (totalScore >= cat.minScore) {
+                    category = cat.label;
+                    break;
+                }
+            }
+
+            setTimeout(() => {
+                document.getElementById('score-category').textContent = category;
+            }, 1500);
+
+            // Animate subscores
+            setTimeout(() => {
+                animateCounter('legal-score', 0, assessment.legal_strength_score, 1000);
+                document.getElementById('legal-bar').style.width = `${assessment.legal_strength_score}%`;
+                if (assessment.legal_explanation) {
+                    document.getElementById('legal-description').textContent = assessment.legal_explanation;
+                }
+            }, 500);
+
+            setTimeout(() => {
+                animateCounter('procedural-score', 0, assessment.procedural_score, 1000);
+                document.getElementById('procedural-bar').style.width = `${assessment.procedural_score}%`;
+                if (assessment.procedural_explanation) {
+                    document.getElementById('procedural-description').textContent = assessment.procedural_explanation;
+                }
+            }, 800);
+
+            setTimeout(() => {
+                animateCounter('practical-score', 0, assessment.practical_score, 1000);
+                document.getElementById('practical-bar').style.width = `${assessment.practical_score}%`;
+                if (assessment.practical_explanation) {
+                    document.getElementById('practical-description').textContent = assessment.practical_explanation;
+                }
+            }, 1100);
+
+            // Add factors
+            const factorsList = document.getElementById('factors-list');
+            factorsList.innerHTML = '';
+
+            if (assessment.key_factors) {
+                assessment.key_factors.forEach((factor, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.className = 'factor-item';
+                        const iconClass = factor.impact === 'positive' ? 'positive' :
+                                         factor.impact === 'negative' ? 'negative' : 'neutral';
+                        const iconPath = factor.impact === 'positive' ? 'M5 13l4 4L19 7' :
+                                        factor.impact === 'negative' ? 'M6 18L18 6M6 6l12 12' :
+                                        'M20 12H4';
+                        li.innerHTML = `
+                            <svg class="factor-icon ${iconClass}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}" />
+                            </svg>
+                            <span class="factor-text">${factor.factor}</span>
+                        `;
+                        factorsList.appendChild(li);
+                    }, 1400 + (index * 150));
+                });
+            }
+        }
+
+        // Animate counter
+        function animateCounter(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            const range = end - start;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + (range * easeProgress));
+                element.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Download report (placeholder)
+        function downloadReport() {
+            alert('Report download feature coming soon! For now, please take a screenshot or schedule a consultation to receive a detailed analysis.');
+        }
+
+        // Start over
+        function startOver() {
+            showScreen('landing-screen');
+            document.getElementById('chat-messages').innerHTML = '';
+            conversationHistory = [];
+            collectedData = {};
+            currentStep = 1;
+            isProcessing = false;
+            apiCallDepth = 0;
+            currentHelpContent = null;
+            updateProgressSteps();
+
+            // Reset loading screen stages for next use
+            document.querySelectorAll('.loading-stage').forEach(stage => {
+                stage.classList.remove('active', 'complete');
+            });
+            document.getElementById('loading-progress-bar').style.width = '0%';
+        }
+
+        // =============================================================================
+        // TEMPLATE INITIALIZATION
+        // =============================================================================
+        // This function populates all HTML elements from the TEMPLATE_CONFIG object.
+        // It runs automatically when the page loads.
+        // =============================================================================
+
+        function initializeTemplate() {
+            const config = TEMPLATE_CONFIG;
+
+            // --- Update page title ---
+            document.title = config.content.pageTitle;
+
+            // --- Update CSS custom properties from branding colors ---
+            const root = document.documentElement;
+            if (config.branding.colors) {
+                root.style.setProperty('--primary-dark', config.branding.colors.primaryDark);
+                root.style.setProperty('--primary-blue', config.branding.colors.primaryBlue);
+                root.style.setProperty('--accent-gold', config.branding.colors.accentGold);
+                root.style.setProperty('--accent-gold-light', config.branding.colors.accentGoldLight);
+            }
+
+            // --- Password Screen ---
+            const passwordLogo = document.querySelector('.password-logo');
+            if (passwordLogo) passwordLogo.textContent = config.branding.firmName;
+
+            const passwordTitle = document.querySelector('.password-title');
+            if (passwordTitle) passwordTitle.textContent = config.content.productName;
+
+            // --- Landing Screen ---
+            const logoText = document.querySelector('.logo-text');
+            if (logoText) logoText.textContent = config.branding.firmName;
+
+            const landingHeadline = document.querySelector('.landing-headline');
+            if (landingHeadline) landingHeadline.textContent = config.content.headline;
+
+            const landingSubheadline = document.querySelector('.landing-subheadline');
+            if (landingSubheadline) landingSubheadline.textContent = config.content.subheadline;
+
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                // Preserve the arrow SVG, just update the text
+                const svg = ctaButton.querySelector('svg');
+                ctaButton.textContent = config.content.ctaButtonText + ' ';
+                if (svg) ctaButton.appendChild(svg);
+            }
+
+            const landingDisclaimer = document.querySelector('#landing-screen .disclaimer');
+            if (landingDisclaimer) landingDisclaimer.textContent = config.content.disclaimers.landing;
+
+            // --- Chat Screen ---
+            const chatHeaderLogo = document.querySelector('.chat-header-logo');
+            if (chatHeaderLogo) chatHeaderLogo.textContent = config.branding.firmName;
+
+            const chatHeaderProduct = document.querySelector('.chat-header > div:last-child');
+            if (chatHeaderProduct) chatHeaderProduct.textContent = config.content.productName;
+
+            const chatDisclaimer = document.querySelector('.chat-confidentiality-notice');
+            if (chatDisclaimer) chatDisclaimer.textContent = config.content.disclaimers.chat;
+
+            // --- Progress Steps (dynamically generate) ---
+            const progressStepsContainer = document.querySelector('.progress-steps');
+            if (progressStepsContainer && config.content.progressSteps) {
+                // Save the video link before clearing
+                const videoLink = progressStepsContainer.querySelector('.video-intro-link');
+                progressStepsContainer.innerHTML = '';
+
+                config.content.progressSteps.forEach((stepText, index) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'progress-step' + (index === 0 ? ' active' : '');
+                    stepDiv.setAttribute('data-step', index + 1);
+                    stepDiv.innerHTML = `
+                        <div class="step-indicator">
+                            ${index + 1}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="step-text">${stepText}</span>
+                    `;
+                    progressStepsContainer.appendChild(stepDiv);
+                });
+
+                // Re-add video link if it exists
+                if (videoLink) progressStepsContainer.appendChild(videoLink);
+            }
+
+            // --- Loading Screen Title ---
+            const loadingTitle = document.querySelector('.loading-title');
+            if (loadingTitle && config.content.analysisTitle) {
+                loadingTitle.textContent = config.content.analysisTitle;
+            }
+
+            // --- Loading Screen Stages (dynamically generate) ---
+            const loadingStagesContainer = document.querySelector('.loading-stages');
+            if (loadingStagesContainer && config.content.loadingStages) {
+                loadingStagesContainer.innerHTML = '';
+
+                config.content.loadingStages.forEach(stage => {
+                    const stageDiv = document.createElement('div');
+                    stageDiv.className = 'loading-stage';
+                    stageDiv.setAttribute('data-stage', stage.key);
+                    stageDiv.innerHTML = `
+                        <div class="loading-stage-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${stage.icon || 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'}" />
+                            </svg>
+                        </div>
+                        <div class="loading-stage-text">
+                            <h4>${stage.label}</h4>
+                            <p>${stage.description || ''}</p>
+                        </div>
+                    `;
+                    loadingStagesContainer.appendChild(stageDiv);
+                });
+            }
+
+            // --- Results Screen ---
+            const resultsLogo = document.querySelector('.results-logo');
+            if (resultsLogo) resultsLogo.textContent = config.branding.firmName;
+
+            const resultsSubtitle = document.querySelector('.results-subtitle');
+            if (resultsSubtitle) resultsSubtitle.textContent = config.content.productName + ' Analysis';
+
+            const resultsDisclaimer = document.querySelector('.results-disclaimer');
+            if (resultsDisclaimer) resultsDisclaimer.textContent = config.content.disclaimers.results;
+
+            // --- Consultation Link ---
+            const consultationLink = document.querySelector('.action-button.primary');
+            if (consultationLink && config.branding.contactUrl) {
+                consultationLink.href = config.branding.contactUrl;
+            }
+
+            // --- Subscores (dynamically generate) ---
+            const subscoresContainer = document.querySelector('.subscores');
+            if (subscoresContainer && config.content.subscores) {
+                subscoresContainer.innerHTML = '';
+
+                config.content.subscores.forEach(subscore => {
+                    const card = document.createElement('div');
+                    card.className = 'subscore-card';
+                    card.innerHTML = `
+                        <div class="subscore-header">
+                            <span class="subscore-title">${subscore.title}</span>
+                            <span id="${subscore.id}-score" class="subscore-value">0</span>
+                        </div>
+                        <div class="subscore-bar">
+                            <div id="${subscore.id}-bar" class="subscore-bar-fill"></div>
+                        </div>
+                        <p id="${subscore.id}-description" class="subscore-description">${subscore.description}</p>
+                    `;
+                    subscoresContainer.appendChild(card);
+                });
+            }
+
+            // --- Video Modal Title ---
+            const videoModalTitle = document.querySelector('.video-modal-title');
+            if (videoModalTitle && config.content.videoModalTitle) {
+                // Preserve the SVG icon, just update the text
+                const svg = videoModalTitle.querySelector('svg');
+                videoModalTitle.textContent = '';
+                if (svg) videoModalTitle.appendChild(svg);
+                videoModalTitle.appendChild(document.createTextNode(' ' + config.content.videoModalTitle));
+            }
+        }
+
+        // Initialize template when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeTemplate);
+    </script>
+</body>
+</html>
