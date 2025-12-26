@@ -201,6 +201,21 @@ const {
 } = require('./script-generator-functions');
 
 // ==============================
+// Import PreIntake Functions
+// ==============================
+const {
+  submitDemoRequest,
+} = require('./preintake-functions');
+
+const {
+  analyzePreIntakeLead,
+} = require('./preintake-analysis-functions');
+
+const {
+  generatePreIntakeDemo,
+} = require('./demo-generator-functions');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -316,6 +331,11 @@ module.exports = {
 
   // ========== SCRIPT GENERATOR FUNCTIONS ==========
   generateRecruitingScript,
+
+  // ========== PREINTAKE FUNCTIONS ==========
+  submitDemoRequest,
+  analyzePreIntakeLead,
+  generatePreIntakeDemo,
 };
 
 // ==============================

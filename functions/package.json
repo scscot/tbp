@@ -25,6 +25,7 @@
     "@sendgrid/mail": "^8.1.5",
     "app-store-server-api": "^0.17.1",
     "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "express-rate-limit": "^8.1.0",
     "firebase-admin": "^13.5.0",

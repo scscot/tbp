@@ -495,15 +495,275 @@
             margin-top: 0.5rem;
         }
 
-        .demo-submit:hover {
+        .demo-submit:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: var(--shadow-glow);
+        }
+
+        .demo-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .demo-submit.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .demo-submit.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid var(--primary-dark);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .demo-note {
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 1rem;
+        }
+
+        /* Success State */
+        .demo-success {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .demo-success-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .demo-success-icon svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .demo-success h3 {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-success p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .demo-success .check-email {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        /* Error State */
+        .form-error {
+            background: rgba(245, 101, 101, 0.2);
+            border: 1px solid var(--danger);
+            color: #feb2b2;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        /* Practice Area Selector */
+        .practice-selector {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .practice-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .practice-selector-title {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .practice-total {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .practice-total.valid {
+            background: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+        }
+
+        .practice-total.invalid {
+            background: rgba(245, 101, 101, 0.2);
+            color: var(--danger);
+        }
+
+        .practice-total.zero {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .practice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 500px) {
+            .practice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .practice-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .practice-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .practice-row.active {
+            background: rgba(201, 169, 98, 0.15);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+        }
+
+        .practice-row.primary {
+            background: rgba(201, 169, 98, 0.25);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .practice-row.primary::after {
+            content: '★';
+            color: var(--accent-gold);
+            margin-left: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .practice-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .practice-label span {
+            font-size: 1rem;
+        }
+
+        .practice-select {
+            width: 70px;
+            padding: 0.35rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .practice-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .practice-select option {
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+
+        .practice-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+
+        /* Other practice area with text input */
+        .practice-row-other {
+            grid-column: 1 / -1;
+        }
+
+        .practice-other-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .practice-other-icon {
+            font-size: 1rem;
+        }
+
+        .practice-other-input {
+            flex: 1;
+            padding: 0.35rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            max-width: 200px;
+        }
+
+        .practice-other-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .practice-other-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .practice-other-input.required {
+            border-color: var(--danger);
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         /* Footer */
@@ -780,8 +1040,9 @@
         <div class="container">
             <h2>See Your AI Intake in 60 Seconds</h2>
             <p>Enter your firm's website. We'll analyze your practice areas, brand colors, and current intake—then generate a working demo.</p>
-            <div class="demo-form-container">
-                <form class="demo-form" action="#" method="POST">
+            <div class="demo-form-container" id="demo-form-container">
+                <form class="demo-form" id="demo-form">
+                    <div class="form-error" id="form-error"></div>
                     <div class="form-group">
                         <label for="name">Your Name</label>
                         <input type="text" id="name" name="name" placeholder="Jane Smith" required>
@@ -794,9 +1055,322 @@
                         <label for="website">Firm Website</label>
                         <input type="url" id="website" name="website" placeholder="https://smithlaw.com" required>
                     </div>
-                    <button type="submit" class="demo-submit">Create My Demo</button>
+
+                    <!-- Practice Area Breakdown -->
+                    <div class="practice-selector">
+                        <div class="practice-selector-header">
+                            <span class="practice-selector-title">Practice Area Breakdown</span>
+                            <span class="practice-total zero" id="practice-total">0%</span>
+                        </div>
+                        <div class="practice-grid" id="practice-grid">
+                            <div class="practice-row" data-area="personal_injury">
+                                <label class="practice-label"><span>🚗</span> Personal Injury</label>
+                                <select class="practice-select" name="practice_personal_injury">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="immigration">
+                                <label class="practice-label"><span>🌎</span> Immigration</label>
+                                <select class="practice-select" name="practice_immigration">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="family_law">
+                                <label class="practice-label"><span>👨‍👩‍👧</span> Family Law</label>
+                                <select class="practice-select" name="practice_family_law">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="bankruptcy">
+                                <label class="practice-label"><span>💳</span> Bankruptcy</label>
+                                <select class="practice-select" name="practice_bankruptcy">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="criminal_defense">
+                                <label class="practice-label"><span>⚖️</span> Criminal Defense</label>
+                                <select class="practice-select" name="practice_criminal_defense">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="tax">
+                                <label class="practice-label"><span>📊</span> Tax / IRS</label>
+                                <select class="practice-select" name="practice_tax">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="estate_planning">
+                                <label class="practice-label"><span>📜</span> Estate Planning</label>
+                                <select class="practice-select" name="practice_estate_planning">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="employment">
+                                <label class="practice-label"><span>💼</span> Employment Law</label>
+                                <select class="practice-select" name="practice_employment">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="workers_comp">
+                                <label class="practice-label"><span>🏗️</span> Workers' Comp</label>
+                                <select class="practice-select" name="practice_workers_comp">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row" data-area="real_estate">
+                                <label class="practice-label"><span>🏠</span> Real Estate</label>
+                                <select class="practice-select" name="practice_real_estate">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                            <div class="practice-row practice-row-other" data-area="other">
+                                <div class="practice-other-input-wrapper">
+                                    <span class="practice-other-icon">📁</span>
+                                    <input type="text" class="practice-other-input" id="other-practice-name" placeholder="Other (specify)" maxlength="50">
+                                </div>
+                                <select class="practice-select" name="practice_other">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="15">15%</option>
+                                    <option value="20">20%</option>
+                                    <option value="25">25%</option>
+                                    <option value="30">30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="45">45%</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="practice-note">★ indicates your primary practice area (highest %)</p>
+                    </div>
+
+                    <button type="submit" class="demo-submit" id="submit-btn">Create My Demo</button>
                 </form>
                 <p class="demo-note">Instant analysis of your firm. Customized demo delivered to your inbox in under a minute.</p>
+            </div>
+
+            <!-- Success state (hidden by default) -->
+            <div class="demo-form-container demo-success" id="demo-success" style="display: none;">
+                <div class="demo-success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h3>Demo Request Received</h3>
+                <p>We're analyzing your website now.</p>
+                <p class="check-email">Check your inbox in under a minute.</p>
             </div>
         </div>
     </section>
@@ -805,10 +1379,213 @@
     <footer>
         <div class="footer-links">
             <a href="preintake.md">Documentation</a>
-            <a href="mailto:stephen@teambuildpro.com">Contact</a>
+            <a href="mailto:support@preintake.ai">Contact</a>
         </div>
         <p>&copy; 2025 PreIntake.ai. All rights reserved.</p>
         <p style="margin-top: 0.5rem; font-size: 0.8rem;">Built by <a href="https://stephenscott.us">Stephen Scott</a></p>
     </footer>
+
+    <script>
+        // Firebase Function endpoint
+        const SUBMIT_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/submitDemoRequest';
+
+        // Practice area name mapping
+        const PRACTICE_AREA_NAMES = {
+            personal_injury: 'Personal Injury',
+            immigration: 'Immigration',
+            family_law: 'Family Law',
+            bankruptcy: 'Bankruptcy',
+            criminal_defense: 'Criminal Defense',
+            tax: 'Tax',
+            estate_planning: 'Estate Planning',
+            employment: 'Employment Law',
+            workers_comp: 'Workers\' Compensation',
+            real_estate: 'Real Estate',
+            other: 'Other'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('demo-form');
+            const formContainer = document.getElementById('demo-form-container');
+            const successContainer = document.getElementById('demo-success');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorDiv = document.getElementById('form-error');
+            const practiceSelects = document.querySelectorAll('.practice-select');
+            const practiceTotalEl = document.getElementById('practice-total');
+            const practiceRows = document.querySelectorAll('.practice-row');
+
+            // Update practice area totals and highlighting
+            function updatePracticeAreas() {
+                let total = 0;
+                let maxValue = 0;
+                let maxArea = null;
+
+                // Calculate total and find primary
+                practiceRows.forEach(row => {
+                    const select = row.querySelector('.practice-select');
+                    const value = parseInt(select.value) || 0;
+                    total += value;
+
+                    // Track highest percentage for primary
+                    if (value > maxValue) {
+                        maxValue = value;
+                        maxArea = row;
+                    }
+
+                    // Update row styling
+                    row.classList.remove('active', 'primary');
+                    if (value > 0) {
+                        row.classList.add('active');
+                    }
+                });
+
+                // Mark primary (highest %)
+                if (maxArea && maxValue > 0) {
+                    maxArea.classList.add('primary');
+                }
+
+                // Update total display
+                practiceTotalEl.textContent = total + '%';
+                practiceTotalEl.classList.remove('valid', 'invalid', 'zero');
+                if (total === 0) {
+                    practiceTotalEl.classList.add('zero');
+                } else if (total === 100) {
+                    practiceTotalEl.classList.add('valid');
+                } else {
+                    practiceTotalEl.classList.add('invalid');
+                }
+
+                return { total, maxValue, maxArea };
+            }
+
+            // Get practice areas data for submission
+            function getPracticeAreasData() {
+                const practiceAreas = {};
+                let primaryArea = null;
+                let maxValue = 0;
+                const otherNameInput = document.getElementById('other-practice-name');
+                const otherName = otherNameInput ? otherNameInput.value.trim() : '';
+
+                practiceRows.forEach(row => {
+                    const area = row.dataset.area;
+                    const select = row.querySelector('.practice-select');
+                    const value = parseInt(select.value) || 0;
+
+                    if (value > 0) {
+                        practiceAreas[area] = value;
+                        if (value > maxValue) {
+                            maxValue = value;
+                            primaryArea = area;
+                        }
+                    }
+                });
+
+                // Determine primary area name, using custom name for "other"
+                let primaryAreaName = null;
+                if (primaryArea) {
+                    if (primaryArea === 'other' && otherName) {
+                        primaryAreaName = otherName;
+                    } else {
+                        primaryAreaName = PRACTICE_AREA_NAMES[primaryArea] || primaryArea;
+                    }
+                }
+
+                return {
+                    breakdown: practiceAreas,
+                    primaryArea: primaryArea,
+                    primaryAreaName: primaryAreaName,
+                    otherName: otherName || null  // Include custom "Other" name
+                };
+            }
+
+            // Add change listeners to all practice selects
+            practiceSelects.forEach(select => {
+                select.addEventListener('change', updatePracticeAreas);
+            });
+
+            // Initialize
+            updatePracticeAreas();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Hide any previous errors
+                errorDiv.classList.remove('show');
+
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const website = document.getElementById('website').value.trim();
+
+                // Basic validation
+                if (!name || !email || !website) {
+                    showError('Please fill in all fields.');
+                    return;
+                }
+
+                // Validate practice areas total equals 100%
+                const { total } = updatePracticeAreas();
+                if (total !== 100) {
+                    showError('Practice area percentages must total 100%. Currently: ' + total + '%');
+                    return;
+                }
+
+                // Get practice areas data
+                const practiceAreasData = getPracticeAreasData();
+
+                // Validate: if "Other" has a percentage, a name must be provided
+                const otherPercentage = practiceAreasData.breakdown.other || 0;
+                const otherNameInput = document.getElementById('other-practice-name');
+                if (otherPercentage > 0 && !practiceAreasData.otherName) {
+                    showError('Please specify your "Other" practice area name.');
+                    if (otherNameInput) {
+                        otherNameInput.classList.add('required');
+                        otherNameInput.focus();
+                        setTimeout(() => otherNameInput.classList.remove('required'), 1000);
+                    }
+                    return;
+                }
+
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.classList.add('loading');
+
+                try {
+                    const response = await fetch(SUBMIT_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            website,
+                            practiceAreas: practiceAreasData
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Something went wrong. Please try again.');
+                    }
+
+                    // Success - show success state
+                    formContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+
+                } catch (error) {
+                    showError(error.message || 'Something went wrong. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('loading');
+                }
+            });
+
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+        });
+    </script>
 </body>
 </html>

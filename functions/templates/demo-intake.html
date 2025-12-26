@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{PAGE_TITLE}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: {{PRIMARY_DARK}};
+            --primary-blue: {{PRIMARY_BLUE}};
+            --accent-gold: {{ACCENT_COLOR}};
+            --accent-gold-light: {{ACCENT_COLOR_LIGHT}};
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --gradient-primary: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+            --gradient-gold: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(201, 169, 98, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-primary);
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Landing Screen */
+        #landing-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            background: var(--gradient-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #landing-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(201, 169, 98, 0.05) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .landing-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .logo-image {
+            max-height: 80px;
+            max-width: 300px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        .landing-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing-subheadline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(201, 169, 98, 0.5);
+        }
+
+        .cta-button svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover svg {
+            transform: translateX(5px);
+        }
+
+        .landing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            color: var(--accent-gold);
+        }
+
+        .feature h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .feature p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .disclaimer {
+            margin-top: 3rem;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Consent Screen */
+        #consent-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .consent-content {
+            max-width: 600px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+
+        .consent-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .consent-items {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .consent-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .consent-item svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--accent-gold);
+            margin-top: 2px;
+        }
+
+        .consent-checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(201, 169, 98, 0.1);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .consent-checkbox {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            accent-color: var(--accent-gold);
+            cursor: pointer;
+        }
+
+        .consent-checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .consent-button {
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .consent-button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .consent-button.enabled:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Chat Screen */
+        #chat-screen {
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .chat-header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+        }
+
+        .chat-header-disclosure {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chat-main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .progress-sidebar {
+            width: 280px;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid var(--border-subtle);
+            overflow-y: auto;
+        }
+
+        .progress-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--bg-card);
+        }
+
+        .progress-step.completed .step-indicator {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .progress-step.completed .step-indicator svg {
+            display: block;
+        }
+
+        .step-indicator {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-indicator {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .step-indicator svg {
+            display: none;
+            width: 14px;
+            height: 14px;
+            color: white;
+        }
+
+        .step-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .progress-step.active .step-text,
+        .progress-step.completed .step-text {
+            color: var(--text-light);
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 80%;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.assistant { align-self: flex-start; }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .message.user .message-avatar {
+            background: var(--primary-blue);
+            color: var(--text-light);
+        }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            line-height: 1.6;
+        }
+
+        .message.assistant .message-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: var(--primary-blue);
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 1rem 1.25rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        .response-options {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .response-button {
+            padding: 0.625rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 25px;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .response-button:hover {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .response-button.selected {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            pointer-events: none;
+        }
+
+        .response-button.multi-select-btn.selected {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            pointer-events: auto;
+        }
+
+        .response-button.multi-select-btn.selected::before {
+            content: "✓ ";
+        }
+
+        .response-button.done-button {
+            width: 100%;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-help-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            color: #1a1f2e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            font-weight: bold;
+            font-style: italic;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-help-button:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .chat-input-area {
+            padding: 1rem 2rem 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            border: none;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .chat-confidentiality-notice {
+            max-width: 800px;
+            margin: 0.75rem auto 0;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .loading-content {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .loading-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+        }
+
+        .loading-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .loading-stage {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .loading-stage.active {
+            opacity: 1;
+            border-color: var(--accent-gold);
+        }
+
+        .loading-stage.complete {
+            opacity: 1;
+            border-color: var(--success);
+        }
+
+        .loading-stage-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+        }
+
+        .loading-stage.complete .loading-stage-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .loading-stage-text {
+            text-align: left;
+        }
+
+        .loading-stage-text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .loading-stage-text p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .loading-progress {
+            height: 4px;
+            background: var(--bg-card);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: var(--gradient-gold);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Results Screen - Green */
+        #results-screen {
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-subtitle {
+            color: var(--text-muted);
+        }
+
+        .results-content {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .routing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .routing-badge.green {
+            background: rgba(72, 187, 120, 0.2);
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .routing-badge.yellow {
+            background: rgba(237, 137, 54, 0.2);
+            border: 2px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .factors-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .factors-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .factors-list {
+            list-style: none;
+        }
+
+        .factor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .factor-item:last-child {
+            border-bottom: none;
+        }
+
+        .factor-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .factor-icon.positive { color: var(--success); }
+        .factor-icon.negative { color: var(--danger); }
+        .factor-icon.neutral { color: var(--text-muted); }
+
+        .next-steps-section {
+            background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(72, 187, 120, 0.05) 100%);
+            border: 1px solid rgba(72, 187, 120, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .next-steps-title {
+            font-size: 1.1rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .next-steps-text {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .actions-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-button.primary {
+            background: var(--gradient-gold);
+            color: var(--primary-dark);
+            border: none;
+        }
+
+        .action-button.primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .action-button.secondary {
+            background: var(--bg-card);
+            color: var(--text-light);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .action-button.secondary:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .action-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .results-disclaimer {
+            max-width: 800px;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Decline Screen - Red */
+        #decline-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .decline-content {
+            max-width: 600px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+
+        .decline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .decline-message {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .resources-section {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .resources-title {
+            font-size: 1rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .resources-list {
+            list-style: none;
+        }
+
+        .resources-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .resources-list li svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .decline-disclaimer {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 1rem;
+            background: rgba(245, 101, 101, 0.1);
+            border: 1px solid rgba(245, 101, 101, 0.2);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .decline-button {
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            color: var(--text-light);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .decline-button:hover {
+            border-color: var(--accent-gold);
+        }
+
+        /* Help Modal */
+        .help-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .help-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-modal {
+            background: var(--primary-dark);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .help-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-modal-content {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .help-modal-close {
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .help-modal-close:hover {
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .progress-sidebar {
+                display: none;
+            }
+
+            .chat-header-disclosure {
+                display: none;
+            }
+
+            .message {
+                max-width: 95%;
+            }
+
+            .consent-content,
+            .decline-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Screen -->
+    <div id="landing-screen" class="screen active">
+        <div class="landing-content">
+            <div class="logo-container">
+                {{LOGO_HTML}}
+            </div>
+            <h1 class="landing-headline">{{LANDING_HEADLINE}}</h1>
+            <p class="landing-subheadline">
+                {{LANDING_SUBHEADLINE}}
+            </p>
+            <button class="cta-button" onclick="showConsentScreen()">
+                Start My Evaluation
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+            <div class="landing-features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3>Quick & Easy</h3>
+                    <p>Complete in under 5 minutes</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3>Confidential</h3>
+                    <p>Your information is secure</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3>No Obligation</h3>
+                    <p>Free to complete</p>
+                </div>
+            </div>
+            <p class="disclaimer">
+                This evaluation is for informational purposes only and does not create an attorney-client relationship.
+            </p>
+        </div>
+    </div>
+
+    <!-- Consent Screen -->
+    <div id="consent-screen" class="screen">
+        <div class="consent-content">
+            <h2 class="consent-title">Before We Begin</h2>
+            <div class="consent-items">
+                <div class="consent-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>This evaluation uses AI to help us understand your situation quickly</span>
+                </div>
+                <div class="consent-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Your information is kept confidential and will only be reviewed by our legal team</span>
+                </div>
+                <div class="consent-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>Information shared before representation is confidential but not privileged</span>
+                </div>
+            </div>
+            <div class="consent-checkbox-container">
+                <input type="checkbox" id="consent-checkbox" class="consent-checkbox" onchange="toggleConsentButton()">
+                <label for="consent-checkbox" class="consent-checkbox-label">
+                    <strong>I understand that no attorney-client relationship is formed by submitting this information.</strong>
+                </label>
+            </div>
+            <button id="consent-button" class="consent-button" onclick="startAssessment()">
+                Continue to Evaluation
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div id="chat-screen" class="screen">
+        <header class="chat-header">
+            <div class="chat-header-logo" id="chat-logo">{{FIRM_NAME}}</div>
+            <div class="chat-header-disclosure">AI-assisted intake | No attorney-client relationship</div>
+        </header>
+        <div class="chat-main">
+            <aside class="progress-sidebar">
+                <h3 class="progress-title">Evaluation Progress</h3>
+                <div class="progress-steps">
+                    {{PROGRESS_STEPS_HTML}}
+                </div>
+            </aside>
+            <div class="chat-area">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be inserted here -->
+                </div>
+                <div class="chat-input-area">
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Type your response..." onkeypress="handleKeyPress(event)">
+                        <button id="send-button" class="send-button" onclick="sendMessage()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="chat-confidentiality-notice">Your information is kept confidential. This tool uses AI to assist with your evaluation and does not constitute legal advice or create an attorney-client relationship.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen">
+        <div class="loading-content">
+            <h2 class="loading-title">Evaluating Your Case</h2>
+            <div class="loading-stages">
+                {{LOADING_STAGES_HTML}}
+            </div>
+            <div class="loading-progress">
+                <div id="loading-progress-bar" class="loading-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen (Green/Yellow) -->
+    <div id="results-screen" class="screen">
+        <header class="results-header">
+            <div class="results-logo" id="results-logo">{{FIRM_NAME}}</div>
+            <h1 class="results-title">Your Case Evaluation</h1>
+            <p class="results-subtitle">Thank you for completing your free case evaluation</p>
+        </header>
+        <div class="results-content">
+            <div style="text-align: center;">
+                <div id="routing-badge" class="routing-badge green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="routing-text">We'd Like to Speak With You</span>
+                </div>
+            </div>
+
+            <div class="factors-section">
+                <h3 class="factors-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    Key Factors in Your Case
+                </h3>
+                <ul id="factors-list" class="factors-list">
+                    <!-- Factors will be inserted here -->
+                </ul>
+            </div>
+
+            <div id="next-steps-section" class="next-steps-section">
+                <h3 class="next-steps-title">What Happens Next</h3>
+                <p id="next-steps-text" class="next-steps-text">
+                    Based on the information you provided, we believe you may have a case worth discussing.
+                    A member of our team will contact you within 24 hours to schedule a free consultation.
+                </p>
+            </div>
+
+            <div class="actions-section">
+                <a href="#" id="schedule-button" class="action-button primary" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Schedule Consultation
+                </a>
+                <button class="action-button secondary" onclick="startOver()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Start Over
+                </button>
+            </div>
+        </div>
+        <p class="results-disclaimer">
+            This evaluation is provided for informational purposes only and does not constitute legal advice.
+            Every case is unique, and you should consult with a qualified attorney for advice specific to your situation.
+            Past results do not guarantee future outcomes.
+        </p>
+    </div>
+
+    <!-- Decline Screen (Red) -->
+    <div id="decline-screen" class="screen">
+        <div class="decline-content">
+            <h2 class="decline-title">Thank You for Your Submission</h2>
+            <p class="decline-message">
+                Based on the information provided, <span id="decline-firm-name">{{FIRM_NAME}}</span> may not be the right fit for your situation at this time.
+            </p>
+
+            <div class="resources-section">
+                <h3 class="resources-title">General Resources</h3>
+                <ul class="resources-list">
+                    {{DECLINE_RESOURCES_HTML}}
+                </ul>
+            </div>
+
+            <div class="decline-disclaimer">
+                This is not legal advice. Time limits may apply to your situation. Consider consulting with a licensed attorney.
+            </div>
+
+            <button class="decline-button" onclick="startOver()">Start New Evaluation</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal-overlay" class="help-modal-overlay" onclick="closeHelpModal(event)">
+        <div class="help-modal" onclick="event.stopPropagation()">
+            <div class="help-modal-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span id="help-modal-title-text">Help</span>
+            </div>
+            <div id="help-modal-content" class="help-modal-content"></div>
+            <button class="help-modal-close" onclick="closeHelpModal()">Got it</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            firmName: '{{FIRM_NAME}}',
+            proxyUrl: '{{PROXY_URL}}',
+            model: '{{MODEL}}',
+            webhookUrl: {{WEBHOOK_URL}},
+            webhookKey: {{WEBHOOK_KEY}},
+            scheduleUrl: {{SCHEDULE_URL}},
+            state: '{{STATE}}'
+        };
+
+        // Apply firm branding
+        document.getElementById('schedule-button').href = CONFIG.scheduleUrl || '#';
+
+        // Rate limit retry configuration
+        const MAX_RETRIES = 3;
+        const INITIAL_RETRY_DELAY = 5000;
+
+        // State
+        let conversationHistory = [];
+        let collectedData = {};
+        let currentStep = 1;
+        let isProcessing = false;
+        let apiCallDepth = 0;
+        let currentHelpContent = null;
+        const TOTAL_STEPS = {{TOTAL_STEPS}};
+
+        // Screen management
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showConsentScreen() {
+            showScreen('consent-screen');
+        }
+
+        function toggleConsentButton() {
+            const checkbox = document.getElementById('consent-checkbox');
+            const button = document.getElementById('consent-button');
+            if (checkbox.checked) {
+                button.classList.add('enabled');
+            } else {
+                button.classList.remove('enabled');
+            }
+        }
+
+        // Help modal functions
+        function showHelpModal(title, content) {
+            document.getElementById('help-modal-title-text').textContent = title;
+            document.getElementById('help-modal-content').textContent = content;
+            document.getElementById('help-modal-overlay').classList.add('active');
+        }
+
+        function closeHelpModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('help-modal-overlay').classList.remove('active');
+            }
+        }
+
+        // System prompt (practice-area-specific)
+        const SYSTEM_PROMPT = `{{SYSTEM_PROMPT}}`;
+
+        // Tools definition (practice-area-specific)
+        const TOOLS = {{TOOLS_JSON}};
+
+        // Loading stages (practice-area-specific)
+        const LOADING_STAGES = {{LOADING_STAGES_JSON}};
+
+        // Start assessment
+        function startAssessment() {
+            showScreen('chat-screen');
+            conversationHistory = [];
+            collectedData = {};
+            currentStep = 1;
+            isProcessing = false;
+            apiCallDepth = 0;
+            currentHelpContent = null;
+            updateProgressSteps();
+
+            const initialMessage = { role: "user", content: "{{INITIAL_MESSAGE}}" };
+            conversationHistory.push(initialMessage);
+            sendToAPI(conversationHistory);
+        }
+
+        // Update progress steps
+        function updateProgressSteps() {
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Detect question type and return appropriate button options
+        {{DETECT_BUTTONS_FUNCTION}}
+
+        // Add message to chat
+        function addMessage(content, role, isTyping = false) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            const avatarContent = role === 'assistant' ? '{{AVATAR_ICON}}' : 'You';
+
+            if (isTyping) {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${avatarContent}</div>
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                `;
+                messageDiv.id = 'typing-indicator';
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${avatarContent}</div>
+                    <div class="message-content">${content}</div>
+                `;
+
+                if (role === 'assistant') {
+                    const detectedResult = detectQuestionButtons(content);
+                    if (detectedResult) {
+                        document.querySelector('.chat-input-area').style.display = 'none';
+
+                        const helpContent = currentHelpContent;
+                        currentHelpContent = null;
+
+                        const isMultiSelect = detectedResult.multiSelect === true;
+                        const detectedButtons = isMultiSelect ? detectedResult.buttons : detectedResult;
+
+                        setTimeout(() => {
+                            const messageContent = messageDiv.querySelector('.message-content');
+                            if (messageContent) {
+                                const optionsDiv = document.createElement('div');
+                                optionsDiv.className = 'response-options';
+
+                                if (isMultiSelect) {
+                                    optionsDiv.dataset.multiSelect = 'true';
+                                    const selectedValues = new Set();
+
+                                    detectedButtons.forEach(option => {
+                                        const button = document.createElement('button');
+                                        button.className = 'response-button multi-select-btn';
+                                        button.textContent = option.label;
+                                        button.dataset.value = option.value;
+                                        button.onclick = () => {
+                                            if (isProcessing) return;
+
+                                            if (option.value === 'None of these') {
+                                                if (button.classList.contains('selected')) {
+                                                    button.classList.remove('selected');
+                                                    selectedValues.delete(option.value);
+                                                } else {
+                                                    optionsDiv.querySelectorAll('.multi-select-btn').forEach(btn => {
+                                                        btn.classList.remove('selected');
+                                                    });
+                                                    selectedValues.clear();
+                                                    button.classList.add('selected');
+                                                    selectedValues.add(option.value);
+                                                }
+                                            } else {
+                                                optionsDiv.querySelectorAll('.multi-select-btn').forEach(btn => {
+                                                    if (btn.dataset.value === 'None of these') {
+                                                        btn.classList.remove('selected');
+                                                        selectedValues.delete('None of these');
+                                                    }
+                                                });
+
+                                                button.classList.toggle('selected');
+                                                if (button.classList.contains('selected')) {
+                                                    selectedValues.add(option.value);
+                                                } else {
+                                                    selectedValues.delete(option.value);
+                                                }
+                                            }
+
+                                            const doneBtn = optionsDiv.querySelector('.done-button');
+                                            if (doneBtn) {
+                                                doneBtn.disabled = selectedValues.size === 0;
+                                                doneBtn.style.opacity = selectedValues.size === 0 ? '0.5' : '1';
+                                            }
+                                        };
+                                        optionsDiv.appendChild(button);
+                                    });
+
+                                    const doneBtn = document.createElement('button');
+                                    doneBtn.className = 'response-button done-button';
+                                    doneBtn.textContent = 'Done';
+                                    doneBtn.disabled = true;
+                                    doneBtn.style.opacity = '0.5';
+                                    doneBtn.style.marginTop = '10px';
+                                    doneBtn.style.backgroundColor = 'var(--accent-gold)';
+                                    doneBtn.onclick = () => {
+                                        if (isProcessing || selectedValues.size === 0) return;
+
+                                        optionsDiv.querySelectorAll('button').forEach(btn => {
+                                            btn.disabled = true;
+                                            if (!btn.classList.contains('selected') && !btn.classList.contains('done-button')) {
+                                                btn.style.opacity = '0.4';
+                                            }
+                                        });
+
+                                        const combinedValue = Array.from(selectedValues).join(', ');
+                                        addMessage(combinedValue, 'user');
+                                        conversationHistory.push({ role: "user", content: combinedValue });
+                                        sendToAPI(conversationHistory);
+                                    };
+                                    optionsDiv.appendChild(doneBtn);
+                                } else {
+                                    detectedButtons.forEach(option => {
+                                        const button = document.createElement('button');
+                                        button.className = 'response-button';
+                                        button.textContent = option.label;
+                                        button.onclick = () => selectOption(button, option.value);
+                                        optionsDiv.appendChild(button);
+                                    });
+                                }
+
+                                if (helpContent) {
+                                    const infoBtn = document.createElement('button');
+                                    infoBtn.className = 'info-help-button';
+                                    infoBtn.title = 'Click for help';
+                                    infoBtn.textContent = 'i';
+                                    infoBtn.onclick = (e) => {
+                                        e.stopPropagation();
+                                        showHelpModal(helpContent.title, helpContent.content);
+                                    };
+                                    optionsDiv.appendChild(infoBtn);
+                                }
+                                messageContent.appendChild(optionsDiv);
+
+                                setTimeout(() => {
+                                    messagesContainer.scrollTo({
+                                        top: messagesContainer.scrollHeight,
+                                        behavior: 'smooth'
+                                    });
+                                }, 50);
+                            }
+                        }, 100);
+                    } else {
+                        document.querySelector('.chat-input-area').style.display = 'block';
+                    }
+                }
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTo({
+                top: messagesContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+            return messageDiv;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        function updateTypingMessage(message) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.innerHTML = `<span style="color: var(--accent-gold);">${message}</span>`;
+            }
+        }
+
+        function selectOption(button, value) {
+            if (isProcessing) return;
+
+            button.classList.add('selected');
+            document.querySelectorAll('.response-button').forEach(btn => {
+                btn.disabled = true;
+                if (btn !== button) btn.style.opacity = '0.4';
+            });
+            document.querySelectorAll('.info-help-button').forEach(btn => {
+                btn.disabled = true;
+            });
+
+            addMessage(value, 'user');
+            conversationHistory.push({ role: "user", content: value });
+            sendToAPI(conversationHistory);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            if (!message || isProcessing) return;
+
+            input.value = '';
+            addMessage(message, 'user');
+            conversationHistory.push({ role: "user", content: message });
+            sendToAPI(conversationHistory);
+        }
+
+        async function sendToAPI(messages, retryCount = 0) {
+            apiCallDepth++;
+            isProcessing = true;
+            document.getElementById('send-button').disabled = true;
+
+            if (retryCount === 0 && !document.getElementById('typing-indicator')) {
+                addMessage('', 'assistant', true);
+            }
+
+            try {
+                const response = await fetch(CONFIG.proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: CONFIG.model,
+                        max_tokens: 4096,
+                        system: SYSTEM_PROMPT,
+                        tools: TOOLS,
+                        messages: messages
+                    })
+                });
+
+                if (response.status === 429 && retryCount < MAX_RETRIES) {
+                    const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount);
+                    updateTypingMessage(`High demand - waiting ${Math.ceil(delay / 1000)}s...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return sendToAPI(messages, retryCount + 1);
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API error ${response.status}: ${errorData.error?.message || JSON.stringify(errorData)}`);
+                }
+
+                const data = await response.json();
+                removeTypingIndicator();
+                await processResponse(data);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                removeTypingIndicator();
+                addMessage(`I apologize, but I encountered an error. Please refresh and try again.`, 'assistant');
+            } finally {
+                apiCallDepth--;
+                if (apiCallDepth === 0) {
+                    isProcessing = false;
+                    document.getElementById('send-button').disabled = false;
+                }
+            }
+        }
+
+        async function processResponse(data) {
+            let textContent = '';
+            let toolUses = [];
+
+            for (const block of data.content) {
+                if (block.type === 'text' && block.text) {
+                    textContent += block.text;
+                } else if (block.type === 'tool_use') {
+                    toolUses.push(block);
+                }
+            }
+
+            const toolResults = [];
+            if (toolUses.length > 0) {
+                for (const tool of toolUses) {
+                    const result = processToolUse(tool);
+                    toolResults.push({
+                        type: "tool_result",
+                        tool_use_id: tool.id,
+                        content: result || "Acknowledged"
+                    });
+                }
+            }
+
+            if (textContent) {
+                addMessage(textContent, 'assistant');
+            }
+
+            const filteredContent = data.content.filter(block => {
+                if (block.type === 'text') return block.text && block.text.trim().length > 0;
+                return true;
+            });
+
+            if (filteredContent.length > 0) {
+                conversationHistory.push({ role: "assistant", content: filteredContent });
+            }
+
+            if (toolUses.length > 0) {
+                const hasComplete = toolUses.some(t => t.name === 'complete_intake');
+                if (hasComplete) return;
+
+                if (toolResults.length > 0) {
+                    conversationHistory.push({ role: "user", content: toolResults });
+                    await sendToAPI(conversationHistory);
+                }
+            }
+        }
+
+        function processToolUse(tool) {
+            const { name, input } = tool;
+
+            switch (name) {
+                case 'collect_contact_info':
+                    collectedData.contact = input;
+                    if (currentStep === 1) { currentStep = 2; updateProgressSteps(); }
+                    return "Contact information collected.";
+
+                case 'collect_case_info':
+                    collectedData.case_info = input;
+                    if (currentStep <= 2) { currentStep = 3; updateProgressSteps(); }
+                    return "Case information collected.";
+
+                case 'collect_details':
+                    collectedData.details = input;
+                    if (currentStep <= 3) { currentStep = 4; updateProgressSteps(); }
+                    return "Details collected.";
+
+                case 'collect_additional_info':
+                    collectedData.additional = input;
+                    if (currentStep <= 4) { currentStep = 5; updateProgressSteps(); }
+                    return "Additional information collected.";
+
+                case 'show_question_help':
+                    currentHelpContent = {
+                        title: input.help_title,
+                        content: input.help_content
+                    };
+                    return "Help content stored.";
+
+                case 'complete_intake':
+                    collectedData.assessment = input;
+                    sendWebhook(input);
+                    showLoadingScreen(input);
+                    return "Assessment complete.";
+
+                default:
+                    return "Tool not recognized.";
+            }
+        }
+
+        // Send webhook with lead data
+        async function sendWebhook(assessment) {
+            if (!CONFIG.webhookUrl) return;
+
+            const payload = {
+                lead: collectedData.contact || {},
+                case_info: collectedData.case_info || {},
+                details: collectedData.details || {},
+                additional: collectedData.additional || {},
+                routing: assessment.routing,
+                urgency: assessment.urgency,
+                confidence_level: assessment.confidence_level,
+                recommended_next_action: assessment.recommended_next_action,
+                primary_disqualifier: assessment.primary_disqualifier || null,
+                primary_strength_factor: assessment.primary_strength_factor || null,
+                key_factors: assessment.key_factors || [],
+                timestamp: new Date().toISOString(),
+                source: 'preintake-demo-{{LEAD_ID}}'
+            };
+
+            try {
+                await fetch(CONFIG.webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': CONFIG.webhookKey || ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error('Webhook error:', error);
+            }
+        }
+
+        function showLoadingScreen(assessment) {
+            showScreen('loading-screen');
+
+            const stages = LOADING_STAGES.map(s => s.id);
+            let currentStage = 0;
+            let progress = 0;
+
+            const progressBar = document.getElementById('loading-progress-bar');
+
+            const stageInterval = setInterval(() => {
+                if (currentStage > 0) {
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage-1]}"]`).classList.remove('active');
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage-1]}"]`).classList.add('complete');
+                }
+                if (currentStage < stages.length) {
+                    document.querySelector(`.loading-stage[data-stage="${stages[currentStage]}"]`).classList.add('active');
+                    currentStage++;
+                }
+            }, 1000);
+
+            const progressInterval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    clearInterval(stageInterval);
+                    setTimeout(() => showResults(assessment), 500);
+                }
+            }, 60);
+        }
+
+        function showResults(assessment) {
+            if (assessment.routing === 'red') {
+                showScreen('decline-screen');
+                return;
+            }
+
+            showScreen('results-screen');
+
+            const routingBadge = document.getElementById('routing-badge');
+            const routingText = document.getElementById('routing-text');
+
+            if (assessment.routing === 'green') {
+                routingBadge.className = 'routing-badge green';
+                routingText.textContent = "We'd Like to Speak With You";
+            } else if (assessment.routing === 'yellow') {
+                routingBadge.className = 'routing-badge yellow';
+                routingText.textContent = "We Need More Information";
+            }
+
+            const nextStepsText = document.getElementById('next-steps-text');
+            if (assessment.routing === 'green') {
+                nextStepsText.textContent = "Based on the information you provided, we believe you may have a case worth discussing. A member of our team will contact you within 24 hours to schedule a free consultation.";
+            } else {
+                nextStepsText.textContent = "We'd like to learn more about your case before scheduling a consultation. Please gather any relevant documents you may have. We'll reach out to discuss next steps.";
+            }
+
+            const factorsList = document.getElementById('factors-list');
+            factorsList.innerHTML = '';
+
+            if (assessment.key_factors) {
+                assessment.key_factors.forEach((factor, index) => {
+                    setTimeout(() => {
+                        const li = document.createElement('li');
+                        li.className = 'factor-item';
+                        const iconClass = factor.impact === 'positive' ? 'positive' :
+                                         factor.impact === 'negative' ? 'negative' : 'neutral';
+                        const iconPath = factor.impact === 'positive' ? 'M5 13l4 4L19 7' :
+                                        factor.impact === 'negative' ? 'M6 18L18 6M6 6l12 12' :
+                                        'M20 12H4';
+                        li.innerHTML = `
+                            <svg class="factor-icon ${iconClass}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}" />
+                            </svg>
+                            <span class="factor-text">${factor.factor}</span>
+                        `;
+                        factorsList.appendChild(li);
+                    }, index * 150);
+                });
+            }
+        }
+
+        function startOver() {
+            showScreen('landing-screen');
+            document.getElementById('chat-messages').innerHTML = '';
+            document.getElementById('consent-checkbox').checked = false;
+            document.getElementById('consent-button').classList.remove('enabled');
+            conversationHistory = [];
+            collectedData = {};
+            currentStep = 1;
+            isProcessing = false;
+            apiCallDepth = 0;
+            currentHelpContent = null;
+            updateProgressSteps();
+
+            document.querySelectorAll('.loading-stage').forEach(stage => {
+                stage.classList.remove('active', 'complete');
+            });
+            document.getElementById('loading-progress-bar').style.width = '0%';
+        }
+    </script>
+</body>
+</html>
