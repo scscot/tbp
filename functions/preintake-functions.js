@@ -8,6 +8,8 @@ const { defineSecret, defineString } = require('firebase-functions/params');
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const dns = require('dns').promises;
 
 // Ensure Firebase is initialized
 if (!admin.apps.length) {
@@ -16,6 +18,220 @@ if (!admin.apps.length) {
 
 // Use the dedicated 'preintake' database (separate from default TBP database)
 const db = getFirestore('preintake');
+
+// Rate limiting configuration
+const MAX_SUBMISSIONS_PER_DAY = 5; // Per IP address
+const RATE_LIMIT_COLLECTION = 'rate_limits';
+
+/**
+ * Hash IP address for privacy before storing
+ */
+function hashIP(ip) {
+    return crypto.createHash('sha256').update(ip + 'preintake_salt_2025').digest('hex').substring(0, 16);
+}
+
+/**
+ * Check server-side rate limit by IP
+ * Returns { allowed: boolean, remaining: number }
+ */
+async function checkIPRateLimit(ip) {
+    const hashedIP = hashIP(ip);
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const docId = `${hashedIP}_${today}`;
+
+    try {
+        const docRef = db.collection(RATE_LIMIT_COLLECTION).doc(docId);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
+            return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
+        }
+
+        const data = doc.data();
+        const remaining = MAX_SUBMISSIONS_PER_DAY - (data.count || 0);
+        return { allowed: remaining > 0, remaining: Math.max(0, remaining) };
+    } catch (error) {
+        console.error('Rate limit check error:', error);
+        // Allow on error to not block legitimate requests
+        return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
+    }
+}
+
+/**
+ * Record IP submission for rate limiting
+ */
+async function recordIPSubmission(ip) {
+    const hashedIP = hashIP(ip);
+    const today = new Date().toISOString().split('T')[0];
+    const docId = `${hashedIP}_${today}`;
+
+    try {
+        const docRef = db.collection(RATE_LIMIT_COLLECTION).doc(docId);
+        await docRef.set({
+            count: admin.firestore.FieldValue.increment(1),
+            lastSubmission: admin.firestore.FieldValue.serverTimestamp(),
+            date: today
+        }, { merge: true });
+    } catch (error) {
+        console.error('Rate limit record error:', error);
+    }
+}
+
+/**
+ * Validate email address format and domain
+ * Checks format, common typos, disposable domains, and MX records
+ */
+async function validateEmail(email) {
+    // Basic format validation
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    if (!emailRegex.test(email)) {
+        return { isValid: false, reason: 'Invalid email format. Please enter a valid email address.' };
+    }
+
+    const domain = email.split('@')[1].toLowerCase();
+
+    // Check for obviously fake/test domains
+    const fakeDomains = ['test.com', 'example.com', 'fake.com', 'asdf.com', 'aaa.com', 'abc.com', 'temp.com'];
+    if (fakeDomains.includes(domain)) {
+        return { isValid: false, reason: 'Please enter your actual business email address.' };
+    }
+
+    // Check for disposable email domains
+    const disposableDomains = [
+        'mailinator.com', 'guerrillamail.com', 'tempmail.com', '10minutemail.com',
+        'throwaway.email', 'fakeinbox.com', 'trashmail.com', 'yopmail.com',
+        'sharklasers.com', 'mailnesia.com', 'getairmail.com', 'dispostable.com',
+        'tempail.com', 'temp-mail.org', 'getnada.com', 'emailondeck.com',
+        'mohmal.com', 'tempmailo.com', 'burnermail.io', 'guerrillamail.org'
+    ];
+    if (disposableDomains.includes(domain)) {
+        return { isValid: false, reason: 'Disposable email addresses are not allowed. Please use your business email.' };
+    }
+
+    // Check for common typos in popular domains
+    const typoSuggestions = {
+        'gmial.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gamil.com': 'gmail.com',
+        'gnail.com': 'gmail.com', 'gmaill.com': 'gmail.com', 'gmail.co': 'gmail.com',
+        'yahooo.com': 'yahoo.com', 'yaho.com': 'yahoo.com', 'yaoo.com': 'yahoo.com',
+        'hotmal.com': 'hotmail.com', 'hotmial.com': 'hotmail.com', 'hotmai.com': 'hotmail.com',
+        'outlok.com': 'outlook.com', 'outloo.com': 'outlook.com', 'outlool.com': 'outlook.com'
+    };
+    if (typoSuggestions[domain]) {
+        const suggestion = email.split('@')[0] + '@' + typoSuggestions[domain];
+        return { isValid: false, reason: `Did you mean ${suggestion}?` };
+    }
+
+    // Verify domain has MX records (can receive email)
+    try {
+        const mxRecords = await dns.resolveMx(domain);
+        if (!mxRecords || mxRecords.length === 0) {
+            console.log(`Email validation: No MX records for ${domain}`);
+            return { isValid: false, reason: 'This email domain cannot receive messages. Please check your email address.' };
+        }
+        console.log(`Email validation: ${domain} has ${mxRecords.length} MX records`);
+    } catch (error) {
+        // ENOTFOUND means domain doesn't exist
+        if (error.code === 'ENOTFOUND' || error.code === 'ENODATA') {
+            console.log(`Email validation: Domain ${domain} not found`);
+            return { isValid: false, reason: 'This email domain does not exist. Please check your email address.' };
+        }
+        // Other DNS errors - allow through but log
+        console.error(`Email validation DNS error for ${domain}:`, error.message);
+    }
+
+    return { isValid: true };
+}
+
+/**
+ * Validate that the website is a law firm or attorney website
+ * Checks for legal-related keywords in the page content
+ */
+async function validateLawFirmWebsite(url) {
+    // Legal keywords to look for (case-insensitive)
+    const legalKeywords = [
+        'attorney', 'attorneys', 'lawyer', 'lawyers', 'law firm', 'law office',
+        'legal', 'practice area', 'practice areas', 'case evaluation', 'free consultation',
+        'personal injury', 'criminal defense', 'family law', 'immigration', 'bankruptcy',
+        'estate planning', 'divorce', 'custody', 'dui', 'dwi', 'slip and fall',
+        'workers compensation', 'wrongful death', 'medical malpractice', 'car accident',
+        'truck accident', 'motorcycle accident', 'pedestrian accident',
+        'esq', 'esquire', 'jd', 'juris doctor', 'bar association', 'state bar',
+        'legal services', 'legal representation', 'litigation', 'trial lawyer',
+        'defense attorney', 'plaintiff', 'defendant', 'settlement', 'verdict',
+        'abogado', 'abogados', 'bufete', // Spanish
+        'advogado', 'advogados', 'escritório de advocacia' // Portuguese
+    ];
+
+    // Keywords that suggest it's NOT a law firm (false positives)
+    const excludeKeywords = [
+        'buy now', 'add to cart', 'shopping cart', 'checkout', 'product reviews',
+        'law enforcement', 'brother-in-law', 'mother-in-law', 'father-in-law',
+        'outlaw', 'in-laws', 'lawn care', 'lawn mower'
+    ];
+
+    try {
+        // Fetch the website with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+        const response = await fetch(url, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; PreIntake.ai/1.0; +https://preintake.ai)',
+                'Accept': 'text/html,application/xhtml+xml',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+        });
+
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+            console.log(`Website validation: ${url} returned ${response.status}`);
+            // Can't validate, allow through (might be behind auth, CDN issues, etc.)
+            return { isValid: true, reason: 'Could not fetch website for validation', confidence: 0 };
+        }
+
+        const html = await response.text();
+        const lowerHtml = html.toLowerCase();
+
+        // Check for exclude keywords first
+        for (const keyword of excludeKeywords) {
+            if (lowerHtml.includes(keyword)) {
+                console.log(`Website validation: ${url} contains exclude keyword "${keyword}"`);
+                // Don't automatically reject, just lower confidence
+            }
+        }
+
+        // Count matching legal keywords
+        let matchCount = 0;
+        const matchedKeywords = [];
+        for (const keyword of legalKeywords) {
+            if (lowerHtml.includes(keyword.toLowerCase())) {
+                matchCount++;
+                matchedKeywords.push(keyword);
+            }
+        }
+
+        // Calculate confidence score (0-100)
+        const confidence = Math.min(100, (matchCount / 5) * 100); // 5+ keywords = 100%
+
+        console.log(`Website validation: ${url} - ${matchCount} keywords matched, confidence: ${confidence}%`);
+
+        // Require at least 2 legal keywords for validation
+        if (matchCount >= 2) {
+            return { isValid: true, reason: 'Law firm website verified', confidence, matchedKeywords };
+        } else if (matchCount === 1) {
+            return { isValid: true, reason: 'Limited legal content detected', confidence, matchedKeywords };
+        } else {
+            return { isValid: false, reason: 'No legal content detected on website', confidence: 0, matchedKeywords: [] };
+        }
+
+    } catch (error) {
+        console.error(`Website validation error for ${url}:`, error.message);
+        // On error (timeout, network issues), allow through with note
+        return { isValid: true, reason: `Validation skipped: ${error.message}`, confidence: 0 };
+    }
+}
 
 // SMTP configuration for Dreamhost
 const smtpUser = defineSecret("PREINTAKE_SMTP_USER");
@@ -204,6 +420,23 @@ const submitDemoRequest = onRequest(
         }
 
         try {
+            // Get client IP for rate limiting
+            const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+                           req.headers['x-real-ip'] ||
+                           req.connection?.remoteAddress ||
+                           req.ip ||
+                           'unknown';
+
+            // Check server-side rate limit
+            const rateLimit = await checkIPRateLimit(clientIP);
+            if (!rateLimit.allowed) {
+                console.log(`Rate limit exceeded for IP hash: ${hashIP(clientIP)}`);
+                return res.status(429).json({
+                    error: 'Too many requests. Please try again tomorrow.',
+                    remaining: 0
+                });
+            }
+
             const { name, email, website, practiceAreas } = req.body;
 
             // Validate required fields
@@ -225,10 +458,14 @@ const submitDemoRequest = onRequest(
                 }
             }
 
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                return res.status(400).json({ error: 'Invalid email format' });
+            // Validate email (format, domain existence, MX records)
+            const emailValidation = await validateEmail(email);
+            if (!emailValidation.isValid) {
+                console.log(`Email validation failed for ${email}: ${emailValidation.reason}`);
+                return res.status(400).json({
+                    error: emailValidation.reason,
+                    field: 'email'
+                });
             }
 
             // Validate website URL
@@ -241,6 +478,19 @@ const submitDemoRequest = onRequest(
                 return res.status(400).json({ error: 'Invalid website URL' });
             }
 
+            // Validate that the website is a law firm
+            const validation = await validateLawFirmWebsite(websiteUrl.href);
+            if (!validation.isValid) {
+                console.log(`Website validation failed for ${websiteUrl.href}: ${validation.reason}`);
+                return res.status(400).json({
+                    error: 'This does not appear to be a law firm or attorney website. Please enter a valid law firm website URL.',
+                    details: validation.reason
+                });
+            }
+
+            // Record the submission for rate limiting (only after validation passes)
+            await recordIPSubmission(clientIP);
+
             // Create lead document
             const leadData = {
                 name: name.trim(),
@@ -252,6 +502,13 @@ const submitDemoRequest = onRequest(
                 source: 'landing_page',
                 // Self-reported practice areas from form
                 practiceAreas: practiceAreas || null,
+                // Website validation result
+                websiteValidation: {
+                    isValid: validation.isValid,
+                    confidence: validation.confidence,
+                    reason: validation.reason,
+                    matchedKeywords: validation.matchedKeywords || []
+                },
                 // Will be populated by analysis function later
                 analysis: null,
                 deepResearch: null,

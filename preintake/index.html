@@ -766,6 +766,18 @@
             75% { transform: translateX(4px); }
         }
 
+        /* Honeypot - hidden from humans, bots will fill it */
+        .hp-field {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            pointer-events: none;
+            height: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
         /* Footer */
         footer {
             background: var(--primary-dark);
@@ -1043,6 +1055,11 @@
             <div class="demo-form-container" id="demo-form-container">
                 <form class="demo-form" id="demo-form">
                     <div class="form-error" id="form-error"></div>
+                    <!-- Honeypot field - hidden from humans, bots will fill it -->
+                    <div class="hp-field" aria-hidden="true">
+                        <label for="company_fax">Fax Number</label>
+                        <input type="text" id="company_fax" name="company_fax" tabindex="-1" autocomplete="off">
+                    </div>
                     <div class="form-group">
                         <label for="name">Your Name</label>
                         <input type="text" id="name" name="name" placeholder="Jane Smith" required>
@@ -1389,6 +1406,90 @@
         // Firebase Function endpoint
         const SUBMIT_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/submitDemoRequest';
 
+        // Rate limiting configuration
+        const RATE_LIMIT_KEY = 'preintake_submissions';
+        const MAX_SUBMISSIONS_PER_DAY = 3;
+
+        // Check rate limit (client-side)
+        function checkRateLimit() {
+            try {
+                const stored = localStorage.getItem(RATE_LIMIT_KEY);
+                if (!stored) return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
+
+                const data = JSON.parse(stored);
+                const today = new Date().toDateString();
+
+                // Reset if different day
+                if (data.date !== today) {
+                    return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
+                }
+
+                const remaining = MAX_SUBMISSIONS_PER_DAY - data.count;
+                return { allowed: remaining > 0, remaining: Math.max(0, remaining) };
+            } catch (e) {
+                return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
+            }
+        }
+
+        // Record submission for rate limiting
+        function recordSubmission() {
+            try {
+                const today = new Date().toDateString();
+                const stored = localStorage.getItem(RATE_LIMIT_KEY);
+                let data = stored ? JSON.parse(stored) : { date: today, count: 0 };
+
+                if (data.date !== today) {
+                    data = { date: today, count: 0 };
+                }
+
+                data.count++;
+                localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(data));
+            } catch (e) {
+                // Silently fail if localStorage not available
+            }
+        }
+
+        // Email validation function
+        function isValidEmail(email) {
+            // More robust email regex that checks:
+            // - Has characters before @
+            // - Has valid domain with at least one dot
+            // - TLD is at least 2 characters
+            // - No spaces or invalid characters
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+            if (!emailRegex.test(email)) {
+                return { valid: false, reason: 'Please enter a valid email address (e.g., jane@smithlaw.com)' };
+            }
+
+            // Check for common typos in popular domains
+            const domain = email.split('@')[1].toLowerCase();
+            const typoPatterns = [
+                { pattern: /^g{1,2}mail\./, suggestion: 'gmail.com' },
+                { pattern: /^gmial\./, suggestion: 'gmail.com' },
+                { pattern: /^gmal\./, suggestion: 'gmail.com' },
+                { pattern: /^gamil\./, suggestion: 'gmail.com' },
+                { pattern: /^yahooo?\./, suggestion: 'yahoo.com' },
+                { pattern: /^yaho\./, suggestion: 'yahoo.com' },
+                { pattern: /^hotmai?l\./, suggestion: 'hotmail.com' },
+                { pattern: /^outloo?k\./, suggestion: 'outlook.com' }
+            ];
+
+            for (const typo of typoPatterns) {
+                if (typo.pattern.test(domain) && domain !== typo.suggestion) {
+                    return { valid: false, reason: `Did you mean ${email.split('@')[0]}@${typo.suggestion}?` };
+                }
+            }
+
+            // Check for obviously fake/test domains
+            const fakeDomains = ['test.com', 'example.com', 'fake.com', 'asdf.com', 'aaa.com', 'abc.com'];
+            if (fakeDomains.includes(domain)) {
+                return { valid: false, reason: 'Please enter your actual business email address.' };
+            }
+
+            return { valid: true };
+        }
+
         // Practice area name mapping
         const PRACTICE_AREA_NAMES = {
             personal_injury: 'Personal Injury',
@@ -1512,6 +1613,22 @@
                 // Hide any previous errors
                 errorDiv.classList.remove('show');
 
+                // Check honeypot - if filled, silently reject (bot)
+                const honeypot = document.getElementById('company_fax').value;
+                if (honeypot) {
+                    // Pretend success to bots
+                    formContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+                    return;
+                }
+
+                // Check client-side rate limit
+                const rateCheck = checkRateLimit();
+                if (!rateCheck.allowed) {
+                    showError('Too many requests. Please try again tomorrow.');
+                    return;
+                }
+
                 // Get form values
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
@@ -1520,6 +1637,16 @@
                 // Basic validation
                 if (!name || !email || !website) {
                     showError('Please fill in all fields.');
+                    return;
+                }
+
+                // Validate email format
+                const emailInput = document.getElementById('email');
+                const emailValidation = isValidEmail(email);
+                if (!emailValidation.valid) {
+                    showError(emailValidation.reason);
+                    emailInput.focus();
+                    emailInput.select();
                     return;
                 }
 
@@ -1567,8 +1694,17 @@
                     const data = await response.json();
 
                     if (!response.ok) {
+                        // Handle field-specific errors
+                        if (data.field === 'email') {
+                            const emailInput = document.getElementById('email');
+                            emailInput.focus();
+                            emailInput.select();
+                        }
                         throw new Error(data.error || 'Something went wrong. Please try again.');
                     }
+
+                    // Record successful submission for rate limiting
+                    recordSubmission();
 
                     // Success - show success state
                     formContainer.style.display = 'none';

@@ -1620,11 +1620,94 @@
             }
         }
 
+        // Email validation function
+        function isValidEmail(email) {
+            // Basic format check
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+            if (!emailRegex.test(email)) {
+                return { valid: false, reason: 'Please enter a valid email address (e.g., jane@email.com)' };
+            }
+
+            const domain = email.split('@')[1].toLowerCase();
+
+            // Check for common typos in popular domains
+            const typoPatterns = [
+                { pattern: /^g{1,2}mail\./, suggestion: 'gmail.com' },
+                { pattern: /^gmial\./, suggestion: 'gmail.com' },
+                { pattern: /^gmai\./, suggestion: 'gmail.com' },
+                { pattern: /^gamil\./, suggestion: 'gmail.com' },
+                { pattern: /^gnail\./, suggestion: 'gmail.com' },
+                { pattern: /^gmail\.[a-z]{2}$/, suggestion: 'gmail.com' }, // gmail.cm, gmail.co
+                { pattern: /^yaho{1,2}\./, suggestion: 'yahoo.com' },
+                { pattern: /^yahooo?\./, suggestion: 'yahoo.com' },
+                { pattern: /^yhaoo\./, suggestion: 'yahoo.com' },
+                { pattern: /^hotmal\./, suggestion: 'hotmail.com' },
+                { pattern: /^hotmai\./, suggestion: 'hotmail.com' },
+                { pattern: /^hotamil\./, suggestion: 'hotmail.com' },
+                { pattern: /^outloo?k\./, suggestion: 'outlook.com' },
+                { pattern: /^outlok\./, suggestion: 'outlook.com' }
+            ];
+
+            for (const typo of typoPatterns) {
+                if (typo.pattern.test(domain) && domain !== typo.suggestion) {
+                    return { valid: false, reason: `Did you mean ${email.split('@')[0]}@${typo.suggestion}?` };
+                }
+            }
+
+            // Check for obviously fake/test domains
+            const fakeDomains = ['test.com', 'example.com', 'fake.com', 'asdf.com', 'aaa.com', 'abc.com', 'xxx.com', 'temp.com', 'noemail.com', 'none.com'];
+            if (fakeDomains.includes(domain)) {
+                return { valid: false, reason: 'Please enter your actual email address so we can follow up with you.' };
+            }
+
+            // Check for minimum domain length
+            if (domain.length < 4) {
+                return { valid: false, reason: 'Please enter a valid email domain.' };
+            }
+
+            return { valid: true };
+        }
+
+        // Show validation error in chat
+        function showEmailValidationError(errorMessage) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message assistant-message email-validation-error';
+            errorDiv.innerHTML = `
+                <div class="message-content" style="background-color: #fef2f2; border-left: 3px solid #ef4444;">
+                    <p style="color: #dc2626; margin: 0;">⚠️ ${errorMessage}</p>
+                </div>
+            `;
+            document.getElementById('chat-messages').appendChild(errorDiv);
+            document.getElementById('chat-messages').scrollTo({
+                top: document.getElementById('chat-messages').scrollHeight,
+                behavior: 'smooth'
+            });
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.style.opacity = '0';
+                    errorDiv.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => errorDiv.remove(), 300);
+                }
+            }, 5000);
+        }
+
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
 
             if (!message || isProcessing) return;
+
+            // Check if the message looks like an email (contains @ and .)
+            if (message.includes('@') && message.includes('.') && !message.includes(' ')) {
+                const emailValidation = isValidEmail(message);
+                if (!emailValidation.valid) {
+                    showEmailValidationError(emailValidation.reason);
+                    input.select();
+                    return;
+                }
+            }
 
             input.value = '';
             addMessage(message, 'user');
