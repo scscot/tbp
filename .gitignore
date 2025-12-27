@@ -19,6 +19,7 @@ flutter_*.log
 *.md
 !documents/*.md
 !plans/*.md
+!preintake/PLAN.md
 !CLAUDE.md
 !TEAM_BUILD_PRO_KNOWLEDGE.md
 
