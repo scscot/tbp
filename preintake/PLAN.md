@@ -1,6 +1,6 @@
 # Plan: PreIntake.ai - Generalized Legal Intake Platform
 
-**Last Updated**: 2025-12-26
+**Last Updated**: 2025-12-27
 
 ## Executive Summary
 
@@ -135,6 +135,28 @@ Market research strongly supports generalizing the intake platform to serve any 
 - [x] Criminal Defense (system prompt + button detection)
 - [x] Estate Planning (system prompt + button detection)
 
+### Phase 7: Dynamic Practice Area Selection
+- [x] After contact info collected, ask user to select their case type
+- [x] Show buttons for each practice area from self-reported breakdown (landing page form)
+- [x] Skip practice area question if firm only handles one area
+- [x] Branch to practice-area-specific questions based on selection
+- [x] Update `detectQuestionButtons` to show firm's practice areas dynamically
+- [x] Embed practice area breakdown in generated demo config
+
+**Intake Flow (Multi-Practice Firms):**
+```
+1. Collect name, phone, email
+2. "What type of legal matter do you need help with?"
+   → [Personal Injury] [Family Law] [Bankruptcy] (firm-specific buttons)
+3. Branch to selected practice area's question flow
+```
+
+**Benefits:**
+- More relevant intake for multi-practice firms
+- Better lead qualification (wrong practice area = disqualifier)
+- Uses self-reported practice areas from landing page form (not website analysis)
+- Single-practice firms skip the question (no friction)
+
 ---
 
 ## Architecture
@@ -228,10 +250,9 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ## Next Steps
 
 1. **Test end-to-end flow** - Submit demo request, verify demo generation works
-2. **Immigration template** - Next practice area (highest AI adoption at 47%)
-3. **Family Law template** - High volume, sensitive screening needed
-4. **Analytics dashboard** - Track demo engagement metrics
-5. **Demo expiration** - Auto-delete demos after 30 days
+2. **Deploy functions** - `firebase deploy --only functions`
+3. **Analytics dashboard** - Track demo engagement metrics
+4. **Demo expiration** - Auto-delete demos after 30 days
 
 ---
 

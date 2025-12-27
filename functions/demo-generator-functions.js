@@ -108,6 +108,10 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const practiceBreakdown = leadData.practiceAreas?.breakdown || null;
     const otherPracticeAreaName = leadData.practiceAreas?.otherName || null;
 
+    // Build list of practice areas for multi-area selection
+    const practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
+    const isMultiPractice = practiceAreasList.length > 1;
+
     const state = analysis.location?.state || 'CA';
     const phone = analysis.contactMethods?.phone || '';
     const website = leadData.website || '';
@@ -139,9 +143,9 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const accentColorLight = '#e5d4a1';
 
     // Generate practice-area-specific content
-    const systemPrompt = generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName);
+    const systemPrompt = generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName, practiceAreasList, isMultiPractice);
     const tools = generateTools(practiceArea);
-    const detectButtonsFunction = generateDetectButtonsFunction(practiceArea);
+    const detectButtonsFunction = generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiPractice);
     const progressStepsHtml = generateProgressSteps(practiceArea);
     const loadingStagesHtml = generateLoadingStagesHtml(practiceArea);
     const loadingStagesJson = generateLoadingStagesJson(practiceArea);
@@ -193,6 +197,8 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const configContent = {
         firmName,
         practiceArea,
+        practiceAreas: practiceAreasList,
+        isMultiPractice,
         state,
         phone,
         website,
@@ -243,9 +249,8 @@ async function uploadToStorage(leadId, htmlContent, configContent) {
 }
 
 /**
- * Generate practice-area-specific system prompt
+ * Practice area display names mapping
  */
-// Practice area display names mapping
 const PRACTICE_AREA_DISPLAY_NAMES = {
     personal_injury: 'Personal Injury',
     immigration: 'Immigration',
@@ -260,7 +265,31 @@ const PRACTICE_AREA_DISPLAY_NAMES = {
     other: 'General Practice'
 };
 
-function generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName) {
+/**
+ * Build list of practice areas from breakdown for multi-area selection
+ * Returns array of { key, name } objects sorted by percentage (highest first)
+ */
+function buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName) {
+    if (!practiceBreakdown || Object.keys(practiceBreakdown).length === 0) {
+        return [];
+    }
+
+    return Object.entries(practiceBreakdown)
+        .filter(([_, pct]) => pct > 0)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key, pct]) => ({
+            key,
+            name: key === 'other' && otherPracticeAreaName
+                ? otherPracticeAreaName
+                : PRACTICE_AREA_DISPLAY_NAMES[key] || key,
+            percentage: pct
+        }));
+}
+
+/**
+ * Generate practice-area-specific system prompt
+ */
+function generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName, practiceAreasList, isMultiPractice) {
     // Build firm context from deep research
     let firmContext = '';
     if (deepResearch.firmDescription) {
@@ -285,26 +314,62 @@ function generateSystemPrompt(firmName, practiceArea, state, analysis, deepResea
 
     // Build multi-practice context if firm handles multiple areas
     let multiPracticeContext = '';
-    if (practiceBreakdown && Object.keys(practiceBreakdown).length > 1) {
-        const areas = Object.entries(practiceBreakdown)
-            .sort((a, b) => b[1] - a[1])
-            .map(([key, pct]) => {
-                // Use custom name for "other" if provided
-                let name;
-                if (key === 'other' && otherPracticeAreaName) {
-                    name = otherPracticeAreaName;
-                } else {
-                    name = PRACTICE_AREA_DISPLAY_NAMES[key] || key;
-                }
-                return `${name} (${pct}%)`;
-            });
-        multiPracticeContext = `\n\nPRACTICE AREAS HANDLED:\nThis firm handles multiple practice areas: ${areas.join(', ')}. The primary focus is ${practiceArea}.`;
+    let practiceAreasListStr = '';
+    if (isMultiPractice && practiceAreasList.length > 1) {
+        const areaNames = practiceAreasList.map(a => a.name);
+        multiPracticeContext = `\n\nPRACTICE AREAS HANDLED:\nThis firm handles: ${areaNames.join(', ')}.`;
+        practiceAreasListStr = areaNames.join(', ');
     }
 
-    // Get practice-area-specific prompt sections
+    // For multi-practice firms, build a prompt with practice area selection and ALL flows
+    if (isMultiPractice && practiceAreasList.length > 1) {
+        // Build all practice-area-specific prompts
+        const allPracticePrompts = practiceAreasList.map(area => {
+            const areaPrompt = getPracticeAreaPrompt(area.name, state, analysis);
+            return `### IF USER SELECTS "${area.name.toUpperCase()}":\n${areaPrompt}`;
+        }).join('\n\n');
+
+        return `You are an intake specialist for ${firmName}, a law firm in ${state} handling multiple practice areas.${firmContext}${multiPracticeContext}
+
+CRITICAL RULES:
+1. Ask ONLY ONE question per response. Never ask multiple questions.
+2. Do NOT use markdown formatting. Write in plain text only.
+3. Wait for the user to answer before moving to the next question.
+4. BUTTON RESPONSES: Users select from on-screen buttons. Accept their selection and move on.
+5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface generates buttons automatically.
+6. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+
+## Question Flow (strictly one question at a time):
+
+### Phase 1: Basic Information
+1. Ask for their name
+2. Ask for their phone number
+3. Ask for their email address
+
+### Phase 2: Practice Area Selection
+4. Ask: "What type of legal matter do you need help with today?"
+   - The user will select from buttons showing: ${practiceAreasListStr}
+   - IMPORTANT: Accept their selection and proceed to that practice area's specific questions below
+
+### Phase 3: Practice-Area-Specific Questions
+Based on the user's selection in Phase 2, follow the appropriate question flow:
+
+${allPracticePrompts}
+
+## Response Style
+- Keep responses brief (1-2 sentences max before your ONE question)
+- Be empathetic but professional
+- After user answers, provide brief acknowledgment, then ask the NEXT question
+- NEVER ask multiple questions
+
+## After All Questions
+Call complete_intake with the assessment results.`;
+    }
+
+    // Single practice area - use original flow
     const practicePrompt = getPracticeAreaPrompt(practiceArea, state, analysis);
 
-    return `You are an intake specialist for ${firmName}, a ${practiceArea} law firm in ${state}.${firmContext}${multiPracticeContext}
+    return `You are an intake specialist for ${firmName}, a ${practiceArea} law firm in ${state}.${firmContext}
 
 CRITICAL RULES:
 1. Ask ONLY ONE question per response. Never ask multiple questions.
@@ -749,27 +814,111 @@ function generateTools(practiceArea) {
 
 /**
  * Generate detectQuestionButtons function - practice-area-specific
+ * For multi-practice firms, includes detection for practice area selection
  */
-function generateDetectButtonsFunction(practiceArea) {
+function generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiPractice) {
+    // Build practice area selection detection for multi-practice firms
+    let practiceAreaDetection = '';
+    if (isMultiPractice && practiceAreasList.length > 1) {
+        const buttonsArray = practiceAreasList.map(a =>
+            `{ label: "${a.name}", value: "${a.name}" }`
+        ).join(',\n            ');
+
+        practiceAreaDetection = `
+    // Practice area selection (multi-practice firm)
+    if (lowerText.includes('type of legal matter') || lowerText.includes('what type of') ||
+        lowerText.includes('kind of legal') || lowerText.includes('area of law') ||
+        lowerText.includes('help with today') || lowerText.includes('legal issue') ||
+        lowerText.includes('what brings you')) {
+        return [
+            ${buttonsArray}
+        ];
+    }
+`;
+    }
+
+    // Get the base buttons function for the primary practice area
     const area = practiceArea.toLowerCase();
+    let baseFunction;
 
     if (area.includes('immigration')) {
-        return getImmigrationButtonsFunction();
+        baseFunction = getImmigrationButtonsFunction();
     } else if (area.includes('family')) {
-        return getFamilyLawButtonsFunction();
+        baseFunction = getFamilyLawButtonsFunction();
     } else if (area.includes('tax')) {
-        return getTaxLawButtonsFunction();
+        baseFunction = getTaxLawButtonsFunction();
     } else if (area.includes('bankruptcy')) {
-        return getBankruptcyButtonsFunction();
+        baseFunction = getBankruptcyButtonsFunction();
     } else if (area.includes('criminal')) {
-        return getCriminalDefenseButtonsFunction();
+        baseFunction = getCriminalDefenseButtonsFunction();
     } else if (area.includes('estate')) {
-        return getEstatePlanningButtonsFunction();
+        baseFunction = getEstatePlanningButtonsFunction();
     } else if (area.includes('personal injury')) {
-        return getPersonalInjuryButtonsFunction();
+        baseFunction = getPersonalInjuryButtonsFunction();
     } else {
-        return getGenericButtonsFunction();
+        baseFunction = getGenericButtonsFunction();
     }
+
+    // For multi-practice firms, we need to include ALL practice area button detections
+    if (isMultiPractice && practiceAreasList.length > 1) {
+        // Collect all unique button functions for each practice area
+        const allButtonDetections = new Set();
+
+        practiceAreasList.forEach(areaItem => {
+            const areaLower = areaItem.name.toLowerCase();
+            let areaButtons;
+
+            if (areaLower.includes('immigration')) {
+                areaButtons = getImmigrationButtonsContent();
+            } else if (areaLower.includes('family')) {
+                areaButtons = getFamilyLawButtonsContent();
+            } else if (areaLower.includes('tax')) {
+                areaButtons = getTaxLawButtonsContent();
+            } else if (areaLower.includes('bankruptcy')) {
+                areaButtons = getBankruptcyButtonsContent();
+            } else if (areaLower.includes('criminal')) {
+                areaButtons = getCriminalDefenseButtonsContent();
+            } else if (areaLower.includes('estate')) {
+                areaButtons = getEstatePlanningButtonsContent();
+            } else if (areaLower.includes('personal injury')) {
+                areaButtons = getPersonalInjuryButtonsContent();
+            }
+
+            if (areaButtons) {
+                allButtonDetections.add(areaButtons);
+            }
+        });
+
+        // Combine all button detections
+        const combinedDetections = Array.from(allButtonDetections).join('\n\n');
+
+        return `function detectQuestionButtons(text) {
+    const questionMatch = text.match(/[^.!?]*\\?[^.!?]*/g);
+    if (!questionMatch || questionMatch.length === 0) return null;
+
+    const questionText = questionMatch[questionMatch.length - 1];
+    const lowerText = questionText.toLowerCase();
+${practiceAreaDetection}
+
+${combinedDetections}
+
+    // Generic yes/no
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    return null;
+}`;
+    }
+
+    // Single practice area - return base function as-is
+    return baseFunction;
 }
 
 function getImmigrationButtonsFunction() {
@@ -1721,6 +1870,373 @@ function getGenericButtonsFunction() {
 
     return null;
 }`;
+}
+
+/**
+ * ButtonsContent functions - return just the detection content for combining in multi-practice demos
+ */
+function getImmigrationButtonsContent() {
+    return `    // Immigration status
+    if ((lowerText.includes('immigration status') || lowerText.includes('current status')) &&
+        !lowerText.includes('change') && !lowerText.includes('adjust')) {
+        return [
+            { label: "US Citizen", value: "US Citizen" },
+            { label: "Green Card Holder", value: "Green Card Holder (Permanent Resident)" },
+            { label: "Valid Visa", value: "Valid Visa" },
+            { label: "Expired Visa", value: "Expired Visa" },
+            { label: "Undocumented", value: "Undocumented" },
+            { label: "DACA", value: "DACA" },
+            { label: "Asylum/Refugee", value: "Asylum/Refugee" },
+            { label: "Other/Not Sure", value: "Other/Not Sure" }
+        ];
+    }
+
+    // Type of immigration help
+    if (lowerText.includes('type of immigration') || lowerText.includes('immigration help') ||
+        lowerText.includes('what kind of help') || lowerText.includes('looking for help with')) {
+        return [
+            { label: "Visa Application", value: "Visa Application" },
+            { label: "Green Card", value: "Green Card" },
+            { label: "Citizenship/Naturalization", value: "Citizenship/Naturalization" },
+            { label: "Deportation/Removal Defense", value: "Deportation/Removal Defense" },
+            { label: "Asylum", value: "Asylum" },
+            { label: "Work Permit", value: "Work Permit" },
+            { label: "Family Petition", value: "Family Petition" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Visa type
+    if (lowerText.includes('type of visa') || lowerText.includes('visa category') ||
+        lowerText.includes('which visa') || lowerText.includes('what visa')) {
+        return [
+            { label: "H-1B (Work)", value: "H-1B Work Visa" },
+            { label: "L-1 (Transfer)", value: "L-1 Transfer Visa" },
+            { label: "O-1 (Extraordinary)", value: "O-1 Extraordinary Ability" },
+            { label: "F-1 (Student)", value: "F-1 Student Visa" },
+            { label: "B-1/B-2 (Visitor)", value: "B-1/B-2 Visitor Visa" },
+            { label: "K-1 (Fiance)", value: "K-1 Fiance Visa" },
+            { label: "Other/Not Sure", value: "Other/Not Sure" }
+        ];
+    }
+
+    // Deportation/removal
+    if (lowerText.includes('deportation') || lowerText.includes('removal') || lowerText.includes('immigration court')) {
+        return [
+            { label: "Yes, active proceedings", value: "Yes, in removal proceedings" },
+            { label: "Received notice", value: "Received notice to appear" },
+            { label: "No", value: "No" },
+            { label: "Not sure", value: "Not sure" }
+        ];
+    }`;
+}
+
+function getFamilyLawButtonsContent() {
+    return `    // Type of family law matter
+    if (lowerText.includes('type of') && (lowerText.includes('family') || lowerText.includes('matter') || lowerText.includes('help')) ||
+        lowerText.includes('family law') && lowerText.includes('need')) {
+        return [
+            { label: "Divorce", value: "Divorce" },
+            { label: "Child Custody", value: "Child Custody" },
+            { label: "Child Support", value: "Child Support" },
+            { label: "Spousal Support/Alimony", value: "Spousal Support/Alimony" },
+            { label: "Domestic Violence", value: "Domestic Violence/Restraining Order" },
+            { label: "Prenuptial Agreement", value: "Prenuptial Agreement" },
+            { label: "Adoption", value: "Adoption" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Current custody arrangement
+    if (lowerText.includes('custody') && (lowerText.includes('current') || lowerText.includes('arrangement'))) {
+        return [
+            { label: "No arrangement yet", value: "No formal arrangement" },
+            { label: "Joint custody", value: "Joint custody" },
+            { label: "I have primary custody", value: "I have primary custody" },
+            { label: "Other parent has custody", value: "Other parent has primary custody" },
+            { label: "Supervised visitation", value: "Supervised visitation" }
+        ];
+    }
+
+    // Contested vs uncontested
+    if (lowerText.includes('contested') || lowerText.includes('agree') || lowerText.includes('amicable')) {
+        return [
+            { label: "Contested (disagreement)", value: "Contested - we disagree on terms" },
+            { label: "Uncontested (agreement)", value: "Uncontested - we agree on terms" },
+            { label: "Not sure yet", value: "Not sure yet" }
+        ];
+    }
+
+    // Safety concerns
+    if (lowerText.includes('safety') || lowerText.includes('abuse') || lowerText.includes('violence') || lowerText.includes('danger')) {
+        return [
+            { label: "Yes, urgent safety concern", value: "Yes, urgent safety concern" },
+            { label: "Yes, but not immediate", value: "Yes, but not immediate danger" },
+            { label: "No safety concerns", value: "No safety concerns" }
+        ];
+    }`;
+}
+
+function getTaxLawButtonsContent() {
+    return `    // Type of tax issue
+    if (lowerText.includes('type of tax') || lowerText.includes('tax issue') || lowerText.includes('tax problem') ||
+        lowerText.includes('irs') && lowerText.includes('issue')) {
+        return [
+            { label: "Back Taxes Owed", value: "Back Taxes Owed" },
+            { label: "IRS Audit", value: "IRS Audit" },
+            { label: "Tax Liens/Levies", value: "Tax Liens or Levies" },
+            { label: "Wage Garnishment", value: "Wage Garnishment" },
+            { label: "Unfiled Returns", value: "Unfiled Tax Returns" },
+            { label: "Payroll Tax Issues", value: "Payroll Tax Issues" },
+            { label: "Other", value: "Other Tax Issue" }
+        ];
+    }
+
+    // Amount owed
+    if (lowerText.includes('how much') && (lowerText.includes('owe') || lowerText.includes('debt') || lowerText.includes('amount'))) {
+        return [
+            { label: "Under $10,000", value: "Under $10,000" },
+            { label: "$10,000 - $25,000", value: "$10,000 - $25,000" },
+            { label: "$25,000 - $50,000", value: "$25,000 - $50,000" },
+            { label: "$50,000 - $100,000", value: "$50,000 - $100,000" },
+            { label: "Over $100,000", value: "Over $100,000" },
+            { label: "Not sure", value: "Not sure of exact amount" }
+        ];
+    }
+
+    // Years affected
+    if (lowerText.includes('year') && (lowerText.includes('which') || lowerText.includes('how many') || lowerText.includes('affected'))) {
+        return [
+            { label: "Current year only", value: "Current year only" },
+            { label: "1-2 years", value: "1-2 years" },
+            { label: "3-5 years", value: "3-5 years" },
+            { label: "More than 5 years", value: "More than 5 years" }
+        ];
+    }
+
+    // Current payment plan
+    if (lowerText.includes('payment plan') || lowerText.includes('installment') || lowerText.includes('paying irs')) {
+        return [
+            { label: "Yes, current plan", value: "Yes, on a payment plan" },
+            { label: "Had one, stopped", value: "Had one, but stopped paying" },
+            { label: "No plan", value: "No payment plan" },
+            { label: "Tried, was denied", value: "Tried but was denied" }
+        ];
+    }`;
+}
+
+function getBankruptcyButtonsContent() {
+    return `    // Type of bankruptcy consideration
+    if (lowerText.includes('type of') && lowerText.includes('debt') ||
+        lowerText.includes('kind of debt') || lowerText.includes('primary debt')) {
+        return [
+            { label: "Credit Card Debt", value: "Credit Card Debt" },
+            { label: "Medical Bills", value: "Medical Bills" },
+            { label: "Mortgage/Home", value: "Mortgage/Home Debt" },
+            { label: "Auto Loans", value: "Auto Loans" },
+            { label: "Student Loans", value: "Student Loans" },
+            { label: "Tax Debt", value: "Tax Debt" },
+            { label: "Business Debt", value: "Business Debt" },
+            { label: "Multiple Types", value: "Multiple Types of Debt" }
+        ];
+    }
+
+    // Total debt amount
+    if (lowerText.includes('total') && lowerText.includes('debt') || lowerText.includes('how much') && lowerText.includes('owe')) {
+        return [
+            { label: "Under $10,000", value: "Under $10,000" },
+            { label: "$10,000 - $25,000", value: "$10,000 - $25,000" },
+            { label: "$25,000 - $50,000", value: "$25,000 - $50,000" },
+            { label: "$50,000 - $100,000", value: "$50,000 - $100,000" },
+            { label: "Over $100,000", value: "Over $100,000" },
+            { label: "Not sure", value: "Not sure" }
+        ];
+    }
+
+    // Employment status
+    if (lowerText.includes('employ') || lowerText.includes('working') || lowerText.includes('income')) {
+        return [
+            { label: "Employed full-time", value: "Employed full-time" },
+            { label: "Employed part-time", value: "Employed part-time" },
+            { label: "Self-employed", value: "Self-employed" },
+            { label: "Unemployed", value: "Unemployed" },
+            { label: "Retired", value: "Retired" },
+            { label: "Disabled", value: "Disabled" }
+        ];
+    }
+
+    // Previous bankruptcy
+    if (lowerText.includes('previous') && lowerText.includes('bankruptcy') || lowerText.includes('filed') && lowerText.includes('before')) {
+        return [
+            { label: "Never filed", value: "Never filed bankruptcy" },
+            { label: "Yes, more than 8 years ago", value: "Yes, more than 8 years ago" },
+            { label: "Yes, 4-8 years ago", value: "Yes, 4-8 years ago" },
+            { label: "Yes, less than 4 years ago", value: "Yes, less than 4 years ago" }
+        ];
+    }`;
+}
+
+function getCriminalDefenseButtonsContent() {
+    return `    // Type of charges
+    if (lowerText.includes('type of') && (lowerText.includes('charge') || lowerText.includes('crime') || lowerText.includes('offense')) ||
+        lowerText.includes('charged with') || lowerText.includes('accused of')) {
+        return [
+            { label: "DUI/DWI", value: "DUI/DWI" },
+            { label: "Drug Charges", value: "Drug Charges" },
+            { label: "Assault/Battery", value: "Assault/Battery" },
+            { label: "Theft/Burglary", value: "Theft/Burglary" },
+            { label: "Domestic Violence", value: "Domestic Violence" },
+            { label: "White Collar Crime", value: "White Collar Crime" },
+            { label: "Sex Crimes", value: "Sex Crimes" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // Felony or misdemeanor
+    if (lowerText.includes('felony') || lowerText.includes('misdemeanor') || lowerText.includes('level') && lowerText.includes('charge')) {
+        return [
+            { label: "Felony", value: "Felony" },
+            { label: "Misdemeanor", value: "Misdemeanor" },
+            { label: "Not sure", value: "Not sure" },
+            { label: "Both", value: "Both felony and misdemeanor" }
+        ];
+    }
+
+    // Current status
+    if (lowerText.includes('current') && lowerText.includes('status') || lowerText.includes('case status') ||
+        lowerText.includes('where') && lowerText.includes('case')) {
+        return [
+            { label: "Just arrested", value: "Just arrested" },
+            { label: "Out on bail", value: "Out on bail" },
+            { label: "Awaiting trial", value: "Awaiting trial" },
+            { label: "Trial scheduled", value: "Trial scheduled" },
+            { label: "Convicted, seeking appeal", value: "Convicted, seeking appeal" },
+            { label: "Under investigation", value: "Under investigation" }
+        ];
+    }
+
+    // Custody status
+    if (lowerText.includes('custody') || lowerText.includes('jail') || lowerText.includes('detained')) {
+        return [
+            { label: "Currently in custody", value: "Currently in custody" },
+            { label: "Released on bail", value: "Released on bail" },
+            { label: "Released on own recognizance", value: "Released on own recognizance" },
+            { label: "Not in custody", value: "Not in custody" }
+        ];
+    }`;
+}
+
+function getEstatePlanningButtonsContent() {
+    return `    // Type of estate planning need
+    if (lowerText.includes('type of') && (lowerText.includes('planning') || lowerText.includes('estate') || lowerText.includes('help')) ||
+        lowerText.includes('what') && lowerText.includes('need') && lowerText.includes('estate')) {
+        return [
+            { label: "Create a Will", value: "Create a Will" },
+            { label: "Create a Trust", value: "Create a Trust" },
+            { label: "Update Existing Documents", value: "Update Existing Documents" },
+            { label: "Power of Attorney", value: "Power of Attorney" },
+            { label: "Healthcare Directive", value: "Healthcare Directive" },
+            { label: "Probate Assistance", value: "Probate Assistance" },
+            { label: "Estate Administration", value: "Estate Administration" },
+            { label: "Not Sure", value: "Not Sure - Need Guidance" }
+        ];
+    }
+
+    // Current documents
+    if (lowerText.includes('current') && (lowerText.includes('will') || lowerText.includes('trust') || lowerText.includes('documents'))) {
+        return [
+            { label: "No documents yet", value: "No estate planning documents" },
+            { label: "Have a will", value: "Have a will" },
+            { label: "Have a trust", value: "Have a trust" },
+            { label: "Have both", value: "Have both will and trust" },
+            { label: "Not sure", value: "Not sure what I have" }
+        ];
+    }
+
+    // Estate value
+    if (lowerText.includes('estate') && lowerText.includes('value') || lowerText.includes('assets') && lowerText.includes('worth') ||
+        lowerText.includes('total value')) {
+        return [
+            { label: "Under $100,000", value: "Under $100,000" },
+            { label: "$100,000 - $500,000", value: "$100,000 - $500,000" },
+            { label: "$500,000 - $1 million", value: "$500,000 - $1 million" },
+            { label: "$1 - $5 million", value: "$1 - $5 million" },
+            { label: "Over $5 million", value: "Over $5 million" },
+            { label: "Not sure", value: "Not sure" }
+        ];
+    }
+
+    // Minor children
+    if (lowerText.includes('minor') && lowerText.includes('children') || lowerText.includes('children under')) {
+        return [
+            { label: "Yes", value: "Yes, have minor children" },
+            { label: "No", value: "No minor children" }
+        ];
+    }`;
+}
+
+function getPersonalInjuryButtonsContent() {
+    return `    // Type of incident
+    if (lowerText.includes('type of') && (lowerText.includes('incident') || lowerText.includes('accident') || lowerText.includes('injury')) ||
+        lowerText.includes('what happened') || lowerText.includes('how were you injured')) {
+        return [
+            { label: "Car Accident", value: "Car Accident" },
+            { label: "Truck Accident", value: "Truck Accident" },
+            { label: "Motorcycle Accident", value: "Motorcycle Accident" },
+            { label: "Slip and Fall", value: "Slip and Fall" },
+            { label: "Medical Malpractice", value: "Medical Malpractice" },
+            { label: "Workplace Injury", value: "Workplace Injury" },
+            { label: "Product Liability", value: "Product Liability" },
+            { label: "Dog Bite", value: "Dog Bite" },
+            { label: "Other", value: "Other" }
+        ];
+    }
+
+    // When did it happen
+    if (lowerText.includes('when') && (lowerText.includes('happen') || lowerText.includes('occur') || lowerText.includes('incident') || lowerText.includes('accident'))) {
+        return [
+            { label: "Within last week", value: "Within last week" },
+            { label: "Within last month", value: "Within last month" },
+            { label: "1-6 months ago", value: "1-6 months ago" },
+            { label: "6-12 months ago", value: "6-12 months ago" },
+            { label: "1-2 years ago", value: "1-2 years ago" },
+            { label: "Over 2 years ago", value: "Over 2 years ago" }
+        ];
+    }
+
+    // Medical treatment
+    if (lowerText.includes('medical') && (lowerText.includes('treatment') || lowerText.includes('care') || lowerText.includes('attention'))) {
+        return [
+            { label: "ER/Hospital", value: "Emergency Room/Hospital" },
+            { label: "Urgent Care", value: "Urgent Care" },
+            { label: "Doctor Visit", value: "Doctor Visit" },
+            { label: "Ongoing Treatment", value: "Ongoing Treatment" },
+            { label: "No Treatment Yet", value: "No Treatment Yet" },
+            { label: "No Treatment Needed", value: "No Treatment Needed" }
+        ];
+    }
+
+    // Type of injuries
+    if (lowerText.includes('type of') && lowerText.includes('injur') || lowerText.includes('what injur')) {
+        return [
+            { label: "Broken Bones", value: "Broken Bones" },
+            { label: "Soft Tissue", value: "Soft Tissue Injuries" },
+            { label: "Head/Brain Injury", value: "Head/Brain Injury" },
+            { label: "Back/Spine", value: "Back/Spine Injury" },
+            { label: "Neck/Whiplash", value: "Neck/Whiplash" },
+            { label: "Multiple Injuries", value: "Multiple Injuries" },
+            { label: "Not Sure", value: "Not Sure Yet" }
+        ];
+    }
+
+    // Fault
+    if (lowerText.includes('fault') || lowerText.includes('responsible') || lowerText.includes('caused')) {
+        return [
+            { label: "Other party at fault", value: "Other party was at fault" },
+            { label: "Shared fault", value: "Shared fault" },
+            { label: "Unsure", value: "Unsure who was at fault" }
+        ];
+    }`;
 }
 
 /**
