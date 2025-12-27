@@ -61,12 +61,19 @@ const generatePreIntakeDemo = onDocumentUpdated(
             // Upload to Firebase Storage
             const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
 
-            // Update Firestore with demo URL
+            // Update Firestore with demo URL and default delivery config
             await leadRef.update({
                 status: 'demo_ready',
                 demoUrl: demoUrl,
                 'demo.generatedAt': FieldValue.serverTimestamp(),
                 'demo.version': '1.0.0',
+                // Default delivery config - email to the prospect who requested demo
+                deliveryConfig: {
+                    method: 'email',
+                    emailAddress: afterData.email,
+                    webhookUrl: null,
+                    crmType: null
+                },
                 updatedAt: FieldValue.serverTimestamp(),
             });
 
@@ -177,8 +184,8 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{DECLINE_RESOURCES_HTML}}': declineResourcesHtml,
         '{{PROXY_URL}}': PROXY_URL,
         '{{MODEL}}': CLAUDE_MODEL,
-        '{{WEBHOOK_URL}}': 'null',
-        '{{WEBHOOK_KEY}}': 'null',
+        '{{WEBHOOK_URL}}': 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/handleIntakeCompletion',
+        '{{WEBHOOK_KEY}}': leadId, // Use leadId as simple auth key
         '{{SCHEDULE_URL}}': 'null',
         '{{STATE}}': state,
         '{{TOTAL_STEPS}}': getTotalSteps(practiceArea).toString(),

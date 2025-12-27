@@ -215,6 +215,10 @@ const {
   generatePreIntakeDemo,
 } = require('./demo-generator-functions');
 
+const {
+  handleIntakeCompletion,
+} = require('./intake-delivery-functions');
+
 // ==============================
 // Export All Functions
 // ==============================
@@ -336,6 +340,7 @@ module.exports = {
   submitDemoRequest,
   analyzePreIntakeLead,
   generatePreIntakeDemo,
+  handleIntakeCompletion,
 };
 
 // ==============================
