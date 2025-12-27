@@ -72,8 +72,9 @@ const generatePreIntakeDemo = onDocumentUpdated(
 
             console.log(`Demo generated for lead ${leadId}: ${demoUrl}`);
 
-            // Send notification email
+            // Send notification emails
             await sendDemoReadyEmail(leadId, afterData, analysis, demoUrl);
+            await sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl);
 
         } catch (error) {
             console.error(`Demo generation failed for lead ${leadId}:`, error.message);
@@ -2480,6 +2481,90 @@ async function sendDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
         console.log(`Demo ready email sent for lead ${leadId}`);
     } catch (error) {
         console.error('Error sending demo email:', error.message);
+    }
+}
+
+/**
+ * Send demo ready notification email to prospect
+ */
+async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
+    const user = smtpUser.value();
+    const pass = smtpPass.value();
+
+    if (!user || !pass) {
+        console.error('SMTP credentials not configured for prospect demo email');
+        return;
+    }
+
+    if (!leadData.email) {
+        console.error('No email address for prospect');
+        return;
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.dreamhost.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: { user, pass },
+        tls: { rejectUnauthorized: false },
+    });
+
+    const firmName = analysis.firmName || 'your firm';
+    const firstName = leadData.name ? leadData.name.split(' ')[0] : '';
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <p>Hi${firstName ? ' ' + firstName : ''},</p>
+
+    <p>Your AI intake demo for <strong>${firmName}</strong> is ready.</p>
+
+    <p>We've analyzed your website and built a working intake form customized to your practice areas and qualification criteria. This demo shows how prospective clients would interact with your AI-powered intake system.</p>
+
+    <p style="margin: 30px 0;">
+        <a href="${demoUrl}"
+           style="background: #0c1f3f; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 16px;">
+            View Your Demo
+        </a>
+    </p>
+
+    <p><strong>What you'll see:</strong></p>
+    <ul style="margin: 15px 0; padding-left: 20px;">
+        <li>AI-driven conversation that screens leads in real-time</li>
+        <li>Practice-area-specific questions tailored to your firm</li>
+        <li>Clear qualification signals before leads reach your inbox</li>
+    </ul>
+
+    <p>The demo is private and accessible only via this link. Feel free to test it yourself or share it with your team.</p>
+
+    <p>If you have questions or want to discuss implementation, just reply to this email.</p>
+
+    <p style="margin-top: 30px;">
+        Best,<br>
+        <strong>Stephen Scott</strong><br>
+        PreIntake.ai
+    </p>
+
+    <hr style="margin-top: 40px; border: none; border-top: 1px solid #e2e8f0;">
+    <p style="font-size: 12px; color: #64748b;">
+        Demo URL: <a href="${demoUrl}" style="color: #64748b;">${demoUrl}</a>
+    </p>
+</body>
+</html>`;
+
+    try {
+        await transporter.sendMail({
+            from: FROM_ADDRESS,
+            to: leadData.email,
+            subject: 'Your PreIntake.ai Demo Is Ready',
+            html: htmlContent,
+        });
+        console.log(`Prospect demo ready email sent to ${leadData.email} for lead ${leadId}`);
+    } catch (error) {
+        console.error('Error sending prospect demo email:', error.message);
     }
 }
 

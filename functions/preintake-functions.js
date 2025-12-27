@@ -276,28 +276,41 @@ function generateProspectEmail(name, website) {
 
     <p>Hi ${firstName},</p>
 
-    <p>Thanks for your interest in PreIntake.ai! We've received your demo request for <strong>${website}</strong>.</p>
+    <p>We've received your request to generate a custom PreIntake.ai demo for <strong>${website}</strong>.</p>
 
-    <p>Here's what happens next:</p>
+    <p>Our system is now:</p>
 
     <ol style="color: #64748b;">
-        <li><strong>We analyze your website</strong> - Practice areas, branding, current intake methods</li>
-        <li><strong>We build your custom demo</strong> - A working intake page with your branding</li>
-        <li><strong>You receive your demo link</strong> - Usually within 24 hours</li>
+        <li>
+            <strong>Analyzing your website</strong><br>
+            Practice areas, positioning, intake signals, and structure
+        </li>
+        <li>
+            <strong>Assembling a practice-specific intake flow</strong><br>
+            Screening logic, disqualifiers, and routing behavior
+        </li>
+        <li>
+            <strong>Generating a live demo</strong><br>
+            A working intake experience branded to your firm
+        </li>
     </ol>
 
-    <p>In the meantime, if you have any questions or want to schedule a quick call, just reply to this email.</p>
+    <p>You'll receive a private link to review your demo shortly. Most demos are ready within <strong>about 5 minutes</strong>, depending on site complexity.</p>
+
+    <p>The demo shows how PreIntake.ai screens leads before they reach your CRM—highlighting which cases move forward, which need more information, and which are declined outright.</p>
+
+    <p>If you have questions or want a second set of eyes on the demo once it's ready, just reply to this email.</p>
 
     <p style="margin-top: 30px;">
-        Best regards,<br>
+        —<br>
         <strong>Stephen Scott</strong><br>
-        <span style="color: #64748b;">PreIntake.ai</span>
+        PreIntake.ai
     </p>
 
     <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
 
     <p style="font-size: 12px; color: #94a3b8; text-align: center;">
-        PreIntake.ai - AI-Powered Legal Intake<br>
+        AI-Powered Legal Intake<br>
         <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
     </p>
 </body>
@@ -551,7 +564,7 @@ const submitDemoRequest = onRequest(
                     await sendEmail(
                         transporter,
                         `${name.trim()} <${email.trim().toLowerCase()}>`,
-                        'Your PreIntake.ai Demo Request',
+                        'Your AI Intake Demo Is Being Built',
                         prospectHtml
                     );
                     await docRef.update({ confirmationSent: true });
