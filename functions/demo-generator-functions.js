@@ -53,7 +53,7 @@ const generatePreIntakeDemo = onDocumentUpdated(
 
         try {
             const analysis = afterData.analysis || {};
-            const deepResearch = analysis.deepResearch || {};
+            const deepResearch = afterData.deepResearch || {};  // Top level, not under analysis
 
             // Generate the demo HTML
             const { htmlContent, configContent } = generateDemoFiles(leadId, afterData, analysis, deepResearch);

@@ -129,10 +129,11 @@ Market research strongly supports generalizing the intake platform to serve any 
 ### Phase 6: Practice Area Templates
 - [x] Personal Injury (existing, used as base)
 - [x] Tax/IRS (existing)
-- [ ] Immigration
-- [ ] Family Law
-- [ ] Bankruptcy
-- [ ] Criminal Defense
+- [x] Immigration (system prompt + button detection)
+- [x] Family Law (system prompt + button detection)
+- [x] Bankruptcy (system prompt + button detection)
+- [x] Criminal Defense (system prompt + button detection)
+- [x] Estate Planning (system prompt + button detection)
 
 ---
 
