@@ -829,7 +829,7 @@
                 Practice-specific qualification for PI, Immigration, Family Law, Bankruptcy, and more.
             </p>
             <a href="#demo" class="hero-cta">
-                Create Your Demo
+                Create Your Custom AI Intake Demo
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -1045,7 +1045,6 @@
     <section class="cta-section" id="demo">
         <div class="container">
             <h2>Create Your Custom AI Intake Demo</h2>
-            <p>Enter your firm's website to generate a working AI intake built around your practice areas, branding, and screening rules—ready to review in minutes.</p>
             <div class="demo-form-container" id="demo-form-container">
                 <form class="demo-form" id="demo-form">
                     <div class="form-error" id="form-error"></div>
@@ -1485,6 +1484,58 @@
             return { valid: true };
         }
 
+        // Validate email domain matches website domain
+        function validateEmailDomain(email, websiteUrl) {
+            // Admin bypass
+            const ADMIN_EMAILS = ['scscot@gmail.com'];
+            if (ADMIN_EMAILS.includes(email.toLowerCase())) {
+                return { valid: true };
+            }
+
+            try {
+                // Extract email domain
+                const emailDomain = email.split('@')[1].toLowerCase();
+
+                // Extract website domain
+                let url = websiteUrl.toLowerCase();
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                const urlObj = new URL(url);
+                let websiteDomain = urlObj.hostname;
+
+                // Remove www. prefix if present
+                if (websiteDomain.startsWith('www.')) {
+                    websiteDomain = websiteDomain.substring(4);
+                }
+
+                // Get base domain (last 2 parts) for comparison
+                // e.g., "intake.smithlaw.com" → "smithlaw.com"
+                const getBaseDomain = (domain) => {
+                    const parts = domain.split('.');
+                    if (parts.length >= 2) {
+                        return parts.slice(-2).join('.');
+                    }
+                    return domain;
+                };
+
+                const emailBase = getBaseDomain(emailDomain);
+                const websiteBase = getBaseDomain(websiteDomain);
+
+                if (emailBase !== websiteBase) {
+                    return {
+                        valid: false,
+                        reason: `Your email domain (${emailDomain}) must match your firm's website domain (${websiteDomain}). Please use your firm email address.`
+                    };
+                }
+
+                return { valid: true };
+            } catch (e) {
+                // If URL parsing fails, skip this validation
+                return { valid: true };
+            }
+        }
+
         // Practice area name mapping
         const PRACTICE_AREA_NAMES = {
             personal_injury: 'Personal Injury',
@@ -1617,17 +1668,23 @@
                     return;
                 }
 
-                // Check client-side rate limit
-                const rateCheck = checkRateLimit();
-                if (!rateCheck.allowed) {
-                    showError('Too many requests. Please try again tomorrow.');
-                    return;
-                }
-
                 // Get form values
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const website = document.getElementById('website').value.trim();
+
+                // Admin bypass for rate limiting
+                const ADMIN_EMAILS = ['scscot@gmail.com'];
+                const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+
+                // Check client-side rate limit (skip for admins)
+                if (!isAdmin) {
+                    const rateCheck = checkRateLimit();
+                    if (!rateCheck.allowed) {
+                        showError('Too many requests. Please try again tomorrow.');
+                        return;
+                    }
+                }
 
                 // Basic validation
                 if (!name || !email || !website) {
@@ -1640,6 +1697,15 @@
                 const emailValidation = isValidEmail(email);
                 if (!emailValidation.valid) {
                     showError(emailValidation.reason);
+                    emailInput.focus();
+                    emailInput.select();
+                    return;
+                }
+
+                // Validate email domain matches website domain
+                const domainValidation = validateEmailDomain(email, website);
+                if (!domainValidation.valid) {
+                    showError(domainValidation.reason);
                     emailInput.focus();
                     emailInput.select();
                     return;

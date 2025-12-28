@@ -440,17 +440,23 @@ const submitDemoRequest = onRequest(
                            req.ip ||
                            'unknown';
 
-            // Check server-side rate limit
-            const rateLimit = await checkIPRateLimit(clientIP);
-            if (!rateLimit.allowed) {
-                console.log(`Rate limit exceeded for IP hash: ${hashIP(clientIP)}`);
-                return res.status(429).json({
-                    error: 'Too many requests. Please try again tomorrow.',
-                    remaining: 0
-                });
-            }
-
             const { name, email, website, practiceAreas } = req.body;
+
+            // Admin bypass for rate limiting
+            const ADMIN_EMAILS = ['scscot@gmail.com'];
+            const isAdmin = ADMIN_EMAILS.includes((email || '').toLowerCase());
+
+            // Check server-side rate limit (skip for admins)
+            if (!isAdmin) {
+                const rateLimit = await checkIPRateLimit(clientIP);
+                if (!rateLimit.allowed) {
+                    console.log(`Rate limit exceeded for IP hash: ${hashIP(clientIP)}`);
+                    return res.status(429).json({
+                        error: 'Too many requests. Please try again tomorrow.',
+                        remaining: 0
+                    });
+                }
+            }
 
             // Validate required fields
             if (!name || !email || !website) {

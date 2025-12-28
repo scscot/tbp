@@ -219,6 +219,12 @@ const {
   handleIntakeCompletion,
 } = require('./intake-delivery-functions');
 
+const {
+  getWidgetConfig,
+  intakeChat,
+  serveDemo,
+} = require('./widget-functions');
+
 // ==============================
 // Export All Functions
 // ==============================
@@ -341,6 +347,11 @@ module.exports = {
   analyzePreIntakeLead,
   generatePreIntakeDemo,
   handleIntakeCompletion,
+
+  // ========== WIDGET FUNCTIONS (Embeddable Intake) ==========
+  getWidgetConfig,
+  intakeChat,
+  serveDemo,
 };
 
 // ==============================

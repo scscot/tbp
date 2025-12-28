@@ -1434,7 +1434,25 @@
             });
         }
 
-        // Detect question type and return appropriate button options
+        // Parse AI-specified options from response
+        // Format: [OPTIONS: Option 1 | Option 2 | Option 3]
+        function parseAIOptions(text) {
+            const match = text.match(/\[OPTIONS:\s*([^\]]+)\]/);
+            if (!match) return null;
+
+            const options = match[1].split('|').map(opt => ({
+                label: opt.trim(),
+                value: opt.trim()
+            })).filter(opt => opt.label.length > 0);
+
+            if (options.length === 0) return null;
+
+            // Return clean text and buttons
+            const cleanText = text.replace(/\[OPTIONS:[^\]]+\]/, '').trim();
+            return { text: cleanText, buttons: options };
+        }
+
+        // Legacy fallback: pattern-matching for edge cases
         {{DETECT_BUTTONS_FUNCTION}}
 
         // Add message to chat
@@ -1444,6 +1462,21 @@
             messageDiv.className = `message ${role}`;
 
             const avatarContent = role === 'assistant' ? '{{AVATAR_ICON}}' : 'You';
+
+            // For assistant messages, parse AI-specified options first
+            let displayContent = content;
+            let detectedResult = null;
+
+            if (role === 'assistant') {
+                const aiOptions = parseAIOptions(content);
+                if (aiOptions) {
+                    displayContent = aiOptions.text;
+                    detectedResult = aiOptions.buttons;
+                } else {
+                    // Fallback to legacy pattern matching
+                    detectedResult = detectQuestionButtons(content);
+                }
+            }
 
             if (isTyping) {
                 messageDiv.innerHTML = `
@@ -1456,22 +1489,21 @@
             } else {
                 messageDiv.innerHTML = `
                     <div class="message-avatar">${avatarContent}</div>
-                    <div class="message-content">${content}</div>
+                    <div class="message-content">${displayContent}</div>
                 `;
 
-                if (role === 'assistant') {
-                    const detectedResult = detectQuestionButtons(content);
-                    if (detectedResult) {
-                        document.querySelector('.chat-input-area').style.display = 'none';
+                if (role === 'assistant' && detectedResult) {
+                    document.querySelector('.chat-input-area').style.display = 'none';
 
-                        const helpContent = currentHelpContent;
-                        currentHelpContent = null;
+                    const helpContent = currentHelpContent;
+                    currentHelpContent = null;
 
-                        const isMultiSelect = detectedResult.multiSelect === true;
-                        const detectedButtons = isMultiSelect ? detectedResult.buttons : detectedResult;
+                    // Handle both AI-driven (always array) and legacy (array or object with multiSelect)
+                    const isMultiSelect = detectedResult.multiSelect === true;
+                    const detectedButtons = isMultiSelect ? detectedResult.buttons : (Array.isArray(detectedResult) ? detectedResult : [detectedResult]);
 
-                        setTimeout(() => {
-                            const messageContent = messageDiv.querySelector('.message-content');
+                    setTimeout(() => {
+                        const messageContent = messageDiv.querySelector('.message-content');
                             if (messageContent) {
                                 const optionsDiv = document.createElement('div');
                                 optionsDiv.className = 'response-options';
@@ -1583,7 +1615,6 @@
                         document.querySelector('.chat-input-area').style.display = 'block';
                     }
                 }
-            }
 
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTo({

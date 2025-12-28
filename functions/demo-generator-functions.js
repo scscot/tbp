@@ -184,8 +184,8 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{DECLINE_RESOURCES_HTML}}': declineResourcesHtml,
         '{{PROXY_URL}}': PROXY_URL,
         '{{MODEL}}': CLAUDE_MODEL,
-        '{{WEBHOOK_URL}}': 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/handleIntakeCompletion',
-        '{{WEBHOOK_KEY}}': leadId, // Use leadId as simple auth key
+        '{{WEBHOOK_URL}}': "'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/handleIntakeCompletion'",
+        '{{WEBHOOK_KEY}}': `'${leadId}'`, // Use leadId as simple auth key (quoted)
         '{{SCHEDULE_URL}}': 'null',
         '{{STATE}}': state,
         '{{TOTAL_STEPS}}': getTotalSteps(practiceArea).toString(),
@@ -343,21 +343,35 @@ CRITICAL RULES:
 1. Ask ONLY ONE question per response. Never ask multiple questions.
 2. Do NOT use markdown formatting. Write in plain text only.
 3. Wait for the user to answer before moving to the next question.
-4. BUTTON RESPONSES: Users select from on-screen buttons. Accept their selection and move on.
-5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface generates buttons automatically.
-6. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+4. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+
+## RESPONSE BUTTONS - IMPORTANT:
+When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
+[OPTIONS: Option 1 | Option 2 | Option 3]
+
+Guidelines for buttons:
+- Use 2-5 options maximum
+- Keep option labels short (1-4 words each)
+- Make options mutually exclusive and cover likely responses
+- For yes/no questions: [OPTIONS: Yes | No] or include a third option like "Not sure"
+- For open-ended questions (name, phone, email, or when you need detailed descriptions), do NOT include options
+
+Examples:
+- "Have you seen a doctor for your injuries?" followed by [OPTIONS: Yes | No | Not yet]
+- "When did this incident occur?" followed by [OPTIONS: Within the last month | 1-6 months ago | 6-12 months ago | Over a year ago]
+- "What is your current employment status?" followed by [OPTIONS: Employed | Self-employed | Unemployed | Retired | Disabled]
+
+DO NOT list options in your prose text. ONLY use the [OPTIONS:] format at the end.
 
 ## Question Flow (strictly one question at a time):
 
 ### Phase 1: Basic Information
-1. Ask for their name
-2. Ask for their phone number
-3. Ask for their email address
+1. Ask for their name (no options - free text)
+2. Ask for their phone number (no options - free text)
+3. Ask for their email address (no options - free text)
 
 ### Phase 2: Practice Area Selection
-4. Ask: "What type of legal matter do you need help with today?"
-   - The user will select from buttons showing: ${practiceAreasListStr}
-   - IMPORTANT: Accept their selection and proceed to that practice area's specific questions below
+4. Ask what type of legal matter brings them here, with options: [OPTIONS: ${practiceAreasListStr.split(', ').join(' | ')}]
 
 ### Phase 3: Practice-Area-Specific Questions
 Based on the user's selection in Phase 2, follow the appropriate question flow:
@@ -369,6 +383,7 @@ ${allPracticePrompts}
 - Be empathetic but professional
 - After user answers, provide brief acknowledgment, then ask the NEXT question
 - NEVER ask multiple questions
+- ALWAYS include [OPTIONS: ...] for questions with defined answer choices
 
 ## After All Questions
 Call complete_intake with the assessment results.`;
@@ -383,9 +398,25 @@ CRITICAL RULES:
 1. Ask ONLY ONE question per response. Never ask multiple questions.
 2. Do NOT use markdown formatting. Write in plain text only.
 3. Wait for the user to answer before moving to the next question.
-4. BUTTON RESPONSES: Users select from on-screen buttons. Accept their selection and move on.
-5. DO NOT LIST OPTIONS IN YOUR TEXT. The interface generates buttons automatically.
-6. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+4. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+
+## RESPONSE BUTTONS - IMPORTANT:
+When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
+[OPTIONS: Option 1 | Option 2 | Option 3]
+
+Guidelines for buttons:
+- Use 2-5 options maximum
+- Keep option labels short (1-4 words each)
+- Make options mutually exclusive and cover likely responses
+- For yes/no questions: [OPTIONS: Yes | No] or include a third option like "Not sure"
+- For open-ended questions (name, phone, email, or when you need detailed descriptions), do NOT include options
+
+Examples:
+- "Have you seen a doctor for your injuries?" followed by [OPTIONS: Yes | No | Not yet]
+- "When did this incident occur?" followed by [OPTIONS: Within the last month | 1-6 months ago | 6-12 months ago | Over a year ago]
+- "What is your current employment status?" followed by [OPTIONS: Employed | Self-employed | Unemployed | Retired | Disabled]
+
+DO NOT list options in your prose text. ONLY use the [OPTIONS:] format at the end.
 
 ${practicePrompt}
 
@@ -394,6 +425,7 @@ ${practicePrompt}
 - Be empathetic but professional
 - After user answers, provide brief acknowledgment, then ask the NEXT question
 - NEVER ask multiple questions
+- ALWAYS include [OPTIONS: ...] for questions with defined answer choices
 
 ## After All Questions
 Call complete_intake with the assessment results.`;
@@ -910,11 +942,13 @@ ${practiceAreaDetection}
 
 ${combinedDetections}
 
-    // Generic yes/no
+    // Generic yes/no (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
          lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
          lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
-        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me')) {
+        !lowerText.includes('describe') && !lowerText.includes('explain') && !lowerText.includes('tell me') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('what') && !lowerText.includes('which')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1043,13 +1077,16 @@ function getImmigrationButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No with careful exclusions
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you have') || lowerText.includes('are you currently') ||
          lowerText.includes('have you') || lowerText.includes('did you') ||
-         lowerText.includes('is there') || lowerText.includes('was there')) &&
+         lowerText.includes('is there') || lowerText.includes('was there') ||
+         lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') &&
         !lowerText.includes('type') && !lowerText.includes('kind') &&
-        !lowerText.includes('how') && !lowerText.includes('where') && !lowerText.includes('why')) {
+        !lowerText.includes('how') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('when') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1166,11 +1203,15 @@ function getFamilyLawButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
-         lowerText.includes('is there') || lowerText.includes('did you')) &&
+         lowerText.includes('is there') || lowerText.includes('did you') || lowerText.includes('were you') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') &&
-        !lowerText.includes('type') && !lowerText.includes('how long')) {
+        !lowerText.includes('type') && !lowerText.includes('how long') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1287,11 +1328,15 @@ function getTaxLawButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
-         lowerText.includes('did you')) &&
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
-        !lowerText.includes('how much') && !lowerText.includes('how many')) {
+        !lowerText.includes('how much') && !lowerText.includes('how many') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1409,11 +1454,15 @@ function getBankruptcyButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
-         lowerText.includes('did you')) &&
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
-        !lowerText.includes('how much')) {
+        !lowerText.includes('how much') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1521,10 +1570,14 @@ function getCriminalDefenseButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
-         lowerText.includes('did you') || lowerText.includes('were you')) &&
-        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type')) {
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1637,9 +1690,14 @@ function getEstatePlanningButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
-    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you')) &&
-        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type')) {
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
+    if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1799,10 +1857,14 @@ function getPersonalInjuryButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No
+    // Generic Yes/No (only for actual yes/no questions, not WH-questions)
     if ((lowerText.includes('do you') || lowerText.includes('are you') || lowerText.includes('have you') ||
-         lowerText.includes('did you') || lowerText.includes('were you')) &&
-        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type')) {
+         lowerText.includes('did you') || lowerText.includes('were you') || lowerText.includes('is there') ||
+         lowerText.includes('was there') || lowerText.includes('can you') || lowerText.includes('will you')) &&
+        !lowerText.includes('what') && !lowerText.includes('which') && !lowerText.includes('type') &&
+        !lowerText.includes('when') && !lowerText.includes('where') && !lowerText.includes('why') &&
+        !lowerText.includes('how') && !lowerText.includes('describe') && !lowerText.includes('explain') &&
+        !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1862,14 +1924,16 @@ function getGenericButtonsFunction() {
         ];
     }
 
-    // Generic Yes/No - with strict exclusions
+    // Generic Yes/No - with strict exclusions (only for actual yes/no questions)
     if ((lowerText.includes('do you have') || lowerText.includes('are you currently') ||
          lowerText.includes('have you ever') || lowerText.includes('did you') ||
-         lowerText.includes('is there') || lowerText.includes('was there')) &&
+         lowerText.includes('is there') || lowerText.includes('was there') ||
+         lowerText.includes('can you') || lowerText.includes('will you')) &&
         !lowerText.includes('what') && !lowerText.includes('which') &&
         !lowerText.includes('type') && !lowerText.includes('kind') &&
         !lowerText.includes('how') && !lowerText.includes('where') && !lowerText.includes('why') &&
-        !lowerText.includes('status') && !lowerText.includes('describe')) {
+        !lowerText.includes('when') && !lowerText.includes('status') && !lowerText.includes('describe') &&
+        !lowerText.includes('explain') && !lowerText.includes('tell me')) {
         return [
             { label: "Yes", value: "Yes" },
             { label: "No", value: "No" }
@@ -1955,6 +2019,14 @@ function getFamilyLawButtonsContent() {
         ];
     }
 
+    // Children involved
+    if (lowerText.includes('children') && (lowerText.includes('involved') || lowerText.includes('have') || lowerText.includes('any'))) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
     // Current custody arrangement
     if (lowerText.includes('custody') && (lowerText.includes('current') || lowerText.includes('arrangement'))) {
         return [
@@ -1967,7 +2039,7 @@ function getFamilyLawButtonsContent() {
     }
 
     // Contested vs uncontested
-    if (lowerText.includes('contested') || lowerText.includes('agree') || lowerText.includes('amicable')) {
+    if (lowerText.includes('contested') || (lowerText.includes('agree') && !lowerText.includes('disagree')) || lowerText.includes('amicable')) {
         return [
             { label: "Contested (disagreement)", value: "Contested - we disagree on terms" },
             { label: "Uncontested (agreement)", value: "Uncontested - we agree on terms" },
@@ -1981,6 +2053,43 @@ function getFamilyLawButtonsContent() {
             { label: "Yes, urgent safety concern", value: "Yes, urgent safety concern" },
             { label: "Yes, but not immediate", value: "Yes, but not immediate danger" },
             { label: "No safety concerns", value: "No safety concerns" }
+        ];
+    }
+
+    // Served with papers
+    if (lowerText.includes('served') || lowerText.includes('papers') || lowerText.includes('petition')) {
+        return [
+            { label: "Yes", value: "Yes" },
+            { label: "No", value: "No" }
+        ];
+    }
+
+    // How long married
+    if (lowerText.includes('how long') && lowerText.includes('married')) {
+        return [
+            { label: "Less than 1 year", value: "Less than 1 year" },
+            { label: "1-5 years", value: "1-5 years" },
+            { label: "5-10 years", value: "5-10 years" },
+            { label: "10-20 years", value: "10-20 years" },
+            { label: "More than 20 years", value: "More than 20 years" }
+        ];
+    }
+
+    // Urgency
+    if (lowerText.includes('urgent') || lowerText.includes('deadline') || lowerText.includes('court date') || lowerText.includes('time-sensitive')) {
+        return [
+            { label: "Yes, very urgent", value: "Yes, very urgent" },
+            { label: "Somewhat urgent", value: "Somewhat urgent" },
+            { label: "No particular rush", value: "No particular rush" }
+        ];
+    }
+
+    // Attorney representation
+    if ((lowerText.includes('attorney') || lowerText.includes('lawyer')) && lowerText.includes('have')) {
+        return [
+            { label: "No", value: "No, not represented" },
+            { label: "Yes, currently", value: "Yes, currently represented" },
+            { label: "Previously", value: "Previously, but not now" }
         ];
     }`;
 }
@@ -2577,4 +2686,16 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
 
 module.exports = {
     generatePreIntakeDemo,
+    // Exported for widget-functions.js (server-side chat)
+    generateSystemPrompt,
+    generateTools,
+    buildPracticeAreasList,
+    // Exported for demo regeneration script
+    getLandingHeadline,
+    getLandingSubheadline,
+    generateProgressSteps,
+    generateLoadingStagesHtml,
+    generateLoadingStagesJson,
+    generateDeclineResources,
+    generateDetectButtonsFunction,
 };

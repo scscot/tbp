@@ -1,6 +1,6 @@
 # Plan: PreIntake.ai - Generalized Legal Intake Platform
 
-**Last Updated**: 2025-12-27
+**Last Updated**: 2025-12-28
 
 ## Executive Summary
 
@@ -157,6 +157,60 @@ Market research strongly supports generalizing the intake platform to serve any 
 - Uses self-reported practice areas from landing page form (not website analysis)
 - Single-practice firms skip the question (no friction)
 
+### Phase 8: Intake Delivery System
+- [x] Create `intake-delivery-functions.js` with `handleIntakeCompletion`
+- [x] Email delivery with professional HTML summary (default for demos)
+- [x] Generic webhook delivery for custom CRM integration
+- [x] Update `demo-generator-functions.js` to set webhook URL
+- [x] Store `deliveryConfig` in Firestore with lead document
+- [x] Export `handleIntakeCompletion` in index.js
+- [x] Deploy functions
+
+**Data Flow (No Retention):**
+```
+Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via email/webhook → Discard data
+```
+
+**Delivery Options:**
+| Method | Description | Status |
+|--------|-------------|--------|
+| Email | HTML summary to firm's intake address | ✅ Implemented |
+| Webhook | POST JSON to custom URL | ✅ Implemented |
+| CRM | Direct integration (Law Ruler, Filevine, etc.) | 🔮 Future |
+
+**Key Principle:** PreIntake.ai does NOT retain client data. All intake information is immediately delivered and discarded.
+
+### Phase 9: Account Creation & Payment (Future)
+- [ ] Create `/preintake/create-account.html` page
+- [ ] Account creation form (name, email, password)
+- [ ] Delivery method selection (email, webhook, CRM)
+- [ ] CRM credentials input for direct integrations
+- [ ] Payment setup (setup fee + monthly subscription)
+- [ ] Payment provider integration (TBD: Stripe, LawPay, etc.)
+
+### Phase 10: Embeddable Widget
+- [x] Create `intake-button.js` - floating button that opens intake modal
+- [x] Create `widget.js` - inline widget with Shadow DOM encapsulation
+- [x] Create `serveDemo` Cloud Function to proxy demo HTML (CORS bypass for iframes)
+- [x] Add `/demo/:firmId` URL rewrite in Firebase hosting
+- [x] Support 6 button positions: bottom-right, bottom-left, bottom-center, top-right, top-left, top-center
+- [x] Create `EMBED-INSTRUCTIONS.md` documentation
+- [x] Create `intake-button-test.html` for testing
+
+**Embed Options:**
+| Option | Snippet | Use Case |
+|--------|---------|----------|
+| Intake Button | `<script src="https://preintake.ai/intake-button.js" data-firm="ID"></script>` | Floating CTA on any page |
+| Inline Widget | `<div id="preintake"></div><script src="https://preintake.ai/widget.js" data-firm="ID"></script>` | Dedicated contact page |
+| Direct URL | `https://preintake.ai/demo/FIRM_ID` | Email links, QR codes |
+| iframe | `<iframe src="https://preintake.ai/demo/FIRM_ID"></iframe>` | Maximum isolation |
+
+**Programmatic Control:**
+```javascript
+PreIntake.open();   // Open intake modal
+PreIntake.close();  // Close intake modal
+```
+
 ---
 
 ## Architecture
@@ -173,6 +227,10 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ```
 /preintake/
 ├── index.html              # Landing page with demo request form
+├── intake-button.js        # Embeddable floating button script
+├── widget.js               # Embeddable inline widget script
+├── intake-button-test.html # Test page for intake button
+├── EMBED-INSTRUCTIONS.md   # Client embed documentation
 ├── preintake.html          # Original PI intake page
 ├── preintake-config.js     # Config for preintake.html
 ├── preintake.md            # Pitch deck
@@ -183,6 +241,8 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ├── preintake-analysis-functions.js  # Website analysis + triggers demo generation
 ├── deep-research-functions.js       # Multi-page website scraping
 ├── demo-generator-functions.js      # Demo page generation
+├── intake-delivery-functions.js     # Intake completion webhook + delivery
+├── widget-functions.js              # Widget endpoints (getWidgetConfig, intakeChat, serveDemo)
 └── templates/
     ├── demo-intake.html             # Demo intake template
     └── demo-config.js               # Demo config template
@@ -249,10 +309,11 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 
 ## Next Steps
 
-1. **Test end-to-end flow** - Submit demo request, verify demo generation works
-2. **Deploy functions** - `firebase deploy --only functions`
+1. ~~**Deploy functions**~~ - ✅ Done (handleIntakeCompletion deployed)
+2. **Test end-to-end flow** - Submit demo request, complete intake, verify email delivery
 3. **Analytics dashboard** - Track demo engagement metrics
 4. **Demo expiration** - Auto-delete demos after 30 days
+5. **Account creation page** - Payment setup, delivery method selection (Phase 9)
 
 ---
 
