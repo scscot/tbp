@@ -226,6 +226,16 @@ const {
 } = require('./widget-functions');
 
 // ==============================
+// Import Stripe Functions
+// ==============================
+const {
+  createCheckoutSession,
+  getStripeConfig,
+  stripeWebhook,
+  verifyCheckoutSession,
+} = require('./stripe-functions');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -352,6 +362,12 @@ module.exports = {
   getWidgetConfig,
   intakeChat,
   serveDemo,
+
+  // ========== STRIPE FUNCTIONS (Payment Processing) ==========
+  createCheckoutSession,
+  getStripeConfig,
+  stripeWebhook,
+  verifyCheckoutSession,
 };
 
 // ==============================

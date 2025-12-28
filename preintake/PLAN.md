@@ -1,6 +1,6 @@
 # Plan: PreIntake.ai - Generalized Legal Intake Platform
 
-**Last Updated**: 2025-12-28
+**Last Updated**: 2025-12-28 (Stripe integration complete)
 
 ## Executive Summary
 
@@ -180,13 +180,41 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 
 **Key Principle:** PreIntake.ai does NOT retain client data. All intake information is immediately delivered and discarded.
 
-### Phase 9: Account Creation & Payment (Future)
-- [ ] Create `/preintake/create-account.html` page
-- [ ] Account creation form (name, email, password)
-- [ ] Delivery method selection (email, webhook, CRM)
-- [ ] CRM credentials input for direct integrations
-- [ ] Payment setup (setup fee + monthly subscription)
-- [ ] Payment provider integration (TBD: Stripe, LawPay, etc.)
+### Phase 9: Account Creation & Payment
+- [x] Create `/preintake/create-account.html` page
+- [x] Create `/preintake/payment-success.html` page
+- [x] Stripe integration (`stripe-functions.js`)
+  - [x] `createCheckoutSession` - Creates Stripe Checkout session with setup fee + subscription
+  - [x] `getStripeConfig` - Returns publishable key and pricing info
+  - [x] `stripeWebhook` - Handles subscription events (with signature verification)
+  - [x] `verifyCheckoutSession` - Verifies payment status
+- [x] Stripe webhook configured in Stripe Dashboard
+- [x] Webhook signing secret stored as Firebase secret (`STRIPE_WEBHOOK_SECRET`)
+- [x] Subscription status tracking in Firestore
+- [ ] Delivery method selection (email, webhook, CRM) - Future
+- [ ] CRM credentials input for direct integrations - Future
+
+**Pricing:**
+| Item | Amount |
+|------|--------|
+| One-time Setup Fee | $175 |
+| Monthly Subscription | $75/mo |
+| **Total Due Today** | **$250** |
+
+**Account Activation Flow:**
+```
+Demo expires → /create-account.html?firm=ID → Stripe Checkout → /payment-success.html
+```
+
+**Stripe Webhook Events Handled:**
+- `checkout.session.completed` - Marks account as active
+- `customer.subscription.created/updated/deleted` - Tracks subscription status
+- `invoice.payment_succeeded/failed` - Tracks payment status
+
+**Stripe Configuration:**
+- Webhook endpoint: `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/stripeWebhook`
+- Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
+- Mode: Test (switch to live keys for production)
 
 ### Phase 10: Embeddable Widget
 - [x] Create `intake-button.js` - floating button that opens intake modal
@@ -229,6 +257,8 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ```
 /preintake/
 ├── index.html              # Landing page with demo request form
+├── create-account.html     # Account activation + Stripe checkout page
+├── payment-success.html    # Post-payment success page with embed instructions
 ├── intake-button.js        # Embeddable floating button script
 ├── widget.js               # Embeddable inline widget script
 ├── intake-button-test.html # Test page for intake button
@@ -245,6 +275,7 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ├── demo-generator-functions.js      # Demo page generation
 ├── intake-delivery-functions.js     # Intake completion webhook + delivery
 ├── widget-functions.js              # Widget endpoints (getWidgetConfig, intakeChat, serveDemo)
+├── stripe-functions.js              # Stripe payment processing
 └── templates/
     ├── demo-intake.html             # Demo intake template
     └── demo-config.js               # Demo config template
@@ -312,10 +343,12 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ## Next Steps
 
 1. ~~**Deploy functions**~~ - ✅ Done (handleIntakeCompletion deployed)
-2. **Test end-to-end flow** - Submit demo request, complete intake, verify email delivery
-3. **Analytics dashboard** - Track demo engagement metrics
-4. **Demo expiration** - Auto-delete demos after 30 days
-5. **Account creation page** - Payment setup, delivery method selection (Phase 9)
+2. ~~**Account creation page**~~ - ✅ Done (Phase 9 complete with Stripe integration)
+3. **Test end-to-end payment flow** - Use test card `4242 4242 4242 4242` to verify checkout
+4. **Switch to Stripe live mode** - Replace test keys with live keys when ready
+5. **Analytics dashboard** - Track demo engagement metrics
+6. **Demo expiration** - Auto-delete demos after 30 days
+7. **Customer portal** - Allow customers to manage subscription (cancel, update card)
 
 ---
 
