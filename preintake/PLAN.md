@@ -200,10 +200,12 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 **Embed Options:**
 | Option | Snippet | Use Case |
 |--------|---------|----------|
-| Intake Button | `<script src="https://preintake.ai/intake-button.js" data-firm="ID"></script>` | Floating CTA on any page |
+| Intake Button | `<script src="https://preintake.ai/intake-button.js" data-firm="ID" data-position="bottom-right"></script>` | Floating CTA on any page |
 | Inline Widget | `<div id="preintake"></div><script src="https://preintake.ai/widget.js" data-firm="ID"></script>` | Dedicated contact page |
 | Direct URL | `https://preintake.ai/demo/FIRM_ID` | Email links, QR codes |
 | iframe | `<iframe src="https://preintake.ai/demo/FIRM_ID"></iframe>` | Maximum isolation |
+
+**Button Positions:** `bottom-right` (default), `bottom-left`, `bottom-center`, `top-right`, `top-left`, `top-center`
 
 **Programmatic Control:**
 ```javascript
