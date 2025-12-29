@@ -1021,6 +1021,30 @@
             border-color: var(--accent-gold);
         }
 
+        /* Additional Comments Screen */
+        #additional-comments-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .additional-comments-container {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+
+        #additional-comments-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
         /* Help Modal */
         .help-modal-overlay {
             position: fixed;
@@ -1382,7 +1406,7 @@
                 </p>
             </div>
 
-            <div class="actions-section">
+            <div id="bottom-actions" class="actions-section">
                 <a href="#" id="schedule-button" class="action-button primary" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1398,13 +1422,23 @@
             </div>
 
             <!-- PreIntake.ai Promo -->
-            <div class="preintake-promo">
-                <p class="preintake-promo-text">Impressed? <strong>Get PreIntake.ai for your firm.</strong></p>
+            <div id="preintake-promo" class="preintake-promo">
+                <p class="preintake-promo-text">Add <strong>PreIntake.ai</strong> to the <strong>{{FIRM_NAME}}</strong> website.</p>
                 <a href="https://preintake.ai/create-account.html" class="preintake-promo-button" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     Get Started
+                </a>
+            </div>
+
+            <!-- Return to Firm (Live Mode only) -->
+            <div id="return-to-firm" class="actions-section" style="display: none;">
+                <a href="#" id="return-button" class="action-button primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Return to <span id="return-firm-name"></span>
                 </a>
             </div>
         </div>
@@ -1438,6 +1472,38 @@
         </div>
     </div>
 
+    <!-- Additional Comments Screen -->
+    <div id="additional-comments-screen" class="screen">
+        <div class="additional-comments-container">
+            <h2 style="color: #ffffff; font-size: 20px; margin-bottom: 15px;">Thank You for Providing Information</h2>
+            <p style="color: #e2e8f0; font-size: 16px; margin-bottom: 25px;">Is there anything else you'd like to add?</p>
+
+            <!-- Yes/No Buttons -->
+            <div id="comments-buttons" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
+                <button onclick="showCommentsTextarea()" class="action-button primary" style="min-width: 100px;">
+                    Yes
+                </button>
+                <button onclick="submitWithoutComments()" class="action-button secondary" style="min-width: 100px; background: #f1f5f9; color: #0c1f3f;">
+                    No
+                </button>
+            </div>
+
+            <!-- Textarea (Hidden Initially) -->
+            <div id="comments-input-section" style="display: none;">
+                <textarea id="additional-comments-input"
+                    maxlength="500"
+                    placeholder="Please share any additional details, questions, or concerns..."
+                    style="width: 100%; height: 120px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 15px; resize: none; font-family: inherit; box-sizing: border-box;"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                    <span id="char-counter" style="color: #64748b; font-size: 13px;">0 / 500 characters</span>
+                    <button onclick="submitWithComments()" class="action-button primary">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Help Modal -->
     <div id="help-modal-overlay" class="help-modal-overlay" onclick="closeHelpModal(event)">
         <div class="help-modal" onclick="event.stopPropagation()">
@@ -1452,6 +1518,50 @@
         </div>
     </div>
 
+    <!-- Session Recovery Modal -->
+    <div id="recovery-modal-overlay" class="help-modal-overlay">
+        <div class="help-modal" onclick="event.stopPropagation()" style="text-align: center;">
+            <div class="help-modal-title" style="justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Continue Where You Left Off?</span>
+            </div>
+            <div class="help-modal-content" style="text-align: center; margin-bottom: 20px;">
+                <p id="recovery-name" style="font-size: 1.1rem; color: var(--accent-gold); margin-bottom: 8px;"></p>
+                <p style="color: var(--text-muted);">We found your previous conversation. Would you like to continue or start fresh?</p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button onclick="startFresh()" class="action-button secondary" style="background: transparent; border: 1px solid var(--border-subtle); color: var(--text-light);">
+                    Start Fresh
+                </button>
+                <button onclick="restoreSession()" class="action-button primary">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Mode Confirmation Modal -->
+    <div id="demo-confirmation-overlay" class="help-modal-overlay">
+        <div class="help-modal" onclick="event.stopPropagation()" style="text-align: center; max-width: 400px;">
+            <div class="help-modal-title" style="justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #22c55e;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Demo Intake Sent!</span>
+            </div>
+            <div class="help-modal-content" style="text-align: center; margin-bottom: 20px;">
+                <p style="color: var(--text-muted); margin-bottom: 12px;">The intake lead has been sent to:</p>
+                <p id="demo-confirmation-email" style="font-size: 1.1rem; color: var(--accent-gold); font-weight: 500; word-break: break-all;"></p>
+                <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.9rem;">Please check your inbox to see the lead notification email.</p>
+            </div>
+            <button onclick="closeDemoConfirmation()" class="action-button primary" style="min-width: 120px;">
+                OK
+            </button>
+        </div>
+    </div>
+
     <script>
         // Configuration
         const CONFIG = {
@@ -1461,8 +1571,33 @@
             webhookUrl: {{WEBHOOK_URL}},
             webhookKey: {{WEBHOOK_KEY}},
             scheduleUrl: {{SCHEDULE_URL}},
-            state: '{{STATE}}'
+            state: '{{STATE}}',
+            firmEmail: '{{FIRM_EMAIL}}'
         };
+
+        // Fetch firm status to determine Demo vs Live mode
+        let firmStatus = { isLiveMode: false, firmName: CONFIG.firmName, firmWebsite: null };
+
+        // Additional comments state
+        let additionalComments = '';
+        let pendingAssessment = null;
+
+        async function fetchFirmStatus() {
+            try {
+                const leadId = CONFIG.webhookKey.replace(/'/g, '');
+                const response = await fetch(
+                    `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus?leadId=${leadId}`
+                );
+                if (response.ok) {
+                    firmStatus = await response.json();
+                }
+            } catch (error) {
+                console.warn('Could not fetch firm status, defaulting to demo mode');
+            }
+        }
+
+        // Fetch status on page load
+        fetchFirmStatus();
 
         // Apply firm branding
         document.getElementById('schedule-button').href = CONFIG.scheduleUrl || '#';
@@ -1479,6 +1614,62 @@
         let apiCallDepth = 0;
         let currentHelpContent = null;
         const TOTAL_STEPS = {{TOTAL_STEPS}};
+
+        // Session Recovery Constants
+        const SESSION_KEY = 'preintake_session_{{LEAD_ID}}';
+        const SESSION_TTL_HOURS = 24;
+
+        // Save session to localStorage
+        function saveSession() {
+            if (!collectedData.contact) return; // Only save if we have contact info
+            try {
+                const session = {
+                    conversationHistory,
+                    collectedData,
+                    currentStep,
+                    savedAt: Date.now()
+                };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+            } catch (e) {
+                console.warn('Could not save session:', e);
+            }
+        }
+
+        // Load session from localStorage
+        function loadSession() {
+            try {
+                const saved = localStorage.getItem(SESSION_KEY);
+                if (!saved) return null;
+
+                const session = JSON.parse(saved);
+                const hoursSinceSave = (Date.now() - session.savedAt) / (1000 * 60 * 60);
+
+                if (hoursSinceSave > SESSION_TTL_HOURS) {
+                    localStorage.removeItem(SESSION_KEY);
+                    return null;
+                }
+
+                return session;
+            } catch (e) {
+                console.warn('Could not load session:', e);
+                return null;
+            }
+        }
+
+        // Clear saved session
+        function clearSession() {
+            try {
+                localStorage.removeItem(SESSION_KEY);
+            } catch (e) {
+                console.warn('Could not clear session:', e);
+            }
+        }
+
+        // Check if we have a recoverable session
+        function hasRecoverableSession() {
+            const session = loadSession();
+            return session && session.collectedData?.contact;
+        }
 
         // Screen management
         function showScreen(screenId) {
@@ -1513,6 +1704,18 @@
             }
         }
 
+        // Show demo confirmation modal (Demo mode only)
+        function showDemoConfirmation() {
+            if (firmStatus.isLiveMode) return; // Only show in Demo mode
+            document.getElementById('demo-confirmation-email').textContent = CONFIG.firmEmail;
+            document.getElementById('demo-confirmation-overlay').classList.add('active');
+        }
+
+        // Close demo confirmation modal
+        function closeDemoConfirmation() {
+            document.getElementById('demo-confirmation-overlay').classList.remove('active');
+        }
+
         // System prompt (practice-area-specific)
         const SYSTEM_PROMPT = `{{SYSTEM_PROMPT}}`;
 
@@ -1522,8 +1725,23 @@
         // Loading stages (practice-area-specific)
         const LOADING_STAGES = {{LOADING_STAGES_JSON}};
 
-        // Start assessment
+        // Start assessment - check for recoverable session first
         function startAssessment() {
+            const session = loadSession();
+            if (session && session.collectedData?.contact) {
+                // Show recovery modal
+                const name = session.collectedData.contact.name || 'there';
+                document.getElementById('recovery-name').textContent = `Welcome back, ${name}!`;
+                document.getElementById('recovery-modal-overlay').classList.add('active');
+                return;
+            }
+
+            // No recoverable session, start fresh
+            beginFreshAssessment();
+        }
+
+        // Begin a fresh assessment (no recovery)
+        function beginFreshAssessment() {
             showScreen('chat-screen');
             conversationHistory = [];
             collectedData = {};
@@ -1531,11 +1749,55 @@
             isProcessing = false;
             apiCallDepth = 0;
             currentHelpContent = null;
+            clearSession(); // Clear any stale session data
             updateProgressSteps();
 
             const initialMessage = { role: "user", content: "{{INITIAL_MESSAGE}}" };
             conversationHistory.push(initialMessage);
             sendToAPI(conversationHistory);
+        }
+
+        // User chose to start fresh
+        function startFresh() {
+            document.getElementById('recovery-modal-overlay').classList.remove('active');
+            clearSession();
+            beginFreshAssessment();
+        }
+
+        // User chose to restore session
+        function restoreSession() {
+            document.getElementById('recovery-modal-overlay').classList.remove('active');
+            const session = loadSession();
+            if (!session) {
+                beginFreshAssessment();
+                return;
+            }
+
+            // Restore state
+            conversationHistory = session.conversationHistory || [];
+            collectedData = session.collectedData || {};
+            currentStep = session.currentStep || 1;
+            isProcessing = false;
+            apiCallDepth = 0;
+
+            // Show chat screen and rebuild conversation display
+            showScreen('chat-screen');
+            updateProgressSteps();
+
+            // Clear existing messages and re-render conversation
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML = '';
+
+            // Re-render all messages from history (skip system messages)
+            for (const msg of conversationHistory) {
+                if (msg.role === 'user' || msg.role === 'assistant') {
+                    addMessage(msg.content, msg.role, false);
+                }
+            }
+
+            // Re-enable input and scroll to bottom
+            document.querySelector('.chat-input-area').style.display = 'flex';
+            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
         }
 
         // Update progress steps
@@ -1554,6 +1816,21 @@
         // Parse AI-specified options from response
         // Format: [OPTIONS: Option 1 | Option 2 | Option 3]
         function parseAIOptions(text) {
+            // Check for multi-select format first
+            const multiMatch = text.match(/\[OPTIONS-MULTI:\s*([^\]]+)\]/);
+            if (multiMatch) {
+                const options = multiMatch[1].split('|').map(opt => ({
+                    label: opt.trim(),
+                    value: opt.trim()
+                })).filter(opt => opt.label.length > 0);
+
+                if (options.length === 0) return null;
+
+                const cleanText = text.replace(/\[OPTIONS-MULTI:[^\]]+\]/, '').trim();
+                return { text: cleanText, buttons: { multiSelect: true, buttons: options } };
+            }
+
+            // Check for single-select format
             const match = text.match(/\[OPTIONS:\s*([^\]]+)\]/);
             if (!match) return null;
 
@@ -1850,6 +2127,55 @@
             }, 5000);
         }
 
+        // Phone validation function
+        function isValidPhone(phone) {
+            const cleaned = phone.replace(/[^\d+]/g, '');
+
+            // US: 10 digits with optional +1
+            const usPattern = /^(\+?1)?[2-9]\d{2}[2-9]\d{6}$/;
+
+            // International: + followed by 7-15 digits
+            const intlPattern = /^\+[1-9]\d{6,14}$/;
+
+            if (usPattern.test(cleaned) || intlPattern.test(cleaned)) {
+                return { valid: true };
+            }
+
+            if (cleaned.length < 10) {
+                return { valid: false, reason: 'Phone number appears too short. Please enter a complete phone number.' };
+            }
+            if (cleaned.length > 15) {
+                return { valid: false, reason: 'Phone number appears too long. Please check and re-enter.' };
+            }
+
+            return { valid: false, reason: 'Please enter a valid phone number (e.g., (555) 123-4567 or +1 555 123 4567)' };
+        }
+
+        // Show phone validation error in chat
+        function showPhoneValidationError(errorMessage) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message assistant-message';
+            errorDiv.innerHTML = `
+                <div class="message-content" style="background-color: #fef2f2; border-left: 3px solid #ef4444;">
+                    <p style="color: #dc2626; margin: 0;">${errorMessage}</p>
+                </div>
+            `;
+            document.getElementById('chat-messages').appendChild(errorDiv);
+            document.getElementById('chat-messages').scrollTo({
+                top: document.getElementById('chat-messages').scrollHeight,
+                behavior: 'smooth'
+            });
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.style.opacity = '0';
+                    errorDiv.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => errorDiv.remove(), 300);
+                }
+            }, 5000);
+        }
+
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
@@ -1861,6 +2187,18 @@
                 const emailValidation = isValidEmail(message);
                 if (!emailValidation.valid) {
                     showEmailValidationError(emailValidation.reason);
+                    input.select();
+                    return;
+                }
+            }
+
+            // Check if input looks like a phone number (mostly digits, 7+ chars)
+            const phoneChars = message.replace(/[\d\s\-\(\)\+\.]/g, '');
+            const digitCount = (message.match(/\d/g) || []).length;
+            if (phoneChars.length === 0 && digitCount >= 7) {
+                const phoneValidation = isValidPhone(message);
+                if (!phoneValidation.valid) {
+                    showPhoneValidationError(phoneValidation.reason);
                     input.select();
                     return;
                 }
@@ -1978,21 +2316,25 @@
                 case 'collect_contact_info':
                     collectedData.contact = input;
                     if (currentStep === 1) { currentStep = 2; updateProgressSteps(); }
+                    saveSession(); // Save progress for session recovery
                     return "Contact information collected.";
 
                 case 'collect_case_info':
                     collectedData.case_info = input;
                     if (currentStep <= 2) { currentStep = 3; updateProgressSteps(); }
+                    saveSession(); // Save progress for session recovery
                     return "Case information collected.";
 
                 case 'collect_details':
                     collectedData.details = input;
                     if (currentStep <= 3) { currentStep = 4; updateProgressSteps(); }
+                    saveSession(); // Save progress for session recovery
                     return "Details collected.";
 
                 case 'collect_additional_info':
                     collectedData.additional = input;
                     if (currentStep <= 4) { currentStep = 5; updateProgressSteps(); }
+                    saveSession(); // Save progress for session recovery
                     return "Additional information collected.";
 
                 case 'show_question_help':
@@ -2004,9 +2346,18 @@
 
                 case 'complete_intake':
                     collectedData.assessment = input;
-                    sendWebhook(input);
-                    showLoadingScreen(input);
-                    return "Assessment complete.";
+                    // Check if GREEN or YELLOW - offer additional comments
+                    if (input.routing === 'green' || input.routing === 'yellow') {
+                        pendingAssessment = input;
+                        showScreen('additional-comments-screen');
+                        return "Assessment complete. Awaiting additional comments.";
+                    } else {
+                        // RED routing - skip additional comments
+                        clearSession(); // Clear session on successful submission
+                        sendWebhook(input);
+                        showLoadingScreen(input);
+                        return "Assessment complete.";
+                    }
 
                 default:
                     return "Tool not recognized.";
@@ -2067,6 +2418,8 @@
                 sol_status: assessment.sol_status || null,
                 injuries: assessment.injuries || null,
                 treatment_status: assessment.treatment_status || null,
+                // Additional comments from client
+                additional_comments: assessment.additional_comments || null,
                 // Full conversation transcript
                 transcript: formatTranscript(),
                 timestamp: new Date().toISOString(),
@@ -2168,7 +2521,83 @@
                     }, index * 150);
                 });
             }
+
+            // Handle post-submission display based on mode (uses firmStatus from API call)
+            const bottomActions = document.getElementById('bottom-actions');
+            const preintakePromo = document.getElementById('preintake-promo');
+            const returnToFirm = document.getElementById('return-to-firm');
+
+            if (firmStatus.isLiveMode) {
+                // Live Mode: Show only "Return to Firm" button
+                if (bottomActions) bottomActions.style.display = 'none';
+                if (preintakePromo) preintakePromo.style.display = 'none';
+                if (returnToFirm && firmStatus.firmWebsite) {
+                    returnToFirm.style.display = 'flex';
+                    document.getElementById('return-button').href = firmStatus.firmWebsite;
+                    document.getElementById('return-firm-name').textContent = firmStatus.firmName;
+                }
+            } else {
+                // Demo Mode: Show only preintake-promo
+                if (bottomActions) bottomActions.style.display = 'none';
+                if (preintakePromo) preintakePromo.style.display = 'block';
+                if (returnToFirm) returnToFirm.style.display = 'none';
+
+                // Show demo confirmation modal after a brief delay
+                setTimeout(() => {
+                    showDemoConfirmation();
+                }, 800);
+            }
         }
+
+        // === Additional Comments Functions ===
+
+        // Show textarea when user clicks "Yes"
+        function showCommentsTextarea() {
+            document.getElementById('comments-buttons').style.display = 'none';
+            document.getElementById('comments-input-section').style.display = 'block';
+            document.getElementById('additional-comments-input').focus();
+        }
+
+        // Submit without additional comments
+        function submitWithoutComments() {
+            additionalComments = '';
+            finalizeSubmission();
+        }
+
+        // Submit with additional comments
+        function submitWithComments() {
+            additionalComments = document.getElementById('additional-comments-input').value.trim();
+            finalizeSubmission();
+        }
+
+        // Complete the submission flow
+        function finalizeSubmission() {
+            if (!pendingAssessment) return;
+
+            // Add additional comments to assessment if provided
+            if (additionalComments) {
+                pendingAssessment.additional_comments = additionalComments;
+            }
+
+            clearSession(); // Clear session on successful submission
+            sendWebhook(pendingAssessment);
+            showLoadingScreen(pendingAssessment);
+            pendingAssessment = null;
+        }
+
+        // Initialize character counter on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('additional-comments-input');
+            const counter = document.getElementById('char-counter');
+
+            if (textarea && counter) {
+                textarea.addEventListener('input', function() {
+                    const length = this.value.length;
+                    counter.textContent = `${length} / 500 characters`;
+                    counter.style.color = length > 450 ? '#ef4444' : '#64748b';
+                });
+            }
+        });
 
         function startOver() {
             showScreen('landing-screen');

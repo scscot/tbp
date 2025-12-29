@@ -619,6 +619,39 @@ const submitDemoRequest = onRequest(
     }
 );
 
+/**
+ * Get firm status for intake page display logic
+ * Called by intake page on load to determine Demo vs Live mode
+ */
+const getPreIntakeFirmStatus = onRequest(
+    { region: 'us-west1', cors: true },
+    async (req, res) => {
+        const leadId = req.query.leadId;
+        if (!leadId) {
+            return res.status(400).json({ error: 'Missing leadId' });
+        }
+
+        try {
+            const doc = await db.collection('preintake_leads').doc(leadId).get();
+
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Firm not found' });
+            }
+
+            const data = doc.data();
+            return res.json({
+                isLiveMode: data.subscriptionStatus === 'active',
+                firmName: data.analysis?.firmName || 'Your Firm',
+                firmWebsite: data.website || null
+            });
+        } catch (error) {
+            console.error('Error fetching firm status:', error);
+            return res.status(500).json({ error: 'Internal error' });
+        }
+    }
+);
+
 module.exports = {
-    submitDemoRequest
+    submitDemoRequest,
+    getPreIntakeFirmStatus
 };

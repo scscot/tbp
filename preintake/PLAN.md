@@ -1,6 +1,6 @@
 # Plan: PreIntake.ai - Generalized Legal Intake Platform
 
-**Last Updated**: 2025-12-29 (Phase 12: Enhanced intake email with AI summary & transcript)
+**Last Updated**: 2025-12-29 (Phase 13: Session recovery, deduplication, additional comments, Demo/Live mode)
 
 ## Executive Summary
 
@@ -351,6 +351,90 @@ PreIntake.close();  // Close intake modal
     └── demo-intake.html            # formatTranscript() + webhook payload
 ```
 
+### Phase 13: Session Recovery, Deduplication & UX Enhancements
+- [x] **Phone Number Validation** (`demo-intake.html`)
+  - Validates US formats: `(555) 123-4567`, `555-123-4567`, `5551234567`, `+1 555 123 4567`
+  - Validates international formats: `+44 20 7123 4567`, `+49 30 12345678`
+  - Shows inline error messages with specific feedback (too short, too long, invalid format)
+  - Added `isValidPhone()` and `showPhoneValidationError()` functions
+
+- [x] **Email Header Simplification** (`intake-delivery-functions.js`)
+  - Changed "AI Screening Summary" to "Screening Summary" in email template
+
+- [x] **Demo vs Live Mode Display Logic** (`demo-intake.html`)
+  - Added `getPreIntakeFirmStatus` Cloud Function to check `subscriptionStatus` at runtime
+  - Demo Mode (`subscriptionStatus !== 'active'`): Shows PreIntake.ai promo after submission
+  - Live Mode (`subscriptionStatus === 'active'`): Shows "Return to {firmName}" button with link to firm website
+  - Bottom action buttons hidden in both modes post-submission
+
+- [x] **Additional Comments Feature** (`demo-intake.html`, `intake-delivery-functions.js`)
+  - GREEN/YELLOW qualified leads see "Is there anything else you'd like to add?" prompt
+  - Yes → Shows textarea with 500-character limit and live counter
+  - No → Proceeds directly to submission
+  - RED routing skips additional comments (goes straight to decline screen)
+  - Comments included in webhook payload and displayed in email with blue left border
+
+- [x] **Multi-select Button Support** (`demo-generator-functions.js`, `demo-intake.html`)
+  - AI can use `[OPTIONS-MULTI: Option 1 | Option 2 | Option 3]` for multi-select questions
+  - Updated `parseAIOptions()` to detect `OPTIONS-MULTI:` prefix
+  - Multi-select buttons show checkmarks when selected, allow multiple selections
+  - Updated all practice area system prompts with multi-select documentation
+
+- [x] **Deduplication** (`intake-delivery-functions.js`)
+  - Prevents duplicate emails when same lead submits multiple times
+  - Uses `intake_dedup` Firestore collection with key `{leadId}_{email}_{phone}`
+  - Returns `{success: true, duplicate: true}` for duplicate submissions (no email sent)
+  - Dedup record created before sending to prevent race conditions
+
+- [x] **Session Recovery** (`demo-intake.html`)
+  - Saves progress to localStorage after each data collection tool call
+  - 24-hour TTL for saved sessions
+  - On return: Shows "Continue Where You Left Off?" modal with user's name
+  - Options: "Continue" (restores full conversation) or "Start Fresh"
+  - Clears session on successful submission
+  - Session key: `preintake_session_{LEAD_ID}` (per-firm sessions)
+
+- [x] **Demo Mode Confirmation Modal** (`demo-intake.html`, `demo-generator-functions.js`)
+  - After intake completion in Demo mode, shows confirmation modal
+  - "Demo Intake Sent!" with green checkmark icon
+  - "The intake lead has been sent to: {firmEmail}"
+  - "Please check your inbox to see the lead notification email."
+  - OK button to dismiss
+  - Only shows when `firmStatus.isLiveMode === false`
+  - Added `{{FIRM_EMAIL}}` placeholder to template system
+
+**Data Flow Updates:**
+```
+Intake completes → Check dedup → Send webhook → Show loading → Show results
+                                                              ↓
+                                              Demo Mode: Show confirmation modal
+                                              Live Mode: Show "Return to Firm" CTA
+```
+
+**Session Recovery Flow:**
+```
+User starts intake → Contact info collected → saveSession() to localStorage
+          ↓
+User closes browser
+          ↓
+User returns (within 24 hours) → loadSession() → Show recovery modal
+          ↓
+"Continue" → Restore conversation history → Resume from last message
+"Start Fresh" → clearSession() → Begin new intake
+```
+
+**Files Modified:**
+```
+/functions/
+├── demo-generator-functions.js       # Multi-select prompts, FIRM_EMAIL placeholder
+├── intake-delivery-functions.js      # Deduplication, "Screening Summary" header
+├── preintake-functions.js            # getPreIntakeFirmStatus function
+└── templates/
+    └── demo-intake.html              # Session recovery, phone validation,
+                                      # additional comments, confirmation modal,
+                                      # Demo/Live mode display logic
+```
+
 ---
 
 ## Architecture
@@ -465,15 +549,23 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 3. ~~**Test end-to-end payment flow**~~ - ✅ Done (2025-12-28, test card checkout successful)
 4. ~~**Account activation email**~~ - ✅ Done (sends to customer + Stephen on checkout.session.completed)
 5. ~~**Payment success page polish**~~ - ✅ Done (firm name, embed options, delivery email display)
+6. ~~**Phase 13 UX enhancements**~~ - ✅ Done (2025-12-29)
+   - Phone number validation (US + international formats)
+   - Session recovery (24-hour localStorage with recovery modal)
+   - Deduplication (prevents duplicate intake emails)
+   - Additional comments feature (GREEN/YELLOW leads only)
+   - Multi-select button support (`[OPTIONS-MULTI:]` format)
+   - Demo/Live mode display logic (promo vs "Return to Firm")
+   - Demo confirmation modal ("Intake sent to {email}")
 
 ### Scheduled Next Steps
-6. **Deploy payment-success.html** - Deploy updated page to Firebase hosting
-7. **Switch to Stripe live mode** - Replace test keys with live keys in `stripe-functions.js`
-8. **End-to-end live test** - Complete a real payment with live credentials
-9. **Lead delivery configuration** - Allow customers to configure delivery email/CRM/webhook
-10. **Demo expiration** - Auto-delete demos after 30 days (or on subscription cancel)
-11. **Customer portal** - Allow customers to manage subscription (Stripe Customer Portal)
-12. **Analytics dashboard** - Track demo engagement metrics
+7. **Deploy payment-success.html** - Deploy updated page to Firebase hosting
+8. **Switch to Stripe live mode** - Replace test keys with live keys in `stripe-functions.js`
+9. **End-to-end live test** - Complete a real payment with live credentials
+10. **Lead delivery configuration** - Allow customers to configure delivery email/CRM/webhook
+11. **Demo expiration** - Auto-delete demos after 30 days (or on subscription cancel)
+12. **Customer portal** - Allow customers to manage subscription (Stripe Customer Portal)
+13. **Analytics dashboard** - Track demo engagement metrics
 
 ---
 

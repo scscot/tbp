@@ -196,6 +196,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{INITIAL_MESSAGE}}': getInitialMessage(practiceArea, state),
         '{{AVATAR_ICON}}': avatarIcon,
         '{{LEAD_ID}}': leadId,
+        '{{FIRM_EMAIL}}': leadData.email || '',
     };
 
     for (const [token, value] of Object.entries(replacements)) {
@@ -350,19 +351,27 @@ CRITICAL RULES:
 When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
 [OPTIONS: Option 1 | Option 2 | Option 3]
 
+For questions where users can select MULTIPLE answers (e.g., "what types of...", "which of these apply...", "what kinds of..."), use:
+[OPTIONS-MULTI: Option 1 | Option 2 | Option 3 | Option 4]
+
 Guidelines for buttons:
-- Use 2-5 options maximum
+- Use 2-7 options maximum
 - Keep option labels short (1-4 words each)
-- Make options mutually exclusive and cover likely responses
+- For single-select: Make options mutually exclusive
+- For multi-select: Options can overlap (user selects all that apply)
 - For yes/no questions: [OPTIONS: Yes | No] or include a third option like "Not sure"
 - For open-ended questions (name, phone, email, or when you need detailed descriptions), do NOT include options
 
-Examples:
+Examples (single-select):
 - "Have you seen a doctor for your injuries?" followed by [OPTIONS: Yes | No | Not yet]
 - "When did this incident occur?" followed by [OPTIONS: Within the last month | 1-6 months ago | 6-12 months ago | Over a year ago]
 - "What is your current employment status?" followed by [OPTIONS: Employed | Self-employed | Unemployed | Retired | Disabled]
 
-DO NOT list options in your prose text. ONLY use the [OPTIONS:] format at the end.
+Examples (multi-select - user can choose multiple):
+- "What types of debt do you have?" followed by [OPTIONS-MULTI: Credit Cards | Medical Bills | Car Loan | Mortgage | Student Loans | Personal Loans]
+- "Which injuries did you sustain?" followed by [OPTIONS-MULTI: Head/Brain | Neck/Back | Broken Bones | Internal | Soft Tissue | Other]
+
+DO NOT list options in your prose text. ONLY use the [OPTIONS:] or [OPTIONS-MULTI:] format at the end.
 
 ## Question Flow (strictly one question at a time):
 
@@ -384,7 +393,7 @@ ${allPracticePrompts}
 - Be empathetic but professional
 - After user answers, provide brief acknowledgment, then ask the NEXT question
 - NEVER ask multiple questions
-- ALWAYS include [OPTIONS: ...] for questions with defined answer choices
+- ALWAYS include [OPTIONS: ...] or [OPTIONS-MULTI: ...] for questions with defined answer choices
 
 ## After All Questions
 Call complete_intake with the assessment results.`;
@@ -405,19 +414,27 @@ CRITICAL RULES:
 When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
 [OPTIONS: Option 1 | Option 2 | Option 3]
 
+For questions where users can select MULTIPLE answers (e.g., "what types of...", "which of these apply...", "what kinds of..."), use:
+[OPTIONS-MULTI: Option 1 | Option 2 | Option 3 | Option 4]
+
 Guidelines for buttons:
-- Use 2-5 options maximum
+- Use 2-7 options maximum
 - Keep option labels short (1-4 words each)
-- Make options mutually exclusive and cover likely responses
+- For single-select: Make options mutually exclusive
+- For multi-select: Options can overlap (user selects all that apply)
 - For yes/no questions: [OPTIONS: Yes | No] or include a third option like "Not sure"
 - For open-ended questions (name, phone, email, or when you need detailed descriptions), do NOT include options
 
-Examples:
+Examples (single-select):
 - "Have you seen a doctor for your injuries?" followed by [OPTIONS: Yes | No | Not yet]
 - "When did this incident occur?" followed by [OPTIONS: Within the last month | 1-6 months ago | 6-12 months ago | Over a year ago]
 - "What is your current employment status?" followed by [OPTIONS: Employed | Self-employed | Unemployed | Retired | Disabled]
 
-DO NOT list options in your prose text. ONLY use the [OPTIONS:] format at the end.
+Examples (multi-select - user can choose multiple):
+- "What types of debt do you have?" followed by [OPTIONS-MULTI: Credit Cards | Medical Bills | Car Loan | Mortgage | Student Loans | Personal Loans]
+- "Which injuries did you sustain?" followed by [OPTIONS-MULTI: Head/Brain | Neck/Back | Broken Bones | Internal | Soft Tissue | Other]
+
+DO NOT list options in your prose text. ONLY use the [OPTIONS:] or [OPTIONS-MULTI:] format at the end.
 
 ${practicePrompt}
 
@@ -426,7 +443,7 @@ ${practicePrompt}
 - Be empathetic but professional
 - After user answers, provide brief acknowledgment, then ask the NEXT question
 - NEVER ask multiple questions
-- ALWAYS include [OPTIONS: ...] for questions with defined answer choices
+- ALWAYS include [OPTIONS: ...] or [OPTIONS-MULTI: ...] for questions with defined answer choices
 
 ## After All Questions
 Call complete_intake with the assessment results.`;
@@ -966,7 +983,7 @@ function generateTools(practiceArea) {
                         }
                     }
                 },
-                required: ["routing", "urgency", "recommended_next_action", "key_factors", "ai_screening_summary"]
+                required: ["routing", "urgency", "confidence_level", "recommended_next_action", "key_factors", "ai_screening_summary"]
             }
         }
     ];

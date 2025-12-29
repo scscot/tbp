@@ -57,6 +57,35 @@ const handleIntakeCompletion = onRequest(
 
             console.log(`Processing intake completion for lead: ${leadId}`);
 
+            // === DEDUPLICATION CHECK ===
+            // Prevent duplicate emails if user submits multiple times
+            const email = payload.lead?.email?.toLowerCase()?.trim() || '';
+            const phone = payload.lead?.phone?.replace(/\D/g, '') || '';
+
+            if (email || phone) {
+                const dedupKey = `${leadId}_${email}_${phone}`;
+                const dedupRef = db.collection('intake_dedup').doc(dedupKey);
+                const dedupDoc = await dedupRef.get();
+
+                if (dedupDoc.exists) {
+                    console.log(`Duplicate submission detected for ${dedupKey}, skipping email`);
+                    return res.status(200).json({
+                        success: true,
+                        duplicate: true,
+                        message: 'Intake already submitted'
+                    });
+                }
+
+                // Mark as submitted (do this before sending to prevent race conditions)
+                await dedupRef.set({
+                    leadId,
+                    email,
+                    phone,
+                    submittedAt: FieldValue.serverTimestamp()
+                });
+            }
+            // === END DEDUPLICATION CHECK ===
+
             // Get lead document to find delivery config
             const leadDoc = await db.collection('preintake_leads').doc(leadId).get();
 
@@ -363,7 +392,7 @@ function generateIntakeSummary(payload, firmName) {
         <!-- AI Screening Summary -->
         ${payload.ai_screening_summary ? `
         <div style="background: #f8fafc; border-left: 4px solid #c9a962; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">
-            <h3 style="color: #c9a962; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">AI Screening Summary</h3>
+            <h3 style="color: #c9a962; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">Screening Summary</h3>
             <p style="margin: 0; color: #1a1a2e; font-size: 15px; line-height: 1.7;">${payload.ai_screening_summary}</p>
         </div>
         ` : ''}
@@ -433,6 +462,14 @@ function generateIntakeSummary(payload, firmName) {
         <div style="background: #fffbeb; border-radius: 8px; padding: 15px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
             ${payload.primary_strength_factor ? `<p style="margin: 0 0 8px 0;"><strong style="color: #166534;">Strength:</strong> ${payload.primary_strength_factor}</p>` : ''}
             ${payload.primary_disqualifier ? `<p style="margin: 0;"><strong style="color: #991b1b;">Concern:</strong> ${payload.primary_disqualifier}</p>` : ''}
+        </div>
+        ` : ''}
+
+        <!-- Additional Comments from Client -->
+        ${payload.additional_comments ? `
+        <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">
+            <h3 style="color: #0ea5e9; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">Additional Comments from Client</h3>
+            <p style="margin: 0; color: #1a1a2e; font-size: 15px; line-height: 1.7;">${escapeHtml(payload.additional_comments)}</p>
         </div>
         ` : ''}
 
