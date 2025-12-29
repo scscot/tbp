@@ -18,5 +18,8 @@
   "scripts": {
     "start": "firebase emulators:start",
     "deploy": "firebase deploy --only functions"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.34.0"
   }
 }
