@@ -1,18 +1,390 @@
-# Plan: PreIntake.ai - Generalized Legal Intake Platform
+# PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2025-12-29 (Phase 13: Session recovery, deduplication, additional comments, Demo/Live mode)
-
-## Executive Summary
-
-**Recommendation: YES - Broaden scope beyond PI/California**
-
-Market research strongly supports generalizing the intake platform to serve any legal discipline nationwide. This positions preintake.ai as a horizontal legal tech platform rather than a niche California PI tool.
+**Last Updated**: 2025-12-29
+**Version**: 2.0 (Merged: Technical Implementation + Product Overview + Customer Journey)
 
 ---
 
-## Market Research Findings
+## Table of Contents
+
+1. [Product Overview](#product-overview)
+2. [Customer Journey](#customer-journey)
+3. [Practice Areas Supported](#practice-areas-supported)
+4. [3-Gate Screening Process](#3-gate-screening-process)
+5. [Pricing](#pricing)
+6. [Target Customers](#target-customers)
+7. [Market Research](#market-research)
+8. [Strategic Recommendations](#strategic-recommendations)
+9. [Implementation Status](#implementation-status)
+10. [Architecture](#architecture)
+11. [Security Features](#security-features)
+12. [Demo Generation Flow](#demo-generation-flow)
+13. [Lead Delivery Configuration](#lead-delivery-configuration)
+14. [CRM Integration Research](#crm-integration-research)
+15. [Compliance](#compliance)
+16. [Deployment Model](#deployment-model)
+17. [Current Gaps & Future Improvements](#current-gaps--future-improvements)
+18. [Technical Reference](#technical-reference)
+19. [Success Metrics](#success-metrics)
+20. [Contact](#contact)
+
+---
+
+## Product Overview
+
+### The Problem
+
+Law firm intake staff spend hours qualifying leads that never sign. Meanwhile, real cases slip through because generic forms can't distinguish a strong case from a dead end.
+
+**The math:**
+- 60-70% of intake form submissions are unqualified
+- Each unqualified call costs $25-50 in staff time
+- Time-sensitive cases get lost in the noise
+- 45% of law firms use 5-10+ fragmented technologies
+
+Generic contact forms and chatbots don't solve this. They just flood your inbox faster—with no legal training and high error rates.
+
+### The Solution
+
+**AI-powered intake that screens like your best paralegal—before leads hit your CRM.**
+
+Unlike traditional forms or CRM intake tools, PreIntake.ai conducts a real conversation. It asks the right questions, adapts based on answers, and routes leads before they reach staff:
+
+| Routing | What It Means | What Happens |
+|---------|---------------|--------------|
+| **GREEN** | Strong case indicators | → Instant calendar booking |
+| **YELLOW** | Needs documentation | → Queued for records review |
+| **RED** | Cannot help | → Polite decline with resources |
+
+Staff only see qualified leads. Unqualified submissions never waste their time.
+
+### How It's Different
+
+**This is not another form builder or CRM.**
+
+| Feature | Form Builders / CRMs | PreIntake.ai |
+|---------|---------------------|--------------|
+| Intake style | Static forms, fixed fields | Conversational AI that adapts to each case type |
+| Screening | Generic lead scoring | Practice-area-specific legal screening |
+| Disqualification | Manual review required | Instant (SOL, jurisdiction, conflicts, representation) |
+| Output | Raw form data | Routing decision + plain-English rationale |
+| Integration | Replaces your system | Feeds INTO your existing CRM |
+
+**We sit in front of Lawmatics, Clio, or Filevine—not instead of them.**
+
+Your CRM manages leads. We make sure only real cases get there in the first place.
+
+### What You Get
+
+**Branded Intake Page**
+- Your firm's logo, colors, and messaging
+- Mobile-optimized (60%+ of leads come from phones)
+- Fast load time / Core Web Vitals compliant
+- Jurisdiction-specific compliance disclaimers built in
+- Hosted on our infrastructure—nothing to maintain
+
+**CRM Integration**
+- Webhook delivery to Lawmatics, Clio Grow, Filevine, or any system
+- Green leads auto-route to your consultation calendar
+- Structured case data—no more deciphering form submissions
+
+**Analytics Dashboard** (Future)
+- Completion rate tracking (see where leads drop off)
+- Green/Yellow/Red distribution by practice area
+- Conversion tracking: leads → consults → signed cases
+- A/B testable question flows (optimize for your audience)
+- Monthly ROI reporting
+
+---
+
+## Customer Journey
+
+### Overview
+
+The PreIntake.ai customer journey spans 7 phases from initial discovery to ongoing subscription management.
+
+```
+Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow → Subscription
+```
+
+### Phase 1: Discovery
+
+**Entry Points:**
+- Google search → preintake.ai landing page
+- Referral from existing customer
+- LinkedIn outreach / sales call
+- Legal tech conferences / webinars
+
+**User Actions:**
+- Views landing page (practice areas, pricing, demo video)
+- Enters law firm website URL in demo request form
+- Provides email and practice area breakdown
+
+**System Response:**
+- Validates email (MX lookup, disposable domain check)
+- Validates website (legal keyword detection)
+- Stores lead in Firestore with status `pending`
+- Sends confirmation email: "Your AI Intake Demo is Being Built"
+- Notifies Stephen of new demo request
+
+### Phase 2: Demo Generation
+
+**Trigger:** Firestore onCreate for new lead document
+
+**System Actions:**
+1. Website Analysis (`analyzePreIntakeLead`)
+   - Scrapes homepage for firm name, logo, colors, contact info
+   - Extracts practice areas from navigation and content
+2. Deep Research (`performDeepResearch`)
+   - Discovers additional pages (attorneys, results, testimonials)
+   - Extracts attorney names, bios, case results
+   - Structures data with Claude Haiku
+3. Demo Generation (`generatePreIntakeDemo`)
+   - Applies firm branding to intake template
+   - Configures practice-area-specific prompts
+   - Uploads to Firebase Storage
+
+**Output:**
+- Working demo intake at `https://preintake.ai/demo/{leadId}`
+- Demo ready email to Stephen with firm details and demo URL
+
+**User Actions:**
+- Receives demo URL (via Stephen or automated email)
+- Tests intake conversation
+- Sees their branding, practice areas, and screening logic in action
+- Receives sample lead notification email
+
+### Phase 3: Payment
+
+**Entry:** User clicks "Activate Your Account" from demo page or direct link
+
+**Page:** `/create-account.html?firm={leadId}`
+
+**Flow:**
+1. User reviews pricing ($399 setup + $129/month)
+2. Clicks "Complete Setup" → Stripe Checkout
+3. Stripe processes payment (setup fee + first month subscription)
+4. Webhook (`checkout.session.completed`) → Updates Firestore
+5. Redirect to `/payment-success.html`
+
+**Account Activation:**
+- `subscriptionStatus` set to `active`
+- Customer receives activation email
+- Stephen receives notification
+
+### Phase 4: Onboarding
+
+**Page:** `/payment-success.html`
+
+**What Customer Sees:**
+- Account details (Firm Name, Plan, Lead Delivery Email)
+- Embed code options (Floating Button, Inline Widget, Direct URL, iframe)
+- Position options for button placement
+- "Copy to Clipboard" functionality
+
+**Immediate Access:**
+- Live intake widget ready to embed
+- Email delivery configured automatically
+- No additional setup required
+
+### Phase 5: Implementation
+
+**Customer Actions:**
+- Copies embed code from success page
+- Adds script tag to their website (contact page, footer, etc.)
+- Tests live intake with real conversation
+
+**Embed Options:**
+| Option | Code | Use Case |
+|--------|------|----------|
+| Floating Button | `<script src="https://preintake.ai/intake-button.js" data-firm="ID" data-position="bottom-right"></script>` | Persistent CTA on any page |
+| Inline Widget | `<div id="preintake"></div><script src="https://preintake.ai/widget.js" data-firm="ID"></script>` | Dedicated contact page |
+| Direct URL | `https://preintake.ai/demo/FIRM_ID` | Email links, QR codes |
+| iframe | `<iframe src="https://preintake.ai/demo/FIRM_ID"></iframe>` | Maximum isolation |
+
+### Phase 6: Lead Flow (Ongoing)
+
+**Trigger:** Potential client completes intake conversation
+
+**Flow:**
+1. Visitor engages with intake widget
+2. Conversational AI collects case information
+3. Screening logic evaluates case strength
+4. Assessment generated with routing (GREEN/YELLOW/RED)
+5. Lead delivered via configured method (email default)
+
+**Delivery Contents:**
+- Contact information (name, phone, email)
+- Case summary and key facts
+- Screening assessment with rationale
+- Full conversation transcript
+- Urgency flags and recommended next action
+
+**Post-Submission (Demo Mode):**
+- Confirmation modal: "The intake lead has been sent to {email}"
+- PreIntake.ai promo displayed
+
+**Post-Submission (Live Mode):**
+- "Return to {firmName}" button with link to firm website
+
+### Phase 7: Subscription Management
+
+**Billing:** Monthly via Stripe ($129/month after initial $528)
+
+**Customer Portal:** (Future)
+- Manage payment method
+- View billing history
+- Upgrade/downgrade plans
+- Cancel subscription
+
+**Subscription Events Tracked:**
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+- `invoice.payment_succeeded`
+- `invoice.payment_failed`
+
+---
+
+## Practice Areas Supported
+
+PreIntake.ai uses practice-area-specific templates—each with tailored screening logic, qualification criteria, and conversational flows.
+
+### Personal Injury
+- Vehicle accidents (Car, Motorcycle, Truck, Pedestrian, Bicycle)
+- Rideshare incidents (Uber/Lyft passenger, driver, or third-party)
+- Premises liability (Slip and Fall, negligent security)
+- Animal attacks, Wrongful Death
+- **Key screening**: SOL, fault, injuries, insurance, existing representation
+
+### Immigration
+- Family-based (spouse, parent, sibling)
+- Employment-based (H-1B, L-1, PERM)
+- Asylum and humanitarian (asylum, VAWA, U-visa)
+- Naturalization and citizenship
+- **Key screening**: Visa status, timeline, bars to admission, prior violations
+
+### Family Law
+- Divorce (contested, uncontested)
+- Child custody and support
+- Prenuptial/postnuptial agreements
+- Domestic violence protective orders
+- **Key screening**: Jurisdiction, minor children, assets, urgency
+
+### Bankruptcy
+- Chapter 7 (liquidation)
+- Chapter 13 (reorganization)
+- Means test pre-qualification
+- **Key screening**: Income, debt type, prior filings, asset protection
+
+### Criminal Defense
+- Misdemeanor and felony defense
+- DUI/DWI
+- Federal crimes
+- **Key screening**: Charges, court dates, bail status, existing representation
+
+### Tax Litigation
+- IRS disputes and audits
+- State tax agency conflicts
+- Offer in Compromise evaluation
+- **Key screening**: Tax type, amount at stake, procedural posture
+
+### Estate Planning
+- Wills and trusts
+- Power of attorney
+- Estate administration
+- **Key screening**: Asset complexity, family dynamics, urgency
+
+*Additional practice areas available on request. Our template system makes new verticals fast to deploy.*
+
+---
+
+## 3-Gate Screening Process
+
+**Customized Per Practice Area**
+
+### Gate 1: Hard Disqualifiers (< 60 seconds)
+- Statute of limitations / deadline checks
+- Jurisdiction verification
+- Conflict of interest screening
+- Existing representation check
+
+### Gate 2: Case Strength Assessment
+- Practice-specific liability/merit indicators
+- Documentation and evidence availability
+- Timeline and urgency factors
+
+### Gate 3: Practical Viability
+- Financial exposure vs. recovery potential
+- Complexity assessment
+- Collectability / ability to pay
+
+**Output**: Structured data with routing recommendation, urgency flag, and plain-English rationale—delivered to your CRM automatically via webhook.
+
+---
+
+## Pricing
+
+| Component | Amount |
+|-----------|--------|
+| **One-time Implementation Fee** | $399 |
+| **Monthly Subscription** | $129/mo |
+| **Total Due Today** | **$528** |
+
+### Implementation Fee Includes:
+- Practice-area template configuration
+- Firm branding (logo, colors, messaging)
+- Email delivery setup (webhook/CRM optional)
+- Compliance review for your jurisdiction
+- Working demo for approval
+
+### Monthly Subscription Includes:
+- Hosting and AI infrastructure
+- Unlimited intakes
+- Email support
+- Ongoing updates and improvements
+- Analytics dashboard (when available)
+
+**No long-term contracts.** Cancel anytime.
+
+### The Math (ROI)
+
+When you're spending $300-500 per lead, even small conversion improvements mean real money.
+
+**Example scenario:**
+- Current: 100 leads/month, 30 qualified, 10 consults, 5 signed
+- After: 100 leads/month, 40 qualified*, 18 consults, 9 signed
+
+*Not more qualified leads—better identification of existing qualified leads.*
+
+**Result:** 4 additional signed cases/month × $15K average fee = **$60K incremental revenue**
+
+**Your cost:** $129/month
+
+**ROI:** 465:1
+
+---
+
+## Target Customers
+
+### Good Fit
+- Law firms spending $5K+/month on advertising
+- Intake staff overwhelmed by lead volume
+- Multi-practice firms wanting practice-specific screening
+- Firms wanting measurable conversion data
+- Partners tired of reviewing junk consultations
+
+### Not a Fit
+- Firms with < 20 leads/month (not enough volume to justify)
+- Firms that want to review every submission personally
+- Practices with highly unique intake needs (contact us—we may be able to help)
+
+---
+
+## Market Research
 
 ### Market Size & Growth
+
 | Segment | 2025 Size | 2030 Projection | CAGR |
 |---------|-----------|-----------------|------|
 | Legal AI Software | $3.11B | $10.82B | **28.3%** |
@@ -22,6 +394,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 **Key insight**: Legal AI is the fastest-growing segment at 28.3% CAGR.
 
 ### AI Adoption by Practice Area
+
 | Practice Area | AI Adoption | Intake Complexity |
 |---------------|-------------|-------------------|
 | **Immigration** | **47%** (highest) | Very High |
@@ -34,6 +407,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 **Key insight**: Immigration lawyers are the most AI-hungry (47%) but underserved by current tools.
 
 ### Competitive Landscape
+
 | Competitor | Model | Price | Gap |
 |------------|-------|-------|-----|
 | Lawmatics | CRM + intake | Custom | Generic, not practice-specific |
@@ -44,6 +418,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 **Key insight**: No competitor offers practice-area-specific conversational AI intake that sits *in front of* CRMs.
 
 ### Pain Points (Opportunity)
+
 1. **60-70% of intake submissions are unqualified** - massive waste
 2. **AI error rates too high** - best legal AI scores 77.9% accuracy (unacceptable)
 3. **Fragmented tools** - 45% of firms use 5-10+ different technologies
@@ -51,6 +426,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 5. **Generic solutions fail** - practice-specific screening needed
 
 ### Geographic Considerations
+
 - 8 states adding privacy laws in 2025
 - SOL varies by state and case type
 - Bar association rules differ by jurisdiction
@@ -58,7 +434,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 
 ---
 
-## Strategic Recommendation
+## Strategic Recommendations
 
 ### Why Broaden Scope?
 
@@ -83,7 +459,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 ## Implementation Status
 
 ### Phase 0: Documentation
-- [x] Copy this plan to `/preintake/PLAN.md` for project reference
+- [x] Create `/preintake/PLAN.md` for project reference
 
 ### Phase 1: Foundation
 - [x] Generalize preintake.html to be template-driven
@@ -137,7 +513,7 @@ Market research strongly supports generalizing the intake platform to serve any 
 
 ### Phase 7: Dynamic Practice Area Selection
 - [x] After contact info collected, ask user to select their case type
-- [x] Show buttons for each practice area from self-reported breakdown (landing page form)
+- [x] Show buttons for each practice area from self-reported breakdown
 - [x] Skip practice area question if firm only handles one area
 - [x] Branch to practice-area-specific questions based on selection
 - [x] Update `detectQuestionButtons` to show firm's practice areas dynamically
@@ -150,12 +526,6 @@ Market research strongly supports generalizing the intake platform to serve any 
    → [Personal Injury] [Family Law] [Bankruptcy] (firm-specific buttons)
 3. Branch to selected practice area's question flow
 ```
-
-**Benefits:**
-- More relevant intake for multi-practice firms
-- Better lead qualification (wrong practice area = disqualifier)
-- Uses self-reported practice areas from landing page form (not website analysis)
-- Single-practice firms skip the question (no friction)
 
 ### Phase 8: Intake Delivery System
 - [x] Create `intake-delivery-functions.js` with `handleIntakeCompletion`
@@ -171,322 +541,140 @@ Market research strongly supports generalizing the intake platform to serve any 
 Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via email/webhook → Discard data
 ```
 
-**Delivery Options:**
-| Method | Description | Status |
-|--------|-------------|--------|
-| Email | HTML summary to firm's intake address | ✅ Implemented |
-| Webhook | POST JSON to custom URL | ✅ Implemented |
-| CRM | Direct integration (Law Ruler, Filevine, etc.) | 🔮 Future |
-
-**Key Principle:** PreIntake.ai does NOT retain client data. All intake information is immediately delivered and discarded.
-
 ### Phase 9: Account Creation & Payment
 - [x] Create `/preintake/create-account.html` page
 - [x] Create `/preintake/payment-success.html` page
 - [x] Stripe integration (`stripe-functions.js`)
-  - [x] `createCheckoutSession` - Creates Stripe Checkout session with setup fee + subscription
+  - [x] `createCheckoutSession` - Creates Stripe Checkout session
   - [x] `getStripeConfig` - Returns publishable key and pricing info
   - [x] `stripeWebhook` - Handles subscription events (with signature verification)
-  - [x] `verifyCheckoutSession` - Verifies payment status (returns firmName, customerEmail)
+  - [x] `verifyCheckoutSession` - Verifies payment status
 - [x] Stripe webhook configured in Stripe Dashboard
-- [x] Webhook signing secret stored as Firebase secret (`STRIPE_WEBHOOK_SECRET`)
+- [x] Webhook signing secret stored as Firebase secret
 - [x] Subscription status tracking in Firestore
 - [x] Account activation email (customer + Stephen notification)
-- [x] Payment success page refinements:
-  - [x] Displays firm name instead of email in Account row
-  - [x] Embed code includes `data-position="bottom-right"` with position options hint
-  - [x] Shows lead delivery email in gold accent color
-  - [x] Confetti animation on success
+- [x] Payment success page refinements
 - [ ] Delivery method selection (email, webhook, CRM) - Future
 - [ ] CRM credentials input for direct integrations - Future
 
-**Pricing:**
-| Item | Amount |
-|------|--------|
-| One-time Implementation Fee | $399 |
-| Monthly Subscription | $129/mo |
-| **Total Due Today** | **$528** |
-
-**Account Activation Flow:**
-```
-Demo expires → /create-account.html?firm=ID → Stripe Checkout → /payment-success.html
-```
-
-**Stripe Webhook Events Handled:**
-- `checkout.session.completed` - Marks account as active
-- `customer.subscription.created/updated/deleted` - Tracks subscription status
-- `invoice.payment_succeeded/failed` - Tracks payment status
-
-**Stripe Configuration:**
-- Webhook endpoint: `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/stripeWebhook`
-- Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
-- Mode: Test (switch to live keys for production)
-
-**Price IDs:**
+**Stripe Price IDs:**
 | Environment | Implementation Fee | Monthly Subscription |
 |-------------|-------------------|---------------------|
 | **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
 | **Live** | `price_1SjOXiJBdoLMDposfZXL8nZX` | `price_1SjORKJBdoLMDpos9wBBZbzd` |
 
-**Note:** Test and live mode have separate price IDs. Update `stripe-functions.js` when switching modes.
-
 ### Phase 10: Embeddable Widget
 - [x] Create `intake-button.js` - floating button that opens intake modal
 - [x] Create `widget.js` - inline widget with Shadow DOM encapsulation
-- [x] Create `serveDemo` Cloud Function to proxy demo HTML (CORS bypass for iframes)
+- [x] Create `serveDemo` Cloud Function to proxy demo HTML
 - [x] Add `/demo/:firmId` URL rewrite in Firebase hosting
-- [x] Support 6 button positions: bottom-right, bottom-left, bottom-center, top-right, top-left, top-center
+- [x] Support 6 button positions
 - [x] Create `EMBED-INSTRUCTIONS.md` documentation
 - [x] Create `intake-button-test.html` for testing
 
-**Embed Options:**
-| Option | Snippet | Use Case |
-|--------|---------|----------|
-| Intake Button | `<script src="https://preintake.ai/intake-button.js" data-firm="ID" data-position="bottom-right"></script>` | Floating CTA on any page |
-| Inline Widget | `<div id="preintake"></div><script src="https://preintake.ai/widget.js" data-firm="ID"></script>` | Dedicated contact page |
-| Direct URL | `https://preintake.ai/demo/FIRM_ID` | Email links, QR codes |
-| iframe | `<iframe src="https://preintake.ai/demo/FIRM_ID"></iframe>` | Maximum isolation |
-
-**Button Positions:** `bottom-right` (default), `bottom-left`, `bottom-center`, `top-right`, `top-left`, `top-center`
-
-**Programmatic Control:**
-```javascript
-PreIntake.open();   // Open intake modal
-PreIntake.close();  // Close intake modal
-```
-
 ### Phase 11: Website Expansion
 - [x] Create shared header/footer component (`/preintake/js/components.js`)
-  - Header: PreIntake.ai text logo + hamburger menu (Home, About, Contact, FAQs)
-  - Footer: Copyright, Privacy Policy, Terms of Service, Contact links
-  - Self-initializing IIFE with DOM-ready detection
-- [x] Update landing page (`/preintake/index.html`)
-  - Added header/footer components
-  - Added pricing section ($399 setup + $129/mo)
-  - Added "Request Free Demo" callout section
+- [x] Update landing page with header/footer, pricing, demo CTA
 - [x] Create About Us page (`/preintake/about-us.html`)
-  - Company narrative and mission
-  - Problem/solution messaging (60-70% unqualified leads)
-  - Values grid (Practice-Specific, Privacy-Focused, Integrates, Conversational)
 - [x] Create Contact Us page (`/preintake/contact-us.html`)
-  - Contact form with mailto fallback
-  - support@preintake.ai email
-  - 24-hour response time commitment
 - [x] Create FAQ page (`/preintake/faq.html`)
-  - 8 questions with accordion functionality
-  - Covers pricing, data retention, integrations, customization
 - [x] Create Privacy Policy page (`/preintake/privacy-policy.html`)
-  - Emphasizes no lead data retention
-  - CCPA/GDPR compliance statements
-  - Third-party services (Stripe, Claude AI, Firebase)
 - [x] Create Terms of Service page (`/preintake/terms-of-service.html`)
-  - 18 sections covering service, payments, liability
-  - California governing law
-- [x] Add data privacy language to intake page (`/preintake/preintake.html`)
-  - "Your Data, Your Control" notice with shield icon
-  - Green highlight box after disclaimer
-- [x] Update payment success page with header/footer
-- [x] Update create account page with header/footer
-
-**Files Created:**
-```
-/preintake/
-├── js/components.js        # Shared header/footer component
-├── about-us.html           # About us page
-├── contact-us.html         # Contact form page
-├── faq.html                # FAQ with accordions
-├── privacy-policy.html     # Privacy policy
-└── terms-of-service.html   # Terms of service
-```
-
-**Files Modified:**
-```
-/preintake/
-├── index.html              # Added header/footer, pricing, demo CTA
-├── preintake.html          # Added data privacy notice
-├── payment-success.html    # Added header/footer
-└── create-account.html     # Added header/footer
-```
+- [x] Add data privacy language to intake page
 
 ### Phase 12: Enhanced Intake Email
-- [x] Expand `complete_intake` tool schema with new fields:
-  - `ai_screening_summary`: 2-3 sentence narrative summary of the case
-  - `sol_status`: Object with status (within/near_expiration/expired), months_remaining, note
-  - `injuries`: List of injuries (for PI cases)
-  - `treatment_status`: Current medical treatment status
-- [x] Update all 8 practice area prompts with `## When Calling collect_case_info` instructions
-  - Claude now saves date_occurred and location fields when learned during intake
-  - Personal Injury, Immigration, Family Law, Tax, Bankruptcy, Criminal Defense, Estate Planning, Generic
+- [x] Expand `complete_intake` tool schema with new fields
+- [x] Update all 8 practice area prompts with case info instructions
 - [x] Add `formatTranscript()` function to demo template
-  - Extracts readable conversation from `conversationHistory`
-  - Formats as "Visitor: ..." / "Assistant: ..." dialogue
-  - Removes internal [OPTIONS: ...] markers
 - [x] Add full conversation transcript to webhook payload
-- [x] Redesign email template (`generateIntakeSummary()`) to match homepage mockup:
-  - AI Screening Summary section with gold left border
-  - Case Details grid with SOL Status, Injuries, Treatment
-  - SOL "Expired" displayed in red (#ef4444)
-  - Full Conversation Transcript with styled Visitor/Assistant labels
-  - XSS protection via `escapeHtml()` helper function
+- [x] Redesign email template with professional styling
 
-**Email Sections (Enhanced):**
+**Email Sections:**
 ```
 1. Header - "New Intake Submission" + via PreIntake.ai
 2. Qualification Badge - Green/Yellow/Red with confidence level
 3. Contact Information - Name, Phone, Email
-4. AI Screening Summary - 2-3 sentence narrative (gold left border)
-5. Case Information - Case Type, Date Occurred, Location, SOL Status, Injuries, Treatment
-6. Key Factors - Positive (green badges) and Negative (red badges)
+4. Screening Summary - 2-3 sentence narrative
+5. Case Information - Case Type, Date, Location, SOL Status, Injuries, Treatment
+6. Key Factors - Positive (green) and Negative (red) badges
 7. Primary Strength/Concern - Yellow highlight box
-8. Full Conversation Transcript - Complete dialogue with styled formatting
-9. Footer - Timestamp + PreIntake.ai branding
-```
-
-**Files Modified:**
-```
-/functions/
-├── demo-generator-functions.js     # Tool schema + practice area prompts
-├── intake-delivery-functions.js    # Email template redesign
-└── templates/
-    └── demo-intake.html            # formatTranscript() + webhook payload
+8. Additional Comments - Blue highlight (if provided)
+9. Full Conversation Transcript - Complete dialogue
+10. Footer - Timestamp + PreIntake.ai branding
 ```
 
 ### Phase 13: Session Recovery, Deduplication & UX Enhancements
-- [x] **Phone Number Validation** (`demo-intake.html`)
-  - Validates US formats: `(555) 123-4567`, `555-123-4567`, `5551234567`, `+1 555 123 4567`
-  - Validates international formats: `+44 20 7123 4567`, `+49 30 12345678`
-  - Shows inline error messages with specific feedback (too short, too long, invalid format)
-  - Added `isValidPhone()` and `showPhoneValidationError()` functions
-
-- [x] **Email Header Simplification** (`intake-delivery-functions.js`)
-  - Changed "AI Screening Summary" to "Screening Summary" in email template
-
-- [x] **Demo vs Live Mode Display Logic** (`demo-intake.html`)
-  - Added `getPreIntakeFirmStatus` Cloud Function to check `subscriptionStatus` at runtime
-  - Demo Mode (`subscriptionStatus !== 'active'`): Shows PreIntake.ai promo after submission
-  - Live Mode (`subscriptionStatus === 'active'`): Shows "Return to {firmName}" button with link to firm website
-  - Bottom action buttons hidden in both modes post-submission
-
-- [x] **Additional Comments Feature** (`demo-intake.html`, `intake-delivery-functions.js`)
-  - GREEN/YELLOW qualified leads see "Is there anything else you'd like to add?" prompt
-  - Yes → Shows textarea with 500-character limit and live counter
-  - No → Proceeds directly to submission
-  - RED routing skips additional comments (goes straight to decline screen)
-  - Comments included in webhook payload and displayed in email with blue left border
-
-- [x] **Multi-select Button Support** (`demo-generator-functions.js`, `demo-intake.html`)
-  - AI can use `[OPTIONS-MULTI: Option 1 | Option 2 | Option 3]` for multi-select questions
-  - Updated `parseAIOptions()` to detect `OPTIONS-MULTI:` prefix
-  - Multi-select buttons show checkmarks when selected, allow multiple selections
-  - Updated all practice area system prompts with multi-select documentation
-
-- [x] **Deduplication** (`intake-delivery-functions.js`)
-  - Prevents duplicate emails when same lead submits multiple times
-  - Uses `intake_dedup` Firestore collection with key `{leadId}_{email}_{phone}`
-  - Returns `{success: true, duplicate: true}` for duplicate submissions (no email sent)
-  - Dedup record created before sending to prevent race conditions
-
-- [x] **Session Recovery** (`demo-intake.html`)
-  - Saves progress to localStorage after each data collection tool call
-  - 24-hour TTL for saved sessions
-  - On return: Shows "Continue Where You Left Off?" modal with user's name
-  - Options: "Continue" (restores full conversation) or "Start Fresh"
-  - Clears session on successful submission
-  - Session key: `preintake_session_{LEAD_ID}` (per-firm sessions)
-
-- [x] **Demo Mode Confirmation Modal** (`demo-intake.html`, `demo-generator-functions.js`)
-  - After intake completion in Demo mode, shows confirmation modal
-  - "Demo Intake Sent!" with green checkmark icon
-  - "The intake lead has been sent to: {firmEmail}"
-  - "Please check your inbox to see the lead notification email."
-  - OK button to dismiss
-  - Only shows when `firmStatus.isLiveMode === false`
-  - Added `{{FIRM_EMAIL}}` placeholder to template system
-
-**Data Flow Updates:**
-```
-Intake completes → Check dedup → Send webhook → Show loading → Show results
-                                                              ↓
-                                              Demo Mode: Show confirmation modal
-                                              Live Mode: Show "Return to Firm" CTA
-```
+- [x] **Phone Number Validation** - US and international formats
+- [x] **Email Header Simplification** - "Screening Summary" (removed "AI")
+- [x] **Demo vs Live Mode Display Logic** - Runtime status check
+- [x] **Additional Comments Feature** - GREEN/YELLOW leads only
+- [x] **Multi-select Button Support** - `[OPTIONS-MULTI:]` format
+- [x] **Deduplication** - Prevents duplicate intake emails
+- [x] **Session Recovery** - 24-hour localStorage with recovery modal
+- [x] **Demo Mode Confirmation Modal** - "Intake sent to {email}"
 
 **Session Recovery Flow:**
 ```
 User starts intake → Contact info collected → saveSession() to localStorage
-          ↓
+         ↓
 User closes browser
-          ↓
+         ↓
 User returns (within 24 hours) → loadSession() → Show recovery modal
-          ↓
+         ↓
 "Continue" → Restore conversation history → Resume from last message
 "Start Fresh" → clearSession() → Begin new intake
-```
-
-**Files Modified:**
-```
-/functions/
-├── demo-generator-functions.js       # Multi-select prompts, FIRM_EMAIL placeholder
-├── intake-delivery-functions.js      # Deduplication, "Screening Summary" header
-├── preintake-functions.js            # getPreIntakeFirmStatus function
-└── templates/
-    └── demo-intake.html              # Session recovery, phone validation,
-                                      # additional comments, confirmation modal,
-                                      # Demo/Live mode display logic
 ```
 
 ---
 
 ## Architecture
 
-```
-Form Submission → Validate → Store Lead → Analyze Website → Deep Research → Generate Demo → Email URL
-```
-
 ### Status Flow
-`pending` → `analyzing` → `researching` → `generating_demo` → `demo_ready`
+```
+pending → analyzing → researching → generating_demo → demo_ready
+```
 
-### Files Structure
+### File Structure
 
 ```
 /preintake/
 ├── index.html              # Landing page with demo request form
-├── create-account.html     # Account activation + Stripe checkout page
-├── payment-success.html    # Post-payment success page with embed instructions
+├── create-account.html     # Account activation + Stripe checkout
+├── payment-success.html    # Post-payment success page
 ├── about-us.html           # About us page
 ├── contact-us.html         # Contact form page
-├── faq.html                # FAQ with accordion functionality
+├── faq.html                # FAQ with accordion
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
-├── intake-button.js        # Embeddable floating button script
-├── widget.js               # Embeddable inline widget script
-├── intake-button-test.html # Test page for intake button
+├── intake-button.js        # Embeddable floating button
+├── widget.js               # Embeddable inline widget
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
-├── preintake.html          # Original PI intake page
-├── preintake-config.js     # Config for preintake.html
-├── preintake.md            # Pitch deck
 ├── PLAN.md                 # This file
 └── js/
-    └── components.js       # Shared header/footer component
+    └── components.js       # Shared header/footer
 
 /functions/
 ├── preintake-functions.js           # Form submission handler
-├── preintake-analysis-functions.js  # Website analysis + triggers demo generation
-├── deep-research-functions.js       # Multi-page website scraping
+├── preintake-analysis-functions.js  # Website analysis
+├── deep-research-functions.js       # Multi-page scraping
 ├── demo-generator-functions.js      # Demo page generation
-├── intake-delivery-functions.js     # Intake completion webhook + delivery
-├── widget-functions.js              # Widget endpoints (getWidgetConfig, intakeChat, serveDemo)
-├── stripe-functions.js              # Stripe payment processing
+├── intake-delivery-functions.js     # Intake webhook + delivery
+├── widget-functions.js              # Widget endpoints
+├── stripe-functions.js              # Payment processing
 └── templates/
     ├── demo-intake.html             # Demo intake template
     └── demo-config.js               # Demo config template
 ```
 
 ### Firebase Configuration
-- **Hosting Target**: `preintake-ai` (serves `/preintake/` directory)
-- **Domain**: preintake.ai
-- **Firestore Database**: `preintake` (separate from main TBP database)
-- **Storage Bucket**: `teambuilder-plus-fe74d.firebasestorage.app/preintake-demos/`
+
+| Resource | Value |
+|----------|-------|
+| Hosting Target | `preintake-ai` |
+| Domain | preintake.ai |
+| Firestore Database | `preintake` (separate from TBP) |
+| Storage Bucket | `teambuilder-plus-fe74d.firebasestorage.app/preintake-demos/` |
+| Functions Region | `us-west1` |
 
 ---
 
@@ -507,8 +695,11 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 
 ### Demo Intake (`demo-intake.html`)
 - Email validation in chat interface
+- Phone validation (US and international)
 - Typo detection and suggestions
 - Fake domain blocking
+- Session recovery with 24-hour TTL
+- Deduplication (prevents duplicate submissions)
 
 ---
 
@@ -517,55 +708,15 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 1. **Lead submits form** → `submitDemoRequest` function
 2. **Validation passes** → Store in Firestore with status `pending`
 3. **Confirmation email** → Sent to prospect immediately
-4. **New lead notification** → Sent to Stephen (stephen@preintake.ai)
-5. **Analysis triggers** → `analyzePreIntakeLead` function (Firestore onCreate)
-6. **Website scraped** → Extract firm name, practice areas, branding, contact info
-7. **Deep research runs** → `performDeepResearch` function
+4. **New lead notification** → Sent to Stephen
+5. **Analysis triggers** → `analyzePreIntakeLead` (Firestore onCreate)
+6. **Website scraped** → Extract firm name, practice areas, branding
+7. **Deep research runs** → `performDeepResearch`
 8. **Additional pages scraped** → Attorneys, case results, testimonials
 9. **Claude structures data** → Using Haiku for cost efficiency
-10. **Demo generated** → `generatePreIntakeDemo` function (Firestore onUpdate)
+10. **Demo generated** → `generatePreIntakeDemo` (Firestore onUpdate)
 11. **HTML uploaded** → Firebase Storage at `preintake-demos/{leadId}/index.html`
-12. **Demo ready email** → Sent to Stephen with demo URL and firm details
-
----
-
-## User Decisions (Confirmed)
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Domain** | preintake.ai | Premium .ai domain acquired |
-| **Database** | Separate Firestore | Isolation from TBP data |
-| **Next Practice Area** | Immigration | Highest AI adoption (47%), complex intake |
-| **MVP Scope** | Fully working demos | Auto-generate functional intake pages |
-| **Demo Hosting** | Firebase Storage | `preintake-demos/{leadId}/index.html` |
-
----
-
-## Next Steps
-
-### Completed
-1. ~~**Deploy functions**~~ - ✅ Done (handleIntakeCompletion deployed)
-2. ~~**Account creation page**~~ - ✅ Done (Phase 9 complete with Stripe integration)
-3. ~~**Test end-to-end payment flow**~~ - ✅ Done (2025-12-28, test card checkout successful)
-4. ~~**Account activation email**~~ - ✅ Done (sends to customer + Stephen on checkout.session.completed)
-5. ~~**Payment success page polish**~~ - ✅ Done (firm name, embed options, delivery email display)
-6. ~~**Phase 13 UX enhancements**~~ - ✅ Done (2025-12-29)
-   - Phone number validation (US + international formats)
-   - Session recovery (24-hour localStorage with recovery modal)
-   - Deduplication (prevents duplicate intake emails)
-   - Additional comments feature (GREEN/YELLOW leads only)
-   - Multi-select button support (`[OPTIONS-MULTI:]` format)
-   - Demo/Live mode display logic (promo vs "Return to Firm")
-   - Demo confirmation modal ("Intake sent to {email}")
-
-### Scheduled Next Steps
-7. **Deploy payment-success.html** - Deploy updated page to Firebase hosting
-8. **Switch to Stripe live mode** - Replace test keys with live keys in `stripe-functions.js`
-9. **End-to-end live test** - Complete a real payment with live credentials
-10. **Lead delivery configuration** - Allow customers to configure delivery email/CRM/webhook
-11. **Demo expiration** - Auto-delete demos after 30 days (or on subscription cancel)
-12. **Customer portal** - Allow customers to manage subscription (Stripe Customer Portal)
-13. **Analytics dashboard** - Track demo engagement metrics
+12. **Demo ready email** → Sent to Stephen with demo URL
 
 ---
 
@@ -580,31 +731,15 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 1. Customer pays → Account activated → Leads delivered via EMAIL (default)
 2. Welcome email includes: Embed code + "Configure CRM Integration" link
 3. Customer can optionally set up CRM/webhook delivery later
-4. For unsupported CRMs: Generic webhook or Zapier
 ```
-
-**Benefits:**
-- Zero friction at checkout (no config required)
-- Customers start receiving leads immediately
-- Learn which CRMs are actually requested before building integrations
-- CRM setup can be self-service or assisted (premium)
 
 ### Delivery Methods
 
-| Method | Description | Implementation |
-|--------|-------------|----------------|
+| Method | Description | Status |
+|--------|-------------|--------|
 | **Email** (Default) | HTML summary to firm's intake email | ✅ Implemented |
 | **Webhook** | POST JSON to custom URL (Zapier-compatible) | ✅ Implemented |
 | **Native CRM** | Direct API integration | 🔮 Future |
-
-### When to Configure
-
-| Option | Pros | Cons | Recommendation |
-|--------|------|------|----------------|
-| During checkout | Know what they're getting | Adds friction, complexity | ❌ |
-| On payment-success | Captured the sale | May bounce, not complete | ❌ |
-| Separate onboarding | Dedicated focus | Extra step, may skip | ⚠️ Optional |
-| **Default to email** | Simplest, zero friction | May not meet all needs | ✅ **Recommended** |
 
 ---
 
@@ -649,9 +784,125 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 
 ---
 
+## Compliance
+
+### Built-in Protections
+- No attorney-client relationship disclaimer (ethics-rule compliant)
+- AI usage disclosure (aligned with state bar guidance)
+- Confidentiality boundaries pre-engagement
+- Decline messaging that avoids unauthorized practice of law
+- Data retention and deletion capability
+- HTTPS encryption, US-based hosting
+
+### Configurable by Jurisdiction
+Our system adapts disclaimers and screening logic to each state's requirements. Multi-state firms get automatic routing based on case location.
+
+### Data Privacy
+- PreIntake.ai does NOT retain client data
+- All intake information is immediately delivered and discarded
+- CCPA/GDPR compliance statements in Privacy Policy
+- Third-party services disclosed (Stripe, Claude AI, Firebase)
+
+---
+
+## Deployment Model
+
+**We host everything. Customers focus on cases.**
+
+Intake runs on our infrastructure:
+- Dedicated URL (e.g., `intake.smithlaw.com` via CNAME, or `smithlaw.preintake.ai`)
+- We manage the AI, hosting, security, and updates
+- Customer provides branding assets and webhook endpoint
+- Updates and improvements deploy automatically
+
+**Why this model:**
+1. We can prove ROI with real conversion data
+2. Bug fixes and improvements benefit all clients instantly
+3. No IT burden on law firms
+4. Compliance updates happen automatically
+
+For firms with strict data residency requirements, self-hosted option at custom pricing.
+
+---
+
+## Current Gaps & Future Improvements
+
+| Gap | Current State | Planned Solution | Priority |
+|-----|---------------|------------------|----------|
+| Demo ready notification to customer | Only Stephen notified | Auto-email to customer with demo URL | High |
+| Customer portal | None | Stripe Customer Portal integration | Medium |
+| Analytics dashboard | None | Track demo engagement, conversion rates | Medium |
+| CRM integrations | Email/webhook only | Native Law Ruler, Filevine, SmartAdvocate | Medium |
+| Demo expiration | Demos persist indefinitely | Auto-delete after 30 days or on cancel | Low |
+| Multi-language support | English only | Spanish, Chinese intake options | Low |
+| A/B testing | None | Question flow optimization | Low |
+
+---
+
+## Technical Reference
+
+### Key Cloud Functions
+
+| Function | Trigger | Purpose |
+|----------|---------|---------|
+| `submitDemoRequest` | HTTP | Handle demo request form submission |
+| `analyzePreIntakeLead` | Firestore onCreate | Analyze website, trigger deep research |
+| `generatePreIntakeDemo` | Firestore onUpdate | Generate demo intake page |
+| `handleIntakeCompletion` | HTTP | Process completed intake, deliver lead |
+| `getPreIntakeFirmStatus` | HTTP | Check subscription status for Demo/Live mode |
+| `createCheckoutSession` | HTTP | Create Stripe checkout session |
+| `getStripeConfig` | HTTP | Return publishable key and pricing |
+| `stripeWebhook` | HTTP | Handle Stripe subscription events |
+| `verifyCheckoutSession` | HTTP | Verify payment status |
+| `serveDemo` | HTTP | Proxy demo HTML for CORS bypass |
+| `getWidgetConfig` | HTTP | Return widget configuration |
+| `intakeChat` | HTTP | AI chat endpoint |
+
+### API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/submitDemoRequest` | POST | Submit demo request |
+| `/handleIntakeCompletion` | POST | Deliver completed intake |
+| `/getPreIntakeFirmStatus` | GET | Check firm subscription status |
+| `/createCheckoutSession` | POST | Create Stripe checkout |
+| `/getStripeConfig` | GET | Get Stripe public config |
+| `/stripeWebhook` | POST | Stripe webhook handler |
+| `/verifyCheckoutSession` | GET | Verify checkout completion |
+| `/demo/:firmId` | GET | Serve demo intake page |
+
+### Firestore Collections (preintake database)
+
+| Collection | Purpose |
+|------------|---------|
+| `preintake_leads` | Lead records with status, analysis, delivery config |
+| `intake_dedup` | Deduplication records (leadId_email_phone) |
+| `preintake_rate_limits` | IP rate limiting records |
+
+### Firebase Storage
+
+| Path | Purpose |
+|------|---------|
+| `preintake-demos/{leadId}/index.html` | Generated demo intake pages |
+
+---
+
 ## Success Metrics
 
 1. **Landing page**: Conversion rate from visitor → demo request
 2. **Demo generator**: % of demos viewed after generation
 3. **Sales pipeline**: Demo → sales call → signed customer
-4. **Platform**: Practice areas supported, firms onboarded, intakes processed
+4. **Activation**: Payment → first embedded widget
+5. **Retention**: Monthly churn rate
+6. **Platform**: Practice areas supported, firms onboarded, intakes processed
+
+---
+
+## Contact
+
+**Stephen Scott**
+stephen@preintake.ai
+
+---
+
+**Bottom line:** PreIntake.ai reduces junk intakes and surfaces real cases faster—without replacing your CRM or changing how law firms practice law.
