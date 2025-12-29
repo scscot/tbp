@@ -1,6 +1,6 @@
 # Plan: PreIntake.ai - Generalized Legal Intake Platform
 
-**Last Updated**: 2025-12-28 (Stripe integration complete)
+**Last Updated**: 2025-12-29 (Phase 12: Enhanced intake email with AI summary & transcript)
 
 ## Executive Summary
 
@@ -187,19 +187,25 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
   - [x] `createCheckoutSession` - Creates Stripe Checkout session with setup fee + subscription
   - [x] `getStripeConfig` - Returns publishable key and pricing info
   - [x] `stripeWebhook` - Handles subscription events (with signature verification)
-  - [x] `verifyCheckoutSession` - Verifies payment status
+  - [x] `verifyCheckoutSession` - Verifies payment status (returns firmName, customerEmail)
 - [x] Stripe webhook configured in Stripe Dashboard
 - [x] Webhook signing secret stored as Firebase secret (`STRIPE_WEBHOOK_SECRET`)
 - [x] Subscription status tracking in Firestore
+- [x] Account activation email (customer + Stephen notification)
+- [x] Payment success page refinements:
+  - [x] Displays firm name instead of email in Account row
+  - [x] Embed code includes `data-position="bottom-right"` with position options hint
+  - [x] Shows lead delivery email in gold accent color
+  - [x] Confetti animation on success
 - [ ] Delivery method selection (email, webhook, CRM) - Future
 - [ ] CRM credentials input for direct integrations - Future
 
 **Pricing:**
 | Item | Amount |
 |------|--------|
-| One-time Setup Fee | $175 |
-| Monthly Subscription | $75/mo |
-| **Total Due Today** | **$250** |
+| One-time Implementation Fee | $399 |
+| Monthly Subscription | $129/mo |
+| **Total Due Today** | **$528** |
 
 **Account Activation Flow:**
 ```
@@ -215,6 +221,14 @@ Demo expires → /create-account.html?firm=ID → Stripe Checkout → /payment-s
 - Webhook endpoint: `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/stripeWebhook`
 - Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
 - Mode: Test (switch to live keys for production)
+
+**Price IDs:**
+| Environment | Implementation Fee | Monthly Subscription |
+|-------------|-------------------|---------------------|
+| **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
+| **Live** | `price_1SjOXiJBdoLMDposfZXL8nZX` | `price_1SjORKJBdoLMDpos9wBBZbzd` |
+
+**Note:** Test and live mode have separate price IDs. Update `stripe-functions.js` when switching modes.
 
 ### Phase 10: Embeddable Widget
 - [x] Create `intake-button.js` - floating button that opens intake modal
@@ -241,6 +255,102 @@ PreIntake.open();   // Open intake modal
 PreIntake.close();  // Close intake modal
 ```
 
+### Phase 11: Website Expansion
+- [x] Create shared header/footer component (`/preintake/js/components.js`)
+  - Header: PreIntake.ai text logo + hamburger menu (Home, About, Contact, FAQs)
+  - Footer: Copyright, Privacy Policy, Terms of Service, Contact links
+  - Self-initializing IIFE with DOM-ready detection
+- [x] Update landing page (`/preintake/index.html`)
+  - Added header/footer components
+  - Added pricing section ($399 setup + $129/mo)
+  - Added "Request Free Demo" callout section
+- [x] Create About Us page (`/preintake/about-us.html`)
+  - Company narrative and mission
+  - Problem/solution messaging (60-70% unqualified leads)
+  - Values grid (Practice-Specific, Privacy-Focused, Integrates, Conversational)
+- [x] Create Contact Us page (`/preintake/contact-us.html`)
+  - Contact form with mailto fallback
+  - support@preintake.ai email
+  - 24-hour response time commitment
+- [x] Create FAQ page (`/preintake/faq.html`)
+  - 8 questions with accordion functionality
+  - Covers pricing, data retention, integrations, customization
+- [x] Create Privacy Policy page (`/preintake/privacy-policy.html`)
+  - Emphasizes no lead data retention
+  - CCPA/GDPR compliance statements
+  - Third-party services (Stripe, Claude AI, Firebase)
+- [x] Create Terms of Service page (`/preintake/terms-of-service.html`)
+  - 18 sections covering service, payments, liability
+  - California governing law
+- [x] Add data privacy language to intake page (`/preintake/preintake.html`)
+  - "Your Data, Your Control" notice with shield icon
+  - Green highlight box after disclaimer
+- [x] Update payment success page with header/footer
+- [x] Update create account page with header/footer
+
+**Files Created:**
+```
+/preintake/
+├── js/components.js        # Shared header/footer component
+├── about-us.html           # About us page
+├── contact-us.html         # Contact form page
+├── faq.html                # FAQ with accordions
+├── privacy-policy.html     # Privacy policy
+└── terms-of-service.html   # Terms of service
+```
+
+**Files Modified:**
+```
+/preintake/
+├── index.html              # Added header/footer, pricing, demo CTA
+├── preintake.html          # Added data privacy notice
+├── payment-success.html    # Added header/footer
+└── create-account.html     # Added header/footer
+```
+
+### Phase 12: Enhanced Intake Email
+- [x] Expand `complete_intake` tool schema with new fields:
+  - `ai_screening_summary`: 2-3 sentence narrative summary of the case
+  - `sol_status`: Object with status (within/near_expiration/expired), months_remaining, note
+  - `injuries`: List of injuries (for PI cases)
+  - `treatment_status`: Current medical treatment status
+- [x] Update all 8 practice area prompts with `## When Calling collect_case_info` instructions
+  - Claude now saves date_occurred and location fields when learned during intake
+  - Personal Injury, Immigration, Family Law, Tax, Bankruptcy, Criminal Defense, Estate Planning, Generic
+- [x] Add `formatTranscript()` function to demo template
+  - Extracts readable conversation from `conversationHistory`
+  - Formats as "Visitor: ..." / "Assistant: ..." dialogue
+  - Removes internal [OPTIONS: ...] markers
+- [x] Add full conversation transcript to webhook payload
+- [x] Redesign email template (`generateIntakeSummary()`) to match homepage mockup:
+  - AI Screening Summary section with gold left border
+  - Case Details grid with SOL Status, Injuries, Treatment
+  - SOL "Expired" displayed in red (#ef4444)
+  - Full Conversation Transcript with styled Visitor/Assistant labels
+  - XSS protection via `escapeHtml()` helper function
+
+**Email Sections (Enhanced):**
+```
+1. Header - "New Intake Submission" + via PreIntake.ai
+2. Qualification Badge - Green/Yellow/Red with confidence level
+3. Contact Information - Name, Phone, Email
+4. AI Screening Summary - 2-3 sentence narrative (gold left border)
+5. Case Information - Case Type, Date Occurred, Location, SOL Status, Injuries, Treatment
+6. Key Factors - Positive (green badges) and Negative (red badges)
+7. Primary Strength/Concern - Yellow highlight box
+8. Full Conversation Transcript - Complete dialogue with styled formatting
+9. Footer - Timestamp + PreIntake.ai branding
+```
+
+**Files Modified:**
+```
+/functions/
+├── demo-generator-functions.js     # Tool schema + practice area prompts
+├── intake-delivery-functions.js    # Email template redesign
+└── templates/
+    └── demo-intake.html            # formatTranscript() + webhook payload
+```
+
 ---
 
 ## Architecture
@@ -259,6 +369,11 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ├── index.html              # Landing page with demo request form
 ├── create-account.html     # Account activation + Stripe checkout page
 ├── payment-success.html    # Post-payment success page with embed instructions
+├── about-us.html           # About us page
+├── contact-us.html         # Contact form page
+├── faq.html                # FAQ with accordion functionality
+├── privacy-policy.html     # Privacy policy
+├── terms-of-service.html   # Terms of service
 ├── intake-button.js        # Embeddable floating button script
 ├── widget.js               # Embeddable inline widget script
 ├── intake-button-test.html # Test page for intake button
@@ -266,7 +381,9 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 ├── preintake.html          # Original PI intake page
 ├── preintake-config.js     # Config for preintake.html
 ├── preintake.md            # Pitch deck
-└── PLAN.md                 # This file
+├── PLAN.md                 # This file
+└── js/
+    └── components.js       # Shared header/footer component
 
 /functions/
 ├── preintake-functions.js           # Form submission handler
@@ -342,13 +459,101 @@ Form Submission → Validate → Store Lead → Analyze Website → Deep Researc
 
 ## Next Steps
 
+### Completed
 1. ~~**Deploy functions**~~ - ✅ Done (handleIntakeCompletion deployed)
 2. ~~**Account creation page**~~ - ✅ Done (Phase 9 complete with Stripe integration)
-3. **Test end-to-end payment flow** - Use test card `4242 4242 4242 4242` to verify checkout
-4. **Switch to Stripe live mode** - Replace test keys with live keys when ready
-5. **Analytics dashboard** - Track demo engagement metrics
-6. **Demo expiration** - Auto-delete demos after 30 days
-7. **Customer portal** - Allow customers to manage subscription (cancel, update card)
+3. ~~**Test end-to-end payment flow**~~ - ✅ Done (2025-12-28, test card checkout successful)
+4. ~~**Account activation email**~~ - ✅ Done (sends to customer + Stephen on checkout.session.completed)
+5. ~~**Payment success page polish**~~ - ✅ Done (firm name, embed options, delivery email display)
+
+### Scheduled Next Steps
+6. **Deploy payment-success.html** - Deploy updated page to Firebase hosting
+7. **Switch to Stripe live mode** - Replace test keys with live keys in `stripe-functions.js`
+8. **End-to-end live test** - Complete a real payment with live credentials
+9. **Lead delivery configuration** - Allow customers to configure delivery email/CRM/webhook
+10. **Demo expiration** - Auto-delete demos after 30 days (or on subscription cancel)
+11. **Customer portal** - Allow customers to manage subscription (Stripe Customer Portal)
+12. **Analytics dashboard** - Track demo engagement metrics
+
+---
+
+## Lead Delivery Configuration
+
+### Strategy: Default to Email, Upgrade Later
+
+**Rationale:** Minimize friction at checkout. Get customers activated immediately, then offer CRM integration as a post-activation enhancement.
+
+**Flow:**
+```
+1. Customer pays → Account activated → Leads delivered via EMAIL (default)
+2. Welcome email includes: Embed code + "Configure CRM Integration" link
+3. Customer can optionally set up CRM/webhook delivery later
+4. For unsupported CRMs: Generic webhook or Zapier
+```
+
+**Benefits:**
+- Zero friction at checkout (no config required)
+- Customers start receiving leads immediately
+- Learn which CRMs are actually requested before building integrations
+- CRM setup can be self-service or assisted (premium)
+
+### Delivery Methods
+
+| Method | Description | Implementation |
+|--------|-------------|----------------|
+| **Email** (Default) | HTML summary to firm's intake email | ✅ Implemented |
+| **Webhook** | POST JSON to custom URL (Zapier-compatible) | ✅ Implemented |
+| **Native CRM** | Direct API integration | 🔮 Future |
+
+### When to Configure
+
+| Option | Pros | Cons | Recommendation |
+|--------|------|------|----------------|
+| During checkout | Know what they're getting | Adds friction, complexity | ❌ |
+| On payment-success | Captured the sale | May bounce, not complete | ❌ |
+| Separate onboarding | Dedicated focus | Extra step, may skip | ⚠️ Optional |
+| **Default to email** | Simplest, zero friction | May not meet all needs | ✅ **Recommended** |
+
+---
+
+## CRM Integration Research
+
+### Target CRMs (Legal Practice Management)
+
+| CRM | Website | API Status | Priority |
+|-----|---------|------------|----------|
+| **Law Ruler** | lawruler.com | Has API | High - PI-focused |
+| **Filevine** | filevine.com | Has API | High - Popular |
+| **SmartAdvocate** | smartadvocate.com | Has API | High - PI-focused |
+| **Litify** | litify.com | Salesforce-based | Medium |
+| **Needles** | portal.needles.com | Legacy | Medium |
+| **TrialWorks** | assemblysoftware.com/trialworks | Has API | Medium |
+| **CoCounselor** | cocounselor.com | Unknown | Low |
+
+### Chat/Lead Services (Potential Partners/Competitors)
+
+| Service | Website | Notes |
+|---------|---------|-------|
+| Client Chat Live | clientchatlive.com | Live chat for law firms |
+| Ngage Live Chat | ngagelive.com | 24/7 managed chat |
+| ApexChat | apexchat.com | Legal chat widgets |
+| Captorra | captorra.com | Lead management |
+| SCORPION | scorpion.co | Full-service legal marketing |
+
+### Integration Approach
+
+**Phase 1: Generic (Current)**
+- Email delivery (default)
+- Webhook delivery (Zapier, custom integrations)
+
+**Phase 2: Popular CRMs**
+- Law Ruler (PI firms)
+- Filevine (multi-practice)
+- SmartAdvocate (PI firms)
+
+**Phase 3: Expand Based on Demand**
+- Track which CRMs customers request
+- Build integrations for top-requested systems
 
 ---
 

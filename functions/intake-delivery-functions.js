@@ -293,6 +293,27 @@ function generateIntakeSummary(payload, firmName) {
     const positiveFactors = keyFactors.filter(f => f.impact === 'positive');
     const negativeFactors = keyFactors.filter(f => f.impact === 'negative');
 
+    // SOL status formatting
+    const solStatus = payload.sol_status;
+    const solNote = solStatus?.note || 'N/A';
+    const solIsExpired = solStatus?.status === 'expired';
+    const solColor = solIsExpired ? '#ef4444' : '#1a1a2e';
+
+    // Format transcript for HTML display
+    const transcriptHtml = payload.transcript
+        ? payload.transcript
+            .split('\n\n')
+            .map(line => {
+                if (line.startsWith('Visitor:')) {
+                    return `<div style="margin-bottom: 12px;"><span style="color: #0c1f3f; font-weight: 600;">Visitor:</span> ${escapeHtml(line.replace('Visitor: ', ''))}</div>`;
+                } else if (line.startsWith('Assistant:')) {
+                    return `<div style="margin-bottom: 12px;"><span style="color: #c9a962; font-weight: 600;">Assistant:</span> ${escapeHtml(line.replace('Assistant: ', ''))}</div>`;
+                }
+                return `<div style="margin-bottom: 12px;">${escapeHtml(line)}</div>`;
+            })
+            .join('')
+        : '<p style="color: #64748b; font-style: italic;">Transcript not available</p>';
+
     return `
 <!DOCTYPE html>
 <html>
@@ -339,6 +360,14 @@ function generateIntakeSummary(payload, firmName) {
             </table>
         </div>
 
+        <!-- AI Screening Summary -->
+        ${payload.ai_screening_summary ? `
+        <div style="background: #f8fafc; border-left: 4px solid #c9a962; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">
+            <h3 style="color: #c9a962; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">AI Screening Summary</h3>
+            <p style="margin: 0; color: #1a1a2e; font-size: 15px; line-height: 1.7;">${payload.ai_screening_summary}</p>
+        </div>
+        ` : ''}
+
         <!-- Case Information -->
         <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
             <h3 style="color: #0c1f3f; font-size: 14px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 0.5px;">Case Information</h3>
@@ -355,6 +384,24 @@ function generateIntakeSummary(payload, firmName) {
                     <td style="padding: 5px 0; color: #64748b;">Location:</td>
                     <td style="padding: 5px 0;">${payload.case_info?.location || 'N/A'}</td>
                 </tr>
+                ${solStatus && solNote !== 'N/A' ? `
+                <tr>
+                    <td style="padding: 5px 0; color: #64748b;">SOL Status:</td>
+                    <td style="padding: 5px 0; font-weight: 500; color: ${solColor};">${solNote}</td>
+                </tr>
+                ` : ''}
+                ${payload.injuries ? `
+                <tr>
+                    <td style="padding: 5px 0; color: #64748b;">Injuries:</td>
+                    <td style="padding: 5px 0;">${payload.injuries}</td>
+                </tr>
+                ` : ''}
+                ${payload.treatment_status ? `
+                <tr>
+                    <td style="padding: 5px 0; color: #64748b;">Treatment:</td>
+                    <td style="padding: 5px 0;">${payload.treatment_status}</td>
+                </tr>
+                ` : ''}
             </table>
             ${payload.case_info?.description ? `
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
@@ -382,9 +429,19 @@ function generateIntakeSummary(payload, firmName) {
         ` : ''}
 
         <!-- Primary Factors -->
+        ${(payload.primary_strength_factor || payload.primary_disqualifier) ? `
         <div style="background: #fffbeb; border-radius: 8px; padding: 15px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
             ${payload.primary_strength_factor ? `<p style="margin: 0 0 8px 0;"><strong style="color: #166534;">Strength:</strong> ${payload.primary_strength_factor}</p>` : ''}
             ${payload.primary_disqualifier ? `<p style="margin: 0;"><strong style="color: #991b1b;">Concern:</strong> ${payload.primary_disqualifier}</p>` : ''}
+        </div>
+        ` : ''}
+
+        <!-- Full Conversation Transcript -->
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: #0c1f3f; font-size: 14px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 0.5px;">Full Conversation Transcript</h3>
+            <div style="background: #f8fafc; border-radius: 8px; padding: 20px; font-size: 14px; line-height: 1.6; border: 1px solid #e2e8f0;">
+                ${transcriptHtml}
+            </div>
         </div>
 
         <!-- Footer -->
@@ -396,6 +453,19 @@ function generateIntakeSummary(payload, firmName) {
     </div>
 </body>
 </html>`;
+}
+
+/**
+ * Escape HTML special characters to prevent XSS
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 /**

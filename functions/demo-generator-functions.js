@@ -98,9 +98,10 @@ const generatePreIntakeDemo = onDocumentUpdated(
 
 /**
  * Generate demo HTML and config files from template
+ * Version: 2.1.0 - Added transcript support
  */
 function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
-    // Read template
+    // Read template (includes formatTranscript function for conversation transcript)
     const templatePath = path.join(__dirname, 'templates', 'demo-intake.html');
     let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
@@ -489,12 +490,26 @@ function getPersonalInjuryPrompt(state) {
 - Ask about surgery, missed work
 - Ask if currently represented by attorney
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of incident (e.g., "Auto Accident", "Slip and Fall", "Workplace Injury")
+- date_occurred: When the incident happened (use the exact response they gave, e.g., "Within the past month", "3 months ago", "June 2024")
+- location: State/city where incident occurred (e.g., "${state}", "Baltimore, MD")
+- description: Brief description of what happened
+
 ## Disqualification Rules (call complete_intake with routing="red")
 - Incident more than 2 years ago (SOL expired)
 - No physical injury AND no medical treatment
 - Incident outside ${state}
 - User admits 100% fault
-- User is currently represented by another attorney`;
+- User is currently represented by another attorney
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary of the case. Example: "Rear-end collision at stoplight 3 weeks ago. Visible injuries (whiplash, back pain), currently in physical therapy. Police report filed, other driver cited. No prior attorney contacted. Within SOL."
+- sol_status: Calculate based on incident date and ${state}'s 2-year statute of limitations. Include status (within/near_expiration/expired), months_remaining (number), and note (e.g., "23 months remaining" or "Expired").
+- injuries: List all injuries mentioned (e.g., "Whiplash, back pain, headaches")
+- treatment_status: Current treatment status (e.g., "Active PT", "ER visit only", "Surgery scheduled")`;
 }
 
 function getImmigrationPrompt() {
@@ -532,9 +547,21 @@ For Deportation/Removal:
 - Ask if they've had any criminal issues
 - Ask about timeline/urgency
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of immigration matter (e.g., "Green Card Application", "Visa Application", "Citizenship", "Deportation Defense")
+- date_occurred: Any relevant deadline or date (e.g., "Visa expires in 6 months", "Hearing scheduled for March 2025")
+- location: Where they reside or jurisdiction
+- description: Brief description of their immigration situation
+
 ## Disqualification (call complete_intake with routing="red")
 - Currently in active removal proceedings with counsel
-- Looking for asylum but already missed deadline`;
+- Looking for asylum but already missed deadline
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "Green card application through marriage to US citizen. Married 2 years, no prior immigration issues. Currently on valid H-1B visa expiring in 6 months."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Immigration matter" }`;
 }
 
 function getFamilyLawPrompt(state) {
@@ -570,10 +597,22 @@ For Child/Spousal Support:
 - Ask if the other party has an attorney
 - Ask if they've been served with papers
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of family law matter (e.g., "Divorce", "Child Custody", "Child Support", "Spousal Support")
+- date_occurred: Relevant date (e.g., "Filed for divorce 2 months ago", "Separated June 2024")
+- location: State/county where the matter is filed (e.g., "${state}")
+- description: Brief description of the situation
+
 ## Disqualification (call complete_intake with routing="red")
 - Matter is outside ${state}
 - Already has an attorney on this matter
-- Looking for criminal defense, not family law`;
+- Looking for criminal defense, not family law
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "Contested divorce with 2 minor children. Married 12 years, significant marital assets including family home. Spouse has retained counsel."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Family law matter" }`;
 }
 
 function getTaxLawPrompt() {
@@ -598,6 +637,13 @@ function getTaxLawPrompt() {
 10. Ask if they've worked with a tax attorney before
 11. Ask about urgency (wage garnishment, bank levy, etc.)
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of tax issue (e.g., "IRS Audit", "Back Taxes", "Tax Lien", "Wage Garnishment")
+- date_occurred: Tax years affected or when issue started (e.g., "2021-2023 tax years", "Audit notice received October 2024")
+- location: State where they reside/file
+- description: Brief description of their tax situation
+
 ## Qualification Signals (green routing)
 - Owes significant back taxes ($10k+)
 - Received IRS audit notice
@@ -606,7 +652,12 @@ function getTaxLawPrompt() {
 
 ## Disqualification (call complete_intake with routing="red")
 - Just needs simple tax return prepared
-- Issue is only with another tax preparer, not IRS`;
+- Issue is only with another tax preparer, not IRS
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "IRS audit notice received for 2022 tax year. Owes approximately $45,000 in back taxes. Currently facing wage garnishment."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Tax matter" }`;
 }
 
 function getBankruptcyPrompt() {
@@ -632,6 +683,13 @@ function getBankruptcyPrompt() {
 11. Ask if they've consulted with other attorneys
 12. Ask about timeline/urgency
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of bankruptcy consideration (e.g., "Chapter 7", "Chapter 13", "Debt Relief Consultation")
+- date_occurred: When financial issues started or relevant deadline (e.g., "Garnishment started 3 months ago")
+- location: State where they reside/will file
+- description: Brief description of their financial situation
+
 ## Qualification Signals (green routing)
 - Significant unsecured debt
 - Facing foreclosure or garnishment
@@ -639,7 +697,12 @@ function getBankruptcyPrompt() {
 
 ## Disqualification (call complete_intake with routing="red")
 - Filed bankruptcy in last 8 years (Chapter 7) or 2 years (Chapter 13)
-- Primarily student loan debt (may still help but lower priority)`;
+- Primarily student loan debt (may still help but lower priority)
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "Seeking Chapter 7 bankruptcy. Approximately $85,000 in unsecured debt (credit cards, medical bills). Currently employed, facing wage garnishment."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Bankruptcy matter" }`;
 }
 
 function getCriminalDefensePrompt(state) {
@@ -665,6 +728,13 @@ function getCriminalDefensePrompt(state) {
 11. Ask what county/jurisdiction this is in
 12. Ask if there are any prior criminal convictions
 
+## When Calling collect_case_info
+After completing Phase 2 and 3 questions, call collect_case_info with:
+- case_type: The specific charge (e.g., "DUI/DWI", "Drug Offense", "Assault", "Theft")
+- date_occurred: When the incident occurred (use the exact response, e.g., "Within the past month", "2 weeks ago", "October 2024")
+- location: County/jurisdiction where charges are filed (e.g., "Baltimore County, ${state}")
+- description: Brief description of the charges and situation
+
 ## Urgency Signals (prioritize)
 - In custody
 - Court date within 2 weeks
@@ -673,7 +743,12 @@ function getCriminalDefensePrompt(state) {
 ## Disqualification (call complete_intake with routing="red")
 - Case is outside ${state}
 - Already has private attorney
-- Looking for appeals (may need specialist)`;
+- Looking for appeals (may need specialist)
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "Charged with DUI/DWI in ${state}. First offense, no prior criminal record. Arraignment scheduled in 2 weeks, currently out on bail."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Criminal matter" }`;
 }
 
 function getEstatePlanningPrompt(state) {
@@ -698,6 +773,13 @@ function getEstatePlanningPrompt(state) {
 10. Ask if there are any health concerns creating urgency
 11. Ask about timeline for completing documents
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of estate planning needed (e.g., "Will", "Trust", "Power of Attorney", "Comprehensive Estate Plan")
+- date_occurred: Timeline or urgency (e.g., "Wants to complete within 2 months", "Health concerns - urgent")
+- location: State where they reside (e.g., "${state}")
+- description: Brief description of their estate planning needs
+
 ## Qualification Signals (green routing)
 - Has significant assets to protect
 - Complex family situations
@@ -705,7 +787,12 @@ function getEstatePlanningPrompt(state) {
 
 ## Lower Priority (yellow routing)
 - Simple will with no complex assets
-- Just updating existing documents`;
+- Just updating existing documents
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary. Example: "Needs comprehensive estate plan including will, trust, and powers of attorney. Married with 3 children, significant assets including real estate and business interests."
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A - Estate planning matter" }`;
 }
 
 function getGenericPrompt(practiceArea, qualCriteria, intakeQuestions) {
@@ -729,12 +816,24 @@ ${intakeQuestions ? `Based on their practice area, ask about:\n- ${intakeQuestio
 9. Ask if they're located in your service area
 10. Ask if they're currently represented
 
+## When Calling collect_case_info
+After completing Phase 2 questions, call collect_case_info with:
+- case_type: Type of legal matter (e.g., "${practiceArea}")
+- date_occurred: When the issue began or relevant events occurred (use the exact response)
+- location: Where they are located or where the matter occurred
+- description: Brief description of their situation
+
 ${qualCriteria ? `## Qualification Criteria\nGood candidates will have:\n- ${qualCriteria}` : ''}
 
 ## Disqualification (call complete_intake with routing="red")
 - Outside your service area
 - Currently represented by another attorney
-- Matter is outside your practice area`;
+- Matter is outside your practice area
+
+## When Calling complete_intake
+You MUST include these fields:
+- ai_screening_summary: Write a 2-3 sentence narrative summary of the case, including key facts and circumstances.
+- sol_status: Set to { status: "unknown", months_remaining: null, note: "N/A" } unless statute of limitations applies to this matter.`;
 }
 
 /**
@@ -827,6 +926,27 @@ function generateTools(practiceArea) {
                         type: "string",
                         enum: ["schedule_consult", "request_documents", "decline_with_resources"]
                     },
+                    ai_screening_summary: {
+                        type: "string",
+                        description: "2-3 sentence narrative summary of the case for the law firm. Include key facts: what happened, when, injuries sustained, current treatment status, and whether within statute of limitations."
+                    },
+                    sol_status: {
+                        type: "object",
+                        description: "Statute of limitations status (for applicable practice areas)",
+                        properties: {
+                            status: { type: "string", enum: ["within", "near_expiration", "expired", "unknown"] },
+                            months_remaining: { type: "number", description: "Months until SOL expires (null if expired or unknown)" },
+                            note: { type: "string", description: "Brief SOL note, e.g. '23 months remaining' or 'Expired' or 'N/A'" }
+                        }
+                    },
+                    injuries: {
+                        type: "string",
+                        description: "List of injuries mentioned by caller (for PI cases), e.g. 'Whiplash, back pain, headaches'"
+                    },
+                    treatment_status: {
+                        type: "string",
+                        description: "Current medical treatment status, e.g. 'Active PT', 'Completed treatment', 'ER visit only', 'No treatment yet'"
+                    },
                     primary_disqualifier: {
                         type: "string",
                         description: "Main reason for red routing (if applicable)"
@@ -846,7 +966,7 @@ function generateTools(practiceArea) {
                         }
                     }
                 },
-                required: ["routing", "urgency", "recommended_next_action", "key_factors"]
+                required: ["routing", "urgency", "recommended_next_action", "key_factors", "ai_screening_summary"]
             }
         }
     ];

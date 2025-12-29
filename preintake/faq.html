@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequently Asked Questions - PreIntake.ai</title>
+    <meta name="description" content="Common questions about PreIntake.ai - AI-powered legal intake that screens leads like your best paralegal.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0c1f3f;
+            --primary-blue: #1a3a5c;
+            --accent-gold: #c9a962;
+            --accent-gold-light: #e5d4a1;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --text-dark: #1a1a2e;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* FAQ Item */
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .faq-question:hover {
+            background: #f8fafc;
+        }
+
+        .faq-question svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent-gold);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        .faq-item.open .faq-question svg {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 1.5rem 1.5rem;
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .faq-answer-content p {
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(201, 169, 98, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .faq-section {
+                padding: 3rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="preintake-header"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Frequently Asked Questions</h1>
+                <p>Everything you need to know about PreIntake.ai</p>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="faq-container">
+                <!-- FAQ 1 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How does PreIntake.ai work?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>PreIntake.ai provides an AI-powered chat widget that you embed on your law firm's website. When potential clients visit your site, they interact with our intelligent intake system that:</p>
+                            <ul>
+                                <li>Engages them in a natural, conversational intake experience</li>
+                                <li>Asks practice-specific screening questions based on your firm's criteria</li>
+                                <li>Evaluates responses against legal qualifications (SOL, jurisdiction, etc.)</li>
+                                <li>Routes qualified leads to your CRM or email in real-time</li>
+                                <li>Provides plain-English rationale for each screening decision</li>
+                            </ul>
+                            <p>The widget matches your firm's branding and works 24/7, screening leads before they ever reach your intake team.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What practice areas do you support?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>PreIntake.ai supports a wide range of legal practice areas, each with its own specialized screening logic:</p>
+                            <ul>
+                                <li><strong>Personal Injury</strong> - Vehicle accidents, premises liability, dog bites, rideshare incidents</li>
+                                <li><strong>Immigration</strong> - Family-based, employment-based, asylum, VAWA, U-visa</li>
+                                <li><strong>Family Law</strong> - Divorce, custody, support, protective orders</li>
+                                <li><strong>Bankruptcy</strong> - Chapter 7, Chapter 13, means test screening</li>
+                                <li><strong>Criminal Defense</strong> - Misdemeanors, felonies, DUI/DWI, federal crimes</li>
+                                <li><strong>Tax/IRS</strong> - Disputes, audits, Offer in Compromise</li>
+                                <li><strong>Estate Planning</strong> - Wills, trusts, probate</li>
+                                <li><strong>Employment Law</strong> - Discrimination, wrongful termination, wage disputes</li>
+                                <li><strong>Workers' Compensation</strong> - Workplace injuries, benefits disputes</li>
+                                <li><strong>Real Estate</strong> - Transactions, disputes, landlord-tenant</li>
+                            </ul>
+                            <p>We can also customize screening for other practice areas based on your firm's needs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How much does it cost?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>PreIntake.ai uses simple, transparent pricing:</p>
+                            <ul>
+                                <li><strong>$399 one-time implementation fee</strong> - Covers custom setup of your AI intake, including practice area configuration, branding, and screening criteria</li>
+                                <li><strong>$129/month subscription</strong> - Includes unlimited AI-powered intake screenings, lead routing, and real-time delivery to your CRM or email</li>
+                            </ul>
+                            <p>No hidden fees, no per-lead charges, no long-term contracts. You can request a free demo before committing to see exactly how it works with your firm's branding and practice areas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Do you retain my client data?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p><strong>No. PreIntake.ai does not retain lead data.</strong></p>
+                            <p>Qualified leads are securely passed directly to your firm in real-time via email or your CRM integration. Our intake widget embeds on your website—conversations are processed in real-time and delivered directly to you. We never store client information beyond immediate processing.</p>
+                            <p>This privacy-first approach means your clients' sensitive information stays where it belongs: with your firm.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How do I add the intake to my website?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Adding PreIntake.ai to your website is simple. After setup, you receive a small code snippet that looks like this:</p>
+                            <p><code>&lt;script src="https://preintake.ai/widget/your-firm-id.js"&gt;&lt;/script&gt;</code></p>
+                            <p>You (or your web developer) paste this code into your website, typically just before the closing <code>&lt;/body&gt;</code> tag. That's it—the widget appears automatically and starts screening leads immediately.</p>
+                            <p>Works with any website platform: WordPress, Squarespace, Wix, custom sites, or any CMS. No special plugins or technical expertise required.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I customize the intake questions?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes. During implementation, we configure your intake based on:</p>
+                            <ul>
+                                <li>Your specific practice areas and their relative priority</li>
+                                <li>Your qualification criteria and screening thresholds</li>
+                                <li>Jurisdiction and geographic focus</li>
+                                <li>Any custom questions or disqualifiers specific to your firm</li>
+                            </ul>
+                            <p>The AI adapts its conversation based on responses, so it's not just a static questionnaire—it's an intelligent intake that asks follow-up questions when needed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How are leads delivered?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Leads are delivered in real-time through your preferred method:</p>
+                            <ul>
+                                <li><strong>Email</strong> - Detailed lead notification sent to your intake team with all collected information and screening rationale</li>
+                                <li><strong>Webhook/CRM</strong> - Direct integration with your CRM (Lawmatics, Clio, Filevine, etc.) to create new leads automatically</li>
+                            </ul>
+                            <p>Each lead includes:</p>
+                            <ul>
+                                <li>Contact information collected during intake</li>
+                                <li>Practice area and case type</li>
+                                <li>Qualification status (Green/Yellow/Red)</li>
+                                <li>Plain-English summary of why the lead was qualified or flagged</li>
+                                <li>Full transcript of the intake conversation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What CRMs do you integrate with?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>PreIntake.ai integrates with popular legal CRMs including:</p>
+                            <ul>
+                                <li>Lawmatics</li>
+                                <li>Clio</li>
+                                <li>Filevine</li>
+                                <li>PracticePanther</li>
+                                <li>MyCase</li>
+                                <li>And others via webhook/Zapier</li>
+                            </ul>
+                            <p>We sit in front of your CRM—we don't replace it. Qualified leads flow directly into your existing system so your team can work with the tools they already know.</p>
+                            <p>Don't see your CRM listed? Contact us—we can often set up custom integrations via webhook.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Still Have Questions?</h2>
+            <p>Request a free demo and we'll show you exactly how PreIntake.ai works for your firm.</p>
+            <a href="/#demo" class="cta-button">Request Free Demo</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="preintake-footer"></div>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const isOpen = faqItem.classList.contains('open');
+
+                // Close all other FAQs
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('open');
+                });
+
+                // Toggle current
+                if (!isOpen) {
+                    faqItem.classList.add('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

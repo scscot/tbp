@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - PreIntake.ai | AI-Powered Legal Intake</title>
+    <meta name="description" content="Learn about PreIntake.ai - founded by legal tech innovators to solve the critical problem of unqualified intake submissions wasting law firm resources.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0c1f3f;
+            --primary-blue: #1a3a5c;
+            --accent-gold: #c9a962;
+            --accent-gold-light: #e5d4a1;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --text-dark: #1a1a2e;
+            --bg-light: #f8fafc;
+            --success: #48bb78;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            color: var(--accent-gold);
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 4rem 2rem;
+        }
+
+        .section-light {
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .section p {
+            font-size: 1.0625rem;
+            color: #475569;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Problem Stats */
+        .problem-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .value-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .value-card h3 {
+            font-size: 1.125rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .value-card h3 span {
+            font-size: 1.25rem;
+        }
+
+        .value-card p {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .cta-section p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(201, 169, 98, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .section {
+                padding: 3rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="preintake-header"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Revolutionizing <span>Legal Intake</span> with AI</h1>
+                <p>We identified a critical gap in how law firms handle intake—and built an innovative solution to solve it.</p>
+            </div>
+        </section>
+
+        <!-- The Problem Section -->
+        <section class="section section-light">
+            <div class="container">
+                <h2>The Problem We Solve</h2>
+                <p>Every law firm faces the same frustrating challenge: a flood of intake submissions, with the majority being unqualified leads that waste valuable staff time and resources.</p>
+
+                <div class="problem-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">Up to 70%</div>
+                        <div class="stat-label">of intake submissions are often unqualified</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$25-50</div>
+                        <div class="stat-label">each unqualified call can cost in staff time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Hours</div>
+                        <div class="stat-label">wasted daily on leads that never sign</div>
+                    </div>
+                </div>
+
+                <p>Generic chatbots and form builders don't understand legal nuances. They can't screen for statute of limitations issues, identify jurisdiction problems, or recognize practice-specific disqualifiers. The result? Your staff becomes a human filter, manually reviewing every submission to find the cases worth pursuing.</p>
+            </div>
+        </section>
+
+        <!-- Our Solution Section -->
+        <section class="section">
+            <div class="container">
+                <h2>Our Approach</h2>
+                <p>PreIntake.ai was founded by legal technology innovators who saw this problem firsthand. We asked a simple question: <em>What if your intake could screen leads like your best paralegal—before they ever reach your CRM?</em></p>
+
+                <p>The answer is an AI-powered intake system that understands legal practice areas deeply. Not a generic chatbot, but a practice-specific screening tool that knows the difference between a strong personal injury case and one that's outside the statute of limitations. That can identify immigration visa eligibility issues. That understands which bankruptcy chapters apply based on income and debt profiles.</p>
+
+                <p>Our system sits in front of your existing CRM—Lawmatics, Clio, Filevine—and ensures only qualified leads make it through. Every submission receives intelligent routing with plain-English rationale, so your team knows exactly why a lead was qualified, flagged for review, or declined.</p>
+            </div>
+        </section>
+
+        <!-- Our Values Section -->
+        <section class="section section-light">
+            <div class="container">
+                <h2>What Sets Us Apart</h2>
+                <p>We built PreIntake.ai on principles that matter to the law firms we serve.</p>
+
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h3><span>🎯</span> Practice-Specific Intelligence</h3>
+                        <p>Not generic AI—our system understands PI, immigration, family law, bankruptcy, criminal defense, and more. Each practice area has its own screening logic.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3><span>🔒</span> Privacy-Focused</h3>
+                        <p>We don't retain lead data. Qualified leads pass directly to your firm in real-time via email or CRM integration. Your clients' information stays yours.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3><span>🔌</span> Integrates, Not Replaces</h3>
+                        <p>PreIntake.ai feeds INTO your existing workflow. We don't ask you to replace your CRM—we make it more effective by filtering what reaches it.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3><span>💬</span> Conversational, Not Static</h3>
+                        <p>Dynamic intake conversations that adapt based on responses. Natural language processing that feels human, not robotic form-filling.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="section">
+            <div class="container">
+                <h2>Our Mission</h2>
+                <p>We believe law firms should spend their time on clients who genuinely need their help—not sorting through unqualified leads. Every hour your team spends on an intake that goes nowhere is an hour they could have spent on a case that matters.</p>
+
+                <p>PreIntake.ai exists to give that time back. By automating intelligent screening, we help firms focus on what they do best: practicing law and serving clients.</p>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>See It In Action</h2>
+            <p>Experience how PreIntake.ai works with a fully customized demo using your firm's branding and practice areas.</p>
+            <a href="/#demo" class="cta-button">Request Your Free Demo</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="preintake-footer"></div>
+</body>
+</html>

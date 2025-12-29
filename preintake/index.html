@@ -6,6 +6,8 @@
     <title>PreIntake.ai - AI-Powered Legal Intake That Screens Like Your Best Paralegal</title>
     <meta name="description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Practice-specific screening for PI, Immigration, Family Law, Bankruptcy & more. Get your fully customized demo today.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
     <style>
         :root {
             --primary-dark: #0c1f3f;
@@ -67,14 +69,16 @@
 
         .hero-badge {
             display: inline-block;
-            background: rgba(201, 169, 98, 0.2);
-            border: 1px solid var(--accent-gold);
+            background: rgba(201, 169, 98, 0.25);
+            border: 2px solid var(--accent-gold);
             color: var(--accent-gold);
-            padding: 0.5rem 1rem;
+            padding: 1rem 2.5rem;
             border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .hero h1 {
@@ -797,6 +801,407 @@
             margin: 0 1rem;
         }
 
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--accent-gold);
+            background: linear-gradient(180deg, #fffbf0 0%, #ffffff 100%);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pricing-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            background: rgba(201, 169, 98, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+        }
+
+        .pricing-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-amount span {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .pricing-desc {
+            font-size: 0.95rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Demo Callout Section */
+        .demo-callout {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+        }
+
+        .demo-callout-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .demo-callout-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: rgba(72, 187, 120, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success);
+        }
+
+        .demo-callout h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .demo-callout-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .demo-callout-list {
+            list-style: none;
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .demo-callout-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .demo-callout-list li svg {
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .demo-callout-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .demo-callout-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(201, 169, 98, 0.5);
+        }
+
+        /* Lead Output Example */
+        .lead-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .lead-card {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .lead-card-header {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .lead-card-header.qualified {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        }
+
+        .lead-card-header.declined {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        }
+
+        .lead-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .lead-badge.qualified {
+            background: var(--success);
+            color: white;
+        }
+
+        .lead-badge.declined {
+            background: #ef4444;
+            color: white;
+        }
+
+        .lead-card-time {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .lead-card-body {
+            padding: 1.5rem;
+        }
+
+        .lead-card-contact {
+            margin-bottom: 1rem;
+        }
+
+        .lead-card-contact h4 {
+            font-size: 1.125rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .lead-card-contact p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .lead-card-summary {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lead-card-summary-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .lead-card-summary p {
+            font-size: 0.9rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .lead-card-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .lead-detail {
+            font-size: 0.8rem;
+        }
+
+        .lead-detail-label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .lead-detail-value {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .lead-card-footer {
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lead-card-footer a {
+            font-size: 0.875rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .lead-card-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Trust/Privacy Section */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .trust-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .trust-card-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            color: var(--success);
+        }
+
+        .trust-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+        }
+
+        .trust-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Competitive Comparison */
+        .vs-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 3rem;
+        }
+
+        .vs-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .vs-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .vs-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .vs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .vs-item {
+            text-align: center;
+        }
+
+        .vs-item-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .vs-item-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .vs-item-compare {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero {
@@ -815,18 +1220,36 @@
             .comparison-table td {
                 padding: 1rem;
             }
+
+            .lead-examples {
+                grid-template-columns: 1fr;
+            }
+
+            .lead-card-details {
+                grid-template-columns: 1fr;
+            }
+
+            .vs-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .vs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <div id="preintake-header"></div>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-badge">AI-Powered Legal Intake</div>
-            <h1>See Your <span>AI Intake</span> in 60 Seconds</h1>
+            <h1>Stop Wasting Time on <span>Unqualified Leads</span></h1>
             <p class="hero-subtitle">
-                PreIntake.ai screens leads like your best paralegal—before they hit your CRM.
-                Practice-specific qualification for PI, Immigration, Family Law, Bankruptcy, and more.
+                AI-powered intake with practice-specific precision. PreIntake.ai screens leads like your best paralegal—before they hit your CRM.
             </p>
             <a href="#demo" class="hero-cta">
                 Create Your Custom AI Intake Demo
@@ -842,16 +1265,16 @@
     <div class="stats-bar">
         <div class="stats-container">
             <div class="stat">
-                <div class="stat-number">60-70%</div>
-                <div class="stat-label">of intake submissions are unqualified</div>
+                <div class="stat-number">Up to 70%</div>
+                <div class="stat-label">of intake submissions are often unqualified</div>
             </div>
             <div class="stat">
                 <div class="stat-number">$25-50</div>
-                <div class="stat-label">cost per unqualified call in staff time</div>
+                <div class="stat-label">each unqualified call can cost in staff time</div>
             </div>
             <div class="stat">
-                <div class="stat-number">45%</div>
-                <div class="stat-label">of firms use 5-10+ fragmented tools</div>
+                <div class="stat-number">5-10+</div>
+                <div class="stat-label">disconnected tools many firms rely on</div>
             </div>
             <div class="stat">
                 <div class="stat-number">24/7</div>
@@ -979,8 +1402,8 @@
     <section class="section">
         <div class="container">
             <div class="section-header">
-                <h2>Practice-Specific Templates</h2>
-                <p>Each practice area has its own screening logic, qualification criteria, and conversational flow.</p>
+                <h2>Built Around Your Practice Areas</h2>
+                <p>We configure custom intake logic based on how your firm evaluates cases. The practice areas shown below are examples of how PreIntake.ai adapts to different legal disciplines.</p>
             </div>
             <div class="practice-grid">
                 <div class="practice-card">
@@ -1037,6 +1460,252 @@
                     </ul>
                     <div class="practice-card-screening">Screens: Tax type, amount, procedural posture</div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What You Receive Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Your Team Receives</h2>
+                <p>Every intake arrives as a complete, actionable summary—not a data dump. Here's exactly what lands in your inbox.</p>
+            </div>
+            <div class="lead-examples">
+                <!-- Qualified Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header qualified">
+                        <span class="lead-badge qualified">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Qualified Lead
+                        </span>
+                        <span class="lead-card-time">Just now</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <div class="lead-card-contact">
+                            <h4>Maria Rodriguez</h4>
+                            <p>Personal Injury — Vehicle Accident</p>
+                        </div>
+                        <div class="lead-card-summary">
+                            <div class="lead-card-summary-title">AI Screening Summary</div>
+                            <p>Rear-end collision at stoplight 3 weeks ago. Visible injuries (whiplash, back pain), currently in physical therapy. Police report filed, other driver cited. No prior attorney contacted. Within SOL.</p>
+                        </div>
+                        <div class="lead-card-details">
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Accident Date</div>
+                                <div class="lead-detail-value">Dec 7, 2025</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">SOL Status</div>
+                                <div class="lead-detail-value">23 months remaining</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Injuries</div>
+                                <div class="lead-detail-value">Whiplash, back pain</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Treatment</div>
+                                <div class="lead-detail-value">Active PT</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="#">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email</span>
+                    </div>
+                </div>
+
+                <!-- Declined Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header declined">
+                        <span class="lead-badge declined">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Does Not Qualify
+                        </span>
+                        <span class="lead-card-time">2 min ago</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <div class="lead-card-contact">
+                            <h4>James Wilson</h4>
+                            <p>Personal Injury — Slip and Fall</p>
+                        </div>
+                        <div class="lead-card-summary">
+                            <div class="lead-card-summary-title">AI Screening Rationale</div>
+                            <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
+                        </div>
+                        <div class="lead-card-details">
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Incident Date</div>
+                                <div class="lead-detail-value">Dec 2022</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">SOL Status</div>
+                                <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Disqualifier</div>
+                                <div class="lead-detail-value">SOL exceeded</div>
+                            </div>
+                            <div class="lead-detail">
+                                <div class="lead-detail-label">Action</div>
+                                <div class="lead-detail-value">Auto-declined</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="#">View Full Transcript →</a>
+                        <span class="lead-card-time">Not forwarded to CRM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust & Privacy Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Your Data, Your Control</h2>
+                <p>Unlike competitors who store everything, PreIntake.ai is built with privacy at its core.</p>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3>Zero Data Retention</h3>
+                    <p>We never store client intake data. Leads are processed in real-time, delivered to you, then immediately discarded. Your clients' information never sits on our servers.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3>Real-Time Delivery</h3>
+                    <p>Qualified leads arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot leads.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3>Your Infrastructure</h3>
+                    <p>The intake widget lives on your website. Client conversations never leave your domain until you receive the summary. You control the experience.</p>
+                </div>
+            </div>
+
+            <!-- Competitive Positioning -->
+            <div class="vs-section">
+                <div class="vs-header">
+                    <h3>Why Firms Switch from Answering Services</h3>
+                    <p>PreIntake.ai vs. traditional receptionist services like Smith.ai</p>
+                </div>
+                <div class="vs-grid">
+                    <div class="vs-item">
+                        <div class="vs-item-value">$129/mo</div>
+                        <div class="vs-item-label">Flat monthly rate</div>
+                        <div class="vs-item-compare">vs. $285+/mo for 30 calls</div>
+                    </div>
+                    <div class="vs-item">
+                        <div class="vs-item-value">Unlimited</div>
+                        <div class="vs-item-label">Intake screenings</div>
+                        <div class="vs-item-compare">vs. per-call pricing</div>
+                    </div>
+                    <div class="vs-item">
+                        <div class="vs-item-value">Instant</div>
+                        <div class="vs-item-label">Response time</div>
+                        <div class="vs-item-compare">vs. hold times & callbacks</div>
+                    </div>
+                    <div class="vs-item">
+                        <div class="vs-item-value">Practice-Specific</div>
+                        <div class="vs-item-label">Legal screening</div>
+                        <div class="vs-item-compare">vs. generic scripts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section section-dark" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>One-time setup, straightforward monthly subscription. No hidden fees.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div class="pricing-label">One-Time Implementation</div>
+                    <div class="pricing-amount">$399</div>
+                    <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas, branding, and screening criteria</div>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </div>
+                    <div class="pricing-label">Monthly Subscription</div>
+                    <div class="pricing-amount">$129<span>/mo</span></div>
+                    <div class="pricing-desc">Unlimited AI-powered intake screenings, lead routing, and real-time delivery to your CRM</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Free Demo Callout -->
+    <section class="section demo-callout">
+        <div class="container">
+            <div class="demo-callout-content">
+                <div class="demo-callout-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2>Try Before You Buy</h2>
+                <p class="demo-callout-subtitle">Every demo is fully customized to your firm—completely free.</p>
+                <ul class="demo-callout-list">
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Your firm's branding and colors
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Practice-specific screening logic
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Real AI intake conversation in action
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        No credit card required
+                    </li>
+                </ul>
+                <a href="#demo" class="demo-callout-cta">Request Your Free Demo</a>
             </div>
         </div>
     </section>
@@ -1387,14 +2056,7 @@
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-links">
-            <a href="preintake.md">Documentation</a>
-            <a href="mailto:support@preintake.ai">Contact</a>
-        </div>
-        <p>&copy; 2025 PreIntake.ai. All rights reserved.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Built by <a href="https://stephenscott.us">Stephen Scott</a></p>
-    </footer>
+    <div id="preintake-footer"></div>
 
     <script>
         // Firebase Function endpoint
@@ -1487,7 +2149,7 @@
         // Validate email domain matches website domain
         function validateEmailDomain(email, websiteUrl) {
             // Admin bypass
-            const ADMIN_EMAILS = ['scscot@gmail.com'];
+            const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
             if (ADMIN_EMAILS.includes(email.toLowerCase())) {
                 return { valid: true };
             }
@@ -1674,7 +2336,7 @@
                 const website = document.getElementById('website').value.trim();
 
                 // Admin bypass for rate limiting
-                const ADMIN_EMAILS = ['scscot@gmail.com'];
+                const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
                 const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
 
                 // Check client-side rate limit (skip for admins)

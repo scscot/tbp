@@ -6,6 +6,8 @@
     <title>Payment Successful - PreIntake.ai</title>
     <meta name="description" content="Your PreIntake.ai account has been activated successfully.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
     <style>
         :root {
             --primary-dark: #0c1f3f;
@@ -32,10 +34,16 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: var(--text-light);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            color: var(--text-light);
         }
 
         body::before {
@@ -200,10 +208,39 @@
             padding: 1rem;
             margin-top: 0.75rem;
             font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--accent-gold-light);
             overflow-x: auto;
-            white-space: nowrap;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .position-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .position-hint code {
+            background: rgba(201, 169, 98, 0.2);
+            color: var(--accent-gold);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.7rem;
+        }
+
+        .position-options {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.65rem;
+            margin: 0.2rem 0.15rem;
         }
 
         .copy-btn {
@@ -312,9 +349,13 @@
     </style>
 </head>
 <body>
-    <canvas id="confetti" class="confetti"></canvas>
+    <!-- Header -->
+    <div id="preintake-header"></div>
 
-    <div class="container">
+    <main>
+        <canvas id="confetti" class="confetti"></canvas>
+
+        <div class="container">
         <div class="logo">
             <a href="/">Pre<span>Intake</span>.ai</a>
         </div>
@@ -337,12 +378,12 @@
 
                 <div class="info-box">
                     <div class="info-row">
-                        <span class="label">Account</span>
-                        <span class="value" id="customer-email">Loading...</span>
+                        <span class="label">Firm</span>
+                        <span class="value" id="firm-name">Loading...</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Plan</span>
-                        <span class="value">PreIntake.ai Subscription</span>
+                        <span class="value">Monthly Subscription</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Status</span>
@@ -351,16 +392,16 @@
                 </div>
 
                 <div class="next-steps">
-                    <h3>Add Intake to Your Website</h3>
+                    <h3>How to Add Intake Form to Your Website</h3>
 
                     <div class="step">
                         <div class="step-number">1</div>
                         <div class="step-content">
                             <h4>Copy Your Embed Code</h4>
                             <p>Add this snippet to any page where you want the intake button to appear:</p>
-                            <div class="embed-code" id="embed-code">
-                                &lt;script src="https://preintake.ai/intake-button.js" data-firm="<span id="firm-id-code">...</span>"&gt;&lt;/script&gt;
-                            </div>
+                            <div class="embed-code" id="embed-code">&lt;script src="https://preintake.ai/intake-button.js" data-firm="<span id="firm-id-code">YOUR_FIRM_ID</span>" data-position="bottom-right"&gt;&lt;/script&gt;</div>
+                            <p class="position-hint">Change <code>data-position</code> to control button placement:<br>
+                            <span class="position-options">bottom-right</span> <span class="position-options">bottom-left</span> <span class="position-options">bottom-center</span> <span class="position-options">top-right</span> <span class="position-options">top-left</span> <span class="position-options">top-center</span></p>
                             <button class="copy-btn" onclick="copyEmbedCode()">Copy Code</button>
                         </div>
                     </div>
@@ -377,7 +418,7 @@
                         <div class="step-number">3</div>
                         <div class="step-content">
                             <h4>Start Receiving Leads</h4>
-                            <p>Qualified leads will be delivered to your email. Contact us to set up CRM integration.</p>
+                            <p>Qualified leads will be delivered to <span id="delivery-email" style="color: var(--accent-gold);"></span>. Contact us to set up CRM integration.</p>
                         </div>
                     </div>
                 </div>
@@ -397,6 +438,10 @@
             </div>
         </div>
     </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="preintake-footer"></div>
 
     <script>
         // Configuration
@@ -410,9 +455,10 @@
         // DOM elements
         const loadingEl = document.getElementById('loading');
         const contentEl = document.getElementById('content');
-        const customerEmailEl = document.getElementById('customer-email');
+        const firmNameEl = document.getElementById('firm-name');
         const firmIdCodeEl = document.getElementById('firm-id-code');
         const demoLinkEl = document.getElementById('demo-link');
+        const deliveryEmailEl = document.getElementById('delivery-email');
 
         /**
          * Initialize page
@@ -420,9 +466,10 @@
         async function init() {
             if (!sessionId || !firmId) {
                 showContent();
-                customerEmailEl.textContent = 'Your account';
+                firmNameEl.textContent = 'Your Firm';
                 firmIdCodeEl.textContent = firmId || 'YOUR_FIRM_ID';
                 demoLinkEl.href = firmId ? `https://preintake.ai/demo/${firmId}` : '/';
+                deliveryEmailEl.textContent = 'your email';
                 return;
             }
 
@@ -437,9 +484,10 @@
                 const data = await response.json();
 
                 // Update UI
-                customerEmailEl.textContent = data.customerEmail || 'Your account';
+                firmNameEl.textContent = data.firmName || 'Your Firm';
                 firmIdCodeEl.textContent = firmId;
                 demoLinkEl.href = `https://preintake.ai/demo/${firmId}`;
+                deliveryEmailEl.textContent = data.customerEmail || 'your email';
 
                 showContent();
                 triggerConfetti();
@@ -447,9 +495,10 @@
             } catch (error) {
                 console.error('Verification error:', error);
                 // Still show success (payment was successful if they got here)
-                customerEmailEl.textContent = 'Your account';
+                firmNameEl.textContent = 'Your Firm';
                 firmIdCodeEl.textContent = firmId;
                 demoLinkEl.href = `https://preintake.ai/demo/${firmId}`;
+                deliveryEmailEl.textContent = 'your email';
                 showContent();
                 triggerConfetti();
             }
@@ -467,7 +516,7 @@
          * Copy embed code to clipboard
          */
         function copyEmbedCode() {
-            const code = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}"><\/script>`;
+            const code = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"><\/script>`;
             navigator.clipboard.writeText(code).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 btn.textContent = 'Copied!';

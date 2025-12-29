@@ -287,6 +287,38 @@
             opacity: 0.7;
         }
 
+        .privacy-notice {
+            margin-top: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem 1.5rem;
+            background: rgba(72, 187, 120, 0.1);
+            border: 1px solid rgba(72, 187, 120, 0.3);
+            border-radius: 8px;
+            max-width: 500px;
+        }
+
+        .privacy-notice-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        .privacy-notice-title svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .privacy-notice-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
         /* Chat Screen Styles */
         #chat-screen {
             flex-direction: column;
@@ -1308,6 +1340,52 @@
             margin: 0 auto;
         }
 
+        /* Results Screen PreIntake Promo */
+        .preintake-promo {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .preintake-promo-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .preintake-promo-text strong {
+            color: var(--accent-gold);
+        }
+
+        .preintake-promo-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            background: transparent;
+            border: 2px solid var(--accent-gold);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .preintake-promo-button:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .preintake-promo-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .chat-main {
@@ -1428,6 +1506,17 @@
                 This tool provides a framework for understanding litigation potential and should not be construed as legal advice.
                 Use in consultation with qualified counsel to make informed decisions about your tax litigation strategy.
             </p>
+            <div class="privacy-notice">
+                <div class="privacy-notice-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Your Data, Your Control
+                </div>
+                <p class="privacy-notice-text">
+                    PreIntake.ai does not retain lead data. Qualified leads are securely passed directly to your firm in real-time via email or CRM. Our intake widget embeds on your website—we never store client information beyond immediate processing.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -1650,6 +1739,17 @@
                     </svg>
                     Start Over
                 </button>
+            </div>
+
+            <!-- PreIntake.ai Promo -->
+            <div class="preintake-promo">
+                <p class="preintake-promo-text">Impressed? <strong>Get PreIntake.ai for your firm.</strong></p>
+                <a href="/create-account.html" class="preintake-promo-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Get Started
+                </a>
             </div>
         </div>
         <p class="results-disclaimer">

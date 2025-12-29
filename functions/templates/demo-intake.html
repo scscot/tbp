@@ -1086,6 +1086,102 @@
         }
 
         /* Responsive */
+        /* Sidebar CTA */
+        .sidebar-cta {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .sidebar-cta-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-cta-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .sidebar-cta-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .sidebar-cta-button:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-cta-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Results Screen PreIntake Promo */
+        .preintake-promo {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .preintake-promo-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .preintake-promo-text strong {
+            color: var(--accent-gold);
+        }
+
+        .preintake-promo-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            background: transparent;
+            border: 2px solid var(--accent-gold);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .preintake-promo-button:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .preintake-promo-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
         @media (max-width: 768px) {
             .progress-sidebar {
                 display: none;
@@ -1206,6 +1302,16 @@
                 <div class="progress-steps">
                     {{PROGRESS_STEPS_HTML}}
                 </div>
+                <div class="sidebar-cta">
+                    <h4 class="sidebar-cta-title">Ready to Go Live?</h4>
+                    <p class="sidebar-cta-text">Like what you see? Add PreIntake.ai to your website and start converting leads today.</p>
+                    <a href="https://preintake.ai/create-account.html" class="sidebar-cta-button" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Get Started
+                    </a>
+                </div>
             </aside>
             <div class="chat-area">
                 <div id="chat-messages" class="chat-messages">
@@ -1289,6 +1395,17 @@
                     </svg>
                     Start Over
                 </button>
+            </div>
+
+            <!-- PreIntake.ai Promo -->
+            <div class="preintake-promo">
+                <p class="preintake-promo-text">Impressed? <strong>Get PreIntake.ai for your firm.</strong></p>
+                <a href="https://preintake.ai/create-account.html" class="preintake-promo-button" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Get Started
+                </a>
             </div>
         </div>
         <p class="results-disclaimer">
@@ -1896,6 +2013,39 @@
             }
         }
 
+        // Format conversation history into readable transcript
+        function formatTranscript() {
+            const lines = [];
+            for (const msg of conversationHistory) {
+                if (msg.role === 'user') {
+                    // User messages - could be string or tool results array
+                    if (typeof msg.content === 'string') {
+                        lines.push(`Visitor: ${msg.content}`);
+                    }
+                    // Skip tool_result arrays (internal)
+                } else if (msg.role === 'assistant') {
+                    // Assistant messages - extract text blocks only
+                    if (Array.isArray(msg.content)) {
+                        for (const block of msg.content) {
+                            if (block.type === 'text' && block.text) {
+                                // Remove [OPTIONS: ...] from display
+                                const cleanText = block.text.replace(/\[OPTIONS:.*?\]/g, '').trim();
+                                if (cleanText) {
+                                    lines.push(`Assistant: ${cleanText}`);
+                                }
+                            }
+                        }
+                    } else if (typeof msg.content === 'string') {
+                        const cleanText = msg.content.replace(/\[OPTIONS:.*?\]/g, '').trim();
+                        if (cleanText) {
+                            lines.push(`Assistant: ${cleanText}`);
+                        }
+                    }
+                }
+            }
+            return lines.join('\n\n');
+        }
+
         // Send webhook with lead data
         async function sendWebhook(assessment) {
             if (!CONFIG.webhookUrl) return;
@@ -1912,6 +2062,13 @@
                 primary_disqualifier: assessment.primary_disqualifier || null,
                 primary_strength_factor: assessment.primary_strength_factor || null,
                 key_factors: assessment.key_factors || [],
+                // New fields for enhanced email
+                ai_screening_summary: assessment.ai_screening_summary || null,
+                sol_status: assessment.sol_status || null,
+                injuries: assessment.injuries || null,
+                treatment_status: assessment.treatment_status || null,
+                // Full conversation transcript
+                transcript: formatTranscript(),
                 timestamp: new Date().toISOString(),
                 source: 'preintake-demo-{{LEAD_ID}}'
             };
