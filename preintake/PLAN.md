@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2025-12-29
-**Version**: 2.0 (Merged: Technical Implementation + Product Overview + Customer Journey)
+**Version**: 2.1 (Added Phase 14: SEO Optimization)
 
 ---
 
@@ -613,6 +613,29 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 - [x] **Session Recovery** - 24-hour localStorage with recovery modal
 - [x] **Demo Mode Confirmation Modal** - "Intake sent to {email}"
 
+### Phase 14: SEO & Search Engine Optimization
+- [x] **Meta Tag Optimization** - All pages updated with SEO-optimized titles, descriptions, keywords
+- [x] **Canonical URLs** - Added to all indexable pages
+- [x] **Open Graph Tags** - Social sharing optimization for all pages
+- [x] **Schema.org Structured Data** - SoftwareApplication (index), FAQPage (faq)
+- [x] **Noindex Tags** - Added to utility pages (create-account, payment-success, test pages)
+- [x] **sitemap.xml** - Created with 6 indexable pages and priority levels
+- [x] **robots.txt** - Created with sitemap reference and disallow rules
+- [x] **Stripe Promo Codes** - Enabled `allow_promotion_codes: true` for discounts
+
+**SEO-Optimized Pages:**
+| Page | Priority | Keywords Focus |
+|------|----------|----------------|
+| index.html | 1.0 | AI legal intake, automated client screening, law firm intake software |
+| about-us.html | 0.8 | Legal tech company, AI intake mission |
+| faq.html | 0.8 | Legal intake FAQ, AI screening questions |
+| contact-us.html | 0.7 | Legal software support, demo request |
+| privacy-policy.html | 0.3 | Data protection, GDPR/CCPA compliance |
+| terms-of-service.html | 0.3 | Service agreement, subscription terms |
+
+**Noindexed Pages:**
+- create-account.html, payment-success.html, widget-test.html, intake-button-test.html, preintake.html
+
 **Session Recovery Flow:**
 ```
 User starts intake → Contact info collected → saveSession() to localStorage
@@ -646,6 +669,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── faq.html                # FAQ with accordion
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
+├── sitemap.xml             # SEO sitemap (6 pages)
+├── robots.txt              # Search engine directives
 ├── intake-button.js        # Embeddable floating button
 ├── widget.js               # Embeddable inline widget
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
