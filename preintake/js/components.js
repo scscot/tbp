@@ -20,6 +20,7 @@
             <header class="site-header">
                 <div class="header-container">
                     <a href="/" class="logo">
+                        <img src="/images/icon.svg" alt="PreIntake.ai" class="logo-icon">
                         <span class="logo-pre">Pre</span><span class="logo-intake">Intake</span><span class="logo-ai">.ai</span>
                     </a>
                     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -28,6 +29,7 @@
                     <nav class="nav-menu">
                         <a href="/">Home</a>
                         <a href="/about-us.html">About</a>
+                        <a href="/#pricing">Pricing</a>
                         <a href="/faq.html">FAQs</a>
                         <a href="/contact-us.html">Contact</a>
                     </nav>
@@ -95,7 +97,7 @@
         styles.textContent = `
             /* Header Styles */
             .site-header {
-                background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%);
+                background: #0a1628;
                 padding: 1rem 2rem;
                 position: sticky;
                 top: 0;
@@ -112,10 +114,11 @@
 
             .logo {
                 font-family: 'Playfair Display', serif;
-                font-size: 1.5rem;
+                font-size: 1.75rem;
                 font-weight: 700;
                 text-decoration: none;
                 display: flex;
+                align-items: center;
             }
 
             .logo-pre {
@@ -128,6 +131,13 @@
 
             .logo-ai {
                 color: #ffffff;
+            }
+
+            .logo-icon {
+                height: 1.75rem;
+                width: auto;
+                margin-right: 0.5rem;
+                vertical-align: middle;
             }
 
             .nav-menu {
@@ -234,7 +244,7 @@
 
             /* Footer Styles */
             .site-footer {
-                background: #0c1f3f;
+                background: #0a1628;
                 padding: 1.5rem 2rem;
                 margin-top: auto;
             }

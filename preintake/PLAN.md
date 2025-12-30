@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2025-12-29
-**Version**: 2.1 (Added Phase 14: SEO Optimization)
+**Last Updated**: 2025-12-30
+**Version**: 2.3 (Added branding: icon, header/footer styling)
 
 ---
 
@@ -648,6 +648,46 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 "Start Fresh" → clearSession() → Begin new intake
 ```
 
+### Phase 15: Project Audit (2025-12-30)
+- [x] **Frontend HTML Audit** - Validated all 11 HTML files for structure and consistency
+- [x] **Frontend JavaScript Audit** - Checked 4 JS files for syntax errors and patterns
+- [x] **Backend Cloud Functions Audit** - Verified 8 function files and index.js exports
+- [x] **Cross-file Consistency Check** - Confirmed pricing ($129/month + $399 setup) and email consistency
+- [x] **Security Review** - Verified no hardcoded secrets, all use Firebase `defineSecret`
+- [x] **Schema.org Fix** - Updated `priceValidUntil` from "2025-12-31" to "2026-12-31" (was expiring)
+- [ ] **Missing Asset** - Create `/preintake/images/og-image.png` for social sharing previews
+
+### Phase 16: Branding & Icon (2025-12-30)
+- [x] **Site Icon** - Created `/preintake/images/icon.svg` (gold #c9a962, filter funnel design)
+- [x] **Favicon Integration** - Added favicon references to all 8 HTML pages
+- [x] **Header Logo Icon** - Added icon inline with "PreIntake.ai" text in header
+- [x] **Logo Size Increase** - Increased logo text and icon from 1.5rem to 1.75rem
+- [x] **Header/Footer Background** - Changed from gradient to solid `#0a1628` for better contrast
+
+**Branding Updates:**
+| Element | Before | After |
+|---------|--------|-------|
+| Header background | `linear-gradient(135deg, #0c1f3f, #1a3a5c)` | `#0a1628` (solid) |
+| Footer background | `#0c1f3f` | `#0a1628` (matches header) |
+| Logo font size | 1.5rem | 1.75rem |
+| Logo icon | None | `/images/icon.svg` (1.75rem) |
+| Favicon | None | `/images/icon.svg` (all pages) |
+
+**Audit Summary:**
+| Category | Files | Status |
+|----------|-------|--------|
+| Frontend HTML | 11 | ✅ Pass |
+| Frontend JavaScript | 4 | ✅ Pass |
+| Backend Functions | 8 | ✅ Pass |
+| Pricing Consistency | All | ✅ Pass |
+| Security | All | ✅ Pass |
+| API Endpoints | All | ✅ Pass |
+
+**Outstanding Issue:**
+- `og-image.png` referenced in meta tags but file doesn't exist
+- Affects: index.html, faq.html, about-us.html, contact-us.html
+- Required: Create 1200x630px image at `/preintake/images/og-image.png`
+
 ---
 
 ## Architecture
@@ -675,8 +715,10 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── widget.js               # Embeddable inline widget
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
 ├── PLAN.md                 # This file
-└── js/
-    └── components.js       # Shared header/footer
+├── js/
+│   └── components.js       # Shared header/footer
+└── images/
+    └── icon.svg            # Site icon/favicon (gold #c9a962)
 
 /functions/
 ├── preintake-functions.js           # Form submission handler

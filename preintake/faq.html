@@ -15,6 +15,8 @@
     <meta name="description" content="Get answers about AI legal intake software: How does automated client screening work? What practice areas are supported? How does PreIntake.ai integrate with your CRM? Pricing, setup & more.">
     <meta name="keywords" content="legal intake FAQ, AI screening questions, law firm intake software help, automated client intake questions, legal chatbot FAQ">
     <link rel="canonical" href="https://preintake.ai/faq.html">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="apple-touch-icon" href="/images/icon.svg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -51,6 +53,54 @@
                 "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "PreIntake.ai costs $129/month for unlimited intake screenings, plus a one-time $399 implementation fee for custom setup and training."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What happens after a lead completes intake?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "After intake, leads are instantly qualified using traffic light scoring: Green (strong fit), Yellow (needs review), or Red (poor fit). You receive a detailed summary with contact info, case details, and plain-English reasoning for the qualification."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I add PreIntake.ai to my website?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Adding PreIntake.ai is simple. After setup, you receive a small code snippet to paste before the closing body tag on any page. Works with any website platform: WordPress, Squarespace, Wix, custom sites, or any CMS."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How is the intake customized for my firm?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Each intake is configured with your specific practice areas and priorities, qualification criteria and screening thresholds, jurisdiction and geographic focus, and any custom questions or disqualifiers specific to your firm."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How are leads delivered?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Leads are delivered in real-time via email notification or direct CRM integration. Each lead includes contact information, practice area, qualification status, plain-English summary, and full conversation transcript."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What CRMs do you integrate with?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "PreIntake.ai integrates with popular legal CRMs including Lawmatics, Clio, Filevine, PracticePanther, MyCase, and others via webhook or Zapier. We sit in front of your CRM—we don't replace it."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I cancel my subscription?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can cancel your subscription at any time—no contracts, no hassle. Simply email support@preintake.ai with your cancellation request and we'll process it within 24 hours. Your subscription remains active until the end of your current billing period."
                 }
             }
         ]
@@ -245,6 +295,75 @@
             box-shadow: 0 0 40px rgba(201, 169, 98, 0.4);
         }
 
+        /* Embed Code Styles */
+        .embed-code {
+            background: rgba(12, 31, 63, 0.9);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-gold-light);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .position-hint {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .position-hint code {
+            background: rgba(201, 169, 98, 0.15);
+            color: var(--accent-gold);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+        }
+
+        .position-options {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.7rem;
+            margin: 0.2rem 0.15rem;
+            color: var(--primary-dark);
+        }
+
+        .btn-email-developer {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);
+            color: var(--primary-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-email-developer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.4);
+        }
+
+        .btn-email-developer svg {
+            width: 18px;
+            height: 18px;
+        }
+
         @media (max-width: 768px) {
             .hero {
                 padding: 3rem 1.5rem;
@@ -370,10 +489,19 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Adding PreIntake.ai to your website is simple. After setup, you receive a small code snippet that looks like this:</p>
-                            <p><code>&lt;script src="https://preintake.ai/widget/your-firm-id.js"&gt;&lt;/script&gt;</code></p>
-                            <p>You (or your web developer) paste this code into your website, typically just before the closing <code>&lt;/body&gt;</code> tag. That's it—the widget appears automatically and starts screening leads immediately.</p>
+                            <p>Adding PreIntake.ai to your website is simple. After setup, you receive a small code snippet to add to any page where you want the intake button to appear:</p>
+                            <div class="embed-code">&lt;script src="https://preintake.ai/intake-button.js" data-firm="YOUR_FIRM_ID" data-position="bottom-right"&gt;&lt;/script&gt;</div>
+                            <p class="position-hint">Change <code>data-position</code> to control button placement:<br>
+                            <span class="position-options">bottom-right</span> <span class="position-options">bottom-left</span> <span class="position-options">bottom-center</span> <span class="position-options">top-right</span> <span class="position-options">top-left</span> <span class="position-options">top-center</span></p>
+                            <p>Paste the code just before the closing <code>&lt;/body&gt;</code> tag on your website. That's it—the intake button appears automatically and starts screening leads immediately.</p>
                             <p>Works with any website platform: WordPress, Squarespace, Wix, custom sites, or any CMS. No special plugins or technical expertise required.</p>
+                            <a href="mailto:?subject=PreIntake.ai%20-%20Website%20Integration%20Instructions&body=Hi%2C%0A%0APlease%20add%20the%20PreIntake.ai%20intake%20button%20to%20our%20website.%20This%20enables%20AI-powered%20client%20screening%20on%20our%20site.%0A%0AEMBED%20CODE%0A-----------%0A%3Cscript%20src%3D%22https%3A%2F%2Fpreintake.ai%2Fintake-button.js%22%20data-firm%3D%22YOUR_FIRM_ID%22%20data-position%3D%22bottom-right%22%3E%3C%2Fscript%3E%0A%0AINSTRUCTIONS%0A-----------%0A1.%20Paste%20this%20code%20before%20the%20closing%20%3C%2Fbody%3E%20tag%20on%20any%20page%20where%20you%20want%20the%20intake%20button%0A2.%20The%20button%20will%20appear%20in%20the%20bottom-right%20corner%20by%20default%0A3.%20Change%20data-position%20to%3A%20bottom-left%2C%20bottom-center%2C%20top-right%2C%20top-left%2C%20or%20top-center%20if%20needed%0A%0AQuestions%3F%20Contact%20support%40preintake.ai%0A%0AThanks!" class="btn-email-developer">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                Send Instructions to My Web Developer
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -448,6 +576,28 @@
                             </ul>
                             <p>We sit in front of your CRM—we don't replace it. Qualified leads flow directly into your existing system so your team can work with the tools they already know.</p>
                             <p>Don't see your CRM listed? Contact us—we can often set up custom integrations via webhook.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 9 -->
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How do I cancel my subscription?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>You can cancel your subscription at any time—no contracts, no hassle. Simply <a href="mailto:support@preintake.ai?subject=Subscription%20Cancellation%20Request&body=Please%20cancel%20our%20PreIntake.ai%20subscription.%0A%0AAccount%20Verification%20Info%3A%0A%0ALaw%20Firm%20Name%3A%0AEmail%20Address%3A%0A%0AThank%20you!">click here</a> to request cancellation and we'll process it within 24 hours.</p>
+                            <p>After cancellation:</p>
+                            <ul>
+                                <li>Your subscription remains active until the end of your current billing period</li>
+                                <li>The intake button will stop working when your subscription ends</li>
+                                <li>You won't be charged again</li>
+                            </ul>
+                            <p>If you're having issues or considering canceling, reach out first—we're happy to help troubleshoot or adjust your setup.</p>
                         </div>
                     </div>
                 </div>

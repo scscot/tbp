@@ -281,23 +281,30 @@ function generateActivationEmail(firmName, firmId, customerEmail) {
     </div>
 
     <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: rgba(72, 187, 120, 0.15); border: 2px solid #48bb78; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
-                <span style="color: #48bb78; font-size: 28px;">✓</span>
-            </div>
-        </div>
-
         <h2 style="color: #0c1f3f; text-align: center; margin-bottom: 20px;">Your Account is Active!</h2>
 
         <p>Welcome to PreIntake.ai! Your AI-powered intake system for <strong>${firmName || 'your firm'}</strong> is now ready to use.</p>
 
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 25px 0;">
             <h3 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Quick Start: Add Intake to Your Website</h3>
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Copy this code and paste it before the closing <code>&lt;/body&gt;</code> tag:</p>
-            <div style="background: #1a1a2e; color: #c9a962; padding: 15px; border-radius: 6px; font-family: Monaco, Menlo, monospace; font-size: 12px; overflow-x: auto; word-break: break-all;">
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Copy this code and paste it before the closing <code>&lt;/body&gt;</code> tag of your website pages:</p>
+            <div style="background: #1a1a2e; color: #ffffff; padding: 15px; border-radius: 6px; font-family: Monaco, Menlo, monospace; font-size: 12px; overflow-x: auto; word-break: break-all;">
                 ${embedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
             </div>
+            <p style="margin: 15px 0 5px 0; font-size: 14px; color: #64748b;"><strong><em>Change <code>data-position</code> to control button placement:</em></strong></p>
+            <ul style="margin: 5px 0 10px 20px; padding: 0; font-size: 14px; color: #64748b;">
+                <li><code>bottom-right</code></li>
+                <li><code>bottom-left</code></li>
+                <li><code>bottom-center</code></li>
+                <li><code>top-right</code></li>
+                <li><code>top-left</code></li>
+                <li><code>top-center</code></li>
+            </ul>
+            <p style="margin: 10px 0 0 0; font-size: 14px; color: #64748b;">That's it—the intake button appears automatically and starts screening leads immediately.</p>
+            <p style="margin: 10px 0 0 0; font-size: 14px; color: #64748b;">Works with any website platform: WordPress, Squarespace, Wix, custom sites, or any CMS. No special plugins or technical expertise required.</p>
         </div>
+
+        <p style="margin: 0 0 25px 0; font-size: 14px; color: #64748b;"><strong><em>Not technical?</em></strong> Forward this email to your web developer—they'll have everything they need.</p>
 
         <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin: 25px 0;">
             <p style="margin: 0; font-size: 14px; color: #92400e;">
@@ -306,27 +313,13 @@ function generateActivationEmail(firmName, firmId, customerEmail) {
             </p>
         </div>
 
-        <h3 style="color: #0c1f3f; font-size: 16px; margin: 25px 0 15px 0;">What's Next?</h3>
-
-        <ol style="color: #64748b; padding-left: 20px;">
-            <li style="margin-bottom: 10px;"><strong>Test your intake</strong> - Visit <a href="https://preintake.ai/demo/${firmId}" style="color: #c9a962;">your demo page</a> to see it in action</li>
-            <li style="margin-bottom: 10px;"><strong>Add to your website</strong> - Use the embed code above</li>
-            <li style="margin-bottom: 10px;"><strong>Start receiving leads</strong> - Qualified intakes arrive via email</li>
-        </ol>
-
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="https://preintake.ai/demo/${firmId}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #e5d4a1 50%, #c9a962 100%); color: #0c1f3f; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px;">
-                View Your Intake Demo
-            </a>
-        </div>
-
         <p style="margin-top: 30px; color: #64748b;">
             Questions? Reply to this email or reach out at <a href="mailto:support@preintake.ai" style="color: #c9a962;">support@preintake.ai</a>.
         </p>
 
         <p style="margin-top: 25px;">
             —<br>
-            <strong>Stephen Scott</strong><br>
+            <strong>Support Team</strong><br>
             PreIntake.ai
         </p>
     </div>

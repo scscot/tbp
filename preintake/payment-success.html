@@ -14,6 +14,8 @@
     <title>Payment Successful - PreIntake.ai</title>
     <meta name="robots" content="noindex, nofollow">
     <meta name="description" content="Your PreIntake.ai account has been activated successfully.">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="apple-touch-icon" href="/images/icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <!-- Shared Header/Footer Components -->
     <script src="/js/components.js"></script>
@@ -99,24 +101,6 @@
             padding: 3rem 2.5rem;
             backdrop-filter: blur(10px);
             text-align: center;
-        }
-
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(72, 187, 120, 0.15);
-            border: 2px solid var(--success);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-
-        .success-icon svg {
-            width: 40px;
-            height: 40px;
-            color: var(--success);
         }
 
         h1 {
@@ -376,12 +360,6 @@
             </div>
 
             <div id="content" style="display: none;">
-                <div class="success-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                </div>
-
                 <h1>You're All Set!</h1>
                 <p class="subtitle">Your PreIntake.ai account is now active. Here's how to add AI-powered intake to your website.</p>
 
@@ -432,13 +410,12 @@
                     </div>
                 </div>
 
-                <a href="#" class="btn-primary" id="demo-link">
+                <a href="#" class="btn-primary" id="email-developer-btn" style="margin-top: 1.5rem;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
-                    View Your Intake Demo
+                    Send Instructions to My Web Developer
                 </a>
 
                 <p class="help-text">
@@ -466,8 +443,8 @@
         const contentEl = document.getElementById('content');
         const firmNameEl = document.getElementById('firm-name');
         const firmIdCodeEl = document.getElementById('firm-id-code');
-        const demoLinkEl = document.getElementById('demo-link');
         const deliveryEmailEl = document.getElementById('delivery-email');
+        const emailDeveloperBtn = document.getElementById('email-developer-btn');
 
         /**
          * Initialize page
@@ -477,7 +454,6 @@
                 showContent();
                 firmNameEl.textContent = 'Your Firm';
                 firmIdCodeEl.textContent = firmId || 'YOUR_FIRM_ID';
-                demoLinkEl.href = firmId ? `https://preintake.ai/demo/${firmId}` : '/';
                 deliveryEmailEl.textContent = 'your email';
                 return;
             }
@@ -495,7 +471,6 @@
                 // Update UI
                 firmNameEl.textContent = data.firmName || 'Your Firm';
                 firmIdCodeEl.textContent = firmId;
-                demoLinkEl.href = `https://preintake.ai/demo/${firmId}`;
                 deliveryEmailEl.textContent = data.customerEmail || 'your email';
 
                 showContent();
@@ -506,7 +481,6 @@
                 // Still show success (payment was successful if they got here)
                 firmNameEl.textContent = 'Your Firm';
                 firmIdCodeEl.textContent = firmId;
-                demoLinkEl.href = `https://preintake.ai/demo/${firmId}`;
                 deliveryEmailEl.textContent = 'your email';
                 showContent();
                 triggerConfetti();
@@ -519,6 +493,7 @@
         function showContent() {
             loadingEl.style.display = 'none';
             contentEl.style.display = 'block';
+            setupEmailDeveloperButton();
         }
 
         /**
@@ -533,6 +508,18 @@
                     btn.textContent = 'Copy Code';
                 }, 2000);
             });
+        }
+
+        /**
+         * Set up email developer button with mailto link
+         */
+        function setupEmailDeveloperButton() {
+            const currentFirmId = firmId || 'YOUR_FIRM_ID';
+            const subject = 'PreIntake.ai%20-%20Website%20Integration%20Instructions';
+            // Pre-encoded body with placeholder for firm ID
+            const bodyTemplate = 'Hi%2C%0A%0APlease%20add%20the%20PreIntake.ai%20intake%20button%20to%20our%20website.%20This%20enables%20AI-powered%20client%20screening%20on%20our%20site.%0A%0AEMBED%20CODE%0A-----------%0A%3Cscript%20src%3D%22https%3A%2F%2Fpreintake.ai%2Fintake-button.js%22%20data-firm%3D%22FIRM_ID_PLACEHOLDER%22%20data-position%3D%22bottom-right%22%3E%3C%2Fscript%3E%0A%0AINSTRUCTIONS%0A-----------%0A1.%20Paste%20this%20code%20before%20the%20closing%20%3C%2Fbody%3E%20tag%20on%20any%20page%20where%20you%20want%20the%20intake%20button%0A2.%20The%20button%20will%20appear%20in%20the%20bottom-right%20corner%20by%20default%0A3.%20Change%20data-position%20to%3A%20bottom-left%2C%20bottom-center%2C%20top-right%2C%20top-left%2C%20or%20top-center%20if%20needed%0A%0AQuestions%3F%20Contact%20support%40preintake.ai%0A%0AThanks!';
+            const body = bodyTemplate.replace('FIRM_ID_PLACEHOLDER', currentFirmId);
+            emailDeveloperBtn.href = 'mailto:?subject=' + subject + '&body=' + body;
         }
 
         /**

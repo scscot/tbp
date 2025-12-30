@@ -16,12 +16,14 @@
     <meta name="keywords" content="legal intake software, AI legal intake, law firm client intake, automated legal screening, legal chatbot, virtual receptionist law firm, client intake automation, legal CRM integration, lead qualification software">
     <meta name="author" content="PreIntake.ai">
     <link rel="canonical" href="https://preintake.ai/">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="apple-touch-icon" href="/images/icon.svg">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://preintake.ai/">
     <meta property="og:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
-    <meta property="og:description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Reduce unqualified consultations by 60%. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta property="og:description" content="AI-powered legal intake that qualifies leads before they hit your email or CRM. Reduce unqualified consultations by 60%. Practice-specific screening for PI, Family Law, Immigration & more.">
     <meta property="og:image" content="https://preintake.ai/images/og-image.png">
     <meta property="og:site_name" content="PreIntake.ai">
 
@@ -29,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://preintake.ai/">
     <meta name="twitter:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
-    <meta name="twitter:description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta name="twitter:description" content="AI-powered legal intake that qualifies leads before they hit your email or CRM. Practice-specific screening for PI, Family Law, Immigration & more.">
     <meta name="twitter:image" content="https://preintake.ai/images/og-image.png">
 
     <!-- Schema.org Structured Data -->
@@ -46,7 +48,7 @@
             "@type": "Offer",
             "price": "129.00",
             "priceCurrency": "USD",
-            "priceValidUntil": "2025-12-31",
+            "priceValidUntil": "2026-12-31",
             "availability": "https://schema.org/InStock"
         },
         "aggregateRating": {
@@ -1574,6 +1576,62 @@
             margin-top: 0.25rem;
         }
 
+        /* 3 Simple Steps */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.3);
+        }
+
+        .step-content h3 {
+            font-size: 1.125rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .step-content p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero {
@@ -1621,7 +1679,7 @@
             <div class="hero-badge">AI-Powered Legal Intake</div>
             <h1>Stop Wasting Time on <span>Unqualified Leads</span></h1>
             <p class="hero-subtitle">
-                AI-powered intake with practice-specific precision. PreIntake.ai screens leads like your best paralegal—before they hit your CRM.
+                AI-powered intake with practice-specific precision. PreIntake.ai screens leads like your best paralegal—before they hit your email or CRM.
             </p>
             <a href="#demo" class="hero-cta">
                 Create Your Custom AI Intake Demo
@@ -1941,7 +1999,7 @@
                     </div>
                     <div class="lead-card-footer">
                         <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Delivered via email</span>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
                     </div>
                 </div>
 
@@ -2045,7 +2103,7 @@
                     </div>
                     <div class="lead-card-footer">
                         <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Not forwarded to CRM</span>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
                     </div>
                 </div>
             </div>
@@ -2121,12 +2179,45 @@
         </div>
     </section>
 
+    <!-- 3 Simple Steps Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get Started in 3 Simple Steps</h2>
+                <p>From demo to live intake in minutes, not weeks.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Request Your Custom Demo</h3>
+                        <p>Enter your website URL. We analyze your practice areas and build a personalized AI intake demo—free, in under 5 minutes.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Create Your Account</h3>
+                        <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Add One Line of Code</h3>
+                        <p>Copy a single script tag to your website. That's it—your AI intake is live and screening leads 24/7.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Section -->
     <section class="section section-dark" id="pricing">
         <div class="container">
             <div class="section-header">
                 <h2>Simple, Transparent Pricing</h2>
-                <p>One-time setup, straightforward monthly subscription. No hidden fees.</p>
+                <p>One-time setup, straightforward monthly subscription. No hidden fees. Cancel anytime.</p>
             </div>
             <div class="pricing-grid">
                 <div class="pricing-card">
@@ -2141,7 +2232,6 @@
                     <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas, branding, and screening criteria</div>
                 </div>
                 <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
                     <div class="pricing-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -2149,7 +2239,7 @@
                     </div>
                     <div class="pricing-label">Monthly Subscription</div>
                     <div class="pricing-amount">$129<span>/mo</span></div>
-                    <div class="pricing-desc">Unlimited AI-powered intake screenings, lead routing, and real-time delivery to your CRM</div>
+                    <div class="pricing-desc">Unlimited AI-powered intake screenings, lead routing, and real-time delivery via email or CRM</div>
                 </div>
             </div>
         </div>
