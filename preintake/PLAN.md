@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2025-12-30
-**Version**: 2.3 (Added branding: icon, header/footer styling)
+**Version**: 2.4 (First customer activated, bug fixes for payment flow)
 
 ---
 
@@ -562,6 +562,22 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 |-------------|-------------------|---------------------|
 | **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
 | **Live** | `price_1SjOXiJBdoLMDposfZXL8nZX` | `price_1SjORKJBdoLMDpos9wBBZbzd` |
+
+**Firestore Subscription Fields** (in `preintake_leads` collection):
+| Field | Description |
+|-------|-------------|
+| `status` | Overall lead status (`active`, `demo_ready`, etc.) |
+| `subscriptionStatus` | Stripe subscription state (`active`, `canceled`, etc.) |
+| `stripeCustomerId` | Stripe customer ID (e.g., `cus_...`) |
+| `stripeSubscriptionId` | Stripe subscription ID (e.g., `sub_...`) |
+| `deliveryEmail` | Email for lead delivery |
+| `activatedAt` | Timestamp of account activation |
+| `currentPeriodStart` | Subscription period start date |
+| `currentPeriodEnd` | Subscription period end date |
+
+**Bug Fixes (2025-12-30):**
+- [x] **Demo template create-account links** - Fixed missing `?firm={{LEAD_ID}}` parameter in `demo-intake.html` (lines 1332, 1427)
+- [x] **Stripe webhook signature verification** - Updated `STRIPE_WEBHOOK_SECRET` to match Stripe Dashboard; added debug logging for signature mismatches
 
 ### Phase 10: Embeddable Widget
 - [x] Create `intake-button.js` - floating button that opens intake modal
