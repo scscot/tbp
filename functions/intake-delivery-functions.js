@@ -389,7 +389,7 @@ function generateIntakeSummary(payload, firmName) {
             </table>
         </div>
 
-        <!-- AI Screening Summary -->
+        <!-- Screening Summary -->
         ${payload.ai_screening_summary ? `
         <div style="background: #f8fafc; border-left: 4px solid #c9a962; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">
             <h3 style="color: #c9a962; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">Screening Summary</h3>

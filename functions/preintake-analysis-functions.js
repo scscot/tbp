@@ -83,9 +83,10 @@ const analyzePreIntakeLead = onDocumentCreated(
             try {
                 const deepResearchResult = await performDeepResearch(website, analysisResult);
 
-                // Update Firestore with deep research results and trigger demo generation
+                // Update Firestore with deep research results
+                // Status is 'awaiting_confirmation' - user must confirm practice areas before demo generation
                 await leadRef.update({
-                    status: 'generating_demo',
+                    status: 'awaiting_confirmation',
                     deepResearch: {
                         status: deepResearchResult.status || 'completed',
                         completedAt: FieldValue.serverTimestamp(),
@@ -102,14 +103,14 @@ const analyzePreIntakeLead = onDocumentCreated(
                     updatedAt: FieldValue.serverTimestamp(),
                 });
 
-                console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed`);
+                console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Awaiting practice area confirmation.`);
 
             } catch (deepResearchError) {
                 console.error(`Deep research failed for lead ${leadId}:`, deepResearchError.message);
 
-                // Continue to demo generation even if deep research fails
+                // Still await confirmation even if deep research fails (will use initial analysis)
                 await leadRef.update({
-                    status: 'generating_demo',
+                    status: 'awaiting_confirmation',
                     deepResearch: {
                         status: 'failed',
                         error: deepResearchError.message,
@@ -404,21 +405,28 @@ async function analyzeWithClaude(extractedData) {
         apiKey: anthropicApiKey.value(),
     });
 
-    const prompt = `You are analyzing a law firm website to help create a personalized AI intake system. Based on the extracted data below, provide a structured analysis.
+    const prompt = `You are analyzing a law firm website to help create a personalized AI intake system.
+
+CRITICAL: Identify ALL practice areas this law firm handles by examining the navigation links and headings carefully. Law firms typically list their practice areas in the main navigation menu (e.g., "Personal Injury", "Employment Law", "Tenant Rights", "Criminal Defense", etc.). Do NOT just rely on the auto-detected keywords - they may miss practice areas or include false positives.
 
 EXTRACTED WEBSITE DATA:
 - Title: ${extractedData.extractedTitle}
-- Description: ${extractedData.extractedDescription}
-- Navigation Links: ${extractedData.navLinks.join(', ')}
-- Headings: ${extractedData.headings.slice(0, 10).join(', ')}
-- Detected Practice Areas: ${extractedData.detectedKeywords.join(', ')}
-- Contact Methods: Phone: ${extractedData.contactMethods.phone}, Email: ${extractedData.contactMethods.email}, Has Form: ${extractedData.contactMethods.hasContactForm}, Has Chat: ${extractedData.contactMethods.hasChatWidget}
-- Content Sample: ${extractedData.contentSample.substring(0, 1500)}
+- Meta Description: ${extractedData.extractedDescription}
+- Navigation Menu Links: ${extractedData.navLinks.join(', ')}
+- Page Headings: ${extractedData.headings.slice(0, 15).join(', ')}
+- Auto-detected Keywords (may be incomplete/inaccurate): ${extractedData.detectedKeywords.join(', ')}
+- Content Sample: ${extractedData.contentSample.substring(0, 2000)}
 
-Analyze this law firm and respond with ONLY valid JSON (no markdown, no explanation) in this exact format:
+INSTRUCTIONS:
+1. Look at the Navigation Menu Links carefully - these typically contain the firm's practice areas
+2. Identify ALL distinct practice areas (usually 3-8 for most firms)
+3. Use standard practice area names (e.g., "Personal Injury" not "Car Accidents", "Employment Law" not just "Discrimination")
+4. Do NOT include "Social Security" unless it's clearly a disability/SSI practice
+
+Respond with ONLY valid JSON (no markdown, no explanation):
 {
-    "firmName": "The firm's name",
-    "practiceAreas": ["List of practice areas they handle"],
+    "firmName": "The firm's official name",
+    "practiceAreas": ["Practice Area 1", "Practice Area 2", "Practice Area 3"],
     "primaryPracticeArea": "Their main/primary practice area",
     "location": {
         "city": "City if detectable",
@@ -426,18 +434,14 @@ Analyze this law firm and respond with ONLY valid JSON (no markdown, no explanat
         "serviceArea": "Description of service area"
     },
     "intakeRecommendations": [
-        "Specific screening question 1 relevant to their practice",
-        "Specific screening question 2",
-        "Specific screening question 3",
-        "Specific screening question 4",
-        "Specific screening question 5"
+        "Screening question 1 for their primary practice",
+        "Screening question 2",
+        "Screening question 3"
     ],
     "qualificationCriteria": [
-        "What makes someone a qualified lead for this firm",
-        "Another qualification criterion",
-        "Another criterion"
+        "What makes a qualified lead for this firm"
     ],
-    "competitiveNotes": "Brief notes on how to position intake based on their website messaging"
+    "competitiveNotes": "Brief positioning notes"
 }`;
 
     try {

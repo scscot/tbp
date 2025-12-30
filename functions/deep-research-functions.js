@@ -630,20 +630,23 @@ async function structureWithClaude(scrapedData, initialAnalysis) {
         apiKey: anthropicApiKey.value(),
     });
 
-    const prompt = `You are analyzing scraped law firm website data to create a comprehensive firm profile. Structure and enhance this data.
+    const prompt = `You are analyzing scraped law firm website data to create a comprehensive firm profile.
+
+CRITICAL TASK: Identify ALL practice areas this firm handles. The initial analysis found these practice areas: ${initialAnalysis.practiceAreas?.join(', ') || 'Unknown'}. Use these as a starting point but verify and expand based on the scraped data.
 
 INITIAL ANALYSIS:
 - Firm Name: ${initialAnalysis.firmName || 'Unknown'}
 - Primary Practice Area: ${initialAnalysis.primaryPracticeArea || 'Unknown'}
+- Detected Practice Areas: ${initialAnalysis.practiceAreas?.join(', ') || 'Unknown'}
 - Location: ${initialAnalysis.location?.city || 'Unknown'}, ${initialAnalysis.location?.state || ''}
 
-SCRAPED DATA:
+SCRAPED DATA FROM MULTIPLE PAGES:
 
 ATTORNEYS (${scrapedData.attorneys.length} found):
-${scrapedData.attorneys.map(a => `- ${a.name}${a.title ? ` (${a.title})` : ''}${a.bio ? `: ${a.bio.substring(0, 100)}...` : ''}`).join('\n') || 'None found'}
+${scrapedData.attorneys.map(a => `- ${a.name}${a.title ? ` (${a.title})` : ''}${a.practiceAreas?.length ? ` - Areas: ${a.practiceAreas.join(', ')}` : ''}`).join('\n') || 'None found'}
 
-PRACTICE AREAS (${scrapedData.practiceAreas.length} pages):
-${scrapedData.practiceAreas.map(p => `- ${p.name}: ${p.description?.substring(0, 100) || 'No description'}...`).join('\n') || 'None found'}
+PRACTICE AREA PAGES SCRAPED (${scrapedData.practiceAreas.length} pages):
+${scrapedData.practiceAreas.map(p => `- ${p.name}${p.subAreas?.length ? ` (sub-areas: ${p.subAreas.slice(0, 5).join(', ')})` : ''}`).join('\n') || 'None found'}
 
 CASE RESULTS (${scrapedData.results.length} found):
 ${scrapedData.results.map(r => `- ${r.amount}: ${r.caseType}`).join('\n') || 'None found'}
@@ -655,6 +658,12 @@ FIRM INFO:
 ${scrapedData.firmInfo.description?.substring(0, 300) || 'No description'}
 Years in Business: ${scrapedData.firmInfo.yearsInBusiness || 'Unknown'}
 Offices: ${scrapedData.firmInfo.officeLocations?.join(', ') || 'Unknown'}
+
+INSTRUCTIONS FOR PRACTICE AREAS:
+1. Use the practice areas from initial analysis as your primary source
+2. Add any additional practice areas found in the scraped pages
+3. Use standard practice area names (e.g., "Personal Injury", "Employment Law", "Tenant Rights", "Criminal Defense")
+4. The practiceAreaDetails keys should match the practice areas exactly
 
 Respond with ONLY valid JSON (no markdown, no explanation) in this exact format:
 {

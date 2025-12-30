@@ -108,18 +108,24 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     // Extract values
     const firmName = analysis.firmName || 'Law Firm';
 
-    // Prefer self-reported practice area from form, fallback to website analysis
-    const practiceArea = leadData.practiceAreas?.primaryAreaName ||
+    // Use confirmed practice areas (from user confirmation modal) or fallback to analysis
+    const confirmedAreas = leadData.confirmedPracticeAreas?.areas || [];
+    const practiceArea = leadData.confirmedPracticeAreas?.primaryArea ||
                         analysis.primaryPracticeArea ||
                         'General Practice';
 
-    // Store full practice breakdown for potential multi-area support
-    const practiceBreakdown = leadData.practiceAreas?.breakdown || null;
-    const otherPracticeAreaName = leadData.practiceAreas?.otherName || null;
-
-    // Build list of practice areas for multi-area selection
-    const practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
+    // Build practice areas list from confirmed areas
+    // If user confirmed multiple areas, treat as multi-practice firm
+    let practiceAreasList = [];
+    if (confirmedAreas.length > 0) {
+        practiceAreasList = confirmedAreas.map((name, index) => ({
+            key: name.toLowerCase().replace(/\s+/g, '_'),
+            name: name,
+            percentage: index === 0 ? 100 : 0 // Primary gets 100%, others 0 (not used)
+        }));
+    }
     const isMultiPractice = practiceAreasList.length > 1;
+    const otherPracticeAreaName = null; // Not used in new flow
 
     const state = analysis.location?.state || 'CA';
     const phone = analysis.contactMethods?.phone || '';
@@ -152,7 +158,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const accentColorLight = '#e5d4a1';
 
     // Generate practice-area-specific content
-    const systemPrompt = generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName, practiceAreasList, isMultiPractice);
+    const systemPrompt = generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceAreasList, isMultiPractice);
     const tools = generateTools(practiceArea);
     const detectButtonsFunction = generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiPractice);
     const progressStepsHtml = generateProgressSteps(practiceArea);
@@ -177,8 +183,8 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{ACCENT_COLOR}}': accentColor,
         '{{ACCENT_COLOR_LIGHT}}': accentColorLight,
         '{{LOGO_HTML}}': logoHtml,
-        '{{LANDING_HEADLINE}}': getLandingHeadline(practiceArea),
-        '{{LANDING_SUBHEADLINE}}': getLandingSubheadline(practiceArea, firmName),
+        '{{LANDING_HEADLINE}}': getLandingHeadline(practiceArea, isMultiPractice),
+        '{{LANDING_SUBHEADLINE}}': getLandingSubheadline(practiceArea, firmName, isMultiPractice),
         '{{PROGRESS_STEPS_HTML}}': progressStepsHtml,
         '{{LOADING_STAGES_HTML}}': loadingStagesHtml,
         '{{LOADING_STAGES_JSON}}': loadingStagesJson,
@@ -193,7 +199,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{SYSTEM_PROMPT}}': systemPrompt.replace(/`/g, '\\`').replace(/\$/g, '\\$'),
         '{{TOOLS_JSON}}': JSON.stringify(tools, null, 2),
         '{{DETECT_BUTTONS_FUNCTION}}': detectButtonsFunction,
-        '{{INITIAL_MESSAGE}}': getInitialMessage(practiceArea, state),
+        '{{INITIAL_MESSAGE}}': getInitialMessage(practiceArea, state, isMultiPractice),
         '{{AVATAR_ICON}}': avatarIcon,
         '{{LEAD_ID}}': leadId,
         '{{FIRM_EMAIL}}': leadData.email || '',
@@ -299,7 +305,7 @@ function buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName) {
 /**
  * Generate practice-area-specific system prompt
  */
-function generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceBreakdown, otherPracticeAreaName, practiceAreasList, isMultiPractice) {
+function generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceAreasList, isMultiPractice) {
     // Build firm context from deep research
     let firmContext = '';
     if (deepResearch.firmDescription) {
@@ -2609,7 +2615,10 @@ function generateDeclineResources(state) {
 /**
  * Get landing headline by practice area
  */
-function getLandingHeadline(practiceArea) {
+function getLandingHeadline(practiceArea, isMultiPractice) {
+    // For multi-practice firms, use generic headline
+    if (isMultiPractice) return 'Free Legal Consultation';
+
     const area = practiceArea.toLowerCase();
     if (area.includes('personal injury')) return 'Free Case Evaluation';
     if (area.includes('immigration')) return 'Free Immigration Consultation';
@@ -2624,14 +2633,22 @@ function getLandingHeadline(practiceArea) {
 /**
  * Get landing subheadline
  */
-function getLandingSubheadline(practiceArea, firmName) {
+function getLandingSubheadline(practiceArea, firmName, isMultiPractice) {
+    // For multi-practice firms, use generic subheadline
+    if (isMultiPractice) {
+        return `Find out if ${firmName} can help with your legal matter in under 5 minutes. Our AI-powered intake helps us understand your situation quickly and confidentially.`;
+    }
     return `Find out if ${firmName} can help with your ${practiceArea.toLowerCase()} matter in under 5 minutes. Our AI-powered intake helps us understand your situation quickly and confidentially.`;
 }
 
 /**
  * Get initial message for starting conversation
  */
-function getInitialMessage(practiceArea, state) {
+function getInitialMessage(practiceArea, state, isMultiPractice) {
+    // For multi-practice firms, don't assume which practice area - let the AI ask
+    if (isMultiPractice) {
+        return `I'd like to get a free case evaluation in ${state}.`;
+    }
     return `I'd like to get a free case evaluation for a ${practiceArea.toLowerCase()} matter in ${state}.`;
 }
 

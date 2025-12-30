@@ -3,8 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PreIntake.ai - AI-Powered Legal Intake That Screens Like Your Best Paralegal</title>
-    <meta name="description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Practice-specific screening for PI, Immigration, Family Law, Bankruptcy & more. Get your fully customized demo today.">
+    <title>AI Legal Intake Software for Law Firms | Automated Client Screening | PreIntake.ai</title>
+    <meta name="description" content="PreIntake.ai automates legal client intake with AI-powered screening. Qualify leads 24/7, reduce unqualified consultations by 60%, and integrate with your CRM. Practice-specific intake for PI, Family Law, Immigration & more. Free demo.">
+    <meta name="keywords" content="legal intake software, AI legal intake, law firm client intake, automated legal screening, legal chatbot, virtual receptionist law firm, client intake automation, legal CRM integration, lead qualification software">
+    <meta name="author" content="PreIntake.ai">
+    <link rel="canonical" href="https://preintake.ai/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://preintake.ai/">
+    <meta property="og:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
+    <meta property="og:description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Reduce unqualified consultations by 60%. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta property="og:image" content="https://preintake.ai/images/og-image.png">
+    <meta property="og:site_name" content="PreIntake.ai">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://preintake.ai/">
+    <meta name="twitter:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
+    <meta name="twitter:description" content="AI-powered legal intake that qualifies leads before they hit your CRM. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta name="twitter:image" content="https://preintake.ai/images/og-image.png">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PreIntake.ai",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "AI-powered legal intake software that automates client screening and lead qualification for law firms",
+        "url": "https://preintake.ai",
+        "offers": {
+            "@type": "Offer",
+            "price": "129.00",
+            "priceCurrency": "USD",
+            "priceValidUntil": "2025-12-31",
+            "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "47"
+        },
+        "provider": {
+            "@type": "Organization",
+            "name": "PreIntake.ai",
+            "url": "https://preintake.ai"
+        }
+    }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <!-- Shared Header/Footer Components -->
     <script src="/js/components.js"></script>
@@ -594,174 +643,335 @@
             display: block;
         }
 
-        /* Practice Area Selector */
-        .practice-selector {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        /* Processing/Analyzing State */
+        .analyzing-state {
+            text-align: center;
+            padding: 2.5rem 2rem;
         }
 
-        .practice-selector-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .analyzing-spinner {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .analyzing-spinner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(201, 169, 98, 0.2);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .analyzing-state h3 {
+            font-size: 1.35rem;
+            color: var(--text-light);
             margin-bottom: 0.75rem;
         }
 
-        .practice-selector-title {
-            font-size: 0.875rem;
+        .analyzing-state p {
             color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 350px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
-        .practice-total {
+        .analyzing-steps {
+            margin-top: 1.5rem;
+            text-align: left;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .analyzing-step {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: var(--text-muted);
             font-size: 0.875rem;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
-        .practice-total.valid {
-            background: rgba(72, 187, 120, 0.2);
+        .analyzing-step.active {
+            color: var(--text-light);
+        }
+
+        .analyzing-step.complete {
             color: var(--success);
         }
 
-        .practice-total.invalid {
-            background: rgba(245, 101, 101, 0.2);
-            color: var(--danger);
-        }
-
-        .practice-total.zero {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
-        }
-
-        .practice-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        @media (max-width: 500px) {
-            .practice-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .practice-row {
+        .analyzing-step-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .analyzing-step.active .analyzing-step-icon {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .analyzing-step.complete .analyzing-step-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Practice Area Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem 1.5rem 0;
+            text-align: center;
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Practice Area Tags */
+        .practice-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            min-height: 40px;
+        }
+
+        .practice-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 1px solid #86efac;
+            color: #166534;
+            padding: 0.5rem 0.875rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
             transition: all 0.2s ease;
         }
 
-        .practice-row:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .practice-tag.primary {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
         }
 
-        .practice-row.active {
-            background: rgba(201, 169, 98, 0.15);
-            border: 1px solid rgba(201, 169, 98, 0.3);
-        }
-
-        .practice-row.primary {
-            background: rgba(201, 169, 98, 0.25);
-            border: 1px solid var(--accent-gold);
-        }
-
-        .practice-row.primary::after {
+        .practice-tag.primary::before {
             content: '★';
-            color: var(--accent-gold);
-            margin-left: 0.25rem;
             font-size: 0.75rem;
         }
 
-        .practice-label {
-            font-size: 0.8rem;
-            color: var(--text-light);
+        .practice-tag-remove {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .practice-tag-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+        }
+
+        .practice-tag-remove svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Add Practice Area */
+        .add-practice-area {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-practice-input {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .add-practice-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .add-practice-btn {
+            padding: 0.625rem 1rem;
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
             white-space: nowrap;
         }
 
-        .practice-select {
-            width: 70px;
-            padding: 0.35rem 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            color: var(--text-light);
-            font-size: 0.8rem;
+        .add-practice-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        /* Primary Area Selector */
+        .primary-area-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .primary-area-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .primary-area-select {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: white;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .practice-select:focus {
+        .primary-area-select:focus {
             outline: none;
             border-color: var(--accent-gold);
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
         }
 
-        .practice-select option {
-            background: var(--primary-dark);
-            color: var(--text-light);
-        }
-
-        .practice-note {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.75rem;
-            text-align: center;
-        }
-
-        /* Other practice area with text input */
-        .practice-row-other {
-            grid-column: 1 / -1;
-        }
-
-        .practice-other-input-wrapper {
+        /* Modal Actions */
+        .modal-actions {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex: 1;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
         }
 
-        .practice-other-icon {
+        .modal-btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
             font-size: 1rem;
-        }
-
-        .practice-other-input {
-            flex: 1;
-            padding: 0.35rem 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            color: var(--text-light);
-            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.2s ease;
-            max-width: 200px;
         }
 
-        .practice-other-input:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            background: rgba(255, 255, 255, 0.15);
+        .modal-btn-secondary {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            border: 1px solid #e2e8f0;
         }
 
-        .practice-other-input::placeholder {
-            color: var(--text-muted);
+        .modal-btn-secondary:hover {
+            background: #e2e8f0;
         }
 
-        .practice-other-input.required {
-            border-color: var(--danger);
-            animation: shake 0.3s ease-in-out;
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            border: none;
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.3);
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            75% { transform: translateX(4px); }
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(201, 169, 98, 0.4);
+        }
+
+        .modal-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Empty state for no practice areas */
+        .practice-tags-empty {
+            text-align: center;
+            padding: 1rem;
+            color: #64748b;
+            font-size: 0.875rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #e2e8f0;
         }
 
         /* Honeypot - hidden from humans, bots will fill it */
@@ -1106,6 +1316,160 @@
         }
 
         .lead-card-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .lead-card-meta {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .lead-card-meta.declined-meta {
+            color: #dc2626;
+        }
+
+        .lead-card-section {
+            margin-bottom: 1rem;
+        }
+
+        .lead-card-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .contact-label {
+            color: #64748b;
+            width: 60px;
+            flex-shrink: 0;
+        }
+
+        .contact-value {
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .lead-card-factors {
+            margin-top: 1rem;
+        }
+
+        .factor-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .factor-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .factor-pill.positive {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .factor-pill.negative {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .factor-pill.neutral {
+            background: #f8fafc;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .declined-summary {
+            background: #fef2f2;
+            border-left: 3px solid #ef4444;
+        }
+
+        .lead-card-transcript {
+            display: none;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .lead-card-transcript.expanded {
+            display: block;
+        }
+
+        .lead-card-transcript-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .transcript-message {
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .transcript-message:last-child {
+            margin-bottom: 0;
+        }
+
+        .transcript-role {
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+        }
+
+        .transcript-role.ai {
+            color: var(--accent-gold);
+        }
+
+        .transcript-role.user {
+            color: var(--primary-dark);
+        }
+
+        .transcript-text {
+            color: #475569;
+            padding-left: 0.5rem;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        .transcript-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .transcript-toggle:hover {
             text-decoration: underline;
         }
 
@@ -1479,40 +1843,96 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                             </svg>
-                            Qualified Lead
+                            Qualified
                         </span>
-                        <span class="lead-card-time">Just now</span>
+                        <span class="lead-card-meta">Confidence: high · Schedule Consultation</span>
                     </div>
                     <div class="lead-card-body">
-                        <div class="lead-card-contact">
-                            <h4>Maria Rodriguez</h4>
-                            <p>Personal Injury — Vehicle Accident</p>
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">Steve Martinez</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(415) 555-3874</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">steve@email.com</span>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Screening Summary -->
                         <div class="lead-card-summary">
-                            <div class="lead-card-summary-title">AI Screening Summary</div>
-                            <p>Rear-end collision at stoplight 3 weeks ago. Visible injuries (whiplash, back pain), currently in physical therapy. Police report filed, other driver cited. No prior attorney contacted. Within SOL.</p>
+                            <div class="lead-card-summary-title">Screening Summary</div>
+                            <p>Received 30-day eviction notice last Friday alleging lease violation. Client believes notice is invalid. Minor alleged violation (plants on balcony). Not currently represented. Located in California. Time-sensitive matter requiring immediate attention.</p>
                         </div>
-                        <div class="lead-card-details">
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Accident Date</div>
-                                <div class="lead-detail-value">Dec 7, 2025</div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Tenant Rights</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Last Friday</div>
+                                </div>
                             </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">SOL Status</div>
-                                <div class="lead-detail-value">23 months remaining</div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill positive">✓ Recent eviction notice</span>
+                                <span class="factor-pill positive">✓ Believes notice invalid</span>
+                                <span class="factor-pill positive">✓ Within service area</span>
+                                <span class="factor-pill positive">✓ Not represented</span>
                             </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Injuries</div>
-                                <div class="lead-detail-value">Whiplash, back pain</div>
-                            </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Treatment</div>
-                                <div class="lead-detail-value">Active PT</div>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-qualified">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">Steve Martinez</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Thank you, Steve. Could you briefly describe what happened and why you're seeking legal help?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">I got a 30-day eviction notice last Friday. They're saying I violated my lease but I think it's bogus.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">I understand. What reason did they give for the alleged lease violation?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">They said I have plants on my balcony which is apparently not allowed. But I've had them there for 2 years and no one said anything.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Are you currently represented by an attorney in this matter?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">No, not yet. That's why I'm reaching out.</div>
                         </div>
                     </div>
                     <div class="lead-card-footer">
-                        <a href="#">View Full Transcript →</a>
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
                         <span class="lead-card-time">Delivered via email</span>
                     </div>
                 </div>
@@ -1526,38 +1946,97 @@
                             </svg>
                             Does Not Qualify
                         </span>
-                        <span class="lead-card-time">2 min ago</span>
+                        <span class="lead-card-meta declined-meta">Disqualifier: SOL exceeded</span>
                     </div>
                     <div class="lead-card-body">
-                        <div class="lead-card-contact">
-                            <h4>James Wilson</h4>
-                            <p>Personal Injury — Slip and Fall</p>
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">James Wilson</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(510) 555-9821</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">jwilson@email.com</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="lead-card-summary">
-                            <div class="lead-card-summary-title">AI Screening Rationale</div>
+                        <!-- Screening Rationale -->
+                        <div class="lead-card-summary declined-summary">
+                            <div class="lead-card-summary-title">Screening Rationale</div>
                             <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
                         </div>
-                        <div class="lead-card-details">
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Incident Date</div>
-                                <div class="lead-detail-value">Dec 2022</div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Personal Injury</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Dec 2022</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">SOL Status</div>
+                                    <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
+                                </div>
                             </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">SOL Status</div>
-                                <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill negative">✗ SOL exceeded (3+ years)</span>
+                                <span class="factor-pill negative">✗ No documentation</span>
+                                <span class="factor-pill neutral">○ No prior treatment</span>
                             </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Disqualifier</div>
-                                <div class="lead-detail-value">SOL exceeded</div>
-                            </div>
-                            <div class="lead-detail">
-                                <div class="lead-detail-label">Action</div>
-                                <div class="lead-detail-value">Auto-declined</div>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-declined">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">James Wilson</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Thank you, James. Could you briefly describe what happened?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">I slipped and fell at a grocery store back in December 2022. Hurt my back pretty bad.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">I'm sorry to hear that. Did you receive any medical treatment for your injuries?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I couldn't afford it at the time. I just rested at home.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake AI:</div>
+                            <div class="transcript-text">Did you document the incident? For example, did you file an incident report with the store or take photos?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I didn't think to do that. I just wanted to get out of there.</div>
                         </div>
                     </div>
                     <div class="lead-card-footer">
-                        <a href="#">View Full Transcript →</a>
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
                         <span class="lead-card-time">Not forwarded to CRM</span>
                     </div>
                 </div>
@@ -1735,307 +2214,42 @@
                         <input type="url" id="website" name="website" placeholder="https://smithlaw.com" required>
                     </div>
 
-                    <!-- Practice Area Breakdown -->
-                    <div class="practice-selector">
-                        <div class="practice-selector-header">
-                            <span class="practice-selector-title">Practice Area Breakdown</span>
-                            <span class="practice-total zero" id="practice-total">0%</span>
-                        </div>
-                        <div class="practice-grid" id="practice-grid">
-                            <div class="practice-row" data-area="personal_injury">
-                                <label class="practice-label">Personal Injury</label>
-                                <select class="practice-select" name="practice_personal_injury">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="immigration">
-                                <label class="practice-label">Immigration</label>
-                                <select class="practice-select" name="practice_immigration">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="family_law">
-                                <label class="practice-label">Family Law</label>
-                                <select class="practice-select" name="practice_family_law">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="bankruptcy">
-                                <label class="practice-label">Bankruptcy</label>
-                                <select class="practice-select" name="practice_bankruptcy">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="criminal_defense">
-                                <label class="practice-label">Criminal Defense</label>
-                                <select class="practice-select" name="practice_criminal_defense">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="tax">
-                                <label class="practice-label">Tax / IRS</label>
-                                <select class="practice-select" name="practice_tax">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="estate_planning">
-                                <label class="practice-label">Estate Planning</label>
-                                <select class="practice-select" name="practice_estate_planning">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="employment">
-                                <label class="practice-label">Employment Law</label>
-                                <select class="practice-select" name="practice_employment">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="workers_comp">
-                                <label class="practice-label">Workers' Comp</label>
-                                <select class="practice-select" name="practice_workers_comp">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row" data-area="real_estate">
-                                <label class="practice-label">Real Estate</label>
-                                <select class="practice-select" name="practice_real_estate">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                            <div class="practice-row practice-row-other" data-area="other">
-                                <div class="practice-other-input-wrapper">
-                                    <span class="practice-other-icon">📁</span>
-                                    <input type="text" class="practice-other-input" id="other-practice-name" placeholder="Other (specify)" maxlength="50">
-                                </div>
-                                <select class="practice-select" name="practice_other">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                    <option value="30">30%</option>
-                                    <option value="35">35%</option>
-                                    <option value="40">40%</option>
-                                    <option value="45">45%</option>
-                                    <option value="50">50%</option>
-                                    <option value="55">55%</option>
-                                    <option value="60">60%</option>
-                                    <option value="65">65%</option>
-                                    <option value="70">70%</option>
-                                    <option value="75">75%</option>
-                                    <option value="80">80%</option>
-                                    <option value="85">85%</option>
-                                    <option value="90">90%</option>
-                                    <option value="95">95%</option>
-                                    <option value="100">100%</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="demo-submit" id="submit-btn">Create Customized Demo</button>
+                    <button type="submit" class="demo-submit" id="submit-btn">Analyze My Website</button>
                 </form>
+            </div>
+
+            <!-- Analyzing state (hidden by default) -->
+            <div class="demo-form-container analyzing-state" id="analyzing-state" style="display: none;">
+                <div class="analyzing-spinner"></div>
+                <h3>Analyzing Your Website</h3>
+                <p>We're scanning your firm's website to understand your practice areas and intake requirements.</p>
+                <div class="analyzing-steps">
+                    <div class="analyzing-step active" id="step-scanning">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <span>Scanning website pages...</span>
+                    </div>
+                    <div class="analyzing-step" id="step-extracting">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <span>Identifying practice areas...</span>
+                    </div>
+                    <div class="analyzing-step" id="step-configuring">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <span>Preparing confirmation...</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Success state (hidden by default) -->
@@ -2058,13 +2272,49 @@
     <!-- Footer -->
     <div id="preintake-footer"></div>
 
+    <!-- Practice Area Confirmation Modal -->
+    <div class="modal-overlay" id="practice-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Practice Areas Detected</h3>
+                <p>We found these practice areas on your website. Confirm they're correct or make changes.</p>
+            </div>
+            <div class="modal-body">
+                <div class="practice-tags" id="practice-tags">
+                    <!-- Tags will be dynamically inserted here -->
+                </div>
+                <div class="add-practice-area">
+                    <input type="text" class="add-practice-input" id="add-practice-input" placeholder="Add a practice area..." maxlength="50">
+                    <button type="button" class="add-practice-btn" id="add-practice-btn">Add</button>
+                </div>
+                <div class="primary-area-selector">
+                    <label class="primary-area-label">Primary Practice Area</label>
+                    <select class="primary-area-select" id="primary-area-select">
+                        <!-- Options will be dynamically inserted here -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" id="modal-cancel-btn">Back</button>
+                <button type="button" class="modal-btn modal-btn-primary" id="modal-confirm-btn">Confirm & Build Demo</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Firebase Function endpoint
+        // Firebase Function endpoints
         const SUBMIT_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/submitDemoRequest';
+        const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
+        const CONFIRM_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/confirmPracticeAreas';
 
         // Rate limiting configuration
         const RATE_LIMIT_KEY = 'preintake_submissions';
         const MAX_SUBMISSIONS_PER_DAY = 3;
+
+        // State management
+        let currentLeadId = null;
+        let practiceAreas = [];
+        let primaryArea = null;
 
         // Check rate limit (client-side)
         function checkRateLimit() {
@@ -2075,7 +2325,6 @@
                 const data = JSON.parse(stored);
                 const today = new Date().toDateString();
 
-                // Reset if different day
                 if (data.date !== today) {
                     return { allowed: true, remaining: MAX_SUBMISSIONS_PER_DAY };
                 }
@@ -2107,18 +2356,12 @@
 
         // Email validation function
         function isValidEmail(email) {
-            // More robust email regex that checks:
-            // - Has characters before @
-            // - Has valid domain with at least one dot
-            // - TLD is at least 2 characters
-            // - No spaces or invalid characters
             const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
             if (!emailRegex.test(email)) {
                 return { valid: false, reason: 'Please enter a valid email address (e.g., jane@smithlaw.com)' };
             }
 
-            // Check for common typos in popular domains
             const domain = email.split('@')[1].toLowerCase();
             const typoPatterns = [
                 { pattern: /^g{1,2}mail\./, suggestion: 'gmail.com' },
@@ -2137,7 +2380,6 @@
                 }
             }
 
-            // Check for obviously fake/test domains
             const fakeDomains = ['test.com', 'example.com', 'fake.com', 'asdf.com', 'aaa.com', 'abc.com'];
             if (fakeDomains.includes(domain)) {
                 return { valid: false, reason: 'Please enter your actual business email address.' };
@@ -2148,17 +2390,13 @@
 
         // Validate email domain matches website domain
         function validateEmailDomain(email, websiteUrl) {
-            // Admin bypass
             const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
             if (ADMIN_EMAILS.includes(email.toLowerCase())) {
                 return { valid: true };
             }
 
             try {
-                // Extract email domain
                 const emailDomain = email.split('@')[1].toLowerCase();
-
-                // Extract website domain
                 let url = websiteUrl.toLowerCase();
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
                     url = 'https://' + url;
@@ -2166,13 +2404,10 @@
                 const urlObj = new URL(url);
                 let websiteDomain = urlObj.hostname;
 
-                // Remove www. prefix if present
                 if (websiteDomain.startsWith('www.')) {
                     websiteDomain = websiteDomain.substring(4);
                 }
 
-                // Get base domain (last 2 parts) for comparison
-                // e.g., "intake.smithlaw.com" → "smithlaw.com"
                 const getBaseDomain = (domain) => {
                     const parts = domain.split('.');
                     if (parts.length >= 2) {
@@ -2193,153 +2428,269 @@
 
                 return { valid: true };
             } catch (e) {
-                // If URL parsing fails, skip this validation
                 return { valid: true };
             }
         }
 
-        // Practice area name mapping
-        const PRACTICE_AREA_NAMES = {
-            personal_injury: 'Personal Injury',
-            immigration: 'Immigration',
-            family_law: 'Family Law',
-            bankruptcy: 'Bankruptcy',
-            criminal_defense: 'Criminal Defense',
-            tax: 'Tax',
-            estate_planning: 'Estate Planning',
-            employment: 'Employment Law',
-            workers_comp: 'Workers\' Compensation',
-            real_estate: 'Real Estate',
-            other: 'Other'
-        };
+        // =====================================
+        // Practice Area Tag Management
+        // =====================================
+
+        function renderPracticeTags() {
+            const container = document.getElementById('practice-tags');
+            const primarySelect = document.getElementById('primary-area-select');
+
+            if (practiceAreas.length === 0) {
+                container.innerHTML = '<div class="practice-tags-empty">No practice areas detected. Add at least one practice area.</div>';
+                primarySelect.innerHTML = '<option value="">-- Select primary area --</option>';
+                return;
+            }
+
+            container.innerHTML = practiceAreas.map(area => `
+                <span class="practice-tag ${area === primaryArea ? 'primary' : ''}">
+                    ${area}
+                    <button type="button" class="practice-tag-remove" onclick="removePracticeArea('${area.replace(/'/g, "\\'")}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </span>
+            `).join('');
+
+            // Update primary area dropdown
+            primarySelect.innerHTML = practiceAreas.map(area =>
+                `<option value="${area}" ${area === primaryArea ? 'selected' : ''}>${area}</option>`
+            ).join('');
+        }
+
+        function addPracticeArea(areaName) {
+            const name = areaName.trim();
+            if (!name) return;
+            if (practiceAreas.length >= 10) {
+                alert('Maximum of 10 practice areas allowed.');
+                return;
+            }
+            if (practiceAreas.some(a => a.toLowerCase() === name.toLowerCase())) {
+                return; // Already exists
+            }
+            practiceAreas.push(name);
+            if (practiceAreas.length === 1) {
+                primaryArea = name; // First area becomes primary
+            }
+            renderPracticeTags();
+        }
+
+        function removePracticeArea(areaName) {
+            practiceAreas = practiceAreas.filter(a => a !== areaName);
+            if (primaryArea === areaName) {
+                primaryArea = practiceAreas[0] || null;
+            }
+            renderPracticeTags();
+            updateConfirmButton();
+        }
+
+        function setPrimaryArea(areaName) {
+            if (practiceAreas.includes(areaName)) {
+                primaryArea = areaName;
+                renderPracticeTags();
+            }
+        }
+
+        function updateConfirmButton() {
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            confirmBtn.disabled = practiceAreas.length === 0;
+        }
+
+        // =====================================
+        // Modal Management
+        // =====================================
+
+        function showModal() {
+            const modal = document.getElementById('practice-modal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('practice-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // =====================================
+        // Analysis Step Animation
+        // =====================================
+
+        function updateAnalysisStep(step) {
+            const steps = ['step-scanning', 'step-extracting', 'step-configuring'];
+            steps.forEach((stepId, index) => {
+                const stepEl = document.getElementById(stepId);
+                if (index < step) {
+                    stepEl.classList.remove('active');
+                    stepEl.classList.add('complete');
+                } else if (index === step) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('complete');
+                } else {
+                    stepEl.classList.remove('active', 'complete');
+                }
+            });
+        }
+
+        // =====================================
+        // Poll for Analysis Results
+        // =====================================
+
+        async function pollForAnalysis(leadId, maxAttempts = 60) {
+            const pollInterval = 2000; // 2 seconds
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(`${STATUS_ENDPOINT}?leadId=${leadId}`);
+                    const data = await response.json();
+
+                    // Analysis is complete when status is 'awaiting_confirmation'
+                    // (Deep Research has finished and practice areas are available)
+                    if (data.status === 'awaiting_confirmation' &&
+                        data.practiceAreas && data.practiceAreas.length > 0) {
+                        updateAnalysisStep(2); // Show all steps complete
+                        return data;
+                    } else if (data.status === 'analysis_failed') {
+                        throw new Error(data.error || 'Website analysis failed. Please check the URL and try again.');
+                    }
+
+                    // Update step animation based on status
+                    if (data.status === 'analyzing') {
+                        updateAnalysisStep(0); // Scanning
+                    } else if (data.status === 'researching') {
+                        updateAnalysisStep(1); // Identifying practice areas
+                    }
+
+                } catch (error) {
+                    console.error('Poll error:', error);
+                    if (error.message.includes('analysis failed') || error.message.includes('Website analysis failed')) {
+                        throw error;
+                    }
+                }
+
+                attempts++;
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('Analysis timed out. Please try again.');
+        }
+
+        // =====================================
+        // Main Form Handler
+        // =====================================
 
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('demo-form');
             const formContainer = document.getElementById('demo-form-container');
+            const analyzingContainer = document.getElementById('analyzing-state');
             const successContainer = document.getElementById('demo-success');
             const submitBtn = document.getElementById('submit-btn');
             const errorDiv = document.getElementById('form-error');
-            const practiceSelects = document.querySelectorAll('.practice-select');
-            const practiceTotalEl = document.getElementById('practice-total');
-            const practiceRows = document.querySelectorAll('.practice-row');
 
-            // Update practice area totals and highlighting
-            function updatePracticeAreas() {
-                let total = 0;
-                let maxValue = 0;
-                let maxArea = null;
+            // Modal elements
+            const addPracticeInput = document.getElementById('add-practice-input');
+            const addPracticeBtn = document.getElementById('add-practice-btn');
+            const primaryAreaSelect = document.getElementById('primary-area-select');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+            const modalConfirmBtn = document.getElementById('modal-confirm-btn');
 
-                // Calculate total and find primary
-                practiceRows.forEach(row => {
-                    const select = row.querySelector('.practice-select');
-                    const value = parseInt(select.value) || 0;
-                    total += value;
-
-                    // Track highest percentage for primary
-                    if (value > maxValue) {
-                        maxValue = value;
-                        maxArea = row;
-                    }
-
-                    // Update row styling
-                    row.classList.remove('active', 'primary');
-                    if (value > 0) {
-                        row.classList.add('active');
-                    }
-                });
-
-                // Mark primary (highest %)
-                if (maxArea && maxValue > 0) {
-                    maxArea.classList.add('primary');
-                }
-
-                // Update total display
-                practiceTotalEl.textContent = total + '%';
-                practiceTotalEl.classList.remove('valid', 'invalid', 'zero');
-                if (total === 0) {
-                    practiceTotalEl.classList.add('zero');
-                } else if (total === 100) {
-                    practiceTotalEl.classList.add('valid');
-                } else {
-                    practiceTotalEl.classList.add('invalid');
-                }
-
-                return { total, maxValue, maxArea };
-            }
-
-            // Get practice areas data for submission
-            function getPracticeAreasData() {
-                const practiceAreas = {};
-                let primaryArea = null;
-                let maxValue = 0;
-                const otherNameInput = document.getElementById('other-practice-name');
-                const otherName = otherNameInput ? otherNameInput.value.trim() : '';
-
-                practiceRows.forEach(row => {
-                    const area = row.dataset.area;
-                    const select = row.querySelector('.practice-select');
-                    const value = parseInt(select.value) || 0;
-
-                    if (value > 0) {
-                        practiceAreas[area] = value;
-                        if (value > maxValue) {
-                            maxValue = value;
-                            primaryArea = area;
-                        }
-                    }
-                });
-
-                // Determine primary area name, using custom name for "other"
-                let primaryAreaName = null;
-                if (primaryArea) {
-                    if (primaryArea === 'other' && otherName) {
-                        primaryAreaName = otherName;
-                    } else {
-                        primaryAreaName = PRACTICE_AREA_NAMES[primaryArea] || primaryArea;
-                    }
-                }
-
-                return {
-                    breakdown: practiceAreas,
-                    primaryArea: primaryArea,
-                    primaryAreaName: primaryAreaName,
-                    otherName: otherName || null  // Include custom "Other" name
-                };
-            }
-
-            // Add change listeners to all practice selects
-            practiceSelects.forEach(select => {
-                select.addEventListener('change', updatePracticeAreas);
+            // Add practice area button handler
+            addPracticeBtn.addEventListener('click', function() {
+                addPracticeArea(addPracticeInput.value);
+                addPracticeInput.value = '';
+                updateConfirmButton();
             });
 
-            // Initialize
-            updatePracticeAreas();
+            // Add practice area on Enter key
+            addPracticeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addPracticeArea(addPracticeInput.value);
+                    addPracticeInput.value = '';
+                    updateConfirmButton();
+                }
+            });
 
+            // Primary area change handler
+            primaryAreaSelect.addEventListener('change', function() {
+                setPrimaryArea(this.value);
+            });
+
+            // Modal cancel button
+            modalCancelBtn.addEventListener('click', function() {
+                hideModal();
+                // Show form again
+                analyzingContainer.style.display = 'none';
+                formContainer.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+            });
+
+            // Modal confirm button
+            modalConfirmBtn.addEventListener('click', async function() {
+                if (practiceAreas.length === 0) return;
+
+                modalConfirmBtn.disabled = true;
+                modalConfirmBtn.textContent = 'Building Demo...';
+
+                try {
+                    // Confirm practice areas with backend
+                    const response = await fetch(CONFIRM_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            leadId: currentLeadId,
+                            practiceAreas: practiceAreas,
+                            primaryArea: primaryArea
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to confirm practice areas');
+                    }
+
+                    // Record successful submission
+                    recordSubmission();
+
+                    // Hide modal and show success
+                    hideModal();
+                    analyzingContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+
+                } catch (error) {
+                    alert(error.message || 'Something went wrong. Please try again.');
+                    modalConfirmBtn.disabled = false;
+                    modalConfirmBtn.textContent = 'Confirm & Build Demo';
+                }
+            });
+
+            // Form submission
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
-                // Hide any previous errors
                 errorDiv.classList.remove('show');
 
-                // Check honeypot - if filled, silently reject (bot)
+                // Check honeypot
                 const honeypot = document.getElementById('company_fax').value;
                 if (honeypot) {
-                    // Pretend success to bots
                     formContainer.style.display = 'none';
                     successContainer.style.display = 'block';
                     return;
                 }
 
-                // Get form values
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const website = document.getElementById('website').value.trim();
 
-                // Admin bypass for rate limiting
                 const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
                 const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
 
-                // Check client-side rate limit (skip for admins)
                 if (!isAdmin) {
                     const rateCheck = checkRateLimit();
                     if (!rateCheck.allowed) {
@@ -2348,13 +2699,11 @@
                     }
                 }
 
-                // Basic validation
                 if (!name || !email || !website) {
                     showError('Please fill in all fields.');
                     return;
                 }
 
-                // Validate email format
                 const emailInput = document.getElementById('email');
                 const emailValidation = isValidEmail(email);
                 if (!emailValidation.valid) {
@@ -2373,68 +2722,49 @@
                     return;
                 }
 
-                // Validate practice areas total equals 100%
-                const { total } = updatePracticeAreas();
-                if (total !== 100) {
-                    showError('Practice area percentages must total 100%. Currently: ' + total + '%');
-                    return;
-                }
-
-                // Get practice areas data
-                const practiceAreasData = getPracticeAreasData();
-
-                // Validate: if "Other" has a percentage, a name must be provided
-                const otherPercentage = practiceAreasData.breakdown.other || 0;
-                const otherNameInput = document.getElementById('other-practice-name');
-                if (otherPercentage > 0 && !practiceAreasData.otherName) {
-                    showError('Please specify your "Other" practice area name.');
-                    if (otherNameInput) {
-                        otherNameInput.classList.add('required');
-                        otherNameInput.focus();
-                        setTimeout(() => otherNameInput.classList.remove('required'), 1000);
-                    }
-                    return;
-                }
-
-                // Show loading state
+                // Show loading state and analyzing screen
                 submitBtn.disabled = true;
                 submitBtn.classList.add('loading');
+                formContainer.style.display = 'none';
+                analyzingContainer.style.display = 'block';
+                updateAnalysisStep(0);
 
                 try {
+                    // Submit form data (no practice areas - AI will detect them)
                     const response = await fetch(SUBMIT_ENDPOINT, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            name,
-                            email,
-                            website,
-                            practiceAreas: practiceAreasData
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, website })
                     });
 
                     const data = await response.json();
 
                     if (!response.ok) {
-                        // Handle field-specific errors
                         if (data.field === 'email') {
-                            const emailInput = document.getElementById('email');
                             emailInput.focus();
                             emailInput.select();
                         }
                         throw new Error(data.error || 'Something went wrong. Please try again.');
                     }
 
-                    // Record successful submission for rate limiting
-                    recordSubmission();
+                    currentLeadId = data.leadId;
 
-                    // Success - show success state
-                    formContainer.style.display = 'none';
-                    successContainer.style.display = 'block';
+                    // Poll for analysis results
+                    const analysisResult = await pollForAnalysis(currentLeadId);
+
+                    // Populate practice areas from analysis
+                    practiceAreas = analysisResult.practiceAreas || [];
+                    primaryArea = analysisResult.primaryArea || practiceAreas[0] || null;
+
+                    // Render tags and show modal
+                    renderPracticeTags();
+                    updateConfirmButton();
+                    showModal();
 
                 } catch (error) {
                     showError(error.message || 'Something went wrong. Please try again.');
+                    analyzingContainer.style.display = 'none';
+                    formContainer.style.display = 'block';
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('loading');
                 }
@@ -2445,6 +2775,20 @@
                 errorDiv.classList.add('show');
             }
         });
+    </script>
+
+    <!-- Transcript Toggle -->
+    <script>
+        function toggleTranscript(transcriptId, linkElement) {
+            const transcript = document.getElementById(transcriptId);
+            if (transcript.classList.contains('expanded')) {
+                transcript.classList.remove('expanded');
+                linkElement.textContent = 'View Full Transcript →';
+            } else {
+                transcript.classList.add('expanded');
+                linkElement.textContent = 'Hide Transcript ↑';
+            }
+        }
     </script>
 </body>
 </html>

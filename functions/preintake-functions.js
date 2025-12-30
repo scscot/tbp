@@ -78,6 +78,78 @@ async function recordIPSubmission(ip) {
 }
 
 /**
+ * Normalize website URL for duplicate detection
+ * Removes trailing slashes, lowercases hostname, removes www prefix
+ */
+function normalizeWebsiteUrl(url) {
+    try {
+        const parsed = new URL(url);
+        // Lowercase hostname, remove www prefix
+        let hostname = parsed.hostname.toLowerCase();
+        if (hostname.startsWith('www.')) {
+            hostname = hostname.substring(4);
+        }
+        // Remove trailing slash from pathname
+        let pathname = parsed.pathname;
+        if (pathname.endsWith('/') && pathname.length > 1) {
+            pathname = pathname.slice(0, -1);
+        }
+        // Return normalized URL (protocol + hostname + pathname)
+        return `${parsed.protocol}//${hostname}${pathname === '/' ? '' : pathname}`;
+    } catch (e) {
+        return url.toLowerCase();
+    }
+}
+
+/**
+ * Find existing lead by normalized website URL
+ * Returns { id, data } if found, null otherwise
+ */
+async function findExistingLead(normalizedUrl) {
+    try {
+        // Query for leads with matching website (need to check normalized versions)
+        const snapshot = await db.collection('preintake_leads')
+            .where('normalizedWebsite', '==', normalizedUrl)
+            .limit(1)
+            .get();
+
+        if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            return { id: doc.id, data: doc.data() };
+        }
+
+        // Also check without normalization field (for older leads)
+        // This catches cases where the exact URL matches
+        const exactSnapshot = await db.collection('preintake_leads')
+            .where('website', '==', normalizedUrl)
+            .limit(1)
+            .get();
+
+        if (!exactSnapshot.empty) {
+            const doc = exactSnapshot.docs[0];
+            return { id: doc.id, data: doc.data() };
+        }
+
+        // Check with trailing slash variant
+        const withSlash = normalizedUrl + '/';
+        const slashSnapshot = await db.collection('preintake_leads')
+            .where('website', '==', withSlash)
+            .limit(1)
+            .get();
+
+        if (!slashSnapshot.empty) {
+            const doc = slashSnapshot.docs[0];
+            return { id: doc.id, data: doc.data() };
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error checking for existing lead:', error);
+        return null; // Allow through on error
+    }
+}
+
+/**
  * Validate email address format and domain
  * Checks format, common typos, disposable domains, and MX records
  */
@@ -466,16 +538,8 @@ const submitDemoRequest = onRequest(
                 });
             }
 
-            // Validate practice areas if provided
-            if (practiceAreas && practiceAreas.breakdown) {
-                const total = Object.values(practiceAreas.breakdown).reduce((sum, val) => sum + val, 0);
-                if (total !== 100) {
-                    return res.status(400).json({
-                        error: 'Practice area percentages must total 100%',
-                        currentTotal: total
-                    });
-                }
-            }
+            // Practice areas are now optional - they'll be detected by Deep Research
+            // and confirmed by the user via the confirmation modal
 
             // Validate email (format, domain existence, MX records)
             const emailValidation = await validateEmail(email);
@@ -507,6 +571,31 @@ const submitDemoRequest = onRequest(
                 });
             }
 
+            // Check for duplicate - only allow ONE demo per law firm website
+            // Normalize URL for comparison (remove trailing slash, lowercase hostname)
+            const normalizedUrl = normalizeWebsiteUrl(websiteUrl.href);
+            const existingLead = await findExistingLead(normalizedUrl);
+
+            if (existingLead) {
+                console.log(`Duplicate demo request blocked for ${normalizedUrl} - existing lead: ${existingLead.id}`);
+
+                // If demo is ready, return the existing demo URL
+                if (existingLead.data.demoUrl) {
+                    return res.status(409).json({
+                        error: 'A demo has already been created for this website.',
+                        existingDemoUrl: existingLead.data.demoUrl,
+                        message: 'You can access your existing demo at the URL provided.'
+                    });
+                }
+
+                // If demo is still being processed, inform the user
+                return res.status(409).json({
+                    error: 'A demo request is already being processed for this website.',
+                    status: existingLead.data.status,
+                    message: 'Please check your email for the demo link, or wait for processing to complete.'
+                });
+            }
+
             // Record the submission for rate limiting (only after validation passes)
             await recordIPSubmission(clientIP);
 
@@ -515,6 +604,7 @@ const submitDemoRequest = onRequest(
                 name: name.trim(),
                 email: email.trim().toLowerCase(),
                 website: websiteUrl.href,
+                normalizedWebsite: normalizedUrl, // For duplicate detection
                 status: 'pending', // pending, analyzing, researching, generating_demo, demo_ready
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -622,6 +712,7 @@ const submitDemoRequest = onRequest(
 /**
  * Get firm status for intake page display logic
  * Called by intake page on load to determine Demo vs Live mode
+ * Also used during demo request flow to poll for analysis completion
  */
 const getPreIntakeFirmStatus = onRequest(
     { region: 'us-west1', cors: true },
@@ -639,10 +730,67 @@ const getPreIntakeFirmStatus = onRequest(
             }
 
             const data = doc.data();
+
+            // Get practice areas - merge Deep Research and initial analysis
+            // Initial analysis uses Claude to identify practice areas from nav menu
+            // Deep Research scrapes individual practice area pages for more detail
+            let practiceAreas = [];
+            let primaryArea = null;
+
+            const initialAreas = data.analysis?.practiceAreas || [];
+            const deepResearchAreas = data.deepResearch?.practiceAreaDetails
+                ? Object.keys(data.deepResearch.practiceAreaDetails)
+                : [];
+
+            // Use initial analysis as the primary source (Claude analyzes nav menu)
+            // Deep Research often only captures pages it can find via URL patterns
+            if (initialAreas.length > 0) {
+                // Start with initial analysis (Claude identified these from nav menu)
+                practiceAreas = [...initialAreas];
+
+                // Add any Deep Research areas not already in the list
+                for (const area of deepResearchAreas) {
+                    // Normalize for comparison (case-insensitive, ignore minor differences)
+                    const normalizedArea = area.toLowerCase().trim();
+                    const exists = practiceAreas.some(a =>
+                        a.toLowerCase().trim() === normalizedArea ||
+                        a.toLowerCase().includes(normalizedArea) ||
+                        normalizedArea.includes(a.toLowerCase())
+                    );
+                    if (!exists) {
+                        practiceAreas.push(area);
+                    }
+                }
+
+                primaryArea = data.analysis.primaryPracticeArea || practiceAreas[0];
+            } else if (deepResearchAreas.length > 0) {
+                // No initial analysis, use Deep Research
+                practiceAreas = deepResearchAreas;
+                primaryArea = deepResearchAreas[0];
+            }
+
+            // Return comprehensive status for both demo request flow and intake page
             return res.json({
-                isLiveMode: data.subscriptionStatus === 'active',
+                // Lead status: pending, analyzing, researching, awaiting_confirmation, generating_demo, demo_ready, analysis_failed
+                status: data.status || 'pending',
+
+                // Practice areas (from Deep Research if available, otherwise initial analysis)
+                practiceAreas: practiceAreas,
+                primaryArea: primaryArea,
+
+                // Firm info from analysis
                 firmName: data.analysis?.firmName || 'Your Firm',
-                firmWebsite: data.website || null
+                firmWebsite: data.website || null,
+                location: data.analysis?.location || null,
+
+                // For intake page display logic
+                isLiveMode: data.subscriptionStatus === 'active',
+
+                // Demo URL if ready
+                demoUrl: data.demoUrl || null,
+
+                // Error info if failed
+                error: data.analysis?.error || null
             });
         } catch (error) {
             console.error('Error fetching firm status:', error);
@@ -651,7 +799,97 @@ const getPreIntakeFirmStatus = onRequest(
     }
 );
 
+/**
+ * Confirm practice areas after Deep Research detection
+ * User can modify the detected practice areas and set a primary area
+ * Triggers demo generation after confirmation
+ */
+const confirmPracticeAreas = onRequest(
+    {
+        cors: true,
+        region: 'us-west1'
+    },
+    async (req, res) => {
+        // Only allow POST
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { leadId, practiceAreas, primaryArea } = req.body;
+
+            // Validate required fields
+            if (!leadId) {
+                return res.status(400).json({ error: 'Missing leadId' });
+            }
+
+            if (!practiceAreas || !Array.isArray(practiceAreas) || practiceAreas.length === 0) {
+                return res.status(400).json({ error: 'At least one practice area is required' });
+            }
+
+            if (!primaryArea) {
+                return res.status(400).json({ error: 'Primary practice area is required' });
+            }
+
+            // Verify primary area is in the list
+            if (!practiceAreas.includes(primaryArea)) {
+                return res.status(400).json({ error: 'Primary area must be one of the selected practice areas' });
+            }
+
+            // Get the lead document
+            const leadRef = db.collection('preintake_leads').doc(leadId);
+            const doc = await leadRef.get();
+
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Lead not found' });
+            }
+
+            const data = doc.data();
+
+            // Verify lead is in a valid state for confirmation
+            // 'awaiting_confirmation' is the expected state after Deep Research completes
+            if (data.status !== 'awaiting_confirmation') {
+                return res.status(400).json({
+                    error: 'Lead is not ready for practice area confirmation',
+                    currentStatus: data.status
+                });
+            }
+
+            // Update the lead with confirmed practice areas
+            await leadRef.update({
+                // Store user-confirmed practice areas separately from auto-detected ones
+                confirmedPracticeAreas: {
+                    areas: practiceAreas,
+                    primaryArea: primaryArea,
+                    confirmedAt: admin.firestore.FieldValue.serverTimestamp()
+                },
+                // Update analysis to use confirmed primary area
+                'analysis.primaryPracticeArea': primaryArea,
+                // Trigger demo generation
+                status: 'generating_demo',
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(`Practice areas confirmed for lead ${leadId}: ${practiceAreas.join(', ')} (primary: ${primaryArea})`);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Practice areas confirmed, demo generation started',
+                leadId: leadId
+            });
+
+        } catch (error) {
+            console.error('Error confirming practice areas:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                message: error.message
+            });
+        }
+    }
+);
+
 module.exports = {
     submitDemoRequest,
-    getPreIntakeFirmStatus
+    getPreIntakeFirmStatus,
+    confirmPracticeAreas
 };

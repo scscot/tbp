@@ -17,8 +17,9 @@ if (!admin.apps.length) {
 // Use the dedicated 'preintake' database
 const db = getFirestore('preintake');
 
-// Stripe secret key
+// Stripe secrets
 const stripeSecretKey = defineSecret('STRIPE_SECRET_KEY');
+const stripeWebhookSecret = defineSecret('STRIPE_WEBHOOK_SECRET');
 
 // SMTP Configuration (same as preintake-functions.js)
 const smtpUser = defineSecret("PREINTAKE_SMTP_USER");
@@ -30,13 +31,13 @@ const FROM_ADDRESS = 'PreIntake.ai <support@preintake.ai>';
 const NOTIFY_EMAIL = 'stephen@preintake.ai';
 
 // Stripe configuration
+// LIVE MODE price IDs
+const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjOXiJBdoLMDposfZXL8nZX'; // $399 one-time implementation fee
+const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjORKJBdoLMDpos9wBBZbzd'; // $129/month subscription
 // TEST MODE price IDs (for testing with 4242 4242 4242 4242)
-const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjQ1aJaJO3EHqOSH5tYPJOB'; // $399 one-time implementation fee
-const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjNpAJaJO3EHqOSHh4DbhNM'; // $129/month subscription
-// LIVE MODE price IDs (swap these back for production)
-// const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjOXiJBdoLMDposfZXL8nZX';
-// const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjORKJBdoLMDpos9wBBZbzd';
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SjNi9JBdoLMDposz9zUguoaB7fl4J1dzI5YFTnIzoge9IeAD9GcISLZq2cIT4Jh3x78pDuJtxSA0qmVEwBCV5gN007IHKxxOv';
+// const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjQ1aJaJO3EHqOSH5tYPJOB';
+// const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjNpAJaJO3EHqOSHh4DbhNM';
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SjNi9JBdoLMDposKpLCGI1NRg0cDPmKwRhDQfZ1kkiVlGxFyYi6OBUyLhfFkIpgFlrX2kJR8kR6uS4Wy7VGXVQR00M7hdJJkG';
 
 /**
  * Create a Stripe Checkout session for subscription
@@ -104,6 +105,7 @@ const createCheckoutSession = onRequest(
                     },
                 ],
                 mode: 'subscription',
+                allow_promotion_codes: true,
                 success_url: `https://preintake.ai/payment-success.html?session_id={CHECKOUT_SESSION_ID}&firm=${firmId}`,
                 cancel_url: `https://preintake.ai/create-account.html?firm=${firmId}&cancelled=true`,
                 metadata: {
@@ -156,14 +158,13 @@ const stripeWebhook = onRequest(
     {
         cors: false,
         region: 'us-west1',
-        secrets: [stripeSecretKey, smtpUser, smtpPass],
+        secrets: [stripeSecretKey, stripeWebhookSecret, smtpUser, smtpPass],
     },
     async (req, res) => {
         const stripe = require('stripe')(stripeSecretKey.value());
 
-        // Get the webhook signing secret from environment
-        // You'll need to set this: firebase functions:secrets:set STRIPE_WEBHOOK_SECRET
-        const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+        // Get the webhook signing secret
+        const endpointSecret = stripeWebhookSecret.value();
 
         let event;
 

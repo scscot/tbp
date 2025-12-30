@@ -206,6 +206,7 @@ const {
 const {
   submitDemoRequest,
   getPreIntakeFirmStatus,
+  confirmPracticeAreas,
 } = require('./preintake-functions');
 
 const {
@@ -356,6 +357,7 @@ module.exports = {
   // ========== PREINTAKE FUNCTIONS ==========
   submitDemoRequest,
   getPreIntakeFirmStatus,
+  confirmPracticeAreas,
   analyzePreIntakeLead,
   generatePreIntakeDemo,
   handleIntakeCompletion,
