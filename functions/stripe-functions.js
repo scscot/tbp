@@ -106,6 +106,7 @@ const createCheckoutSession = onRequest(
                 ],
                 mode: 'subscription',
                 allow_promotion_codes: true,
+                billing_address_collection: 'required', // Collect full billing info for receipts
                 success_url: `https://preintake.ai/payment-success.html?session_id={CHECKOUT_SESSION_ID}&firm=${firmId}`,
                 cancel_url: `https://preintake.ai/create-account.html?firm=${firmId}&cancelled=true`,
                 metadata: {
@@ -116,6 +117,16 @@ const createCheckoutSession = onRequest(
                     metadata: {
                         firmId: firmId,
                         firmName: firmName || '',
+                    },
+                },
+                // Send invoice/receipt emails for this subscription
+                invoice_creation: {
+                    enabled: true,
+                    invoice_data: {
+                        description: `PreIntake.ai - AI-Powered Legal Intake for ${firmName || 'Your Firm'}`,
+                        metadata: {
+                            firmId: firmId,
+                        },
                     },
                 },
             });
@@ -171,14 +182,22 @@ const stripeWebhook = onRequest(
         if (endpointSecret) {
             // Verify webhook signature
             const sig = req.headers['stripe-signature'];
+
+            // In Firebase v2, raw body may be in req.rawBody or req.body (as Buffer)
+            const rawBody = req.rawBody || req.body;
+
             try {
-                event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+                event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
             } catch (err) {
                 console.error('Webhook signature verification failed:', err.message);
+                console.error('Signature:', sig?.substring(0, 50) + '...');
+                console.error('Raw body type:', typeof rawBody);
+                console.error('Raw body length:', rawBody?.length);
                 return res.status(400).send(`Webhook Error: ${err.message}`);
             }
         } else {
             // For testing without signature verification
+            console.log('No endpoint secret - skipping signature verification');
             event = req.body;
         }
 
