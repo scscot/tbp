@@ -205,12 +205,14 @@ const {
 // ==============================
 const {
   submitDemoRequest,
+  verifyDemoEmail,
   getPreIntakeFirmStatus,
   confirmPracticeAreas,
 } = require('./preintake-functions');
 
 const {
   analyzePreIntakeLead,
+  analyzeAfterEmailVerification,
 } = require('./preintake-analysis-functions');
 
 const {
@@ -356,9 +358,11 @@ module.exports = {
 
   // ========== PREINTAKE FUNCTIONS ==========
   submitDemoRequest,
+  verifyDemoEmail,
   getPreIntakeFirmStatus,
   confirmPracticeAreas,
   analyzePreIntakeLead,
+  analyzeAfterEmailVerification,
   generatePreIntakeDemo,
   handleIntakeCompletion,
 

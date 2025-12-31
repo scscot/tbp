@@ -10,6 +10,7 @@ const { getFirestore } = require('firebase-admin/firestore');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const dns = require('dns').promises;
+const Anthropic = require('@anthropic-ai/sdk');
 
 // Ensure Firebase is initialized
 if (!admin.apps.length) {
@@ -216,35 +217,13 @@ async function validateEmail(email) {
 
 /**
  * Validate that the website is a law firm or attorney website
- * Checks for legal-related keywords in the page content
+ * Uses Claude AI to analyze the website content with high accuracy
  */
 async function validateLawFirmWebsite(url) {
-    // Legal keywords to look for (case-insensitive)
-    const legalKeywords = [
-        'attorney', 'attorneys', 'lawyer', 'lawyers', 'law firm', 'law office',
-        'legal', 'practice area', 'practice areas', 'case evaluation', 'free consultation',
-        'personal injury', 'criminal defense', 'family law', 'immigration', 'bankruptcy',
-        'estate planning', 'divorce', 'custody', 'dui', 'dwi', 'slip and fall',
-        'workers compensation', 'wrongful death', 'medical malpractice', 'car accident',
-        'truck accident', 'motorcycle accident', 'pedestrian accident',
-        'esq', 'esquire', 'jd', 'juris doctor', 'bar association', 'state bar',
-        'legal services', 'legal representation', 'litigation', 'trial lawyer',
-        'defense attorney', 'plaintiff', 'defendant', 'settlement', 'verdict',
-        'abogado', 'abogados', 'bufete', // Spanish
-        'advogado', 'advogados', 'escritório de advocacia' // Portuguese
-    ];
-
-    // Keywords that suggest it's NOT a law firm (false positives)
-    const excludeKeywords = [
-        'buy now', 'add to cart', 'shopping cart', 'checkout', 'product reviews',
-        'law enforcement', 'brother-in-law', 'mother-in-law', 'father-in-law',
-        'outlaw', 'in-laws', 'lawn care', 'lawn mower'
-    ];
-
     try {
         // Fetch the website with timeout
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        const timeout = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
         const response = await fetch(url, {
             signal: controller.signal,
@@ -259,51 +238,85 @@ async function validateLawFirmWebsite(url) {
 
         if (!response.ok) {
             console.log(`Website validation: ${url} returned ${response.status}`);
-            // Can't validate, allow through (might be behind auth, CDN issues, etc.)
-            return { isValid: true, reason: 'Could not fetch website for validation', confidence: 0 };
+            return {
+                isValid: false,
+                reason: `Unable to access website (HTTP ${response.status})`,
+                confidence: 0
+            };
         }
 
         const html = await response.text();
-        const lowerHtml = html.toLowerCase();
 
-        // Check for exclude keywords first
-        for (const keyword of excludeKeywords) {
-            if (lowerHtml.includes(keyword)) {
-                console.log(`Website validation: ${url} contains exclude keyword "${keyword}"`);
-                // Don't automatically reject, just lower confidence
-            }
+        // Truncate HTML for Claude (first 15000 chars should capture key content)
+        const truncatedHtml = html.substring(0, 15000);
+
+        // Call Claude to validate
+        const anthropic = new Anthropic({
+            apiKey: anthropicApiKey.value(),
+        });
+
+        console.log(`Website validation: Sending ${url} to Claude for analysis...`);
+
+        const message = await anthropic.messages.create({
+            model: 'claude-3-haiku-20240307',
+            max_tokens: 200,
+            messages: [{
+                role: 'user',
+                content: `Analyze this website HTML and determine if it represents a law firm, attorney practice, or legal services provider.
+
+Return ONLY a valid JSON object (no markdown, no explanation) with these exact fields:
+- isLawFirm: boolean (true ONLY if this is clearly a law firm, attorney, or legal services website)
+- confidence: number (0-100, your confidence level)
+- reason: string (brief 1-sentence explanation)
+
+Be strict: marketing agencies, tech companies, SaaS tools, or businesses that merely mention "legal" in passing are NOT law firms.
+
+Website HTML:
+${truncatedHtml}`
+            }]
+        });
+
+        // Parse Claude's response
+        const responseText = message.content[0].text.trim();
+        console.log(`Website validation: Claude response for ${url}: ${responseText}`);
+
+        let analysis;
+        try {
+            analysis = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error(`Website validation: Failed to parse Claude response: ${responseText}`);
+            return {
+                isValid: false,
+                reason: 'AI validation returned invalid response',
+                confidence: 0
+            };
         }
 
-        // Count matching legal keywords
-        let matchCount = 0;
-        const matchedKeywords = [];
-        for (const keyword of legalKeywords) {
-            if (lowerHtml.includes(keyword.toLowerCase())) {
-                matchCount++;
-                matchedKeywords.push(keyword);
-            }
-        }
+        // Require high confidence (80%+) for validation to pass
+        const isValid = analysis.isLawFirm === true && analysis.confidence >= 80;
 
-        // Calculate confidence score (0-100)
-        const confidence = Math.min(100, (matchCount / 5) * 100); // 5+ keywords = 100%
+        console.log(`Website validation: ${url} - isLawFirm: ${analysis.isLawFirm}, confidence: ${analysis.confidence}%, isValid: ${isValid}`);
 
-        console.log(`Website validation: ${url} - ${matchCount} keywords matched, confidence: ${confidence}%`);
-
-        // Require at least 2 legal keywords for validation
-        if (matchCount >= 2) {
-            return { isValid: true, reason: 'Law firm website verified', confidence, matchedKeywords };
-        } else if (matchCount === 1) {
-            return { isValid: true, reason: 'Limited legal content detected', confidence, matchedKeywords };
-        } else {
-            return { isValid: false, reason: 'No legal content detected on website', confidence: 0, matchedKeywords: [] };
-        }
+        return {
+            isValid: isValid,
+            isLawFirm: analysis.isLawFirm,
+            confidence: analysis.confidence,
+            reason: analysis.reason
+        };
 
     } catch (error) {
         console.error(`Website validation error for ${url}:`, error.message);
-        // On error (timeout, network issues), allow through with note
-        return { isValid: true, reason: `Validation skipped: ${error.message}`, confidence: 0 };
+        // On error, reject (do NOT allow through)
+        return {
+            isValid: false,
+            reason: `Unable to verify website: ${error.message}`,
+            confidence: 0
+        };
     }
 }
+
+// Anthropic API key for AI validation
+const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
 // SMTP configuration for Dreamhost
 const smtpUser = defineSecret("PREINTAKE_SMTP_USER");
@@ -313,6 +326,57 @@ const smtpPort = defineString("PREINTAKE_SMTP_PORT", { default: "587" });
 
 const FROM_ADDRESS = 'PreIntake.ai <support@preintake.ai>';
 const NOTIFY_EMAIL = 'stephen@preintake.ai';
+
+/**
+ * Generate a secure verification token
+ */
+function generateVerificationToken() {
+    return crypto.randomBytes(32).toString('hex');
+}
+
+/**
+ * Generate verification email HTML
+ */
+function generateVerificationEmail(name, website, verificationUrl) {
+    const firstName = name.split(' ')[0];
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #0c1f3f; font-size: 24px; margin-bottom: 10px;">PreIntake.ai</h1>
+    </div>
+
+    <p>Hi ${firstName},</p>
+
+    <p>Thank you for your interest in PreIntake.ai! Please verify your email address to start building your custom AI intake demo for <strong>${website}</strong>.</p>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Verify Email & Start Demo</a>
+    </div>
+
+    <p style="color: #64748b; font-size: 14px;">This link will expire in 24 hours. If you didn't request this demo, you can safely ignore this email.</p>
+
+    <p style="margin-top: 30px;">
+        —<br>
+        <strong>Support Team</strong><br>
+        PreIntake.ai
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+        AI-Powered Legal Intake<br>
+        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
+    </p>
+</body>
+</html>
+`;
+}
 
 /**
  * Send email via SMTP (Dreamhost)
@@ -375,7 +439,7 @@ function generateProspectEmail(name, website) {
 
     <p style="margin-top: 30px;">
         —<br>
-        <strong>Stephen Scott</strong><br>
+        <strong>Support Team</strong><br>
         PreIntake.ai
     </p>
 
@@ -496,7 +560,7 @@ const submitDemoRequest = onRequest(
     {
         cors: true,
         region: 'us-west1',
-        secrets: [smtpUser, smtpPass]
+        secrets: [smtpUser, smtpPass, anthropicApiKey]
     },
     async (req, res) => {
         // Only allow POST
@@ -599,13 +663,17 @@ const submitDemoRequest = onRequest(
             // Record the submission for rate limiting (only after validation passes)
             await recordIPSubmission(clientIP);
 
-            // Create lead document
+            // Generate verification token (expires in 24 hours)
+            const verificationToken = generateVerificationToken();
+            const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+            // Create lead document with pending verification status
             const leadData = {
                 name: name.trim(),
                 email: email.trim().toLowerCase(),
                 website: websiteUrl.href,
                 normalizedWebsite: normalizedUrl, // For duplicate detection
-                status: 'pending', // pending, analyzing, researching, generating_demo, demo_ready
+                status: 'pending_verification', // pending_verification, pending, analyzing, researching, generating_demo, demo_ready
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
                 source: 'landing_page',
@@ -618,11 +686,16 @@ const submitDemoRequest = onRequest(
                     reason: validation.reason,
                     matchedKeywords: validation.matchedKeywords || []
                 },
+                // Email verification
+                verificationToken: verificationToken,
+                verificationExpiry: verificationExpiry,
+                emailVerified: false,
                 // Will be populated by analysis function later
                 analysis: null,
                 deepResearch: null,
                 demoUrl: null,
                 // Email tracking
+                verificationEmailSent: false,
                 confirmationSent: false,
                 notificationSent: false
             };
@@ -631,72 +704,59 @@ const submitDemoRequest = onRequest(
             const docRef = await db.collection('preintake_leads').add(leadData);
             const leadId = docRef.id;
 
-            console.log(`PreIntake lead created: ${leadId} - ${email}`);
+            console.log(`PreIntake lead created (pending verification): ${leadId} - ${email}`);
 
-            // Create SMTP transporter
+            // Create SMTP transporter and send verification email
             const user = smtpUser.value();
             const pass = smtpPass.value();
 
             if (!user || !pass) {
                 console.error('SMTP credentials not configured');
-            } else {
-                const transporter = nodemailer.createTransport({
-                    host: smtpHost.value(),
-                    port: parseInt(smtpPort.value()),
-                    secure: false,
-                    requireTLS: true, // Force STARTTLS upgrade
-                    auth: {
-                        user: user,
-                        pass: pass
-                    },
-                    tls: {
-                        rejectUnauthorized: false // Allow self-signed certs
-                    }
+                return res.status(500).json({
+                    error: 'Email configuration error. Please try again later.'
                 });
-
-                // Send confirmation email to prospect
-                try {
-                    const prospectHtml = generateProspectEmail(name.trim(), websiteUrl.href);
-                    await sendEmail(
-                        transporter,
-                        `${name.trim()} <${email.trim().toLowerCase()}>`,
-                        'Your AI Intake Demo Is Being Built',
-                        prospectHtml
-                    );
-                    await docRef.update({ confirmationSent: true });
-                    console.log(`Confirmation email sent to ${email}`);
-                } catch (emailErr) {
-                    console.error('Error sending confirmation email:', emailErr.message);
-                }
-
-                // Send notification email to Stephen
-                try {
-                    const notifyHtml = generateNotifyEmail(
-                        name.trim(),
-                        email.trim().toLowerCase(),
-                        websiteUrl.href,
-                        leadId,
-                        practiceAreas
-                    );
-                    const primaryAreaLabel = practiceAreas?.primaryAreaName ? ` (${practiceAreas.primaryAreaName})` : '';
-                    await sendEmail(
-                        transporter,
-                        NOTIFY_EMAIL,
-                        `New PreIntake Lead: ${name.trim()} - ${websiteUrl.hostname}${primaryAreaLabel}`,
-                        notifyHtml
-                    );
-                    await docRef.update({ notificationSent: true });
-                    console.log(`Notification email sent to ${NOTIFY_EMAIL}`);
-                } catch (emailErr) {
-                    console.error('Error sending notification email:', emailErr.message);
-                }
             }
 
-            // Return success with lead ID
+            const transporter = nodemailer.createTransport({
+                host: smtpHost.value(),
+                port: parseInt(smtpPort.value()),
+                secure: false,
+                requireTLS: true, // Force STARTTLS upgrade
+                auth: {
+                    user: user,
+                    pass: pass
+                },
+                tls: {
+                    rejectUnauthorized: false // Allow self-signed certs
+                }
+            });
+
+            // Send verification email
+            try {
+                const verificationUrl = `https://preintake.ai/?verify=${verificationToken}`;
+                const verifyHtml = generateVerificationEmail(name.trim(), websiteUrl.href, verificationUrl);
+                await sendEmail(
+                    transporter,
+                    `${name.trim()} <${email.trim().toLowerCase()}>`,
+                    'Verify Your Email - PreIntake.ai Demo Request',
+                    verifyHtml
+                );
+                await docRef.update({ verificationEmailSent: true });
+                console.log(`Verification email sent to ${email}`);
+            } catch (emailErr) {
+                console.error('Error sending verification email:', emailErr.message);
+                return res.status(500).json({
+                    error: 'Failed to send verification email. Please try again.'
+                });
+            }
+
+            // Return success - tell frontend to show "check your email" screen
             return res.status(200).json({
                 success: true,
-                message: 'Demo request received',
-                leadId: leadId
+                message: 'Verification email sent',
+                leadId: leadId,
+                requiresVerification: true,
+                email: email.trim().toLowerCase()
             });
 
         } catch (error) {
@@ -762,11 +822,21 @@ const getPreIntakeFirmStatus = onRequest(
                     }
                 }
 
-                primaryArea = data.analysis.primaryPracticeArea || practiceAreas[0];
+                // Ensure primaryArea is an exact match from practiceAreas array
+                // (AI's primaryPracticeArea might have slightly different formatting)
+                const rawPrimary = data.analysis.primaryPracticeArea;
+                if (rawPrimary) {
+                    // Find case-insensitive match in practiceAreas
+                    primaryArea = practiceAreas.find(pa =>
+                        pa.toLowerCase().trim() === rawPrimary.toLowerCase().trim()
+                    ) || practiceAreas[0];
+                } else {
+                    primaryArea = practiceAreas[0];
+                }
             } else if (deepResearchAreas.length > 0) {
                 // No initial analysis, use Deep Research
                 practiceAreas = deepResearchAreas;
-                primaryArea = deepResearchAreas[0];
+                primaryArea = practiceAreas[0]; // Always use first item from the array
             }
 
             // Return comprehensive status for both demo request flow and intake page
@@ -888,8 +958,166 @@ const confirmPracticeAreas = onRequest(
     }
 );
 
+/**
+ * Verify Demo Email
+ * Called when user clicks verification link in email
+ * Validates token, marks lead as verified, and triggers analysis
+ */
+const verifyDemoEmail = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+        secrets: [smtpUser, smtpPass]
+    },
+    async (req, res) => {
+        // Allow GET (from email link click) or POST
+        const token = req.query.token || req.body?.token;
+
+        if (!token) {
+            return res.status(400).json({
+                error: 'Missing verification token',
+                valid: false
+            });
+        }
+
+        try {
+            // Find lead with this verification token
+            const snapshot = await db.collection('preintake_leads')
+                .where('verificationToken', '==', token)
+                .limit(1)
+                .get();
+
+            if (snapshot.empty) {
+                console.log(`Verification failed: Token not found - ${token.substring(0, 10)}...`);
+                return res.status(404).json({
+                    error: 'Invalid or expired verification link',
+                    valid: false
+                });
+            }
+
+            const doc = snapshot.docs[0];
+            const leadId = doc.id;
+            const data = doc.data();
+
+            // Check if already verified
+            if (data.emailVerified === true) {
+                console.log(`Verification: Already verified - ${leadId}, status: ${data.status}`);
+
+                // If demo is already ready, return the URL for immediate redirect
+                if (data.status === 'demo_ready' && data.demoUrl) {
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Demo already created',
+                        leadId: leadId,
+                        valid: true,
+                        alreadyVerified: true,
+                        demoReady: true,
+                        demoUrl: data.demoUrl
+                    });
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'Email already verified',
+                    leadId: leadId,
+                    valid: true,
+                    alreadyVerified: true
+                });
+            }
+
+            // Check if token is expired
+            const expiryDate = data.verificationExpiry?.toDate ? data.verificationExpiry.toDate() : new Date(data.verificationExpiry);
+            if (expiryDate < new Date()) {
+                console.log(`Verification failed: Token expired - ${leadId}`);
+                return res.status(410).json({
+                    error: 'Verification link has expired. Please submit a new demo request.',
+                    valid: false,
+                    expired: true
+                });
+            }
+
+            // Mark as verified and update status to trigger analysis
+            await doc.ref.update({
+                emailVerified: true,
+                verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+                status: 'pending', // Move from pending_verification to pending (triggers analysis)
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(`Email verified for lead: ${leadId} - ${data.email}`);
+
+            // Now send the confirmation email and notification (moved from submitDemoRequest)
+            const user = smtpUser.value();
+            const pass = smtpPass.value();
+
+            if (user && pass) {
+                const transporter = nodemailer.createTransport({
+                    host: smtpHost.value(),
+                    port: parseInt(smtpPort.value()),
+                    secure: false,
+                    requireTLS: true,
+                    auth: { user, pass },
+                    tls: { rejectUnauthorized: false }
+                });
+
+                // Send confirmation email to prospect
+                try {
+                    const prospectHtml = generateProspectEmail(data.name, data.website);
+                    await sendEmail(
+                        transporter,
+                        `${data.name} <${data.email}>`,
+                        'Your AI Intake Demo Is Being Built',
+                        prospectHtml
+                    );
+                    await doc.ref.update({ confirmationSent: true });
+                    console.log(`Confirmation email sent to ${data.email}`);
+                } catch (emailErr) {
+                    console.error('Error sending confirmation email:', emailErr.message);
+                }
+
+                // Send notification email to Stephen
+                try {
+                    const notifyHtml = generateNotifyEmail(
+                        data.name,
+                        data.email,
+                        data.website,
+                        leadId,
+                        data.practiceAreas
+                    );
+                    const primaryAreaLabel = data.practiceAreas?.primaryAreaName ? ` (${data.practiceAreas.primaryAreaName})` : '';
+                    await sendEmail(
+                        transporter,
+                        NOTIFY_EMAIL,
+                        `New PreIntake Lead: ${data.name} - ${new URL(data.website).hostname}${primaryAreaLabel}`,
+                        notifyHtml
+                    );
+                    await doc.ref.update({ notificationSent: true });
+                    console.log(`Notification email sent to ${NOTIFY_EMAIL}`);
+                } catch (emailErr) {
+                    console.error('Error sending notification email:', emailErr.message);
+                }
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Email verified successfully',
+                leadId: leadId,
+                valid: true
+            });
+
+        } catch (error) {
+            console.error('Error verifying email:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                valid: false
+            });
+        }
+    }
+);
+
 module.exports = {
     submitDemoRequest,
+    verifyDemoEmail,
     getPreIntakeFirmStatus,
     confirmPracticeAreas
 };

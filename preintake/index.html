@@ -740,6 +740,50 @@
             color: white;
         }
 
+        /* Verification Pending State */
+        .verification-pending {
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        /* Building Demo State */
+        .building-demo {
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        .building-demo h3 {
+            font-size: 1.35rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .building-demo p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 350px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .building-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            color: var(--text-muted);
+        }
+
+        .spinner-small {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(201, 169, 98, 0.3);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
         /* Practice Area Confirmation Modal */
         .modal-overlay {
             position: fixed;
@@ -2246,7 +2290,7 @@
     </section>
 
     <!-- Free Demo Callout -->
-    <section class="section demo-callout" id="demo">
+    <section class="section demo-callout">
         <div class="container">
             <div class="demo-callout-content">
                 <div class="demo-callout-icon">
@@ -2351,19 +2395,48 @@
                 </div>
             </div>
 
-            <!-- Success state (hidden by default) -->
+            <!-- Building demo state (hidden by default) -->
+            <div class="demo-form-container building-demo" id="building-demo" style="display: none;">
+                <div class="demo-success-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 40px; height: 40px;">
+                        <path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
+                        <path d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
+                        <path d="M4.462 19.462c.42-.419.753-.89 1-1.394.453.213.902.434 1.347.661a6.743 6.743 0 01-1.286 1.794.75.75 0 11-1.06-1.06z" />
+                    </svg>
+                </div>
+                <h3>Building Your Custom Demo</h3>
+                <p>We're generating your personalized AI intake experience.</p>
+                <div class="building-progress">
+                    <div class="spinner-small"></div>
+                    <span id="building-progress-text">Generating your demo...</span>
+                </div>
+            </div>
+
+            <!-- Verification pending state (hidden by default) -->
+            <div class="demo-form-container verification-pending" id="verification-pending" style="display: none;">
+                <div class="demo-success-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3>Check Your Email</h3>
+                <p>We've sent a verification link to <strong id="verification-email"></strong></p>
+                <p class="check-email">Click the link in the email to verify your address and start building your custom demo.</p>
+                <p style="font-size: 0.85rem; margin-top: 1.5rem; color: var(--text-muted);">The link will expire in 24 hours. If you don't see the email, check your spam folder.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Didn't receive the email? <a href="#" onclick="location.reload(); return false;" style="color: #c9a962;">Try again</a></p>
+            </div>
+
+            <!-- Fallback success state - shown only if auto-redirect fails -->
             <div class="demo-form-container demo-success" id="demo-success" style="display: none;">
                 <div class="demo-success-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <h3>Your Intake Demo Is Being Built</h3>
-                <p>We're analyzing your firm's website, practice mix, and intake signals to assemble a working AI intake tailored to how your firm evaluates new matters.</p>
-                <p class="check-email">You'll receive an email in a few minutes with a private link to review your demo.</p>
-                <p>The demo shows how leads are screened, routed, or declined before reaching your CRM—based on real disqualifiers, not generic form logic.</p>
-                <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--text-muted);">No installation. No CRM changes. This demo runs independently.</p>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Most demos are ready in under 5 minutes, depending on site complexity.</p>
+                <h3>Demo Generation in Progress</h3>
+                <p>Your custom AI intake demo is being built. This may take a few minutes for complex sites.</p>
+                <p class="check-email">You'll receive an email with your private demo link shortly.</p>
+                <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--text-muted);">No need to wait here—we'll send the link to your email when it's ready.</p>
             </div>
         </div>
     </section>
@@ -2400,11 +2473,28 @@
         </div>
     </div>
 
+    <!-- Validation Error Modal -->
+    <div class="modal-overlay" id="validation-error-modal">
+        <div class="modal-content" style="max-width: 420px;">
+            <div class="modal-header">
+                <div style="font-size: 48px; margin-bottom: 1rem;">⚠️</div>
+                <h3 style="color: #dc2626;">Website Validation Failed</h3>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 1rem 1.5rem 1.5rem;">
+                <p id="validation-error-message" style="color: #475569; font-size: 1rem; line-height: 1.6;"></p>
+            </div>
+            <div class="modal-actions" style="justify-content: center;">
+                <button type="button" class="modal-btn modal-btn-primary" onclick="closeValidationModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Firebase Function endpoints
         const SUBMIT_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/submitDemoRequest';
         const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
         const CONFIRM_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/confirmPracticeAreas';
+        const VERIFY_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/verifyDemoEmail';
 
         // Rate limiting configuration
         const RATE_LIMIT_KEY = 'preintake_submissions';
@@ -2680,6 +2770,42 @@
             throw new Error('Analysis timed out. Please try again.');
         }
 
+        // Poll for demo completion after practice area confirmation
+        async function pollForDemoCompletion(leadId, maxAttempts = 90, updateCallback = null) {
+            const pollInterval = 2000; // 2 seconds
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(`${STATUS_ENDPOINT}?leadId=${leadId}`);
+                    const data = await response.json();
+
+                    // Demo is ready when status is 'demo_ready' and demoUrl is available
+                    if (data.status === 'demo_ready' && data.demoUrl) {
+                        return data;
+                    } else if (data.status === 'generation_failed' || data.status === 'analysis_failed') {
+                        throw new Error(data.error || 'Demo generation failed. Please try again.');
+                    }
+
+                    // Update progress callback if provided
+                    if (updateCallback) {
+                        updateCallback(data.status, attempts);
+                    }
+
+                } catch (error) {
+                    console.error('Demo poll error:', error);
+                    if (error.message.includes('failed')) {
+                        throw error;
+                    }
+                }
+
+                attempts++;
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('Demo generation timed out. You will receive an email when your demo is ready.');
+        }
+
         // =====================================
         // Main Form Handler
         // =====================================
@@ -2688,6 +2814,8 @@
             const form = document.getElementById('demo-form');
             const formContainer = document.getElementById('demo-form-container');
             const analyzingContainer = document.getElementById('analyzing-state');
+            const verificationContainer = document.getElementById('verification-pending');
+            const buildingContainer = document.getElementById('building-demo');
             const successContainer = document.getElementById('demo-success');
             const submitBtn = document.getElementById('submit-btn');
             const errorDiv = document.getElementById('form-error');
@@ -2758,15 +2886,50 @@
                     // Record successful submission
                     recordSubmission();
 
-                    // Hide modal and show success
+                    // Hide modal and show building demo state
                     hideModal();
                     analyzingContainer.style.display = 'none';
-                    successContainer.style.display = 'block';
+                    formContainer.style.display = 'none';
+                    buildingContainer.style.display = 'block';
+
+                    // Scroll to the building container (which is now visible)
+                    buildingContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Get the progress text element for updates
+                    const progressText = document.getElementById('building-progress-text');
+
+                    // Poll for demo completion (no rotating messages - generation is fast ~2 seconds)
+                    const demoResult = await pollForDemoCompletion(currentLeadId, 90);
+
+                    // Demo is ready - redirect to demo URL
+                    if (demoResult.demoUrl) {
+                        // Update UI to show success before redirect
+                        if (progressText) {
+                            progressText.textContent = 'Demo ready! Redirecting...';
+                        }
+
+                        // Brief delay so user sees the success message
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        // Redirect to demo
+                        window.location.href = demoResult.demoUrl;
+                    } else {
+                        // Edge case: demo ready but no URL - show success screen
+                        buildingContainer.style.display = 'none';
+                        successContainer.style.display = 'block';
+                    }
 
                 } catch (error) {
-                    alert(error.message || 'Something went wrong. Please try again.');
-                    modalConfirmBtn.disabled = false;
-                    modalConfirmBtn.textContent = 'Confirm & Build Demo';
+                    // On error or timeout, show success screen as fallback
+                    // User will still receive email with demo link
+                    console.error('Demo polling error:', error);
+                    buildingContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+
+                    // If it's a real error (not timeout), show alert
+                    if (!error.message.includes('timed out')) {
+                        alert(error.message || 'Something went wrong. Please check your email for the demo link.');
+                    }
                 }
             });
 
@@ -2821,12 +2984,9 @@
                     return;
                 }
 
-                // Show loading state and analyzing screen
+                // Show loading state on button only (don't switch containers yet)
                 submitBtn.disabled = true;
                 submitBtn.classList.add('loading');
-                formContainer.style.display = 'none';
-                analyzingContainer.style.display = 'block';
-                updateAnalysisStep(0);
 
                 try {
                     // Submit form data (no practice areas - AI will detect them)
@@ -2839,6 +2999,13 @@
                     const data = await response.json();
 
                     if (!response.ok) {
+                        // Check if this is a law firm validation error (400 status)
+                        if (response.status === 400 && data.error && data.error.includes('law firm')) {
+                            showValidationErrorModal(website, data.error);
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('loading');
+                            return;
+                        }
                         if (data.field === 'email') {
                             emailInput.focus();
                             emailInput.select();
@@ -2848,7 +3015,23 @@
 
                     currentLeadId = data.leadId;
 
-                    // Poll for analysis results
+                    // Check if verification is required (new flow)
+                    if (data.requiresVerification) {
+                        // Show verification pending screen directly (no analyzing spinner flash)
+                        formContainer.style.display = 'none';
+                        document.getElementById('verification-email').textContent = data.email;
+                        verificationContainer.style.display = 'block';
+                        recordSubmission(); // Record for rate limiting
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+                        return;
+                    }
+
+                    // Legacy flow: Show analyzing and poll for results (if email already verified)
+                    formContainer.style.display = 'none';
+                    analyzingContainer.style.display = 'block';
+                    updateAnalysisStep(0);
+
                     const analysisResult = await pollForAnalysis(currentLeadId);
 
                     // Populate practice areas from analysis
@@ -2873,7 +3056,97 @@
                 errorDiv.textContent = message;
                 errorDiv.classList.add('show');
             }
+
+            // =====================================
+            // Verification Token Detection
+            // =====================================
+            // Check if user arrived via email verification link
+            async function checkVerificationToken() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const verifyToken = urlParams.get('verify');
+
+                if (!verifyToken) return;
+
+                // Clean URL without refreshing page
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Show analyzing state while we verify
+                formContainer.style.display = 'none';
+                analyzingContainer.style.display = 'block';
+                updateAnalysisStep(0);
+
+                // Scroll to the analyzing container (which is now visible)
+                // Note: Can't scroll to demo-form-container since it's hidden
+                analyzingContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Track when we started showing the analyzing state
+                const startTime = Date.now();
+                const MIN_DISPLAY_TIME = 3000; // Show analyzing for at least 3 seconds
+
+                try {
+                    // Call verification endpoint
+                    const response = await fetch(`${VERIFY_ENDPOINT}?token=${verifyToken}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        if (response.status === 410 && data.expired) {
+                            throw new Error('Your verification link has expired. Please submit a new demo request.');
+                        } else if (response.status === 404) {
+                            throw new Error('Invalid verification link. Please submit a new demo request.');
+                        }
+                        throw new Error(data.error || 'Verification failed. Please try again.');
+                    }
+
+                    // If demo is already ready, redirect immediately
+                    if (data.demoReady && data.demoUrl) {
+                        window.location.href = data.demoUrl;
+                        return;
+                    }
+
+                    // Email verified successfully!
+                    currentLeadId = data.leadId;
+
+                    // Poll for analysis results
+                    const analysisResult = await pollForAnalysis(currentLeadId);
+
+                    // Ensure minimum display time before showing modal
+                    const elapsed = Date.now() - startTime;
+                    if (elapsed < MIN_DISPLAY_TIME) {
+                        await new Promise(resolve => setTimeout(resolve, MIN_DISPLAY_TIME - elapsed));
+                    }
+
+                    // Populate practice areas from analysis
+                    practiceAreas = analysisResult.practiceAreas || [];
+                    primaryArea = analysisResult.primaryArea || practiceAreas[0] || null;
+
+                    // Render tags and show modal
+                    renderPracticeTags();
+                    updateConfirmButton();
+                    showModal();
+
+                } catch (error) {
+                    showError(error.message || 'Verification failed. Please try again.');
+                    analyzingContainer.style.display = 'none';
+                    formContainer.style.display = 'block';
+                }
+            }
+
+            // Run verification check on page load
+            checkVerificationToken();
         });
+
+        // Validation error modal functions
+        function showValidationErrorModal(url, errorMessage) {
+            const modal = document.getElementById('validation-error-modal');
+            const messageEl = document.getElementById('validation-error-message');
+            messageEl.innerHTML = `Our AI analysis of <strong>${url}</strong> has determined it is not a law firm or attorney website.<br><br>PreIntake.ai is designed exclusively for legal professionals. Please enter a valid law firm website URL.`;
+            modal.classList.add('show');
+        }
+
+        function closeValidationModal() {
+            const modal = document.getElementById('validation-error-modal');
+            modal.classList.remove('show');
+        }
     </script>
 
     <!-- Transcript Toggle -->

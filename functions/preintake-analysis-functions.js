@@ -3,7 +3,7 @@
  * Automatically analyzes law firm websites when demo requests are submitted
  */
 
-const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { defineSecret } = require('firebase-functions/params');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const Anthropic = require('@anthropic-ai/sdk');
@@ -45,98 +45,139 @@ const analyzePreIntakeLead = onDocumentCreated(
 
         const leadId = event.params.leadId;
         const leadData = snap.data();
-        const { name, email, website } = leadData;
 
-        console.log(`Starting analysis for lead ${leadId}: ${website}`);
+        // Skip analysis if email verification is pending (will be triggered after verification)
+        if (leadData.status === 'pending_verification' || leadData.emailVerified !== true) {
+            console.log(`Lead ${leadId} is pending email verification - skipping analysis for now`);
+            return;
+        }
 
-        // Use the dedicated 'preintake' database
-        const db = getFirestore('preintake');
-        const leadRef = db.collection('preintake_leads').doc(leadId);
+        // Proceed with analysis
+        await performAnalysis(leadId, leadData);
+    }
+);
 
-        // Update status to analyzing
+/**
+ * Firestore trigger: Start analysis when email verification is completed
+ * This trigger fires when emailVerified changes from false/undefined to true
+ */
+const analyzeAfterEmailVerification = onDocumentUpdated(
+    {
+        document: 'preintake_leads/{leadId}',
+        database: 'preintake',
+        region: 'us-west1',
+        secrets: [anthropicApiKey, smtpUser, smtpPass],
+        timeoutSeconds: 300,
+        memory: '512MiB',
+    },
+    async (event) => {
+        const beforeData = event.data.before.data();
+        const afterData = event.data.after.data();
+        const leadId = event.params.leadId;
+
+        // Only trigger analysis when emailVerified changes to true
+        if (beforeData.emailVerified !== true && afterData.emailVerified === true) {
+            console.log(`Email verified for lead ${leadId} - starting analysis`);
+            await performAnalysis(leadId, afterData);
+        }
+    }
+);
+
+/**
+ * Core analysis function - shared by both create and update triggers
+ */
+async function performAnalysis(leadId, leadData) {
+    const { name, email, website } = leadData;
+
+    console.log(`Starting analysis for lead ${leadId}: ${website}`);
+
+    // Use the dedicated 'preintake' database
+    const db = getFirestore('preintake');
+    const leadRef = db.collection('preintake_leads').doc(leadId);
+
+    // Update status to analyzing
+    await leadRef.update({
+        status: 'analyzing',
+        'analysis.status': 'processing',
+        'analysis.startedAt': FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+    });
+
+    try {
+        // Fetch and analyze website (initial analysis)
+        const analysisResult = await analyzeWebsite(website);
+
+        // Update Firestore with initial analysis results
         await leadRef.update({
-            status: 'analyzing',
-            'analysis.status': 'processing',
-            'analysis.startedAt': FieldValue.serverTimestamp(),
+            status: 'researching',
+            analysis: {
+                status: 'completed',
+                startedAt: leadData.analysis?.startedAt || FieldValue.serverTimestamp(),
+                completedAt: FieldValue.serverTimestamp(),
+                ...analysisResult,
+            },
             updatedAt: FieldValue.serverTimestamp(),
         });
 
-        try {
-            // Fetch and analyze website (initial analysis)
-            const analysisResult = await analyzeWebsite(website);
+        console.log(`Initial analysis completed for lead ${leadId}, starting deep research...`);
 
-            // Update Firestore with initial analysis results
+        // Perform deep research (multi-page scraping)
+        try {
+            const deepResearchResult = await performDeepResearch(website, analysisResult);
+
+            // Update Firestore with deep research results
+            // Status is 'awaiting_confirmation' - user must confirm practice areas before demo generation
             await leadRef.update({
-                status: 'researching',
-                analysis: {
-                    status: 'completed',
-                    startedAt: leadData.analysis?.startedAt || FieldValue.serverTimestamp(),
+                status: 'awaiting_confirmation',
+                deepResearch: {
+                    status: deepResearchResult.status || 'completed',
                     completedAt: FieldValue.serverTimestamp(),
-                    ...analysisResult,
+                    pagesAnalyzed: deepResearchResult.pagesAnalyzed || 0,
+                    attorneys: deepResearchResult.attorneys || [],
+                    caseResults: deepResearchResult.caseResults || [],
+                    testimonials: deepResearchResult.testimonials || [],
+                    practiceAreaDetails: deepResearchResult.practiceAreaDetails || {},
+                    firmDescription: deepResearchResult.firmDescription || null,
+                    yearsInBusiness: deepResearchResult.yearsInBusiness || null,
+                    officeLocations: deepResearchResult.officeLocations || [],
+                    discoveredUrls: deepResearchResult.discoveredUrls || {},
                 },
                 updatedAt: FieldValue.serverTimestamp(),
             });
 
-            console.log(`Initial analysis completed for lead ${leadId}, starting deep research...`);
+            console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Awaiting practice area confirmation.`);
 
-            // Perform deep research (multi-page scraping)
-            try {
-                const deepResearchResult = await performDeepResearch(website, analysisResult);
+        } catch (deepResearchError) {
+            console.error(`Deep research failed for lead ${leadId}:`, deepResearchError.message);
 
-                // Update Firestore with deep research results
-                // Status is 'awaiting_confirmation' - user must confirm practice areas before demo generation
-                await leadRef.update({
-                    status: 'awaiting_confirmation',
-                    deepResearch: {
-                        status: deepResearchResult.status || 'completed',
-                        completedAt: FieldValue.serverTimestamp(),
-                        pagesAnalyzed: deepResearchResult.pagesAnalyzed || 0,
-                        attorneys: deepResearchResult.attorneys || [],
-                        caseResults: deepResearchResult.caseResults || [],
-                        testimonials: deepResearchResult.testimonials || [],
-                        practiceAreaDetails: deepResearchResult.practiceAreaDetails || {},
-                        firmDescription: deepResearchResult.firmDescription || null,
-                        yearsInBusiness: deepResearchResult.yearsInBusiness || null,
-                        officeLocations: deepResearchResult.officeLocations || [],
-                        discoveredUrls: deepResearchResult.discoveredUrls || {},
-                    },
-                    updatedAt: FieldValue.serverTimestamp(),
-                });
-
-                console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Awaiting practice area confirmation.`);
-
-            } catch (deepResearchError) {
-                console.error(`Deep research failed for lead ${leadId}:`, deepResearchError.message);
-
-                // Still await confirmation even if deep research fails (will use initial analysis)
-                await leadRef.update({
-                    status: 'awaiting_confirmation',
-                    deepResearch: {
-                        status: 'failed',
-                        error: deepResearchError.message,
-                        completedAt: FieldValue.serverTimestamp(),
-                    },
-                    updatedAt: FieldValue.serverTimestamp(),
-                });
-            }
-
-            // Send analysis notification email (includes deep research data if available)
-            await sendAnalysisEmail(leadId, name, email, website, analysisResult);
-
-        } catch (error) {
-            console.error(`Analysis failed for lead ${leadId}:`, error.message);
-
-            // Update status to failed
+            // Still await confirmation even if deep research fails (will use initial analysis)
             await leadRef.update({
-                status: 'analysis_failed',
-                'analysis.status': 'failed',
-                'analysis.error': error.message,
-                'analysis.completedAt': FieldValue.serverTimestamp(),
+                status: 'awaiting_confirmation',
+                deepResearch: {
+                    status: 'failed',
+                    error: deepResearchError.message,
+                    completedAt: FieldValue.serverTimestamp(),
+                },
                 updatedAt: FieldValue.serverTimestamp(),
             });
         }
+
+        // Send analysis notification email (includes deep research data if available)
+        await sendAnalysisEmail(leadId, name, email, website, analysisResult);
+
+    } catch (error) {
+        console.error(`Analysis failed for lead ${leadId}:`, error.message);
+
+        // Update status to failed
+        await leadRef.update({
+            status: 'analysis_failed',
+            'analysis.status': 'failed',
+            'analysis.error': error.message,
+            'analysis.completedAt': FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+        });
     }
-);
+}
 
 /**
  * Fetch and analyze a website
@@ -423,9 +464,9 @@ INSTRUCTIONS:
 3. Use standard practice area names (e.g., "Personal Injury" not "Car Accidents", "Employment Law" not just "Discrimination")
 4. Do NOT include "Social Security" unless it's clearly a disability/SSI practice
 
-Respond with ONLY valid JSON (no markdown, no explanation):
+Respond with ONLY valid JSON (no markdown, no explanation). Replace ALL placeholder values with actual extracted data:
 {
-    "firmName": "The firm's official name",
+    "firmName": "EXTRACT the law firm's actual name from the page",
     "practiceAreas": ["Practice Area 1", "Practice Area 2", "Practice Area 3"],
     "primaryPracticeArea": "Their main/primary practice area",
     "location": {
@@ -456,8 +497,27 @@ Respond with ONLY valid JSON (no markdown, no explanation):
         // Parse JSON response
         const analysis = JSON.parse(responseText);
 
+        // Validate firm name - check if AI returned a placeholder
+        let firmName = analysis.firmName;
+        const placeholders = ['the firm', 'law firm', 'official name', 'extract', 'actual name'];
+        const isPlaceholder = !firmName || placeholders.some(p => firmName.toLowerCase().includes(p));
+
+        if (isPlaceholder) {
+            // Try to extract from headings (look for "Law", "LLC", "LLP", "Firm", attorney names)
+            const firmPatterns = [/LLC/i, /LLP/i, /Law\s*(Firm|Office|Group|Center)/i, /\bPC\b/i, /\bPLLC\b/i];
+            const headingMatch = extractedData.headings.find(h =>
+                firmPatterns.some(p => p.test(h)) || h.includes('&') && h.split(' ').length <= 5
+            );
+            if (headingMatch) {
+                firmName = headingMatch;
+            } else {
+                // Fall back to title extraction
+                firmName = extractedData.extractedTitle?.split('|')[0]?.split('-')[0]?.trim() || null;
+            }
+        }
+
         return {
-            firmName: analysis.firmName || null,
+            firmName: firmName || null,
             practiceAreas: analysis.practiceAreas || extractedData.detectedKeywords,
             primaryPracticeArea: analysis.primaryPracticeArea || extractedData.detectedKeywords[0] || 'General Practice',
             location: analysis.location || { city: null, state: null, serviceArea: null },
@@ -590,4 +650,5 @@ async function sendAnalysisEmail(leadId, name, email, website, analysis) {
 
 module.exports = {
     analyzePreIntakeLead,
+    analyzeAfterEmailVerification,
 };

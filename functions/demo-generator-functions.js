@@ -166,18 +166,20 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const loadingStagesJson = generateLoadingStagesJson(practiceArea);
     const declineResourcesHtml = generateDeclineResources(state);
 
-    // Generate logo HTML - show firm name if no valid logo
-    const logoHtml = logoUrl
-        ? `<img src="${logoUrl}" alt="${firmName}" class="logo-image" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="logo-text" style="display:none">${firmName}</div>`
-        : `<div class="logo-text">${firmName}</div>`;
+    // Generate logo HTML - always use text (logo images often have poor quality/transparency)
+    const logoHtml = `<div class="logo-text">${firmName}</div>`;
 
     // Generate avatar icon
     const avatarIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>';
+
+    // Escape firm name for JavaScript string context (single quotes)
+    const firmNameJS = firmName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
     // Replace all tokens
     const replacements = {
         '{{PAGE_TITLE}}': `Free Case Evaluation - ${firmName}`,
         '{{FIRM_NAME}}': firmName,
+        '{{FIRM_NAME_JS}}': firmNameJS,
         '{{PRIMARY_DARK}}': primaryDark,
         '{{PRIMARY_BLUE}}': primaryBlue,
         '{{ACCENT_COLOR}}': accentColor,
@@ -2814,7 +2816,7 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
 
     <p style="margin-top: 30px;">
         Best,<br>
-        <strong>Stephen Scott</strong><br>
+        <strong>Support Team</strong><br>
         PreIntake.ai
     </p>
 

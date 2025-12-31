@@ -162,6 +162,7 @@
             padding-top: 3rem;
             border-top: 1px solid var(--border-subtle);
             flex-wrap: nowrap;
+            width: 100%;
         }
 
         @media (max-width: 600px) {
@@ -174,6 +175,9 @@
 
         .feature {
             text-align: center;
+            flex: 0 1 auto;
+            min-width: 120px;
+            max-width: 150px;
         }
 
         .feature-icon {
@@ -1115,6 +1119,7 @@
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 1px solid var(--border-subtle);
+            text-align: center;
         }
 
         .sidebar-cta-title {
@@ -1565,7 +1570,7 @@
     <script>
         // Configuration
         const CONFIG = {
-            firmName: '{{FIRM_NAME}}',
+            firmName: '{{FIRM_NAME_JS}}',
             proxyUrl: '{{PROXY_URL}}',
             model: '{{MODEL}}',
             webhookUrl: {{WEBHOOK_URL}},

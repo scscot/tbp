@@ -24,7 +24,7 @@ const db = getFirestore('preintake');
 const smtpUser = defineSecret("PREINTAKE_SMTP_USER");
 const smtpPass = defineSecret("PREINTAKE_SMTP_PASS");
 
-const FROM_ADDRESS = 'PreIntake.ai <intake@preintake.ai>';
+const FROM_ADDRESS = 'PreIntake.ai <support@preintake.ai>';
 const NOTIFY_EMAIL = 'stephen@preintake.ai';
 
 /**
@@ -137,6 +137,11 @@ const handleIntakeCompletion = onRequest(
 
             // Also notify Stephen of completed intake
             await notifyIntakeComplete(transporter, payload, leadData, deliveryResult);
+
+            // Send conversion email if first intake and delivery was successful
+            if (deliveryResult.success) {
+                await sendConversionEmail(transporter, leadId, leadData);
+            }
 
             return res.status(200).json({
                 success: true,
@@ -308,6 +313,118 @@ async function notifyIntakeComplete(transporter, payload, leadData, deliveryResu
     } catch (error) {
         console.error('Failed to send notification:', error);
     }
+}
+
+/**
+ * Send conversion email after first demo intake
+ * Encourages demo user to activate their account
+ */
+async function sendConversionEmail(transporter, leadId, leadData) {
+    // Skip if already sent or if firm is already active (paid)
+    if (leadData.conversionEmailSent || leadData.status === 'active') {
+        return;
+    }
+
+    const firmName = leadData.analysis?.firmName || 'Your Firm';
+    const toEmail = leadData.email;
+    const firstName = leadData.name?.split(' ')[0] || '';
+    const accountUrl = `https://preintake.ai/create-account.html?firm=${leadId}`;
+
+    try {
+        await transporter.sendMail({
+            from: 'PreIntake.ai <support@preintake.ai>',
+            to: toEmail,
+            subject: `Your PreIntake.ai Demo Just Captured a Lead`,
+            html: generateConversionEmailHtml(firmName, firstName, accountUrl)
+        });
+
+        // Mark as sent
+        await db.collection('preintake_leads').doc(leadId).update({
+            conversionEmailSent: true,
+            conversionEmailSentAt: FieldValue.serverTimestamp()
+        });
+
+        console.log(`Conversion email sent to ${toEmail} for lead ${leadId}`);
+    } catch (error) {
+        console.error('Failed to send conversion email:', error);
+    }
+}
+
+/**
+ * Generate HTML for conversion email
+ */
+function generateConversionEmailHtml(firmName, firstName, accountUrl) {
+    const greeting = firstName ? `Hi ${firstName},` : 'Hi there,';
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+    <div style="background: white; border-radius: 12px; padding: 35px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-family: Georgia, serif; color: #0c1f3f; font-size: 24px; margin: 0;">
+                Pre<span style="color: #c9a962;">Intake</span>.ai
+            </h1>
+        </div>
+
+        <!-- Body -->
+        <p style="margin: 0 0 20px 0;">${greeting}</p>
+
+        <p style="margin: 0 0 20px 0;">
+            Great news — your PreIntake.ai demo just captured its first lead for <strong>${firmName}</strong>.
+        </p>
+
+        <p style="margin: 0 0 20px 0;">
+            You should have received an email with the full intake details, including the AI screening summary and qualification status.
+        </p>
+
+        <p style="margin: 0 0 25px 0;">
+            <strong>Ready to go live?</strong> Activate your account to add AI-powered intake to your website. The same intelligent screening you just experienced will work 24/7 on your site, qualifying leads while you focus on your cases.
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${accountUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #e5d4a1 50%, #c9a962 100%); color: #0c1f3f; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(201, 169, 98, 0.4);">
+                Activate Your Account
+            </a>
+        </div>
+
+        <!-- What's Included -->
+        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <p style="margin: 0 0 12px 0; font-weight: 600; color: #0c1f3f;">What's included:</p>
+            <ul style="margin: 0; padding-left: 20px; color: #475569;">
+                <li style="margin-bottom: 8px;">AI intake customized to your practice areas</li>
+                <li style="margin-bottom: 8px;">Embeddable widget for your website</li>
+                <li style="margin-bottom: 8px;">24/7 lead qualification and screening</li>
+                <li style="margin-bottom: 8px;">Email or webhook delivery to your CRM</li>
+                <li>Cancel anytime — no long-term contracts</li>
+            </ul>
+        </div>
+
+        <p style="margin: 25px 0 0 0; color: #64748b; font-size: 14px;">
+            Questions? Just reply to this email and I'll be happy to help.
+        </p>
+
+        <p style="margin: 20px 0 0 0;">
+            Best,<br>
+            <strong>Support Team</strong><br>
+            <span style="color: #64748b;">PreIntake.ai</span>
+        </p>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding-top: 25px; margin-top: 25px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 12px;">
+            <a href="https://preintake.ai" style="color: #64748b; text-decoration: none;">PreIntake.ai</a> — AI-Powered Legal Intake
+        </div>
+
+    </div>
+</body>
+</html>`;
 }
 
 /**
