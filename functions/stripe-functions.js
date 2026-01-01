@@ -32,8 +32,8 @@ const NOTIFY_EMAIL = 'stephen@preintake.ai';
 
 // Stripe configuration
 // LIVE MODE price IDs
-const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjOXiJBdoLMDposfZXL8nZX'; // $399 one-time implementation fee
-const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjORKJBdoLMDpos9wBBZbzd'; // $129/month subscription
+const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SksYAJBdoLMDposleabMPli'; // $149 one-time setup fee
+const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SksalJBdoLMDposiiL704de'; // $79/month subscription
 // TEST MODE price IDs (for testing with 4242 4242 4242 4242)
 // const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjQ1aJaJO3EHqOSH5tYPJOB';
 // const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjNpAJaJO3EHqOSHh4DbhNM';
@@ -380,7 +380,7 @@ function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
         </tr>
         <tr>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; color: #64748b;">Amount</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #48bb78;">$528 ($399 + $129/mo)</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #48bb78;">$228 ($149 + $79/mo)</td>
         </tr>
     </table>
 

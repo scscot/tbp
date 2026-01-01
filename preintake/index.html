@@ -12,7 +12,7 @@
       gtag('config', 'G-V5DR80KWBP');
     </script>
     <title>AI Legal Intake Software for Law Firms | Automated Client Screening | PreIntake.ai</title>
-    <meta name="description" content="PreIntake.ai automates legal client intake with AI-powered screening. Qualify leads 24/7, reduce unqualified consultations by 60%, and integrate with your CRM. Practice-specific intake for PI, Family Law, Immigration & more. Free demo.">
+    <meta name="description" content="PreIntake.ai screens every lead before it reaches you. Practice-specific AI intake that screens and qualifies leads 24/7. Every lead is assessed as qualified, needs review, or not a fit. Free demo.">
     <meta name="keywords" content="legal intake software, AI legal intake, law firm client intake, automated legal screening, legal chatbot, virtual receptionist law firm, client intake automation, legal CRM integration, lead qualification software">
     <meta name="author" content="PreIntake.ai">
     <link rel="canonical" href="https://preintake.ai/">
@@ -23,7 +23,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://preintake.ai/">
     <meta property="og:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
-    <meta property="og:description" content="AI-powered legal intake that qualifies leads before they hit your email or CRM. Reduce unqualified consultations by 60%. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta property="og:description" content="Practice-specific AI intake that screens and qualifies leads 24/7. Every lead is assessed as qualified, needs review, or not a fit—before it reaches your inbox or phone.">
     <meta property="og:image" content="https://preintake.ai/images/og-image.png">
     <meta property="og:site_name" content="PreIntake.ai">
 
@@ -31,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://preintake.ai/">
     <meta name="twitter:title" content="AI Legal Intake Software | Automate Client Screening | PreIntake.ai">
-    <meta name="twitter:description" content="AI-powered legal intake that qualifies leads before they hit your email or CRM. Practice-specific screening for PI, Family Law, Immigration & more.">
+    <meta name="twitter:description" content="Practice-specific AI intake that screens and qualifies leads 24/7. Every lead is assessed as qualified, needs review, or not a fit—before it reaches your inbox or phone.">
     <meta name="twitter:image" content="https://preintake.ai/images/og-image.png">
 
     <!-- Schema.org Structured Data -->
@@ -46,7 +46,7 @@
         "url": "https://preintake.ai",
         "offers": {
             "@type": "Offer",
-            "price": "129.00",
+            "price": "79.00",
             "priceCurrency": "USD",
             "priceValidUntil": "2026-12-31",
             "availability": "https://schema.org/InStock"
@@ -191,6 +191,17 @@
             color: var(--text-muted);
         }
 
+        /* Desktop-only line breaks */
+        .desktop-only {
+            display: inline;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-only {
+                display: none;
+            }
+        }
+
         /* Stats Bar */
         .stats-bar {
             background: var(--primary-dark);
@@ -291,6 +302,75 @@
         .problem-card p {
             color: #64748b;
             font-size: 0.95rem;
+        }
+
+        /* CRM Integration Note */
+        .crm-note {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 1rem 0;
+            text-align: center;
+            border-top: 1px solid #bae6fd;
+            border-bottom: 1px solid #bae6fd;
+        }
+
+        .crm-note p {
+            color: #0369a1;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .crm-note a {
+            color: #0284c7;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .crm-note a:hover {
+            color: #0369a1;
+        }
+
+        /* Sticky CTA Button */
+        .sticky-cta {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, var(--accent) 0%, #f59e0b 100%);
+            color: var(--primary-dark);
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
+        }
+
+        .sticky-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .sticky-cta:hover {
+            box-shadow: 0 6px 28px rgba(245, 158, 11, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .sticky-cta.visible:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .sticky-cta {
+                bottom: 16px;
+                right: 16px;
+                padding: 12px 20px;
+                font-size: 0.875rem;
+            }
         }
 
         /* Comparison Table */
@@ -1718,12 +1798,12 @@
     <div id="preintake-header"></div>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-badge">AI-Powered Legal Intake</div>
-            <h1>Stop Wasting Time on <span>Unqualified Leads</span></h1>
+            <h1>Screen Every Lead<br class="desktop-only"> <span>Before It Reaches Your Firm</span></h1>
             <p class="hero-subtitle">
-                AI-powered intake with practice-specific precision. PreIntake.ai screens leads like your best paralegal—before they hit your email or CRM.
+                Practice-specific AI intake that screens and qualifies leads—24/7. Every lead is assessed as qualified, needs review, or not a fit—before it reaches your inbox or phone.
             </p>
             <a href="#demo" class="hero-cta">
                 Create Your Custom AI Intake Demo
@@ -1786,153 +1866,11 @@
                 <div class="problem-card">
                     <div class="problem-card-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                     </div>
-                    <h3>Replace, Not Integrate</h3>
-                    <p>Most intake tools try to replace your CRM. You end up with another system to manage.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Solution Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>PreIntake.ai Is Different</h2>
-                <p>We sit in front of your CRM—Lawmatics, Clio, Filevine—and make sure only real cases get there.</p>
-            </div>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Form Builders / CRMs</th>
-                        <th>PreIntake.ai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Intake Style</td>
-                        <td>Static forms, fixed fields</td>
-                        <td>Conversational AI that adapts</td>
-                    </tr>
-                    <tr>
-                        <td>Screening</td>
-                        <td>Generic lead scoring</td>
-                        <td>Practice-specific legal screening</td>
-                    </tr>
-                    <tr>
-                        <td>Disqualification</td>
-                        <td>Manual review required</td>
-                        <td>Instant (SOL, jurisdiction, conflicts)</td>
-                    </tr>
-                    <tr>
-                        <td>Output</td>
-                        <td>Raw form data</td>
-                        <td>Routing + plain-English rationale</td>
-                    </tr>
-                    <tr>
-                        <td>Integration</td>
-                        <td>Replaces your system</td>
-                        <td>Feeds INTO your existing CRM</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Routing Section -->
-    <section class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <h2>Intelligent Lead Routing</h2>
-                <p>Every lead gets screened and routed automatically. Your staff only sees qualified cases.</p>
-            </div>
-            <div class="routing-grid">
-                <div class="routing-card green">
-                    <div class="routing-badge">GREEN</div>
-                    <h3>Strong Case Indicators</h3>
-                    <p>Clear liability, documented injuries, within SOL, no existing representation.</p>
-                    <div class="routing-action">→ Instant Calendar Booking</div>
-                </div>
-                <div class="routing-card yellow">
-                    <div class="routing-badge">YELLOW</div>
-                    <h3>Needs Documentation</h3>
-                    <p>Promising case but missing key documents or unclear on certain facts.</p>
-                    <div class="routing-action">→ Queued for Records Review</div>
-                </div>
-                <div class="routing-card red">
-                    <div class="routing-badge">RED</div>
-                    <h3>Cannot Help</h3>
-                    <p>Outside SOL, wrong jurisdiction, existing representation, or clear disqualifier.</p>
-                    <div class="routing-action">→ Polite Decline + Resources</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Practice Areas -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Built Around Your Practice Areas</h2>
-                <p>We configure custom intake logic based on how your firm evaluates cases. The practice areas shown below are examples of how PreIntake.ai adapts to different legal disciplines.</p>
-            </div>
-            <div class="practice-grid">
-                <div class="practice-card">
-                    <h3><span>🚗</span> Personal Injury</h3>
-                    <ul>
-                        <li>Vehicle accidents (Car, Motorcycle, Truck)</li>
-                        <li>Rideshare incidents (Uber/Lyft)</li>
-                        <li>Premises liability, Dog bites</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: SOL, fault, injuries, insurance, representation</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>🌎</span> Immigration</h3>
-                    <ul>
-                        <li>Family-based (spouse, parent, sibling)</li>
-                        <li>Employment-based (H-1B, L-1, PERM)</li>
-                        <li>Asylum, VAWA, U-visa</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: Visa status, timeline, bars, violations</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>👨‍👩‍👧</span> Family Law</h3>
-                    <ul>
-                        <li>Divorce (contested/uncontested)</li>
-                        <li>Child custody and support</li>
-                        <li>Protective orders</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: Jurisdiction, children, assets, urgency</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>💳</span> Bankruptcy</h3>
-                    <ul>
-                        <li>Chapter 7 (liquidation)</li>
-                        <li>Chapter 13 (reorganization)</li>
-                        <li>Means test pre-qualification</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: Income, debt type, prior filings</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>⚖️</span> Criminal Defense</h3>
-                    <ul>
-                        <li>Misdemeanor and felony defense</li>
-                        <li>DUI/DWI</li>
-                        <li>Federal crimes</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: Charges, court dates, bail, representation</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>📊</span> Tax Litigation</h3>
-                    <ul>
-                        <li>IRS disputes and audits</li>
-                        <li>State tax agency conflicts</li>
-                        <li>Offer in Compromise</li>
-                    </ul>
-                    <div class="practice-card-screening">Screens: Tax type, amount, procedural posture</div>
+                    <h3>No After-Hours Coverage</h3>
+                    <p>Contact forms sit in your inbox until morning. Hot leads go cold while you sleep—or call another firm.</p>
                 </div>
             </div>
         </div>
@@ -2154,6 +2092,109 @@
         </div>
     </section>
 
+    <!-- CRM Integration Note -->
+    <div class="crm-note">
+        <div class="container">
+            <p>Already use Lawmatics, Clio, or Filevine? PreIntake.ai integrates seamlessly—screened leads flow directly into your existing system.</p>
+        </div>
+    </div>
+
+    <!-- Routing Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>Intelligent Lead Assessment</h2>
+                <p>Every lead gets screened and assessed automatically. Your staff knows exactly how to prioritize each one.</p>
+            </div>
+            <div class="routing-grid">
+                <div class="routing-card green">
+                    <div class="routing-badge">GREEN</div>
+                    <h3>Strong Case Indicators</h3>
+                    <p>Clear liability, documented injuries, within SOL, no existing representation.</p>
+                    <div class="routing-action">→ Instant Calendar Booking</div>
+                </div>
+                <div class="routing-card yellow">
+                    <div class="routing-badge">YELLOW</div>
+                    <h3>Needs Documentation</h3>
+                    <p>Promising case but missing key documents or unclear on certain facts.</p>
+                    <div class="routing-action">→ Queued for Records Review</div>
+                </div>
+                <div class="routing-card red">
+                    <div class="routing-badge">RED</div>
+                    <h3>Not a Fit</h3>
+                    <p>Outside SOL, wrong jurisdiction, existing representation, or clear disqualifier.</p>
+                    <div class="routing-action">→ Lead Informed + Full Details Delivered</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practice Areas -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built Around Your Practice Areas</h2>
+                <p>We configure custom intake logic based on how your firm evaluates cases. The practice areas shown below are examples of how PreIntake.ai adapts to different legal disciplines.</p>
+            </div>
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <h3><span>🚗</span> Personal Injury</h3>
+                    <ul>
+                        <li>Vehicle accidents (Car, Motorcycle, Truck)</li>
+                        <li>Rideshare incidents (Uber/Lyft)</li>
+                        <li>Premises liability, Dog bites</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: SOL, fault, injuries, insurance, representation</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>🌎</span> Immigration</h3>
+                    <ul>
+                        <li>Family-based (spouse, parent, sibling)</li>
+                        <li>Employment-based (H-1B, L-1, PERM)</li>
+                        <li>Asylum, VAWA, U-visa</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: Visa status, timeline, bars, violations</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>👨‍👩‍👧</span> Family Law</h3>
+                    <ul>
+                        <li>Divorce (contested/uncontested)</li>
+                        <li>Child custody and support</li>
+                        <li>Protective orders</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: Jurisdiction, children, assets, urgency</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>💳</span> Bankruptcy</h3>
+                    <ul>
+                        <li>Chapter 7 (liquidation)</li>
+                        <li>Chapter 13 (reorganization)</li>
+                        <li>Means test pre-qualification</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: Income, debt type, prior filings</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>⚖️</span> Criminal Defense</h3>
+                    <ul>
+                        <li>Misdemeanor and felony defense</li>
+                        <li>DUI/DWI</li>
+                        <li>Federal crimes</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: Charges, court dates, bail, representation</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>📊</span> Tax Litigation</h3>
+                    <ul>
+                        <li>IRS disputes and audits</li>
+                        <li>State tax agency conflicts</li>
+                        <li>Offer in Compromise</li>
+                    </ul>
+                    <div class="practice-card-screening">Screens: Tax type, amount, procedural posture</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Trust & Privacy Section -->
     <section class="section">
         <div class="container">
@@ -2178,7 +2219,7 @@
                         </svg>
                     </div>
                     <h3>Real-Time Delivery</h3>
-                    <p>Qualified leads arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot leads.</p>
+                    <p>All screened leads arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot leads.</p>
                 </div>
                 <div class="trust-card">
                     <div class="trust-card-icon">
@@ -2191,35 +2232,6 @@
                 </div>
             </div>
 
-            <!-- Competitive Positioning -->
-            <div class="vs-section">
-                <div class="vs-header">
-                    <h3>Why Firms Switch from Answering Services</h3>
-                    <p>PreIntake.ai vs. traditional receptionist services like Smith.ai</p>
-                </div>
-                <div class="vs-grid">
-                    <div class="vs-item">
-                        <div class="vs-item-value">$129/mo</div>
-                        <div class="vs-item-label">Flat monthly rate</div>
-                        <div class="vs-item-compare">vs. $285+/mo for 30 calls</div>
-                    </div>
-                    <div class="vs-item">
-                        <div class="vs-item-value">Unlimited</div>
-                        <div class="vs-item-label">Intake screenings</div>
-                        <div class="vs-item-compare">vs. per-call pricing</div>
-                    </div>
-                    <div class="vs-item">
-                        <div class="vs-item-value">Instant</div>
-                        <div class="vs-item-label">Response time</div>
-                        <div class="vs-item-compare">vs. hold times & callbacks</div>
-                    </div>
-                    <div class="vs-item">
-                        <div class="vs-item-value">Practice-Specific</div>
-                        <div class="vs-item-label">Legal screening</div>
-                        <div class="vs-item-compare">vs. generic scripts</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -2271,8 +2283,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
-                    <div class="pricing-label">One-Time Implementation</div>
-                    <div class="pricing-amount">$399</div>
+                    <div class="pricing-label">One-Time Setup</div>
+                    <div class="pricing-amount">$149</div>
                     <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas, branding, and screening criteria</div>
                 </div>
                 <div class="pricing-card featured">
@@ -2282,51 +2294,9 @@
                         </svg>
                     </div>
                     <div class="pricing-label">Monthly Subscription</div>
-                    <div class="pricing-amount">$129<span>/mo</span></div>
+                    <div class="pricing-amount">$79<span>/mo</span></div>
                     <div class="pricing-desc">Unlimited AI-powered intake screenings, lead routing, and real-time delivery via email or CRM</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Free Demo Callout -->
-    <section class="section demo-callout">
-        <div class="container">
-            <div class="demo-callout-content">
-                <div class="demo-callout-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <h2>Try Before You Buy</h2>
-                <p class="demo-callout-subtitle">Every demo is fully customized to your firm—completely free.</p>
-                <ul class="demo-callout-list">
-                    <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Your firm's branding and colors
-                    </li>
-                    <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Practice-specific screening logic
-                    </li>
-                    <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Real AI intake conversation in action
-                    </li>
-                    <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        No credit card required
-                    </li>
-                </ul>
-                <a href="#demo" class="demo-callout-cta">Request Your Free Demo</a>
             </div>
         </div>
     </section>
@@ -3161,6 +3131,38 @@
                 linkElement.textContent = 'Hide Transcript ↑';
             }
         }
+    </script>
+
+    <!-- Sticky CTA Button -->
+    <a href="#demo" class="sticky-cta" id="sticky-cta">Free Demo →</a>
+    <script>
+        (function() {
+            const stickyCta = document.getElementById('sticky-cta');
+            const hero = document.getElementById('hero');
+            const demoSection = document.getElementById('demo');
+
+            function updateStickyVisibility() {
+                const heroBottom = hero.getBoundingClientRect().bottom;
+                const demoTop = demoSection.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                // Show when scrolled past hero, hide when demo section enters viewport
+                if (heroBottom < 0 && demoTop > windowHeight) {
+                    stickyCta.classList.add('visible');
+                } else {
+                    stickyCta.classList.remove('visible');
+                }
+            }
+
+            // Smooth scroll to demo section
+            stickyCta.addEventListener('click', function(e) {
+                e.preventDefault();
+                demoSection.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', updateStickyVisibility, { passive: true });
+            updateStickyVisibility();
+        })();
     </script>
 </body>
 </html>

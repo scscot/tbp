@@ -161,7 +161,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 **Page:** `/create-account.html?firm={leadId}`
 
 **Flow:**
-1. User reviews pricing ($399 setup + $129/month)
+1. User reviews pricing ($149 setup + $79/month)
 2. Clicks "Complete Setup" → Stripe Checkout
 3. Stripe processes payment (setup fee + first month subscription)
 4. Webhook (`checkout.session.completed`) → Updates Firestore
@@ -229,7 +229,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 
 ### Phase 7: Subscription Management
 
-**Billing:** Monthly via Stripe ($129/month after initial $528)
+**Billing:** Monthly via Stripe ($79/month after initial $228)
 
 **Customer Portal:** (Future)
 - Manage payment method
@@ -327,11 +327,11 @@ PreIntake.ai uses practice-area-specific templates—each with tailored screenin
 
 | Component | Amount |
 |-----------|--------|
-| **One-time Implementation Fee** | $399 |
-| **Monthly Subscription** | $129/mo |
-| **Total Due Today** | **$528** |
+| **One-time Setup Fee** | $149 |
+| **Monthly Subscription** | $79/mo |
+| **Total Due Today** | **$228** |
 
-### Implementation Fee Includes:
+### Setup Fee Includes:
 - Practice-area template configuration
 - Firm branding (logo, colors, messaging)
 - Email delivery setup (webhook/CRM optional)
@@ -359,7 +359,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 
 **Result:** 4 additional signed cases/month × $15K average fee = **$60K incremental revenue**
 
-**Your cost:** $129/month
+**Your cost:** $79/month
 
 **ROI:** 465:1
 
@@ -558,10 +558,10 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 - [ ] CRM credentials input for direct integrations - Future
 
 **Stripe Price IDs:**
-| Environment | Implementation Fee | Monthly Subscription |
+| Environment | Setup Fee | Monthly Subscription |
 |-------------|-------------------|---------------------|
 | **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
-| **Live** | `price_1SjOXiJBdoLMDposfZXL8nZX` | `price_1SjORKJBdoLMDpos9wBBZbzd` |
+| **Live** | `price_1SksYAJBdoLMDposleabMPli` | `price_1SksalJBdoLMDposiiL704de` |
 
 **Firestore Subscription Fields** (in `preintake_leads` collection):
 | Field | Description |
@@ -670,7 +670,7 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 - [x] **Frontend HTML Audit** - Validated all 11 HTML files for structure and consistency
 - [x] **Frontend JavaScript Audit** - Checked 4 JS files for syntax errors and patterns
 - [x] **Backend Cloud Functions Audit** - Verified 8 function files and index.js exports
-- [x] **Cross-file Consistency Check** - Confirmed pricing ($129/month + $399 setup) and email consistency
+- [x] **Cross-file Consistency Check** - Confirmed pricing ($79/month + $149 setup) and email consistency
 - [x] **Security Review** - Verified no hardcoded secrets, all use Firebase `defineSecret`
 - [x] **Schema.org Fix** - Updated `priceValidUntil` from "2025-12-31" to "2026-12-31" (was expiring)
 - [x] **OG Image Created** - Created `/preintake/images/og-image.png` (1200x630) for social sharing previews
@@ -848,17 +848,47 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 ## CRM Integration Research
 
-### Target CRMs (Legal Practice Management)
+### CRM Categories (Important Distinction)
 
-| CRM | Website | API Status | Priority |
-|-----|---------|------------|----------|
-| **Law Ruler** | lawruler.com | Has API | High - PI-focused |
-| **Filevine** | filevine.com | Has API | High - Popular |
-| **SmartAdvocate** | smartadvocate.com | Has API | High - PI-focused |
-| **Litify** | litify.com | Salesforce-based | Medium |
-| **Needles** | portal.needles.com | Legacy | Medium |
-| **TrialWorks** | assemblysoftware.com/trialworks | Has API | Medium |
-| **CoCounselor** | cocounselor.com | Unknown | Low |
+Legal CRMs fall into two categories—mixing them up leads to bad product decisions:
+
+| Category | Purpose | Examples |
+|----------|---------|----------|
+| **(A) Intake Conversion Engines** | Lead capture, screening, conversion | Lawmatics, Clio Grow, Law Ruler, Lead Docket |
+| **(B) Relationship/BD CRMs** | Client relationships, business development | InterAction+, Salesforce (raw) |
+
+**PreIntake.ai sits in front of Category A.** We're a gatekeeper, not a data janitor.
+
+### Target CRMs (Prioritized by ROI)
+
+**Tier 1 — Ship First** (removes #1 post-demo objection)
+
+| CRM | Market | Why Priority | Integration Scope |
+|-----|--------|--------------|-------------------|
+| **Lawmatics** | Mid-size PI, Immigration, Family | Dominates intake; firms say it "collects junk but doesn't screen" | Create/Update Lead, GREEN/YELLOW/RED mapping, transcript |
+| **Clio Grow** | Broad install base | Massive adoption, logo trust | New Lead, custom fields, calendar trigger for GREEN |
+| **Filevine** | PI-heavy firms | Standard in PI; high willingness to pay | Create Lead → Project (conditional), notes + flags |
+
+**Tier 2 — High-Volume PI** (prints money)
+
+| CRM | Market | Why Priority |
+|-----|--------|--------------|
+| **Law Ruler** | Hardcore PI intake teams | Obsessive about speed; weak AI screening today |
+| **SmartAdvocate** | Old-school PI | Deeply embedded; firms spend $50k+/mo on ads |
+
+**Tier 3 — Enterprise/Platform** (build after revenue momentum)
+
+| CRM | Notes |
+|-----|-------|
+| **Litify** | Salesforce underneath; longer sales cycles, compliance overhead |
+| **Salesforce (raw)** | Rarely used directly by small firms; accessed through Litify |
+
+**Tier 4 — Webhook Only** (let Zapier handle it)
+
+| CRM | Notes |
+|-----|-------|
+| **HubSpot** | Generic; webhook + Zapier covers at near-zero cost |
+| **Zoho** | Budget-focused; same approach |
 
 ### Chat/Lead Services (Potential Partners/Competitors)
 
@@ -868,22 +898,30 @@ pending → analyzing → researching → generating_demo → demo_ready
 | Ngage Live Chat | ngagelive.com | 24/7 managed chat |
 | ApexChat | apexchat.com | Legal chat widgets |
 | Captorra | captorra.com | Lead management |
+| Lead Docket | leaddocket.com | Legal intake + lead management (PI ecosystem) |
 | SCORPION | scorpion.co | Full-service legal marketing |
 
 ### Integration Approach
 
-**Phase 1: Generic (Current)**
-- Email delivery (default)
-- Webhook delivery (Zapier, custom integrations)
+**Current State (Phase 1)**
+- Email delivery (default) ✅
+- Webhook delivery (Zapier, custom integrations) ✅
+- **This covers ~80% of buyers today**
 
-**Phase 2: Popular CRMs**
-- Law Ruler (PI firms)
-- Filevine (multi-practice)
-- SmartAdvocate (PI firms)
+**Future Phases (Revisit After 5+ Paying Customers Request Same CRM)**
 
-**Phase 3: Expand Based on Demand**
-- Track which CRMs customers request
-- Build integrations for top-requested systems
+| Phase | CRMs | Trigger |
+|-------|------|---------|
+| Phase 2 | Lawmatics, Clio Grow, Filevine | Repeated customer requests |
+| Phase 3 | Law Ruler, SmartAdvocate | PI market expansion |
+| Phase 4 | Litify | Enterprise demand |
+
+**Build Criteria:**
+- Don't build native integrations until 5+ paying customers ask for the same one
+- Track which CRMs customers request in a simple tally
+- Integrations should remove friction, not add feature bloat
+
+*Last reviewed: 2025-12-31 (based on market analysis from legal-CRM rankings)*
 
 ---
 
@@ -938,7 +976,7 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | Demo ready notification to customer | Only Stephen notified | Auto-email to customer with demo URL | High |
 | Customer portal | None | Stripe Customer Portal integration | Medium |
 | Analytics dashboard | None | Track demo engagement, conversion rates | Medium |
-| CRM integrations | Email/webhook only | Native Law Ruler, Filevine, SmartAdvocate | Medium |
+| CRM integrations | Email/webhook only (covers 80%) | Native integrations when 5+ customers request same CRM | Low (deferred) |
 | Demo expiration | Demos persist indefinitely | Auto-delete after 30 days or on cancel | Low |
 | Multi-language support | English only | Spanish, Chinese intake options | Low |
 | A/B testing | None | Question flow optimization | Low |
