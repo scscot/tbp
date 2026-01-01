@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2025-12-30
-**Version**: 2.4 (First customer activated, bug fixes for payment flow)
+**Last Updated**: 2025-12-31
+**Version**: 2.5 (Post-demo conversion email, UX fixes, email address updates)
 
 ---
 
@@ -574,6 +574,8 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 | `activatedAt` | Timestamp of account activation |
 | `currentPeriodStart` | Subscription period start date |
 | `currentPeriodEnd` | Subscription period end date |
+| `conversionEmailSent` | Boolean - Conversion email already sent (prevents duplicates) |
+| `conversionEmailSentAt` | Timestamp of conversion email delivery |
 
 **Bug Fixes (2025-12-30):**
 - [x] **Demo template create-account links** - Fixed missing `?firm={{LEAD_ID}}` parameter in `demo-intake.html` (lines 1332, 1427)
@@ -671,7 +673,7 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 - [x] **Cross-file Consistency Check** - Confirmed pricing ($129/month + $399 setup) and email consistency
 - [x] **Security Review** - Verified no hardcoded secrets, all use Firebase `defineSecret`
 - [x] **Schema.org Fix** - Updated `priceValidUntil` from "2025-12-31" to "2026-12-31" (was expiring)
-- [ ] **Missing Asset** - Create `/preintake/images/og-image.png` for social sharing previews
+- [x] **OG Image Created** - Created `/preintake/images/og-image.png` (1200x630) for social sharing previews
 
 ### Phase 16: Branding & Icon (2025-12-30)
 - [x] **Site Icon** - Created `/preintake/images/icon.svg` (gold #c9a962, filter funnel design)
@@ -699,10 +701,28 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 | Security | All | ✅ Pass |
 | API Endpoints | All | ✅ Pass |
 
-**Outstanding Issue:**
-- `og-image.png` referenced in meta tags but file doesn't exist
-- Affects: index.html, faq.html, about-us.html, contact-us.html
-- Required: Create 1200x630px image at `/preintake/images/og-image.png`
+### Phase 17: Email & UX Improvements (2025-12-31)
+- [x] **Post-Demo Conversion Email** - Auto-send after first successful intake lead delivery
+  - New `sendConversionEmail()` function in `intake-delivery-functions.js`
+  - Tracks via `conversionEmailSent` and `conversionEmailSentAt` fields
+  - Skips active/paid subscribers and already-sent leads
+  - Subject: "Your PreIntake.ai Demo Just Captured a Lead"
+  - CTA: Links to `https://preintake.ai/create-account.html?firm={leadId}`
+- [x] **FROM Address Update** - Changed from `intake@preintake.ai` to `support@preintake.ai`
+- [x] **Signature Update** - Changed from "Stephen Scott, Founder" to "Support Team, PreIntake.ai"
+- [x] **JavaScript Parse Error Fix** - Escaped apostrophes in firm names that broke demo template
+- [x] **Firm Name Extraction** - Improved extraction logic from analysis data
+- [x] **Verification Email Re-click Fix** - Prevented page hang on second verification click
+- [x] **Demo Template UI Fixes** - Fixed sidebar-cta centering and logo issues
+
+**Conversion Email Flow:**
+```
+Intake completes → deliveryResult.success → Check conversionEmailSent flag
+     ↓
+If not sent AND status !== 'active' → sendConversionEmail()
+     ↓
+Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt=timestamp
+```
 
 ---
 
@@ -909,6 +929,9 @@ For firms with strict data residency requirements, self-hosted option at custom 
 ---
 
 ## Current Gaps & Future Improvements
+
+**Recently Completed:**
+- ✅ Post-intake conversion email (Phase 17) - Sends after first demo lead delivery
 
 | Gap | Current State | Planned Solution | Priority |
 |-----|---------------|------------------|----------|
