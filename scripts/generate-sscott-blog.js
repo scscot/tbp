@@ -815,7 +815,7 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
 async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
   const FormData = require('form-data');
   const mailgunApiKey = process.env.MAILGUN_API_KEY;
-  const mailgunDomain = 'mailer.teambuildpro.com';
+  const mailgunDomain = 'hello.teambuildpro.com';
 
   if (!mailgunApiKey) {
     console.log(`${colors.yellow}MAILGUN_API_KEY not set, skipping email${colors.reset}`);
@@ -824,7 +824,7 @@ async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
 
   try {
     const form = new FormData();
-    form.append('from', 'Stephen Scott Blog Bot <blog@mailer.teambuildpro.com>');
+    form.append('from', 'Stephen Scott Blog Bot <blog@hello.teambuildpro.com>');
     form.append('to', toEmail);
     form.append('subject', subject);
     form.append('html', htmlBody);

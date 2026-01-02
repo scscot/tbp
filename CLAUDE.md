@@ -226,8 +226,8 @@ All four main sites have identical structure:
 - **Template Name**: `mailer`
 - **Template Version**: `initial` (personal, conversational style)
 - **Subject Line**: "The Recruiting App Built for Direct Sales"
-- **From**: `Stephen Scott <stephen@mailer.teambuildpro.com>`
-- **Domain**: mailer.teambuildpro.com (warmup started Dec 5, 2025)
+- **From**: `Stephen Scott <stephen@hello.teambuildpro.com>`
+- **Domain**: hello.teambuildpro.com (warmup started Dec 5, 2025)
 - **Tracking**: UTM parameters for GA4 (Mailgun open tracking unreliable due to Gmail pre-fetch)
 - **Seasonal Sign-off**: Automatic date-based greeting (see below)
 

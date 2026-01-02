@@ -10,7 +10,7 @@ const androidCampaignEnabledYahoo = defineString("ANDROID_CAMPAIGN_ENABLED_YAHOO
 const emailCampaignSyncEnabledYahoo = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED_YAHOO", { default: "false" });
 const emailCampaignBatchSizeYahoo = defineString("EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO", { default: "1" });
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuildpro.com" });
+const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "hello.teambuildpro.com" });
 
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
@@ -30,7 +30,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const selectedSubject = subjects[subjectIndex].subject;
   const subjectTag = subjects[subjectIndex].tag;
 
-  form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
+  form.append('from', 'Stephen Scott <stephen@hello.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', selectedSubject);
@@ -232,7 +232,7 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
         const selectedSubject = `The Recruiting App Built for Direct Sales`;
         const selectedVersion = 'initial';
 
-        form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
+        form.append('from', 'Stephen Scott <stephen@hello.teambuildpro.com>');
         form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
         form.append('subject', selectedSubject);
         form.append('template', 'mailer');

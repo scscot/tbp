@@ -13,14 +13,14 @@ const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { defaul
 const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "mailer.teambuildpro.com" });
+const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "hello.teambuildpro.com" });
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
 const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
-const FROM_ADDRESS = 'Stephen Scott <stephen@mailer.teambuildpro.com>';
+const FROM_ADDRESS = 'Stephen Scott <stephen@hello.teambuildpro.com>';
 const TEMPLATE_NAME = 'mailer';
 const SEND_DELAY_MS = 1000;
 
@@ -61,7 +61,8 @@ const CAMPAIGN_CONFIGS = {
     campaignTag: 'initial_campaign',
     utmCampaign: 'initial_campaign',
     subjects: [
-      { subject: () => 'The Recruiting App Built for Direct Sales', tag: 'subject_recruiting_app' }
+    //   { subject: () => 'Happy New Year!', tag: 'subject_recruiting_app' }
+      { subject: () => 'A smarter way to build your team', tag: 'subject_recruiting_app' }
     ],
     includeUtmTracking: true
   },
@@ -74,7 +75,7 @@ const CAMPAIGN_CONFIGS = {
     campaignTag: 'android_launch',
     utmCampaign: 'android_launch',
     subjects: [
-      { subject: () => 'The Recruiting App Built for Direct Sales', tag: 'android_launch' }
+      { subject: () => 'A smarter way to build your team', tag: 'android_launch' }
     ],
     includeUtmTracking: false,
     // Field mappings for resend campaign

@@ -16,7 +16,7 @@ const mailgunApiKey = defineString('MAILGUN_API_KEY');
 const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 
 // Constants
-const MAILGUN_DOMAIN = 'mailer.teambuildpro.com';
+const MAILGUN_DOMAIN = 'hello.teambuildpro.com';
 const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';

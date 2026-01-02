@@ -6,7 +6,7 @@ async function main() {
   const config = JSON.parse(fs.readFileSync('../secrets/mailgun_config.json', 'utf8'));
   const apiKey = config.api_key;
 
-  const domain = 'mailer.teambuildpro.com';
+  const domain = 'hello.teambuildpro.com';
 
   try {
     const response = await axios.get(

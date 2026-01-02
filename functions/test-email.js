@@ -18,7 +18,7 @@ async function sendTestEmail() {
   const selectedSubject = 'The Recruiting App Built for Direct Sales';
   const selectedVersion = 'initial';
 
-  form.append('from', 'Stephen Scott <stephen@mailer.teambuildpro.com>');
+  form.append('from', 'Stephen Scott <stephen@hello.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   form.append('subject', selectedSubject);
 
@@ -37,7 +37,7 @@ async function sendTestEmail() {
 
   // Get API key from environment
   const apiKey = process.env.MAILGUN_API_KEY;
-  const domain = 'mailer.teambuildpro.com';
+  const domain = 'hello.teambuildpro.com';
 
   if (!apiKey) {
     console.error('❌ MAILGUN_API_KEY environment variable not set');

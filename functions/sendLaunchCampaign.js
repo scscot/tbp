@@ -8,7 +8,7 @@ const path = require('path');
 
 // Define Mailgun API key and domain from environment variables
 const mailgunApiKey = defineString('MAILGUN_API_KEY');
-const mailgunDomain = defineString('MAILGUN_DOMAIN', { default: 'mailer.teambuildpro.com' });
+const mailgunDomain = defineString('MAILGUN_DOMAIN', { default: 'hello.teambuildpro.com' });
 
 // Load the email template
 const templatePath = path.join(__dirname, 'email_templates/launch_campaign_mailgun.html');
@@ -153,7 +153,7 @@ async function sendTestEmail(testEmail, template, apiKey, domain) {
     .replace(/%recipient\.email%/g, testEmail);
 
   const form = new FormData();
-  form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+  form.append('from', 'Stephen Scott | Team Build Pro <stephen@hello.teambuildpro.com>');
   form.append('to', testEmail);
   form.append('subject', '🚀 Team Build Pro is Now Available! [TEST]');
   form.append('html', personalizedTemplate);
@@ -233,7 +233,7 @@ async function sendPersonalizedEmail(subscriber, template, apiKey, domain) {
     .replace(/%recipient\.email%/g, email);
 
   const form = new FormData();
-  form.append('from', 'Stephen Scott | Team Build Pro <sscott@info.teambuildpro.com>');
+  form.append('from', 'Stephen Scott | Team Build Pro <stephen@hello.teambuildpro.com>');
   form.append('to', `${firstName} ${lastName} <${email}>`);
   form.append('bcc', 'scscot@gmail.com');
   form.append('subject', `${firstName}, Team Build Pro is now available!`);
