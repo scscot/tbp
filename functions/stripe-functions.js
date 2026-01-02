@@ -283,7 +283,8 @@ async function sendEmail(to, subject, htmlContent) {
  * Generate account activation email HTML for customer
  */
 function generateActivationEmail(firmName, firmId, customerEmail) {
-    const embedCode = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"></script>`;
+    const buttonEmbedCode = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"></script>`;
+    const pageEmbedCode = `<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>\n<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"></script>`;
 
     return `
 <!DOCTYPE html>
@@ -304,24 +305,29 @@ function generateActivationEmail(firmName, firmId, customerEmail) {
 
         <p>Welcome to PreIntake.ai! Your AI-powered intake system for <strong>${firmName || 'your firm'}</strong> is now ready to use.</p>
 
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 25px 0;">
-            <h3 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Quick Start: Add Intake to Your Website</h3>
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Copy this code and paste it before the closing <code>&lt;/body&gt;</code> tag of your website pages:</p>
-            <div style="background: #1a1a2e; color: #ffffff; padding: 15px; border-radius: 6px; font-family: Monaco, Menlo, monospace; font-size: 12px; overflow-x: auto; word-break: break-all;">
-                ${embedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+        <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Choose the embed option that works best for your site:</p>
+
+        <!-- Option 1: Button Embed -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #0c1f3f; font-size: 16px; margin: 0 0 10px 0;">Option 1: Floating Button (Recommended)</h3>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Add to any page. A button appears that opens the intake form in a modal.</p>
+            <div style="background: #1a1a2e; color: #ffffff; padding: 15px; border-radius: 6px; font-family: Monaco, Menlo, monospace; font-size: 11px; overflow-x: auto; word-break: break-all;">
+                ${buttonEmbedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
             </div>
-            <p style="margin: 15px 0 5px 0; font-size: 14px; color: #64748b;"><strong><em>Change <code>data-position</code> to control button placement:</em></strong></p>
-            <ul style="margin: 5px 0 10px 20px; padding: 0; font-size: 14px; color: #64748b;">
-                <li><code>bottom-right</code></li>
-                <li><code>bottom-left</code></li>
-                <li><code>bottom-center</code></li>
-                <li><code>top-right</code></li>
-                <li><code>top-left</code></li>
-                <li><code>top-center</code></li>
-            </ul>
-            <p style="margin: 10px 0 0 0; font-size: 14px; color: #64748b;">That's it—the intake button appears automatically and starts screening leads immediately.</p>
-            <p style="margin: 10px 0 0 0; font-size: 14px; color: #64748b;">Works with any website platform: WordPress, Squarespace, Wix, custom sites, or any CMS. No special plugins or technical expertise required.</p>
+            <p style="margin: 10px 0 5px 0; font-size: 13px; color: #64748b;"><em>Position options: bottom-right, bottom-left, bottom-center, top-right, top-left, top-center</em></p>
         </div>
+
+        <!-- Option 2: Page Embed -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #0c1f3f; font-size: 16px; margin: 0 0 10px 0;">Option 2: Full Page Embed</h3>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Add to a dedicated "Free Case Evaluation" page. The form fills the container.</p>
+            <div style="background: #1a1a2e; color: #ffffff; padding: 15px; border-radius: 6px; font-family: Monaco, Menlo, monospace; font-size: 11px; overflow-x: auto; word-break: break-all; white-space: pre-wrap;">
+${pageEmbedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+            </div>
+            <p style="margin: 10px 0 0 0; font-size: 13px; color: #64748b;"><em>Style the container div to control dimensions.</em></p>
+        </div>
+
+        <p style="margin: 0 0 20px 0; font-size: 14px; color: #64748b;">Both options work with any website platform: WordPress, Squarespace, Wix, or custom sites. No special plugins required.</p>
 
         <p style="margin: 0 0 25px 0; font-size: 14px; color: #64748b;"><strong><em>Not technical?</em></strong> Forward this email to your web developer—they'll have everything they need.</p>
 
