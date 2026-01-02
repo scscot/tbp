@@ -552,10 +552,10 @@ git add . && git commit -m "message" && git push
 The email campaign system consists of two parallel campaigns targeting different audience segments, both using the same Mailgun template with different data sources.
 
 **Mailgun Configuration:**
-- **Template Name**: `campaign`
+- **Template Name**: `mailer`
 - **Template Version**: `initial`
-- **Subject Line**: `The Recruiting App Built for Direct Sales`
-- **From**: `Stephen Scott <ss@hello.teambuildpro.com>`
+- **Subject Line**: `A smarter way to build your team`
+- **From**: `Stephen Scott <stephen@hello.teambuildpro.com>`
 - **Domain**: hello.teambuildpro.com
 - **Tracking**: Opens, clicks, and delivery status enabled
 

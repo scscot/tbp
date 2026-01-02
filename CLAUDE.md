@@ -225,9 +225,9 @@ All four main sites have identical structure:
 **Mailgun Configuration:**
 - **Template Name**: `mailer`
 - **Template Version**: `initial` (personal, conversational style)
-- **Subject Line**: "The Recruiting App Built for Direct Sales"
+- **Subject Line**: "A smarter way to build your team"
 - **From**: `Stephen Scott <stephen@hello.teambuildpro.com>`
-- **Domain**: hello.teambuildpro.com (warmup started Dec 5, 2025)
+- **Domain**: hello.teambuildpro.com (warmup started Jan 1, 2026)
 - **Tracking**: UTM parameters for GA4 (Mailgun open tracking unreliable due to Gmail pre-fetch)
 - **Seasonal Sign-off**: Automatic date-based greeting (see below)
 
@@ -244,7 +244,7 @@ The `computeSeasonalSignoff()` function in `email-campaign-functions.js` adds da
 - **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (even hours)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
-- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 20)
+- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (currently 2, warmup mode)
 - **UTM Tracking**: `utm_source=mailgun`, `utm_medium=email`, `utm_campaign=initial_campaign`, `utm_content=subject_recruiting_app`
 
 ### Yahoo Campaign (Mailgun - Automated)
