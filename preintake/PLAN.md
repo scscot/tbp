@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2025-12-31
-**Version**: 2.5 (Post-demo conversion email, UX fixes, email address updates)
+**Last Updated**: 2026-01-03
+**Version**: 2.7 (Email outreach campaign infrastructure)
 
 ---
 
@@ -248,54 +248,40 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 
 ## Practice Areas Supported
 
-PreIntake.ai uses practice-area-specific templates—each with tailored screening logic, qualification criteria, and conversational flows.
+**PreIntake.ai works with ANY legal practice area.** The system uses a flexible template architecture that adapts to any type of law firm.
 
-### Personal Injury
-- Vehicle accidents (Car, Motorcycle, Truck, Pedestrian, Bicycle)
-- Rideshare incidents (Uber/Lyft passenger, driver, or third-party)
-- Premises liability (Slip and Fall, negligent security)
-- Animal attacks, Wrongful Death
-- **Key screening**: SOL, fault, injuries, insurance, existing representation
+### How It Works
 
-### Immigration
-- Family-based (spouse, parent, sibling)
-- Employment-based (H-1B, L-1, PERM)
-- Asylum and humanitarian (asylum, VAWA, U-visa)
-- Naturalization and citizenship
-- **Key screening**: Visa status, timeline, bars to admission, prior violations
+1. **Specialized Templates**: Common practice areas have pre-built screening logic with practice-specific questions and qualification criteria
+2. **Generic Template**: Any practice area not in the specialized list uses an intelligent generic template that adapts the conversation to that practice type
+3. **Custom Configuration**: Firms can add any practice areas during setup—the system dynamically generates appropriate intake flows
 
-### Family Law
-- Divorce (contested, uncontested)
-- Child custody and support
-- Prenuptial/postnuptial agreements
-- Domestic violence protective orders
-- **Key screening**: Jurisdiction, minor children, assets, urgency
+### Practice Areas with Specialized Screening
 
-### Bankruptcy
-- Chapter 7 (liquidation)
-- Chapter 13 (reorganization)
-- Means test pre-qualification
-- **Key screening**: Income, debt type, prior filings, asset protection
+These areas have deep, practice-specific question flows and qualification criteria:
 
-### Criminal Defense
-- Misdemeanor and felony defense
-- DUI/DWI
-- Federal crimes
-- **Key screening**: Charges, court dates, bail status, existing representation
+| Practice Area | Key Screening Criteria |
+|---------------|----------------------|
+| **Personal Injury** | SOL, fault, injuries, insurance, existing representation |
+| **Immigration** | Visa status, timeline, bars to admission, prior violations |
+| **Family Law** | Jurisdiction, minor children, assets, urgency |
+| **Bankruptcy** | Income, debt type, prior filings, asset protection |
+| **Criminal Defense** | Charges, court dates, bail status, existing representation |
+| **Tax/IRS** | Tax type, amount at stake, procedural posture |
+| **Estate Planning** | Asset complexity, family dynamics, urgency |
+| **Employment Law** | Discrimination type, timeline, documentation |
+| **Workers' Compensation** | Injury type, employer response, medical treatment |
+| **Real Estate** | Transaction type, timeline, disputes |
 
-### Tax Litigation
-- IRS disputes and audits
-- State tax agency conflicts
-- Offer in Compromise evaluation
-- **Key screening**: Tax type, amount at stake, procedural posture
+### Other Practice Areas
 
-### Estate Planning
-- Wills and trusts
-- Power of attorney
-- Estate administration
-- **Key screening**: Asset complexity, family dynamics, urgency
+Any practice area not listed above (e.g., IP, Civil Litigation, Business Law, Entertainment Law, etc.) uses the generic template with:
+- Standard contact collection
+- Practice-type-aware case description questions
+- Dynamic follow-up questions based on responses
+- Universal qualification criteria (jurisdiction, representation status, urgency)
 
-*Additional practice areas available on request. Our template system makes new verticals fast to deploy.*
+The generic template leverages Claude AI to ask intelligent follow-up questions relevant to the specific legal matter described.
 
 ---
 
@@ -501,15 +487,18 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] Demo confirmation email to prospect (on form submission)
 - [x] New lead notification to Stephen (on form submission)
 - [x] Demo ready notification to Stephen with demo URL
+- [x] Demo ready notification to prospect with demo URL (`sendProspectDemoReadyEmail`)
 
-### Phase 6: Practice Area Templates
-- [x] Personal Injury (existing, used as base)
-- [x] Tax/IRS (existing)
-- [x] Immigration (system prompt + button detection)
-- [x] Family Law (system prompt + button detection)
-- [x] Bankruptcy (system prompt + button detection)
-- [x] Criminal Defense (system prompt + button detection)
-- [x] Estate Planning (system prompt + button detection)
+### Phase 6: Practice Area Templates (Specialized + Generic)
+- [x] Personal Injury (specialized, used as base)
+- [x] Tax/IRS (specialized)
+- [x] Immigration (specialized - system prompt + button detection)
+- [x] Family Law (specialized - system prompt + button detection)
+- [x] Bankruptcy (specialized - system prompt + button detection)
+- [x] Criminal Defense (specialized - system prompt + button detection)
+- [x] Estate Planning (specialized - system prompt + button detection)
+- [x] Employment Law, Workers' Comp, Real Estate (specialized detection)
+- [x] Generic Template (`getGenericPrompt`) - handles ANY other practice area dynamically
 
 ### Phase 7: Dynamic Practice Area Selection
 - [x] After contact info collected, ask user to select their case type
@@ -724,6 +713,52 @@ If not sent AND status !== 'active' → sendConversionEmail()
 Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt=timestamp
 ```
 
+### Phase 18: Email Outreach Campaign (2026-01-03)
+- [x] **Email Campaign Script** - `scripts/send-preintake-campaign.js`
+  - Sends outreach emails to law firms from Firestore `preintake_emails` collection
+  - Uses Dreamhost SMTP via nodemailer (smtp.dreamhost.com:587)
+  - Configurable batch size via `BATCH_SIZE` environment variable (default: 5)
+  - 1-second delay between emails to avoid rate limiting
+  - Tracks sent status, batch ID, message ID in Firestore
+  - Template version: `v4-generic` (practice-agnostic messaging)
+- [x] **GitHub Actions Workflow** - `.github/workflows/preintake-email-campaign.yml`
+  - Scheduled: Mon-Fri at 10am and 2pm PT (cron: `0 18,22 * * 1-5`)
+  - Manual trigger with configurable batch size
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` secrets
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+- [x] **Unsubscribe System**
+  - Cloud Function: `handlePreIntakeUnsubscribe` (updates Firestore status)
+  - Unsubscribe page: `preintake.ai/unsubscribe.html`
+  - Email footer includes personalized unsubscribe link
+- [x] **SPF Authentication** - Fixed email deliverability
+  - Added `include:relay.mailchannels.net` to SPF TXT record for legal.preintake.ai
+  - Dreamhost routes through MailChannels relay servers
+  - All three checks passing: SPF, DKIM, DMARC
+- [x] **GitHub Secrets Configured**
+  - `PREINTAKE_SMTP_USER`: scott@legal.preintake.ai
+  - `PREINTAKE_SMTP_PASS`: Dreamhost SMTP password
+
+**Email Template (v4-generic):**
+- Subject: "A smarter way to screen intake inquiries before staff review"
+- From: Stephen Scott <scott@legal.preintake.ai>
+- Personalization: `${firmName}` in pre-CTA paragraph
+- CTA: "Generate a Demo" → preintake.ai with UTM tracking
+- Preview text: "How law firms reduce unqualified consultations without hiring more staff."
+
+**Firestore Collection:** `preintake_emails` (in `preintake` database)
+| Field | Description |
+|-------|-------------|
+| `firmName` | Law firm name |
+| `email` | Contact email |
+| `sent` | Boolean - email sent |
+| `status` | `pending`, `sent`, `failed`, `unsubscribed` |
+| `sentTimestamp` | When email was sent |
+| `batchId` | Batch identifier |
+| `messageId` | SMTP message ID |
+| `subjectLine` | Subject line used |
+| `templateVersion` | Template version (v4-generic) |
+| `randomIndex` | Random number for shuffled sending order |
+
 ---
 
 ## Architecture
@@ -819,7 +854,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 9. **Claude structures data** → Using Haiku for cost efficiency
 10. **Demo generated** → `generatePreIntakeDemo` (Firestore onUpdate)
 11. **HTML uploaded** → Firebase Storage at `preintake-demos/{leadId}/index.html`
-12. **Demo ready email** → Sent to Stephen with demo URL
+12. **Demo ready emails** → Sent to BOTH prospect (`sendProspectDemoReadyEmail`) AND Stephen
 
 ---
 
@@ -970,10 +1005,10 @@ For firms with strict data residency requirements, self-hosted option at custom 
 
 **Recently Completed:**
 - ✅ Post-intake conversion email (Phase 17) - Sends after first demo lead delivery
+- ✅ Demo ready notification to customer - Sends via `sendProspectDemoReadyEmail()` when demo is generated
 
 | Gap | Current State | Planned Solution | Priority |
 |-----|---------------|------------------|----------|
-| Demo ready notification to customer | Only Stephen notified | Auto-email to customer with demo URL | High |
 | Customer portal | None | Stripe Customer Portal integration | Medium |
 | Analytics dashboard | None | Track demo engagement, conversion rates | Medium |
 | CRM integrations | Email/webhook only (covers 80%) | Native integrations when 5+ customers request same CRM | Low (deferred) |

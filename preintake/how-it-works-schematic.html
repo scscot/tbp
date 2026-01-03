@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How PreIntake.ai Works - Visual Schematic</title>
+    <style>
+        :root {
+            --primary-dark: #0c1f3f;
+            --primary-blue: #1a3a5c;
+            --accent-gold: #c9a962;
+            --text-light: #ffffff;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --success: #48bb78;
+            --warning: #f6ad55;
+            --danger: #fc8181;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--primary-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .logo-pre { color: var(--text-light); }
+        .logo-intake { color: var(--accent-gold); }
+        .logo-ai { color: var(--text-light); }
+
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+        }
+
+        /* Flow Diagram */
+        .flow-section {
+            margin-bottom: 4rem;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 180px;
+            max-width: 220px;
+        }
+
+        .flow-box.primary {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: white;
+        }
+
+        .flow-box.gold {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8944f 100%);
+            color: var(--primary-dark);
+        }
+
+        .flow-box.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .flow-box.warning {
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            color: var(--primary-dark);
+        }
+
+        .flow-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .flow-desc {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: var(--accent-gold);
+        }
+
+        .arrow-down {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin-bottom: 4rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .comparison-header {
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .comparison-header.without {
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+        }
+
+        .comparison-header.with {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .comparison-body {
+            padding: 1.5rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .comparison-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .comparison-text {
+            font-size: 0.95rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            margin-bottom: 4rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            margin-bottom: 4rem;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-gold), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-item,
+            .timeline-item:nth-child(odd) {
+                flex-direction: row;
+                padding-left: 50px;
+            }
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .timeline-content {
+                width: 100%;
+            }
+        }
+
+        .timeline-dot {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-dot {
+                position: absolute;
+                left: 0;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Integration Section */
+        .integration-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .integration-section h2 {
+            color: white;
+        }
+
+        .integration-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .integration-item {
+            text-align: center;
+        }
+
+        .integration-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .integration-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        /* References Section */
+        .references-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .references-section h2 {
+            text-align: left;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 0.75rem;
+            padding-left: 2rem;
+            position: relative;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .references-list li::before {
+            content: attr(data-ref);
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .references-list a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .references-list a:hover {
+            text-decoration: underline;
+        }
+
+        sup {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-pre">Pre</span><span class="logo-intake">Intake</span><span class="logo-ai">.ai</span>
+        </div>
+        <p class="subtitle">AI-Powered Client Intake for Law Firms</p>
+    </header>
+
+    <div class="container">
+        <!-- Main Flow Diagram -->
+        <section class="flow-section">
+            <h2>How It Works</h2>
+            <div class="flow-diagram">
+                <!-- Row 1: Entry Points -->
+                <div class="flow-row">
+                    <div class="flow-box">
+                        <div class="flow-icon">🌐</div>
+                        <div class="flow-title">Website Visitor</div>
+                        <div class="flow-desc">Potential client visits your site</div>
+                    </div>
+                    <div class="flow-box">
+                        <div class="flow-icon">📱</div>
+                        <div class="flow-title">Mobile User</div>
+                        <div class="flow-desc">Clicks ad or referral link</div>
+                    </div>
+                    <div class="flow-box">
+                        <div class="flow-icon">🌙</div>
+                        <div class="flow-title">After-Hours Lead</div>
+                        <div class="flow-desc">Needs help at 2am</div>
+                    </div>
+                </div>
+
+                <div class="arrow-down">⬇️</div>
+
+                <!-- Row 2: AI Intake -->
+                <div class="flow-row">
+                    <div class="flow-box gold" style="min-width: 300px; max-width: 400px;">
+                        <div class="flow-icon">🤖</div>
+                        <div class="flow-title">PreIntake.ai Chatbot</div>
+                        <div class="flow-desc">24/7 AI-powered intake assistant engages every visitor instantly</div>
+                    </div>
+                </div>
+
+                <div class="arrow-down">⬇️</div>
+
+                <!-- Row 3: Screening Process -->
+                <div class="flow-row">
+                    <div class="flow-box primary">
+                        <div class="flow-icon">📋</div>
+                        <div class="flow-title">Case Details</div>
+                        <div class="flow-desc">Collects incident info, dates, injuries</div>
+                    </div>
+                    <span class="arrow">➡️</span>
+                    <div class="flow-box primary">
+                        <div class="flow-icon">⚖️</div>
+                        <div class="flow-title">Qualification</div>
+                        <div class="flow-desc">Screens against your criteria</div>
+                    </div>
+                    <span class="arrow">➡️</span>
+                    <div class="flow-box primary">
+                        <div class="flow-icon">📊</div>
+                        <div class="flow-title">Scoring</div>
+                        <div class="flow-desc">Prioritizes by case value</div>
+                    </div>
+                </div>
+
+                <div class="arrow-down">⬇️</div>
+
+                <!-- Row 4: Outcomes -->
+                <div class="flow-row">
+                    <div class="flow-box success">
+                        <div class="flow-icon">✅</div>
+                        <div class="flow-title">Qualified Lead</div>
+                        <div class="flow-desc">Instant notification to your team</div>
+                    </div>
+                    <div class="flow-box warning">
+                        <div class="flow-icon">📅</div>
+                        <div class="flow-title">Consultation Booked</div>
+                        <div class="flow-desc">Auto-scheduled on your calendar</div>
+                    </div>
+                    <div class="flow-box" style="background: #e2e8f0;">
+                        <div class="flow-icon">📁</div>
+                        <div class="flow-title">Not a Fit</div>
+                        <div class="flow-desc">Politely declined, data saved</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Before/After Comparison -->
+        <section class="comparison-section">
+            <h2>Before vs. After PreIntake.ai</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <div class="comparison-header without">❌ Without PreIntake.ai</div>
+                    <div class="comparison-body">
+                        <div class="comparison-item">
+                            <span class="comparison-icon">📵</span>
+                            <span class="comparison-text">48% of calls go unanswered<sup>[1]</sup></span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">⏰</span>
+                            <span class="comparison-text">67% fail to respond to emails<sup>[1]</sup></span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">💸</span>
+                            <span class="comparison-text">$111 avg. cost per lead wasted<sup>[2]</sup></span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">😴</span>
+                            <span class="comparison-text">Zero coverage nights & weekends</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">📝</span>
+                            <span class="comparison-text">Manual intake takes 15-30 min/lead</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">🏃</span>
+                            <span class="comparison-text">67% of clients hire first responder<sup>[3]</sup></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-header with">✅ With PreIntake.ai</div>
+                    <div class="comparison-body">
+                        <div class="comparison-item">
+                            <span class="comparison-icon">💬</span>
+                            <span class="comparison-text">100% of visitors engaged instantly</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">⚡</span>
+                            <span class="comparison-text">Response in under 5 seconds</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">🎯</span>
+                            <span class="comparison-text">Pre-qualified leads only</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">🌙</span>
+                            <span class="comparison-text">24/7/365 availability</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">🤖</span>
+                            <span class="comparison-text">AI handles intake automatically</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-icon">🏆</span>
+                            <span class="comparison-text">You become the first responder</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Stats -->
+        <section class="stats-section">
+            <h2>The Numbers That Matter</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">67%</div>
+                    <div class="stat-label">of clients hire first attorney who responds<sup>[3]</sup></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">21x</div>
+                    <div class="stat-label">better lead qualification in 5 min vs 30 min<sup>[4]</sup></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">52%</div>
+                    <div class="stat-label">more revenue with intake automation<sup>[5]</sup></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI never sleeps, never takes breaks</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Journey Timeline -->
+        <section class="timeline-section">
+            <h2>The Client Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">1. Visitor Arrives</div>
+                        <div class="timeline-desc">Potential client lands on your website after searching "personal injury lawyer near me" at 11pm.</div>
+                    </div>
+                    <div class="timeline-dot">👤</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">2. AI Engages Instantly</div>
+                        <div class="timeline-desc">PreIntake.ai chat widget appears: "Hi! I can help you understand if you have a case. What happened?"</div>
+                    </div>
+                    <div class="timeline-dot">💬</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">3. Smart Questions</div>
+                        <div class="timeline-desc">AI asks about incident date, injuries, medical treatment, and other party's insurance - customized to your practice area.</div>
+                    </div>
+                    <div class="timeline-dot">🧠</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">4. Real-Time Qualification</div>
+                        <div class="timeline-desc">Based on your criteria, AI determines this is a qualified lead with potential $50K+ case value.</div>
+                    </div>
+                    <div class="timeline-dot">✅</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">5. Instant Notification</div>
+                        <div class="timeline-desc">You receive text/email with full intake summary. Client gets confirmation and next steps.</div>
+                    </div>
+                    <div class="timeline-dot">📱</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">6. Consultation Booked</div>
+                        <div class="timeline-desc">AI schedules consultation on your calendar. By morning, you have a qualified appointment waiting.</div>
+                    </div>
+                    <div class="timeline-dot">📅</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Areas -->
+        <section class="integration-section">
+            <h2>Built for High-Volume Practice Areas</h2>
+            <div class="integration-grid">
+                <div class="integration-item">
+                    <div class="integration-icon">🚗</div>
+                    <div class="integration-label">Personal Injury</div>
+                </div>
+                <div class="integration-item">
+                    <div class="integration-icon">💳</div>
+                    <div class="integration-label">Bankruptcy</div>
+                </div>
+                <div class="integration-item">
+                    <div class="integration-icon">🛂</div>
+                    <div class="integration-label">Immigration</div>
+                </div>
+                <div class="integration-item">
+                    <div class="integration-icon">⚖️</div>
+                    <div class="integration-label">Criminal Defense</div>
+                </div>
+                <div class="integration-item">
+                    <div class="integration-icon">👨‍👩‍👧</div>
+                    <div class="integration-label">Family Law</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- References Section -->
+        <section class="references-section">
+            <h2>Sources & References</h2>
+            <ul class="references-list">
+                <li data-ref="[1]">
+                    <strong>Clio Legal Trends Report (2024)</strong> - "Client Intake Best Practices for Law Firms"<br>
+                    <a href="https://www.clio.com/blog/client-intake-law-firms/" target="_blank">https://www.clio.com/blog/client-intake-law-firms/</a><br>
+                    <em>Finding: 48% of law firms failed to answer phones; 67% unable to respond to emails</em>
+                </li>
+                <li data-ref="[2]">
+                    <strong>LocaliQ Legal Search Advertising Benchmarks (2024)</strong><br>
+                    <a href="https://localiq.com/blog/legal-search-advertising-benchmarks/" target="_blank">https://localiq.com/blog/legal-search-advertising-benchmarks/</a><br>
+                    <em>Finding: Average cost per lead for attorneys is $111.05; Personal Injury at $159.17</em>
+                </li>
+                <li data-ref="[3]">
+                    <strong>Stafi - "The Real Cost of Missed Calls for Law Firms"</strong><br>
+                    <a href="https://getstafi.com/missed-calls-law-firms/" target="_blank">https://getstafi.com/missed-calls-law-firms/</a><br>
+                    <em>Finding: 67% of legal clients choose the first attorney who answers their call</em>
+                </li>
+                <li data-ref="[4]">
+                    <strong>MIT Lead Response Management Study (2007)</strong> - cited in Clio Legal Trends<br>
+                    <a href="https://www.clio.com/blog/client-intake-law-firms/" target="_blank">https://www.clio.com/blog/client-intake-law-firms/</a><br>
+                    <em>Finding: Odds of qualifying a lead decrease 21x when response delayed from 5 to 30 minutes</em>
+                </li>
+                <li data-ref="[5]">
+                    <strong>Clio Legal Trends Report - Intake Automation Revenue Impact</strong><br>
+                    <a href="https://www.clio.com/blog/client-intake-law-firms/" target="_blank">https://www.clio.com/blog/client-intake-law-firms/</a><br>
+                    <em>Finding: Law firms using intake automation see 52% more revenue; 51% increase in leads</em>
+                </li>
+                <li data-ref="[6]">
+                    <strong>American Bar Association - "Law's New First Impression: Transforming Client Intake" (2025)</strong><br>
+                    <a href="https://www.americanbar.org/groups/law_practice/resources/law-practice-magazine/2025/march-april-2025/laws-new-first-impression-transforming-client-intake/" target="_blank">https://www.americanbar.org/groups/law_practice/resources/law-practice-magazine/2025/</a><br>
+                    <em>Overview of client intake challenges and modern solutions in legal practice</em>
+                </li>
+                <li data-ref="[7]">
+                    <strong>Clio - AI Adoption in Solo, Small, and Mid-Sized Law Firms (2025)</strong><br>
+                    <a href="https://www.clio.com/blog/2025-ai-adoption-solo-small-mid-sized-firms/" target="_blank">https://www.clio.com/blog/2025-ai-adoption-solo-small-mid-sized-firms/</a><br>
+                    <em>Finding: 79% of legal professionals use AI; 84% expect adoption to grow</em>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p><a href="https://preintake.ai">preintake.ai</a> - AI-Powered Legal Intake</p>
+    </footer>
+</body>
+</html>

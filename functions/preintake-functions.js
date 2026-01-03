@@ -1115,9 +1115,74 @@ const verifyDemoEmail = onRequest(
     }
 );
 
+/**
+ * Handle Unsubscribe Request
+ * Marks email as unsubscribed in preintake_emails collection
+ */
+const handlePreIntakeUnsubscribe = onRequest(
+    {
+        cors: true,
+        region: 'us-west1'
+    },
+    async (req, res) => {
+        // Only allow POST
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ error: 'Email is required' });
+            }
+
+            const normalizedEmail = email.trim().toLowerCase();
+
+            // Find the email in preintake_emails collection
+            const snapshot = await db.collection('preintake_emails')
+                .where('email', '==', normalizedEmail)
+                .limit(1)
+                .get();
+
+            if (snapshot.empty) {
+                // Email not found - still return success (don't reveal if email exists)
+                console.log(`Unsubscribe: Email not found - ${normalizedEmail}`);
+                return res.status(200).json({
+                    success: true,
+                    message: 'Unsubscribed successfully'
+                });
+            }
+
+            // Update the document
+            const doc = snapshot.docs[0];
+            await doc.ref.update({
+                status: 'unsubscribed',
+                unsubscribedAt: admin.firestore.FieldValue.serverTimestamp(),
+                sent: true // Mark as sent to prevent future sends
+            });
+
+            console.log(`Unsubscribe: Successfully unsubscribed ${normalizedEmail}`);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Unsubscribed successfully'
+            });
+
+        } catch (error) {
+            console.error('Unsubscribe error:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                message: error.message
+            });
+        }
+    }
+);
+
 module.exports = {
     submitDemoRequest,
     verifyDemoEmail,
     getPreIntakeFirmStatus,
-    confirmPracticeAreas
+    confirmPracticeAreas,
+    handlePreIntakeUnsubscribe
 };

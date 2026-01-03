@@ -1,0 +1,66 @@
+name: PreIntake Email Campaign
+
+on:
+  schedule:
+    # Run at 10am and 2pm PT, Monday through Friday
+    # PT = UTC-8 (standard) or UTC-7 (daylight saving)
+    # Using 18:00 and 22:00 UTC covers 10am and 2pm PT during standard time
+    # Day-of-week: 1-5 = Monday through Friday
+    - cron: '0 18,22 * * 1-5'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: 'Number of emails to send'
+        required: false
+        default: '5'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  send-campaign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: |
+          npm install firebase-admin nodemailer
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Send email batch
+        env:
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '5' }}
+        run: |
+          echo "Starting PreIntake email campaign..."
+          echo "Batch size: $BATCH_SIZE"
+          node scripts/send-preintake-campaign.js
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
