@@ -149,7 +149,6 @@ function generateEmailHTML(firmName, email) {
         <h1 style="color: #ffffff; font-size: 24px; margin: 0;">
             <span style="color: #ffffff;">Pre</span><span style="color: #c9a962;">Intake</span><span style="color: #ffffff;">.ai</span>
         </h1>
-        <p style="color: #ffffff; font-size: 14px; margin: 0; font-weight: 400;">Practice-Specific AI Powered Intake</p>
     </div>
 
     <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
