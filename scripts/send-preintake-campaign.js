@@ -5,14 +5,28 @@
  * Sends outreach emails to law firms from Firestore preintake_emails collection.
  * Uses Dreamhost SMTP via nodemailer.
  *
+ * SCHEDULE (PT Time Enforcement):
+ *   - Days: Tuesday, Wednesday, Thursday only
+ *   - Windows: 9:00-9:30am PT and 1:30-2:00pm PT
+ *   - Automatically handles DST (script checks PT time, not UTC)
+ *   - Exits cleanly with code 0 if outside allowed window
+ *
  * Environment Variables:
  *   PREINTAKE_SMTP_USER - SMTP username (scott@legal.preintake.ai)
  *   PREINTAKE_SMTP_PASS - SMTP password
  *   BATCH_SIZE - Number of emails to send per run (default: 5)
+ *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
+ *   SKIP_TIME_CHECK - Set to 'true' to bypass PT time window check
  *
  * Usage:
+ *   # Normal run (respects PT time window)
  *   PREINTAKE_SMTP_USER=xxx PREINTAKE_SMTP_PASS=xxx node scripts/send-preintake-campaign.js
- *   PREINTAKE_SMTP_USER=xxx PREINTAKE_SMTP_PASS=xxx BATCH_SIZE=10 node scripts/send-preintake-campaign.js
+ *
+ *   # Force run outside time window (for testing)
+ *   SKIP_TIME_CHECK=true PREINTAKE_SMTP_USER=xxx PREINTAKE_SMTP_PASS=xxx node scripts/send-preintake-campaign.js
+ *
+ *   # Test mode (sends to test email, doesn't update Firestore)
+ *   TEST_EMAIL=test@example.com SKIP_TIME_CHECK=true ... node scripts/send-preintake-campaign.js
  */
 
 const admin = require('firebase-admin');
@@ -45,6 +59,68 @@ const SMTP_PASS = process.env.PREINTAKE_SMTP_PASS;
 
 // Test mode: override recipient email (does NOT mark as sent in Firestore)
 const TEST_EMAIL = process.env.TEST_EMAIL || null;
+
+// Skip time check (for manual testing)
+const SKIP_TIME_CHECK = process.env.SKIP_TIME_CHECK === 'true';
+
+/**
+ * Check if current time is within allowed PT business window
+ * Returns { allowed: boolean, reason: string, ptTime: string }
+ */
+function checkPTBusinessWindow() {
+    const now = new Date();
+    const ptTimeStr = now.toLocaleString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        weekday: 'long',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    });
+
+    // Get PT components
+    const ptDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+    const day = ptDate.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+    const hour = ptDate.getHours();
+    const minute = ptDate.getMinutes();
+    const timeInMinutes = hour * 60 + minute;
+
+    // Allowed days: Tue-Thu (2, 3, 4)
+    const allowedDays = [2, 3, 4];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    if (!allowedDays.includes(day)) {
+        return {
+            allowed: false,
+            reason: `${dayNames[day]} is outside allowed days (Tue-Thu)`,
+            ptTime: ptTimeStr
+        };
+    }
+
+    // Allowed windows: 9:00-9:30am PT and 1:30-2:00pm PT
+    // Window 1: 9:00am - 9:30am (540-570 minutes)
+    // Window 2: 1:30pm - 2:00pm (810-840 minutes)
+    const window1Start = 9 * 60;      // 9:00am = 540
+    const window1End = 9 * 60 + 30;   // 9:30am = 570
+    const window2Start = 13 * 60 + 30; // 1:30pm = 810
+    const window2End = 14 * 60;        // 2:00pm = 840
+
+    const inWindow1 = timeInMinutes >= window1Start && timeInMinutes < window1End;
+    const inWindow2 = timeInMinutes >= window2Start && timeInMinutes < window2End;
+
+    if (!inWindow1 && !inWindow2) {
+        return {
+            allowed: false,
+            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (9:00-9:30am, 1:30-2:00pm)`,
+            ptTime: ptTimeStr
+        };
+    }
+
+    return {
+        allowed: true,
+        reason: inWindow1 ? 'Morning window (9:00-9:30am PT)' : 'Afternoon window (1:30-2:00pm PT)',
+        ptTime: ptTimeStr
+    };
+}
 
 /**
  * Generate outreach email HTML
@@ -151,6 +227,24 @@ async function sendEmail(transporter, to, subject, htmlContent) {
 async function runCampaign() {
     console.log('📧 PreIntake.ai Email Campaign');
     console.log('================================\n');
+
+    // Check PT business window (unless bypassed)
+    if (!SKIP_TIME_CHECK) {
+        const timeCheck = checkPTBusinessWindow();
+        console.log(`🕐 Current PT Time: ${timeCheck.ptTime}`);
+
+        if (!timeCheck.allowed) {
+            console.log(`⏭️  Skipping: ${timeCheck.reason}`);
+            console.log('   Allowed: Tue-Thu, 9:00-9:30am PT and 1:30-2:00pm PT');
+            console.log('   Set SKIP_TIME_CHECK=true to bypass');
+            process.exit(0);
+        }
+
+        console.log(`✅ ${timeCheck.reason}`);
+        console.log('');
+    } else {
+        console.log('⚠️  Time check bypassed (SKIP_TIME_CHECK=true)\n');
+    }
 
     // Validate environment
     if (!SMTP_USER || !SMTP_PASS) {
