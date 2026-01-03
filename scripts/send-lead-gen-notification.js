@@ -48,38 +48,9 @@ function formatDate(isoString) {
  * Generate email HTML content
  */
 function generateEmailHTML(summary) {
-    const statusIcon = summary.blocked ? '⚠️' : '✅';
-    const statusText = summary.blocked
-        ? `BLOCKED: ${summary.block_reason}`
-        : 'All systems operational';
-
-    // Practice areas breakdown
-    let practiceAreasHTML = '';
-    if (Object.keys(summary.practice_areas).length > 0) {
-        const sortedAreas = Object.entries(summary.practice_areas)
-            .sort((a, b) => b[1] - a[1]);
-        practiceAreasHTML = sortedAreas
-            .map(([area, count]) => `<li>${area}: ${count}</li>`)
-            .join('\n');
-    } else {
-        practiceAreasHTML = '<li>No new firms scraped</li>';
-    }
-
-    // New firms list (first 10)
-    let firmsListHTML = '';
-    if (summary.new_firms_list && summary.new_firms_list.length > 0) {
-        const firms = summary.new_firms_list.slice(0, 10);
-        firmsListHTML = firms.map(f =>
-            `<tr>
-                <td style="padding: 4px 8px; border-bottom: 1px solid #eee;">${f.firm}</td>
-                <td style="padding: 4px 8px; border-bottom: 1px solid #eee;">${f.area}</td>
-            </tr>`
-        ).join('\n');
-
-        if (summary.new_firms_list.length > 10) {
-            firmsListHTML += `<tr><td colspan="2" style="padding: 4px 8px; color: #666;">... and ${summary.new_firms_list.length - 10} more</td></tr>`;
-        }
-    }
+    const successRate = summary.extract.success + summary.extract.failed > 0
+        ? Math.round((summary.extract.success / (summary.extract.success + summary.extract.failed)) * 100)
+        : 0;
 
     return `<!DOCTYPE html>
 <html>
@@ -90,7 +61,7 @@ function generateEmailHTML(summary) {
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
     <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
         <h1 style="color: #ffffff; font-size: 20px; margin: 0;">
-            PreIntake.ai Lead Generation Report
+            PreIntake.ai Email Extraction Report
         </h1>
     </div>
 
@@ -99,45 +70,45 @@ function generateEmailHTML(summary) {
             ${formatDate(summary.run_date)}
         </p>
 
-        <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Summary</h2>
+        <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Email Extraction Results</h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">New firms scraped:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${summary.scrape.new_firms}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Emails extracted this run:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600; color: #166534;">${summary.extract.success}</td>
             </tr>
             <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Emails extracted:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${summary.extract.success}</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Email extraction failed:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Failed extractions:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${summary.extract.failed}</td>
             </tr>
             <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Skipped (recent attempt):</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Skipped (recently attempted):</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${summary.extract.skipped}</td>
             </tr>
-        </table>
-
-        <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Practice Areas</h2>
-        <ul style="margin: 0 0 20px 0; padding-left: 20px;">
-            ${practiceAreasHTML}
-        </ul>
-
-        ${firmsListHTML ? `
-        <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">New Firms Added</h2>
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
-            <tr style="background: #f1f5f9;">
-                <th style="padding: 8px; text-align: left;">Firm</th>
-                <th style="padding: 8px; text-align: left;">Practice Area</th>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Success rate:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${successRate}%</td>
             </tr>
-            ${firmsListHTML}
         </table>
-        ` : ''}
 
-        <div style="background: ${summary.blocked ? '#fef2f2' : '#f0fdf4'}; padding: 15px; border-radius: 8px; margin-top: 20px;">
-            <p style="margin: 0; font-weight: 600; color: ${summary.blocked ? '#991b1b' : '#166534'};">
-                ${statusIcon} Status: ${statusText}
+        <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Directory Totals</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Total firms in directory:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${summary.total_firms.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Firms with emails:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600; color: #166534;">${summary.firms_with_emails.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Pending extraction:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${(summary.total_firms - summary.firms_with_emails).toLocaleString()}</td>
+            </tr>
+        </table>
+
+        <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <p style="margin: 0; font-weight: 600; color: #166534;">
+                ✅ Pipeline completed successfully
             </p>
         </div>
     </div>
@@ -153,41 +124,28 @@ function generateEmailHTML(summary) {
  * Generate plain text version
  */
 function generatePlainText(summary) {
-    const statusText = summary.blocked
-        ? `BLOCKED: ${summary.block_reason}`
-        : 'All systems operational';
+    const successRate = summary.extract.success + summary.extract.failed > 0
+        ? Math.round((summary.extract.success / (summary.extract.success + summary.extract.failed)) * 100)
+        : 0;
 
-    let text = `PreIntake.ai Lead Generation Report
+    return `PreIntake.ai Email Extraction Report
 ${formatDate(summary.run_date)}
 
-SUMMARY
--------
-New firms scraped: ${summary.scrape.new_firms}
-Emails extracted: ${summary.extract.success}
-Email extraction failed: ${summary.extract.failed}
-Skipped (recent attempt): ${summary.extract.skipped}
+EMAIL EXTRACTION RESULTS
+------------------------
+Emails extracted this run: ${summary.extract.success}
+Failed extractions: ${summary.extract.failed}
+Skipped (recently attempted): ${summary.extract.skipped}
+Success rate: ${successRate}%
 
-PRACTICE AREAS
---------------
+DIRECTORY TOTALS
+----------------
+Total firms in directory: ${summary.total_firms.toLocaleString()}
+Firms with emails: ${summary.firms_with_emails.toLocaleString()}
+Pending extraction: ${(summary.total_firms - summary.firms_with_emails).toLocaleString()}
+
+STATUS: Pipeline completed successfully
 `;
-
-    for (const [area, count] of Object.entries(summary.practice_areas).sort((a, b) => b[1] - a[1])) {
-        text += `${area}: ${count}\n`;
-    }
-
-    if (summary.new_firms_list && summary.new_firms_list.length > 0) {
-        text += `\nNEW FIRMS ADDED\n---------------\n`;
-        for (const firm of summary.new_firms_list.slice(0, 10)) {
-            text += `- ${firm.firm} (${firm.area})\n`;
-        }
-        if (summary.new_firms_list.length > 10) {
-            text += `... and ${summary.new_firms_list.length - 10} more\n`;
-        }
-    }
-
-    text += `\nSTATUS: ${statusText}\n`;
-
-    return text;
 }
 
 /**
@@ -213,9 +171,9 @@ async function main() {
 
     const summary = JSON.parse(fs.readFileSync(SUMMARY_FILE, 'utf-8'));
     console.log(`📂 Loaded summary from ${SUMMARY_FILE}`);
-    console.log(`   New firms: ${summary.scrape.new_firms}`);
+    console.log(`   Total firms: ${summary.total_firms}`);
     console.log(`   Emails extracted: ${summary.extract.success}`);
-    console.log(`   Blocked: ${summary.blocked}`);
+    console.log(`   Firms with emails: ${summary.firms_with_emails}`);
 
     // Create transporter
     const transporter = nodemailer.createTransport({
@@ -242,13 +200,11 @@ async function main() {
     }
 
     // Build subject line
-    let subject = 'New Law Firms Added';
-    if (summary.blocked) {
-        subject = '⚠️ Lead Generation BLOCKED - Action Required';
-    } else if (summary.scrape.new_firms === 0) {
-        subject = 'Lead Generation Report - No New Firms';
+    let subject;
+    if (summary.extract.success > 0) {
+        subject = `Email Extraction: ${summary.extract.success} new emails (${summary.firms_with_emails} total)`;
     } else {
-        subject = `New Law Firms Added: ${summary.scrape.new_firms} firms, ${summary.extract.success} emails`;
+        subject = `Email Extraction Report - No new emails`;
     }
 
     // Send email

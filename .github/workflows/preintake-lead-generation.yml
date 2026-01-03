@@ -10,10 +10,6 @@ on:
   # Allow manual trigger for testing
   workflow_dispatch:
     inputs:
-      scrape_batch_size:
-        description: 'Number of new firms to scrape from Justia'
-        required: false
-        default: '50'
       extract_batch_size:
         description: 'Number of email extractions to attempt'
         required: false
@@ -24,7 +20,7 @@ env:
   PYTHON_VERSION: '3.11'
 
 jobs:
-  build-leads:
+  extract-emails:
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -45,7 +41,7 @@ jobs:
           cache-dependency-path: 'scripts/package.json'
 
       - name: Install Python dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install requests
 
       - name: Install Node dependencies
         working-directory: scripts
@@ -59,15 +55,11 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
           echo "Firebase credentials configured"
 
-      - name: Run lead generation pipeline
-        id: pipeline
-        continue-on-error: true
+      - name: Extract emails from firm websites
         env:
-          SCRAPE_BATCH_SIZE: ${{ github.event.inputs.scrape_batch_size || '50' }}
           EXTRACT_BATCH_SIZE: ${{ github.event.inputs.extract_batch_size || '100' }}
         run: |
-          echo "Starting lead generation pipeline..."
-          echo "Scrape batch size: $SCRAPE_BATCH_SIZE"
+          echo "Starting email extraction pipeline..."
           echo "Extract batch size: $EXTRACT_BATCH_SIZE"
           python scripts/build-preintake-leads.py
 
@@ -98,7 +90,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Auto-update law firm leads $(date +%Y-%m-%d)"
+            git commit -m "Auto-update law firm emails $(date +%Y-%m-%d)"
             git push
             echo "Changes committed and pushed"
           fi

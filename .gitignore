@@ -52,6 +52,10 @@ colabs/
 Build_*
 temp/
 
+# Justia scraping (manual HTML saves)
+preintake/justia-pages/
+preintake/justia-links
+
 # === Flutter / Dart / Pub Specific Ignores ===
 lib_backup/
 build/
