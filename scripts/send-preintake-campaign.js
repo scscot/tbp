@@ -175,7 +175,7 @@ function generateEmailHTML(firmName, email) {
         <p>We can generate a demo tailored specifically to <strong>${firmName}</strong>.</p>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Generate a Demo</a>
+            <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Generate a Demo for Your Practice</a>
         </div>
 
         <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
