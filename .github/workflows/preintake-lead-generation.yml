@@ -60,6 +60,8 @@ jobs:
           echo "Firebase credentials configured"
 
       - name: Run lead generation pipeline
+        id: pipeline
+        continue-on-error: true
         env:
           SCRAPE_BATCH_SIZE: ${{ github.event.inputs.scrape_batch_size || '50' }}
           EXTRACT_BATCH_SIZE: ${{ github.event.inputs.extract_batch_size || '100' }}
@@ -70,11 +72,13 @@ jobs:
           python scripts/build-preintake-leads.py
 
       - name: Import to Firestore
+        if: always()
         run: |
           echo "Importing new leads to Firestore..."
           node scripts/import-preintake-emails.js
 
       - name: Send notification email
+        if: always()
         env:
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
@@ -83,6 +87,7 @@ jobs:
           node scripts/send-lead-gen-notification.js
 
       - name: Commit updated CSV files
+        if: always()
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"

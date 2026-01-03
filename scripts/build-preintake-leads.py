@@ -515,9 +515,8 @@ def main():
 
     print(f"\nSummary saved to: {SUMMARY_JSON}")
 
-    # Exit with error if blocked
-    if summary["blocked"]:
-        sys.exit(1)
+    # Note: Don't exit with error code when blocked
+    # The notification email will alert about the blocking status
 
 
 if __name__ == "__main__":
