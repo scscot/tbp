@@ -1,0 +1,106 @@
+name: PreIntake Lead Generation
+
+on:
+  schedule:
+    # Daily at 3am PT - covers both DST scenarios
+    # 10:00 UTC = 3am PDT / 2am PST
+    # 11:00 UTC = 4am PDT / 3am PST
+    - cron: '0 10,11 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      scrape_batch_size:
+        description: 'Number of new firms to scrape from Justia'
+        required: false
+        default: '50'
+      extract_batch_size:
+        description: 'Number of email extractions to attempt'
+        required: false
+        default: '100'
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  build-leads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install Python dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Install Node dependencies
+        working-directory: scripts
+        run: npm install firebase-admin nodemailer
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run lead generation pipeline
+        env:
+          SCRAPE_BATCH_SIZE: ${{ github.event.inputs.scrape_batch_size || '50' }}
+          EXTRACT_BATCH_SIZE: ${{ github.event.inputs.extract_batch_size || '100' }}
+        run: |
+          echo "Starting lead generation pipeline..."
+          echo "Scrape batch size: $SCRAPE_BATCH_SIZE"
+          echo "Extract batch size: $EXTRACT_BATCH_SIZE"
+          python scripts/build-preintake-leads.py
+
+      - name: Import to Firestore
+        run: |
+          echo "Importing new leads to Firestore..."
+          node scripts/import-preintake-emails.js
+
+      - name: Send notification email
+        env:
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          echo "Sending notification email..."
+          node scripts/send-lead-gen-notification.js
+
+      - name: Commit updated CSV files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add preintake/law-firms-directory.csv
+          git add preintake/law-firms-directory-with-emails.csv
+
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update law firm leads $(date +%Y-%m-%d)"
+            git push
+            echo "Changes committed and pushed"
+          fi
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          rm -f scripts/lead-gen-summary.json
+          echo "Cleanup complete"
