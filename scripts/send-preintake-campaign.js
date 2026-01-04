@@ -139,26 +139,29 @@ function generateEmailHTML(firmName, email) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<![endif]-->
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
-    <!-- Preview text (hidden) -->
-    <div style="display: none; max-height: 0; overflow: hidden;">
-        How law firms reduce unqualified consultations without hiring more staff.
+<body style="margin:0; padding:0; background-color:#f8fafc;">
+  <div style="display:none; max-height:0; overflow:hidden;">
+    How law firms reduce unqualified consultations without hiring more staff.
+  </div>
+
+  <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
+
+    <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
+      <h1 style="color:#ffffff; font-size:24px; margin:0;">
+        <span style="color:#ffffff;">Pre</span><span style="color:#c9a962;">Intake</span><span style="color:#ffffff;">.ai</span>
+      </h1>
     </div>
 
-    <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
-        <h1 style="color: #ffffff; font-size: 24px; margin: 0;">
-            <span style="color: #ffffff;">Pre</span><span style="color: #c9a962;">Intake</span><span style="color: #ffffff;">.ai</span>
-        </h1>
-    </div>
+    <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+      <p style="text-align:center; margin:0 0 16px 0;">
+        <strong>Practice-Specific AI Intake That Screens and Qualifies Inquires—24/7</strong>
+      </p>
 
-    <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <p>Most law practices spend a surprising amount of staff time
-        reviewing inquiries that were never a fit to begin with.
-        Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases
-        are mixed in with the noise.</p>
+      <p>Most law practices spend a surprising amount of staff time
+      reviewing inquiries that were never a fit to begin with.</p>
+      <p>Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases are mixed in with the noise.</p>
 
-        <p><strong>PreIntake.ai</strong> screens prospective clients before they reach your team,
-        so staff time is spent reviewing cases that already meet your criteria.</p>
+        <p><strong>PreIntake.ai screens prospective clients before they reach your team</strong>, so staff time is spent reviewing cases that already meet your criteria.</p>
 
         <ul style="color: #1a1a2e; padding-left: 20px;">
             <li>Screens inquiries using practice-specific criteria</li>
@@ -169,10 +172,10 @@ function generateEmailHTML(firmName, email) {
         <p>Firms typically use this to reduce unproductive intake work
         and surface viable cases faster — without changing their CRM or existing workflow.</p>
 
-        <p>We can generate a demo tailored specifically to <strong>${firmName}</strong>.</p>
+        <p>We've already mapped a demo tailored specifically to <strong>${firmName}</strong>.</p>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Generate a Demo for Your Practice</a>
+            <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Practice's Demo</a>
         </div>
 
         <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
@@ -186,11 +189,11 @@ function generateEmailHTML(firmName, email) {
         </p>
     </div>
 
-    <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
-        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
-        <p style="margin: 15px 0 0 0;">
-            <a href="${unsubscribeUrl}" style="color: #94a3b8; text-decoration: underline;">Unsubscribe</a>
-        </p>
+    <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
+      <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
+      <p style="margin:15px 0 0 0;">
+        <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
+      </p>
     </div>
 </body>
 </html>`;

@@ -866,7 +866,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 **Flow:**
 ```
-1. Customer pays → Account activated → Leads delivered via EMAIL (default)
+1. Customer pays → Account activated → Inquires delivered via EMAIL (default)
 2. Welcome email includes: Embed code + "Configure CRM Integration" link
 3. Customer can optionally set up CRM/webhook delivery later
 ```
