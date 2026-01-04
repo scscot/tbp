@@ -145,15 +145,13 @@ function generateEmailHTML(firmName, email) {
         How law firms reduce unqualified consultations without hiring more staff.
     </div>
 
-    <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+    <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
         <h1 style="color: #ffffff; font-size: 24px; margin: 0;">
             <span style="color: #ffffff;">Pre</span><span style="color: #c9a962;">Intake</span><span style="color: #ffffff;">.ai</span>
         </h1>
     </div>
 
     <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <p>Hi there,</p>
-
         <p>Most law practices spend a surprising amount of staff time
         reviewing inquiries that were never a fit to begin with.
         Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases
