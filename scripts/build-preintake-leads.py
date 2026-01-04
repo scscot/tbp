@@ -41,7 +41,8 @@ BAD_EMAIL_PATTERNS = [
     "facebook.com", "twitter.com", "linkedin.com", "instagram.com",
     ".png", ".jpg", ".gif", ".webp", ".svg",
     "noreply", "no-reply", "donotreply",
-    "avadacorporate.com", "pilawyerapp.com",  # Third-party service providers
+    "avadacorporate.com", "pilawyerapp.com", "latofonts.com",  # Third-party service providers
+    "unbundledlaw.com",  # Legal services platform, not firm domains
 ]
 PREFERRED_PREFIXES = [
     "intake@", "info@", "contact@", "office@", "mail@",

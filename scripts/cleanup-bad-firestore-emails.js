@@ -23,6 +23,8 @@ const COLLECTION_NAME = 'preintake_emails';
 const BAD_EMAIL_DOMAINS = [
     'avadacorporate.com',
     'pilawyerapp.com',
+    'latofonts.com',
+    'unbundledlaw.com',
 ];
 
 async function cleanupBadEmails() {
