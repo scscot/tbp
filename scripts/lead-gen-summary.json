@@ -1,0 +1,17 @@
+{
+  "run_date": "2026-01-03T12:23:28.084600",
+  "scrape": {
+    "new_firms": 0,
+    "skipped_existing": 0,
+    "errors": 0
+  },
+  "extract": {
+    "success": 2,
+    "failed": 3,
+    "skipped": 0
+  },
+  "practice_areas": {},
+  "blocked": true,
+  "block_reason": "Blocked after 0 firms: HTTP 403",
+  "new_firms_list": []
+}
