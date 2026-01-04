@@ -41,6 +41,7 @@ BAD_EMAIL_PATTERNS = [
     "facebook.com", "twitter.com", "linkedin.com", "instagram.com",
     ".png", ".jpg", ".gif", ".webp", ".svg",
     "noreply", "no-reply", "donotreply",
+    "avadacorporate.com", "pilawyerapp.com",  # Third-party service providers
 ]
 PREFERRED_PREFIXES = [
     "intake@", "info@", "contact@", "office@", "mail@",

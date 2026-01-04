@@ -2,10 +2,9 @@ name: PreIntake Lead Generation
 
 on:
   schedule:
-    # Daily at 3am PT - covers both DST scenarios
-    # 10:00 UTC = 3am PDT / 2am PST
-    # 11:00 UTC = 4am PDT / 3am PST
-    - cron: '0 10,11 * * *'
+    # Daily at 3am PT (10:00 UTC during PDT, 11:00 UTC during PST)
+    # Using 10:00 UTC - runs at 3am PDT / 2am PST
+    - cron: '0 10 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
