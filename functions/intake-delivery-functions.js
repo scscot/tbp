@@ -90,8 +90,8 @@ const handleIntakeCompletion = onRequest(
             const leadDoc = await db.collection('preintake_leads').doc(leadId).get();
 
             if (!leadDoc.exists) {
-                console.error(`Lead not found: ${leadId}`);
-                return res.status(404).json({ error: 'Lead not found' });
+                console.error(`Inquiry not found: ${leadId}`);
+                return res.status(404).json({ error: 'Inquiry not found' });
             }
 
             const leadData = leadDoc.data();
@@ -164,7 +164,7 @@ async function deliverViaEmail(transporter, payload, config, leadData) {
         const firmName = leadData.analysis?.firmName || 'Your Firm';
         const htmlSummary = generateIntakeSummary(payload, firmName);
 
-        const leadName = payload.lead?.name || 'New Lead';
+        const leadName = payload.lead?.name || 'New Inquiry';
         const caseType = payload.case_info?.case_type || 'Legal Matter';
         const routing = payload.routing || 'unknown';
 
@@ -181,7 +181,7 @@ async function deliverViaEmail(transporter, payload, config, leadData) {
         await transporter.sendMail({
             from: FROM_ADDRESS,
             to: config.emailAddress,
-            subject: `${subjectPrefix}New Lead: ${leadName} - ${caseType}`,
+            subject: `${subjectPrefix}New Inquiry: ${leadName} - ${caseType}`,
             html: htmlSummary
         });
 
@@ -286,7 +286,7 @@ async function notifyIntakeComplete(transporter, payload, leadData, deliveryResu
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${firmName}</td>
         </tr>
         <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Lead:</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Inquiry:</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${payload.lead?.name || 'N/A'} (${payload.lead?.email || 'N/A'})</td>
         </tr>
         <tr>
@@ -334,7 +334,7 @@ async function sendConversionEmail(transporter, leadId, leadData) {
         await transporter.sendMail({
             from: 'PreIntake.ai <support@preintake.ai>',
             to: toEmail,
-            subject: `Your PreIntake.ai Demo Just Captured a Lead`,
+            subject: `Your PreIntake.ai Demo Just Captured an Inquiry`,
             html: generateConversionEmailHtml(firmName, firstName, accountUrl)
         });
 
@@ -377,7 +377,7 @@ function generateConversionEmailHtml(firmName, firstName, accountUrl) {
         <p style="margin: 0 0 20px 0;">${greeting}</p>
 
         <p style="margin: 0 0 20px 0;">
-            Great news — your PreIntake.ai demo just captured its first lead for <strong>${firmName}</strong>.
+            Great news — your PreIntake.ai demo just captured its first inquiry for <strong>${firmName}</strong>.
         </p>
 
         <p style="margin: 0 0 20px 0;">
@@ -385,7 +385,7 @@ function generateConversionEmailHtml(firmName, firstName, accountUrl) {
         </p>
 
         <p style="margin: 0 0 25px 0;">
-            <strong>Ready to go live?</strong> Activate your account to add AI-powered intake to your website. The same intelligent screening you just experienced will work 24/7 on your site, qualifying leads while you focus on your cases.
+            <strong>Ready to go live?</strong> Activate your account to add AI-powered intake to your website. The same intelligent screening you just experienced will work 24/7 on your site, qualifying inquiries while you focus on your cases.
         </p>
 
         <!-- CTA Button -->
@@ -401,7 +401,7 @@ function generateConversionEmailHtml(firmName, firstName, accountUrl) {
             <ul style="margin: 0; padding-left: 20px; color: #475569;">
                 <li style="margin-bottom: 8px;">AI intake customized to your practice areas</li>
                 <li style="margin-bottom: 8px;">Embeddable widget for your website</li>
-                <li style="margin-bottom: 8px;">24/7 lead qualification and screening</li>
+                <li style="margin-bottom: 8px;">24/7 inquiry qualification and screening</li>
                 <li style="margin-bottom: 8px;">Email or webhook delivery to your CRM</li>
                 <li>Cancel anytime — no long-term contracts</li>
             </ul>

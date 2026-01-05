@@ -433,7 +433,7 @@ function generateProspectEmail(name, website) {
 
     <p>You'll receive a private link to review your demo shortly. Most demos are ready within <strong>about 5 minutes</strong>, depending on site complexity.</p>
 
-    <p>The demo shows how PreIntake.ai screens leads before they reach your CRM—highlighting which cases move forward, which need more information, and which are declined outright.</p>
+    <p>The demo shows how PreIntake.ai screens inquiries before they reach your CRM—highlighting which cases move forward, which need more information, and which are declined outright.</p>
 
     <p>If you have questions or want a second set of eyes on the demo once it's ready, just reply to this email.</p>
 
@@ -534,7 +534,7 @@ function generateNotifyEmail(name, email, website, leadId, practiceAreas) {
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${practiceAreasHtml}</td>
         </tr>
         <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Lead ID:</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Inquiry ID:</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: monospace;">${leadId}</td>
         </tr>
     </table>
@@ -911,7 +911,7 @@ const confirmPracticeAreas = onRequest(
             const doc = await leadRef.get();
 
             if (!doc.exists) {
-                return res.status(404).json({ error: 'Lead not found' });
+                return res.status(404).json({ error: 'Inquiry not found' });
             }
 
             const data = doc.data();
@@ -920,7 +920,7 @@ const confirmPracticeAreas = onRequest(
             // 'awaiting_confirmation' is the expected state after Deep Research completes
             if (data.status !== 'awaiting_confirmation') {
                 return res.status(400).json({
-                    error: 'Lead is not ready for practice area confirmation',
+                    error: 'Inquiry is not ready for practice area confirmation',
                     currentStatus: data.status
                 });
             }
@@ -1088,7 +1088,7 @@ const verifyDemoEmail = onRequest(
                     await sendEmail(
                         transporter,
                         NOTIFY_EMAIL,
-                        `New PreIntake Lead: ${data.name} - ${new URL(data.website).hostname}${primaryAreaLabel}`,
+                        `New PreIntake Inquiry: ${data.name} - ${new URL(data.website).hostname}${primaryAreaLabel}`,
                         notifyHtml
                     );
                     await doc.ref.update({ notificationSent: true });

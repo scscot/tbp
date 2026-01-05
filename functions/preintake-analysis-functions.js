@@ -480,7 +480,7 @@ Respond with ONLY valid JSON (no markdown, no explanation). Replace ALL placehol
         "Screening question 3"
     ],
     "qualificationCriteria": [
-        "What makes a qualified lead for this firm"
+        "What makes a qualified inquiry for this firm"
     ],
     "competitiveNotes": "Brief positioning notes"
 }`;
@@ -580,7 +580,7 @@ async function sendAnalysisEmail(leadId, name, email, website, analysis) {
 
     <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
         <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 140px;">Lead:</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 140px;">Inquiry:</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${name} (<a href="mailto:${email}">${email}</a>)</td>
         </tr>
         <tr>
