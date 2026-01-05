@@ -554,7 +554,7 @@ function generateBlogHTML(blogPost) {
 
   <footer class="main-footer">
     <div class="container">
-      <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} Stephen Scott. All rights reserved.</p>
       <p>
         <a href="/books.html">Books</a> &bull;
         <a href="/blog.html">Blog</a> &bull;

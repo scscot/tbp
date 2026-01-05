@@ -334,7 +334,7 @@ CONTENT STRUCTURE:
 2. **Why This Matters Now** (1 H2 section)
    - Current trends or context
    - Why traditional approaches fail
-   - What's changed in 2025
+   - What's changed in ${new Date().getFullYear()}
 
 3. **Main Content** (5-7 H2 sections)
    - Each section should be 200-400 words
@@ -1122,7 +1122,7 @@ ${colors.bright}CONTENT STRUCTURE:${colors.reset}
 2. **Why This Matters Now** (1 H2 section)
    - Current trends or context
    - Why traditional approaches fail
-   - What's changed in 2025
+   - What's changed in ${new Date().getFullYear()}
 
 3. **Main Content** (5-7 H2 sections)
    - Each section should be 200-400 words
