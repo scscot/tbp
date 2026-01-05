@@ -30,11 +30,11 @@ function loadTeamBuildProFacts() {
   return facts;
 }
 
-// Load sections from CLAUDE.md
+// Load sections from TEAM_BUILD_PRO_KNOWLEDGE.md
 function loadClaudeMdSections() {
-  const claudeMdPath = path.join(__dirname, '..', 'CLAUDE.md');
+  const claudeMdPath = path.join(__dirname, '..', 'TEAM_BUILD_PRO_KNOWLEDGE.md');
   if (!fs.existsSync(claudeMdPath)) {
-    console.log(`${colors.yellow}Warning: CLAUDE.md not found${colors.reset}`);
+    console.log(`${colors.yellow}Warning: TEAM_BUILD_PRO_KNOWLEDGE.md not found${colors.reset}`);
     return null;
   }
 
@@ -293,7 +293,7 @@ function generateBlogPromptPlain(title, category, keywords, extraNotes) {
 TEAM BUILD PRO FACTS (USE ONLY THESE - DO NOT FABRICATE FEATURES):
 If you mention Team Build Pro in this article, only reference features documented below.
 
-=== FROM CLAUDE.MD (Product Identity) ===
+=== FROM TEAM_BUILD_PRO_KNOWLEDGE.MD (Product Identity) ===
 ${tbpFacts.claudeMd.coreIdentity || ''}
 
 ${tbpFacts.claudeMd.statistics || ''}
