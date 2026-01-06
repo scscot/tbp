@@ -3,18 +3,18 @@ name: PreIntake Email Campaign
 on:
   schedule:
     # Script enforces PT time windows - cron triggers cover both DST scenarios
-    # Target windows: 9:00-9:30am PT and 1:30-2:00pm PT, Tue-Thu only
+    # Target windows: 9:00-10:00am PT and 1:00-2:00pm PT, Mon-Fri
     #
-    # Morning window triggers:
-    #   16:15 UTC = 9:15am PDT / 8:15am PST (PDT passes, PST skipped)
-    #   17:15 UTC = 10:15am PDT / 9:15am PST (PDT skipped, PST passes)
-    # Afternoon window triggers:
-    #   20:45 UTC = 1:45pm PDT / 12:45pm PST (PDT passes, PST skipped)
-    #   21:45 UTC = 2:45pm PDT / 1:45pm PST (PDT skipped, PST passes)
+    # Morning window triggers (9:30am PT target):
+    #   16:30 UTC = 9:30am PDT / 8:30am PST (PDT passes, PST skipped)
+    #   17:30 UTC = 10:30am PDT / 9:30am PST (PDT skipped, PST passes)
+    # Afternoon window triggers (1:30pm PT target):
+    #   20:30 UTC = 1:30pm PDT / 12:30pm PST (PDT passes, PST skipped)
+    #   21:30 UTC = 2:30pm PDT / 1:30pm PST (PDT skipped, PST passes)
     #
-    # Day-of-week: 2-4 = Tuesday through Thursday
-    - cron: '15 16,17 * * 2-4'
-    - cron: '45 20,21 * * 2-4'
+    # Day-of-week: 1-5 = Monday through Friday
+    - cron: '30 16,17 * * 1-5'
+    - cron: '30 20,21 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:
@@ -22,7 +22,7 @@ on:
       batch_size:
         description: 'Number of emails to send'
         required: false
-        default: '15'
+        default: '20'
       skip_time_check:
         description: 'Bypass PT time window check'
         required: false
@@ -69,7 +69,7 @@ jobs:
         env:
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size || '15' }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '20' }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
         run: |
           echo "Starting PreIntake email campaign..."

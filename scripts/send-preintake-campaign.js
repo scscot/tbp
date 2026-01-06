@@ -6,8 +6,8 @@
  * Uses Dreamhost SMTP via nodemailer.
  *
  * SCHEDULE (PT Time Enforcement):
- *   - Days: Tuesday, Wednesday, Thursday only
- *   - Windows: 9:00-9:30am PT and 1:30-2:00pm PT
+ *   - Days: Monday through Friday
+ *   - Windows: 9:00-10:00am PT and 1:00-2:00pm PT
  *   - Automatically handles DST (script checks PT time, not UTC)
  *   - Exits cleanly with code 0 if outside allowed window
  *
@@ -84,24 +84,24 @@ function checkPTBusinessWindow() {
     const minute = ptDate.getMinutes();
     const timeInMinutes = hour * 60 + minute;
 
-    // Allowed days: Tue-Thu (2, 3, 4)
-    const allowedDays = [2, 3, 4];
+    // Allowed days: Mon-Fri (1, 2, 3, 4, 5)
+    const allowedDays = [1, 2, 3, 4, 5];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     if (!allowedDays.includes(day)) {
         return {
             allowed: false,
-            reason: `${dayNames[day]} is outside allowed days (Tue-Thu)`,
+            reason: `${dayNames[day]} is outside allowed days (Mon-Fri)`,
             ptTime: ptTimeStr
         };
     }
 
-    // Allowed windows: 9:00-9:30am PT and 1:30-2:00pm PT
-    // Window 1: 9:00am - 9:30am (540-570 minutes)
-    // Window 2: 1:30pm - 2:00pm (810-840 minutes)
-    const window1Start = 9 * 60;      // 9:00am = 540
-    const window1End = 9 * 60 + 30;   // 9:30am = 570
-    const window2Start = 13 * 60 + 30; // 1:30pm = 810
+    // Allowed windows: 9:00-10:00am PT and 1:00-2:00pm PT
+    // Window 1: 9:00am - 10:00am (540-600 minutes)
+    // Window 2: 1:00pm - 2:00pm (780-840 minutes)
+    const window1Start = 9 * 60;       // 9:00am = 540
+    const window1End = 10 * 60;        // 10:00am = 600
+    const window2Start = 13 * 60;      // 1:00pm = 780
     const window2End = 14 * 60;        // 2:00pm = 840
 
     const inWindow1 = timeInMinutes >= window1Start && timeInMinutes < window1End;
@@ -110,14 +110,14 @@ function checkPTBusinessWindow() {
     if (!inWindow1 && !inWindow2) {
         return {
             allowed: false,
-            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (9:00-9:30am, 1:30-2:00pm)`,
+            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (9:00-10:00am, 1:00-2:00pm)`,
             ptTime: ptTimeStr
         };
     }
 
     return {
         allowed: true,
-        reason: inWindow1 ? 'Morning window (9:00-9:30am PT)' : 'Afternoon window (1:30-2:00pm PT)',
+        reason: inWindow1 ? 'Morning window (9:00-10:00am PT)' : 'Afternoon window (1:00-2:00pm PT)',
         ptTime: ptTimeStr
     };
 }
@@ -235,7 +235,7 @@ async function runCampaign() {
 
         if (!timeCheck.allowed) {
             console.log(`⏭️  Skipping: ${timeCheck.reason}`);
-            console.log('   Allowed: Tue-Thu, 9:00-9:30am PT and 1:30-2:00pm PT');
+            console.log('   Allowed: Mon-Fri, 9:00-10:00am PT and 1:00-2:00pm PT');
             console.log('   Set SKIP_TIME_CHECK=true to bypass');
             process.exit(0);
         }
