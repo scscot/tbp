@@ -22,7 +22,7 @@ on:
       batch_size:
         description: 'Number of emails to send'
         required: false
-        default: '5'
+        default: '15'
       skip_time_check:
         description: 'Bypass PT time window check'
         required: false
@@ -69,7 +69,7 @@ jobs:
         env:
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size || '5' }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '15' }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
         run: |
           echo "Starting PreIntake email campaign..."
