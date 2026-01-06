@@ -161,7 +161,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 **Page:** `/create-account.html?firm={leadId}`
 
 **Flow:**
-1. User reviews pricing ($149 setup + $79/month)
+1. User reviews pricing ($149 setup + $99/month)
 2. Clicks "Complete Setup" → Stripe Checkout
 3. Stripe processes payment (setup fee + first month subscription)
 4. Webhook (`checkout.session.completed`) → Updates Firestore
@@ -229,7 +229,7 @@ Discovery → Demo → Payment → Onboarding → Implementation → Lead Flow �
 
 ### Phase 7: Subscription Management
 
-**Billing:** Monthly via Stripe ($79/month after initial $228)
+**Billing:** Monthly via Stripe ($99/month after initial $248)
 
 **Customer Portal:** (Future)
 - Manage payment method
@@ -314,8 +314,8 @@ The generic template leverages Claude AI to ask intelligent follow-up questions 
 | Component | Amount |
 |-----------|--------|
 | **One-time Setup Fee** | $149 |
-| **Monthly Subscription** | $79/mo |
-| **Total Due Today** | **$228** |
+| **Monthly Subscription** | $99/mo |
+| **Total Due Today** | **$248** |
 
 ### Setup Fee Includes:
 - Practice-area template configuration
@@ -345,7 +345,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 
 **Result:** 4 additional signed cases/month × $15K average fee = **$60K incremental revenue**
 
-**Your cost:** $79/month
+**Your cost:** $99/month
 
 **ROI:** 465:1
 
@@ -550,7 +550,7 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 | Environment | Setup Fee | Monthly Subscription |
 |-------------|-------------------|---------------------|
 | **Test** | `price_1SjQ1aJaJO3EHqOSH5tYPJOB` | `price_1SjNpAJaJO3EHqOSHh4DbhNM` |
-| **Live** | `price_1SksYAJBdoLMDposleabMPli` | `price_1SksalJBdoLMDposiiL704de` |
+| **Live** | `price_1SksYAJBdoLMDposleabMPli` | `price_1SmPbhJBdoLMDposfgTFIJSA` |
 
 **Firestore Subscription Fields** (in `preintake_leads` collection):
 | Field | Description |
@@ -659,7 +659,7 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 - [x] **Frontend HTML Audit** - Validated all 11 HTML files for structure and consistency
 - [x] **Frontend JavaScript Audit** - Checked 4 JS files for syntax errors and patterns
 - [x] **Backend Cloud Functions Audit** - Verified 8 function files and index.js exports
-- [x] **Cross-file Consistency Check** - Confirmed pricing ($79/month + $149 setup) and email consistency
+- [x] **Cross-file Consistency Check** - Confirmed pricing ($99/month + $149 setup) and email consistency
 - [x] **Security Review** - Verified no hardcoded secrets, all use Firebase `defineSecret`
 - [x] **Schema.org Fix** - Updated `priceValidUntil` from "2025-12-31" to "2026-12-31" (was expiring)
 - [x] **OG Image Created** - Created `/preintake/images/og-image.png` (1200x630) for social sharing previews

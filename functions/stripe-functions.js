@@ -33,7 +33,7 @@ const NOTIFY_EMAIL = 'stephen@preintake.ai';
 // Stripe configuration
 // LIVE MODE price IDs
 const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SksYAJBdoLMDposleabMPli'; // $149 one-time setup fee
-const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SksalJBdoLMDposiiL704de'; // $79/month subscription
+const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SmPbhJBdoLMDposfgTFIJSA'; // $99/month subscription
 // TEST MODE price IDs (for testing with 4242 4242 4242 4242)
 // const STRIPE_SETUP_FEE_PRICE_ID = 'price_1SjQ1aJaJO3EHqOSH5tYPJOB';
 // const STRIPE_SUBSCRIPTION_PRICE_ID = 'price_1SjNpAJaJO3EHqOSHh4DbhNM';
