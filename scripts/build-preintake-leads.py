@@ -276,6 +276,7 @@ def main():
 
     # Calculate final counts
     summary["firms_with_emails"] = sum(1 for r in all_rows if r.get("extraction_status") == "success")
+    summary["total_failed"] = sum(1 for r in all_rows if r.get("extraction_status") == "failed")
 
     # Summary
     print("\n" + "="*60)
@@ -286,6 +287,10 @@ def main():
     print(f"Failed extractions: {summary['extract']['failed']}")
     print(f"Skipped (recently failed): {summary['extract']['skipped']}")
     print(f"Total firms with emails: {summary['firms_with_emails']}")
+    print(f"Total failed extractions: {summary['total_failed']}")
+    total_attempted = summary['firms_with_emails'] + summary['total_failed']
+    if total_attempted > 0:
+        print(f"Overall success rate: {summary['firms_with_emails'] / total_attempted * 100:.1f}%")
 
     # Save summary for notification script
     with open(SUMMARY_JSON, 'w') as f:

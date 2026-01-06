@@ -101,8 +101,16 @@ function generateEmailHTML(summary) {
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600; color: #166534;">${summary.firms_with_emails.toLocaleString()}</td>
             </tr>
             <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Failed extractions:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${(summary.total_failed || 0).toLocaleString()}</td>
+            </tr>
+            <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Pending extraction:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${(summary.total_firms - summary.firms_with_emails).toLocaleString()}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${(summary.total_firms - summary.firms_with_emails - (summary.total_failed || 0)).toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Total success rate:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${((summary.firms_with_emails + (summary.total_failed || 0)) > 0 ? Math.round((summary.firms_with_emails / (summary.firms_with_emails + (summary.total_failed || 0))) * 100) : 0)}%</td>
             </tr>
         </table>
 
@@ -142,7 +150,9 @@ DIRECTORY TOTALS
 ----------------
 Total firms in directory: ${summary.total_firms.toLocaleString()}
 Firms with emails: ${summary.firms_with_emails.toLocaleString()}
-Pending extraction: ${(summary.total_firms - summary.firms_with_emails).toLocaleString()}
+Failed extractions: ${(summary.total_failed || 0).toLocaleString()}
+Pending extraction: ${(summary.total_firms - summary.firms_with_emails - (summary.total_failed || 0)).toLocaleString()}
+Total success rate: ${((summary.firms_with_emails + (summary.total_failed || 0)) > 0 ? Math.round((summary.firms_with_emails / (summary.firms_with_emails + (summary.total_failed || 0))) * 100) : 0)}%
 
 STATUS: Pipeline completed successfully
 `;
