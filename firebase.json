@@ -566,7 +566,13 @@
             "ignore": [
                 "firebase.json",
                 "**/.*",
-                "**/node_modules/**"
+                "**/node_modules/**",
+                "venv/**",
+                "justia-pages/**",
+                "*.py",
+                "*.csv",
+                "*.md",
+                "*.pdf"
             ],
             "cleanUrls": true,
             "trailingSlash": false,
