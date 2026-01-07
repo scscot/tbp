@@ -185,10 +185,35 @@
             height: 20px;
         }
 
+        .hero-cta-stacked {
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 1rem 2.5rem 0.85rem;
+        }
+
+        .cta-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .cta-main svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .cta-sub {
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
         .hero-note {
             margin-top: 1.5rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.75);
         }
 
         /* Desktop-only line breaks */
@@ -578,6 +603,13 @@
         }
 
         /* Demo Form */
+        .demo-outcome {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
         .demo-form-container {
             max-width: 500px;
             margin: 0 auto;
@@ -1805,13 +1837,15 @@
             <p class="hero-subtitle">
                 Every inquiry screened before it reaches your firm — qualified, needs review, or not a fit.
             </p>
-            <a href="#demo" class="hero-cta">
-                See It In Action
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+            <a href="#demo" class="hero-cta hero-cta-stacked">
+                <span class="cta-main">
+                    See It In Action
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </span>
+                <span class="cta-sub">Watch a real inquiry get evaluated and routed</span>
             </a>
-            <p class="hero-note">Automated intake screening. See a demo for your practice.</p>
         </div>
     </section>
 
@@ -2169,6 +2203,7 @@
     <section class="cta-section" id="demo">
         <div class="container">
             <h2>Get Your Custom Demo</h2>
+            <p class="demo-outcome">Within weeks, your staff spends time only on viable matters.</p>
             <div class="demo-form-container" id="demo-form-container">
                 <form class="demo-form" id="demo-form">
                     <div class="form-error" id="form-error"></div>
@@ -2411,8 +2446,8 @@
                     <div class="pricing-desc">Unlimited AI-powered intake screenings, inquiry routing, and real-time delivery via email or CRM</div>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Expert-level screening tailored to your practice area. Every inquiry assessed before it reaches your inbox. Cancel anytime—no long-term contracts.
+            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem;">
+                Cancel anytime—no long-term contracts.
             </p>
         </div>
     </section>

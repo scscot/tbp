@@ -778,17 +778,26 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Unit economics: CPL <$25, Demo <$150, CAC <$1,000
   - A/B testing: Lead Gen Forms vs Landing Page traffic
   - Expansion roadmap: PI → Immigration → Family Law → Bankruptcy → Criminal Defense
+- [x] **Hero CTA Stacked Layout** - Redesigned hero button with two-line format
+  - Primary: "See It In Action →" with arrow icon
+  - Subtext: "Watch a real inquiry get evaluated and routed"
+  - Removes ambiguity about what clicking the CTA will show
+- [x] **Outcome Statement** - Added clarity line in demo section
+  - "Within weeks, your staff spends time only on viable matters."
+  - Answers "what's different after this runs?" question
+- [x] **Pricing Section Simplified** - Reduced risk-reversal text to essentials
+  - Changed from multi-sentence value recap to: "Cancel anytime—no long-term contracts."
 
 **Final Page Structure:**
 ```
-1. Hero
+1. Hero (with stacked CTA button)
 2. What Your Firm Receives (value proof)
 3. Routing Section (GREEN/YELLOW/RED mechanics)
 4. 3 Simple Steps (ease of implementation)
-5. Demo Form (id="demo") - early conversion point
+5. Demo Form (id="demo") with outcome statement
 6. Practice Areas (supporting content)
 7. Trust & Privacy
-8. Pricing
+8. Pricing (with risk-reversal)
 9. Footer
 ```
 
