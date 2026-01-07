@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-03
-**Version**: 2.7 (Email outreach campaign infrastructure)
+**Last Updated**: 2026-01-06
+**Version**: 2.8 (Homepage conversion optimization + LinkedIn ad campaign)
 
 ---
 
@@ -758,6 +758,44 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
 | `subjectLine` | Subject line used |
 | `templateVersion` | Template version (v4-generic) |
 | `randomIndex` | Random number for shuffled sending order |
+
+### Phase 19: Homepage Conversion Optimization (2026-01-06)
+- [x] **Section Reordering** - Optimized page flow for conversion
+  - Moved "What Your Firm Receives" to first position below Hero
+  - Moved "3 Simple Steps" after Routing Section (GREEN/YELLOW/RED)
+  - Moved Demo Form immediately after "3 Simple Steps" as early conversion point
+  - Practice Areas section follows Demo Form for those who scroll further
+- [x] **Terminology Update** - Changed "What Your Team Receives" to "What Your Firm Receives" (legal-specific terminology)
+- [x] **Hidden Sections** - Removed negative framing; value stands on its own
+  - Stats Bar (commented out with HIDDEN label)
+  - Problem Section (commented out with HIDDEN label)
+  - CRM Integration Note (commented out with HIDDEN label)
+- [x] **Sticky CTA Update** - Changed from "Free Demo →" to "See It In Action →" (matches hero button)
+- [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-06
+- [x] **LinkedIn Ad Campaign Plan** - Created comprehensive campaign documentation (`LINKEDIN_AD_CAMPAIGN_PLAN.md`)
+  - Phased budget approach: $30/day (weeks 1-4) → $50-75/day (scaling)
+  - Target: PI attorneys at small-mid firms (2-50 employees)
+  - Unit economics: CPL <$25, Demo <$150, CAC <$1,000
+  - A/B testing: Lead Gen Forms vs Landing Page traffic
+  - Expansion roadmap: PI → Immigration → Family Law → Bankruptcy → Criminal Defense
+
+**Final Page Structure:**
+```
+1. Hero
+2. What Your Firm Receives (value proof)
+3. Routing Section (GREEN/YELLOW/RED mechanics)
+4. 3 Simple Steps (ease of implementation)
+5. Demo Form (id="demo") - early conversion point
+6. Practice Areas (supporting content)
+7. Trust & Privacy
+8. Pricing
+9. Footer
+```
+
+**Hidden Sections (commented out for future restoration):**
+- Stats Bar
+- Problem Section
+- CRM Integration Note
 
 ---
 
