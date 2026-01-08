@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * PreIntake.ai Weekly Analytics Report
+ * PreIntake.ai Daily Analytics Report
  *
  * Generates a comprehensive email campaign performance report including:
- * - GA4 traffic and engagement metrics
+ * - GA4 traffic and engagement metrics (yesterday + this week)
  * - Firestore campaign send statistics
- * - Week-over-week comparisons
+ * - Day-over-day and week-over-week comparisons
  *
  * Sends report via Dreamhost SMTP (support@preintake.ai).
  *
@@ -68,11 +68,15 @@ async function getFirestoreStats() {
         pending: 0,
         failed: 0,
         unsubscribed: 0,
+        sentYesterday: 0,
         sentThisWeek: 0,
         sentLastWeek: 0
     };
 
     const now = new Date();
+    // Yesterday = start of yesterday to start of today
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
@@ -93,6 +97,11 @@ async function getFirestoreStats() {
 
             if (data.sentTimestamp) {
                 const sentDate = data.sentTimestamp.toDate();
+                // Check if sent yesterday
+                if (sentDate >= startOfYesterday && sentDate < startOfToday) {
+                    stats.sentYesterday++;
+                }
+                // Check if sent this week
                 if (sentDate >= oneWeekAgo) {
                     stats.sentThisWeek++;
                 } else if (sentDate >= twoWeeksAgo && sentDate < oneWeekAgo) {
@@ -177,7 +186,7 @@ async function getDemoRequests(startDate) {
 /**
  * Generate HTML email report
  */
-function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoRequests) {
+function generateReportHTML(firestoreStats, yesterdayGA4, thisWeekGA4, lastWeekGA4, demoRequests) {
     const now = new Date();
     const reportDate = now.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -186,6 +195,15 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
         day: 'numeric'
     });
 
+    // Calculate click rates
+    const yesterdayClickRate = firestoreStats.sentYesterday > 0
+        ? ((yesterdayGA4?.sessions || 0) / firestoreStats.sentYesterday * 100).toFixed(1)
+        : 'N/A';
+
+    const weeklyClickRate = firestoreStats.sentThisWeek > 0
+        ? ((thisWeekGA4?.sessions || 0) / firestoreStats.sentThisWeek * 100).toFixed(1)
+        : 'N/A';
+
     // Calculate week-over-week changes
     const sessionChange = lastWeekGA4 && lastWeekGA4.sessions > 0
         ? (((thisWeekGA4.sessions - lastWeekGA4.sessions) / lastWeekGA4.sessions) * 100).toFixed(0)
@@ -193,10 +211,6 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
 
     const engagementChange = lastWeekGA4 && lastWeekGA4.engagedSessions > 0
         ? (((thisWeekGA4.engagedSessions - lastWeekGA4.engagedSessions) / lastWeekGA4.engagedSessions) * 100).toFixed(0)
-        : 'N/A';
-
-    const clickRate = firestoreStats.sentThisWeek > 0
-        ? ((thisWeekGA4.sessions / firestoreStats.sentThisWeek) * 100).toFixed(1)
         : 'N/A';
 
     return `<!DOCTYPE html>
@@ -211,7 +225,7 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
         <!-- Header -->
         <div style="background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:24px; border-radius:12px 12px 0 0; text-align:center;">
             <h1 style="color:#ffffff; font-size:24px; margin:0;">
-                <span style="color:#c9a962;">PreIntake.ai</span> Weekly Report
+                <span style="color:#c9a962;">PreIntake.ai</span> Daily Report
             </h1>
             <p style="color:#94a3b8; margin:8px 0 0 0; font-size:14px;">${reportDate}</p>
         </div>
@@ -233,6 +247,10 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
                     <td style="padding:8px 0; text-align:right; font-weight:600; color:#10b981;">${firestoreStats.sent}</td>
                 </tr>
                 <tr>
+                    <td style="padding:8px 0; color:#64748b;">Sent Yesterday</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600;">${firestoreStats.sentYesterday}</td>
+                </tr>
+                <tr>
                     <td style="padding:8px 0; color:#64748b;">Sent This Week</td>
                     <td style="padding:8px 0; text-align:right; font-weight:600;">${firestoreStats.sentThisWeek}</td>
                 </tr>
@@ -246,7 +264,38 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
                 </tr>
             </table>
 
-            <!-- Click Performance -->
+            <!-- Click Performance Yesterday -->
+            <h2 style="color:#0c1f3f; font-size:18px; margin:0 0 16px 0; padding-bottom:8px; border-bottom:2px solid #c9a962;">
+                🖱️ Click Performance (Yesterday)
+            </h2>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:24px;">
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Sessions from Email</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600;">${yesterdayGA4?.sessions || 0}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Click Rate</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600; color:#10b981;">${yesterdayClickRate}%</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Engaged Sessions</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600;">${yesterdayGA4?.engagedSessions || 0}</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Engagement Rate</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600;">${yesterdayGA4?.engagementRate || 0}%</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Avg Session Duration</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600;">${yesterdayGA4?.avgDuration || 0}s</td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 0; color:#64748b;">Bounce Rate</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600; color:#ef4444;">${yesterdayGA4?.bounceRate || 0}%</td>
+                </tr>
+            </table>
+
+            <!-- Click Performance This Week -->
             <h2 style="color:#0c1f3f; font-size:18px; margin:0 0 16px 0; padding-bottom:8px; border-bottom:2px solid #c9a962;">
                 🖱️ Click Performance (This Week)
             </h2>
@@ -257,7 +306,7 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
                 </tr>
                 <tr>
                     <td style="padding:8px 0; color:#64748b;">Click Rate</td>
-                    <td style="padding:8px 0; text-align:right; font-weight:600; color:#10b981;">${clickRate}%</td>
+                    <td style="padding:8px 0; text-align:right; font-weight:600; color:#10b981;">${weeklyClickRate}%</td>
                 </tr>
                 <tr>
                     <td style="padding:8px 0; color:#64748b;">Engaged Sessions</td>
@@ -311,17 +360,17 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
             <div style="background:#f8fafc; border-left:4px solid #c9a962; padding:16px; margin-top:24px;">
                 <h3 style="color:#0c1f3f; font-size:14px; margin:0 0 8px 0;">💡 Key Insights</h3>
                 <ul style="color:#64748b; font-size:14px; margin:0; padding-left:20px;">
-                    ${thisWeekGA4?.sessions > 0 && firestoreStats.sentThisWeek > 0 ? `
-                    <li style="margin-bottom:4px;">Click rate of ${clickRate}% ${parseFloat(clickRate) > 5 ? 'exceeds' : 'is below'} industry average (2-5%)</li>
+                    ${yesterdayGA4?.sessions > 0 && firestoreStats.sentYesterday > 0 ? `
+                    <li style="margin-bottom:4px;">Yesterday's click rate of ${yesterdayClickRate}% ${parseFloat(yesterdayClickRate) > 5 ? 'exceeds' : 'is below'} industry average (2-5%)</li>
                     ` : ''}
-                    ${thisWeekGA4?.engagementRate < 50 ? `
-                    <li style="margin-bottom:4px;">Engagement rate of ${thisWeekGA4?.engagementRate}% suggests homepage optimization opportunity</li>
+                    ${yesterdayGA4?.engagementRate < 50 && yesterdayGA4?.sessions > 0 ? `
+                    <li style="margin-bottom:4px;">Yesterday's engagement rate of ${yesterdayGA4?.engagementRate}% suggests homepage optimization opportunity</li>
                     ` : ''}
                     ${demoRequests === 0 && thisWeekGA4?.sessions > 10 ? `
-                    <li style="margin-bottom:4px;">0 demos despite ${thisWeekGA4?.sessions} clicks - review homepage conversion</li>
+                    <li style="margin-bottom:4px;">0 demos despite ${thisWeekGA4?.sessions} clicks this week - review homepage conversion</li>
                     ` : ''}
                     ${firestoreStats.pending > 0 ? `
-                    <li style="margin-bottom:4px;">${firestoreStats.pending} emails remaining (~${Math.ceil(firestoreStats.pending / 80)} days at current pace)</li>
+                    <li style="margin-bottom:4px;">${firestoreStats.pending} emails remaining (~${Math.ceil(firestoreStats.pending / 10)} days at current pace)</li>
                     ` : ''}
                 </ul>
             </div>
@@ -329,7 +378,7 @@ function generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoReques
 
         <!-- Footer -->
         <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
-            <p style="margin:0;">Automated report from PreIntake.ai Analytics</p>
+            <p style="margin:0;">Automated daily report from PreIntake.ai Analytics</p>
         </div>
     </div>
 </body>
@@ -362,13 +411,13 @@ async function sendReport(htmlContent) {
     });
 
     const now = new Date();
-    const weekOf = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
     try {
         await transporter.sendMail({
             from: FROM_ADDRESS,
             to: REPORT_EMAIL,
-            subject: `PreIntake.ai Weekly Report - Week of ${weekOf}`,
+            subject: `PreIntake.ai Daily Report - ${dateStr}`,
             html: htmlContent
         });
         console.log('✅ Report sent to', REPORT_EMAIL);
@@ -383,33 +432,33 @@ async function sendReport(htmlContent) {
  * Main function
  */
 async function generateReport() {
-    console.log('📊 PreIntake.ai Analytics Report Generator');
-    console.log('==========================================\n');
+    console.log('📊 PreIntake.ai Daily Analytics Report Generator');
+    console.log('================================================\n');
 
     // Get date ranges
     const now = new Date();
     const thisWeekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const lastWeekStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-    const lastWeekEnd = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     console.log('📅 Fetching data...\n');
 
-    // Fetch all data
-    const [firestoreStats, thisWeekGA4, lastWeekGA4, demoRequests] = await Promise.all([
+    // Fetch all data (yesterday = 1daysAgo to today in GA4 terms)
+    const [firestoreStats, yesterdayGA4, thisWeekGA4, lastWeekGA4, demoRequests] = await Promise.all([
         getFirestoreStats(),
+        getGA4EmailMetrics('yesterday', 'yesterday'),
         getGA4EmailMetrics('7daysAgo', 'today'),
         getGA4EmailMetrics('14daysAgo', '7daysAgo'),
         getDemoRequests(thisWeekStart)
     ]);
 
     console.log('📧 Firestore Stats:', firestoreStats);
+    console.log('📆 Yesterday GA4:', yesterdayGA4);
     console.log('📈 This Week GA4:', thisWeekGA4);
     console.log('📉 Last Week GA4:', lastWeekGA4);
     console.log('🎯 Demo Requests:', demoRequests);
     console.log('');
 
     // Generate and send report
-    const reportHTML = generateReportHTML(firestoreStats, thisWeekGA4, lastWeekGA4, demoRequests);
+    const reportHTML = generateReportHTML(firestoreStats, yesterdayGA4, thisWeekGA4, lastWeekGA4, demoRequests);
     await sendReport(reportHTML);
 
     console.log('\n✅ Report generation complete');

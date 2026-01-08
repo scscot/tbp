@@ -1,10 +1,10 @@
-name: PreIntake Weekly Analytics Report
+name: PreIntake Daily Analytics Report
 
 on:
   schedule:
-    # Every Monday at 9am PT (5pm UTC during PST, 4pm UTC during PDT)
-    - cron: '0 17 * * 1'  # PST (Nov-Mar)
-    - cron: '0 16 * * 1'  # PDT (Mar-Nov)
+    # Every day at 3am PT (11am UTC during PST, 10am UTC during PDT)
+    - cron: '0 11 * * *'  # PST (Nov-Mar)
+    - cron: '0 10 * * *'  # PDT (Mar-Nov)
 
   # Allow manual trigger for testing
   workflow_dispatch:
