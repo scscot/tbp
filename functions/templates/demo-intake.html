@@ -2387,14 +2387,14 @@
                                 // Remove [OPTIONS: ...] from display
                                 const cleanText = block.text.replace(/\[OPTIONS:.*?\]/g, '').trim();
                                 if (cleanText) {
-                                    lines.push(`Assistant: ${cleanText}`);
+                                    lines.push(`Intake: ${cleanText}`);
                                 }
                             }
                         }
                     } else if (typeof msg.content === 'string') {
                         const cleanText = msg.content.replace(/\[OPTIONS:.*?\]/g, '').trim();
                         if (cleanText) {
-                            lines.push(`Assistant: ${cleanText}`);
+                            lines.push(`Intake: ${cleanText}`);
                         }
                     }
                 }

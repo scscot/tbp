@@ -452,8 +452,8 @@ function generateIntakeSummary(payload, firmName) {
             .map(line => {
                 if (line.startsWith('Visitor:')) {
                     return `<div style="margin-bottom: 12px;"><span style="color: #0c1f3f; font-weight: 600;">Visitor:</span> ${escapeHtml(line.replace('Visitor: ', ''))}</div>`;
-                } else if (line.startsWith('Assistant:')) {
-                    return `<div style="margin-bottom: 12px;"><span style="color: #c9a962; font-weight: 600;">Assistant:</span> ${escapeHtml(line.replace('Assistant: ', ''))}</div>`;
+                } else if (line.startsWith('Intake:')) {
+                    return `<div style="margin-bottom: 12px;"><span style="color: #c9a962; font-weight: 600;">Intake:</span> ${escapeHtml(line.replace('Intake: ', ''))}</div>`;
                 }
                 return `<div style="margin-bottom: 12px;">${escapeHtml(line)}</div>`;
             })
