@@ -240,6 +240,16 @@ const {
 } = require('./stripe-functions');
 
 // ==============================
+// Import Account Portal Functions
+// ==============================
+const {
+  sendAccountAccessLink,
+  verifyAccountToken,
+  updateAccountSettings,
+  createBillingPortalSession,
+} = require('./account-portal-functions');
+
+// ==============================
 // Export All Functions
 // ==============================
 
@@ -376,6 +386,12 @@ module.exports = {
   getStripeConfig,
   stripeWebhook,
   verifyCheckoutSession,
+
+  // ========== ACCOUNT PORTAL FUNCTIONS ==========
+  sendAccountAccessLink,
+  verifyAccountToken,
+  updateAccountSettings,
+  createBillingPortalSession,
 };
 
 // ==============================

@@ -359,6 +359,74 @@ ${pageEmbedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
 }
 
 /**
+ * Generate cancellation confirmation email for customer
+ */
+function generateCancellationEmail(firmName, periodEndDate) {
+    const formattedDate = new Date(periodEndDate).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+    <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+        <h1 style="color: #ffffff; font-size: 24px; margin: 0;">
+            <span style="color: #ffffff;">Pre</span><span style="color: #c9a962;">Intake</span><span style="color: #ffffff;">.ai</span>
+        </h1>
+    </div>
+
+    <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #0c1f3f; text-align: center; margin-bottom: 20px;">Subscription Cancelled</h2>
+
+        <p>We're sorry to see you go. Your PreIntake.ai subscription for <strong>${firmName || 'your firm'}</strong> has been cancelled.</p>
+
+        <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin: 25px 0;">
+            <p style="margin: 0; font-size: 14px; color: #92400e;">
+                <strong>Your access remains active until:</strong><br>
+                <span style="font-size: 18px; font-weight: 600;">${formattedDate}</span>
+            </p>
+        </div>
+
+        <p>Your AI intake widget will continue to work and deliver leads until this date. After that, the widget will stop functioning on your website.</p>
+
+        <h3 style="color: #0c1f3f; font-size: 16px; margin-top: 25px;">Changed your mind?</h3>
+        <p>You can reactivate your subscription anytime before ${formattedDate} by visiting your account portal:</p>
+
+        <div style="text-align: center; margin: 25px 0;">
+            <a href="https://preintake.ai/account.html" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8954f 100%); color: #0c1f3f; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                Manage My Account
+            </a>
+        </div>
+
+        <p style="margin-top: 30px; color: #64748b; font-size: 14px;">
+            We'd love to hear your feedback. If there's anything we could have done better, please let us know at <a href="mailto:support@preintake.ai" style="color: #c9a962;">support@preintake.ai</a>.
+        </p>
+
+        <p style="margin-top: 25px;">
+            —<br>
+            <strong>Support Team</strong><br>
+            PreIntake.ai
+        </p>
+    </div>
+
+    <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+        <p style="margin: 0;">AI-Powered Legal Intake</p>
+        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
+    </div>
+</body>
+</html>
+`;
+}
+
+/**
  * Generate notification email to Stephen for new activation
  */
 function generateActivationNotifyEmail(firmName, customerEmail, firmId) {
@@ -496,6 +564,13 @@ async function handleSubscriptionUpdated(subscription) {
     if (!firmId) return;
 
     try {
+        // Get current document to check if cancel_at_period_end changed
+        const leadDoc = await db.collection('preintake_leads').doc(firmId).get();
+        const leadData = leadDoc.exists ? leadDoc.data() : {};
+        const wasNotCancelling = !leadData.cancelAtPeriodEnd;
+        const isNowCancelling = subscription.cancel_at_period_end === true;
+
+        // Update the document
         await db.collection('preintake_leads').doc(firmId).update({
             subscriptionStatus: subscription.status,
             currentPeriodStart: new Date(subscription.current_period_start * 1000),
@@ -504,7 +579,51 @@ async function handleSubscriptionUpdated(subscription) {
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        console.log(`Subscription updated for firm ${firmId}: ${subscription.status}`);
+        console.log(`Subscription updated for firm ${firmId}: ${subscription.status}, cancel_at_period_end: ${subscription.cancel_at_period_end}`);
+
+        // Send cancellation email if user just cancelled (and we haven't sent one already)
+        if (wasNotCancelling && isNowCancelling && !leadData.cancellationEmailSent) {
+            const firmName = leadData.analysis?.firmName || leadData.website || 'Your Firm';
+            const customerEmail = leadData.deliveryEmail || leadData.email;
+            const periodEndDate = new Date(subscription.current_period_end * 1000);
+
+            try {
+                const emailHtml = generateCancellationEmail(firmName, periodEndDate);
+                await sendEmail(
+                    customerEmail,
+                    'Your PreIntake.ai Subscription Has Been Cancelled',
+                    emailHtml
+                );
+
+                // Mark that we sent the cancellation email
+                await db.collection('preintake_leads').doc(firmId).update({
+                    cancellationEmailSent: true,
+                    cancellationEmailSentAt: admin.firestore.FieldValue.serverTimestamp(),
+                });
+
+                console.log(`Cancellation email sent to ${customerEmail} for firm ${firmId}`);
+
+                // Also notify Stephen
+                await sendEmail(
+                    NOTIFY_EMAIL,
+                    `⚠️ Subscription Cancelled: ${firmName}`,
+                    `<p>Subscription cancelled for <strong>${firmName}</strong> (${customerEmail}).</p>
+                     <p>Access remains active until: ${periodEndDate.toLocaleDateString()}</p>
+                     <p><a href="https://console.firebase.google.com/project/teambuilder-plus-fe74d/firestore/databases/preintake/data/~2Fpreintake_leads~2F${firmId}">View in Firestore</a></p>`
+                );
+            } catch (emailErr) {
+                console.error('Error sending cancellation email:', emailErr.message);
+            }
+        }
+
+        // If user reactivated (was cancelling, now not cancelling), reset the flag
+        if (!isNowCancelling && leadData.cancelAtPeriodEnd === true) {
+            await db.collection('preintake_leads').doc(firmId).update({
+                cancellationEmailSent: false,
+            });
+            console.log(`Subscription reactivated for firm ${firmId}`);
+        }
+
     } catch (error) {
         console.error('Error handling subscription updated:', error);
     }

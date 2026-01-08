@@ -33,6 +33,7 @@
                         <a href="/about-us.html">About</a>
                         <a href="/faq.html">FAQs</a>
                         <a href="/contact-us.html">Contact</a>
+                        <a href="/account.html" class="nav-account">My Account</a>
                     </nav>
                 </div>
             </header>
@@ -120,6 +121,8 @@
                 text-decoration: none;
                 display: flex;
                 align-items: center;
+                line-height: 1;
+                transform: translateY(2px);
             }
 
             .logo-pre {
@@ -135,14 +138,14 @@
             }
 
             .logo-icon {
-                height: 1.75rem;
+                height: 1.5rem;
                 width: auto;
                 margin-right: 0.5rem;
-                vertical-align: middle;
             }
 
             .nav-menu {
                 display: flex;
+                align-items: center;
                 gap: 2rem;
             }
 
@@ -151,11 +154,25 @@
                 text-decoration: none;
                 font-size: 0.95rem;
                 font-weight: 500;
+                line-height: 1;
                 transition: color 0.2s ease;
             }
 
             .nav-menu a:hover {
                 color: #c9a962;
+            }
+
+            .nav-menu a.nav-account {
+                background: rgba(201, 169, 98, 0.15);
+                border: 1px solid rgba(201, 169, 98, 0.4);
+                padding: 0.4rem 0.9rem;
+                border-radius: 6px;
+                color: #c9a962;
+            }
+
+            .nav-menu a.nav-account:hover {
+                background: rgba(201, 169, 98, 0.25);
+                border-color: #c9a962;
             }
 
             /* Hamburger Menu */

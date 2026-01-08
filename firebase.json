@@ -574,7 +574,7 @@
                 "*.md",
                 "*.pdf"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [],
             "rewrites": [

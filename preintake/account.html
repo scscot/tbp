@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5DR80KWBP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-V5DR80KWBP');
+    </script>
+    <title>My Account - PreIntake.ai</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Manage your PreIntake.ai account settings and billing.">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="apple-touch-icon" href="/images/icon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Shared Header/Footer Components -->
+    <script src="/js/components.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0c1f3f;
+            --primary-blue: #1a3a5c;
+            --accent-gold: #c9a962;
+            --accent-gold-light: #e5d4a1;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --text-dark: #1a1a2e;
+            --bg-light: #f8fafc;
+            --success: #48bb78;
+            --error: #f56565;
+            --shadow-glow: 0 0 40px rgba(201, 169, 98, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-light);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .info-row .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .info-row .value {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .editable-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5rem;
+        }
+
+        .editable-row .label {
+            margin-bottom: 0.25rem;
+        }
+
+        .editable-row .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .save-btn {
+            padding: 0.75rem 1.25rem;
+            background: rgba(201, 169, 98, 0.2);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            background: rgba(201, 169, 98, 0.3);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .save-btn.success {
+            background: rgba(72, 187, 120, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .next-steps {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .next-steps h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: rgba(201, 169, 98, 0.2);
+            border: 1px solid var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .embed-code {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-gold-light);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .position-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .position-hint code {
+            background: rgba(201, 169, 98, 0.2);
+            color: var(--accent-gold);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.7rem;
+        }
+
+        .position-options {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.65rem;
+            margin: 0.2rem 0.15rem;
+        }
+
+        .embed-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .embed-toggle-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .embed-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .embed-toggle-btn.active {
+            background: rgba(201, 169, 98, 0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .embed-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .embed-type-content {
+            display: none;
+        }
+
+        .embed-type-content.active {
+            display: block;
+        }
+
+        .copy-btn {
+            background: rgba(201, 169, 98, 0.2);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(201, 169, 98, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .help-text {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .help-text a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(245, 101, 101, 0.1);
+            border: 1px solid rgba(245, 101, 101, 0.3);
+            color: #fc8181;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: rgba(72, 187, 120, 0.1);
+            border: 1px solid rgba(72, 187, 120, 0.3);
+            color: #68d391;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+        }
+
+        .logout-link {
+            display: block;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-link:hover {
+            color: var(--text-light);
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .editable-row .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="preintake-header"></div>
+
+    <main>
+        <div class="container">
+            <div class="card">
+                <!-- State 1: Email Entry (visible by default) -->
+                <div id="email-entry">
+                    <h1>Access Your Account</h1>
+                    <p class="subtitle">For active subscribers only. Enter the email address associated with your PreIntake.ai subscription and we'll send you a secure link to access your settings.</p>
+
+                    <div id="email-error" class="error-message" style="display: none;"></div>
+                    <div id="email-success" class="success-message" style="display: none;"></div>
+
+                    <form id="email-form" onsubmit="requestAccessLink(event)">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="you@yourfirm.com" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="send-link-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Send Access Link
+                        </button>
+                    </form>
+
+                    <p class="help-text">
+                        Need help? Email <a href="mailto:support@preintake.ai">support@preintake.ai</a>
+                    </p>
+                </div>
+
+                <!-- State 2: Loading -->
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Verifying your access link...</p>
+                </div>
+
+                <!-- State 3: Account Dashboard -->
+                <div id="dashboard" style="display: none;">
+                    <h1>Account Settings</h1>
+                    <p class="subtitle">Manage your PreIntake.ai account and billing.</p>
+
+                    <div class="info-box">
+                        <div class="info-row">
+                            <span class="label">Firm</span>
+                            <span class="value" id="firm-name">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status</span>
+                            <span class="value" id="subscription-status" style="color: var(--success);">Active</span>
+                        </div>
+                        <div class="info-row editable-row">
+                            <span class="label">Lead Delivery Email</span>
+                            <div class="input-group">
+                                <input type="email" class="input-field" id="delivery-email" placeholder="leads@yourfirm.com">
+                                <button class="save-btn" id="save-email-btn" onclick="saveDeliveryEmail()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="next-steps">
+                        <h3>Your Embed Code</h3>
+
+                        <div class="embed-toggle">
+                            <button class="embed-toggle-btn active" onclick="setEmbedType('button')" id="toggle-button">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                    <rect x="7" y="14" width="10" height="4" rx="1"></rect>
+                                </svg>
+                                Floating Button
+                            </button>
+                            <button class="embed-toggle-btn" onclick="setEmbedType('page')" id="toggle-page">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                </svg>
+                                Full Page
+                            </button>
+                        </div>
+
+                        <!-- Button Embed Content -->
+                        <div class="embed-type-content active" id="content-button">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Add this snippet to any page. A floating button will appear that opens your intake form.</p>
+                            <div class="embed-code" id="embed-code-button">&lt;script src="https://preintake.ai/intake-button.js" data-firm="<span class="firm-id-code">YOUR_FIRM_ID</span>" data-position="bottom-right"&gt;&lt;/script&gt;</div>
+                            <p class="position-hint">Change <code>data-position</code> to control button placement:<br>
+                            <span class="position-options">bottom-right</span> <span class="position-options">bottom-left</span> <span class="position-options">bottom-center</span> <span class="position-options">top-right</span> <span class="position-options">top-left</span> <span class="position-options">top-center</span></p>
+                            <button class="copy-btn" onclick="copyEmbedCode('button')">Copy Code</button>
+                        </div>
+
+                        <!-- Page Embed Content -->
+                        <div class="embed-type-content" id="content-page">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Add this to a dedicated "Free Case Evaluation" page.</p>
+                            <div class="embed-code" id="embed-code-page">&lt;div id="preintake-form" style="width: 100%; min-height: 700px;"&gt;&lt;/div&gt;
+&lt;script src="https://preintake.ai/intake-page.js" data-firm="<span class="firm-id-code">YOUR_FIRM_ID</span>"&gt;&lt;/script&gt;</div>
+                            <p class="position-hint">Style the container <code>&lt;div&gt;</code> to control dimensions.</p>
+                            <button class="copy-btn" onclick="copyEmbedCode('page')">Copy Code</button>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="openBillingPortal()" id="billing-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        Manage Billing
+                    </button>
+
+                    <button class="btn-secondary" onclick="emailDeveloper()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Send Code to Web Developer
+                    </button>
+
+                    <a class="logout-link" onclick="logout()">Sign out</a>
+                </div>
+
+                <!-- State 4: Error -->
+                <div id="error-state" style="display: none;">
+                    <h1>Link Expired</h1>
+                    <p class="subtitle" id="error-message">This access link has expired or is invalid. Please request a new one.</p>
+
+                    <button class="btn-primary" onclick="showEmailEntry()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Request New Access Link
+                    </button>
+
+                    <p class="help-text">
+                        Need help? Email <a href="mailto:support@preintake.ai">support@preintake.ai</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="preintake-footer"></div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net';
+
+        // State
+        let currentToken = null;
+        let accountData = null;
+        let currentEmbedType = 'button';
+
+        /**
+         * Initialize page based on URL parameters
+         */
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                // Have a token - verify it
+                showLoading();
+                await verifyToken(token);
+            } else {
+                // No token - show email entry
+                showEmailEntry();
+            }
+        }
+
+        /**
+         * Show email entry form
+         */
+        function showEmailEntry() {
+            hideAll();
+            document.getElementById('email-entry').style.display = 'block';
+            document.getElementById('email-error').style.display = 'none';
+            document.getElementById('email-success').style.display = 'none';
+        }
+
+        /**
+         * Show loading state
+         */
+        function showLoading() {
+            hideAll();
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        /**
+         * Show dashboard
+         */
+        function showDashboard() {
+            hideAll();
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        /**
+         * Show error state
+         */
+        function showError(message) {
+            hideAll();
+            document.getElementById('error-message').textContent = message || 'This access link has expired or is invalid. Please request a new one.';
+            document.getElementById('error-state').style.display = 'block';
+        }
+
+        /**
+         * Hide all states
+         */
+        function hideAll() {
+            document.getElementById('email-entry').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('error-state').style.display = 'none';
+        }
+
+        /**
+         * Request access link via email
+         */
+        async function requestAccessLink(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const btn = document.getElementById('send-link-btn');
+            const errorEl = document.getElementById('email-error');
+            const successEl = document.getElementById('email-success');
+
+            if (!email) {
+                errorEl.textContent = 'Please enter your email address.';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorEl.textContent = 'Please enter a valid email address.';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner" style="width: 20px; height: 20px; margin: 0;"></div> Sending...`;
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/sendAccountAccessLink`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successEl.textContent = 'Check your email for a secure access link. The link expires in 1 hour.';
+                    successEl.style.display = 'block';
+                    document.getElementById('email').value = '';
+                } else {
+                    errorEl.textContent = data.error || 'An error occurred. Please try again.';
+                    errorEl.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Request error:', error);
+                errorEl.textContent = 'An error occurred. Please try again.';
+                errorEl.style.display = 'block';
+            }
+
+            // Re-enable button
+            btn.disabled = false;
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Send Access Link`;
+        }
+
+        /**
+         * Verify token and load account data
+         */
+        async function verifyToken(token) {
+            try {
+                const response = await fetch(`${API_BASE}/verifyAccountToken?token=${encodeURIComponent(token)}`);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    showError(data.error);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentToken = data.sessionToken || token;
+                    accountData = data.account;
+
+                    // Populate dashboard
+                    document.getElementById('firm-name').textContent = accountData.firmName;
+                    document.getElementById('delivery-email').value = accountData.deliveryEmail || '';
+
+                    // Update subscription status
+                    const statusEl = document.getElementById('subscription-status');
+                    const status = accountData.subscriptionStatus || 'active';
+                    statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                    statusEl.style.color = status === 'active' ? 'var(--success)' : 'var(--error)';
+
+                    // Update firm ID in embed codes
+                    updateFirmIdCodes(accountData.firmId);
+
+                    showDashboard();
+                } else {
+                    showError();
+                }
+
+            } catch (error) {
+                console.error('Verify error:', error);
+                showError('An error occurred. Please try again.');
+            }
+        }
+
+        /**
+         * Update all firm ID code elements
+         */
+        function updateFirmIdCodes(id) {
+            document.querySelectorAll('.firm-id-code').forEach(el => {
+                el.textContent = id;
+            });
+        }
+
+        /**
+         * Set embed type (button or page)
+         */
+        function setEmbedType(type) {
+            currentEmbedType = type;
+
+            // Update toggle buttons
+            document.getElementById('toggle-button').classList.toggle('active', type === 'button');
+            document.getElementById('toggle-page').classList.toggle('active', type === 'page');
+
+            // Update content visibility
+            document.getElementById('content-button').classList.toggle('active', type === 'button');
+            document.getElementById('content-page').classList.toggle('active', type === 'page');
+        }
+
+        /**
+         * Copy embed code to clipboard
+         */
+        function copyEmbedCode(type) {
+            const firmId = accountData?.firmId || 'YOUR_FIRM_ID';
+            let code;
+
+            if (type === 'button') {
+                code = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"><\/script>`;
+            } else {
+                code = `<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>\n<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"><\/script>`;
+            }
+
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector(`#content-${type} .copy-btn`);
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy Code';
+                }, 2000);
+            });
+        }
+
+        /**
+         * Save delivery email
+         */
+        async function saveDeliveryEmail() {
+            const email = document.getElementById('delivery-email').value.trim();
+            const btn = document.getElementById('save-email-btn');
+
+            if (!email) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch(`${API_BASE}/updateAccountSettings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentToken, deliveryEmail: email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    btn.textContent = 'Saved!';
+                    btn.classList.add('success');
+                    accountData.deliveryEmail = data.account.deliveryEmail;
+
+                    setTimeout(() => {
+                        btn.textContent = 'Save';
+                        btn.classList.remove('success');
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Failed to save. Please try again.');
+                    btn.textContent = 'Save';
+                }
+
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('An error occurred. Please try again.');
+                btn.textContent = 'Save';
+            }
+
+            btn.disabled = false;
+        }
+
+        /**
+         * Open Stripe billing portal
+         */
+        async function openBillingPortal() {
+            const btn = document.getElementById('billing-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner" style="width: 20px; height: 20px; margin: 0;"></div> Opening...`;
+
+            try {
+                const response = await fetch(`${API_BASE}/createBillingPortalSession`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentToken })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.url) {
+                    window.open(data.url, '_blank');
+                } else {
+                    alert(data.error || 'Failed to open billing portal. Please try again.');
+                }
+
+            } catch (error) {
+                console.error('Billing portal error:', error);
+                alert('An error occurred. Please try again.');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Manage Billing`;
+        }
+
+        /**
+         * Email embed code to web developer
+         */
+        function emailDeveloper() {
+            const firmId = accountData?.firmId || 'YOUR_FIRM_ID';
+            const subject = encodeURIComponent('PreIntake.ai - Website Integration Instructions');
+            const body = encodeURIComponent(`Hi,
+
+Please add the PreIntake.ai intake form to our website. This enables AI-powered client screening on our site.
+
+We have TWO options for embedding. Please use whichever works best for our site:
+
+OPTION 1: FLOATING BUTTON (Recommended)
+---------------------------------------
+Add this code before </body> on any page. A floating button will appear that opens the intake form in a modal.
+
+<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"><\/script>
+
+Position options: bottom-right, bottom-left, bottom-center, top-right, top-left, top-center
+
+
+OPTION 2: FULL PAGE EMBED
+-------------------------
+Add this code to a dedicated "Free Case Evaluation" page. The form will fill the container.
+
+<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>
+<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"><\/script>
+
+Style the container div to control dimensions.
+
+
+Questions? Contact support@preintake.ai
+
+Thanks!`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        /**
+         * Logout - clear state and show email entry
+         */
+        function logout() {
+            currentToken = null;
+            accountData = null;
+            // Clear URL params
+            window.history.replaceState({}, document.title, window.location.pathname);
+            showEmailEntry();
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

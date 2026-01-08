@@ -33,6 +33,36 @@ const {
 } = require('./demo-generator-functions');
 
 /**
+ * Validate subscription status for widget access
+ * Returns { valid: boolean, reason: string }
+ */
+function validateSubscription(data) {
+    // Allow demo mode (not yet paid)
+    if (data.status === 'demo_ready' || data.status === 'pending' || data.status === 'analyzing' || data.status === 'researching' || data.status === 'generating_demo') {
+        return { valid: true, reason: 'demo_mode' };
+    }
+
+    // Allow active subscriptions
+    if (data.subscriptionStatus === 'active') {
+        return { valid: true, reason: 'active_subscription' };
+    }
+
+    // Allow grace period (cancelled but not yet expired)
+    if (data.cancelAtPeriodEnd === true && data.currentPeriodEnd) {
+        const periodEnd = data.currentPeriodEnd.toDate ? data.currentPeriodEnd.toDate() : new Date(data.currentPeriodEnd);
+        if (periodEnd > new Date()) {
+            return { valid: true, reason: 'grace_period' };
+        }
+    }
+
+    // Subscription expired or cancelled
+    return {
+        valid: false,
+        reason: data.subscriptionStatus === 'cancelled' ? 'subscription_cancelled' : 'subscription_expired'
+    };
+}
+
+/**
  * Get public widget configuration for a firm
  * Returns ONLY public data - no prompts, tools, or qualification criteria
  */
@@ -57,6 +87,19 @@ const getWidgetConfig = onRequest(
             }
 
             const data = leadDoc.data();
+
+            // Validate subscription status
+            const subscriptionCheck = validateSubscription(data);
+            if (!subscriptionCheck.valid) {
+                return res.status(403).json({
+                    error: 'subscription_inactive',
+                    reason: subscriptionCheck.reason,
+                    message: subscriptionCheck.reason === 'subscription_cancelled'
+                        ? 'This intake widget has been deactivated because the subscription was cancelled.'
+                        : 'This intake widget has been deactivated because the subscription has expired.'
+                });
+            }
+
             const analysis = data.analysis || {};
             const deepResearch = data.deepResearch || {};
 
@@ -123,6 +166,19 @@ const intakeChat = onRequest(
             }
 
             const data = leadDoc.data();
+
+            // Validate subscription status
+            const subscriptionCheck = validateSubscription(data);
+            if (!subscriptionCheck.valid) {
+                return res.status(403).json({
+                    error: 'subscription_inactive',
+                    reason: subscriptionCheck.reason,
+                    message: subscriptionCheck.reason === 'subscription_cancelled'
+                        ? 'This intake widget has been deactivated because the subscription was cancelled.'
+                        : 'This intake widget has been deactivated because the subscription has expired.'
+                });
+            }
+
             const analysis = data.analysis || {};
             const deepResearch = data.deepResearch || {};
 
