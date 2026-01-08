@@ -22,9 +22,12 @@
 const admin = require('firebase-admin');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const nodemailer = require('nodemailer');
+const path = require('path');
 
 // Initialize Firebase Admin
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || './secrets/serviceAccountKey.json';
+// Resolve paths relative to repo root (one level up from scripts/)
+const repoRoot = path.join(__dirname, '..');
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || path.join(repoRoot, 'secrets', 'serviceAccountKey.json');
 const serviceAccount = require(serviceAccountPath);
 
 if (!admin.apps.length) {
@@ -38,8 +41,9 @@ const db = admin.firestore();
 db.settings({ databaseId: 'preintake' });
 
 // GA4 client - uses GOOGLE_APPLICATION_CREDENTIALS or default credentials
+const ga4CredentialsPath = process.env.GA4_CREDENTIALS || path.join(repoRoot, 'secrets', 'ga4-service-account.json');
 const analyticsDataClient = new BetaAnalyticsDataClient({
-    keyFilename: process.env.GA4_CREDENTIALS || './secrets/ga4-service-account.json'
+    keyFilename: ga4CredentialsPath
 });
 
 // Configuration
