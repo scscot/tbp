@@ -80,8 +80,15 @@ async function getFirestoreStats() {
         const data = doc.data();
         stats.total++;
 
-        if (data.status === 'pending') stats.pending++;
-        else if (data.status === 'sent') {
+        // Check both status field AND sent boolean for compatibility
+        const isSent = data.status === 'sent' || data.sent === true;
+        const isPending = data.status === 'pending' || (!data.sent && !data.status);
+
+        if (data.status === 'unsubscribed') {
+            stats.unsubscribed++;
+        } else if (data.status === 'failed') {
+            stats.failed++;
+        } else if (isSent) {
             stats.sent++;
 
             if (data.sentTimestamp) {
@@ -92,9 +99,9 @@ async function getFirestoreStats() {
                     stats.sentLastWeek++;
                 }
             }
+        } else if (isPending) {
+            stats.pending++;
         }
-        else if (data.status === 'failed') stats.failed++;
-        else if (data.status === 'unsubscribed') stats.unsubscribed++;
     });
 
     return stats;
