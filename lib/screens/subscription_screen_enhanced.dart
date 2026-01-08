@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import '../services/iap_service.dart';
 import '../services/admin_settings_service.dart';
+import '../services/analytics_service.dart';
 import '../config/app_colors.dart';
 import '../models/user_model.dart';
 import '../widgets/header_widgets.dart';
@@ -26,11 +27,13 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
   String? _bizOpp; // --- 1. State variable for biz_opp added ---
   final IAPService _iapService = IAPService();
   final AdminSettingsService _adminSettingsService = AdminSettingsService();
+  final AnalyticsService _analytics = AnalyticsService();
 
   @override
   void initState() {
     super.initState();
     debugPrint('🔄 SUBSCRIPTION_SCREEN: initState called');
+    _analytics.logSubscriptionView();
     _initializeIAP();
     _loadSubscriptionStatus();
     _loadBizOppData(); // --- 2. Call to fetch biz_opp data added ---
@@ -109,7 +112,13 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
     setState(() => isPurchasing = true);
 
     debugPrint('🔍 SUBSCRIPTION_SCREEN: IAP Service Status - Available: ${_iapService.available}, Products: ${_iapService.products.length}');
-    
+
+    // Track purchase attempt
+    _analytics.logEvent(
+      name: 'subscription_purchase_attempt',
+      parameters: {'platform': Platform.isIOS ? 'ios' : 'android'},
+    );
+
     await _iapService.purchaseMonthlySubscription(
       onSuccess: () async {
         if (!mounted) return;
@@ -119,6 +128,13 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
         setState(() => isPurchasing = false);
 
         if (mounted && isActive) {
+          // Track successful subscription
+          _analytics.logSubscriptionStart(
+            productId: 'team_build_pro_monthly',
+            price: 6.99,
+            currency: 'USD',
+          );
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(context.l10n?.subscriptionSuccessMessage ?? '✅ Subscription activated successfully!'),
@@ -127,6 +143,12 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
           );
           Navigator.pop(context, 'subscription_updated');
         } else {
+          // Track purchase not yet active
+          _analytics.logEvent(
+            name: 'subscription_purchase_pending',
+            parameters: {'platform': Platform.isIOS ? 'ios' : 'android'},
+          );
+
           // Treat as failure if server says not active yet
           if (mounted) {
             showDialog(
@@ -142,6 +164,17 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
       onFailure: () {
         if (!mounted) return;
         setState(() => isPurchasing = false);
+
+        // Track purchase failure
+        _analytics.logEvent(
+          name: 'subscription_purchase_failed',
+          parameters: {
+            'platform': Platform.isIOS ? 'ios' : 'android',
+            'iap_available': _iapService.available,
+            'products_loaded': _iapService.products.length,
+          },
+        );
+
         showDialog(
           context: context,
           builder: (dialogContext) => AlertDialog(
@@ -170,12 +203,24 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
   Future<void> _handleRestorePurchases() async {
     setState(() => isPurchasing = true);
 
+    // Track restore attempt
+    _analytics.logEvent(
+      name: 'subscription_restore_attempt',
+      parameters: {'platform': Platform.isIOS ? 'ios' : 'android'},
+    );
+
     await _iapService.restorePurchases(
       onSuccess: () async {
         if (!mounted) return;
 
         // Refresh subscription status after restore
         await _loadSubscriptionStatus();
+
+        // Track successful restore
+        _analytics.logEvent(
+          name: 'subscription_restore_success',
+          parameters: {'platform': Platform.isIOS ? 'ios' : 'android'},
+        );
 
         setState(() => isPurchasing = false);
         if (mounted) {
@@ -185,7 +230,7 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
               backgroundColor: Colors.green,
             ),
           );
-          
+
           // Safe dashboard update - pop with result to trigger refresh
           Navigator.pop(context, 'subscription_updated');
         }
@@ -193,6 +238,13 @@ class _SubscriptionScreenEnhancedState extends State<SubscriptionScreenEnhanced>
       onFailure: () {
         if (!mounted) return;
         setState(() => isPurchasing = false);
+
+        // Track restore not found
+        _analytics.logEvent(
+          name: 'subscription_restore_none',
+          parameters: {'platform': Platform.isIOS ? 'ios' : 'android'},
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(context.l10n?.subscriptionRestoreNone ?? 'No previous subscription found to restore.'),

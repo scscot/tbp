@@ -11,6 +11,7 @@ import '../models/user_model.dart';
 import '../config/app_colors.dart';
 import '../widgets/localized_text.dart';
 import '../l10n/app_localizations.dart';
+import '../services/analytics_service.dart';
 
 class ShareScreen extends StatefulWidget {
   final String appId;
@@ -36,10 +37,12 @@ class _ShareScreenState extends State<ShareScreen>
   bool _showProspectMessages = false;
   bool _showPartnerMessages = false;
   final Map<String, String?> _selectedLanguages = {}; // Track selected language per message
+  final AnalyticsService _analytics = AnalyticsService();
 
   @override
   void initState() {
     super.initState();
+    _analytics.logScreenView(screenName: 'share_screen');
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -149,6 +152,8 @@ class _ShareScreenState extends State<ShareScreen>
   Future<void> _composeEmail({
     required String subject,
     required String body,
+    String? messageType,
+    String? recipientType,
   }) async {
     final text = '$subject\n\n$body';
 
@@ -166,6 +171,13 @@ class _ShareScreenState extends State<ShareScreen>
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
 
+      // Track successful share
+      _analytics.logShareMessage(
+        messageType: messageType ?? 'unknown',
+        platform: 'native_share',
+        recipientType: recipientType,
+      );
+
       if (kDebugMode) {
         debugPrint('✅ SHARE_SCREEN: Share.share() completed successfully');
       }
@@ -174,6 +186,14 @@ class _ShareScreenState extends State<ShareScreen>
         debugPrint('❌ SHARE_SCREEN: Share.share() error: $e');
         debugPrint(stack.toString());
       }
+
+      // Track share error
+      _analytics.logError(
+        errorType: 'share_failed',
+        errorMessage: e.toString(),
+        screen: 'share_screen',
+      );
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

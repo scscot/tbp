@@ -1199,25 +1199,46 @@ ${context.metricsAvailable ? `
 - Active Devices: ${context.sessions.activeDevices || 0}
 ` : '- Detailed metrics not yet available (new app or insufficient data)'}
 
-Based on this data, provide:
-1. **Key Observations** (3-5 bullet points about the current state)
-2. **Strengths** (2-3 things going well)
-3. **Areas for Improvement** (2-3 actionable items)
-4. **Recommended Actions** (3-5 specific, prioritized recommendations for the next 30 days)
+Return a JSON object with the following structure:
+{
+  "keyObservations": ["observation 1", "observation 2", ...],
+  "strengths": ["strength 1", "strength 2", ...],
+  "areasForImprovement": ["area 1", "area 2", ...],
+  "recommendedActions": ["action 1", "action 2", ...]
+}
 
-Focus on ASO (App Store Optimization), user acquisition, and retention. Be specific and actionable. Keep the total response under 500 words.`;
+Provide:
+- keyObservations: 3-5 bullet points about the current state
+- strengths: 2-3 things going well
+- areasForImprovement: 2-3 actionable items
+- recommendedActions: 3-5 specific, prioritized recommendations for the next 30 days
+
+Focus on ASO (App Store Optimization), user acquisition, and retention. Be specific and actionable.`;
 
         const completion = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: 'You are an expert mobile app growth consultant specializing in App Store optimization and user acquisition. Provide concise, actionable insights.' },
+            { role: 'system', content: 'You are an expert mobile app growth consultant specializing in App Store optimization and user acquisition. Always respond with valid JSON only.' },
             { role: 'user', content: prompt }
           ],
           max_tokens: 800,
-          temperature: 0.7
+          temperature: 0.7,
+          response_format: { type: 'json_object' }
         });
 
-        const analysis = completion.choices[0]?.message?.content || 'Analysis not available.';
+        const responseText = completion.choices[0]?.message?.content || '{}';
+        let analysis;
+        try {
+          analysis = JSON.parse(responseText);
+        } catch (parseError) {
+          logger.warn('Failed to parse AI response as JSON:', parseError);
+          analysis = {
+            keyObservations: ['AI analysis format error - please try again'],
+            strengths: [],
+            areasForImprovement: [],
+            recommendedActions: []
+          };
+        }
 
         return {
           generatedAt: new Date().toISOString(),
@@ -1234,7 +1255,12 @@ Focus on ASO (App Store Optimization), user acquisition, and retention. Be speci
         logger.error('Error generating AI analysis:', error);
         return {
           generatedAt: new Date().toISOString(),
-          analysis: 'AI analysis temporarily unavailable. Please try again later.',
+          analysis: {
+            keyObservations: ['AI analysis temporarily unavailable'],
+            strengths: [],
+            areasForImprovement: [],
+            recommendedActions: []
+          },
           error: error.message
         };
       }

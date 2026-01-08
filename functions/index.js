@@ -116,6 +116,13 @@ const {
 } = require('./analytics-functions');
 
 // ==============================
+// Import Analytics Dashboard Functions
+// ==============================
+const {
+  getTBPAnalytics,
+} = require('./analytics-dashboard-functions');
+
+// ==============================
 // Import Email Campaign Functions
 // ==============================
 const {
@@ -312,6 +319,9 @@ module.exports = {
   deleteNonAdminUsers,
   cleanupOrphanedUsers,
   updateUserTimezone,
+
+  // ========== ANALYTICS DASHBOARD FUNCTIONS ==========
+  getTBPAnalytics,
 
   // ========== ADMIN FUNCTIONS ==========
   // Apple subscription management

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -44,6 +45,13 @@ import 'widgets/localized_text.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const String appId = 'L8n1tJqHqYd3F5j6';
+
+// Firebase Analytics for automatic screen tracking
+final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+final FirebaseAnalyticsObserver analyticsObserver = FirebaseAnalyticsObserver(
+  analytics: FirebaseAnalytics.instance,
+  nameExtractor: (settings) => settings.name ?? 'unknown',
+);
 
 void main() async {
   try {
@@ -273,7 +281,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             fontFamily: 'Inter',
           ),
           debugShowCheckedModeBanner: false,
-          navigatorObservers: [routeObserver],
+          navigatorObservers: [routeObserver, analyticsObserver],
           onGenerateRoute: (settings) {
             if (settings.name == '/network') {
               final args = settings.arguments as Map<String, dynamic>?;
