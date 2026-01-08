@@ -30,6 +30,7 @@ flutter_*.log
 assets/env.*
 !assets/env.template
 secrets/
+functions/ga4-service-account.json
 
 # === IDE Specific Ignores ===
 # IntelliJ / Android Studio

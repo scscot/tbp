@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-06
-**Version**: 2.8 (Homepage conversion optimization + LinkedIn ad campaign)
+**Last Updated**: 2026-01-08
+**Version**: 2.9 (Hero messaging refinement + data privacy trust signal)
 
 ---
 
@@ -46,17 +46,21 @@ Generic contact forms and chatbots don't solve this. They just flood your inbox 
 
 ### The Solution
 
-**AI-powered intake that screens like your best paralegal—before leads hit your CRM.**
+**AI that screens like your best paralegal.**
 
-Unlike traditional forms or CRM intake tools, PreIntake.ai conducts a real conversation. It asks the right questions, adapts based on answers, and routes leads before they reach staff:
+Every inquiry delivered with a complete case summary, qualification assessment, and recommendation—ready for your review.
+
+Unlike traditional forms or CRM intake tools, PreIntake.ai conducts a real conversation. It asks the right questions, adapts based on answers, and pre-evaluates every case before staff review:
 
 | Routing | What It Means | What Happens |
 |---------|---------------|--------------|
-| **GREEN** | Strong case indicators | → Instant calendar booking |
+| **GREEN** | Strong case indicators | → Priority follow-up recommended |
 | **YELLOW** | Needs documentation | → Queued for records review |
 | **RED** | Cannot help | → Polite decline with resources |
 
-Staff only see qualified leads. Unqualified submissions never waste their time.
+**All inquiries are delivered to your team**—but each arrives pre-screened with a clear assessment and recommended action, so staff time goes to viable matters.
+
+**Zero Data Retention** — Inquiries are processed and delivered immediately, never stored on our servers.
 
 ### How It's Different
 
@@ -790,7 +794,7 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
 
 **Final Page Structure:**
 ```
-1. Hero (with stacked CTA button)
+1. Hero (paralegal comparison H1, Zero Data Retention trust signal, sticky CTA)
 2. What Your Firm Receives (value proof)
 3. Routing Section (GREEN/YELLOW/RED mechanics)
 4. 3 Simple Steps (ease of implementation)
@@ -805,6 +809,45 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
 - Stats Bar
 - Problem Section
 - CRM Integration Note
+
+### Phase 20: Hero Messaging Refinement (2026-01-08)
+- [x] **H1 Messaging Update** - Refined hero heading with paralegal comparison
+  - Changed from capability-focused to artifact-focused messaging
+  - Final H1: "AI That Screens Like Your Best Paralegal" (two lines on desktop)
+  - Added `<br class="desktop-only" />` for responsive line break
+- [x] **Subhead Update** - Describes what firm receives, not what AI does
+  - "Every inquiry delivered with a complete case summary, qualification assessment, and recommendation—ready for your review."
+- [x] **Zero Data Retention Trust Signal** - Added privacy assurance in hero
+  - "Zero Data Retention — Inquiries processed and delivered, never stored."
+  - Addresses law firm data security concerns
+  - Styled with gold accent for emphasis
+- [x] **Hero CTA Hidden** - Using sticky CTA instead for scroll engagement
+  - Hero CTA commented out (available for restoration)
+  - Sticky CTA appears after scroll: "See It In Action →"
+- [x] **Section Padding Standardization** - Consistent spacing across all sections
+  - Desktop: `padding: 4rem 2rem` (was 5rem/6rem in places)
+  - Mobile: `padding: 3rem 1.5rem`
+  - Applied to: `.hero`, `.section`, `.cta-section`
+- [x] **Hero Privacy Font Size** - Increased visibility of trust signal
+  - Changed from `0.875rem` to `1.05rem`
+- [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-08
+
+**Hero Messaging Evolution:**
+```
+Before: Generic AI intake messaging
+After:  "AI That Screens Like Your Best Paralegal"
+        - Creates safe mental bridge (paralegal comparison, not AI superiority claim)
+        - Focuses on artifact delivered (summary, assessment, recommendation)
+        - Keeps human in control ("ready for your review")
+```
+
+**Key Messaging Decisions:**
+| Choice | Selected | Rationale |
+|--------|----------|-----------|
+| "Screens" vs "Thinks" | Screens | More concrete, action-oriented, credible |
+| "review" vs "decision" | review | Keeps human in control, less pressure |
+| "delivered" vs "arrives" | delivered | Active voice, service-oriented |
+| Hero CTA vs Sticky CTA | Sticky | Encourages scroll, reduces bounce on cold traffic |
 
 ---
 
