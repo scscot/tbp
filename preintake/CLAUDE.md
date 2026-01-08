@@ -46,7 +46,7 @@ Generic contact forms and chatbots don't solve this. They just flood your inbox 
 
 ### The Solution
 
-**AI that screens like your best paralegal.**
+**AI that reviews inquiries like your best paralegal.**
 
 Every inquiry delivered with a complete case summary, qualification assessment, and recommendation—ready for your review.
 
@@ -813,8 +813,10 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
 ### Phase 20: Hero Messaging Refinement (2026-01-08)
 - [x] **H1 Messaging Update** - Refined hero heading with paralegal comparison
   - Changed from capability-focused to artifact-focused messaging
-  - Final H1: "AI That Screens Like Your Best Paralegal" (two lines on desktop)
-  - Added `<br class="desktop-only" />` for responsive line break
+  - Final H1: "AI That Reviews Inquiries / Like Your Best Paralegal" (two lines on desktop)
+  - Line break after "Inquiries" keeps "Like Your Best Paralegal" together
+  - Added space before `<br>` to prevent "InquiriesLike" on mobile
+  - Changed "Screens" → "Reviews" to eliminate filtering implication
 - [x] **Subhead Update** - Describes what firm receives, not what AI does
   - "Every inquiry delivered with a complete case summary, qualification assessment, and recommendation—ready for your review."
 - [x] **Zero Data Retention Trust Signal** - Added privacy assurance in hero
@@ -832,11 +834,26 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Changed from `0.875rem` to `1.05rem`
 - [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-08
 
+- [x] **Scroll Cue** - Tested and removed
+  - Added "See an example summary ↓" but removed after review
+  - Hero flows better without it; sticky CTA handles scroll motivation
+- [x] **Filtering Language Audit** - Comprehensive cleanup of filtering-implied language
+  - Changed "screen/screened/screening" → "review/reviewed/reviewing" throughout
+  - Changed "Screening Summary" → "Case Summary"
+  - Changed "Screening Rationale" → "Assessment Rationale"
+  - Changed "Screens:" → "Checks:" on all 6 practice area cards
+  - Changed "Does Not Qualify" → "Not a Fit" (also "Disqualifier:" → "Reason:")
+  - Changed "before it reaches your inbox" → "arrives in your inbox with"
+  - Changed "Your Infrastructure" → "Your Branded Experience" (removed inaccurate "never leave your domain" claim)
+
 **Hero Messaging Evolution:**
 ```
-Before: Generic AI intake messaging
-After:  "AI That Screens Like Your Best Paralegal"
+Before: "AI That Screens Like Your Best Paralegal"
+After:  "AI That Reviews Inquiries
+         Like Your Best Paralegal"
         - Creates safe mental bridge (paralegal comparison, not AI superiority claim)
+        - "Reviews" eliminates filtering ambiguity that "screens" carried
+        - Line break keeps "Like Your Best Paralegal" as complete phrase
         - Focuses on artifact delivered (summary, assessment, recommendation)
         - Keeps human in control ("ready for your review")
 ```
@@ -844,10 +861,11 @@ After:  "AI That Screens Like Your Best Paralegal"
 **Key Messaging Decisions:**
 | Choice | Selected | Rationale |
 |--------|----------|-----------|
-| "Screens" vs "Thinks" | Screens | More concrete, action-oriented, credible |
+| "Reviews" vs "Screens" | Reviews | "Screens" implied filtering; "Reviews" = assessment without gatekeeping |
 | "review" vs "decision" | review | Keeps human in control, less pressure |
 | "delivered" vs "arrives" | delivered | Active voice, service-oriented |
 | Hero CTA vs Sticky CTA | Sticky | Encourages scroll, reduces bounce on cold traffic |
+| Scroll cue | Removed | Tested but removed; hero flows better without it |
 
 ---
 
