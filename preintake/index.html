@@ -185,35 +185,10 @@
             height: 20px;
         }
 
-        .hero-cta-stacked {
-            flex-direction: column;
-            gap: 0.25rem;
-            padding: 1rem 2.5rem 0.85rem;
-        }
-
-        .cta-main {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.35rem;
-            font-weight: 600;
-        }
-
-        .cta-main svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .cta-sub {
-            font-size: 0.85rem;
-            font-weight: 400;
-            opacity: 0.8;
-        }
-
         .hero-note {
             margin-top: 1.5rem;
-            font-size: 1.05rem;
-            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.875rem;
+            color: var(--text-muted);
         }
 
         /* Desktop-only line breaks */
@@ -603,13 +578,6 @@
         }
 
         /* Demo Form */
-        .demo-outcome {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-
         .demo-form-container {
             max-width: 500px;
             margin: 0 auto;
@@ -1837,15 +1805,13 @@
             <p class="hero-subtitle">
                 Every inquiry screened before it reaches your firm — qualified, needs review, or not a fit.
             </p>
-            <a href="#demo" class="hero-cta hero-cta-stacked">
-                <span class="cta-main">
-                    See It In Action
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </span>
-                <span class="cta-sub">Watch a real inquiry get evaluated and routed</span>
+            <a href="#demo" class="hero-cta">
+                See It In Action
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
             </a>
+            <p class="hero-note">Automated intake screening. See a demo for your practice.</p>
         </div>
     </section>
 
@@ -2128,13 +2094,12 @@
     </section>
     -->
 
-    <!-- CRM Integration Note (HIDDEN)
+    <!-- CRM Integration Note -->
     <div class="crm-note">
         <div class="container">
             <p>Already use Lawmatics, Clio, or Filevine? PreIntake.ai integrates seamlessly—screened inquiries flow directly into your existing system.</p>
         </div>
     </div>
-    -->
 
     <!-- Routing Section -->
     <section class="section section-dark">
@@ -2162,150 +2127,6 @@
                     <p>Outside SOL, wrong jurisdiction, existing representation, or clear disqualifier.</p>
                     <div class="routing-action">→ Inquiry Informed + Full Details Delivered</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3 Simple Steps Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Get Started in 3 Simple Steps</h2>
-                <p>From demo to live intake in minutes, not weeks.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Request Your Custom Demo</h3>
-                        <p>Enter your website URL. We analyze your practice areas and build a personalized AI intake demo—free, in under 5 minutes.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Create Your Account</h3>
-                        <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Add One Line of Code</h3>
-                        <p>Copy a single script tag to your website. That's it—your AI intake is live and screening inquiries 24/7.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Demo CTA Section -->
-    <section class="cta-section" id="demo">
-        <div class="container">
-            <h2>Get Your Custom Demo</h2>
-            <p class="demo-outcome">Within weeks, your staff spends time only on viable matters.</p>
-            <div class="demo-form-container" id="demo-form-container">
-                <form class="demo-form" id="demo-form">
-                    <div class="form-error" id="form-error"></div>
-                    <!-- Honeypot field - hidden from humans, bots will fill it -->
-                    <div class="hp-field" aria-hidden="true">
-                        <label for="company_fax">Fax Number</label>
-                        <input type="text" id="company_fax" name="company_fax" tabindex="-1" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" placeholder="Jane Smith" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="jane@smithlaw.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="website">Firm Website</label>
-                        <input type="url" id="website" name="website" placeholder="https://smithlaw.com" required>
-                    </div>
-
-                    <button type="submit" class="demo-submit" id="submit-btn">Analyze My Website & Build My Demo</button>
-                    <p style="color: white; font-style: italic; margin-top: 0.30rem; font-size: 0.9rem;">Takes ~1 minute. Demo ready in minutes.</p>
-                </form>
-            </div>
-
-            <!-- Analyzing state (hidden by default) -->
-            <div class="demo-form-container analyzing-state" id="analyzing-state" style="display: none;">
-                <div class="analyzing-spinner"></div>
-                <h3>Analyzing Your Website</h3>
-                <p>We're scanning your firm's website to understand your practice areas and intake requirements.</p>
-                <div class="analyzing-steps">
-                    <div class="analyzing-step active" id="step-scanning">
-                        <div class="analyzing-step-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-                        <span>Scanning website pages...</span>
-                    </div>
-                    <div class="analyzing-step" id="step-extracting">
-                        <div class="analyzing-step-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                        </div>
-                        <span>Identifying practice areas...</span>
-                    </div>
-                    <div class="analyzing-step" id="step-configuring">
-                        <div class="analyzing-step-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </div>
-                        <span>Preparing confirmation...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Building demo state (hidden by default) -->
-            <div class="demo-form-container building-demo" id="building-demo" style="display: none;">
-                <div class="demo-success-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 40px; height: 40px;">
-                        <path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
-                        <path d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
-                        <path d="M4.462 19.462c.42-.419.753-.89 1-1.394.453.213.902.434 1.347.661a6.743 6.743 0 01-1.286 1.794.75.75 0 11-1.06-1.06z" />
-                    </svg>
-                </div>
-                <h3>Building Your Custom Demo</h3>
-                <p>We're generating your personalized AI intake experience.</p>
-                <div class="building-progress">
-                    <div class="spinner-small"></div>
-                    <span id="building-progress-text">Generating your demo...</span>
-                </div>
-            </div>
-
-            <!-- Verification pending state (hidden by default) -->
-            <div class="demo-form-container verification-pending" id="verification-pending" style="display: none;">
-                <div class="demo-success-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h3>Check Your Email</h3>
-                <p>We've sent a verification link to <strong id="verification-email"></strong></p>
-                <p class="check-email">Click the link in the email to verify your address and start building your custom demo.</p>
-                <p style="font-size: 0.85rem; margin-top: 1.5rem; color: var(--text-muted);">The link will expire in 24 hours. If you don't see the email, check your spam folder.</p>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Didn't receive the email? <a href="#" onclick="location.reload(); return false;" style="color: #c9a962;">Try again</a></p>
-            </div>
-
-            <!-- Fallback success state - shown only if auto-redirect fails -->
-            <div class="demo-form-container demo-success" id="demo-success" style="display: none;">
-                <div class="demo-success-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-                <h3>Demo Generation in Progress</h3>
-                <p>Your custom AI intake demo is being built. This may take a few minutes for complex sites.</p>
-                <p class="check-email">You'll receive an email with your private demo link shortly.</p>
-                <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--text-muted);">No need to wait here—we'll send the link to your email when it's ready.</p>
             </div>
         </div>
     </section>
@@ -2416,6 +2237,39 @@
         </div>
     </section>
 
+    <!-- 3 Simple Steps Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get Started in 3 Simple Steps</h2>
+                <p>From demo to live intake in minutes, not weeks.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Request Your Custom Demo</h3>
+                        <p>Enter your website URL. We analyze your practice areas and build a personalized AI intake demo—free, in under 5 minutes.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Create Your Account</h3>
+                        <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Add One Line of Code</h3>
+                        <p>Copy a single script tag to your website. That's it—your AI intake is live and screening inquiries 24/7.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Section -->
     <section class="section section-dark" id="pricing">
         <div class="container">
@@ -2446,9 +2300,119 @@
                     <div class="pricing-desc">Unlimited AI-powered intake screenings, inquiry routing, and real-time delivery via email or CRM</div>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem;">
-                Cancel anytime—no long-term contracts.
+            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Expert-level screening tailored to your practice area. Every inquiry assessed before it reaches your inbox. Cancel anytime—no long-term contracts.
             </p>
+        </div>
+    </section>
+
+    <!-- Demo CTA Section -->
+    <section class="cta-section" id="demo">
+        <div class="container">
+            <h2>Get Your Custom Demo</h2>
+            <div class="demo-form-container" id="demo-form-container">
+                <form class="demo-form" id="demo-form">
+                    <div class="form-error" id="form-error"></div>
+                    <!-- Honeypot field - hidden from humans, bots will fill it -->
+                    <div class="hp-field" aria-hidden="true">
+                        <label for="company_fax">Fax Number</label>
+                        <input type="text" id="company_fax" name="company_fax" tabindex="-1" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="jane@smithlaw.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="website">Firm Website</label>
+                        <input type="url" id="website" name="website" placeholder="https://smithlaw.com" required>
+                    </div>
+
+                    <button type="submit" class="demo-submit" id="submit-btn">Analyze My Website & Build My Demo</button>
+                    <p style="color: white; font-style: italic; margin-top: 0.30rem; font-size: 0.9rem;">Takes ~1 minute. Demo ready in minutes.</p>
+                </form>
+            </div>
+
+            <!-- Analyzing state (hidden by default) -->
+            <div class="demo-form-container analyzing-state" id="analyzing-state" style="display: none;">
+                <div class="analyzing-spinner"></div>
+                <h3>Analyzing Your Website</h3>
+                <p>We're scanning your firm's website to understand your practice areas and intake requirements.</p>
+                <div class="analyzing-steps">
+                    <div class="analyzing-step active" id="step-scanning">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <span>Scanning website pages...</span>
+                    </div>
+                    <div class="analyzing-step" id="step-extracting">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <span>Identifying practice areas...</span>
+                    </div>
+                    <div class="analyzing-step" id="step-configuring">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <span>Preparing confirmation...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Building demo state (hidden by default) -->
+            <div class="demo-form-container building-demo" id="building-demo" style="display: none;">
+                <div class="demo-success-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 40px; height: 40px;">
+                        <path d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
+                        <path d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
+                        <path d="M4.462 19.462c.42-.419.753-.89 1-1.394.453.213.902.434 1.347.661a6.743 6.743 0 01-1.286 1.794.75.75 0 11-1.06-1.06z" />
+                    </svg>
+                </div>
+                <h3>Building Your Custom Demo</h3>
+                <p>We're generating your personalized AI intake experience.</p>
+                <div class="building-progress">
+                    <div class="spinner-small"></div>
+                    <span id="building-progress-text">Generating your demo...</span>
+                </div>
+            </div>
+
+            <!-- Verification pending state (hidden by default) -->
+            <div class="demo-form-container verification-pending" id="verification-pending" style="display: none;">
+                <div class="demo-success-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3>Check Your Email</h3>
+                <p>We've sent a verification link to <strong id="verification-email"></strong></p>
+                <p class="check-email">Click the link in the email to verify your address and start building your custom demo.</p>
+                <p style="font-size: 0.85rem; margin-top: 1.5rem; color: var(--text-muted);">The link will expire in 24 hours. If you don't see the email, check your spam folder.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Didn't receive the email? <a href="#" onclick="location.reload(); return false;" style="color: #c9a962;">Try again</a></p>
+            </div>
+
+            <!-- Fallback success state - shown only if auto-redirect fails -->
+            <div class="demo-form-container demo-success" id="demo-success" style="display: none;">
+                <div class="demo-success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h3>Demo Generation in Progress</h3>
+                <p>Your custom AI intake demo is being built. This may take a few minutes for complex sites.</p>
+                <p class="check-email">You'll receive an email with your private demo link shortly.</p>
+                <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--text-muted);">No need to wait here—we'll send the link to your email when it's ready.</p>
+            </div>
         </div>
     </section>
 
