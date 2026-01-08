@@ -845,6 +845,9 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Changed "Does Not Qualify" → "Not a Fit" (also "Disqualifier:" → "Reason:")
   - Changed "before it reaches your inbox" → "arrives in your inbox with"
   - Changed "Your Infrastructure" → "Your Branded Experience" (removed inaccurate "never leave your domain" claim)
+  - Changed "Assistant:" → "Intake:" in transcript labels (avoids AI anxiety, cleaner abstraction)
+    - Updated `demo-intake.html` formatTranscript() function (2 places)
+    - Updated `intake-delivery-functions.js` email transcript formatting
 
 **Hero Messaging Evolution:**
 ```
