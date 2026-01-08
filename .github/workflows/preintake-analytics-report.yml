@@ -1,0 +1,61 @@
+name: PreIntake Weekly Analytics Report
+
+on:
+  schedule:
+    # Every Monday at 9am PT (5pm UTC during PST, 4pm UTC during PDT)
+    - cron: '0 17 * * 1'  # PST (Nov-Mar)
+    - cron: '0 16 * * 1'  # PDT (Mar-Nov)
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: |
+          npm install firebase-admin nodemailer @google-analytics/data
+          echo "Dependencies installed"
+
+      - name: Setup credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GA4_SERVICE_ACCOUNT: ${{ secrets.GA4_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "$GA4_SERVICE_ACCOUNT" > secrets/ga4-service-account.json
+          echo "Credentials configured"
+
+      - name: Generate and send report
+        env:
+          PREINTAKE_SMTP_USER: support@preintake.ai
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SUPPORT_SMTP_PASS }}
+          REPORT_EMAIL: scscot@gmail.com
+          GA4_PROPERTY_ID: ${{ secrets.PREINTAKE_GA4_PROPERTY_ID }}
+        run: |
+          echo "Generating PreIntake.ai weekly analytics report..."
+          node scripts/preintake-analytics-report.js
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
