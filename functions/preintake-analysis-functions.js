@@ -46,6 +46,12 @@ const analyzePreIntakeLead = onDocumentCreated(
         const leadId = event.params.leadId;
         const leadData = snap.data();
 
+        // Skip analysis for campaign-sourced leads (already processed with demo)
+        if (leadData.source === 'campaign') {
+            console.log(`Lead ${leadId} is from email campaign - already processed, skipping analysis`);
+            return;
+        }
+
         // Skip analysis if email verification is pending (will be triggered after verification)
         if (leadData.status === 'pending_verification' || leadData.emailVerified !== true) {
             console.log(`Lead ${leadId} is pending email verification - skipping analysis for now`);
