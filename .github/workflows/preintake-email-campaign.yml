@@ -52,9 +52,9 @@ jobs:
           cache-dependency-path: 'scripts/package.json'
 
       - name: Install dependencies
-        working-directory: scripts
         run: |
-          npm install firebase-admin nodemailer
+          cd scripts && npm install firebase-admin nodemailer && cd ..
+          cd functions && npm install && cd ..
           echo "Dependencies installed"
 
       - name: Setup Firebase credentials
