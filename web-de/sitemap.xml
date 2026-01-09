@@ -361,4 +361,13 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://pt.teambuildpro.com/blog/2026-mlm-compliance-alert-pre-written-messages.html</loc>
+    <lastmod>2026-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
