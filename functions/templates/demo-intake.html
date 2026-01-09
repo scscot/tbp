@@ -331,6 +331,18 @@
         .chat-header-disclosure {
             font-size: 0.75rem;
             color: var(--text-muted);
+            text-align: right;
+        }
+
+        .chat-header-disclosure a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .chat-header-disclosure a:hover {
+            opacity: 1;
+            text-decoration: underline;
         }
 
         .chat-main {
@@ -1165,6 +1177,19 @@
             height: 18px;
         }
 
+        .sidebar-return-link {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.9rem !important;
+            color: #c9a962 !important;
+            text-decoration: underline !important;
+            text-align: center;
+        }
+
+        .sidebar-return-link:hover {
+            opacity: 0.8;
+        }
+
         /* Results Screen PreIntake Promo */
         .preintake-promo {
             margin-top: 2.5rem;
@@ -1228,6 +1253,66 @@
             .decline-content {
                 padding: 1.5rem;
             }
+        }
+
+        /* Onboarding Modal */
+        .onboarding-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .onboarding-modal.hidden {
+            display: none;
+        }
+
+        .onboarding-modal-content {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .onboarding-modal-content h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .onboarding-modal-content p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .onboarding-modal-button {
+            background: var(--gradient-gold);
+            color: var(--primary-dark);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .onboarding-modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
         }
     </style>
 </head>
@@ -1323,7 +1408,7 @@
     <div id="chat-screen" class="screen">
         <header class="chat-header">
             <div class="chat-header-logo" id="chat-logo">{{FIRM_NAME}}</div>
-            <div class="chat-header-disclosure">AI-assisted intake | No attorney-client relationship</div>
+            <div class="chat-header-disclosure">AI-assisted intake | No attorney-client relationship<br><a href="https://preintake.ai" target="_blank">Powered by PreIntake.ai</a></div>
         </header>
         <div class="chat-main">
             <aside class="progress-sidebar">
@@ -1340,6 +1425,7 @@
                         </svg>
                         Get Started
                     </a>
+                    <a href="https://preintake.ai" class="sidebar-return-link" target="_blank">Return to PreIntake.ai</a>
                 </div>
             </aside>
             <div class="chat-area">
@@ -2622,6 +2708,34 @@
             });
             document.getElementById('loading-progress-bar').style.width = '0%';
         }
+
+    </script>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="onboarding-modal">
+        <div class="onboarding-modal-content">
+            <h2>Welcome to Your Demo</h2>
+            <p>This demo shows how PreIntake.ai reviews inquiries for your firm.</p>
+            <p>When you're ready to go live, it embeds directly into your website—setup takes just minutes, and visitors never leave your site.</p>
+            <button id="onboarding-modal-close" class="onboarding-modal-button">Start Demo</button>
+        </div>
+    </div>
+
+    <script>
+        // Onboarding modal - show once per session
+        (function() {
+            const modal = document.getElementById('onboarding-modal');
+            const closeBtn = document.getElementById('onboarding-modal-close');
+
+            if (sessionStorage.getItem('preintake_onboarding_seen')) {
+                modal.classList.add('hidden');
+            }
+
+            closeBtn.addEventListener('click', function() {
+                modal.classList.add('hidden');
+                sessionStorage.setItem('preintake_onboarding_seen', 'true');
+            });
+        })();
     </script>
 </body>
 </html>

@@ -106,7 +106,11 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
     // Extract values
-    const firmName = analysis.firmName || 'Law Firm';
+    // For campaign-sourced leads, prioritize leadData.name (from contact database)
+    // over analysis.firmName (scraped from website, often unreliable)
+    const firmName = leadData.source === 'campaign'
+        ? (leadData.name || analysis.firmName || 'Law Firm')
+        : (analysis.firmName || leadData.name || 'Law Firm');
 
     // Use confirmed practice areas (from user confirmation modal) or fallback to analysis
     const confirmedAreas = leadData.confirmedPracticeAreas?.areas || [];
@@ -242,7 +246,7 @@ async function uploadToStorage(leadId, htmlContent, configContent) {
     await htmlFile.save(htmlContent, {
         contentType: 'text/html',
         metadata: {
-            cacheControl: 'public, max-age=3600',
+            cacheControl: 'no-cache, no-store, must-revalidate',
         },
     });
 
@@ -2638,9 +2642,9 @@ function getLandingHeadline(practiceArea, isMultiPractice) {
 function getLandingSubheadline(practiceArea, firmName, isMultiPractice) {
     // For multi-practice firms, use generic subheadline
     if (isMultiPractice) {
-        return `Find out if ${firmName} can help with your legal matter in under 5 minutes. Our AI-powered intake helps us understand your situation quickly and confidentially.`;
+        return `Find out if ${firmName} can help with your legal matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`;
     }
-    return `Find out if ${firmName} can help with your ${practiceArea.toLowerCase()} matter in under 5 minutes. Our AI-powered intake helps us understand your situation quickly and confidentially.`;
+    return `Find out if ${firmName} can help with your ${practiceArea.toLowerCase()} matter in under 5 minutes. We'll review your situation quickly, carefully, and confidentially.`;
 }
 
 /**

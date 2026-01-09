@@ -250,17 +250,17 @@ function generateEmailHTML(firmName, email, leadId) {
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="text-align:center; margin:0 0 16px 0;">
-        <strong>Practice-Specific AI Intake That Screens and Qualifies Inquiries—24/7</strong>
+        <strong>Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7</strong>
       </p>
 
       <p>Most law practices spend a surprising amount of staff time reviewing inquiries that were never a fit to begin with.</p>
 
       <p>Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases are mixed in with the noise.</p>
 
-      <p><strong>PreIntake.ai screens prospective clients before they reach your team</strong>, so staff time is spent reviewing cases that already meet your criteria.</p>
+      <p><strong>PreIntake.ai reviews prospective clients before they reach your team</strong>, so staff time is spent on cases that already meet your criteria.</p>
 
       <ul style="color: #1a1a2e; padding-left: 20px;">
-          <li>Screens inquiries using practice-specific criteria</li>
+          <li>Reviews inquiries using practice-specific criteria</li>
           <li>Designates each inquiry as <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
           <li>Provides a short, plain-English explanation with each result</li>
       </ul>
@@ -325,17 +325,17 @@ function generateFallbackEmailHTML(firmName, email) {
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="text-align:center; margin:0 0 16px 0;">
-        <strong>Practice-Specific AI Intake That Screens and Qualifies Inquires—24/7</strong>
+        <strong>Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7</strong>
       </p>
 
       <p>Most law practices spend a surprising amount of staff time
       reviewing inquiries that were never a fit to begin with.</p>
       <p>Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases are mixed in with the noise.</p>
 
-        <p><strong>PreIntake.ai screens prospective clients before they reach your team</strong>, so staff time is spent reviewing cases that already meet your criteria.</p>
+        <p><strong>PreIntake.ai reviews prospective clients before they reach your team</strong>, so staff time is spent on cases that already meet your criteria.</p>
 
         <ul style="color: #1a1a2e; padding-left: 20px;">
-            <li>Screens inquiries using practice-specific criteria</li>
+            <li>Reviews inquiries using practice-specific criteria</li>
             <li>Designates each inquiry as <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
             <li>Provides a short, plain-English explanation with each result</li>
         </ul>
@@ -376,7 +376,7 @@ function generateFallbackEmailHTML(firmName, email) {
 function generateSubject(hasDemo) {
     // Use same cold outreach subject regardless of demo status
     // Don't say "demo is ready" - that sounds like they requested it
-    return 'A smarter way to screen intake inquiries before staff review';
+    return 'A smarter way to review intake inquiries before staff engagement';
 }
 
 /**
