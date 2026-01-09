@@ -108,9 +108,15 @@ const getWidgetConfig = onRequest(
             const otherPracticeAreaName = data.practiceAreas?.otherName || null;
             const practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
 
+            // For campaign-sourced leads, prioritize data.name (from contact database)
+            // over analysis.firmName (scraped from website, often unreliable)
+            const firmName = data.source === 'campaign'
+                ? (data.name || analysis.firmName || 'Law Firm')
+                : (analysis.firmName || data.name || 'Law Firm');
+
             // Return ONLY public data
             return res.json({
-                firmName: analysis.firmName || data.name || 'Law Firm',
+                firmName: firmName,
                 logoUrl: analysis.logo || null,
                 colors: {
                     primary: analysis.primaryColor || '#0c1f3f',
