@@ -1923,14 +1923,22 @@
                 Every inquiry delivered with a complete case summary, qualification assessment, and recommendation—ready for your review.
             </p>
             <p class="hero-privacy"><strong>Zero Data Retention</strong> — Inquiries processed and delivered, never stored.</p>
-            <!-- Hero CTA hidden - using sticky CTA instead
-            <a href="#demo" class="hero-cta">
+
+            <!-- Campaign Hero CTA (shown for ?demo= visitors) -->
+            <a href="#" class="hero-cta campaign-hero-cta" id="campaign-hero-cta" style="display: none;">
+                See How It Works
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </a>
+
+            <!-- Default Hero CTA (shown for non-campaign visitors) -->
+            <a href="#demo" class="hero-cta" id="default-hero-cta">
                 See It In Action
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
-            -->
         </div>
     </section>
 
@@ -3288,22 +3296,26 @@
                     // Update section title
                     document.getElementById('demo-section-title').textContent = 'Your Demo is Ready';
 
-                    // Configure and show the CTA view
+                    // Configure and show the CTA view in demo section
                     const ctaView = document.getElementById('campaign-cta-view');
                     const ctaBtn = document.getElementById('campaign-demo-btn');
                     ctaBtn.href = data.demoUrl;
                     ctaView.classList.add('visible');
+
+                    // Show campaign hero CTA and hide default hero CTA
+                    const campaignHeroCta = document.getElementById('campaign-hero-cta');
+                    const defaultHeroCta = document.getElementById('default-hero-cta');
+                    if (campaignHeroCta && defaultHeroCta) {
+                        campaignHeroCta.href = data.demoUrl;
+                        campaignHeroCta.style.display = 'inline-flex';
+                        defaultHeroCta.style.display = 'none';
+                    }
 
                     // Hide sticky CTA since we're showing the campaign CTA
                     const stickyCta = document.getElementById('sticky-cta');
                     if (stickyCta) {
                         stickyCta.style.display = 'none';
                     }
-
-                    // Scroll to demo section smoothly
-                    setTimeout(() => {
-                        document.getElementById('demo').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 300);
 
                     return true; // Handled campaign demo
 
