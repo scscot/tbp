@@ -122,9 +122,11 @@ jobs:
           git add web/blog/*.html web-es/blog/*.html web-pt/blog/*.html web-de/blog/*.html
           git add web/blog.html web-es/blog.html web-pt/blog.html web-de/blog.html
           git add web/sitemap.xml web-es/sitemap.xml web-pt/sitemap.xml web-de/sitemap.xml
-          git add scripts/generate-blog.js
+          git add scripts/generate-ai-blog.js || true
+          git add scripts/generate-blog.js || true
           git add scripts/blog-response.json scripts/blog-recommendations.json || true
           git add scripts/spanish-translation.json scripts/portuguese-translation.json scripts/german-translation.json || true
+          git add scripts/last-blog-prompt.txt scripts/german-translation-prompt.txt || true
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
@@ -137,8 +139,15 @@ jobs:
 
             Co-Authored-By: Claude <noreply@anthropic.com>"
 
-            # Pull any remote changes and rebase our commit on top, then push
-            git pull --rebase origin main
+            # Stash any remaining unstaged changes before rebase
+            git stash --include-untracked || true
+
+            # Pull any remote changes and rebase our commit on top
+            git pull --rebase origin main || true
+
+            # Apply stashed changes back (if any)
+            git stash pop || true
+
             git push
           fi
 

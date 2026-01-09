@@ -12,8 +12,7 @@ const { defineSecret } = require('firebase-functions/params');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-const { androidpublisher } = require('@googleapis/androidpublisher');
-const { GoogleAuth } = require('google-auth-library');
+const { Storage } = require('@google-cloud/storage');
 
 // App Store Connect API secrets
 const ascKeyId = defineSecret('ASC_KEY_ID');
@@ -27,6 +26,7 @@ const GA4_PROPERTY_ID = '485651473';
 
 // Google Play Configuration
 const PLAY_STORE_PACKAGE_NAME = 'com.scott.ultimatefix';
+const PLAY_STORE_GCS_BUCKET = 'pubsite_prod_8651719546203306974';
 
 // ==============================
 // GA4 Analytics Functions
@@ -676,158 +676,187 @@ Be specific and actionable. Keep responses concise.`;
 }
 
 // ==============================
-// Google Play Analytics Functions
+// Google Play Analytics Functions (via GCS Bucket)
 // ==============================
 
 /**
- * Get Google Play Developer API client
+ * Get Google Cloud Storage client with service account credentials
  */
-function getPlayStoreClient() {
-  const auth = new GoogleAuth({
-    keyFilename: SERVICE_ACCOUNT_KEY_PATH,
-    scopes: ['https://www.googleapis.com/auth/androidpublisher']
-  });
-  return androidpublisher({
-    version: 'v3',
-    auth
+function getStorageClient() {
+  return new Storage({
+    keyFilename: SERVICE_ACCOUNT_KEY_PATH
   });
 }
 
 /**
- * Fetch Google Play Store analytics data
+ * Parse CSV content (UTF-16 to UTF-8 handled)
+ */
+function parseCSV(content) {
+  // Play Console exports CSV in UTF-16, convert if needed
+  let text = content;
+  if (content.charCodeAt(0) === 0xFEFF || content.charCodeAt(0) === 0xFFFE) {
+    // BOM detected, likely UTF-16
+    text = content.slice(1);
+  }
+
+  const lines = text.split('\n').filter(line => line.trim());
+  if (lines.length === 0) return [];
+
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  const data = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+    const row = {};
+    headers.forEach((header, idx) => {
+      row[header] = values[idx] || '';
+    });
+    data.push(row);
+  }
+
+  return data;
+}
+
+/**
+ * Fetch Google Play Store analytics data from GCS bucket
  */
 async function fetchGooglePlayMetrics() {
   try {
-    const play = getPlayStoreClient();
-    const packageName = PLAY_STORE_PACKAGE_NAME;
+    const storage = getStorageClient();
+    const bucket = storage.bucket(PLAY_STORE_GCS_BUCKET);
 
-    // Fetch app details and reviews in parallel
-    const [appDetails, reviewsResponse] = await Promise.all([
-      // Get app edit info (basic app details)
-      play.edits.insert({
-        packageName: packageName
-      }).then(async (editResponse) => {
-        const editId = editResponse.data.id;
-        try {
-          // Get app listings
-          const listings = await play.edits.listings.list({
-            packageName: packageName,
-            editId: editId
-          });
-
-          // Get current track info (release info)
-          const tracks = await play.edits.tracks.list({
-            packageName: packageName,
-            editId: editId
-          });
-
-          // Delete the edit (we don't need to commit)
-          await play.edits.delete({
-            packageName: packageName,
-            editId: editId
-          });
-
-          return {
-            listings: listings.data.listings || [],
-            tracks: tracks.data.tracks || []
-          };
-        } catch (e) {
-          // Clean up edit on error
-          try {
-            await play.edits.delete({
-              packageName: packageName,
-              editId: editId
-            });
-          } catch (deleteError) {
-            // Ignore cleanup errors
-          }
-          throw e;
-        }
-      }),
-
-      // Get reviews
-      play.reviews.list({
-        packageName: packageName
-      })
-    ]);
-
-    // Process app details
-    const englishListing = appDetails.listings.find(l => l.language === 'en-US') || appDetails.listings[0];
-    const productionTrack = appDetails.tracks.find(t => t.track === 'production');
-    const latestRelease = productionTrack?.releases?.[0];
-
-    // Process reviews
-    const reviews = (reviewsResponse.data.reviews || []).map(r => ({
-      reviewId: r.reviewId,
-      authorName: r.authorName,
-      rating: r.comments?.[0]?.userComment?.starRating || 0,
-      text: r.comments?.[0]?.userComment?.text || '',
-      lastModified: r.comments?.[0]?.userComment?.lastModified?.seconds
-        ? new Date(r.comments[0].userComment.lastModified.seconds * 1000).toISOString()
-        : null,
-      device: r.comments?.[0]?.userComment?.device || 'Unknown',
-      androidOsVersion: r.comments?.[0]?.userComment?.androidOsVersion || 'Unknown',
-      appVersionCode: r.comments?.[0]?.userComment?.appVersionCode || null,
-      appVersionName: r.comments?.[0]?.userComment?.appVersionName || null
-    }));
-
-    // Calculate rating distribution
-    const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    let totalRating = 0;
-    reviews.forEach(r => {
-      if (r.rating >= 1 && r.rating <= 5) {
-        ratingDistribution[r.rating]++;
-        totalRating += r.rating;
-      }
+    // List files in the stats/installs directory
+    const [files] = await bucket.getFiles({
+      prefix: 'stats/installs/',
+      maxResults: 100
     });
+
+    logger.info(`Found ${files.length} files in GCS bucket stats/installs/`);
+
+    if (files.length === 0) {
+      return {
+        available: false,
+        error: true,
+        message: 'No install statistics files found in GCS bucket',
+        setupInstructions: {
+          step1: 'Go to Play Console > Users and permissions',
+          step2: 'Add ga4-data-reader@teambuilder-plus-fe74d.iam.gserviceaccount.com',
+          step3: 'Set "View app information" permission to "Global"',
+          note: 'Reports may take 24-48 hours to appear after granting access'
+        }
+      };
+    }
+
+    // Find the most recent overview or detailed installs file
+    // File naming pattern: installs_<package>_<YYYYMM>_<type>.csv
+    const installFiles = files
+      .filter(f => f.name.includes(PLAY_STORE_PACKAGE_NAME) || f.name.includes('overview'))
+      .sort((a, b) => b.name.localeCompare(a.name)); // Most recent first
+
+    logger.info(`Filtered to ${installFiles.length} relevant install files`);
+
+    // Get the most recent file(s)
+    const metrics = {
+      activeInstalls: 0,
+      totalInstalls: 0,
+      dailyInstalls: [],
+      dailyUninstalls: [],
+      byCountry: {},
+      dataAvailable: false,
+      filesProcessed: []
+    };
+
+    // Process up to 3 most recent files
+    for (const file of installFiles.slice(0, 3)) {
+      try {
+        logger.info(`Processing file: ${file.name}`);
+        const [content] = await file.download();
+        const text = content.toString('utf-8');
+        const data = parseCSV(text);
+
+        if (data.length > 0) {
+          metrics.dataAvailable = true;
+          metrics.filesProcessed.push(file.name);
+
+          // Process each row
+          data.forEach(row => {
+            // Common field mappings (Play Console CSV format)
+            const date = row['Date'] || row['date'] || '';
+            const dailyInstalls = parseInt(row['Daily Device Installs'] || row['Daily User Installs'] || row['Installs'] || '0', 10);
+            const dailyUninstalls = parseInt(row['Daily Device Uninstalls'] || row['Daily User Uninstalls'] || row['Uninstalls'] || '0', 10);
+            const activeDeviceInstalls = parseInt(row['Active Device Installs'] || row['Active Installs'] || '0', 10);
+            const totalUserInstalls = parseInt(row['Total User Installs'] || row['Cumulative Installs'] || '0', 10);
+            const country = row['Country'] || row['country'] || '';
+
+            if (date) {
+              metrics.dailyInstalls.push({ date, installs: dailyInstalls });
+              metrics.dailyUninstalls.push({ date, uninstalls: dailyUninstalls });
+            }
+
+            if (activeDeviceInstalls > metrics.activeInstalls) {
+              metrics.activeInstalls = activeDeviceInstalls;
+            }
+
+            if (totalUserInstalls > metrics.totalInstalls) {
+              metrics.totalInstalls = totalUserInstalls;
+            }
+
+            if (country) {
+              metrics.byCountry[country] = (metrics.byCountry[country] || 0) + dailyInstalls;
+            }
+          });
+        }
+      } catch (fileError) {
+        logger.warn(`Error processing file ${file.name}:`, fileError.message);
+      }
+    }
+
+    // Sort daily data by date
+    metrics.dailyInstalls.sort((a, b) => a.date.localeCompare(b.date));
+    metrics.dailyUninstalls.sort((a, b) => a.date.localeCompare(b.date));
+
+    // Calculate recent totals (last 7 days if available)
+    const recentInstalls = metrics.dailyInstalls.slice(-7);
+    const recentUninstalls = metrics.dailyUninstalls.slice(-7);
+
+    const totalRecentInstalls = recentInstalls.reduce((sum, d) => sum + d.installs, 0);
+    const totalRecentUninstalls = recentUninstalls.reduce((sum, d) => sum + d.uninstalls, 0);
 
     return {
       available: true,
       appInfo: {
-        packageName: packageName,
-        title: englishListing?.title || 'Team Build Pro',
-        shortDescription: englishListing?.shortDescription || '',
-        fullDescription: englishListing?.fullDescription || ''
+        packageName: PLAY_STORE_PACKAGE_NAME,
+        title: 'Team Build Pro: Direct Sales'
       },
-      currentVersion: {
-        versionName: latestRelease?.name || 'Unknown',
-        versionCode: latestRelease?.versionCodes?.[0] || null,
-        status: latestRelease?.status || 'Unknown',
-        releaseNotes: latestRelease?.releaseNotes?.[0]?.text || ''
-      },
-      reviews: {
-        reviews: reviews.slice(0, 10), // Latest 10 reviews
-        totalReviews: reviews.length,
-        averageRating: reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 'N/A',
-        ratingDistribution
-      },
-      // Note: Download stats require Google Play Console Reports API (separate setup)
       metrics: {
-        dataAvailable: false,
-        message: 'Download and install metrics require Play Console Reports API access'
+        dataAvailable: metrics.dataAvailable,
+        activeInstalls: metrics.activeInstalls,
+        totalInstalls: metrics.totalInstalls,
+        recentInstalls: totalRecentInstalls,
+        recentUninstalls: totalRecentUninstalls,
+        dailyData: metrics.dailyInstalls.slice(-14), // Last 14 days
+        byCountry: metrics.byCountry,
+        filesProcessed: metrics.filesProcessed
       }
     };
 
   } catch (error) {
-    logger.error('Error fetching Google Play metrics:', error);
+    logger.error('Error fetching Google Play metrics from GCS:', error);
 
-    // Provide helpful error message based on error type
-    let message = 'Failed to fetch Google Play data';
+    let message = 'Failed to fetch Google Play data from GCS bucket';
     let setupInstructions = null;
 
-    if (error.code === 401 || error.message?.includes('Login Required') || error.message?.includes('UNAUTHENTICATED')) {
-      message = 'API authentication failed. Service account needs API access in Play Console.';
+    if (error.code === 403 || error.message?.includes('does not have storage.objects.list')) {
+      message = 'Service account lacks permission to access the Play Console GCS bucket.';
       setupInstructions = {
-        step1: 'Go to Play Console > Setup > API access',
-        step2: 'Link your Google Cloud project (teambuilder-plus-fe74d)',
-        step3: 'Under "Service accounts", find ga4-data-reader@teambuilder-plus-fe74d.iam.gserviceaccount.com',
-        step4: 'Click "Grant access" and set appropriate permissions',
-        note: 'This is different from adding the service account as a User in Play Console'
+        step1: 'Go to Play Console > Users and permissions',
+        step2: 'Add ga4-data-reader@teambuilder-plus-fe74d.iam.gserviceaccount.com as a user',
+        step3: 'Set "View app information" permission to "Global"',
+        step4: 'Wait 24-48 hours for reports to be accessible',
+        note: 'The service account needs global read access to download reports from GCS'
       };
-    } else if (error.code === 403 || error.message?.includes('403')) {
-      message = 'Permission denied. Service account lacks required Play Console API permissions.';
-    } else if (error.code === 404 || error.message?.includes('404')) {
-      message = 'App not found. Verify package name is correct.';
+    } else if (error.code === 404) {
+      message = 'GCS bucket not found. Verify the bucket name is correct.';
     } else if (error.message) {
       message = error.message;
     }
