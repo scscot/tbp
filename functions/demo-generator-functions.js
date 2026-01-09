@@ -2854,4 +2854,7 @@ module.exports = {
     generateLoadingStagesJson,
     generateDeclineResources,
     generateDetectButtonsFunction,
+    // Exported for scripts/send-preintake-campaign.js (inline demo generation)
+    generateDemoFiles,
+    uploadToStorage,
 };

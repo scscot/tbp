@@ -442,8 +442,10 @@ function detectPracticeAreas(text, navLinks, headings) {
  * Analyze extracted data with Claude AI
  */
 async function analyzeWithClaude(extractedData) {
+    // Support both Cloud Functions (defineSecret) and scripts (env var)
+    const apiKey = process.env.ANTHROPIC_API_KEY || anthropicApiKey.value();
     const anthropic = new Anthropic({
-        apiKey: anthropicApiKey.value(),
+        apiKey: apiKey,
     });
 
     const prompt = `You are analyzing a law firm website to help create a personalized AI intake system.
@@ -651,4 +653,6 @@ async function sendAnalysisEmail(leadId, name, email, website, analysis) {
 module.exports = {
     analyzePreIntakeLead,
     analyzeAfterEmailVerification,
+    // Exported for scripts/send-preintake-campaign.js (inline demo generation)
+    analyzeWebsite,
 };

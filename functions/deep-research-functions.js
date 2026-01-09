@@ -626,8 +626,10 @@ function detectCaseType(text) {
  * Use Claude to structure and enhance the scraped data
  */
 async function structureWithClaude(scrapedData, initialAnalysis) {
+    // Support both Cloud Functions (defineSecret) and scripts (env var)
+    const apiKey = process.env.ANTHROPIC_API_KEY || anthropicApiKey.value();
     const anthropic = new Anthropic({
-        apiKey: anthropicApiKey.value(),
+        apiKey: apiKey,
     });
 
     const prompt = `You are analyzing scraped law firm website data to create a comprehensive firm profile.

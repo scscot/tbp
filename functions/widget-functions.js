@@ -121,6 +121,8 @@ const getWidgetConfig = onRequest(
                 state: analysis.state || data.state || 'California',
                 // UI hints
                 totalSteps: practiceAreasList.length > 1 ? 5 : 4,
+                // Demo URL for campaign personalization
+                demoUrl: data.demoUrl || null,
             });
 
         } catch (error) {

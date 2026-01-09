@@ -384,6 +384,107 @@
             }
         }
 
+        /* Campaign Welcome Banner */
+        .campaign-welcome {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            padding: 1.25rem 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .campaign-welcome.visible {
+            display: block;
+        }
+
+        .campaign-welcome-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .campaign-welcome {
+                padding: 1rem 1.5rem;
+            }
+            .campaign-welcome-text {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Campaign CTA View (replaces form for campaign visitors) */
+        .campaign-cta-view {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .campaign-cta-view.visible {
+            display: block;
+        }
+
+        .campaign-cta-view h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .campaign-cta-view p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .campaign-demo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.35rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            border: none;
+            cursor: pointer;
+        }
+
+        .campaign-demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(201, 169, 98, 0.5);
+        }
+
+        .campaign-demo-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .campaign-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 3rem;
+            color: white;
+        }
+
+        .campaign-loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
         /* Comparison Table */
         .comparison-table {
             width: 100%;
@@ -1808,6 +1909,11 @@
     <!-- Header -->
     <div id="preintake-header"></div>
 
+    <!-- Campaign Welcome Banner (shown for ?demo= visitors) -->
+    <div class="campaign-welcome" id="campaign-welcome">
+        <p class="campaign-welcome-text">Welcome, <span id="campaign-firm-name">Your Firm</span>!</p>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero" id="hero">
         <div class="hero-content">
@@ -2322,7 +2428,26 @@
     <!-- Demo CTA Section -->
     <section class="cta-section" id="demo">
         <div class="container">
-            <h2>Get Your Custom Demo</h2>
+            <h2 id="demo-section-title">Get Your Custom Demo</h2>
+
+            <!-- Campaign CTA View (shown for ?demo= visitors instead of form) -->
+            <div class="campaign-cta-view" id="campaign-cta-view">
+                <h3>Your Personalized Demo is Ready</h3>
+                <p>See exactly how AI-powered intake will work for your firm—using your branding and practice areas.</p>
+                <a href="#" class="campaign-demo-btn" id="campaign-demo-btn">
+                    See How It Works
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Campaign Loading State -->
+            <div class="campaign-loading" id="campaign-loading" style="display: none;">
+                <div class="campaign-loading-spinner"></div>
+                <span>Loading your demo...</span>
+            </div>
+
             <div class="demo-form-container" id="demo-form-container">
                 <form class="demo-form" id="demo-form">
                     <div class="form-error" id="form-error"></div>
@@ -2483,6 +2608,7 @@
         const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
         const CONFIRM_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/confirmPracticeAreas';
         const VERIFY_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/verifyDemoEmail';
+        const CONFIG_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getWidgetConfig';
 
         // Rate limiting configuration
         const RATE_LIMIT_KEY = 'preintake_submissions';
@@ -3119,8 +3245,84 @@
                 }
             }
 
-            // Run verification check on page load
-            checkVerificationToken();
+            // =====================================
+            // Campaign Demo Detection (?demo= parameter)
+            // =====================================
+            // For visitors arriving from email campaign with pre-generated demo
+            async function checkCampaignDemo() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const demoLeadId = urlParams.get('demo');
+
+                if (!demoLeadId) return false;
+
+                // Clean URL without refreshing page
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Show loading state
+                formContainer.style.display = 'none';
+                document.getElementById('campaign-loading').style.display = 'flex';
+
+                try {
+                    // Fetch firm data from widget config endpoint
+                    const response = await fetch(`${CONFIG_ENDPOINT}?firmId=${demoLeadId}`);
+
+                    if (!response.ok) {
+                        throw new Error('Demo not found');
+                    }
+
+                    const data = await response.json();
+
+                    if (!data.demoUrl) {
+                        throw new Error('Demo URL not available');
+                    }
+
+                    // Hide loading state
+                    document.getElementById('campaign-loading').style.display = 'none';
+
+                    // Show personalized welcome banner
+                    const welcomeBanner = document.getElementById('campaign-welcome');
+                    const firmNameSpan = document.getElementById('campaign-firm-name');
+                    firmNameSpan.textContent = data.firmName || 'Your Firm';
+                    welcomeBanner.classList.add('visible');
+
+                    // Update section title
+                    document.getElementById('demo-section-title').textContent = 'Your Demo is Ready';
+
+                    // Configure and show the CTA view
+                    const ctaView = document.getElementById('campaign-cta-view');
+                    const ctaBtn = document.getElementById('campaign-demo-btn');
+                    ctaBtn.href = data.demoUrl;
+                    ctaView.classList.add('visible');
+
+                    // Hide sticky CTA since we're showing the campaign CTA
+                    const stickyCta = document.getElementById('sticky-cta');
+                    if (stickyCta) {
+                        stickyCta.style.display = 'none';
+                    }
+
+                    // Scroll to demo section smoothly
+                    setTimeout(() => {
+                        document.getElementById('demo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 300);
+
+                    return true; // Handled campaign demo
+
+                } catch (error) {
+                    console.error('Campaign demo error:', error);
+                    // On error, fall back to showing normal form
+                    document.getElementById('campaign-loading').style.display = 'none';
+                    formContainer.style.display = 'block';
+                    return false;
+                }
+            }
+
+            // Run campaign demo check first (takes priority)
+            // If not a campaign visit, run verification check
+            checkCampaignDemo().then(handled => {
+                if (!handled) {
+                    checkVerificationToken();
+                }
+            });
         });
 
         // Validation error modal functions
