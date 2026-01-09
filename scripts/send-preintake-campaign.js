@@ -197,8 +197,8 @@ async function generateDemoForContact(contactData) {
             deepResearch
         );
 
-        // Step 5: Upload to Firebase Storage
-        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
+        // Step 5: Upload to Firebase Storage (pass Firebase app for cross-module compatibility)
+        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent, admin.app());
         console.log(`   ✓ Demo uploaded: ${demoUrl}`);
 
         // Step 6: Save lead document with demo URL

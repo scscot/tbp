@@ -234,9 +234,13 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
 
 /**
  * Upload demo files to Firebase Storage
+ * @param {string} leadId - Lead document ID
+ * @param {string} htmlContent - Generated HTML content
+ * @param {string} configContent - Config JSON content
+ * @param {object} firebaseApp - Optional Firebase app instance (for script usage)
  */
-async function uploadToStorage(leadId, htmlContent, configContent) {
-    const storage = getStorage();
+async function uploadToStorage(leadId, htmlContent, configContent, firebaseApp = null) {
+    const storage = firebaseApp ? getStorage(firebaseApp) : getStorage();
     const bucket = storage.bucket(STORAGE_BUCKET);
 
     // Upload HTML file
