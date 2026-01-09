@@ -127,6 +127,7 @@ jobs:
           git add scripts/blog-response.json scripts/blog-recommendations.json || true
           git add scripts/spanish-translation.json scripts/portuguese-translation.json scripts/german-translation.json || true
           git add scripts/last-blog-prompt.txt scripts/german-translation-prompt.txt || true
+          git add scripts/package.json scripts/package-lock.json || true
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
