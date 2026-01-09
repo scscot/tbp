@@ -32,7 +32,9 @@
  *   TEST_EMAIL=test@example.com SKIP_TIME_CHECK=true ... node scripts/send-preintake-campaign.js
  */
 
-const admin = require('firebase-admin');
+// IMPORTANT: Use firebase-admin from functions/node_modules to ensure same instance
+// as the functions modules (they have their own node_modules with separate firebase-admin)
+const admin = require('../functions/node_modules/firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 
