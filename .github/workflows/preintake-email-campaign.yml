@@ -69,6 +69,7 @@ jobs:
         env:
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size || '20' }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
         run: |
