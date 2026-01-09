@@ -5,8 +5,24 @@
 
 const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { defineSecret } = require('firebase-functions/params');
+const admin = require('firebase-admin');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
+
+/**
+ * Initialize Firebase Admin for script usage
+ * This ensures the functions' firebase-admin instance is initialized
+ * (separate from any firebase-admin in scripts/node_modules)
+ */
+function initFirebaseAdmin(serviceAccount, storageBucket) {
+    if (!admin.apps.length) {
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            storageBucket: storageBucket
+        });
+    }
+    return admin;
+}
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
@@ -234,13 +250,9 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
 
 /**
  * Upload demo files to Firebase Storage
- * @param {string} leadId - Lead document ID
- * @param {string} htmlContent - Generated HTML content
- * @param {string} configContent - Config JSON content
- * @param {object} firebaseApp - Optional Firebase app instance (for script usage)
  */
-async function uploadToStorage(leadId, htmlContent, configContent, firebaseApp = null) {
-    const storage = firebaseApp ? getStorage(firebaseApp) : getStorage();
+async function uploadToStorage(leadId, htmlContent, configContent) {
+    const storage = getStorage();
     const bucket = storage.bucket(STORAGE_BUCKET);
 
     // Upload HTML file
@@ -2865,4 +2877,5 @@ module.exports = {
     // Exported for scripts/send-preintake-campaign.js (inline demo generation)
     generateDemoFiles,
     uploadToStorage,
+    initFirebaseAdmin,
 };

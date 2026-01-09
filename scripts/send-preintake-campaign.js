@@ -32,24 +32,18 @@
  *   TEST_EMAIL=test@example.com SKIP_TIME_CHECK=true ... node scripts/send-preintake-campaign.js
  */
 
-// Firebase Admin - use direct require (works in both local and CI environments)
-const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 
-// Initialize Firebase Admin FIRST (before importing functions that use Firebase)
-const serviceAccount = require('../secrets/serviceAccountKey.json');
-if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        storageBucket: 'teambuilder-plus-fe74d.firebasestorage.app'
-    });
-}
-
-// Import demo generation functions AFTER Firebase is initialized
+// Import demo generation functions first
 const { analyzeWebsite } = require('../functions/preintake-analysis-functions');
 const { performDeepResearch } = require('../functions/deep-research-functions');
-const { generateDemoFiles, uploadToStorage } = require('../functions/demo-generator-functions');
+const { generateDemoFiles, uploadToStorage, initFirebaseAdmin } = require('../functions/demo-generator-functions');
+
+// Initialize Firebase Admin using the functions' firebase-admin instance
+// This ensures uploadToStorage uses the same initialized app
+const serviceAccount = require('../secrets/serviceAccountKey.json');
+const admin = initFirebaseAdmin(serviceAccount, 'teambuilder-plus-fe74d.firebasestorage.app');
 
 // Use the dedicated 'preintake' database
 const db = admin.firestore();
@@ -197,8 +191,8 @@ async function generateDemoForContact(contactData) {
             deepResearch
         );
 
-        // Step 5: Upload to Firebase Storage (pass Firebase app for cross-module compatibility)
-        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent, admin.app());
+        // Step 5: Upload to Firebase Storage
+        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
         console.log(`   ✓ Demo uploaded: ${demoUrl}`);
 
         // Step 6: Save lead document with demo URL
