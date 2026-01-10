@@ -205,14 +205,13 @@ const intakeChat = onRequest(
             }
 
             // Generate system prompt (SERVER-SIDE ONLY - never exposed to client)
+            // Note: generateSystemPrompt signature is (firmName, practiceArea, state, analysis, deepResearch, practiceAreasList, isMultiPractice)
             const systemPrompt = generateSystemPrompt(
                 analysis.firmName || data.name || 'Law Firm',
                 primaryPracticeArea,
                 analysis.state || data.state || 'California',
                 analysis,
                 deepResearch,
-                practiceBreakdown,
-                otherPracticeAreaName,
                 practiceAreasList,
                 isMultiPractice
             );

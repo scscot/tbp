@@ -10,9 +10,18 @@ const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
 
 /**
- * Initialize Firebase Admin for script usage
- * This ensures the functions' firebase-admin instance is initialized
- * (separate from any firebase-admin in scripts/node_modules)
+ * Initialize Firebase Admin for script usage (external callers like regenerate-preintake-demos.js)
+ *
+ * IMPORTANT: This function is NOT used within Cloud Functions context.
+ * Cloud Functions initialize Firebase automatically via their trigger context.
+ * This function exists solely for external scripts that need to:
+ * - Access the same Firestore database
+ * - Use the same Storage bucket
+ * - Call exported utility functions like generateDemoFiles() and uploadToStorage()
+ *
+ * @param {Object} serviceAccount - Service account credentials JSON
+ * @param {string} storageBucket - Firebase Storage bucket name
+ * @returns {Object} Initialized firebase-admin instance
  */
 function initFirebaseAdmin(serviceAccount, storageBucket) {
     if (!admin.apps.length) {
@@ -95,9 +104,14 @@ const generatePreIntakeDemo = onDocumentUpdated(
 
             console.log(`Demo generated for lead ${leadId}: ${demoUrl}`);
 
-            // Send notification emails
-            await sendDemoReadyEmail(leadId, afterData, analysis, demoUrl);
-            await sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl);
+            // Send notification emails (wrapped in separate try-catch so email failures don't mark demo as failed)
+            try {
+                await sendDemoReadyEmail(leadId, afterData, analysis, demoUrl);
+                await sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl);
+            } catch (emailError) {
+                console.error(`Email notification failed for ${leadId}:`, emailError.message);
+                // Don't throw - demo is still ready, just notification failed
+            }
 
         } catch (error) {
             console.error(`Demo generation failed for lead ${leadId}:`, error.message);

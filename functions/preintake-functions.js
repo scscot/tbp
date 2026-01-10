@@ -321,7 +321,7 @@ const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 // SMTP configuration for Dreamhost
 const smtpUser = defineSecret("PREINTAKE_SMTP_USER");
 const smtpPass = defineSecret("PREINTAKE_SMTP_PASS");
-const smtpHost = defineString("PREINTAKE_SMTP_HOST", { default: "mail.preintake.ai" });
+const smtpHost = defineString("PREINTAKE_SMTP_HOST", { default: "smtp.dreamhost.com" });
 const smtpPort = defineString("PREINTAKE_SMTP_PORT", { default: "587" });
 
 const FROM_ADDRESS = 'PreIntake.ai <support@preintake.ai>';
