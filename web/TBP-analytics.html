@@ -822,6 +822,14 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- AI Observations for Website -->
+                <div class="observations-section" id="ga4ObservationsSection" style="display: none;">
+                    <h3>Observations & Recommendations <span class="ai-badge">AI Generated</span></h3>
+                    <div id="ga4ObservationsContent">
+                        <p class="no-data-message">Loading AI analysis...</p>
+                    </div>
+                </div>
             </div>
 
             <!-- iOS App Store Tab -->
@@ -853,6 +861,9 @@
                 <!-- 7-Day Performance Metrics -->
                 <div class="metrics-highlight" id="iosMetricsHighlight" style="display: none;">
                     <h3>7-Day Performance Metrics</h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin: -5px 0 15px 0; text-align: center;">
+                        Downloads = first-time only. Impressions/Page Views = total events (not unique).
+                    </p>
                     <div class="metrics-grid">
                         <div class="metric-item">
                             <span class="value" id="iosDownloads">-</span>
@@ -860,11 +871,11 @@
                         </div>
                         <div class="metric-item">
                             <span class="value" id="iosImpressions">-</span>
-                            <span class="label">Impressions</span>
+                            <span class="label">Impressions (Total)</span>
                         </div>
                         <div class="metric-item">
                             <span class="value" id="iosPageViews">-</span>
-                            <span class="label">Page Views</span>
+                            <span class="label">Page Views (Total)</span>
                         </div>
                         <div class="metric-item">
                             <span class="value" id="iosConversion">-</span>
@@ -1146,50 +1157,55 @@
                 return;
             }
 
-            // Key Metrics
-            document.getElementById('ga4TotalUsers').textContent = formatNumber(data.keyMetrics?.totalUsers || 0);
-            document.getElementById('ga4NewUsers').textContent = formatNumber(data.keyMetrics?.newUsers || 0);
-            document.getElementById('ga4Sessions').textContent = formatNumber(data.keyMetrics?.sessions || 0);
-            document.getElementById('ga4EngagementRate').textContent = formatPercent(data.keyMetrics?.engagementRate || 0);
-            document.getElementById('ga4AvgDuration').textContent = formatDuration(data.keyMetrics?.averageSessionDuration || 0);
-            document.getElementById('ga4PageViews').textContent = formatNumber(data.keyMetrics?.pageViews || 0);
+            // Key Metrics - API returns 'overview' not 'keyMetrics'
+            const overview = data.overview || {};
+            document.getElementById('ga4TotalUsers').textContent = formatNumber(overview.activeUsers || 0);
+            document.getElementById('ga4NewUsers').textContent = formatNumber(overview.newUsers || 0);
+            document.getElementById('ga4Sessions').textContent = formatNumber(overview.sessions || 0);
+            // engagementRate is already a percentage from the API (e.g., 11.72)
+            document.getElementById('ga4EngagementRate').textContent = (overview.engagementRate || 0).toFixed(1) + '%';
+            document.getElementById('ga4AvgDuration').textContent = formatDuration(overview.averageSessionDuration || 0);
+            document.getElementById('ga4PageViews').textContent = formatNumber(overview.pageViews || 0);
 
-            // Traffic Sources
+            // Traffic Sources - API returns 'trafficSources.data' with sessionSource/sessionMedium
             const sourcesTable = document.getElementById('trafficSourcesTable');
-            if (data.topSources && data.topSources.length > 0) {
-                sourcesTable.innerHTML = data.topSources.slice(0, 10).map(s => `
+            const trafficData = data.trafficSources?.data || [];
+            if (trafficData.length > 0) {
+                sourcesTable.innerHTML = trafficData.slice(0, 10).map(s => `
                     <tr>
-                        <td>${escapeHtml(s.source)} / ${escapeHtml(s.medium)}</td>
-                        <td>${formatNumber(s.sessions)}</td>
-                        <td>${formatNumber(s.users)}</td>
+                        <td>${escapeHtml(s.sessionSource || '(not set)')} / ${escapeHtml(s.sessionMedium || '(none)')}</td>
+                        <td>${formatNumber(s.sessions || 0)}</td>
+                        <td>${formatNumber(s.activeUsers || 0)}</td>
                     </tr>
                 `).join('');
             } else {
                 sourcesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No traffic data</td></tr>';
             }
 
-            // Top Pages
+            // Top Pages - API returns 'topPages.data' with pagePath/screenPageViews
             const pagesTable = document.getElementById('topPagesTable');
-            if (data.topPages && data.topPages.length > 0) {
-                pagesTable.innerHTML = data.topPages.slice(0, 10).map(p => `
+            const pagesData = data.topPages?.data || [];
+            if (pagesData.length > 0) {
+                pagesTable.innerHTML = pagesData.slice(0, 10).map(p => `
                     <tr>
-                        <td title="${escapeHtml(p.path)}">${escapeHtml(truncatePath(p.path))}</td>
-                        <td>${formatNumber(p.views)}</td>
-                        <td>${formatPercent(p.engagementRate)}</td>
+                        <td title="${escapeHtml(p.pagePath || '')}">${escapeHtml(truncatePath(p.pagePath || ''))}</td>
+                        <td>${formatNumber(p.screenPageViews || 0)}</td>
+                        <td>${(p.engagementRate || 0).toFixed(1)}%</td>
                     </tr>
                 `).join('');
             } else {
                 pagesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No page data</td></tr>';
             }
 
-            // Device Breakdown
+            // Device Breakdown - API returns 'deviceBreakdown.data' with deviceCategory
             const deviceDiv = document.getElementById('deviceBreakdown');
-            if (data.deviceBreakdown && data.deviceBreakdown.length > 0) {
+            const deviceData = data.deviceBreakdown?.data || [];
+            if (deviceData.length > 0) {
                 const deviceMap = {};
-                data.deviceBreakdown.forEach(d => {
-                    const key = d.device;
+                deviceData.forEach(d => {
+                    const key = d.deviceCategory || 'unknown';
                     if (!deviceMap[key]) deviceMap[key] = 0;
-                    deviceMap[key] += d.users;
+                    deviceMap[key] += (d.activeUsers || 0);
                 });
                 deviceDiv.innerHTML = Object.entries(deviceMap).map(([device, users]) => `
                     <div class="stat-card">
@@ -1202,56 +1218,40 @@
                 deviceDiv.innerHTML = '<p class="no-data-message">No device data</p>';
             }
 
-            // Top Countries
+            // Top Countries - Not in current API, hide section for now
             const countriesTable = document.getElementById('topCountriesTable');
-            if (data.topCountries && data.topCountries.length > 0) {
-                // Deduplicate countries
-                const countryMap = {};
-                data.topCountries.forEach(c => {
-                    if (!countryMap[c.country]) {
-                        countryMap[c.country] = { users: 0, engagementRate: 0, count: 0 };
-                    }
-                    countryMap[c.country].users += c.users;
-                    countryMap[c.country].engagementRate += parseFloat(c.engagementRate) || 0;
-                    countryMap[c.country].count++;
-                });
-                const countries = Object.entries(countryMap)
-                    .map(([country, data]) => ({
-                        country,
-                        users: data.users,
-                        engagementRate: data.engagementRate / data.count
-                    }))
-                    .sort((a, b) => b.users - a.users)
-                    .slice(0, 10);
+            countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">Country data not available in API</td></tr>';
 
-                countriesTable.innerHTML = countries.map(c => `
-                    <tr>
-                        <td>${escapeHtml(c.country)}</td>
-                        <td>${formatNumber(c.users)}</td>
-                        <td>${formatPercent(c.engagementRate)}</td>
-                    </tr>
-                `).join('');
-            } else {
-                countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No country data</td></tr>';
-            }
-
-            // Email Campaign
-            if (data.emailCampaign && data.emailCampaign.bySubject && data.emailCampaign.bySubject.length > 0) {
+            // Email Campaign - API returns 'emailCampaign.data' with sessionCampaignName
+            const emailData = data.emailCampaign?.data || [];
+            if (emailData.length > 0) {
                 document.getElementById('emailCampaignSection').style.display = 'block';
-                const campaignHtml = data.emailCampaign.bySubject.map(c => `
+                // Group by campaign name and sum sessions
+                const campaignMap = {};
+                emailData.forEach(c => {
+                    const key = c.sessionCampaignName || 'Unknown';
+                    if (!campaignMap[key]) {
+                        campaignMap[key] = { sessions: 0, users: 0, engagementSum: 0, count: 0 };
+                    }
+                    campaignMap[key].sessions += (c.sessions || 0);
+                    campaignMap[key].users += (c.activeUsers || 0);
+                    campaignMap[key].engagementSum += (c.engagementRate || 0);
+                    campaignMap[key].count++;
+                });
+                const campaignHtml = Object.entries(campaignMap).map(([name, stats]) => `
                     <div class="campaign-card">
-                        <h4>${escapeHtml(c.subjectTag || c.campaign || 'Campaign')}</h4>
+                        <h4>${escapeHtml(name)}</h4>
                         <div class="campaign-stats">
                             <div class="campaign-stat">
-                                <span class="value">${formatNumber(c.sessions)}</span>
+                                <span class="value">${formatNumber(stats.sessions)}</span>
                                 <span class="label">Sessions</span>
                             </div>
                             <div class="campaign-stat">
-                                <span class="value">${formatNumber(c.users)}</span>
+                                <span class="value">${formatNumber(stats.users)}</span>
                                 <span class="label">Users</span>
                             </div>
                             <div class="campaign-stat">
-                                <span class="value">${formatPercent(c.engagementRate)}</span>
+                                <span class="value">${(stats.engagementSum / stats.count).toFixed(1)}%</span>
                                 <span class="label">Engagement</span>
                             </div>
                         </div>
@@ -1260,6 +1260,31 @@
                 document.getElementById('emailCampaignContent').innerHTML = campaignHtml;
             } else {
                 document.getElementById('emailCampaignSection').style.display = 'none';
+            }
+
+            // GA4 AI Observations - from website.observations (shared across date ranges)
+            const observations = analyticsData.website?.observations;
+            if (observations && !observations.error && observations.analysis) {
+                document.getElementById('ga4ObservationsSection').style.display = 'block';
+                const obsContent = document.getElementById('ga4ObservationsContent');
+                const analysis = observations.analysis;
+
+                let html = '';
+                if (analysis.keyObservations?.length > 0) {
+                    html += `<div class="observation-category"><h4>Key Observations</h4><ul>${analysis.keyObservations.map(o => `<li>${escapeHtml(o)}</li>`).join('')}</ul></div>`;
+                }
+                if (analysis.strengths?.length > 0) {
+                    html += `<div class="observation-category strengths"><h4>Strengths</h4><ul>${analysis.strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul></div>`;
+                }
+                if (analysis.areasForImprovement?.length > 0) {
+                    html += `<div class="observation-category improvements"><h4>Areas for Improvement</h4><ul>${analysis.areasForImprovement.map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul></div>`;
+                }
+                if (analysis.recommendedActions?.length > 0) {
+                    html += `<div class="observation-category actions"><h4>Recommended Actions</h4><ul>${analysis.recommendedActions.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul></div>`;
+                }
+                obsContent.innerHTML = html || '<p class="no-data-message">No analysis available</p>';
+            } else {
+                document.getElementById('ga4ObservationsSection').style.display = 'none';
             }
         }
 
@@ -1436,9 +1461,148 @@
         }
 
         function displayAndroidData() {
-            // Android data is now handled via CSV import
-            // This function just loads any saved CSV data
-            loadSavedAndroidData();
+            // Check if API returned Android data
+            const android = analyticsData?.android;
+
+            if (android && android.available && android.metrics && android.metrics.dataAvailable) {
+                // Use live API data
+                displayAndroidApiData(android);
+                // Hide manual import section when API data is available
+                document.getElementById('androidImportSection').style.display = 'none';
+            } else if (android && android.error) {
+                // Show error and enable manual import
+                console.log('Android API error:', android.message);
+                document.getElementById('androidImportSection').style.display = 'block';
+                loadSavedAndroidData();
+            } else {
+                // Fallback to CSV import
+                document.getElementById('androidImportSection').style.display = 'block';
+                loadSavedAndroidData();
+            }
+        }
+
+        function displayAndroidApiData(android) {
+            const metrics = android.metrics;
+
+            // Update stats cards
+            document.getElementById('androidActiveInstalls').textContent = formatNumber(metrics.activeInstalls || 0);
+            document.getElementById('androidTotalInstalls').textContent = formatNumber(metrics.totalInstalls || 0);
+            document.getElementById('androidRecentInstalls').textContent = formatNumber(metrics.recentInstalls || 0);
+            document.getElementById('androidUninstalls').textContent = formatNumber(metrics.recentUninstalls || 0);
+
+            // Update labels with data date
+            const dataDate = metrics.mostRecentDate ? ` (as of ${metrics.mostRecentDate})` : '';
+            document.getElementById('androidActiveInstallsLabel').textContent = 'Current devices' + dataDate;
+            document.getElementById('androidTotalInstallsLabel').textContent = 'All time';
+            document.getElementById('androidRecentPeriod').textContent = 'Last 7 days';
+            document.getElementById('androidUninstallsPeriod').textContent = 'Last 7 days';
+
+            // Draw chart from API daily data
+            if (metrics.dailyData && metrics.dailyData.length > 0) {
+                drawAndroidChartFromApi(metrics.dailyData);
+            } else {
+                document.getElementById('androidInstallChart').innerHTML = '<p style="color: #888; text-align: center; width: 100%;">No daily data available</p>';
+                document.getElementById('androidChartLabels').innerHTML = '';
+            }
+
+            // Show country breakdown if available
+            if (metrics.byCountry && Object.keys(metrics.byCountry).length > 0) {
+                displayAndroidCountryBreakdown(metrics.byCountry);
+            }
+
+            // Show data source info
+            if (metrics.filesProcessed && metrics.filesProcessed.length > 0) {
+                const infoDiv = document.getElementById('androidDataSource');
+                if (infoDiv) {
+                    infoDiv.innerHTML = `<small style="color: #888;">Data from ${metrics.filesProcessed.length} files (GCS bucket)</small>`;
+                }
+            }
+        }
+
+        function drawAndroidChartFromApi(dailyData) {
+            const chartContainer = document.getElementById('androidInstallChart');
+            const labelsContainer = document.getElementById('androidChartLabels');
+
+            // Get last 30 days max
+            const chartData = dailyData.slice(-30);
+            const maxInstalls = Math.max(...chartData.map(d => d.installs || 0), 1);
+
+            chartContainer.innerHTML = '';
+            labelsContainer.innerHTML = '';
+
+            chartData.forEach((row, idx) => {
+                const installs = row.installs || 0;
+                const height = (installs / maxInstalls) * 160 + 10; // Min height 10px
+                const bar = document.createElement('div');
+                bar.style.cssText = `
+                    flex: 1;
+                    height: ${height}px;
+                    background: linear-gradient(180deg, #34c759, #30d158);
+                    border-radius: 4px 4px 0 0;
+                    min-width: 8px;
+                    cursor: pointer;
+                    transition: opacity 0.2s;
+                `;
+                bar.title = `${row.date}: ${installs} install(s)`;
+                bar.onmouseover = () => bar.style.opacity = '0.8';
+                bar.onmouseout = () => bar.style.opacity = '1';
+                chartContainer.appendChild(bar);
+            });
+
+            // Add date labels (first, middle, last)
+            if (chartData.length > 0) {
+                const firstDate = chartData[0].date || '';
+                const lastDate = chartData[chartData.length - 1].date || '';
+                labelsContainer.innerHTML = `<span>${firstDate}</span><span>${lastDate}</span>`;
+            }
+        }
+
+        function displayAndroidCountryBreakdown(byCountry) {
+            // Find or create country section
+            let countrySection = document.getElementById('androidCountrySection');
+            if (!countrySection) {
+                countrySection = document.createElement('div');
+                countrySection.id = 'androidCountrySection';
+                countrySection.className = 'section-card';
+                countrySection.innerHTML = '<h3>Total Installs by Country <span style="font-weight: normal; font-size: 12px; color: #666;">(All Time)</span></h3><div id="androidCountryList"></div>';
+                // Insert before the import section
+                const chartSection = document.getElementById('androidChartSection');
+                if (chartSection && chartSection.nextSibling) {
+                    chartSection.parentNode.insertBefore(countrySection, chartSection.nextSibling);
+                }
+            }
+
+            const listDiv = document.getElementById('androidCountryList') || countrySection.querySelector('div');
+
+            // Sort countries by install count
+            const sorted = Object.entries(byCountry).sort((a, b) => b[1] - a[1]);
+            const total = sorted.reduce((sum, [, count]) => sum + count, 0);
+
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+            sorted.forEach(([country, count]) => {
+                const pct = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+                html += `
+                    <div style="background: #f5f5f7; padding: 8px 12px; border-radius: 8px; flex: 1; min-width: 120px;">
+                        <div style="font-weight: 600; font-size: 14px;">${getCountryName(country)}</div>
+                        <div style="color: #34c759; font-size: 18px; font-weight: 600;">${count}</div>
+                        <div style="color: #888; font-size: 11px;">${pct}% of total</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            listDiv.innerHTML = html;
+        }
+
+        function getCountryName(code) {
+            const countries = {
+                'US': 'United States', 'DE': 'Germany', 'IN': 'India', 'BR': 'Brazil',
+                'GB': 'United Kingdom', 'FR': 'France', 'IT': 'Italy', 'ES': 'Spain',
+                'CA': 'Canada', 'AU': 'Australia', 'MX': 'Mexico', 'JP': 'Japan',
+                'KR': 'South Korea', 'PH': 'Philippines', 'ID': 'Indonesia', 'TH': 'Thailand',
+                'VN': 'Vietnam', 'PL': 'Poland', 'NL': 'Netherlands', 'TR': 'Turkey',
+                'GH': 'Ghana', 'MZ': 'Mozambique', 'NG': 'Nigeria', 'ZA': 'South Africa'
+            };
+            return countries[code] || code;
         }
 
         // Utility Functions
