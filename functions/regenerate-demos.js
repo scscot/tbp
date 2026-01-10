@@ -72,7 +72,7 @@ async function regenerateDemo(leadId) {
     const declineResourcesHtml = generateDeclineResources(state);
 
     // Load template
-    const template = fs.readFileSync('./templates/demo-intake.html', 'utf8');
+    const template = fs.readFileSync('./templates/demo-intake.html.template', 'utf8');
 
     // Build logo HTML
     const logoUrl = analysis.logo || '';

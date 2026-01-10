@@ -1418,14 +1418,14 @@
                 </div>
                 <div class="sidebar-cta">
                     <h4 class="sidebar-cta-title">Ready to Go Live?</h4>
-                    <p class="sidebar-cta-text">Like what you see? Add PreIntake.ai to your website and start converting leads today.</p>
+                    <p class="sidebar-cta-text">Like what you see? Add PreIntake.ai to your website today.</p>
                     <a href="https://preintake.ai/create-account.html?firm={{LEAD_ID}}" class="sidebar-cta-button" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         Get Started
                     </a>
-                    <a href="https://preintake.ai" class="sidebar-return-link" target="_blank">Return to PreIntake.ai</a>
+                    <a href="{{RETURN_URL}}" class="sidebar-return-link" target="_blank">Return to PreIntake.ai</a>
                 </div>
             </aside>
             <div class="chat-area">

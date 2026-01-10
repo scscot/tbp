@@ -481,7 +481,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 
 ### Phase 4: Demo Generator
 - [x] Build demo generation function (`generatePreIntakeDemo`)
-- [x] Create demo intake template (`/functions/templates/demo-intake.html`)
+- [x] Create demo intake template (`/functions/templates/demo-intake.html.template`)
 - [x] Create demo config template (`/functions/templates/demo-config.js`)
 - [x] Add email validation to demo intake chat interface
 - [x] Configure Firebase Storage for demo hosting
@@ -571,7 +571,7 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 | `conversionEmailSentAt` | Timestamp of conversion email delivery |
 
 **Bug Fixes (2025-12-30):**
-- [x] **Demo template create-account links** - Fixed missing `?firm={{LEAD_ID}}` parameter in `demo-intake.html` (lines 1332, 1427)
+- [x] **Demo template create-account links** - Fixed missing `?firm={{LEAD_ID}}` parameter in `demo-intake.html.template` (lines 1332, 1427)
 - [x] **Stripe webhook signature verification** - Updated `STRIPE_WEBHOOK_SECRET` to match Stripe Dashboard; added debug logging for signature mismatches
 
 ### Phase 10: Embeddable Widget
@@ -846,7 +846,7 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Changed "before it reaches your inbox" → "arrives in your inbox with"
   - Changed "Your Infrastructure" → "Your Branded Experience" (removed inaccurate "never leave your domain" claim)
   - Changed "Assistant:" → "Intake:" in transcript labels (avoids AI anxiety, cleaner abstraction)
-    - Updated `demo-intake.html` formatTranscript() function (2 places)
+    - Updated `demo-intake.html.template` formatTranscript() function (2 places)
     - Updated `intake-delivery-functions.js` email transcript formatting
 
 **Hero Messaging Evolution:**
@@ -911,7 +911,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── widget-functions.js              # Widget endpoints
 ├── stripe-functions.js              # Payment processing
 └── templates/
-    ├── demo-intake.html             # Demo intake template
+    ├── demo-intake.html.template    # Demo intake template
     └── demo-config.js               # Demo config template
 ```
 
@@ -942,7 +942,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 - Email validation with MX record lookup
 - Disposable email domain blocking (20+ domains)
 
-### Demo Intake (`demo-intake.html`)
+### Demo Intake (`demo-intake.html.template`)
 - Email validation in chat interface
 - Phone validation (US and international)
 - Typo detection and suggestions

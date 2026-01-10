@@ -358,8 +358,255 @@ const serveDemo = onRequest(
     }
 );
 
+/**
+ * Track demo visits and views for click rate analytics
+ * - type=visit: Records when someone clicks an email link (page load)
+ * - type=view: Records when someone actually engages with the demo
+ */
+const trackDemoView = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+    },
+    async (req, res) => {
+        try {
+            const firmId = req.query.firmId || req.query.firm || req.body?.firmId;
+            const trackType = req.query.type || 'view'; // Default to 'view' for backwards compatibility
+
+            if (!firmId) {
+                return res.status(400).json({ error: 'Missing firmId parameter' });
+            }
+
+            // Validate firmId format (alphanumeric only)
+            if (!/^[a-zA-Z0-9]+$/.test(firmId)) {
+                return res.status(400).json({ error: 'Invalid firm ID' });
+            }
+
+            // Validate type
+            if (trackType !== 'visit' && trackType !== 'view') {
+                return res.status(400).json({ error: 'Invalid type parameter (must be visit or view)' });
+            }
+
+            // Get lead document
+            const leadRef = db.collection('preintake_leads').doc(firmId);
+            const leadDoc = await leadRef.get();
+
+            if (!leadDoc.exists) {
+                return res.status(404).json({ error: 'Lead not found' });
+            }
+
+            const data = leadDoc.data();
+
+            // Only track for campaign-sourced leads (email clicks)
+            if (data.source !== 'campaign') {
+                return res.json({ success: true, tracked: false, reason: 'not_campaign_source' });
+            }
+
+            const now = admin.firestore.FieldValue.serverTimestamp();
+            const updateData = {};
+
+            if (trackType === 'visit') {
+                // Track page visit (email CTA click)
+                updateData.lastVisitAt = now;
+                updateData.visitCount = admin.firestore.FieldValue.increment(1);
+                if (!data.firstVisitAt) {
+                    updateData.firstVisitAt = now;
+                }
+                console.log(`Visit tracked for lead ${firmId}`);
+            } else {
+                // Track demo view (engagement)
+                updateData.lastViewedAt = now;
+                updateData.viewCount = admin.firestore.FieldValue.increment(1);
+                if (!data.firstViewedAt) {
+                    updateData.firstViewedAt = now;
+                }
+                console.log(`Demo view tracked for lead ${firmId}`);
+            }
+
+            await leadRef.update(updateData);
+
+            return res.json({
+                success: true,
+                tracked: true,
+                type: trackType,
+                firmId: firmId,
+            });
+
+        } catch (error) {
+            console.error('trackDemoView error:', error);
+            return res.status(500).json({ error: 'Failed to track' });
+        }
+    }
+);
+
+/**
+ * Get email campaign analytics data
+ * Returns aggregated stats for the analytics dashboard
+ */
+const getEmailAnalytics = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+    },
+    async (req, res) => {
+        try {
+            const now = new Date();
+
+            // Calculate date boundaries
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const startDate = new Date(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate());
+            const yesterdayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+            // Get all sent emails
+            const emailsSnap = await db.collection('preintake_emails')
+                .where('sent', '==', true)
+                .get();
+
+            let totalSent = emailsSnap.size;
+            let withDemo = 0;
+            let withoutDemo = 0;
+            let last7DaysSent = 0;
+            let last7DaysWithDemo = 0;
+            let yesterdaySent = 0;
+            let yesterdayWithDemo = 0;
+            const templateVersions = {};
+
+            emailsSnap.forEach(doc => {
+                const data = doc.data();
+
+                // Count demo vs fallback
+                if (data.demoGenerated) {
+                    withDemo++;
+                } else {
+                    withoutDemo++;
+                }
+
+                // Template versions
+                const version = data.templateVersion || 'unknown';
+                templateVersions[version] = (templateVersions[version] || 0) + 1;
+
+                // Date-based counts
+                if (data.sentTimestamp) {
+                    const sentDate = data.sentTimestamp.toDate();
+
+                    // Last 7 days
+                    if (sentDate >= startDate && sentDate < endDate) {
+                        last7DaysSent++;
+                        if (data.demoGenerated) last7DaysWithDemo++;
+                    }
+
+                    // Yesterday
+                    if (sentDate >= yesterdayStart && sentDate < todayStart) {
+                        yesterdaySent++;
+                        if (data.demoGenerated) yesterdayWithDemo++;
+                    }
+                }
+            });
+
+            // Get campaign-sourced leads
+            const leadsSnap = await db.collection('preintake_leads')
+                .where('source', '==', 'campaign')
+                .get();
+
+            // Visit tracking (email CTA clicks)
+            let visitedCount = 0;
+            let last7DaysVisited = 0;
+            let yesterdayVisited = 0;
+
+            // View tracking (demo engagement)
+            let viewedCount = 0;
+            let last7DaysViewed = 0;
+            let yesterdayViewed = 0;
+
+            let activeLeads = 0;
+            const leadDetails = [];
+
+            leadsSnap.forEach(doc => {
+                const data = doc.data();
+
+                // Visit tracking
+                const visitCount = data.visitCount || 0;
+                const firstVisitAt = data.firstVisitAt?.toDate();
+
+                if (visitCount > 0) {
+                    visitedCount++;
+                    if (firstVisitAt) {
+                        if (firstVisitAt >= startDate) last7DaysVisited++;
+                        if (firstVisitAt >= yesterdayStart && firstVisitAt < todayStart) yesterdayVisited++;
+                    }
+                }
+
+                // View tracking
+                const viewCount = data.viewCount || 0;
+                const firstViewedAt = data.firstViewedAt?.toDate();
+
+                if (viewCount > 0) {
+                    viewedCount++;
+                    if (firstViewedAt) {
+                        if (firstViewedAt >= startDate) last7DaysViewed++;
+                        if (firstViewedAt >= yesterdayStart && firstViewedAt < todayStart) yesterdayViewed++;
+                    }
+                }
+
+                // Active leads (status changed or has delivery config)
+                if (data.status !== 'demo_ready' || data.deliveryConfig) {
+                    activeLeads++;
+                }
+
+                leadDetails.push({
+                    firmName: data.name || data.analysis?.firmName || 'Unknown',
+                    status: data.status || 'unknown',
+                    createdAt: data.createdAt?.toDate()?.toISOString().split('T')[0] || null,
+                    firstVisitAt: firstVisitAt?.toISOString().split('T')[0] || null,
+                    visitCount: visitCount,
+                    firstViewedAt: firstViewedAt?.toISOString().split('T')[0] || null,
+                    viewCount: viewCount,
+                });
+            });
+
+            // Sort leads by creation date (newest first)
+            leadDetails.sort((a, b) => {
+                if (!a.createdAt) return 1;
+                if (!b.createdAt) return -1;
+                return b.createdAt.localeCompare(a.createdAt);
+            });
+
+            return res.json({
+                dateRange: `${startDate.toISOString().split('T')[0]} to ${now.toISOString().split('T')[0]}`,
+                totalSent,
+                withDemo,
+                withoutDemo,
+                last7DaysSent,
+                last7DaysWithDemo,
+                yesterdaySent,
+                yesterdayWithDemo,
+                campaignLeads: leadsSnap.size,
+                // Visits (email CTA clicks)
+                visitedCount,
+                last7DaysVisited,
+                yesterdayVisited,
+                // Views (demo engagement)
+                viewedCount,
+                last7DaysViewed,
+                yesterdayViewed,
+                activeLeads,
+                templateVersions,
+                leadDetails,
+            });
+
+        } catch (error) {
+            console.error('getEmailAnalytics error:', error);
+            return res.status(500).json({ error: 'Failed to load analytics' });
+        }
+    }
+);
+
 module.exports = {
     getWidgetConfig,
     intakeChat,
     serveDemo,
+    trackDemoView,
+    getEmailAnalytics,
 };

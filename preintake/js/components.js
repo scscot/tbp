@@ -39,6 +39,16 @@
             </header>
         `;
 
+        // Check if user has viewed their demo (campaign visitor who clicked through)
+        const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
+        const accountBtn = container.querySelector('.nav-account');
+
+        if (demoViewedId && accountBtn) {
+            accountBtn.href = `https://preintake.ai/create-account.html?firm=${demoViewedId}`;
+            accountBtn.textContent = 'Get Started →';
+            accountBtn.classList.add('nav-get-started');
+        }
+
         // Add mobile menu toggle functionality
         const menuToggle = container.querySelector('.menu-toggle');
         const navMenu = container.querySelector('.nav-menu');
@@ -173,6 +183,19 @@
             .nav-menu a.nav-account:hover {
                 background: rgba(201, 169, 98, 0.25);
                 border-color: #c9a962;
+            }
+
+            /* Get Started button (shown after demo viewed) */
+            .nav-menu a.nav-get-started {
+                background: linear-gradient(135deg, #c9a962 0%, #d4b978 100%);
+                border: 1px solid #c9a962;
+                color: #0a1628;
+                font-weight: 600;
+            }
+
+            .nav-menu a.nav-get-started:hover {
+                background: linear-gradient(135deg, #d4b978 0%, #e0c98a 100%);
+                color: #0a1628;
             }
 
             /* Hamburger Menu */

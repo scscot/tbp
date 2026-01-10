@@ -234,6 +234,8 @@ const {
   getWidgetConfig,
   intakeChat,
   serveDemo,
+  trackDemoView,
+  getEmailAnalytics,
 } = require('./widget-functions');
 
 // ==============================
@@ -390,6 +392,8 @@ module.exports = {
   getWidgetConfig,
   intakeChat,
   serveDemo,
+  trackDemoView,
+  getEmailAnalytics,
 
   // ========== STRIPE FUNCTIONS (Payment Processing) ==========
   createCheckoutSession,

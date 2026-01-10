@@ -118,7 +118,7 @@ const generatePreIntakeDemo = onDocumentUpdated(
  */
 function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     // Read template (includes formatTranscript function for conversation transcript)
-    const templatePath = path.join(__dirname, 'templates', 'demo-intake.html');
+    const templatePath = path.join(__dirname, 'templates', 'demo-intake.html.template');
     let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
     // Extract values
@@ -225,6 +225,9 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{AVATAR_ICON}}': avatarIcon,
         '{{LEAD_ID}}': leadId,
         '{{FIRM_EMAIL}}': leadData.email || '',
+        '{{RETURN_URL}}': leadData.source === 'campaign'
+            ? `https://preintake.ai/?demo=${leadId}`
+            : 'https://preintake.ai',
     };
 
     for (const [token, value] of Object.entries(replacements)) {

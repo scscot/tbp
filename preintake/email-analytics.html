@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Email Campaign Analytics | PreIntake.ai</title>
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        /* Password Modal */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 22, 40, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .password-modal {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(201, 169, 98, 0.2);
+        }
+
+        .password-modal h2 {
+            color: #c9a962;
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+        }
+
+        .password-modal p {
+            color: #94a3b8;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #c9a962;
+        }
+
+        .password-input.error {
+            border-color: #ef4444;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%);
+            color: #0c1f3f;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.4);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* Main Content */
+        .analytics-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: #ffffff;
+        }
+
+        .header h1 span {
+            color: #c9a962;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            background: transparent;
+            color: #c9a962;
+            border: 2px solid #c9a962;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #c9a962;
+            color: #0c1f3f;
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .last-updated {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .stat-value.highlight {
+            color: #c9a962;
+        }
+
+        .stat-value.success {
+            color: #10b981;
+        }
+
+        .stat-value.warning {
+            color: #f59e0b;
+        }
+
+        .stat-value.muted {
+            color: #64748b;
+        }
+
+        /* Click Rate Section */
+        .click-rate-section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(201, 169, 98, 0.2);
+        }
+
+        .click-rate-section h2 {
+            color: #c9a962;
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        .rate-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .rate-card {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .rate-card h4 {
+            color: #64748b;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .rate-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #c9a962;
+            margin-bottom: 8px;
+        }
+
+        .rate-details {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Lead Details Table */
+        .leads-section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leads-section h2 {
+            color: #ffffff;
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leads-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .leads-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .leads-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.demo_ready {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status-badge.awaiting_confirmation {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .view-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-count.viewed {
+            color: #10b981;
+        }
+
+        .view-count.not-viewed {
+            color: #64748b;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #334155;
+            border-top-color: #c9a962;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #94a3b8;
+            margin-top: 16px;
+        }
+
+        /* Template Versions */
+        .template-versions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .template-badge {
+            background: #0f172a;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .template-badge code {
+            color: #c9a962;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .leads-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .rate-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Modal -->
+    <div class="password-overlay" id="password-overlay">
+        <div class="password-modal">
+            <h2>Email Analytics</h2>
+            <p>Enter password to access campaign analytics</p>
+            <input type="password" class="password-input" id="password-input" placeholder="Password" autofocus>
+            <button class="password-btn" id="password-btn">Access Analytics</button>
+            <p class="error-message" id="error-message">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- Main Analytics Content -->
+    <div class="analytics-container" id="analytics-container">
+        <div class="header">
+            <div>
+                <h1><span>PreIntake.ai</span> Email Analytics</h1>
+                <p class="last-updated" id="last-updated"></p>
+            </div>
+            <button class="refresh-btn" id="refresh-btn">Refresh Data</button>
+        </div>
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading analytics data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = 'TeamBuildPro2024!';
+        const API_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailAnalytics';
+
+        // Password handling
+        const passwordOverlay = document.getElementById('password-overlay');
+        const passwordInput = document.getElementById('password-input');
+        const passwordBtn = document.getElementById('password-btn');
+        const errorMessage = document.getElementById('error-message');
+        const analyticsContainer = document.getElementById('analytics-container');
+
+        function checkPassword() {
+            const password = passwordInput.value;
+            if (password === CORRECT_PASSWORD) {
+                passwordOverlay.style.display = 'none';
+                analyticsContainer.style.display = 'block';
+                sessionStorage.setItem('analytics_auth', 'true');
+                loadAnalytics();
+            } else {
+                passwordInput.classList.add('error');
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    passwordInput.classList.remove('error');
+                }, 500);
+            }
+        }
+
+        passwordBtn.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        // Check if already authenticated this session
+        if (sessionStorage.getItem('analytics_auth') === 'true') {
+            passwordOverlay.style.display = 'none';
+            analyticsContainer.style.display = 'block';
+            loadAnalytics();
+        }
+
+        // Load analytics data
+        async function loadAnalytics() {
+            const content = document.getElementById('content');
+            const refreshBtn = document.getElementById('refresh-btn');
+            refreshBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_ENDPOINT);
+                if (!response.ok) throw new Error('Failed to fetch analytics');
+                const data = await response.json();
+                renderAnalytics(data);
+            } catch (error) {
+                content.innerHTML = `
+                    <div class="stat-card" style="text-align: center; padding: 60px;">
+                        <p style="color: #ef4444; margin-bottom: 16px;">Failed to load analytics data</p>
+                        <p style="color: #64748b; font-size: 0.9rem;">${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                refreshBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('refresh-btn').addEventListener('click', loadAnalytics);
+
+        function renderAnalytics(data) {
+            const content = document.getElementById('content');
+            const lastUpdated = document.getElementById('last-updated');
+
+            lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
+
+            // Calculate click rates
+            const allTimeRate = data.withDemo > 0 ? ((data.viewedCount / data.withDemo) * 100).toFixed(1) : '0.0';
+            const last7DaysRate = data.last7DaysWithDemo > 0 ? ((data.last7DaysViewed / data.last7DaysWithDemo) * 100).toFixed(1) : '0.0';
+            const yesterdayRate = data.yesterdayWithDemo > 0 ? ((data.yesterdayViewed / data.yesterdayWithDemo) * 100).toFixed(1) : '0.0';
+
+            content.innerHTML = `
+                <!-- Email Campaign Progress -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Email Campaign Progress</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Total Emails Sent</span>
+                            <span class="stat-value">${data.totalSent.toLocaleString()}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">With Pre-generated Demo</span>
+                            <span class="stat-value success">${data.withDemo.toLocaleString()}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Without Demo (Fallback)</span>
+                            <span class="stat-value muted">${data.withoutDemo.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Yesterday</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Emails Sent</span>
+                            <span class="stat-value">${data.yesterdaySent}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">With Demos</span>
+                            <span class="stat-value ${data.yesterdayWithDemo > 0 ? 'success' : 'muted'}">${data.yesterdayWithDemo}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Visits</span>
+                            <span class="stat-value ${data.yesterdayVisited > 0 ? 'success' : 'muted'}">${data.yesterdayVisited || 0}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Demos Viewed</span>
+                            <span class="stat-value ${data.yesterdayViewed > 0 ? 'success' : 'muted'}">${data.yesterdayViewed}</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Last 7 Days</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Emails Sent</span>
+                            <span class="stat-value">${data.last7DaysSent}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">With Demos</span>
+                            <span class="stat-value ${data.last7DaysWithDemo > 0 ? 'success' : 'muted'}">${data.last7DaysWithDemo}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Visits</span>
+                            <span class="stat-value ${data.last7DaysVisited > 0 ? 'success' : 'muted'}">${data.last7DaysVisited || 0}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Demos Viewed</span>
+                            <span class="stat-value ${data.last7DaysViewed > 0 ? 'success' : 'muted'}">${data.last7DaysViewed}</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Engagement Tracking (All Time)</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Campaign Leads</span>
+                            <span class="stat-value">${data.campaignLeads}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Visits</span>
+                            <span class="stat-value ${data.visitedCount > 0 ? 'success' : 'muted'}">${data.visitedCount || 0}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Demos Viewed</span>
+                            <span class="stat-value ${data.viewedCount > 0 ? 'success' : 'muted'}">${data.viewedCount}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Active Leads</span>
+                            <span class="stat-value highlight">${data.activeLeads}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Click Rate Section -->
+                <div class="click-rate-section">
+                    <h2>Click Rate (Demo Views / Emails with Demos)</h2>
+                    ${data.withDemo > 0 ? `
+                    <div class="rate-cards">
+                        <div class="rate-card">
+                            <h4>All Time</h4>
+                            <div class="rate-value">${allTimeRate}%</div>
+                            <div class="rate-details">${data.viewedCount} views / ${data.withDemo} emails</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Last 7 Days</h4>
+                            <div class="rate-value">${last7DaysRate}%</div>
+                            <div class="rate-details">${data.last7DaysViewed} views / ${data.last7DaysWithDemo} emails</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Yesterday</h4>
+                            <div class="rate-value">${yesterdayRate}%</div>
+                            <div class="rate-details">${data.yesterdayViewed} views / ${data.yesterdayWithDemo} emails</div>
+                        </div>
+                    </div>
+                    ` : `
+                    <p style="color: #94a3b8; text-align: center; padding: 40px;">
+                        No emails with pre-generated demos yet.<br>
+                        Run the campaign with demo generation enabled to start tracking click rates.
+                    </p>
+                    `}
+                </div>
+
+                <!-- Template Versions -->
+                <div class="stat-card" style="margin-bottom: 40px;">
+                    <h3>Template Versions Used</h3>
+                    <div class="template-versions" style="margin-top: 16px;">
+                        ${Object.entries(data.templateVersions).map(([version, count]) => `
+                            <div class="template-badge">
+                                <code>${version}</code>
+                                <span>${count.toLocaleString()}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Lead Details -->
+                ${data.leadDetails.length > 0 ? `
+                <div class="leads-section">
+                    <h2>Campaign Lead Details</h2>
+                    <table class="leads-table">
+                        <thead>
+                            <tr>
+                                <th>Firm Name</th>
+                                <th>Created</th>
+                                <th>Visits</th>
+                                <th>Demo Views</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.leadDetails.map(lead => `
+                                <tr>
+                                    <td>${lead.firmName}</td>
+                                    <td>${lead.createdAt || 'Unknown'}</td>
+                                    <td>
+                                        <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
+                                            ${lead.visitCount > 0 ? `${lead.visitCount}x` : '-'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
+                                            ${lead.viewCount > 0 ? `${lead.viewCount}x` : '-'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge ${lead.status}">${lead.status.replace(/_/g, ' ')}</span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ` : ''}
+            `;
+        }
+    </script>
+</body>
+</html>
