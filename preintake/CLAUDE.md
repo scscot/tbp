@@ -870,6 +870,40 @@ After:  "AI That Reviews Inquiries
 | Hero CTA vs Sticky CTA | Sticky | Encourages scroll, reduces bounce on cold traffic |
 | Scroll cue | Removed | Tested but removed; hero flows better without it |
 
+### Phase 21: Demo Improvements & Analytics (2026-01-10)
+- [x] **Template File Rename** - Renamed `demo-intake.html` → `demo-intake.html.template`
+  - Suppresses VS Code JavaScript validation errors on `{{placeholder}}` syntax
+  - Updated all code references in `demo-generator-functions.js` and `regenerate-demos.js`
+- [x] **Conditional Header Button** - Dynamic "Get Started" CTA for campaign visitors
+  - Header shows "My Account" by default
+  - After user clicks Campaign Hero CTA, header changes to "Get Started →"
+  - Uses `sessionStorage` key `tbp_demo_viewed` to track demo views
+  - Links directly to `create-account.html?firm={leadId}`
+  - Gold gradient styling (`.nav-get-started` class) for prominent CTA
+- [x] **Demo Regeneration Utility** - `scripts/regenerate-preintake-demos.js`
+  - Regenerates all demos with latest template (fixes missing onboarding modal)
+  - Supports dry-run mode: `node scripts/regenerate-preintake-demos.js`
+  - Run mode: `node scripts/regenerate-preintake-demos.js --run`
+  - Specific lead: `node scripts/regenerate-preintake-demos.js --run --id=LEAD_ID`
+  - All 12 existing demos regenerated with updated template
+- [x] **Email Analytics Dashboard** - `preintake/email-analytics.html`
+  - Campaign performance tracking (visits, demo views, conversions)
+  - Integrates with GA4 data
+- [x] **Click Rate Analysis** - `scripts/analyze-click-rate.js`
+  - Analyzes email campaign click-through rates
+
+**New Files:**
+| File | Purpose |
+|------|---------|
+| `scripts/regenerate-preintake-demos.js` | Regenerate demos with latest template |
+| `preintake/email-analytics.html` | Campaign analytics dashboard |
+| `scripts/analyze-click-rate.js` | Click rate analysis utility |
+
+**sessionStorage Keys (Campaign Tracking):**
+| Key | Purpose | Set By |
+|-----|---------|--------|
+| `tbp_demo_viewed` | Stores leadId when demo CTA clicked | `index.html` Campaign Hero CTA |
+
 ---
 
 ## Architecture
@@ -889,6 +923,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── about-us.html           # About us page
 ├── contact-us.html         # Contact form page
 ├── faq.html                # FAQ with accordion
+├── email-analytics.html    # Campaign analytics dashboard
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
 ├── sitemap.xml             # SEO sitemap (6 pages)
@@ -896,9 +931,9 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── intake-button.js        # Embeddable floating button
 ├── widget.js               # Embeddable inline widget
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
-├── PLAN.md                 # This file
+├── CLAUDE.md               # Project documentation
 ├── js/
-│   └── components.js       # Shared header/footer
+│   └── components.js       # Shared header/footer (conditional Get Started button)
 └── images/
     └── icon.svg            # Site icon/favicon (gold #c9a962)
 
@@ -913,6 +948,11 @@ pending → analyzing → researching → generating_demo → demo_ready
 └── templates/
     ├── demo-intake.html.template    # Demo intake template
     └── demo-config.js               # Demo config template
+
+/scripts/
+├── regenerate-preintake-demos.js    # Regenerate demos with latest template
+├── analyze-click-rate.js            # Email click rate analysis
+└── send-preintake-campaign.js       # Email campaign sender
 ```
 
 ### Firebase Configuration
