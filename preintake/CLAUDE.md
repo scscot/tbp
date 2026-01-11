@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-08
-**Version**: 2.9 (Hero messaging refinement + data privacy trust signal)
+**Last Updated**: 2026-01-10
+**Version**: 3.0 (Pre-Screen positioning + practice-area subtitle + audit fixes)
 
 ---
 
@@ -903,6 +903,43 @@ After:  "AI That Reviews Inquiries
 | Key | Purpose | Set By |
 |-----|---------|--------|
 | `tbp_demo_viewed` | Stores leadId when demo CTA clicked | `index.html` Campaign Hero CTA |
+
+### Phase 22: Pre-Screen Positioning & Audit Fixes (2026-01-10)
+- [x] **H1 Messaging Update** - Changed from "Screen" to "Pre-Screen" positioning
+  - Final H1: "Pre-Screen Every Inquiry Before They Reach Your Firm"
+  - "Pre-Screen" clarifies position: happens BEFORE staff/CRM/time wasted
+  - Aligns with "sits in front of CRMs" architecture narrative
+  - Uses industry-standard legal ops terminology (pre-screened cases/leads)
+  - Implies gate/evaluation, not blocking - reduces objection
+- [x] **Hero Subtitle Enhancement** - Added practice-area differentiation
+  - "Every inquiry assessed and delivered with a case summary tailored to your firm's practice area, a qualification rating, and a clear next-step recommendation—qualified, needs review, or not a fit."
+  - Highlights core differentiator (practice-area specific screening)
+  - "your firm's" for direct, personal tone
+  - "clear next-step recommendation" more actionable than generic "recommendation"
+- [x] **Cloud Functions Audit Fixes**
+  - Fixed SMTP host default in `preintake-functions.js` (mail.preintake.ai → smtp.dreamhost.com)
+  - Fixed `generateSystemPrompt()` signature mismatch in `widget-functions.js` (9 args → 7 args)
+  - Added separate try-catch for email sending in `demo-generator-functions.js`
+  - Enhanced `initFirebaseAdmin()` JSDoc for script usage clarity
+- [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-10
+
+**Hero Messaging Evolution (Final):**
+```
+Before: "Screen Every Inquiry Before It Reaches Your Firm"
+After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
+        - "Pre-Screen" encodes "sits in front of CRMs" in one word
+        - "They" (plural) works better than "It" for "Every Inquiry"
+        - Industry-standard terminology in legal ops
+        - Implies evaluation, not blocking
+```
+
+**Key Messaging Decisions (Phase 22):**
+| Choice | Selected | Rationale |
+|--------|----------|-----------|
+| "Pre-Screen" vs "Screen" | Pre-Screen | Clarifies position (before staff), industry terminology |
+| "They" vs "It" | They | Plural works better with "Every Inquiry" |
+| Practice-area in subtitle | Yes | Core differentiator, deserves hero placement |
+| "your firm's" vs "the firm's" | your firm's | More direct, personal tone |
 
 ---
 
