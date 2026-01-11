@@ -246,7 +246,7 @@ function generateEmailHTML(firmName, email, leadId) {
         <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Most intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
+      <p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
       <p>Every inquiry is assessed and delivered with:</p>
 
@@ -257,7 +257,7 @@ function generateEmailHTML(firmName, email, leadId) {
       </ul>
 
       <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiries are processed and delivered immediately, never stored on our servers.
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
       <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
@@ -301,7 +301,7 @@ function generateEmailHTML(firmName, email, leadId) {
  */
 function generateFallbackEmailHTML(firmName, email) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    const demoUrl = `https://preintake.ai/#demo?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     return `<!DOCTYPE html>
 <html>
@@ -330,7 +330,7 @@ function generateFallbackEmailHTML(firmName, email) {
         <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Most intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
+      <p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
       <p>Every inquiry is assessed and delivered with:</p>
 
@@ -341,7 +341,7 @@ function generateFallbackEmailHTML(firmName, email) {
       </ul>
 
       <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiries are processed and delivered immediately, never stored on our servers.
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
       <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
@@ -386,7 +386,7 @@ function generateEmailPlainText(firmName, email, leadId) {
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Most intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
 
 Every inquiry is assessed and delivered with:
 
@@ -394,7 +394,7 @@ Every inquiry is assessed and delivered with:
 • A qualification rating: qualified, needs review, or not a fit
 • A plain-English explanation of why
 
-Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers.
+Zero Data Retention — Inquiry content is processed and delivered, not retained.
 
 Your staff reviews results—not raw submissions. No CRM changes required.
 
@@ -420,12 +420,12 @@ Unsubscribe: ${unsubscribeUrl}`;
  */
 function generateFallbackEmailPlainText(firmName, email) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    const demoUrl = `https://preintake.ai/#demo?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Most intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
 
 Every inquiry is assessed and delivered with:
 
@@ -433,7 +433,7 @@ Every inquiry is assessed and delivered with:
 • A qualification rating: qualified, needs review, or not a fit
 • A plain-English explanation of why
 
-Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers.
+Zero Data Retention — Inquiry content is processed and delivered, not retained.
 
 Your staff reviews results—not raw submissions. No CRM changes required.
 
@@ -541,7 +541,7 @@ async function runCampaign() {
             pass: SMTP_PASS
         },
         tls: {
-            rejectUnauthorized: false
+            rejectUnauthorized: true
         }
     });
 
