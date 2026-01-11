@@ -260,6 +260,10 @@ function generateEmailHTML(firmName, email, leadId) {
           <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
+      <p style="color: #64748b; font-size: 14px; margin-top: 8px;">
+          Embeds directly on your website — visitors never leave your site.
+      </p>
+
       <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
 
       <p>We've prepared a demo tailored specifically to <strong>${firmName}</strong>:</p>
@@ -344,6 +348,10 @@ function generateFallbackEmailHTML(firmName, email) {
           <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
+      <p style="color: #64748b; font-size: 14px; margin-top: 8px;">
+          Embeds directly on your website — visitors never leave your site.
+      </p>
+
       <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
 
       <p>We can build a demo tailored specifically to <strong>${firmName}</strong>.</p>
@@ -396,6 +404,8 @@ Every inquiry is assessed and delivered with:
 
 Zero Data Retention — Inquiry content is processed and delivered, not retained.
 
+Embeds directly on your website — visitors never leave your site.
+
 Your staff reviews results—not raw submissions. No CRM changes required.
 
 We've prepared a demo tailored specifically to ${firmName}:
@@ -434,6 +444,8 @@ Every inquiry is assessed and delivered with:
 • A plain-English explanation of why
 
 Zero Data Retention — Inquiry content is processed and delivered, not retained.
+
+Embeds directly on your website — visitors never leave your site.
 
 Your staff reviews results—not raw submissions. No CRM changes required.
 
