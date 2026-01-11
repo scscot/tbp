@@ -1,88 +1,106 @@
 // ==============================
 // EMAIL STATS FUNCTIONS MODULE
 // Provides email campaign statistics for the web dashboard
+// Now uses Firestore for tracking data (SMTP migration)
 // ==============================
 
 const { onRequest } = require('firebase-functions/v2/https');
-const { defineString, defineSecret } = require('firebase-functions/params');
+const { defineSecret } = require('firebase-functions/params');
 const { db } = require('./shared/utilities');
-const axios = require('axios');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-
-// Parameters (loaded from .env file)
-const mailgunApiKey = defineString('MAILGUN_API_KEY');
 
 // GA4 Service Account credentials (stored as secret)
 const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 
 // Constants
-const MAILGUN_DOMAIN = 'hello.teambuildpro.com';
 const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
 /**
- * Get Mailgun statistics for today
+ * Get email tracking statistics from Firestore
+ * Replaces Mailgun API stats with real-time Firestore tracking data
  */
-async function fetchMailgunStats(apiKey, domain) {
+async function fetchEmailTrackingStats(contactsRef) {
   try {
-    const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
+    // Get sent count (accepted/delivered)
+    const sentSnapshot = await contactsRef.where('sent', '==', true).count().get();
+    const delivered = sentSnapshot.data().count;
 
-    // Build URL with proper event parameter format for Mailgun API
-    const events = ['accepted', 'delivered', 'failed', 'opened', 'clicked'];
-    const eventParams = events.map(e => `event=${e}`).join('&');
-    const url = `${mailgunBaseUrl}/stats/total?${eventParams}&duration=1d&resolution=hour`;
+    // Get failed count
+    const failedSnapshot = await contactsRef.where('status', '==', 'failed').count().get();
+    const failed = failedSnapshot.data().count;
 
-    const statsResponse = await axios.get(url, {
-      auth: {
-        username: 'api',
-        password: apiKey
+    // Get opened count (contacts with openedAt timestamp)
+    const openedSnapshot = await contactsRef.where('openedAt', '!=', null).count().get();
+    const opened = openedSnapshot.data().count;
+
+    // Get clicked count (contacts with clickedAt timestamp)
+    const clickedSnapshot = await contactsRef.where('clickedAt', '!=', null).count().get();
+    const clicked = clickedSnapshot.data().count;
+
+    // Calculate rates
+    const openRate = delivered > 0 ? ((opened / delivered) * 100).toFixed(1) + '%' : '0%';
+    const clickRate = delivered > 0 ? ((clicked / delivered) * 100).toFixed(1) + '%' : '0%';
+    const clickToOpenRate = opened > 0 ? ((clicked / opened) * 100).toFixed(1) + '%' : '0%';
+
+    return {
+      accepted: delivered + failed, // Total attempts
+      delivered,
+      failed,
+      opened,
+      clicked,
+      openRate,
+      clickRate,
+      clickToOpenRate
+    };
+  } catch (error) {
+    console.error('Error fetching email tracking stats:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Get subject line breakdown from Firestore
+ */
+async function fetchSubjectLineStats(contactsRef) {
+  try {
+    // Get all sent contacts with their subject tags
+    const sentSnapshot = await contactsRef
+      .where('sent', '==', true)
+      .select('subjectTag', 'openedAt', 'clickedAt')
+      .get();
+
+    // Aggregate by subject tag
+    const subjectStats = {};
+
+    sentSnapshot.docs.forEach(doc => {
+      const data = doc.data();
+      const tag = data.subjectTag || 'unknown';
+
+      if (!subjectStats[tag]) {
+        subjectStats[tag] = { sent: 0, opened: 0, clicked: 0 };
       }
+
+      subjectStats[tag].sent++;
+      if (data.openedAt) subjectStats[tag].opened++;
+      if (data.clickedAt) subjectStats[tag].clicked++;
     });
 
-    if (statsResponse.data && statsResponse.data.stats) {
-      const stats = statsResponse.data.stats;
+    // Calculate rates for each subject
+    const result = Object.entries(subjectStats).map(([tag, stats]) => ({
+      subjectTag: tag,
+      sent: stats.sent,
+      opened: stats.opened,
+      clicked: stats.clicked,
+      openRate: stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) + '%' : '0%',
+      clickRate: stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) + '%' : '0%'
+    }));
 
-      // Aggregate stats for the day
-      const totals = {
-        accepted: 0,
-        delivered: 0,
-        failed: 0,
-        opened: 0,
-        clicked: 0
-      };
-
-      stats.forEach(hourStat => {
-        if (hourStat.accepted) totals.accepted += hourStat.accepted.total || 0;
-        if (hourStat.delivered) totals.delivered += hourStat.delivered.total || 0;
-        if (hourStat.failed) {
-          if (hourStat.failed.permanent) totals.failed += hourStat.failed.permanent.total || 0;
-          if (hourStat.failed.temporary) totals.failed += hourStat.failed.temporary.total || 0;
-        }
-        if (hourStat.opened) totals.opened += hourStat.opened.total || 0;
-        if (hourStat.clicked) totals.clicked += hourStat.clicked.total || 0;
-      });
-
-      const openRate = totals.delivered > 0 ? ((totals.opened / totals.delivered) * 100).toFixed(1) + '%' : '0%';
-      const clickRate = totals.delivered > 0 ? ((totals.clicked / totals.delivered) * 100).toFixed(1) + '%' : '0%';
-      const engagementRate = totals.delivered > 0 ? (((totals.opened + totals.clicked) / totals.delivered) * 100).toFixed(1) + '%' : '0%';
-
-      return {
-        accepted: totals.accepted,
-        delivered: totals.delivered,
-        failed: totals.failed,
-        opened: totals.opened,
-        clicked: totals.clicked,
-        openRate,
-        clickRate,
-        engagementRate
-      };
-    }
-
-    return null;
+    return result;
   } catch (error) {
-    console.error('Error fetching Mailgun stats:', error.message);
-    return null;
+    console.error('Error fetching subject line stats:', error.message);
+    return [];
   }
 }
 
@@ -120,9 +138,9 @@ async function fetchGA4Stats(serviceAccountJson) {
       ],
       dimensionFilter: {
         filter: {
-          fieldName: 'sessionSource',
+          fieldName: 'sessionMedium',
           stringFilter: {
-            value: 'mailgun',
+            value: 'smtp',
             matchType: 'EXACT'
           }
         }
@@ -245,11 +263,11 @@ const getEmailCampaignStats = onRequest({
       };
     });
 
-    // Get Mailgun stats
-    const mailgunStats = await fetchMailgunStats(
-      mailgunApiKey.value(),
-      MAILGUN_DOMAIN
-    );
+    // Get email tracking stats from Firestore (replaces Mailgun API)
+    const trackingStats = await fetchEmailTrackingStats(contactsRef);
+
+    // Get subject line breakdown
+    const subjectLineStats = await fetchSubjectLineStats(contactsRef);
 
     // Get GA4 stats
     let ga4Stats = null;
@@ -275,7 +293,7 @@ const getEmailCampaignStats = onRequest({
       today: {
         sent: todayCount
       },
-      mailgun: mailgunStats || {
+      tracking: trackingStats || {
         accepted: 0,
         delivered: 0,
         failed: 0,
@@ -283,8 +301,9 @@ const getEmailCampaignStats = onRequest({
         clicked: 0,
         openRate: '0%',
         clickRate: '0%',
-        engagementRate: '0%'
+        clickToOpenRate: '0%'
       },
+      subjectLines: subjectLineStats,
       ga4: ga4Stats || {
         sessions: 0,
         users: 0,

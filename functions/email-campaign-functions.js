@@ -1,8 +1,15 @@
+/**
+ * Team Build Pro Email Campaign Functions (SMTP Version)
+ *
+ * Scheduled email campaigns using SMTP via nodemailer.
+ * Sends emails with real-time open/click tracking via Cloud Functions.
+ */
+
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { defineString } = require("firebase-functions/params");
-const axios = require('axios');
-const FormData = require('form-data');
 const { db } = require('./shared/utilities');
+const { sendTrackedEmail, verifyConnection, closeConnection } = require('./email-smtp-sender');
+const { generateEmailHTML, generateEmailPlainText } = require('./email_templates/tbp-smtp-template');
 
 // =============================================================================
 // PARAMETERS
@@ -10,18 +17,12 @@ const { db } = require('./shared/utilities');
 
 const emailCampaignEnabled = defineString("EMAIL_CAMPAIGN_ENABLED", { default: "false" });
 const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { default: "false" });
-const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
-const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "hello.teambuildpro.com" });
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
-const _CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
-const FROM_ADDRESS = 'Stephen Scott <stephen@hello.teambuildpro.com>';
-const TEMPLATE_NAME = 'mailer';
 const SEND_DELAY_MS = 1000;
 
 // =============================================================================
@@ -55,97 +56,83 @@ const CAMPAIGN_CONFIGS = {
   main: {
     name: 'HOURLY EMAIL CAMPAIGN',
     logPrefix: '📧',
-    batchIdPrefix: 'batch',
+    batchIdPrefix: 'smtp_batch',
     sentField: 'sent',
-    templateVersion: 'initial',
-    campaignTag: 'initial_campaign',
-    utmCampaign: 'initial_campaign',
+    utmCampaign: 'tbp_smtp_campaign',
     subjects: [
-    //   { subject: () => 'Happy New Year!', tag: 'subject_recruiting_app' }
       { subject: () => 'A smarter way to build your team', tag: 'subject_recruiting_app' }
-    ],
-    includeUtmTracking: true
+    ]
   },
   android: {
     name: 'ANDROID LAUNCH CAMPAIGN',
     logPrefix: '📧',
-    batchIdPrefix: 'android_batch',
+    batchIdPrefix: 'android_smtp_batch',
     sentField: 'resend',
-    templateVersion: 'initial',
-    campaignTag: 'android_launch',
     utmCampaign: 'android_launch',
     subjects: [
       { subject: () => 'A smarter way to build your team', tag: 'android_launch' }
     ],
-    includeUtmTracking: false,
     // Field mappings for resend campaign
     timestampField: 'resendTimestamp',
     statusField: 'resendStatus',
     errorField: 'resendErrorMessage',
-    mailgunIdField: 'mailgunResendId',
+    messageIdField: 'smtpResendMessageId',
     lastAttemptField: 'lastResendAttempt'
   }
 };
 
 // =============================================================================
-// MAILGUN EMAIL SENDER
+// SMTP EMAIL SENDER
 // =============================================================================
 
-async function sendEmailViaMailgun(contact, config, apiKey, domain, index = 0) {
-  const form = new FormData();
-
+/**
+ * Send email via SMTP with tracking
+ *
+ * @param {object} contact - Contact data { firstName, lastName, email }
+ * @param {string} docId - Firestore document ID (used as tracking ID)
+ * @param {object} config - Campaign configuration
+ * @param {number} index - Index for subject rotation
+ * @returns {Promise<object>} Send result
+ */
+async function sendEmailViaSMTP(contact, docId, config, index = 0) {
   // Select subject based on index rotation
   const subjectIndex = index % config.subjects.length;
   const subjectConfig = config.subjects[subjectIndex];
   const selectedSubject = subjectConfig.subject(contact);
   const subjectTag = subjectConfig.tag;
 
-  form.append('from', FROM_ADDRESS);
-  form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
-  form.append('subject', selectedSubject);
-  form.append('template', TEMPLATE_NAME);
-  form.append('t:version', config.templateVersion);
-  form.append('o:tag', config.campaignTag);
-  form.append('o:tag', config.templateVersion);
-  form.append('o:tag', subjectTag);
-  form.append('o:tracking', 'yes');
-  form.append('o:tracking-opens', 'yes');
-  form.append('o:tracking-clicks', 'yes');
+  // Compute seasonal sign-off
+  const seasonalSignoff = computeSeasonalSignoff();
 
-  // Build template variables
-  const templateVars = {
-    first_name: contact.firstName,
-    last_name: contact.lastName,
-    email: contact.email,
-    seasonal_signoff: computeSeasonalSignoff()
+  // Generate email content with tracking
+  const templateConfig = {
+    subjectTag: subjectTag,
+    utmCampaign: config.utmCampaign
   };
 
-  // Add UTM tracking if configured
-  if (config.includeUtmTracking) {
-    templateVars.utm_source = 'mailgun';
-    templateVars.utm_medium = 'email';
-    templateVars.utm_campaign = config.utmCampaign;
-    templateVars.utm_content = subjectTag;
-  }
+  const htmlContent = generateEmailHTML(contact, docId, templateConfig, seasonalSignoff);
+  const textContent = generateEmailPlainText(contact, docId, templateConfig, seasonalSignoff);
 
-  form.append('h:X-Mailgun-Variables', JSON.stringify(templateVars));
+  // Send via SMTP
+  const result = await sendTrackedEmail(
+    contact,
+    docId,
+    selectedSubject,
+    htmlContent,
+    textContent
+  );
 
-  const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
-  const response = await axios.post(`${mailgunBaseUrl}/messages`, form, {
-    headers: {
-      ...form.getHeaders(),
-      'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`
-    }
-  });
-
-  return { result: response.data, subjectTag };
+  return {
+    ...result,
+    subjectTag: subjectTag
+  };
 }
 
 // =============================================================================
 // SHARED CAMPAIGN PROCESSOR
 // =============================================================================
 
-async function processCampaignBatch(config, enabledParam, apiKey, domain, batchSize) {
+async function processCampaignBatch(config, enabledParam, batchSize) {
   const { name, logPrefix, batchIdPrefix, sentField } = config;
 
   console.log(`${logPrefix} ${name}: Starting batch email send`);
@@ -157,9 +144,11 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
     return { status: 'disabled', sent: 0 };
   }
 
-  if (!apiKey) {
-    console.error(`❌ ${name}: MAILGUN_API_KEY not configured`);
-    return { status: 'error', message: 'Missing API key' };
+  // Verify SMTP connection before starting
+  const connectionOk = await verifyConnection();
+  if (!connectionOk) {
+    console.error(`❌ ${name}: SMTP connection failed`);
+    return { status: 'error', message: 'SMTP connection failed' };
   }
 
   console.log(`${logPrefix} ${name}: Batch size set to ${batchSize}`);
@@ -176,6 +165,7 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
 
     if (unsentSnapshot.empty) {
       console.log(`✅ ${name}: No unsent emails found. Campaign complete!`);
+      closeConnection();
       return { status: 'complete', sent: 0 };
     }
 
@@ -188,7 +178,7 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
     const timestampField = config.timestampField || 'sentTimestamp';
     const statusField = config.statusField || 'status';
     const errorField = config.errorField || 'errorMessage';
-    const mailgunIdField = config.mailgunIdField || 'mailgunId';
+    const messageIdField = config.messageIdField || 'messageId';
     const lastAttemptField = config.lastAttemptField || 'lastAttempt';
 
     for (let i = 0; i < unsentSnapshot.docs.length; i++) {
@@ -198,23 +188,27 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
       try {
         console.log(`📤 Sending to ${contact.email}...`);
 
-        const { result, subjectTag } = await sendEmailViaMailgun(contact, config, apiKey, domain, i);
+        const result = await sendEmailViaSMTP(contact, doc.id, config, i);
 
-        const updateData = {
-          [sentField]: true,
-          [timestampField]: new Date(),
-          batchId: batchId,
-          [statusField]: 'sent',
-          [errorField]: '',
-          [mailgunIdField]: result.id || '',
-          templateVersion: config.templateVersion,
-          subjectTag: subjectTag
-        };
+        if (result.success) {
+          const updateData = {
+            [sentField]: true,
+            [timestampField]: new Date(),
+            batchId: batchId,
+            [statusField]: 'sent',
+            [errorField]: '',
+            [messageIdField]: result.messageId || '',
+            subjectTag: result.subjectTag,
+            smtpResponse: result.response || ''
+          };
 
-        await doc.ref.update(updateData);
+          await doc.ref.update(updateData);
 
-        console.log(`✅ Sent to ${contact.email} [${config.templateVersion}]: ${result.id}`);
-        sent++;
+          console.log(`✅ Sent to ${contact.email}: ${result.messageId}`);
+          sent++;
+        } else {
+          throw new Error(result.error || 'Unknown SMTP error');
+        }
 
         if (sent < unsentSnapshot.size) {
           await new Promise(resolve => setTimeout(resolve, SEND_DELAY_MS));
@@ -235,6 +229,9 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
       }
     }
 
+    // Close SMTP connection after batch
+    closeConnection();
+
     console.log(`\n📊 ${batchId} Complete:`);
     console.log(`   Total processed: ${unsentSnapshot.size}`);
     console.log(`   Successfully sent: ${sent}`);
@@ -253,6 +250,7 @@ async function processCampaignBatch(config, enabledParam, apiKey, domain, batchS
 
   } catch (error) {
     console.error(`💥 ${name}: Batch failed:`, error.message);
+    closeConnection();
     throw error;
   }
 }
@@ -266,17 +264,13 @@ const sendHourlyEmailCampaign = onSchedule({
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
-  timeoutSeconds: 60
-}, async (event) => {
-  const apiKey = mailgunApiKey.value();
-  const domain = mailgunDomain.value();
+  timeoutSeconds: 120
+}, async () => {
   const batchSize = parseInt(emailCampaignBatchSize.value());
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.main,
     emailCampaignEnabled,
-    apiKey,
-    domain,
     batchSize
   );
 });
@@ -286,185 +280,15 @@ const sendAndroidLaunchCampaign = onSchedule({
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
-  timeoutSeconds: 60
-}, async (event) => {
-  const apiKey = mailgunApiKey.value();
-  const domain = mailgunDomain.value();
+  timeoutSeconds: 120
+}, async () => {
   const batchSize = parseInt(emailCampaignBatchSize.value());
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.android,
     androidCampaignEnabled,
-    apiKey,
-    domain,
     batchSize
   );
-});
-
-const syncMailgunEvents = onSchedule({
-  schedule: "10 8,10,12,14,16,18 * * *",
-  timeZone: "America/Los_Angeles",
-  region: "us-central1",
-  memory: "512MiB",
-  timeoutSeconds: 540
-}, async (event) => {
-  console.log("🔄 MAILGUN EVENT SYNC: Starting event synchronization");
-
-  const syncEnabled = emailCampaignSyncEnabled.value().toLowerCase() === 'true';
-  const apiKey = mailgunApiKey.value();
-  const domain = mailgunDomain.value();
-
-  if (!syncEnabled) {
-    console.log("🔄 MAILGUN EVENT SYNC: Disabled via environment variable. Skipping.");
-    return { status: 'disabled', synced: 0 };
-  }
-
-  if (!apiKey) {
-    console.error("❌ MAILGUN EVENT SYNC: MAILGUN_API_KEY not configured");
-    return { status: 'error', message: 'Missing API key' };
-  }
-
-  try {
-    const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
-    const now = new Date();
-    const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000));
-
-    console.log(`🔄 MAILGUN EVENT SYNC: Querying events from ${twoHoursAgo.toISOString()} to ${now.toISOString()}`);
-
-    const eventTypes = ['delivered', 'failed', 'opened', 'clicked'];
-    const eventsByEmail = {};
-
-    for (const eventType of eventTypes) {
-      try {
-        const response = await axios.get(`${mailgunBaseUrl}/events`, {
-          auth: { username: 'api', password: apiKey },
-          params: {
-            begin: Math.floor(twoHoursAgo.getTime() / 1000),
-            end: Math.floor(now.getTime() / 1000),
-            event: eventType,
-            limit: 300
-          }
-        });
-
-        if (response.data && response.data.items) {
-          for (const item of response.data.items) {
-            const email = item.recipient;
-            if (!eventsByEmail[email]) {
-              eventsByEmail[email] = { delivered: [], failed: [], opened: [], clicked: [] };
-            }
-            eventsByEmail[email][eventType].push(item);
-          }
-          console.log(`   Fetched ${response.data.items.length} ${eventType} events`);
-        }
-      } catch (error) {
-        console.error(`⚠️  Error fetching ${eventType} events: ${error.message}`);
-      }
-    }
-
-    const emailsToSync = Object.keys(eventsByEmail);
-    console.log(`🔄 MAILGUN EVENT SYNC: Processing ${emailsToSync.length} unique email addresses`);
-
-    if (emailsToSync.length === 0) {
-      console.log("✅ MAILGUN EVENT SYNC: No events to sync");
-      return { status: 'success', synced: 0 };
-    }
-
-    const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
-    let synced = 0;
-    let notFound = 0;
-    let errors = 0;
-
-    const batches = [];
-    let currentBatch = db.batch();
-    let batchCount = 0;
-
-    for (const email of emailsToSync) {
-      try {
-        const contactSnapshot = await contactsRef.where('email', '==', email).limit(1).get();
-
-        if (contactSnapshot.empty) {
-          notFound++;
-          continue;
-        }
-
-        const contactDoc = contactSnapshot.docs[0];
-        const events = eventsByEmail[email];
-        const updateData = { lastMailgunSync: now };
-
-        if (events.delivered.length > 0) {
-          const latestDelivered = events.delivered.sort((a, b) => b.timestamp - a.timestamp)[0];
-          updateData.deliveryStatus = 'delivered';
-          updateData.deliveredAt = new Date(latestDelivered.timestamp * 1000);
-        }
-
-        if (events.failed.length > 0) {
-          const latestFailed = events.failed.sort((a, b) => b.timestamp - a.timestamp)[0];
-          updateData.deliveryStatus = 'failed';
-          updateData.failedAt = new Date(latestFailed.timestamp * 1000);
-          updateData.failureReason = latestFailed.reason || latestFailed['delivery-status']?.message || 'Unknown';
-        }
-
-        if (events.opened.length > 0) {
-          const firstOpen = events.opened.sort((a, b) => a.timestamp - b.timestamp)[0];
-          updateData.openedAt = new Date(firstOpen.timestamp * 1000);
-          updateData.openCount = events.opened.length;
-        }
-
-        if (events.clicked.length > 0) {
-          const firstClick = events.clicked.sort((a, b) => a.timestamp - b.timestamp)[0];
-          updateData.clickedAt = new Date(firstClick.timestamp * 1000);
-          updateData.clickCount = events.clicked.length;
-        }
-
-        currentBatch.update(contactDoc.ref, updateData);
-        batchCount++;
-        synced++;
-
-        if (batchCount >= 500) {
-          batches.push(currentBatch);
-          currentBatch = db.batch();
-          batchCount = 0;
-        }
-
-      } catch (error) {
-        console.error(`❌ Error processing ${email}: ${error.message}`);
-        errors++;
-      }
-    }
-
-    if (batchCount > 0) {
-      batches.push(currentBatch);
-    }
-
-    console.log(`💾 MAILGUN EVENT SYNC: Committing ${batches.length} batch(es)...`);
-
-    for (let i = 0; i < batches.length; i++) {
-      try {
-        await batches[i].commit();
-        console.log(`   Batch ${i + 1}/${batches.length} committed`);
-      } catch (error) {
-        console.error(`   ❌ Batch ${i + 1} failed: ${error.message}`);
-      }
-    }
-
-    console.log(`\n✅ MAILGUN EVENT SYNC: Complete`);
-    console.log(`   Emails processed: ${emailsToSync.length}`);
-    console.log(`   Contacts updated: ${synced}`);
-    console.log(`   Contacts not found: ${notFound}`);
-    console.log(`   Errors: ${errors}`);
-
-    return {
-      status: 'success',
-      synced,
-      notFound,
-      errors,
-      totalEmails: emailsToSync.length
-    };
-
-  } catch (error) {
-    console.error('💥 MAILGUN EVENT SYNC: Failed:', error.message);
-    throw error;
-  }
 });
 
 // =============================================================================
@@ -473,6 +297,5 @@ const syncMailgunEvents = onSchedule({
 
 module.exports = {
   sendHourlyEmailCampaign,
-  sendAndroidLaunchCampaign,
-  syncMailgunEvents
+  sendAndroidLaunchCampaign
 };

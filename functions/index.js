@@ -128,8 +128,15 @@ const {
 const {
   sendHourlyEmailCampaign,
   sendAndroidLaunchCampaign,
-  syncMailgunEvents
 } = require('./email-campaign-functions');
+
+// ==============================
+// Import Email Tracking Functions (SMTP Migration)
+// ==============================
+const {
+  trackEmailOpen,
+  trackEmailClick,
+} = require('./email-tracking-functions');
 
 // ==============================
 // Import Email Stats Functions
@@ -358,7 +365,10 @@ module.exports = {
   // Email campaign (scheduled)
   sendHourlyEmailCampaign,
   sendAndroidLaunchCampaign,
-  syncMailgunEvents,
+
+  // Email tracking endpoints (SMTP migration)
+  trackEmailOpen,
+  trackEmailClick,
 
   // Email stats (HTTP endpoint)
   getEmailCampaignStats,
