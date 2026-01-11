@@ -36,7 +36,7 @@ if (!isDryRun && !isDelete) {
 }
 
 // Statistics
-let stats = {
+const stats = {
   totalScanned: 0,
   matchingUplineAdmin: 0,
   markedForDeletion: 0,
@@ -46,7 +46,7 @@ let stats = {
 };
 
 // CSV log data
-let deletedUsers = [];
+const deletedUsers = [];
 
 /**
  * Prompt user for confirmation
@@ -85,7 +85,7 @@ function saveToCSV() {
 /**
  * Delete user from Auth and Firestore users
  */
-async function deleteUser(uid, email, reason) {
+async function deleteUser(uid, email, _reason) {
   let authDeleted = false;
   let firestoreUserDeleted = false;
 

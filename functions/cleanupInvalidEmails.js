@@ -120,7 +120,7 @@ const args = process.argv.slice(2);
 const dryRun = !args.includes('--delete');
 
 cleanupInvalidEmails(dryRun)
-  .then(result => {
+  .then(_result => {
     console.log('\n✅ Scan complete');
     process.exit(0);
   })

@@ -8,7 +8,7 @@ if (admin.apps.length === 0) {
 }
 
 const db = admin.firestore();
-const auth = admin.auth();
+const _auth = admin.auth();
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -23,7 +23,7 @@ if (!isDryRun && !isDelete) {
 }
 
 // Statistics
-let stats = {
+const stats = {
   totalScanned: 0,
   emptyDocuments: 0,
   nonEmptyDocuments: 0,
@@ -33,7 +33,7 @@ let stats = {
 };
 
 // CSV log data
-let deletedUsers = [];
+const deletedUsers = [];
 
 /**
  * Prompt user for confirmation

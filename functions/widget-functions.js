@@ -101,7 +101,7 @@ const getWidgetConfig = onRequest(
             }
 
             const analysis = data.analysis || {};
-            const deepResearch = data.deepResearch || {};
+            const _deepResearch = data.deepResearch || {};
 
             // Build practice areas list from breakdown
             const practiceBreakdown = data.practiceAreas?.breakdown || {};
@@ -156,7 +156,7 @@ const intakeChat = onRequest(
         }
 
         try {
-            const { firmId, sessionId, messages } = req.body;
+            const { firmId, sessionId: _sessionId, messages } = req.body;
 
             if (!firmId) {
                 return res.status(400).json({ error: 'Missing firmId' });
@@ -268,7 +268,7 @@ const intakeChat = onRequest(
 function processResponse(response) {
     let text = '';
     let buttons = [];
-    let toolCalls = [];
+    const toolCalls = [];
 
     for (const block of response.content) {
         if (block.type === 'text') {
@@ -463,7 +463,7 @@ const getEmailAnalytics = onRequest(
                 .where('sent', '==', true)
                 .get();
 
-            let totalSent = emailsSnap.size;
+            const totalSent = emailsSnap.size;
             let withDemo = 0;
             let withoutDemo = 0;
             let last7DaysSent = 0;

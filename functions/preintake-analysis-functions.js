@@ -192,41 +192,37 @@ async function analyzeWebsite(websiteUrl) {
     let html;
     let finalUrl = websiteUrl;
 
-    try {
-        // Create a timeout promise
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Website fetch timed out')), FETCH_TIMEOUT);
-        });
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Website fetch timed out')), FETCH_TIMEOUT);
+    });
 
-        // Create the fetch promise
-        const fetchPromise = fetch(websiteUrl, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; PreIntakeBot/1.0; +https://preintake.ai)',
-                'Accept': 'text/html,application/xhtml+xml',
-            },
-            redirect: 'follow',
-            timeout: FETCH_TIMEOUT,
-        });
+    // Create the fetch promise
+    const fetchPromise = fetch(websiteUrl, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; PreIntakeBot/1.0; +https://preintake.ai)',
+            'Accept': 'text/html,application/xhtml+xml',
+        },
+        redirect: 'follow',
+        timeout: FETCH_TIMEOUT,
+    });
 
-        // Race between fetch and timeout
-        const response = await Promise.race([fetchPromise, timeoutPromise]);
+    // Race between fetch and timeout
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
 
-        finalUrl = response.url;
-        const contentLength = response.headers.get('content-length');
-        if (contentLength && parseInt(contentLength) > MAX_HTML_SIZE) {
-            throw new Error('Website content too large');
-        }
+    finalUrl = response.url;
+    const contentLength = response.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > MAX_HTML_SIZE) {
+        throw new Error('Website content too large');
+    }
 
-        html = await response.text();
-        if (html.length > MAX_HTML_SIZE) {
-            html = html.substring(0, MAX_HTML_SIZE);
-        }
-    } catch (error) {
-        throw error;
+    html = await response.text();
+    if (html.length > MAX_HTML_SIZE) {
+        html = html.substring(0, MAX_HTML_SIZE);
     }
 
     // Parse HTML and extract data

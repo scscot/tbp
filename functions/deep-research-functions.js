@@ -5,7 +5,7 @@
  */
 
 const { defineSecret } = require('firebase-functions/params');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { getFirestore: _getFirestore, FieldValue: _FieldValue } = require('firebase-admin/firestore');
 const Anthropic = require('@anthropic-ai/sdk');
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
@@ -15,7 +15,7 @@ const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY');
 
 // Constants
 const FETCH_TIMEOUT = 15000; // 15 seconds per page
-const MAX_PAGES = 15; // Maximum pages to scrape
+const _MAX_PAGES = 15; // Maximum pages to scrape
 const MAX_HTML_SIZE = 2 * 1024 * 1024; // 2MB per page
 
 // URL patterns for page type detection
@@ -307,7 +307,9 @@ function extractAttorneys(html, pageUrl) {
             if (photo) {
                 try {
                     photoUrl = new URL(photo, pageUrl).href;
-                } catch {}
+                } catch (_) {
+                    // Invalid URL format - keep photoUrl as null
+                }
             }
 
             // Extract email
@@ -353,7 +355,9 @@ function extractAttorneys(html, pageUrl) {
                     if (photo) {
                         try {
                             photoUrl = new URL(photo, pageUrl).href;
-                        } catch {}
+                        } catch (_) {
+                            // Invalid URL format - keep photoUrl as null
+                        }
                     }
 
                     if (!attorneys.find(a => a.name === headingText)) {
@@ -377,7 +381,7 @@ function extractAttorneys(html, pageUrl) {
 /**
  * Extract practice area information from a page
  */
-function extractPracticeAreas(html, pageUrl) {
+function extractPracticeAreas(html, _pageUrl) {
     const $ = cheerio.load(html);
     const areas = [];
 
@@ -388,7 +392,7 @@ function extractPracticeAreas(html, pageUrl) {
     const pageTitle = $('h1').first().text().trim() || $('title').text().trim();
 
     // Extract main content
-    const content = $('main, article, .content, #content, .main').first().text().trim() ||
+    const _content = $('main, article, .content, #content, .main').first().text().trim() ||
                    $('body').text().trim();
 
     // Extract description (first meaningful paragraph)

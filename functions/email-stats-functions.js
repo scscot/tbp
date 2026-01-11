@@ -44,7 +44,7 @@ async function fetchMailgunStats(apiKey, domain) {
       const stats = statsResponse.data.stats;
 
       // Aggregate stats for the day
-      let totals = {
+      const totals = {
         accepted: 0,
         delivered: 0,
         failed: 0,
@@ -140,7 +140,7 @@ async function fetchGA4Stats(serviceAccountJson) {
     }
 
     // Aggregate results
-    let totals = {
+    const totals = {
       sessions: 0,
       users: 0,
       newUsers: 0,

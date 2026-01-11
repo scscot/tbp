@@ -936,7 +936,7 @@ const checkExpiredTrials = onSchedule("0 9 * * *", async (event) => {
 
   try {
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const _thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     const usersSnapshot = await db.collection('users')
       .where('subscriptionStatus', '==', 'trial')

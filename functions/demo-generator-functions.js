@@ -159,7 +159,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         }));
     }
     const isMultiPractice = practiceAreasList.length > 1;
-    const otherPracticeAreaName = null; // Not used in new flow
+    const _otherPracticeAreaName = null; // Not used in new flow
 
     const state = analysis.location?.state || 'CA';
     const phone = analysis.contactMethods?.phone || '';
@@ -901,7 +901,7 @@ You MUST include these fields:
 /**
  * Generate tools array for the practice area
  */
-function generateTools(practiceArea) {
+function generateTools(_practiceArea) {
     // Base tools that apply to all practice areas
     return [
         {
@@ -2694,7 +2694,7 @@ function getInitialMessage(practiceArea, state, isMultiPractice) {
 /**
  * Lighten a hex color
  */
-function lightenColor(color, percent) {
+function _lightenColor(color, percent) {
     if (!color || !color.startsWith('#')) return null;
 
     const num = parseInt(color.replace('#', ''), 16);

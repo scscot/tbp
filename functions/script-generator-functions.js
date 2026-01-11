@@ -6,7 +6,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const Anthropic = require('@anthropic-ai/sdk');
-const { getFirestore, FieldValue, Timestamp } = require('firebase-admin/firestore');
+const { getFirestore, FieldValue, Timestamp: _Timestamp } = require('firebase-admin/firestore');
 
 // Rate limiting configuration
 const IP_DAILY_LIMIT = 20; // Max requests per IP per day

@@ -41,14 +41,14 @@ async function markContactsForResend() {
     console.log('📝 Updating contacts with resend: false...');
     console.log('');
 
-    const batch = db.batch();
+    const _batch = db.batch();
     const batchLimit = 500;
     let batchCount = 0;
-    let batches = [];
+    const batches = [];
     let currentBatch = db.batch();
 
     for (const doc of snapshot.docs) {
-      const contact = doc.data();
+      const _contact = doc.data();
 
       currentBatch.update(doc.ref, {
         resend: false,

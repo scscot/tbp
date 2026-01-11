@@ -56,7 +56,7 @@ const getBusinessOpportunityName = async (uplineAdminId, defaultName = 'your bus
 /**
  * Helper function to check milestones for upline users
  */
-async function checkUplineMilestone(userId, userData) {
+async function _checkUplineMilestone(userId, userData) {
   try {
     console.log(`MILESTONE UPLINE: Checking milestones for upline user ${userId}`);
 

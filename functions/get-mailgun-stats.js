@@ -87,7 +87,7 @@ async function getMailgunStats() {
       const stats = statsResponse.data.stats;
 
       // Aggregate stats for the day
-      let totals = {
+      const totals = {
         accepted: 0,
         delivered: 0,
         failed: 0,
@@ -144,7 +144,7 @@ async function getMailgunStats() {
           const tagStats = tagStatsResponse.data.stats;
 
           // Aggregate stats from array (API returns hourly breakdown)
-          let totals = { accepted: 0, delivered: 0, failed: 0, opened: 0, clicked: 0 };
+          const totals = { accepted: 0, delivered: 0, failed: 0, opened: 0, clicked: 0 };
 
           tagStats.forEach(hourStat => {
             if (hourStat.accepted) totals.accepted += hourStat.accepted.total || 0;

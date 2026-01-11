@@ -19,7 +19,7 @@ const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "hello.teambuild
 // CONSTANTS
 // =============================================================================
 
-const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
+const _CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
 const FROM_ADDRESS = 'Stephen Scott <stephen@hello.teambuildpro.com>';
 const TEMPLATE_NAME = 'mailer';
 const SEND_DELAY_MS = 1000;

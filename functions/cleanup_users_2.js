@@ -24,7 +24,7 @@ const TARGET_UIDS = [
 ];
 
 // Batch size for processing
-const BATCH_SIZE = 100;
+const _BATCH_SIZE = 100;
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -39,7 +39,7 @@ if (!isDryRun && !isDelete) {
 }
 
 // Statistics
-let stats = {
+const stats = {
   totalScanned: 0,
   markedForDeletion: 0,
   actuallyDeleted: 0,
@@ -49,7 +49,7 @@ let stats = {
 };
 
 // CSV log data
-let deletedUsers = [];
+const deletedUsers = [];
 
 /**
  * Prompt user for confirmation
@@ -88,7 +88,7 @@ function saveToCSV() {
 /**
  * Delete user from Auth, Firestore users, and admin_settings
  */
-async function deleteUser(uid, email, reason) {
+async function deleteUser(uid, email, _reason) {
   let authDeleted = false;
   let firestoreUserDeleted = false;
   let adminSettingsDeleted = false;

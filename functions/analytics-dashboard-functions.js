@@ -1172,7 +1172,7 @@ const getTBPAnalytics = onRequest({
   try {
     // Password authentication
     const { password, dateRange } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -1181,7 +1181,7 @@ const getTBPAnalytics = onRequest({
     logger.info('Fetching TBP Analytics Dashboard data...');
 
     // Determine date ranges
-    const ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
+    const _ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
 
     // Fetch all data sources in parallel
     const [ga4Data30, ga4Data7, iosData, androidData] = await Promise.all([

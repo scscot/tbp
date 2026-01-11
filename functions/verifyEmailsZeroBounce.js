@@ -173,7 +173,7 @@ async function verifyResendEmails(dryRun = true, limit = null) {
   const contactsRef = db.collection('emailCampaigns').doc('master').collection('contacts');
   const nov12 = new Date('2025-11-12T00:00:00Z');
 
-  let query = contactsRef
+  const query = contactsRef
     .where('sent', '==', true)
     .where('sentAt', '<', nov12);
 

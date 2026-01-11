@@ -430,7 +430,7 @@ function generateConversionEmailHtml(firmName, firstName, accountUrl) {
 /**
  * Generate HTML summary of intake for email delivery
  */
-function generateIntakeSummary(payload, firmName) {
+function generateIntakeSummary(payload, _firmName) {
     const routing = payload.routing || 'unknown';
     const routingColor = routing === 'green' ? '#22c55e' : routing === 'yellow' ? '#eab308' : '#ef4444';
     const routingLabel = routing === 'green' ? 'QUALIFIED' : routing === 'yellow' ? 'NEEDS REVIEW' : 'NOT QUALIFIED';

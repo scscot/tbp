@@ -14,7 +14,7 @@ const auth = admin.auth();
 const SAFE_LEVEL = 4;
 
 // Batch size for processing
-const BATCH_SIZE = 100;
+const _BATCH_SIZE = 100;
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -29,7 +29,7 @@ if (!isDryRun && !isDelete) {
 }
 
 // Statistics
-let stats = {
+const stats = {
   totalScanned: 0,
   keptSafeLevel: 0,
   markedForDeletion: 0,
@@ -39,7 +39,7 @@ let stats = {
 };
 
 // CSV log data
-let deletedUsers = [];
+const deletedUsers = [];
 
 /**
  * Check if user should be kept (is safe)
@@ -94,7 +94,7 @@ function saveToCSV() {
 /**
  * Delete user from Auth and Firestore
  */
-async function deleteUser(uid, email, reason) {
+async function deleteUser(uid, email, _reason) {
   let authDeleted = false;
   let firestoreDeleted = false;
 
@@ -154,7 +154,7 @@ async function processUsers() {
     const firstName = userData.firstName || '';
     const lastName = userData.lastName || '';
 
-    const { safe, isSafeLevel, level } = isSafeUser(userData);
+    const { safe, isSafeLevel: _isSafeLevel, level } = isSafeUser(userData);
 
     if (safe) {
       // User is safe - keep them

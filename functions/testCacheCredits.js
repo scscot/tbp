@@ -12,7 +12,7 @@ async function test() {
   const snapshot = await ref.where('sent', '==', true).get();
 
   let verified = 0;
-  let unverified = [];
+  const unverified = [];
   for (const doc of snapshot.docs) {
     const data = doc.data();
     if (data.zbVerified) {

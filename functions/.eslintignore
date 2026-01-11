@@ -8,3 +8,4 @@ index_original_full_backup.js
 index_previous.js
 index-previous.js
 *.bak
+templates/demo-config.js

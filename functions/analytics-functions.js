@@ -11,6 +11,7 @@ const {
   logger,
   db,
   FieldValue,
+  admin,
   validateAuthentication,
   retryWithBackoff,
 } = require('./shared/utilities');
@@ -236,7 +237,7 @@ const getFilteredNetwork = onCall({ region: "us-central1" }, async (request) => 
     const {
       filter = 'all',
       searchQuery = '',
-      levelOffset,
+      _levelOffset,
       limit = 100,
       offset = 0,
       filters = {}
@@ -599,7 +600,7 @@ const getFirestoreMetrics = onRequest({
   try {
     // Simple password check for monitoring access
     const { password } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -754,7 +755,7 @@ const getAppStoreMetrics = onRequest({
   try {
     // Simple password check for monitoring access
     const { password } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -1029,7 +1030,7 @@ const getAppStoreMetrics = onRequest({
 
           // Get the most recent instance with data
           const instances = instancesResponse.data;
-          let reportData = [];
+          const reportData = [];
 
           for (const instance of instances.slice(0, 7)) { // Last 7 days
             try {
@@ -1415,8 +1416,8 @@ const recalculateTeamCounts = onCall({
   const countsMap = new Map();
   allUsers.forEach(doc => countsMap.set(doc.id, { directSponsorCount: 0, totalTeamCount: 0 }));
 
-  let orphanedSponsorRefs = 0;
-  let orphanedUplineRefs = 0;
+  let _orphanedSponsorRefs = 0;
+  let _orphanedUplineRefs = 0;
 
   completedUsers.forEach(doc => {
     const { sponsor_id, upline_refs } = doc.data();
@@ -1425,7 +1426,7 @@ const recalculateTeamCounts = onCall({
       if (existingUids.has(sponsor_id)) {
         countsMap.get(sponsor_id).directSponsorCount++;
       } else {
-        orphanedSponsorRefs++;
+        _orphanedSponsorRefs++;
       }
     }
 
@@ -1433,7 +1434,7 @@ const recalculateTeamCounts = onCall({
       if (existingUids.has(uid)) {
         countsMap.get(uid).totalTeamCount++;
       } else {
-        orphanedUplineRefs++;
+        _orphanedUplineRefs++;
       }
     });
   });
@@ -1540,7 +1541,7 @@ const recalculateTeamCounts = onCall({
   });
 
   const BATCH_SIZE = 500;
-  let batches = [];
+  const batches = [];
   let currentBatch = db.batch();
   let batchCount = 0;
   let countsUpdated = 0;
