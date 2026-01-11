@@ -230,7 +230,7 @@ function generateEmailHTML(firmName, email, leadId) {
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
   <div style="display:none; max-height:0; overflow:hidden;">
-    How law firms reduce unqualified consultations without hiring more staff.
+    Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}.
   </div>
 
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
@@ -243,27 +243,29 @@ function generateEmailHTML(firmName, email, leadId) {
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="text-align:center; margin:0 0 16px 0;">
-        <strong>Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7</strong>
+        <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Most law practices spend a surprising amount of staff time reviewing inquiries that were never a fit to begin with.</p>
+      <p>Most intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
-      <p>Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases are mixed in with the noise.</p>
-
-      <p><strong>PreIntake.ai reviews prospective clients before they reach your team</strong>, so staff time is spent on cases that already meet your criteria.</p>
+      <p>Every inquiry is assessed and delivered with:</p>
 
       <ul style="color: #1a1a2e; padding-left: 20px;">
-          <li>Reviews inquiries using practice-specific criteria</li>
-          <li>Designates each inquiry as <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
-          <li>Provides a short, plain-English explanation with each result</li>
+          <li>A case summary tailored to your practice area</li>
+          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
+          <li>A plain-English explanation of why</li>
       </ul>
 
-      <p>Firms typically use this to reduce unproductive intake work and surface viable cases faster — without changing their CRM or existing workflow.</p>
+      <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiries are processed and delivered immediately, never stored on our servers.
+      </p>
+
+      <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
 
       <p>We've prepared a demo tailored specifically to <strong>${firmName}</strong>:</p>
 
       <div style="text-align: center; margin: 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">See How It Works</a>
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Firm's Demo</a>
       </div>
 
       <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
@@ -286,7 +288,10 @@ function generateEmailHTML(firmName, email, leadId) {
 
     <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
       <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
-      <p style="margin:15px 0 0 0;">
+      <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
+        PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+      </p>
+      <p style="margin:10px 0 0 0;">
         <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
       </p>
     </div>
@@ -312,7 +317,7 @@ function generateFallbackEmailHTML(firmName, email) {
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
   <div style="display:none; max-height:0; overflow:hidden;">
-    How law firms reduce unqualified consultations without hiring more staff.
+    We can build a custom intake demo tailored specifically to ${firmName}.
   </div>
 
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
@@ -325,44 +330,48 @@ function generateFallbackEmailHTML(firmName, email) {
 
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="text-align:center; margin:0 0 16px 0;">
-        <strong>Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7</strong>
+        <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Most law practices spend a surprising amount of staff time
-      reviewing inquiries that were never a fit to begin with.</p>
-      <p>Those dead-end intakes quietly add cost, distraction, and delay — especially when good cases are mixed in with the noise.</p>
+      <p>Most intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
-        <p><strong>PreIntake.ai reviews prospective clients before they reach your team</strong>, so staff time is spent on cases that already meet your criteria.</p>
+      <p>Every inquiry is assessed and delivered with:</p>
 
-        <ul style="color: #1a1a2e; padding-left: 20px;">
-            <li>Reviews inquiries using practice-specific criteria</li>
-            <li>Designates each inquiry as <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
-            <li>Provides a short, plain-English explanation with each result</li>
-        </ul>
+      <ul style="color: #1a1a2e; padding-left: 20px;">
+          <li>A case summary tailored to your practice area</li>
+          <li>A qualification rating: <strong>qualified</strong>, <strong>needs review</strong>, or <strong>not a fit</strong></li>
+          <li>A plain-English explanation of why</li>
+      </ul>
 
-        <p>Firms typically use this to reduce unproductive intake work
-        and surface viable cases faster — without changing their CRM or existing workflow.</p>
+      <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiries are processed and delivered immediately, never stored on our servers.
+      </p>
 
-        <p>We can build a demo tailored specifically to <strong>${firmName}</strong>.</p>
+      <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
 
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Request Your Demo</a>
-        </div>
+      <p>We can build a demo tailored specifically to <strong>${firmName}</strong>.</p>
 
-        <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
-            No commitment. Review it on your own — no calls required.
-        </p>
+      <div style="text-align: center; margin: 30px 0;">
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Request Your Demo</a>
+      </div>
 
-        <p style="margin-top: 20px;">
-            Best,<br>
-            <strong>Stephen Scott</strong><br>
-            PreIntake.ai
-        </p>
+      <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
+          No commitment. Review it on your own — no calls required.
+      </p>
+
+      <p style="margin-top: 20px;">
+          Best,<br>
+          <strong>Stephen Scott</strong><br>
+          PreIntake.ai
+      </p>
     </div>
 
     <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
       <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
-      <p style="margin:15px 0 0 0;">
+      <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
+        PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+      </p>
+      <p style="margin:10px 0 0 0;">
         <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
       </p>
     </div>
@@ -371,23 +380,103 @@ function generateFallbackEmailHTML(firmName, email) {
 }
 
 /**
- * Generate subject line (same for both - cold outreach messaging)
+ * Generate plain-text version of personalized demo email
  */
-function generateSubject(hasDemo) {
-    // Use same cold outreach subject regardless of demo status
-    // Don't say "demo is ready" - that sounds like they requested it
-    return 'A smarter way to review intake inquiries before staff engagement';
+function generateEmailPlainText(firmName, email, leadId) {
+    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
+    const demoUrl = `https://preintake.ai/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    return `PreIntake.ai
+Pre-Screen Every Inquiry — Tailored to Your Practice Area
+
+Most intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+
+Every inquiry is assessed and delivered with:
+
+• A case summary tailored to your practice area
+• A qualification rating: qualified, needs review, or not a fit
+• A plain-English explanation of why
+
+Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers.
+
+Your staff reviews results—not raw submissions. No CRM changes required.
+
+We've prepared a demo tailored specifically to ${firmName}:
+
+View Your Firm's Demo: ${demoUrl}
+
+No commitment. Review it on your own — no calls required.
+
+If you're not the right contact for intake, feel free to forward this email — the demo link above is specific to ${firmName}.
+
+Best,
+Stephen Scott
+PreIntake.ai
+
+---
+PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+Unsubscribe: ${unsubscribeUrl}`;
 }
 
 /**
- * Send email via SMTP
+ * Generate plain-text version of fallback email
  */
-async function sendEmail(transporter, to, subject, htmlContent) {
+function generateFallbackEmailPlainText(firmName, email) {
+    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
+    const demoUrl = `https://preintake.ai/?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    return `PreIntake.ai
+Pre-Screen Every Inquiry — Tailored to Your Practice Area
+
+Most intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+
+Every inquiry is assessed and delivered with:
+
+• A case summary tailored to your practice area
+• A qualification rating: qualified, needs review, or not a fit
+• A plain-English explanation of why
+
+Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers.
+
+Your staff reviews results—not raw submissions. No CRM changes required.
+
+We can build a demo tailored specifically to ${firmName}.
+
+Request Your Demo: ${demoUrl}
+
+No commitment. Review it on your own — no calls required.
+
+Best,
+Stephen Scott
+PreIntake.ai
+
+---
+PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+Unsubscribe: ${unsubscribeUrl}`;
+}
+
+/**
+ * Generate subject line
+ * Different subjects for personalized demo vs fallback email
+ */
+function generateSubject(hasDemo) {
+    if (hasDemo) {
+        return 'Pre-screen every inquiry before it reaches your team';
+    } else {
+        return 'We can build a custom intake demo for your firm';
+    }
+}
+
+/**
+ * Send email via SMTP (with HTML and plain-text versions)
+ */
+async function sendEmail(transporter, to, subject, htmlContent, textContent) {
     const mailOptions = {
         from: FROM_ADDRESS,
         to: to,
         subject: subject,
-        html: htmlContent
+        html: htmlContent,
+        text: textContent
     };
 
     const result = await transporter.sendMail(mailOptions);
@@ -523,19 +612,23 @@ async function runCampaign() {
                 console.log(`   ⚠️ Demo generation disabled - sending fallback email`);
             }
 
-            // Generate subject and email HTML
+            // Generate subject, HTML, and plain-text versions
             const subject = generateSubject(hasDemo);
             const html = hasDemo
                 ? generateEmailHTML(firmName, email, leadId)
                 : generateFallbackEmailHTML(firmName, email);
+            const text = hasDemo
+                ? generateEmailPlainText(firmName, email, leadId)
+                : generateFallbackEmailPlainText(firmName, email);
 
-            // Send email
+            // Send email (with both HTML and plain-text)
             console.log(`   📤 Sending email...`);
             const result = await sendEmail(
                 transporter,
                 recipientEmail,
                 subject,
-                html
+                html,
+                text
             );
 
             // Only update Firestore if NOT in test mode
@@ -548,7 +641,7 @@ async function runCampaign() {
                     errorMessage: '',
                     messageId: result.messageId || '',
                     subjectLine: subject,
-                    templateVersion: hasDemo ? 'v5-personalized-demo' : 'v4-generic'
+                    templateVersion: hasDemo ? 'v6-personalized-demo' : 'v6-generic'
                 };
 
                 // Add demo-related fields if demo was generated

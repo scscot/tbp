@@ -947,6 +947,48 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
   - Only added to personalized demo template (not fallback template)
   - Rationale: Law firms are multi-stakeholder; first reader often isn't decision-maker
 
+### Phase 23: Email & Homepage Messaging Alignment (2026-01-10)
+- [x] **Homepage Metadata Fix** - Updated meta/OG/Twitter descriptions from "Screen" to "Pre-screen"
+  - Lines 15, 26, 34 in `index.html` now consistent with hero H1 messaging
+  - Ensures link previews match homepage positioning
+- [x] **Email Subject Line Update** - Changed to "Pre-screen every inquiry before it reaches your team"
+  - Aligns with homepage "Pre-Screen" terminology
+  - Fallback email uses different subject: "We can build a custom intake demo for your firm"
+- [x] **Email Header Rewrite** - Changed from "Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7"
+  - New header: "Pre-Screen Every Inquiry — Tailored to Your Practice Area"
+  - Leads with core differentiator (pre-screening) + practice-area tailoring
+- [x] **Email Body Restructure** - Reordered to lead with practice-area differentiation
+  - Opens with: "Most intake tools treat every inquiry the same. PreIntake.ai is different..."
+  - Emphasizes practice-area-specific questions and criteria
+- [x] **Zero Data Retention Trust Signal** - Added to both email templates
+  - Gold-accented styling matches homepage
+  - "Inquiries are processed and delivered immediately, never stored on our servers."
+- [x] **CTA Button Update** - Changed from "See How It Works" to "View Your Firm's Demo"
+  - More personalized, matches demo link functionality
+  - Fallback email keeps "Request Your Demo" button
+- [x] **Preheader Alignment** - Updated inbox preview text
+  - Personalized: "Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}."
+  - Fallback: "We can build a custom intake demo tailored specifically to ${firmName}."
+- [x] **CAN-SPAM Compliance** - Added physical mailing address to email footer
+  - "PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860"
+  - Required for commercial email compliance
+- [x] **Plain-Text Fallback** - Added `generateEmailPlainText()` and `generateFallbackEmailPlainText()` functions
+  - Improves deliverability (some spam filters check for text version)
+  - `sendEmail()` now sends multipart emails (HTML + plain-text)
+- [x] **Template Version Update** - Changed from `v5-personalized-demo` to `v6-personalized-demo`
+  - Tracks email template evolution for analytics
+
+**Email Template v6 Changes Summary:**
+| Element | Before | After |
+|---------|--------|-------|
+| Subject | "A smarter way to review intake inquiries before staff engagement" | "Pre-screen every inquiry before it reaches your team" |
+| Header | "Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7" | "Pre-Screen Every Inquiry — Tailored to Your Practice Area" |
+| CTA Button | "See How It Works" | "View Your Firm's Demo" |
+| Preheader | "How law firms reduce unqualified consultations without hiring more staff." | "Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}." |
+| Trust Signal | None | "Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers." |
+| Footer | URL + Unsubscribe only | URL + Physical Address + Unsubscribe |
+| Format | HTML only | HTML + Plain-text multipart |
+
 ---
 
 ## Architecture
