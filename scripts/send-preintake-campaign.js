@@ -256,11 +256,11 @@ function generateEmailHTML(firmName, email, leadId) {
           <li>A plain-English explanation of why</li>
       </ul>
 
-      <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
+      <p style="font-size: 14px; margin-top: 16px;">
           <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
-      <p style="color: #64748b; font-size: 14px; margin-top: 8px;">
+      <p style="font-size: 14px; margin-top: 8px;">
           Embeds directly on your website — visitors never leave your site.
       </p>
 
@@ -272,11 +272,11 @@ function generateEmailHTML(firmName, email, leadId) {
           <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">View Your Firm's Demo</a>
       </div>
 
-      <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
+      <p style="font-size: 14px; margin-top: 16px;">
           No commitment. Review it on your own — no calls required.
       </p>
 
-      <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
+      <p style="font-size: 14px; margin-top: 16px;">
           Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
       </p>
 
@@ -344,11 +344,11 @@ function generateFallbackEmailHTML(firmName, email) {
           <li>A plain-English explanation of why</li>
       </ul>
 
-      <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
+      <p style="font-size: 14px; margin-top: 16px;">
           <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
       </p>
 
-      <p style="color: #64748b; font-size: 14px; margin-top: 8px;">
+      <p style="font-size: 14px; margin-top: 8px;">
           Embeds directly on your website — visitors never leave your site.
       </p>
 
@@ -360,7 +360,7 @@ function generateFallbackEmailHTML(firmName, email) {
           <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Request Your Demo</a>
       </div>
 
-      <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
+      <p style="font-size: 14px; margin-top: 16px;">
           No commitment. Review it on your own — no calls required.
       </p>
 
