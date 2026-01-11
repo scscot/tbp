@@ -396,11 +396,7 @@ const trackDemoView = onRequest(
 
             const data = leadDoc.data();
 
-            // Only track for campaign-sourced leads (email clicks)
-            if (data.source !== 'campaign') {
-                return res.json({ success: true, tracked: false, reason: 'not_campaign_source' });
-            }
-
+            // Track all demo sources (campaign and landing page)
             const now = admin.firestore.FieldValue.serverTimestamp();
             const updateData = {};
 

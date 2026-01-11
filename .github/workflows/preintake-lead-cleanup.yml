@@ -1,0 +1,67 @@
+name: PreIntake Lead Cleanup
+
+on:
+  schedule:
+    # Daily at 1:00am PST (9:00 UTC)
+    # During PDT (Mar-Nov): 9:00 UTC = 2:00am PDT
+    # During PST (Nov-Mar): 9:00 UTC = 1:00am PST
+    - cron: '0 9 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview only (no deletions)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm install firebase-admin && cd ..
+          cd functions && npm install && cd ..
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run cleanup
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          echo "Starting PreIntake lead cleanup..."
+          echo "Dry run: $DRY_RUN"
+          node scripts/cleanup-stale-demos.js
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
