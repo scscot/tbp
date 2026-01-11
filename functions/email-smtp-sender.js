@@ -21,7 +21,7 @@ const smtpPass = defineString("TBP_SMTP_PASS");
 // CONSTANTS
 // =============================================================================
 
-const FROM_ADDRESS = 'Stephen Scott <stephen@hello.teambuildpro.com>';
+const FROM_ADDRESS = 'Stephen Scott <stephen@news.teambuildpro.com>';
 
 // Transporter instance (lazy initialization)
 let transporterInstance = null;

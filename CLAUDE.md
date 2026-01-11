@@ -1273,6 +1273,59 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-77)
    - Copied to CLAUDE.md for AI assistant context
 
+### Week of Jan 11
+
+78. ✅ **Email Campaign SMTP Migration**:
+   - Migrated email campaign from Mailgun API to SMTP via Dreamhost nodemailer
+   - Created new sending domain: `news.teambuildpro.com`
+   - Achieved 10/10 mail-tester.com score with proper DNS configuration:
+     - SPF: `v=spf1 include:netblocks.dreamhost.com include:relay.mailchannels.net ~all`
+     - DKIM: Configured via Dreamhost panel
+     - DMARC: `v=DMARC1; p=none; rua=mailto:dmarc@teambuildpro.com`
+   - FROM address: `Stephen Scott <stephen@news.teambuildpro.com>`
+   - Files updated:
+     - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
+     - `functions/.env.teambuilder-plus-fe74d` - TBP_SMTP_* credentials
+
+79. ✅ **Email Template Redesign (Joe's Recommendations)**:
+   - Rewrote `functions/email_templates/tbp-smtp-template.js` with personal note style
+   - Subject line: "Not an opportunity. Just a tool." (disarms MLM skepticism)
+   - Template features:
+     - System sans-serif font stack (`-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto...`)
+     - 16px font size, 1.6 line height, #1a1a1a text color
+     - 16px paragraph spacing for calm, readable layout
+     - Inline CTA link (not button): "take a look here: teambuildpro.com"
+     - Link color #1a73e8 with underline
+     - Left-aligned (not centered) for personal email feel
+   - Opening line: "I'm not recruiting you, and this isn't an opportunity."
+   - Removed open tracking pixel (was triggering Gmail "suspicious" warnings)
+   - Click tracking preserved via `trackEmailClick` Cloud Function endpoint
+
+80. ✅ **Unsubscribe Page Created**:
+   - Created `web/unsubscribe.html` - simple confirmation page
+   - Static page (no database update needed for one-time campaign)
+   - Matches site styling with header/footer components
+   - Unsubscribe link in email footer points directly to page
+
+81. ✅ **Domain Warmup Strategy**:
+   - Starting with `EMAIL_CAMPAIGN_BATCH_SIZE=2` (12 emails/day)
+   - Schedule: 6 runs/day (8am, 10am, 12pm, 2pm, 4pm, 6pm PT)
+   - Warmup plan:
+     - Week 1: 12/day (batch size 2)
+     - Week 2: 18/day (batch size 3)
+     - Week 3: 30/day (batch size 5)
+     - Week 4+: Scale based on deliverability metrics
+   - Monitor: delivery rate >95%, bounce rate <2%, no spam folder placement
+
+82. ✅ **Campaign Configuration Updated**:
+   - Updated `functions/email-campaign-functions.js`:
+     - Subject: "Not an opportunity. Just a tool." (tag: `not_opportunity`)
+     - UTM campaign: `tbp_smtp_campaign`
+   - Tracking metrics available:
+     - Sends: Firestore `sent: true`
+     - Clicks: `trackEmailClick` endpoint → Firestore `clickedAt`
+     - Opens: Not tracked (pixel removed for deliverability)
+
 ---
 
 ## 📞 Contact & Support

@@ -1,11 +1,9 @@
 /**
  * Team Build Pro SMTP Email Template
  *
- * Generates inline HTML email with embedded tracking:
- * - Open tracking pixel (1x1 transparent GIF)
+ * Professional HTML email template with embedded tracking:
  * - Click tracking via redirect URLs
  * - UTM parameters for GA4 attribution
- * - Seasonal sign-off support
  */
 
 // Base URL for tracking endpoints
@@ -65,7 +63,7 @@ function buildLandingPageUrl(options = {}) {
  * @param {object} config - Campaign configuration
  * @param {string} config.subjectTag - Subject line identifier for UTM
  * @param {string} config.utmCampaign - UTM campaign name
- * @param {string} seasonalSignoff - Optional seasonal greeting
+ * @param {string} seasonalSignoff - Optional seasonal greeting (unused in new template)
  * @returns {string} Complete HTML email
  */
 function generateEmailHTML(contact, trackingId, config, seasonalSignoff = '') {
@@ -81,120 +79,63 @@ function generateEmailHTML(contact, trackingId, config, seasonalSignoff = '') {
   });
 
   const trackedCtaUrl = buildClickUrl(trackingId, landingPageUrl);
-  const openPixelUrl = buildOpenPixelUrl(trackingId);
 
-  // Build unsubscribe URL (can be updated to a proper unsubscribe endpoint)
-  const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
-  const trackedUnsubscribeUrl = buildClickUrl(trackingId, unsubscribeUrl);
-
-  // Seasonal sign-off HTML (if provided)
-  const seasonalHtml = seasonalSignoff
-    ? `<p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">${seasonalSignoff}</p>`
-    : '';
+  // Simple unsubscribe URL (no tracking needed for one-time campaign)
+  const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html`;
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Build Pro</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f5f5f5;">
-        <tr>
-            <td align="center" style="padding: 20px 0;">
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                    <tr>
-                        <td style="padding: 10px; background-color: #ffffff;">
-                            ${seasonalHtml}
+<body style="margin:0; padding:0; background-color:#ffffff;">
+  <div style="max-width:600px; padding:20px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:16px; line-height:1.6; color:#1a1a1a;">
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">${firstName},</p>
+    <p style="margin:0 0 16px 0;">
+      Hello ${firstName},
+    </p>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                What if your recruits could start Day 1 with <strong>pre-built teams, proven skills, and real momentum?</strong>
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      I'm not recruiting you, and this isn't an opportunity.
+    </p>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                That's what Team Build Pro delivers—an <strong>AI-powered downline building system</strong> that works before AND after they join your opportunity.
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      I built something for people already in direct sales who want a better way to support their existing team.
+    </p>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                <strong>What your team gets:</strong>
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      It's meant to help with things like:
+    </p>
 
-                            <ul style="margin: 10px 0 10px 20px; font-size: 16px; line-height: 1.8; color: #333;">
-                                <li><strong>24/7 AI Assistant in 4 languages</strong> (English, Spanish, Portuguese, German)</li>
-                                <li><strong>Pre-building system</strong> that eliminates cold starts</li>
-                                <li><strong>Real-time team tracking</strong> & analytics</li>
-                                <li><strong>Secure team messaging</strong> & coaching tools</li>
-                                <li>Works with <strong>any direct sales opportunity</strong></li>
-                            </ul>
+    <ul style="margin:0 0 16px 10px;">
+      <li style="margin-bottom:6px;">knowing what to say without overthinking it</li>
+      <li style="margin-bottom:6px;">giving new people structure instead of starting from zero</li>
+      <li style="margin-bottom:0;">letting prospects build confidence before joining anything</li>
+    </ul>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                <strong>The advantage:</strong> Your prospects build and qualify their teams BEFORE joining—hitting milestones (4 direct + 20 total) while still prospects. When they join YOUR business? They bring established teams, momentum, and confidence.
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      It works alongside whatever company you're already with.
+    </p>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                <strong>Even better:</strong> Team Build Pro becomes their perpetual recruiting engine AFTER they join—helping them build THEIR downlines with the same AI-powered tools.
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      If you're curious, you can take a look here: <a href="${trackedCtaUrl}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+    </p>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                <strong>Build globally:</strong> Full multilingual support means your team can recruit and coach in English, Spanish (Español), Portuguese (Português), and German (Deutsch)—all with localized AI coaching.
-                            </p>
+    <p style="margin:0 0 16px 0;">
+      Best,<br>
+      Stephen Scott
+    </p>
 
-                            <div style="background-color: #f8f9fa; border-left: 4px solid #007AFF; padding: 15px; margin: 20px 0;">
-                                <p style="margin:0 0 10px 0; font-size:17px; line-height:1.6; color:#333333;">
-                                    <strong>Try it free for 30 days:</strong>
-                                </p>
-                                <p style="margin:0; font-size:16px; line-height:1.5;">
-                                    <a href="${trackedCtaUrl}"
-                                       style="color: #007AFF; text-decoration: underline; font-weight: 500;">
-                                        Learn more at TeamBuildPro.com
-                                    </a>
-                                </p>
-                                <p style="margin: 10px 0 0 0; font-size: 14px; color: #666666;">
-                                    Available on iOS and Android
-                                </p>
-                            </div>
+    <!-- Footer -->
+    <div style="margin-top:24px; padding-top:16px; border-top:1px solid #eeeeee; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:1.5; color:#777777;">
+      <a href="${trackedCtaUrl}" style="color:#1a73e8; text-decoration:underline;">teambuildpro.com</a>
+      &nbsp;·&nbsp;
+      <a href="${unsubscribeUrl}" style="color:#777777; text-decoration:underline;">Unsubscribe</a>
+    </div>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                Not pitching an opportunity, ${firstName}—this is the AI downline-building system that fuels the growth you're already creating.
-                            </p>
+  </div>
 
-                            <p style="margin: 10px 0; font-size: 16px; line-height: 1.5; color: #333;">
-                                If it doesn't help you recruit stronger leaders in 30 days, delete it. No commitment.
-                            </p>
-
-                            <p style="margin: 10px 0 0 0; font-size: 16px; color: #333;">
-                                — Stephen Scott<br>
-                                Creator, Team Build Pro
-                            </p>
-
-                            <p style="margin: 10px 0 0 0; font-size: 14px; font-style: italic; color: #000;">
-                                <strong>P.S. Now available in 4 languages for global team building!</strong>
-                            </p>
-                        </td>
-                    </tr>
-
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 20px; background-color: #f8f9fa; border-top: 1px solid #e0e0e0; text-align: center;">
-                            <p style="margin: 0 0 10px 0; font-size: 12px; color: #666;">
-                                Team Build Pro<br>
-                                <a href="${trackedCtaUrl}" style="color: #007AFF; text-decoration: none;">teambuildpro.com</a>
-                            </p>
-                            <p style="margin: 0; font-size: 12px; color: #999;">
-                                <a href="${trackedUnsubscribeUrl}" style="color: #999; text-decoration: underline;">Unsubscribe</a>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- Open Tracking Pixel -->
-                <img src="${openPixelUrl}" width="1" height="1" alt="" style="display:none; width:1px; height:1px; border:0;" />
-            </td>
-        </tr>
-    </table>
 </body>
 </html>`;
 }
@@ -205,7 +146,7 @@ function generateEmailHTML(contact, trackingId, config, seasonalSignoff = '') {
  * @param {object} contact - Contact data { firstName, lastName, email }
  * @param {string} trackingId - Contact document ID for tracking
  * @param {object} config - Campaign configuration
- * @param {string} seasonalSignoff - Optional seasonal greeting
+ * @param {string} seasonalSignoff - Optional seasonal greeting (unused in new template)
  * @returns {string} Plain text email
  */
 function generateEmailPlainText(contact, trackingId, config, seasonalSignoff = '') {
@@ -221,47 +162,31 @@ function generateEmailPlainText(contact, trackingId, config, seasonalSignoff = '
 
   // For plain text, we use the tracked URL directly
   const trackedCtaUrl = buildClickUrl(trackingId, landingPageUrl);
+  const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html`;
 
-  const seasonalText = seasonalSignoff ? `${seasonalSignoff}\n\n` : '';
+  return `Hello ${firstName},
 
-  return `${seasonalText}${firstName},
+I'm not recruiting you, and this isn't an opportunity.
 
-What if your recruits could start Day 1 with pre-built teams, proven skills, and real momentum?
+I built something for people already in direct sales who want a better way to support their existing team.
 
-That's what Team Build Pro delivers—an AI-powered downline building system that works before AND after they join your opportunity.
+It's meant to help with things like:
 
-What your team gets:
-• 24/7 AI Assistant in 4 languages (English, Spanish, Portuguese, German)
-• Pre-building system that eliminates cold starts
-• Real-time team tracking & analytics
-• Secure team messaging & coaching tools
-• Works with any direct sales opportunity
+* knowing what to say without overthinking it
+* giving new people structure instead of starting from zero
+* letting prospects build confidence before joining anything
 
-The advantage: Your prospects build and qualify their teams BEFORE joining—hitting milestones (4 direct + 20 total) while still prospects. When they join YOUR business? They bring established teams, momentum, and confidence.
+It works alongside whatever company you're already with.
 
-Even better: Team Build Pro becomes their perpetual recruiting engine AFTER they join—helping them build THEIR downlines with the same AI-powered tools.
-
-Build globally: Full multilingual support means your team can recruit and coach in English, Spanish (Español), Portuguese (Português), and German (Deutsch)—all with localized AI coaching.
-
-Try it free for 30 days:
+If you're curious, you can take a look here:
 ${trackedCtaUrl}
 
-Available on iOS and Android
-
-Not pitching an opportunity, ${firstName}—this is the AI downline-building system that fuels the growth you're already creating.
-
-If it doesn't help you recruit stronger leaders in 30 days, delete it. No commitment.
-
-— Stephen Scott
-Creator, Team Build Pro
-
-P.S. Now available in 4 languages for global team building!
+Best,
+Stephen Scott
 
 ---
-Team Build Pro
 teambuildpro.com
-
-To unsubscribe, visit: https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+Unsubscribe: ${unsubscribeUrl}`;
 }
 
 module.exports = {

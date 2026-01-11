@@ -60,7 +60,7 @@ const CAMPAIGN_CONFIGS = {
     sentField: 'sent',
     utmCampaign: 'tbp_smtp_campaign',
     subjects: [
-      { subject: () => 'A smarter way to build your team', tag: 'subject_recruiting_app' }
+      { subject: () => 'Not an opportunity. Just a tool.', tag: 'not_opportunity' }
     ]
   },
   android: {
