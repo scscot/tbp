@@ -272,11 +272,8 @@ function generateEmailHTML(firmName, email, leadId) {
           No commitment. Review it on your own — no calls required.
       </p>
 
-      <p style="margin-top: 10px; color: #64748b; font-size: 14px; text-align: center;">
-          If you're not the right contact for intake, feel free to forward this email — the demo link above is specific to <strong>${firmName}</strong>.
-      </p>
-      <p style="margin-top: 6px; color: #94a3b8; font-size: 12px; text-align: center;">
-          <a href="${demoUrl}" style="color: #c9a962; word-break: break-all;">preintake.ai/?demo=${leadId}</a>
+      <p style="margin-top: 16px; color: #64748b; font-size: 14px;">
+          Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
       </p>
 
       <p style="margin-top: 20px;">
@@ -407,7 +404,7 @@ View Your Firm's Demo: ${demoUrl}
 
 No commitment. Review it on your own — no calls required.
 
-If you're not the right contact for intake, feel free to forward this email — the demo link above is specific to ${firmName}.
+Not the right contact for intake? Feel free to forward — the demo link is specific to ${firmName}.
 
 Best,
 Stephen Scott
