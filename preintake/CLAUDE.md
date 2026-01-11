@@ -941,6 +941,12 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
 | Practice-area in subtitle | Yes | Core differentiator, deserves hero placement |
 | "your firm's" vs "the firm's" | your firm's | More direct, personal tone |
 
+- [x] **Email Campaign Share Line** - Added forward/share encouragement to outreach emails
+  - "If you're not the right contact for intake, feel free to forward this email — the demo link above is specific to **${firmName}**."
+  - Plain-text URL below for forwarded emails where button may not render
+  - Only added to personalized demo template (not fallback template)
+  - Rationale: Law firms are multi-stakeholder; first reader often isn't decision-maker
+
 ---
 
 ## Architecture
