@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2025-12-02
+**Last Updated**: 2026-01-12
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1325,6 +1325,34 @@ After cleaning invalid emails from the database, current metrics from the past 2
      - Sends: Firestore `sent: true`
      - Clicks: `trackEmailClick` endpoint → Firestore `clickedAt`
      - Opens: Not tracked (pixel removed for deliverability)
+
+### Week of Jan 12
+
+83. ✅ **Testimonial Section Added to All Sites**:
+   - Added testimonial card featuring 5-star App Store review from "Arya N."
+   - Review title: "Customizable and implemented on day one"
+   - CSS styles added to all 4 language sites (css/style.css)
+   - HTML sections added to 12 pages total:
+     - web/index.html, web/professionals.html, web/prospects.html
+     - web-es/index.html, web-es/professionals.html, web-es/prospects.html
+     - web-de/index.html, web-de/professionals.html, web-de/prospects.html
+     - web-pt/index.html, web-pt/professionals.html, web-pt/prospects.html
+   - Full translations for ES, DE, PT:
+     - ES: "Lo Que Dicen Los Usuarios" / "Personalizable e implementado desde el primer día"
+     - DE: "Was Nutzer Sagen" / "Anpassbar und vom ersten Tag an implementiert"
+     - PT: "O Que Os Usuários Estão Dizendo" / "Personalizável e implementado desde o primeiro dia"
+   - Gold filled star icons using Material Symbols (`font-variation-settings: 'FILL' 1`)
+   - Gradient avatar background, verified badge with source label
+
+84. ✅ **Screenshots Section H2 Headline Update**:
+   - Changed from "Your AI Recruiting Toolkit" to "Built for Momentum. Designed to Scale."
+   - Rationale: Previous headline was generic/basic, new headline is outcome-focused
+   - Updated 8 files (index.html and professionals.html for each language):
+     - EN: "Built for Momentum. Designed to Scale."
+     - ES: "Construido para el Impulso. Diseñado para Escalar."
+     - DE: "Gebaut für Momentum. Designt zum Skalieren."
+     - PT: "Construído para Momentum. Projetado para Escalar."
+   - prospects.html pages don't have this section (no changes needed)
 
 ---
 
