@@ -63,7 +63,8 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
       emailCampaignResponse,
       topPagesResponse,
       deviceInfoResponse,
-      eventsResponse
+      eventsResponse,
+      domainBreakdownResponse
     ] = await Promise.all([
       // Overview metrics
       client.runReport({
@@ -159,6 +160,21 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
         ],
         orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
         limit: 20
+      }),
+      // Domain/hostname breakdown
+      client.runReport({
+        property: `properties/${propertyId}`,
+        dateRanges: [{ startDate, endDate }],
+        dimensions: [{ name: 'hostName' }],
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'sessions' },
+          { name: 'screenPageViews' },
+          { name: 'engagementRate' },
+          { name: 'averageSessionDuration' }
+        ],
+        orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+        limit: 10
       })
     ]);
 
@@ -170,7 +186,8 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
       emailCampaign: formatGA4Report(emailCampaignResponse[0]),
       topPages: formatGA4Report(topPagesResponse[0]),
       deviceBreakdown: formatGA4Report(deviceInfoResponse[0]),
-      topEvents: formatGA4Report(eventsResponse[0])
+      topEvents: formatGA4Report(eventsResponse[0]),
+      domainBreakdown: formatGA4Report(domainBreakdownResponse[0])
     };
 
   } catch (error) {
@@ -1172,7 +1189,7 @@ const getTBPAnalytics = onRequest({
   try {
     // Password authentication
     const { password, dateRange } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });

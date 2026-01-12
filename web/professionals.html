@@ -65,9 +65,11 @@
             color: #ffffff;
             font-size: clamp(1.75rem, 5vw, 2.75rem);
             font-weight: 900;
-            margin-bottom: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 1.25rem;
             line-height: 1.15;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            text-wrap: balance;
         }
 
         .hero-professionals .subline {
@@ -424,8 +426,8 @@
         <!-- Hero Section -->
         <section class="hero-professionals">
             <div class="container">
-                <h1 id="hero-headline">Build your <span id="bizOppName" style="color: #fbbf24;"></span> team faster with<br class="desktop-only"> AI tools you can actually use</h1>
-                <p class="subline" id="hero-subline">Stop asking prospects to trust the process.<br>Let them see progress before they join.</p>
+                <h1 id="hero-headline">Build your <span id="bizOppName" style="color: #fbbf24;"></span> team faster with AI tools you can actually use</h1>
+                <p class="subline" id="hero-subline">Know What to Say. Keep People Moving. Build Real Momentum.</p>
 
                 <div class="hero-cta-buttons">
                     <a href="#download" class="cta-primary" id="cta-primary">
@@ -434,20 +436,6 @@
                     </a>
                 </div>
 
-            </div>
-        </section>
-
-        <!-- Video Section -->
-        <section class="section-video">
-            <div class="container">
-                <h2 class="video-headline">What do the 25% who don't quit have in common?</h2>
-                <div class="video-container">
-                    <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
-                        <source src="/assets/videos/TBP_Professionals.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <p class="video-subtext">Watch the 60-second answer</p>
             </div>
         </section>
 
@@ -486,7 +474,19 @@
         </section>
 
 
-
+<!-- Video Section -->
+<section class="section-video">
+    <div class="container">
+        <h2 class="video-headline">What do the 25% who don't quit have in common?</h2>
+        <div class="video-container">
+            <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
+                <source src="/assets/videos/TBP_Professionals.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <p class="video-subtext">Watch the 60-second answer</p>
+    </div>
+</section>
 
         <!-- Section 4: Pricing -->
         <section class="section-pricing" id="pricing">

@@ -806,6 +806,26 @@
                     </div>
                 </div>
 
+                <!-- Domain Breakdown -->
+                <div class="section-card">
+                    <h3>Traffic by Domain</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Users</th>
+                                <th>Sessions</th>
+                                <th>Page Views</th>
+                                <th>Engagement</th>
+                                <th>Avg Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="domainBreakdownTable">
+                            <tr><td colspan="6" class="no-data-message">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <!-- Top Countries -->
                 <div class="section-card">
                     <h3>Top Countries</h3>
@@ -1216,6 +1236,33 @@
                 `).join('');
             } else {
                 deviceDiv.innerHTML = '<p class="no-data-message">No device data</p>';
+            }
+
+            // Domain Breakdown - API returns 'domainBreakdown.data' with hostName
+            const domainTable = document.getElementById('domainBreakdownTable');
+            const domainData = data.domainBreakdown?.data || [];
+            if (domainData.length > 0) {
+                // Filter to only show teambuildpro.com domains
+                const tbpDomains = domainData.filter(d => {
+                    const host = (d.hostName || '').toLowerCase();
+                    return host.includes('teambuildpro.com') || host.includes('localhost');
+                });
+                if (tbpDomains.length > 0) {
+                    domainTable.innerHTML = tbpDomains.map(d => `
+                        <tr>
+                            <td>${escapeHtml(d.hostName || '(not set)')}</td>
+                            <td>${formatNumber(d.activeUsers || 0)}</td>
+                            <td>${formatNumber(d.sessions || 0)}</td>
+                            <td>${formatNumber(d.screenPageViews || 0)}</td>
+                            <td>${(d.engagementRate || 0).toFixed(1)}%</td>
+                            <td>${formatDuration(d.averageSessionDuration || 0)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    domainTable.innerHTML = '<tr><td colspan="6" class="no-data-message">No teambuildpro.com domain data</td></tr>';
+                }
+            } else {
+                domainTable.innerHTML = '<tr><td colspan="6" class="no-data-message">No domain data</td></tr>';
             }
 
             // Top Countries - Not in current API, hide section for now

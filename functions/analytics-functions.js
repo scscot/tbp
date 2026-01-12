@@ -600,7 +600,7 @@ const getFirestoreMetrics = onRequest({
   try {
     // Simple password check for monitoring access
     const { password } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -755,7 +755,7 @@ const getAppStoreMetrics = onRequest({
   try {
     // Simple password check for monitoring access
     const { password } = req.query;
-    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD;
+    const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 
     if (!password || password !== MONITORING_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
