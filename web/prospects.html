@@ -508,6 +508,88 @@
             color: #64748b;
             font-size: 1rem;
         }
+
+        /* Testimonial Section */
+        .section-testimonial {
+            padding: 5rem 0;
+            background: #ffffff;
+        }
+
+        .testimonial-card {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial-stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-stars .material-symbols-outlined {
+            color: #fbbf24;
+            font-size: 1.75rem;
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .testimonial-quote {
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: #1e293b;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-info {
+            text-align: left;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .testimonial-source {
+            font-size: 0.875rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .testimonial-source .material-symbols-outlined {
+            font-size: 1rem;
+        }
     </style>
 
     <!-- Google Analytics -->
@@ -543,20 +625,6 @@
             </div>
         </section>
 
-        <!-- Video Section -->
-        <section class="section-video">
-            <div class="container">
-                <h2 class="video-headline">Test-drive success — before you commit</h2>
-                <div class="video-container">
-                    <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
-                        <source src="/assets/videos/TBP_Prospects.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <p class="video-subtext">Watch the 60-second overview</p>
-            </div>
-        </section>
-
         <!-- Section 1: Build Your Team Before You Join -->
         <section class="section-support">
             <div class="container">
@@ -586,6 +654,51 @@
                         </div>
                         <h3>Get 24/7 Coaching</h3>
                         <p>Never feel lost. Your AI Coach answers any question about recruiting and building your business, anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section class="section-video">
+            <div class="container">
+                <h2 class="video-headline">Test-drive success — before you commit</h2>
+                <div class="video-container">
+                    <video controls preload="metadata" poster="/assets/videos/Thumbnail.png">
+                        <source src="/assets/videos/TBP_Prospects.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="video-subtext">Watch the 60-second overview</p>
+            </div>
+        </section>
+
+        <!-- Testimonial Section -->
+        <section class="section-testimonial">
+            <div class="container">
+                <div class="section-header">
+                    <h2>What Users Are Saying</h2>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                        <span class="material-symbols-outlined">star</span>
+                    </div>
+                    <p class="testimonial-title">"Customizable and implemented on day one"</p>
+                    <p class="testimonial-quote">"I've been waiting for this app and since I first started implementing it, immediately, my team has completely fallen in love with the features. It's made a big difference in how we work. Highly recommend!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">A</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Arya N.</div>
+                            <div class="testimonial-source">
+                                <span class="material-symbols-outlined">verified</span>
+                                App Store Review
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
