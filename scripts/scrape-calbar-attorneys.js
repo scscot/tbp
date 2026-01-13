@@ -306,7 +306,7 @@ async function parseDetailPage(barNumber, practiceAreaName) {
                 barNumber: barNumber,
                 sent: false,
                 status: 'pending',
-                randomIndex: Math.random(),
+                randomIndex: Math.random() * 0.1,  // Low range (0.0-0.1) to prioritize CalBar contacts
                 createdAt: admin.firestore.FieldValue.serverTimestamp()
             }
         };
@@ -377,13 +377,24 @@ async function emailExists(email) {
 async function loadProgress() {
     const doc = await db.collection('preintake_scrape_progress').doc('calbar').get();
     if (doc.exists) {
-        return doc.data();
+        const data = doc.data();
+        // Ensure failedAttempts and permanentlySkipped exist
+        return {
+            scrapedPracticeAreaIds: data.scrapedPracticeAreaIds || [],
+            lastRunDate: data.lastRunDate || null,
+            totalInserted: data.totalInserted || 0,
+            totalSkipped: data.totalSkipped || 0,
+            failedAttempts: data.failedAttempts || {},
+            permanentlySkipped: data.permanentlySkipped || []
+        };
     }
     return {
         scrapedPracticeAreaIds: [],
         lastRunDate: null,
         totalInserted: 0,
-        totalSkipped: 0
+        totalSkipped: 0,
+        failedAttempts: {},
+        permanentlySkipped: []
     };
 }
 
@@ -602,6 +613,89 @@ async function sendScrapeSummary(summary) {
 }
 
 /**
+ * Send notification when a practice area is permanently skipped due to repeated failures
+ */
+async function sendFailureNotification(practiceAreaId, practiceAreaName, failedAttempts, stats) {
+    const smtpUser = process.env.PREINTAKE_SMTP_USER;
+    const smtpPass = process.env.PREINTAKE_SMTP_PASS;
+
+    if (!smtpUser || !smtpPass) {
+        console.log('⚠️  SMTP credentials not configured, skipping failure notification');
+        return;
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.dreamhost.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: {
+            user: smtpUser,
+            pass: smtpPass
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
+
+    const errorRate = stats.attorneys_found > 0
+        ? ((stats.errors / stats.attorneys_found) * 100).toFixed(1)
+        : 'N/A';
+
+    const subject = `⚠️ CalBar Scrape: ${practiceAreaName} permanently skipped after ${failedAttempts} failures`;
+
+    const html = `
+        <h2>CalBar Scraper Alert</h2>
+        <p>The practice area <strong>${practiceAreaName}</strong> (ID: ${practiceAreaId}) has been permanently skipped after ${failedAttempts} failed attempts.</p>
+
+        <h3>Last Attempt Stats:</h3>
+        <ul>
+            <li>Attorneys found: ${stats.attorneys_found}</li>
+            <li>Errors: ${stats.errors}</li>
+            <li>Error rate: ${errorRate}%</li>
+            <li>Successfully inserted: ${stats.inserted}</li>
+        </ul>
+
+        <h3>Action Required:</h3>
+        <p>To retry this practice area, manually remove it from the <code>permanentlySkipped</code> array and clear it from <code>failedAttempts</code> in the Firestore document at:</p>
+        <p><code>preintake_scrape_progress/calbar</code></p>
+
+        <p style="color: #666; font-size: 12px; margin-top: 30px;">
+            PreIntake.ai CalBar Scraper<br>
+            Los Angeles, California
+        </p>
+    `;
+
+    const text = `
+CalBar Scraper Alert
+
+The practice area ${practiceAreaName} (ID: ${practiceAreaId}) has been permanently skipped after ${failedAttempts} failed attempts.
+
+Last Attempt Stats:
+- Attorneys found: ${stats.attorneys_found}
+- Errors: ${stats.errors}
+- Error rate: ${errorRate}%
+- Successfully inserted: ${stats.inserted}
+
+Action Required:
+To retry this practice area, manually remove it from the permanentlySkipped array and clear it from failedAttempts in the Firestore document at: preintake_scrape_progress/calbar
+    `.trim();
+
+    try {
+        const result = await transporter.sendMail({
+            from: 'PreIntake CalBar <scott@legal.preintake.ai>',
+            to: 'Stephen Scott <stephen@preintake.ai>',
+            subject,
+            html,
+            text
+        });
+        console.log(`\n📧 Failure notification sent: ${result.messageId}`);
+    } catch (error) {
+        console.error('⚠️  Failed to send failure notification:', error.message);
+    }
+}
+
+/**
  * Scrape a single practice area
  */
 async function scrapePracticeArea(practiceAreaId) {
@@ -758,6 +852,9 @@ async function main() {
     // Load progress
     const progress = await loadProgress();
     console.log(`📊 Previous progress: ${progress.scrapedPracticeAreaIds.length} practice areas completed`);
+    if (progress.permanentlySkipped.length > 0) {
+        console.log(`⚠️  Permanently skipped: ${progress.permanentlySkipped.map(id => PRACTICE_AREAS[id]).join(', ')}`);
+    }
 
     // Determine which practice area to scrape
     let practiceAreaId;
@@ -766,13 +863,19 @@ async function main() {
         practiceAreaId = parseInt(process.env.PRACTICE_AREA_ID, 10);
         console.log(`🎯 Scraping specific practice area: ${PRACTICE_AREAS[practiceAreaId]} (ID: ${practiceAreaId})`);
     } else {
-        // Find next unscraped practice area
+        // Find next unscraped practice area (excluding permanently skipped)
         const unscrapedIds = PRACTICE_AREA_ORDER.filter(id =>
-            !progress.scrapedPracticeAreaIds.includes(id)
+            !progress.scrapedPracticeAreaIds.includes(id) &&
+            !progress.permanentlySkipped.includes(id)
         );
 
         if (unscrapedIds.length === 0) {
-            console.log('✅ All practice areas have been scraped!');
+            if (progress.permanentlySkipped.length > 0) {
+                console.log('⚠️  All remaining practice areas have been permanently skipped due to errors.');
+                console.log('   Check the permanentlySkipped array in Firestore to retry.');
+            } else {
+                console.log('✅ All practice areas have been scraped!');
+            }
             process.exit(0);
         }
 
@@ -783,10 +886,47 @@ async function main() {
     // Scrape the practice area
     const stats = await scrapePracticeArea(practiceAreaId);
 
-    // Update progress
-    if (!progress.scrapedPracticeAreaIds.includes(practiceAreaId)) {
-        progress.scrapedPracticeAreaIds.push(practiceAreaId);
+    // Check error rate and update progress accordingly
+    const ERROR_THRESHOLD = 0.10; // 10% error rate threshold
+    const MAX_FAILED_ATTEMPTS = 3;
+
+    const errorRate = stats.attorneys_found > 0
+        ? stats.errors / stats.attorneys_found
+        : 0;
+
+    const practiceAreaName = PRACTICE_AREAS[practiceAreaId];
+    let scrapeSuccessful = false;
+
+    if (errorRate < ERROR_THRESHOLD) {
+        // Success - mark practice area as completed
+        if (!progress.scrapedPracticeAreaIds.includes(practiceAreaId)) {
+            progress.scrapedPracticeAreaIds.push(practiceAreaId);
+        }
+        // Clear any previous failed attempts for this practice area
+        delete progress.failedAttempts[practiceAreaId];
+        scrapeSuccessful = true;
+        console.log(`\n✅ Practice area completed successfully (error rate: ${(errorRate * 100).toFixed(1)}%)`);
+    } else {
+        // High error rate - track failed attempt
+        const currentAttempts = (progress.failedAttempts[practiceAreaId] || 0) + 1;
+        progress.failedAttempts[practiceAreaId] = currentAttempts;
+
+        console.log(`\n⚠️  High error rate (${(errorRate * 100).toFixed(1)}%) - attempt ${currentAttempts}/${MAX_FAILED_ATTEMPTS}`);
+
+        if (currentAttempts >= MAX_FAILED_ATTEMPTS) {
+            // Permanently skip this practice area
+            if (!progress.permanentlySkipped.includes(practiceAreaId)) {
+                progress.permanentlySkipped.push(practiceAreaId);
+            }
+            console.log(`❌ Practice area permanently skipped after ${currentAttempts} failed attempts`);
+
+            // Send failure notification
+            await sendFailureNotification(practiceAreaId, practiceAreaName, currentAttempts, stats);
+        } else {
+            console.log(`   Will retry on next run`);
+        }
     }
+
     progress.lastRunDate = new Date().toISOString();
     progress.totalInserted = (progress.totalInserted || 0) + stats.inserted;
     progress.totalSkipped = (progress.totalSkipped || 0) + stats.no_email + stats.duplicates_skipped;
@@ -805,23 +945,32 @@ async function main() {
     console.log(`   Duplicates (skipped): ${stats.duplicates_skipped}`);
     console.log(`   ✅ Inserted: ${stats.inserted}`);
     console.log(`   ❌ Errors: ${stats.errors}`);
+    console.log(`   Error rate: ${(errorRate * 100).toFixed(1)}%`);
     console.log(`\n   Total CalBar attorneys in DB: ${totalInDb.toLocaleString()}`);
     console.log(`   Practice areas completed: ${progress.scrapedPracticeAreaIds.length}/14`);
+    if (progress.permanentlySkipped.length > 0) {
+        console.log(`   ⚠️  Permanently skipped: ${progress.permanentlySkipped.length}`);
+    }
 
     // Build summary object
     const summary = {
         run_date: new Date().toISOString(),
         practice_area: {
             id: practiceAreaId,
-            name: PRACTICE_AREAS[practiceAreaId]
+            name: PRACTICE_AREAS[practiceAreaId],
+            successful: scrapeSuccessful,
+            error_rate: (errorRate * 100).toFixed(1) + '%'
         },
         stats,
         totals: {
             total_attorneys_in_db: totalInDb,
             practice_areas_completed: progress.scrapedPracticeAreaIds,
             practice_areas_remaining: PRACTICE_AREA_ORDER.filter(id =>
-                !progress.scrapedPracticeAreaIds.includes(id)
-            )
+                !progress.scrapedPracticeAreaIds.includes(id) &&
+                !progress.permanentlySkipped.includes(id)
+            ),
+            practice_areas_skipped: progress.permanentlySkipped,
+            failed_attempts: progress.failedAttempts
         }
     };
 
