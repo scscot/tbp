@@ -257,35 +257,50 @@ function fetchUrl(url, timeout = 5000) {
 
             const req = protocol.get(url, options, (res) => {
                 let body = '';
+                let statusCode = res.statusCode;
 
                 // Follow redirects
-                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                if (statusCode >= 300 && statusCode < 400 && res.headers.location) {
                     safeResolve({
                         success: false,
                         redirect: res.headers.location,
-                        statusCode: res.statusCode
+                        statusCode: statusCode
                     });
                     return;
                 }
 
                 res.on('data', chunk => {
                     body += chunk;
-                    // Only read first 50KB
+                    // Only read first 50KB - resolve immediately with what we have
                     if (body.length > 50000) {
+                        safeResolve({
+                            success: statusCode === 200,
+                            statusCode: statusCode,
+                            body: body.substring(0, 50000).toLowerCase()
+                        });
                         req.destroy();
                     }
                 });
 
                 res.on('end', () => {
                     safeResolve({
-                        success: res.statusCode === 200,
-                        statusCode: res.statusCode,
+                        success: statusCode === 200,
+                        statusCode: statusCode,
                         body: body.substring(0, 50000).toLowerCase()
                     });
                 });
 
                 res.on('error', () => {
-                    safeResolve({ success: false, error: 'response error' });
+                    // If we already have body content, return it anyway
+                    if (body.length > 0) {
+                        safeResolve({
+                            success: statusCode === 200,
+                            statusCode: statusCode,
+                            body: body.substring(0, 50000).toLowerCase()
+                        });
+                    } else {
+                        safeResolve({ success: false, error: 'response error' });
+                    }
                 });
             });
 
@@ -305,9 +320,13 @@ function fetchUrl(url, timeout = 5000) {
 
 /**
  * Check if content appears to be a law firm website
- * Simplified verification: firmName match = 95%, lastName + law keyword = 75%
+ * Verification priority:
+ *   1. firmName in page = 95%
+ *   2. lastName in page + law keyword = 85%
+ *   3. lastName in domain + law keyword in page = 80%
+ *   4. Page has 3+ law keywords = 70%
  */
-function isLawFirmWebsite(body, attorneyName, firmName) {
+function isLawFirmWebsite(body, attorneyName, firmName, domain) {
     if (!body) return { isLawFirm: false, confidence: 0, reason: 'no content' };
 
     // Check for parked domain indicators first
@@ -316,6 +335,18 @@ function isLawFirmWebsite(body, attorneyName, firmName) {
             return { isLawFirm: false, confidence: 0, reason: 'parked/for sale domain' };
         }
     }
+
+    // Extract lastName for checks
+    let lastName = '';
+    if (attorneyName) {
+        const nameParts = attorneyName.toLowerCase().split(' ');
+        lastName = nameParts[nameParts.length - 1];
+    }
+
+    // Count law keywords in page
+    const keywordCount = LAW_KEYWORDS.filter(keyword => body.includes(keyword)).length;
+    const hasLawKeyword = keywordCount >= 1;
+    const hasMultipleLawKeywords = keywordCount >= 3;
 
     // Primary check: firmName appears in page (95% confidence)
     if (firmName) {
@@ -332,18 +363,20 @@ function isLawFirmWebsite(body, attorneyName, firmName) {
         }
     }
 
-    // Secondary check: attorney lastName + at least 1 law keyword (75% confidence)
-    if (attorneyName) {
-        const nameParts = attorneyName.toLowerCase().split(' ');
-        const lastName = nameParts[nameParts.length - 1];
+    // Secondary check: attorney lastName in page + law keyword (85% confidence)
+    if (lastName.length > 2 && body.includes(lastName) && hasLawKeyword) {
+        return { isLawFirm: true, confidence: 85, reason: 'attorney name + law keyword' };
+    }
 
-        if (lastName.length > 2 && body.includes(lastName)) {
-            // Check for at least one law keyword
-            const hasLawKeyword = LAW_KEYWORDS.some(keyword => body.includes(keyword));
-            if (hasLawKeyword) {
-                return { isLawFirm: true, confidence: 75, reason: 'attorney name + law keyword' };
-            }
-        }
+    // Tertiary check: lastName in domain + law keyword in page (80% confidence)
+    // Common pattern: zevenlaw.com for attorney Zeven, smithlegal.com for Smith, etc.
+    if (lastName.length > 2 && domain && domain.includes(lastName) && hasLawKeyword) {
+        return { isLawFirm: true, confidence: 80, reason: 'lastName in domain + law keyword' };
+    }
+
+    // Fallback check: multiple law keywords suggests it's a law firm (70% confidence)
+    if (hasMultipleLawKeywords) {
+        return { isLawFirm: true, confidence: 70, reason: `${keywordCount} law keywords found` };
     }
 
     return { isLawFirm: false, confidence: 0, reason: 'no firm/attorney match' };
@@ -363,7 +396,7 @@ async function findWebsite(domain, attorneyName, firmName) {
         const result = await fetchUrl(url);
 
         if (result.success && result.body) {
-            const verification = isLawFirmWebsite(result.body, attorneyName, firmName);
+            const verification = isLawFirmWebsite(result.body, attorneyName, firmName, domain);
 
             if (verification.isLawFirm) {
                 return {
@@ -379,7 +412,7 @@ async function findWebsite(domain, attorneyName, firmName) {
         if (result.redirect) {
             const redirectResult = await fetchUrl(result.redirect);
             if (redirectResult.success && redirectResult.body) {
-                const verification = isLawFirmWebsite(redirectResult.body, attorneyName, firmName);
+                const verification = isLawFirmWebsite(redirectResult.body, attorneyName, firmName, domain);
                 if (verification.isLawFirm) {
                     return {
                         success: true,
