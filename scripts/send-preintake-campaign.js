@@ -608,10 +608,14 @@ async function runCampaign() {
 
     for (const doc of snapshot.docs) {
         const data = doc.data();
-        const { firmName, email, website, firstName } = data;
+        const { firmName, email, website, firstName, lastName } = data;
 
         // Use test email if in test mode, otherwise use actual email
         const recipientEmail = TEST_EMAIL || email;
+
+        // Format recipient with name: "First Last <email>" or "FirmName <email>"
+        const recipientName = (firstName && lastName) ? `${firstName} ${lastName}` : firmName;
+        const formattedRecipient = `${recipientName} <${recipientEmail}>`;
 
         try {
             console.log(`\n📧 Processing ${firmName} (${recipientEmail})...`);
@@ -648,10 +652,10 @@ async function runCampaign() {
                 : generateFallbackEmailPlainText(firmName, email, firstName);
 
             // Send email (with both HTML and plain-text)
-            console.log(`   📤 Sending email...`);
+            console.log(`   📤 Sending email to: ${formattedRecipient}`);
             const result = await sendEmail(
                 transporter,
-                recipientEmail,
+                formattedRecipient,
                 subject,
                 html,
                 text
