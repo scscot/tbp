@@ -37,6 +37,7 @@ const nodemailer = require('nodemailer');
 
 // Practice area ID to name mapping
 const PRACTICE_AREAS = {
+    // Tier 1: High priority (ranks 1-14)
     51: 'Personal Injury',
     34: 'Immigration',
     63: 'Workers Compensation',
@@ -50,11 +51,28 @@ const PRACTICE_AREAS = {
     36: 'Insurance',
     10: 'Business Law',
     43: 'Legal Malpractice',
-    53: 'Professional Liability'
+    53: 'Professional Liability',
+    // Tier 2: Moderate priority (ranks 15-25)
+    29: 'Family Law',
+    19: 'Criminal Law',
+    54: 'Real Estate',
+    22: 'Elder Law',
+    60: 'Trusts & Estates',
+    61: 'Wills & Probate',
+    62: 'White Collar Crime',
+    11: 'Civil Rights',
+    56: 'Taxation',
+    33: 'Health Care',
+    65: 'Homeowner Association Law'
 };
 
 // Priority order for scraping (based on practice-area-targets.md)
-const PRACTICE_AREA_ORDER = [51, 34, 63, 46, 52, 58, 9, 42, 16, 66, 36, 10, 43, 53];
+const PRACTICE_AREA_ORDER = [
+    // Tier 1: High priority
+    51, 34, 63, 46, 52, 58, 9, 42, 16, 66, 36, 10, 43, 53,
+    // Tier 2: Moderate priority
+    29, 19, 54, 22, 60, 61, 62, 11, 56, 33, 65
+];
 
 // Configuration
 const BASE_URL = 'https://apps.calbar.ca.gov';
