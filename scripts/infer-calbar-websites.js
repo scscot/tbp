@@ -29,13 +29,17 @@ const PERSONAL_DOMAINS = [
     'mail.com', 'inbox.com', 'zoho.com'
 ];
 
-// Keywords that indicate a law firm website
+// Keywords that indicate a law firm website (simplified list)
 const LAW_KEYWORDS = [
-    'law', 'legal', 'attorney', 'lawyer', 'firm', 'esq',
-    'litigation', 'practice', 'counsel', 'advocate',
-    'injury', 'defense', 'criminal', 'family', 'divorce',
-    'estate', 'trust', 'probate', 'bankruptcy', 'immigration',
-    'llp', 'pllc', 'p.c.', 'apc', 'aplc'
+    'law', 'legal', 'attorney', 'lawyer', 'firm',
+    'litigation', 'practice', 'counsel'
+];
+
+// Parked/invalid domain indicators
+const PARKED_INDICATORS = [
+    'domain for sale', 'buy this domain', 'parked domain',
+    'coming soon', 'under construction', 'this domain',
+    'domain name for sale', 'make an offer'
 ];
 
 // Configuration
@@ -152,87 +156,65 @@ function fetchUrl(url, timeout = 5000) {
 
 /**
  * Check if content appears to be a law firm website
+ * Simplified verification: firmName match = 95%, lastName + law keyword = 75%
  */
-function isLawFirmWebsite(body, attorneyName) {
+function isLawFirmWebsite(body, attorneyName, firmName) {
     if (!body) return { isLawFirm: false, confidence: 0, reason: 'no content' };
 
-    let score = 0;
-    const reasons = [];
-
-    // Check for law-related keywords
-    let keywordMatches = 0;
-    for (const keyword of LAW_KEYWORDS) {
-        if (body.includes(keyword)) {
-            keywordMatches++;
+    // Check for parked domain indicators first
+    for (const indicator of PARKED_INDICATORS) {
+        if (body.includes(indicator)) {
+            return { isLawFirm: false, confidence: 0, reason: 'parked/for sale domain' };
         }
     }
 
-    if (keywordMatches >= 5) {
-        score += 40;
-        reasons.push(`${keywordMatches} law keywords`);
-    } else if (keywordMatches >= 3) {
-        score += 25;
-        reasons.push(`${keywordMatches} law keywords`);
-    } else if (keywordMatches >= 1) {
-        score += 10;
-        reasons.push(`${keywordMatches} law keywords`);
+    // Primary check: firmName appears in page (95% confidence)
+    if (firmName) {
+        const firmNameLower = firmName.toLowerCase();
+        if (body.includes(firmNameLower)) {
+            return { isLawFirm: true, confidence: 95, reason: 'firm name found' };
+        }
+        // Also check without common suffixes (LLP, LLC, PC, etc.)
+        const firmNameClean = firmNameLower
+            .replace(/,?\s*(llp|llc|pc|pllc|p\.c\.|apc|aplc|inc|ltd)\.?$/i, '')
+            .trim();
+        if (firmNameClean.length > 5 && body.includes(firmNameClean)) {
+            return { isLawFirm: true, confidence: 95, reason: 'firm name found' };
+        }
     }
 
-    // Check for attorney name
+    // Secondary check: attorney lastName + at least 1 law keyword (75% confidence)
     if (attorneyName) {
         const nameParts = attorneyName.toLowerCase().split(' ');
         const lastName = nameParts[nameParts.length - 1];
+
         if (lastName.length > 2 && body.includes(lastName)) {
-            score += 30;
-            reasons.push('attorney name found');
+            // Check for at least one law keyword
+            const hasLawKeyword = LAW_KEYWORDS.some(keyword => body.includes(keyword));
+            if (hasLawKeyword) {
+                return { isLawFirm: true, confidence: 75, reason: 'attorney name + law keyword' };
+            }
         }
     }
 
-    // Check for contact/legal page indicators
-    if (body.includes('contact') && (body.includes('phone') || body.includes('email'))) {
-        score += 15;
-        reasons.push('contact info');
-    }
-
-    // Check for legal disclaimers
-    if (body.includes('attorney advertising') || body.includes('prior results') ||
-        body.includes('no guarantee') || body.includes('free consultation')) {
-        score += 20;
-        reasons.push('legal disclaimer');
-    }
-
-    // Negative signals
-    if (body.includes('domain for sale') || body.includes('buy this domain') ||
-        body.includes('parked domain') || body.includes('coming soon')) {
-        score -= 50;
-        reasons.push('parked/for sale (negative)');
-    }
-
-    const confidence = Math.min(100, Math.max(0, score));
-
-    return {
-        isLawFirm: confidence >= 50,
-        confidence,
-        reason: reasons.join(', ') || 'no matches'
-    };
+    return { isLawFirm: false, confidence: 0, reason: 'no firm/attorney match' };
 }
 
 /**
  * Try to find a working website for a domain
+ * Only tries HTTPS (www and non-www) - skips HTTP
  */
-async function findWebsite(domain, attorneyName) {
+async function findWebsite(domain, attorneyName, firmName) {
     const urlsToTry = [
         `https://www.${domain}`,
-        `https://${domain}`,
-        `http://www.${domain}`,
-        `http://${domain}`
+        `https://${domain}`
     ];
 
     for (const url of urlsToTry) {
         const result = await fetchUrl(url);
 
         if (result.success && result.body) {
-            const verification = isLawFirmWebsite(result.body, attorneyName);
+            const verification = isLawFirmWebsite(result.body, attorneyName, firmName);
 
             if (verification.isLawFirm) {
                 return {
@@ -248,7 +230,7 @@ async function findWebsite(domain, attorneyName) {
         if (result.redirect) {
             const redirectResult = await fetchUrl(result.redirect);
             if (redirectResult.success && redirectResult.body) {
-                const verification = isLawFirmWebsite(redirectResult.body, attorneyName);
+                const verification = isLawFirmWebsite(redirectResult.body, attorneyName, firmName);
                 if (verification.isLawFirm) {
                     return {
                         success: true,
@@ -263,7 +245,7 @@ async function findWebsite(domain, attorneyName) {
         await sleep(500); // Brief delay between attempts
     }
 
-    return { success: false, reason: 'no valid law firm website found' };
+    return { success: false, reason: 'no firm/attorney match on website' };
 }
 
 /**
@@ -314,6 +296,7 @@ async function main() {
         const data = doc.data();
         const email = data.email;
         const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
+        const firmName = data.firmName || '';
 
         stats.processed++;
 
@@ -335,7 +318,7 @@ async function main() {
         console.log(`🔍 ${stats.processed}. ${fullName}: Checking ${domain}...`);
 
         // Try to find website
-        const result = await findWebsite(domain, fullName);
+        const result = await findWebsite(domain, fullName, firmName);
 
         if (result.success) {
             console.log(`   ✅ Found: ${result.url} (${result.confidence}% confidence: ${result.reason})`);
