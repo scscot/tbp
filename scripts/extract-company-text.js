@@ -50,7 +50,7 @@ const COMMON_UI_STRINGS = {
   buttons: {
     'Download on the App Store': 'Descargar en App Store',
     'Get it on Google Play': 'Disponible en Google Play',
-    'Free 30-day trial · $4.99/mo · Cancel anytime': 'Prueba gratis 30 días · $4.99/mes · Cancela cuando quieras',
+    'Free 30-day trial · $6.99/mo · Cancel anytime': 'Prueba gratis 30 días · $6.99/mes · Cancela cuando quieras',
   },
   footer: {
     'Privacy Policy': 'Política de Privacidad',

@@ -74,12 +74,12 @@ Direktvertriebsprofis, Network-Marketing-Führungskräfte, MLM-Vertriebspartner�
 
 KEINE GESCHÄFTSGELEGENHEIT
 
-Team Build Pro ist ein Recruiting-Tool für die Gelegenheit, die Sie bereits haben—kein Geschäft an sich. Wir berechnen $4.99/Monat. Wir zahlen keine Provisionen und bieten keine Einkommensmöglichkeiten.
+Team Build Pro ist ein Recruiting-Tool für die Gelegenheit, die Sie bereits haben—kein Geschäft an sich. Wir berechnen $6.99/Monat. Wir zahlen keine Provisionen und bieten keine Einkommensmöglichkeiten.
 
 ABONNEMENT
 
 - 30 Tage kostenlose Testversion (voller Zugang)
-- $4.99/Monat, automatische Verlängerung
+- $6.99/Monat, automatische Verlängerung
 - Jederzeit kündbar
 
 Bedingungen: https://de.teambuildpro.com/terms_of_service.html

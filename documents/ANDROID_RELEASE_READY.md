@@ -33,7 +33,7 @@
 - **Short Description**: Build your team before day one. 70% faster with enterprise-grade security.
 - **Category**: Business
 - **Age Rating**: 17+ (Business Application)
-- **Pricing**: $4.99/month with 30-day free trial
+- **Pricing**: $6.99/month with 30-day free trial
 - **Content Rating**: No objectionable content
 
 ### Critical Compliance Features ✅

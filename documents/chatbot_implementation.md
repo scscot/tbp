@@ -177,7 +177,7 @@ Bot: "Great question! You need 4 direct sponsors + 20 total team members.
 
 User: "What's the difference between this and an MLM?"
 Bot: "Team Build Pro is NOT an MLM or business opportunity. We're a software 
-     tool - you pay us $4.99/month, we don't pay you anything. Think of us 
+     tool - you pay us $6.99/month, we don't pay you anything. Think of us 
      like LinkedIn for direct sales professionals. Would you like me to 
      explain how this helps with legitimate business opportunities?"
 ```

@@ -74,12 +74,12 @@ Profissionais de vendas diretas, líderes de marketing de rede, distribuidores d
 
 NÃO É UMA OPORTUNIDADE DE NEGÓCIO
 
-Team Build Pro é uma ferramenta de recrutamento para a oportunidade que você já tem—não é um negócio em si. Cobramos $4.99/mês. Não pagamos comissões nem oferecemos oportunidades de renda.
+Team Build Pro é uma ferramenta de recrutamento para a oportunidade que você já tem—não é um negócio em si. Cobramos $6.99/mês. Não pagamos comissões nem oferecemos oportunidades de renda.
 
 ASSINATURA
 
 - Teste gratuito de 30 dias (acesso completo)
-- $4.99/mês, renovação automática
+- $6.99/mês, renovação automática
 - Cancele a qualquer momento
 
 Termos: https://pt.teambuildpro.com/terms_of_service.html

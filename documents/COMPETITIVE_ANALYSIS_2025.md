@@ -18,10 +18,10 @@ Team Build Pro occupies a **unique market position** in the direct sales/MLM app
 
 | App | Platform | Price | Languages | Unique Angle |
 |-----|----------|-------|-----------|--------------|
-| **Team Build Pro** | iOS/Android | $4.99/mo | 4 (EN, ES, PT, DE) | Pre-build teams BEFORE joining |
+| **Team Build Pro** | iOS/Android | $6.99/mo | 4 (EN, ES, PT, DE) | Pre-build teams BEFORE joining |
 | **Penny AI** | iOS/Android | $6.99-$8.99/mo | 6 | AI-powered CRM for existing reps |
 | **WO MLM** | iOS/Android | Free/$$ | 3 (EN, ES, IT) | Activity tracking & coaching |
-| **Simple Prospect** | iOS/Android | $4.99/mo | 1 (EN) | Simplified CRM for MLM |
+| **Simple Prospect** | iOS/Android | $6.99/mo | 1 (EN) | Simplified CRM for MLM |
 | **Epixel MLM** | iOS/Android | Enterprise | Multiple | Corporate MLM software suite |
 | **DirectScale** | iOS/Android | Enterprise | Multiple | Enterprise compensation management |
 
@@ -70,13 +70,13 @@ COMPETITOR POSITIONING:
 | **Team messaging** | ✅ Secure | ❌ | ❌ | ❌ |
 | **Multi-language app** | 4 languages | 6 languages | 3 languages | 1 language |
 | **Free trial** | 30 days | Limited | 3 days | 21 days |
-| **Monthly price** | $4.99 | $6.99-$8.99 | Varies | $4.99 |
+| **Monthly price** | $6.99 | $6.99-$8.99 | Varies | $6.99 |
 | **Company-agnostic** | ✅ 100+ | ✅ | ✅ | ✅ |
 
 ### Competitive Advantages Summary
 
 1. **Only pre-join solution** - Category of one
-2. **Best value pricing** - Tied lowest at $4.99/mo with longer free trial
+2. **Best value pricing** - Tied lowest at $6.99/mo with longer free trial
 3. **16 pre-written messages** - Removes "what do I say?" friction
 4. **Built-in messaging** - Competitors require external apps
 5. **Qualification milestones** - Gamifies the recruiting process
@@ -200,7 +200,7 @@ This extra keyword space (vs Apple's 30-char limit) provides significant discove
 
 ### Conversion Opportunity
 
-At **$4.99/month**:
+At **$6.99/month**:
 - 10,000 subscribers = $599,880/year
 - 50,000 subscribers = $2,999,400/year
 - 100,000 subscribers = $5,998,800/year
@@ -349,7 +349,7 @@ For a competitor to match Team Build Pro's position, they would need:
                      30-DAY FREE TRIAL
                               │
                               ▼
-                   $4.99/MONTH SUBSCRIBER
+                   $6.99/MONTH SUBSCRIBER
 ```
 
 ### Key Conversion Points
@@ -431,7 +431,7 @@ The combination of:
 - Long-tail SEO strategy (120+ company pages)
 - Author credibility platform (13 books, podcast presence)
 - Automated content generation (8 posts/month)
-- Competitive pricing ($4.99/mo with 30-day trial)
+- Competitive pricing ($6.99/mo with 30-day trial)
 
 ...creates a **sustainable competitive advantage** that grows stronger with time rather than eroding.
 

@@ -313,7 +313,7 @@ CRITICAL VALIDATION RULES:
 - Do not claim security features not documented (no E2E encryption, no biometric auth)
 - App works with ANY direct sales company (company-agnostic)
 - Available wherever App Store and Google Play operate (NOT "120+ countries")
-- Core features: 16 pre-written messages, AI Coach, downline tracking, 30-day free trial, $4.99/month
+- Core features: 16 pre-written messages, AI Coach, downline tracking, 30-day free trial, $6.99/month
 
 `;
     }

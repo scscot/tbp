@@ -73,12 +73,12 @@ Direct sales professionals, network marketing leaders, MLM distributors—anyone
 
 NOT A BUSINESS OPPORTUNITY
 
-Team Build Pro is a recruiting tool for the opportunity you already have—not a business itself. We charge $4.99/month. We don't pay commissions or offer income opportunities.
+Team Build Pro is a recruiting tool for the opportunity you already have—not a business itself. We charge $6.99/month. We don't pay commissions or offer income opportunities.
 
 SUBSCRIPTION
 
 - 30-day free trial (full access)
-- $4.99/month, auto-renewing
+- $6.99/month, auto-renewing
 - Cancel anytime
 
 Terms: https://teambuildpro.com/terms_of_service.html

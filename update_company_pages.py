@@ -42,7 +42,7 @@ HERO_CTA_TEMPLATE = '''
           </a>
         </div>
         <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500;">
-          Free 30-day trial · $4.99/mo · Cancel anytime
+          Free 30-day trial · $6.99/mo · Cancel anytime
         </div>
       </section>
 '''
@@ -68,7 +68,7 @@ MID_CTA_TEMPLATE = '''
           </a>
         </div>
         <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">
-          Free 30-day trial · $4.99/mo · Cancel anytime
+          Free 30-day trial · $6.99/mo · Cancel anytime
         </div>
       </section>
 '''
@@ -84,7 +84,7 @@ PRIMARY_CTA_BADGES = '''        <div style="margin: 2rem 0; text-align: center;"
             </a>
           </div>
           <div style="font-size: 0.875rem; color: #64748b; font-weight: 500;">
-            Free 30-day trial · $4.99/mo · Cancel anytime
+            Free 30-day trial · $6.99/mo · Cancel anytime
           </div>
         </div>'''
 

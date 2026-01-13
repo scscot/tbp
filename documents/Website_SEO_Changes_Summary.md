@@ -42,14 +42,14 @@ All recommended Phase 1 critical and high-priority SEO improvements have been su
 
 **After** (146 characters - optimal):
 ```html
-<meta name="description" content="Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after.">
+<meta name="description" content="Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $6.99/mo after.">
 ```
 
 **Impact**:
 - ✅ Added **"downline"** keyword
 - ✅ Dual-audience messaging (recruit + empower)
 - ✅ Highlights new features (8 pre-written messages, 24/7 coaching)
-- ✅ Price transparency ($4.99/mo)
+- ✅ Price transparency ($6.99/mo)
 - ✅ Proper length for full Google display (no truncation)
 
 ---

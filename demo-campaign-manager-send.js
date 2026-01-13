@@ -68,7 +68,7 @@ function getEmailTemplate(firstName, demoUrl) {
           <h4 style="color: #92400e; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">Special Preview Benefit:</h4>
           <p style="color: #92400e; margin: 0; line-height: 1.6; font-size: 1rem;">
             <strong>Get Team Build Pro FREE for LIFE!</strong><br /><br />
-            As a preview tester, you'll receive lifetime free access (normally $4.99/month) simply by keeping the preview version installed on your device until it's officially available on Google Play. When we launch on Google Play, we'll send you instructions to upgrade—and your free access continues forever!
+            As a preview tester, you'll receive lifetime free access (normally $6.99/month) simply by keeping the preview version installed on your device until it's officially available on Google Play. When we launch on Google Play, we'll send you instructions to upgrade—and your free access continues forever!
           </p>
         </div>
 

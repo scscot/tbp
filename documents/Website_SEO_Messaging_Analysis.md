@@ -169,7 +169,7 @@ Build Your Downline 10x Faster with AI | Team Build Pro
 
 #### **OPTION A: Dual Audience + Features** ⭐ RECOMMENDED
 ```
-Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after.
+Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $6.99/mo after.
 ```
 **(146 characters)**
 
@@ -580,7 +580,7 @@ AI Downline Building System for Your [Company] Team
 3. ✅ **8 Pre-Written Messages** - Specific pain point coverage (others are generic)
 4. ✅ **Research-Backed Stats** - 75% dropout, 39% social anxiety (credible positioning)
 5. ✅ **App-Based** - Mobile-first (competitors are mostly web-based enterprise software)
-6. ✅ **$4.99/mo** - Most affordable (competitors are $50-500/mo enterprise pricing)
+6. ✅ **$6.99/mo** - Most affordable (competitors are $50-500/mo enterprise pricing)
 
 ---
 
@@ -589,7 +589,7 @@ AI Downline Building System for Your [Company] Team
 ### Immediate Action Items (This Week):
 
 1. ✅ **Update meta title** to: "AI Downline Builder - Recruit Smarter, Build Faster"
-2. ✅ **Update meta description** to: "Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $4.99/mo after."
+2. ✅ **Update meta description** to: "Recruit smarter & empower your downline with AI. Pre-written messages, 24/7 coaching, real-time tracking. Free 30-day trial. $6.99/mo after."
 3. ✅ **Update keyword meta tag** with: downline, building, zero rejection, 24/7 coaching, social anxiety
 4. ✅ **Change H1** to: "AI Downline Building System for Direct Sales Professionals"
 5. ✅ **Add pain point badge** above H1 with 75% statistic

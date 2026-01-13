@@ -140,9 +140,9 @@ At $99/month:
 * 15 extra installs → $6.60 per extra install
 * 39 extra installs → $2.54 per extra install
 Now compare that to a reasonable revenue band:
-For a $4.99/mo subscription:
-* If only 10% of installers end up paying and stay for 6 months, revenue per download is:0.10 × 6 × $4.99 ≈ $3.00
-* If 20% of installers pay and stay for 12 months, revenue per download is:0.20 × 12 × $4.99 ≈ $12.00
+For a $6.99/mo subscription:
+* If only 10% of installers end up paying and stay for 6 months, revenue per download is:0.10 × 6 × $6.99 ≈ $3.00
+* If 20% of installers pay and stay for 12 months, revenue per download is:0.20 × 12 × $6.99 ≈ $12.00
 So:
 * If you’re closer to the $3 per download reality, paying $16.50 per extra install is a losing bet.
 * If you’re closer to the $12 per download reality, paying $2–7 per extra install is perfectly fine.
