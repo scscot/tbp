@@ -214,10 +214,13 @@ async function generateDemoForContact(contactData) {
  * Generate outreach email HTML with personalized demo link
  * Uses cold outreach messaging (not "demo ready" transactional style)
  */
-function generateEmailHTML(firmName, email, leadId) {
+function generateEmailHTML(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
     // Direct link to personalized demo via homepage with ?demo= parameter
     const demoUrl = `https://preintake.ai/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    // Add greeting if firstName is available
+    const greeting = firstName ? `<p>Hello ${firstName},</p>\n\n      ` : '';
 
     return `<!DOCTYPE html>
 <html>
@@ -246,7 +249,7 @@ function generateEmailHTML(firmName, email, leadId) {
         <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
+      ${greeting}<p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
       <p>Every inquiry is assessed and delivered with:</p>
 
@@ -264,7 +267,7 @@ function generateEmailHTML(firmName, email, leadId) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
+      <p>Your staff reviews results—not raw submissions.</p>
 
       <p>We've prepared a demo tailored specifically to <strong>${firmName}</strong>:</p>
 
@@ -290,7 +293,7 @@ function generateEmailHTML(firmName, email, leadId) {
     <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
       <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
       <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
-        PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+        PreIntake.ai · Los Angeles, California
       </p>
       <p style="margin:10px 0 0 0;">
         <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
@@ -303,9 +306,13 @@ function generateEmailHTML(firmName, email, leadId) {
 /**
  * Generate fallback email HTML (no personalized demo)
  */
-function generateFallbackEmailHTML(firmName, email) {
+function generateFallbackEmailHTML(firmName, email, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/#demo?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    // Include firmName in URL so landing page can display it (no #demo hash to prevent auto-scroll)
+    const demoUrl = `https://preintake.ai/?firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    // Add greeting if firstName is available
+    const greeting = firstName ? `<p>Hello ${firstName},</p>\n\n      ` : '';
 
     return `<!DOCTYPE html>
 <html>
@@ -318,7 +325,7 @@ function generateFallbackEmailHTML(firmName, email) {
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
   <div style="display:none; max-height:0; overflow:hidden;">
-    We can build a custom intake demo tailored specifically to ${firmName}.
+    Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}.
   </div>
 
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
@@ -334,7 +341,7 @@ function generateFallbackEmailHTML(firmName, email) {
         <strong>Pre-Screen Every Inquiry — Tailored to Your Practice Area</strong>
       </p>
 
-      <p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
+      ${greeting}<p>Many intake tools treat every inquiry the same. <strong>PreIntake.ai is different</strong>—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.</p>
 
       <p>Every inquiry is assessed and delivered with:</p>
 
@@ -352,16 +359,20 @@ function generateFallbackEmailHTML(firmName, email) {
           Embeds directly on your website — visitors never leave your site.
       </p>
 
-      <p>Your staff reviews results—not raw submissions. No CRM changes required.</p>
+      <p>Your staff reviews results—not raw submissions.</p>
 
-      <p>We can build a demo tailored specifically to <strong>${firmName}</strong>.</p>
+      <p>In under 5 minutes, view a custom intake demo built for <strong>${firmName}</strong>:</p>
 
       <div style="text-align: center; margin: 30px 0;">
-          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Request Your Demo</a>
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Experience It Live</a>
       </div>
 
       <p style="font-size: 14px; margin-top: 16px;">
           No commitment. Review it on your own — no calls required.
+      </p>
+
+      <p style="font-size: 14px; margin-top: 16px;">
+          Not the right contact for intake? Feel free to forward — the demo link is specific to <strong>${firmName}</strong>.
       </p>
 
       <p style="margin-top: 20px;">
@@ -374,7 +385,7 @@ function generateFallbackEmailHTML(firmName, email) {
     <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
       <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
       <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
-        PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+        PreIntake.ai · Los Angeles, California
       </p>
       <p style="margin:10px 0 0 0;">
         <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
@@ -387,14 +398,17 @@ function generateFallbackEmailHTML(firmName, email) {
 /**
  * Generate plain-text version of personalized demo email
  */
-function generateEmailPlainText(firmName, email, leadId) {
+function generateEmailPlainText(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
     const demoUrl = `https://preintake.ai/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    // Add greeting if firstName is available
+    const greeting = firstName ? `Hello ${firstName},\n\n` : '';
 
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+${greeting}Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
 
 Every inquiry is assessed and delivered with:
 
@@ -421,21 +435,25 @@ Stephen Scott
 PreIntake.ai
 
 ---
-PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+PreIntake.ai · Los Angeles, California
 Unsubscribe: ${unsubscribeUrl}`;
 }
 
 /**
  * Generate plain-text version of fallback email
  */
-function generateFallbackEmailPlainText(firmName, email) {
+function generateFallbackEmailPlainText(firmName, email, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/#demo?utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    // Include firmName in URL so landing page can display it (no #demo hash to prevent auto-scroll)
+    const demoUrl = `https://preintake.ai/?firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+
+    // Add greeting if firstName is available
+    const greeting = firstName ? `Hello ${firstName},\n\n` : '';
 
     return `PreIntake.ai
 Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
-Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
+${greeting}Many intake tools treat every inquiry the same. PreIntake.ai is different—it's configured specifically for your firm's practice areas, so the questions asked and criteria applied actually match the cases you take.
 
 Every inquiry is assessed and delivered with:
 
@@ -447,20 +465,22 @@ Zero Data Retention — Inquiry content is processed and delivered, not retained
 
 Embeds directly on your website — visitors never leave your site.
 
-Your staff reviews results—not raw submissions. No CRM changes required.
+Your staff reviews results—not raw submissions.
 
-We can build a demo tailored specifically to ${firmName}.
+In under 5 minutes, view a custom intake demo built for ${firmName}:
 
-Request Your Demo: ${demoUrl}
+Experience It Live: ${demoUrl}
 
 No commitment. Review it on your own — no calls required.
+
+Not the right contact for intake? Feel free to forward — the demo link is specific to ${firmName}.
 
 Best,
 Stephen Scott
 PreIntake.ai
 
 ---
-PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860
+PreIntake.ai · Los Angeles, California
 Unsubscribe: ${unsubscribeUrl}`;
 }
 
@@ -469,11 +489,8 @@ Unsubscribe: ${unsubscribeUrl}`;
  * Different subjects for personalized demo vs fallback email
  */
 function generateSubject(hasDemo) {
-    if (hasDemo) {
-        return 'Pre-screen every inquiry before it reaches your team';
-    } else {
-        return 'We can build a custom intake demo for your firm';
-    }
+    // Same subject for both personalized and fallback emails
+    return 'Pre-screen every inquiry before it reaches your team';
 }
 
 /**
@@ -591,7 +608,7 @@ async function runCampaign() {
 
     for (const doc of snapshot.docs) {
         const data = doc.data();
-        const { firmName, email, website } = data;
+        const { firmName, email, website, firstName } = data;
 
         // Use test email if in test mode, otherwise use actual email
         const recipientEmail = TEST_EMAIL || email;
@@ -624,11 +641,11 @@ async function runCampaign() {
             // Generate subject, HTML, and plain-text versions
             const subject = generateSubject(hasDemo);
             const html = hasDemo
-                ? generateEmailHTML(firmName, email, leadId)
-                : generateFallbackEmailHTML(firmName, email);
+                ? generateEmailHTML(firmName, email, leadId, firstName)
+                : generateFallbackEmailHTML(firmName, email, firstName);
             const text = hasDemo
-                ? generateEmailPlainText(firmName, email, leadId)
-                : generateFallbackEmailPlainText(firmName, email);
+                ? generateEmailPlainText(firmName, email, leadId, firstName)
+                : generateFallbackEmailPlainText(firmName, email, firstName);
 
             // Send email (with both HTML and plain-text)
             console.log(`   📤 Sending email...`);

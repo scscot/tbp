@@ -3254,6 +3254,33 @@
             }
 
             // =====================================
+            // Firm Name Display (?firm= parameter)
+            // =====================================
+            // For visitors arriving from email campaign WITHOUT pre-generated demo
+            function checkFirmParameter() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const firmName = urlParams.get('firm');
+
+                if (!firmName) return false;
+
+                // Clean URL without refreshing page (remove ?firm= but keep at top of page)
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Show personalized welcome banner with firm name
+                const welcomeBanner = document.getElementById('campaign-welcome');
+                const firmNameSpan = document.getElementById('campaign-firm-name');
+                if (welcomeBanner && firmNameSpan) {
+                    firmNameSpan.textContent = decodeURIComponent(firmName);
+                    welcomeBanner.classList.add('visible');
+                }
+
+                // Keep default CTA visible ("Create Your Custom Demo")
+                // No changes to hero CTAs needed
+
+                return true; // Handled firm parameter
+            }
+
+            // =====================================
             // Campaign Demo Detection (?demo= parameter)
             // =====================================
             // For visitors arriving from email campaign with pre-generated demo
@@ -3342,13 +3369,20 @@
                 }
             }
 
-            // Run campaign demo check first (takes priority)
-            // If not a campaign visit, run verification check
-            checkCampaignDemo().then(handled => {
-                if (!handled) {
-                    checkVerificationToken();
-                }
-            });
+            // Check for ?firm= parameter first (no pre-generated demo)
+            // Then check for ?demo= parameter (pre-generated demo)
+            // Finally check for verification token
+            const firmHandled = checkFirmParameter();
+            if (!firmHandled) {
+                checkCampaignDemo().then(handled => {
+                    if (!handled) {
+                        checkVerificationToken();
+                    }
+                });
+            } else {
+                // Still need to check verification token even with firm parameter
+                checkVerificationToken();
+            }
         });
 
         // Validation error modal functions
