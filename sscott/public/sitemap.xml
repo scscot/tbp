@@ -199,4 +199,12 @@
     <priority>0.7</priority>
   </url>
 
+
+  <url>
+    <loc>https://www.stephenscott.us/blog/blockchain-technology-finally-solving-mlms-trust.html</loc>
+    <lastmod>2026-01-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
