@@ -475,6 +475,10 @@ function generateEmailHTML(summary) {
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${summary.stats.attorneys_found}</td>
             </tr>
             <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">With website:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${summary.stats.with_website}</td>
+            </tr>
+            <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee;">With email:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${summary.stats.with_email}</td>
             </tr>
@@ -503,7 +507,7 @@ function generateEmailHTML(summary) {
         <h2 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">Overall Progress</h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Total attorneys in DB:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Total attorneys added from Cal Bar:</td>
                 <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${summary.totals.total_attorneys_in_db.toLocaleString()}</td>
             </tr>
             <tr>
@@ -550,6 +554,7 @@ SCRAPE RESULTS
 --------------
 Pages scraped: ${summary.stats.pages_scraped}
 Attorneys found: ${summary.stats.attorneys_found}
+With website: ${summary.stats.with_website}
 With email: ${summary.stats.with_email}
 No email (skipped): ${summary.stats.no_email}
 Duplicates (skipped): ${summary.stats.duplicates_skipped}
@@ -559,7 +564,7 @@ Email capture rate: ${successRate}%
 
 OVERALL PROGRESS
 ----------------
-Total attorneys in DB: ${summary.totals.total_attorneys_in_db.toLocaleString()}
+Total attorneys added from Cal Bar: ${summary.totals.total_attorneys_in_db.toLocaleString()}
 Practice areas completed: ${summary.totals.practice_areas_completed.length} of 14
 Completed: ${summary.totals.practice_areas_completed.map(id => PRACTICE_AREAS[id] || id).join(', ') || 'None'}
 Remaining: ${summary.totals.practice_areas_remaining.map(id => PRACTICE_AREAS[id] || id).join(', ') || 'All complete!'}
@@ -706,6 +711,7 @@ async function scrapePracticeArea(practiceAreaId) {
     const stats = {
         pages_scraped: 0,
         attorneys_found: 0,
+        with_website: 0,
         with_email: 0,
         no_email: 0,
         duplicates_skipped: 0,
@@ -805,6 +811,9 @@ async function scrapePracticeArea(practiceAreaId) {
         }
 
         stats.with_email++;
+        if (result.data.website) {
+            stats.with_website++;
+        }
 
         // Check for duplicate
         const exists = await emailExists(result.data.email);
@@ -940,13 +949,14 @@ async function main() {
     console.log('📊 Summary');
     console.log('===========================');
     console.log(`   Attorneys found: ${stats.attorneys_found}`);
+    console.log(`   With website: ${stats.with_website}`);
     console.log(`   With email: ${stats.with_email}`);
     console.log(`   No email (skipped): ${stats.no_email}`);
     console.log(`   Duplicates (skipped): ${stats.duplicates_skipped}`);
     console.log(`   ✅ Inserted: ${stats.inserted}`);
     console.log(`   ❌ Errors: ${stats.errors}`);
     console.log(`   Error rate: ${(errorRate * 100).toFixed(1)}%`);
-    console.log(`\n   Total CalBar attorneys in DB: ${totalInDb.toLocaleString()}`);
+    console.log(`\n   Total attorneys added from Cal Bar: ${totalInDb.toLocaleString()}`);
     console.log(`   Practice areas completed: ${progress.scrapedPracticeAreaIds.length}/14`);
     if (progress.permanentlySkipped.length > 0) {
         console.log(`   ⚠️  Permanently skipped: ${progress.permanentlySkipped.length}`);
