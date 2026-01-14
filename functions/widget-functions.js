@@ -447,12 +447,21 @@ const getEmailAnalytics = onRequest(
         try {
             const now = new Date();
 
-            // Calculate date boundaries
-            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            const startDate = new Date(sevenDaysAgo.getFullYear(), sevenDaysAgo.getMonth(), sevenDaysAgo.getDate());
-            const yesterdayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            // Calculate date boundaries in PST (UTC-8)
+            // This ensures consistent "today" regardless of server timezone
+            const PST_OFFSET = -8 * 60 * 60 * 1000; // -8 hours in ms
+            const nowPST = new Date(now.getTime() + PST_OFFSET);
+
+            // Get PST date components
+            const pstYear = nowPST.getUTCFullYear();
+            const pstMonth = nowPST.getUTCMonth();
+            const pstDay = nowPST.getUTCDate();
+
+            // Create boundaries at midnight PST (converted back to UTC)
+            const todayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay) - PST_OFFSET);
+            const yesterdayStart = new Date(Date.UTC(pstYear, pstMonth, pstDay - 1) - PST_OFFSET);
+            const endDate = new Date(Date.UTC(pstYear, pstMonth, pstDay + 1) - PST_OFFSET);
+            const startDate = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7) - PST_OFFSET);
 
             // Get all sent emails
             const emailsSnap = await db.collection('preintake_emails')
