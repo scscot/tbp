@@ -1,0 +1,52 @@
+{
+  "run_date": "2026-01-14T17:41:33.851Z",
+  "practice_area": {
+    "code": "B37",
+    "name": "Personal Injury",
+    "successful": true,
+    "error_rate": "0.0%"
+  },
+  "stats": {
+    "pages_scraped": 1,
+    "counties_scraped": 1,
+    "attorneys_found": 10,
+    "with_email": 10,
+    "with_website": 0,
+    "no_email": 0,
+    "duplicates_skipped": 0,
+    "inserted": 10,
+    "errors": 0
+  },
+  "totals": {
+    "total_attorneys_in_db": 0,
+    "practice_areas_completed": [
+      "B37"
+    ],
+    "practice_areas_remaining": [
+      "B28",
+      "B49",
+      "B33",
+      "B38",
+      "B47",
+      "B05",
+      "B30",
+      "B09",
+      "B29",
+      "B31",
+      "B39",
+      "B19",
+      "B14",
+      "B41",
+      "B18",
+      "B44",
+      "B08",
+      "B43",
+      "B26",
+      "B10",
+      "B06"
+    ],
+    "practice_areas_skipped": []
+  },
+  "duration": "1.1 minutes",
+  "dry_run": true
+}

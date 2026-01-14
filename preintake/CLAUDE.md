@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-10
-**Version**: 3.0 (Pre-Screen positioning + practice-area subtitle + audit fixes)
+**Last Updated**: 2026-01-14
+**Version**: 3.1 (CalBar Attorney Scraper + practice area targeting)
 
 ---
 
@@ -988,6 +988,86 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
 | Trust Signal | None | "Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers." |
 | Footer | URL + Unsubscribe only | URL + Physical Address + Unsubscribe |
 | Format | HTML only | HTML + Plain-text multipart |
+
+### Phase 24: CalBar Attorney Scraper (2026-01-14)
+- [x] **CalBar Scraper Script** - `scripts/scrape-calbar-attorneys.js`
+  - Scrapes attorney contact information from California State Bar website
+  - Handles CSS-based email obfuscation (Cal Bar uses fake email spans with CSS `display:none`)
+  - Pagination support for large result sets
+  - Deduplication against existing Firestore records
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/calbar-scraper.yml`
+  - Scheduled: Daily at 2am PST (10:00 UTC)
+  - Manual trigger with configurable practice area and max attorneys
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Website Inference Script** - `scripts/infer-calbar-websites.js`
+  - Attempts to discover law firm websites for CalBar contacts without websites
+  - Uses Google search and domain inference
+  - Scheduled via `.github/workflows/calbar-website-inference.yml` (daily at 3am PST)
+- [x] **Priority Reordering** - `scripts/update-calbar-random-index.js`
+  - Updates CalBar contacts' `randomIndex` to 0.0-0.1 range
+  - Prioritizes CalBar contacts in email campaign queue over other contacts
+
+**Practice Areas Targeted (25 total):**
+
+| Tier | Priority | ID | Practice Area |
+|------|----------|-----|---------------|
+| **Tier 1** | 1 | 51 | Personal Injury |
+| | 2 | 34 | Immigration |
+| | 3 | 63 | Workers Compensation |
+| | 4 | 46 | Medical Malpractice |
+| | 5 | 52 | Products Liability |
+| | 6 | 58 | Toxic Torts |
+| | 7 | 9 | Bankruptcy |
+| | 8 | 42 | Labor & Employment |
+| | 9 | 16 | Construction Law |
+| | 10 | 66 | Landlord-Tenant Law |
+| | 11 | 36 | Insurance |
+| | 12 | 10 | Business Law |
+| | 13 | 43 | Legal Malpractice |
+| | 14 | 53 | Professional Liability |
+| **Tier 2** | 15 | 29 | Family Law |
+| | 16 | 19 | Criminal Law |
+| | 17 | 54 | Real Estate |
+| | 18 | 22 | Elder Law |
+| | 19 | 60 | Trusts & Estates |
+| | 20 | 61 | Wills & Probate |
+| | 21 | 62 | White Collar Crime |
+| | 22 | 11 | Civil Rights |
+| | 23 | 56 | Taxation |
+| | 24 | 33 | Health Care |
+| | 25 | 65 | Homeowner Association Law |
+
+**Firestore Progress Tracking** (in `preintake_scrape_progress/calbar`):
+| Field | Description |
+|-------|-------------|
+| `scrapedPracticeAreaIds` | Array of completed practice area IDs |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped (no email or duplicate) |
+| `failedAttempts` | Object tracking failed attempts per practice area |
+| `permanentlySkipped` | Array of practice areas skipped after 3 failures |
+
+**Scraper Configuration:**
+| Setting | Value | Notes |
+|---------|-------|-------|
+| `MAX_ATTORNEYS` | 500 (default) | Max attorneys per run |
+| `DELAY_BETWEEN_PAGES` | 2000ms | Polite crawling |
+| `DELAY_BETWEEN_DETAILS` | 1000ms | Rate limit protection |
+| `ERROR_THRESHOLD` | 10% | Mark success if error rate < 10% |
+| `MAX_FAILED_ATTEMPTS` | 3 | Permanently skip after 3 failures |
+
+**New Firestore Fields** (in `preintake_emails` collection for CalBar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"calbar"` |
+| `barNumber` | California Bar number |
+| `practiceArea` | Practice area from Cal Bar |
+| `state` | `"CA"` |
+| `website` | Firm website (if available) |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
 
 ---
 

@@ -1,0 +1,93 @@
+name: Florida Bar Attorney Scraper
+
+on:
+  schedule:
+    # Daily at 2:30am PST (10:30 UTC)
+    # Offset from CalBar scraper (10:00 UTC) to avoid overlap
+    - cron: '30 10 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      practice_area_code:
+        description: 'Specific practice area code to scrape (e.g., B37)'
+        required: false
+        type: string
+      max_attorneys:
+        description: 'Max attorneys to scrape per run'
+        required: false
+        default: '500'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no changes)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm install firebase-admin cheerio@1.0.0 nodemailer && cd ..
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PRACTICE_AREA_CODE: ${{ github.event.inputs.practice_area_code }}
+          MAX_ATTORNEYS: ${{ github.event.inputs.max_attorneys || '500' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          echo "Starting Florida Bar attorney scraper..."
+          if [ -n "$PRACTICE_AREA_CODE" ]; then
+            echo "Practice Area Code: $PRACTICE_AREA_CODE"
+          else
+            echo "Practice Area: Next unscraped (automatic)"
+          fi
+          echo "Max attorneys: $MAX_ATTORNEYS"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY RUN (no changes will be written)"
+          fi
+          node scripts/scrape-flbar-attorneys.js
+
+      - name: Upload summary artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flbar-scrape-summary
+          path: scripts/flbar-scrape-summary.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
