@@ -3287,17 +3287,48 @@
             async function checkCampaignDemo() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const demoLeadId = urlParams.get('demo');
+                const firmNameFromUrl = urlParams.get('firm');
 
                 if (!demoLeadId) return false;
 
-                // Track visit immediately (email CTA click)
+                // Construct demo URL immediately from predictable pattern (no API wait needed)
+                const demoUrl = `https://preintake.ai/demo/${demoLeadId}`;
                 const TRACK_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView';
+
+                // Show firm name IMMEDIATELY from URL (no API wait)
+                const welcomeBanner = document.getElementById('campaign-welcome');
+                const firmNameSpan = document.getElementById('campaign-firm-name');
+                if (firmNameFromUrl) {
+                    firmNameSpan.textContent = decodeURIComponent(firmNameFromUrl);
+                    welcomeBanner.classList.add('visible');
+                }
+
+                // Show campaign hero CTA IMMEDIATELY (no API wait)
+                const campaignHeroCta = document.getElementById('campaign-hero-cta');
+                const defaultHeroCta = document.getElementById('default-hero-cta');
+                if (campaignHeroCta && defaultHeroCta) {
+                    campaignHeroCta.href = demoUrl;
+                    campaignHeroCta.addEventListener('click', () => {
+                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
+                        sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
+                    });
+                    campaignHeroCta.style.display = 'inline-flex';
+                    defaultHeroCta.style.display = 'none';
+                }
+
+                // Hide sticky CTA immediately since we're showing the campaign CTA
+                const stickyCta = document.getElementById('sticky-cta');
+                if (stickyCta) {
+                    stickyCta.style.display = 'none';
+                }
+
+                // Track visit immediately (email CTA click)
                 fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
 
                 // Clean URL without refreshing page
                 window.history.replaceState({}, document.title, window.location.pathname);
 
-                // Show loading state
+                // Show loading state for demo button (not for firm name)
                 formContainer.style.display = 'none';
                 document.getElementById('campaign-loading').style.display = 'flex';
 
@@ -3318,11 +3349,11 @@
                     // Hide loading state
                     document.getElementById('campaign-loading').style.display = 'none';
 
-                    // Show personalized welcome banner
-                    const welcomeBanner = document.getElementById('campaign-welcome');
-                    const firmNameSpan = document.getElementById('campaign-firm-name');
-                    firmNameSpan.textContent = data.firmName || 'Your Firm';
-                    welcomeBanner.classList.add('visible');
+                    // Show personalized welcome banner (update if API has different name, or show if not from URL)
+                    if (!firmNameFromUrl) {
+                        firmNameSpan.textContent = data.firmName || 'Your Firm';
+                        welcomeBanner.classList.add('visible');
+                    }
 
                     // Update section title
                     document.getElementById('demo-section-title').textContent = 'Your Demo is Ready';
@@ -3330,7 +3361,7 @@
                     // Configure and show the CTA view in demo section
                     const ctaView = document.getElementById('campaign-cta-view');
                     const ctaBtn = document.getElementById('campaign-demo-btn');
-                    ctaBtn.href = data.demoUrl;
+                    ctaBtn.href = demoUrl; // Use pre-constructed URL
                     // Track demo view when button is clicked
                     ctaBtn.addEventListener('click', () => {
                         fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
@@ -3338,25 +3369,7 @@
                     });
                     ctaView.classList.add('visible');
 
-                    // Show campaign hero CTA and hide default hero CTA
-                    const campaignHeroCta = document.getElementById('campaign-hero-cta');
-                    const defaultHeroCta = document.getElementById('default-hero-cta');
-                    if (campaignHeroCta && defaultHeroCta) {
-                        campaignHeroCta.href = data.demoUrl;
-                        // Track demo view when hero button is clicked
-                        campaignHeroCta.addEventListener('click', () => {
-                            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
-                            sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
-                        });
-                        campaignHeroCta.style.display = 'inline-flex';
-                        defaultHeroCta.style.display = 'none';
-                    }
-
-                    // Hide sticky CTA since we're showing the campaign CTA
-                    const stickyCta = document.getElementById('sticky-cta');
-                    if (stickyCta) {
-                        stickyCta.style.display = 'none';
-                    }
+                    // Hero CTA and sticky CTA already handled at start of function
 
                     return true; // Handled campaign demo
 

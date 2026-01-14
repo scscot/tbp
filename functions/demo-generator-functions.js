@@ -240,7 +240,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{LEAD_ID}}': leadId,
         '{{FIRM_EMAIL}}': leadData.email || '',
         '{{RETURN_URL}}': leadData.source === 'campaign'
-            ? `https://preintake.ai/?demo=${leadId}`
+            ? `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}`
             : 'https://preintake.ai',
     };
 
