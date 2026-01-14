@@ -464,6 +464,8 @@ const getEmailAnalytics = onRequest(
             let withoutDemo = 0;
             let last7DaysSent = 0;
             let last7DaysWithDemo = 0;
+            let todaySent = 0;
+            let todayWithDemo = 0;
             let yesterdaySent = 0;
             let yesterdayWithDemo = 0;
             const templateVersions = {};
@@ -492,6 +494,12 @@ const getEmailAnalytics = onRequest(
                         if (data.demoGenerated) last7DaysWithDemo++;
                     }
 
+                    // Today
+                    if (sentDate >= todayStart && sentDate < endDate) {
+                        todaySent++;
+                        if (data.demoGenerated) todayWithDemo++;
+                    }
+
                     // Yesterday
                     if (sentDate >= yesterdayStart && sentDate < todayStart) {
                         yesterdaySent++;
@@ -508,11 +516,13 @@ const getEmailAnalytics = onRequest(
             // Visit tracking (email CTA clicks)
             let visitedCount = 0;
             let last7DaysVisited = 0;
+            let todayVisited = 0;
             let yesterdayVisited = 0;
 
             // View tracking (demo engagement)
             let viewedCount = 0;
             let last7DaysViewed = 0;
+            let todayViewed = 0;
             let yesterdayViewed = 0;
 
             let activeLeads = 0;
@@ -529,6 +539,7 @@ const getEmailAnalytics = onRequest(
                     visitedCount++;
                     if (firstVisitAt) {
                         if (firstVisitAt >= startDate) last7DaysVisited++;
+                        if (firstVisitAt >= todayStart && firstVisitAt < endDate) todayVisited++;
                         if (firstVisitAt >= yesterdayStart && firstVisitAt < todayStart) yesterdayVisited++;
                     }
                 }
@@ -541,6 +552,7 @@ const getEmailAnalytics = onRequest(
                     viewedCount++;
                     if (firstViewedAt) {
                         if (firstViewedAt >= startDate) last7DaysViewed++;
+                        if (firstViewedAt >= todayStart && firstViewedAt < endDate) todayViewed++;
                         if (firstViewedAt >= yesterdayStart && firstViewedAt < todayStart) yesterdayViewed++;
                     }
                 }
@@ -575,16 +587,20 @@ const getEmailAnalytics = onRequest(
                 withoutDemo,
                 last7DaysSent,
                 last7DaysWithDemo,
+                todaySent,
+                todayWithDemo,
                 yesterdaySent,
                 yesterdayWithDemo,
                 campaignLeads: leadsSnap.size,
                 // Visits (email CTA clicks)
                 visitedCount,
                 last7DaysVisited,
+                todayVisited,
                 yesterdayVisited,
                 // Views (demo engagement)
                 viewedCount,
                 last7DaysViewed,
+                todayViewed,
                 yesterdayViewed,
                 activeLeads,
                 templateVersions,

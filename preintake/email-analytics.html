@@ -518,6 +518,7 @@
             // Calculate click rates
             const allTimeRate = data.withDemo > 0 ? ((data.viewedCount / data.withDemo) * 100).toFixed(1) : '0.0';
             const last7DaysRate = data.last7DaysWithDemo > 0 ? ((data.last7DaysViewed / data.last7DaysWithDemo) * 100).toFixed(1) : '0.0';
+            const todayRate = data.todayWithDemo > 0 ? ((data.todayViewed / data.todayWithDemo) * 100).toFixed(1) : '0.0';
             const yesterdayRate = data.yesterdayWithDemo > 0 ? ((data.yesterdayViewed / data.yesterdayWithDemo) * 100).toFixed(1) : '0.0';
 
             content.innerHTML = `
@@ -536,6 +537,26 @@
                         <div class="stat-row">
                             <span class="stat-label">Without Demo (Fallback)</span>
                             <span class="stat-value muted">${data.withoutDemo.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Today</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Emails Sent</span>
+                            <span class="stat-value">${data.todaySent}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">With Demos</span>
+                            <span class="stat-value ${data.todayWithDemo > 0 ? 'success' : 'muted'}">${data.todayWithDemo}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Visits</span>
+                            <span class="stat-value ${data.todayVisited > 0 ? 'success' : 'muted'}">${data.todayVisited || 0}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Demos Viewed</span>
+                            <span class="stat-value ${data.todayViewed > 0 ? 'success' : 'muted'}">${data.todayViewed}</span>
                         </div>
                     </div>
 
@@ -614,6 +635,11 @@
                             <h4>Last 7 Days</h4>
                             <div class="rate-value">${last7DaysRate}%</div>
                             <div class="rate-details">${data.last7DaysViewed} views / ${data.last7DaysWithDemo} emails</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Today</h4>
+                            <div class="rate-value">${todayRate}%</div>
+                            <div class="rate-details">${data.todayViewed} views / ${data.todayWithDemo} emails</div>
                         </div>
                         <div class="rate-card">
                             <h4>Yesterday</h4>
