@@ -80,8 +80,8 @@ const SEARCH_URL = `${BASE_URL}/attorney/LicenseeSearch/AdvancedSearch`;
 const DETAIL_URL_PREFIX = `${BASE_URL}/attorney/Licensee/Detail/`;
 const USER_AGENT = 'PreIntake.ai Scraper (+https://preintake.ai)';
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS || '500', 10);
-const DELAY_BETWEEN_PAGES = 2000;  // 2 seconds
-const DELAY_BETWEEN_DETAILS = 1000;  // 1 second
+const DELAY_BETWEEN_PAGES = 8000;  // 8 seconds between search pages
+const DELAY_BETWEEN_DETAILS = 5000;  // 5 seconds between profile pages
 const MAX_RETRIES = 3;
 
 // Initialize Firebase Admin
@@ -119,6 +119,15 @@ function sleep(ms) {
 }
 
 /**
+ * Sleep with random jitter (±30%) to make requests look more organic
+ */
+function sleepWithJitter(baseMs) {
+    const jitter = baseMs * 0.3 * (Math.random() * 2 - 1); // ±30%
+    const finalMs = Math.max(1000, baseMs + jitter); // Minimum 1 second
+    return sleep(finalMs);
+}
+
+/**
  * Fetch with retries and exponential backoff
  * Uses native Node.js fetch (available in Node 18+)
  */
@@ -142,8 +151,8 @@ async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
 
             if (response.status === 429 || response.status === 503) {
                 if (attempt < retries) {
-                    const waitTime = Math.pow(2, attempt) * 1000;
-                    console.log(`   ⚠️  Rate limited (${response.status}), waiting ${waitTime}ms...`);
+                    const waitTime = Math.pow(2, attempt) * 15000; // 15s, 30s, 60s exponential backoff
+                    console.log(`   ⚠️  Rate limited (${response.status}), waiting ${waitTime / 1000}s...`);
                     await sleep(waitTime);
                     continue;
                 }
@@ -156,8 +165,8 @@ async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
             return await response.text();
         } catch (error) {
             if (attempt < retries) {
-                const waitTime = Math.pow(2, attempt) * 1000;
-                console.log(`   ⚠️  Fetch failed (${error.message}), retry ${attempt}/${retries} in ${waitTime}ms...`);
+                const waitTime = Math.pow(2, attempt) * 5000; // 5s, 10s, 20s exponential backoff
+                console.log(`   ⚠️  Fetch failed (${error.message}), retry ${attempt}/${retries} in ${waitTime / 1000}s...`);
                 await sleep(waitTime);
             } else {
                 throw error;
@@ -786,7 +795,7 @@ async function scrapePracticeArea(practiceAreaId) {
             pageNumber++;
 
             if (pageNumber <= totalPages && allBarNumbers.length < MAX_ATTORNEYS) {
-                await sleep(DELAY_BETWEEN_PAGES);
+                await sleepWithJitter(DELAY_BETWEEN_PAGES);
             }
         } catch (error) {
             console.error(`   ❌ Error fetching page ${pageNumber}: ${error.message}`);
@@ -824,7 +833,7 @@ async function scrapePracticeArea(practiceAreaId) {
             } else {
                 stats.errors++;
             }
-            await sleep(DELAY_BETWEEN_DETAILS);
+            await sleepWithJitter(DELAY_BETWEEN_DETAILS);
             continue;
         }
 
@@ -837,7 +846,7 @@ async function scrapePracticeArea(practiceAreaId) {
         const exists = await emailExists(result.data.email);
         if (exists) {
             stats.duplicates_skipped++;
-            await sleep(DELAY_BETWEEN_DETAILS);
+            await sleepWithJitter(DELAY_BETWEEN_DETAILS);
             continue;
         }
 
@@ -854,7 +863,7 @@ async function scrapePracticeArea(practiceAreaId) {
             batchCount = 0;
         }
 
-        await sleep(DELAY_BETWEEN_DETAILS);
+        await sleepWithJitter(DELAY_BETWEEN_DETAILS);
     }
 
     // Commit remaining records

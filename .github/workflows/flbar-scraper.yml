@@ -2,9 +2,9 @@ name: Florida Bar Attorney Scraper
 
 on:
   schedule:
-    # Daily at 2:30am PST (10:30 UTC)
-    # Offset from CalBar scraper (10:00 UTC) to avoid overlap
-    - cron: '30 10 * * *'
+    # Daily at 2:00am PST (10:00 UTC)
+    # Runs after CalBar scraper (8:00 UTC), before CalBar inference (12:00 UTC)
+    - cron: '0 10 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
@@ -30,7 +30,7 @@ env:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
 
     steps:
       - name: Checkout repository

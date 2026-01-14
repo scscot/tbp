@@ -2,10 +2,9 @@ name: CalBar Attorney Scraper
 
 on:
   schedule:
-    # Daily at 2:00am PST (10:00 UTC)
-    # During PDT (Mar-Nov): 10:00 UTC = 3:00am PDT
-    # During PST (Nov-Mar): 10:00 UTC = 2:00am PST
-    - cron: '0 10 * * *'
+    # Daily at midnight PST (8:00 UTC)
+    # Runs first, before FL Bar scraper (10:00 UTC) and CalBar inference (12:00 UTC)
+    - cron: '0 8 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
@@ -26,7 +25,7 @@ env:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
 
     steps:
       - name: Checkout repository

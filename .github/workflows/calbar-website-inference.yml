@@ -2,8 +2,9 @@ name: CalBar Website Inference
 
 on:
   schedule:
-    # Daily at 3am PST (11:00 UTC)
-    - cron: '0 11 * * *'
+    # Daily at 4:00am PST (12:00 UTC)
+    # Runs after CalBar scraper (8:00 UTC) and FL Bar scraper (10:00 UTC)
+    - cron: '0 12 * * *'
 
   workflow_dispatch:
     inputs:
