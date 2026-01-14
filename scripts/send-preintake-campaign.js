@@ -586,27 +586,51 @@ async function runCampaign() {
     // Generate batch ID
     const batchId = `batch_${Date.now()}`;
 
-    // Query unsent emails (excluding unsubscribed)
-    // Prefer contacts with website URLs for demo generation
-    const snapshot = await db.collection(COLLECTION_NAME)
+    // Query unsent emails in two phases:
+    // Phase 1: Contacts WITH website URLs (can generate personalized demos)
+    // Phase 2: Contacts WITHOUT website URLs (fallback emails only)
+    let allDocs = [];
+
+    // Phase 1: Get contacts with website URLs first
+    const withWebsiteSnapshot = await db.collection(COLLECTION_NAME)
         .where('sent', '==', false)
         .where('status', '==', 'pending')
+        .where('website', '!=', '')
+        .orderBy('website')  // Required when using != operator
         .orderBy('randomIndex')
         .limit(BATCH_SIZE)
         .get();
 
-    if (snapshot.empty) {
+    allDocs = [...withWebsiteSnapshot.docs];
+    console.log(`📊 Found ${allDocs.length} contacts with website URLs`);
+
+    // Phase 2: If we need more contacts, get ones without websites
+    const remainingSlots = BATCH_SIZE - allDocs.length;
+    if (remainingSlots > 0) {
+        const withoutWebsiteSnapshot = await db.collection(COLLECTION_NAME)
+            .where('sent', '==', false)
+            .where('status', '==', 'pending')
+            .where('website', '==', '')
+            .orderBy('randomIndex')
+            .limit(remainingSlots)
+            .get();
+
+        allDocs = [...allDocs, ...withoutWebsiteSnapshot.docs];
+        console.log(`📊 Found ${withoutWebsiteSnapshot.size} contacts without website URLs`);
+    }
+
+    if (allDocs.length === 0) {
         console.log('✅ No unsent emails found. Campaign complete!');
         process.exit(0);
     }
 
-    console.log(`📤 Processing ${snapshot.size} emails in ${batchId}\n`);
+    console.log(`📤 Processing ${allDocs.length} emails in ${batchId}\n`);
 
     let sent = 0;
     let failed = 0;
     let demosGenerated = 0;
 
-    for (const doc of snapshot.docs) {
+    for (const doc of allDocs) {
         const data = doc.data();
         const { firmName, email, website, firstName, lastName } = data;
 
@@ -689,7 +713,7 @@ async function runCampaign() {
             sent++;
 
             // Delay between sends
-            if (sent < snapshot.size) {
+            if (sent < allDocs.length) {
                 await new Promise(resolve => setTimeout(resolve, SEND_DELAY_MS));
             }
 
@@ -713,7 +737,7 @@ async function runCampaign() {
 
     // Summary
     console.log(`\n📊 ${batchId} Complete:`);
-    console.log(`   Total processed: ${snapshot.size}`);
+    console.log(`   Total processed: ${allDocs.length}`);
     console.log(`   Successfully sent: ${sent}`);
     console.log(`   Demos generated: ${demosGenerated}`);
     console.log(`   Failed: ${failed}`);

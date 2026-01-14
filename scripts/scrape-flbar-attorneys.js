@@ -764,6 +764,7 @@ async function scrapePracticeArea(practiceAreaCode) {
                         state: 'FL',
                         source: 'flbar',
                         barNumber: attorney.barNumber,
+                        memberUrl: `https://www.floridabar.org/directories/find-mbr/profile/?num=${attorney.barNumber}`,
                         phone: attorney.phone,
                         county: county,
                         sent: false,
