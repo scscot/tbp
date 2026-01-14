@@ -39,12 +39,15 @@
             </header>
         `;
 
-        // Check if user has viewed their demo (campaign visitor who clicked through)
+        // Check if user is a campaign visitor (?demo= in URL) or has viewed their demo
+        const urlParams = new URLSearchParams(window.location.search);
+        const demoIdFromUrl = urlParams.get('demo');
         const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
+        const leadId = demoIdFromUrl || demoViewedId;
         const accountBtn = container.querySelector('.nav-account');
 
-        if (demoViewedId && accountBtn) {
-            accountBtn.href = `https://preintake.ai/create-account.html?firm=${demoViewedId}`;
+        if (leadId && accountBtn) {
+            accountBtn.href = `https://preintake.ai/create-account.html?firm=${leadId}`;
             accountBtn.textContent = 'Get Started →';
             accountBtn.classList.add('nav-get-started');
         }
