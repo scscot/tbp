@@ -395,20 +395,28 @@ async function parseSearchResults(practiceAreaCode, county, pageNum) {
 
             const { firstName, lastName } = parseName(fullName);
 
-            // Extract firm name from profile content (if present)
-            // Firm name is typically in a <strong> or separate line
-            const profileContent = $(el).find('.profile-content');
+            // Extract firm name from profile-contact section (first <p>)
+            const profileContact = $(el).find('.profile-contact');
             let firmName = '';
 
-            // Look for firm name pattern (often appears after the name)
-            const firmEl = profileContent.find('strong').first();
-            if (firmEl.length && !firmEl.text().includes('Office') && !firmEl.text().includes('Cell')) {
-                firmName = firmEl.text().trim();
+            // Firm name is in the first <p> of profile-contact, but may include address
+            const firmEl = profileContact.find('p').first();
+            if (firmEl.length) {
+                const firmText = firmEl.text().trim();
+                // Address starts with a number - extract firm name before that
+                const addressMatch = firmText.match(/^(.+?)(\d+\s)/);
+                if (addressMatch) {
+                    firmName = addressMatch[1].trim();
+                } else if (firmText && !firmText.match(/^\d/)) {
+                    // No address found, use full text if it doesn't start with number
+                    firmName = firmText;
+                }
             }
 
             // Extract phone (Office phone preferred)
             let phone = '';
-            const officeMatch = profileContent.html()?.match(/Office:\s*<a[^>]*href="tel:([^"]+)"[^>]*>/i);
+            const contactHtml = profileContact.html() || '';
+            const officeMatch = contactHtml.match(/Office:\s*<a[^>]*href="tel:([^"]+)"[^>]*>/i);
             if (officeMatch) {
                 phone = officeMatch[1];
             } else {
@@ -738,13 +746,11 @@ async function scrapePracticeArea(practiceAreaCode) {
 
                     stats.with_email++;
 
-                    // Fetch additional data from profile page (with jitter to look organic)
-                    await sleepWithJitter(DELAY_BETWEEN_DETAILS);
-                    const { website, practiceAreas } = await getProfileExtras(attorney.barNumber);
-
-                    if (website) {
-                        stats.with_website++;
-                    }
+                    // DISABLED: Profile page fetching causes 429 rate limiting
+                    // Website can be inferred later via separate workflow (like CalBar)
+                    // const { website, practiceAreas } = await getProfileExtras(attorney.barNumber);
+                    const website = '';
+                    const practiceAreas = [];
 
                     // Prepare document
                     const docData = {

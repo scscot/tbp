@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-01-14T17:41:33.851Z",
+  "run_date": "2026-01-14T18:17:06.058Z",
   "practice_area": {
     "code": "B37",
     "name": "Personal Injury",
@@ -18,7 +18,7 @@
     "errors": 0
   },
   "totals": {
-    "total_attorneys_in_db": 0,
+    "total_attorneys_in_db": 10,
     "practice_areas_completed": [
       "B37"
     ],
@@ -47,6 +47,6 @@
     ],
     "practice_areas_skipped": []
   },
-  "duration": "1.1 minutes",
-  "dry_run": true
+  "duration": "0.0 minutes",
+  "dry_run": false
 }
