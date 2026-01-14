@@ -534,6 +534,27 @@
         // Configuration
         const API_BASE = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net';
 
+        // Request timeout (30 seconds)
+        const DEFAULT_TIMEOUT = 30000;
+
+        /**
+         * Fetch with timeout support
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
         // Get params from URL
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
@@ -563,7 +584,7 @@
 
             try {
                 // Verify checkout session
-                const response = await fetch(`${API_BASE}/verifyCheckoutSession?sessionId=${sessionId}`);
+                const response = await fetchWithTimeout(`${API_BASE}/verifyCheckoutSession?sessionId=${sessionId}`);
 
                 if (!response.ok) {
                     throw new Error('Could not verify session');

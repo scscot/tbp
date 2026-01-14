@@ -78,6 +78,29 @@ jobs:
           echo "Skip time check: $SKIP_TIME_CHECK"
           node scripts/send-preintake-campaign.js
 
+      - name: Notify on failure
+        if: failure()
+        env:
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          node -e "
+          const nodemailer = require('nodemailer');
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.dreamhost.com',
+            port: 587,
+            secure: false,
+            auth: { user: process.env.PREINTAKE_SMTP_USER, pass: process.env.PREINTAKE_SMTP_PASS }
+          });
+          transporter.sendMail({
+            from: process.env.PREINTAKE_SMTP_USER,
+            to: 'scscot@gmail.com',
+            subject: '❌ GitHub Actions: PreIntake Email Campaign FAILED',
+            text: 'Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          }).then(() => console.log('Failure notification sent'))
+            .catch(err => console.error('Failed to send notification:', err.message));
+          "
+
       - name: Clean up
         if: always()
         run: |

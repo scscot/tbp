@@ -222,6 +222,8 @@ const {
   verifyDemoEmail,
   getPreIntakeFirmStatus,
   confirmPracticeAreas,
+  handlePreIntakeUnsubscribe,
+  submitPreIntakeContact,
 } = require('./preintake-functions');
 
 const {
@@ -393,6 +395,8 @@ module.exports = {
   verifyDemoEmail,
   getPreIntakeFirmStatus,
   confirmPracticeAreas,
+  handlePreIntakeUnsubscribe,
+  submitPreIntakeContact,
   analyzePreIntakeLead,
   analyzeAfterEmailVerification,
   generatePreIntakeDemo,

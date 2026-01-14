@@ -1116,6 +1116,206 @@ const verifyDemoEmail = onRequest(
 );
 
 /**
+ * Generate contact form confirmation email HTML
+ */
+function generateContactConfirmationEmail(name, message) {
+    const firstName = name.split(' ')[0];
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #0c1f3f; font-size: 24px; margin-bottom: 10px;">PreIntake.ai</h1>
+    </div>
+
+    <p>Hi ${firstName},</p>
+
+    <p>Thank you for reaching out to PreIntake.ai! We've received your message and will get back to you within 24 hours.</p>
+
+    <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; margin: 20px 0;">
+        <p style="margin: 0; color: #64748b; font-size: 14px;"><strong>Your message:</strong></p>
+        <p style="margin: 0.5rem 0 0; color: #1a1a2e;">${message}</p>
+    </div>
+
+    <p style="margin-top: 30px;">
+        —<br>
+        <strong>Support Team</strong><br>
+        PreIntake.ai
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+        AI-Powered Legal Intake<br>
+        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
+    </p>
+</body>
+</html>
+`;
+}
+
+/**
+ * Generate contact form notification email HTML for support team
+ */
+function generateContactNotificationEmail(name, email, message) {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #0c1f3f;">New Contact Form Submission</h2>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 100px;">Name:</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${name}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Email:</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${email}">${email}</a></td>
+        </tr>
+    </table>
+
+    <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; margin: 20px 0;">
+        <p style="margin: 0; color: #64748b; font-size: 14px;"><strong>Message:</strong></p>
+        <p style="margin: 0.5rem 0 0; color: #1a1a2e; white-space: pre-wrap;">${message}</p>
+    </div>
+
+    <p style="margin-top: 20px;">
+        <a href="mailto:${email}?subject=Re: PreIntake.ai Contact Form"
+           style="background: #c9a962; color: #0c1f3f; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Reply to ${name.split(' ')[0]}
+        </a>
+    </p>
+</body>
+</html>
+`;
+}
+
+/**
+ * Submit Contact Form
+ * Accepts POST with name, email, message
+ * Sends email to support and confirmation to user
+ */
+const submitPreIntakeContact = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+        secrets: [smtpUser, smtpPass]
+    },
+    async (req, res) => {
+        // Only allow POST
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { name, email, message } = req.body;
+
+            // Validate required fields
+            if (!name || !email || !message) {
+                return res.status(400).json({
+                    error: 'Missing required fields',
+                    required: ['name', 'email', 'message']
+                });
+            }
+
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ error: 'Invalid email address' });
+            }
+
+            // Validate message length
+            if (message.length < 10) {
+                return res.status(400).json({ error: 'Message is too short' });
+            }
+
+            if (message.length > 5000) {
+                return res.status(400).json({ error: 'Message is too long (max 5000 characters)' });
+            }
+
+            // Create SMTP transporter
+            const user = smtpUser.value();
+            const pass = smtpPass.value();
+
+            if (!user || !pass) {
+                console.error('SMTP credentials not configured for contact form');
+                return res.status(500).json({
+                    error: 'Email configuration error. Please try again later.'
+                });
+            }
+
+            const transporter = nodemailer.createTransport({
+                host: smtpHost.value(),
+                port: parseInt(smtpPort.value()),
+                secure: false,
+                requireTLS: true,
+                auth: { user, pass },
+                tls: { rejectUnauthorized: false }
+            });
+
+            // Send notification email to support team
+            try {
+                const notificationHtml = generateContactNotificationEmail(
+                    name.trim(),
+                    email.trim().toLowerCase(),
+                    message.trim()
+                );
+                await sendEmail(
+                    transporter,
+                    'support@preintake.ai',
+                    `Contact Form: ${name.trim()}`,
+                    notificationHtml
+                );
+                console.log(`Contact form: Notification sent for ${email}`);
+            } catch (emailErr) {
+                console.error('Error sending contact notification:', emailErr.message);
+                return res.status(500).json({
+                    error: 'Failed to send message. Please try again or email us directly.'
+                });
+            }
+
+            // Send confirmation email to user
+            try {
+                const confirmationHtml = generateContactConfirmationEmail(
+                    name.trim(),
+                    message.trim()
+                );
+                await sendEmail(
+                    transporter,
+                    `${name.trim()} <${email.trim().toLowerCase()}>`,
+                    'We received your message - PreIntake.ai',
+                    confirmationHtml
+                );
+                console.log(`Contact form: Confirmation sent to ${email}`);
+            } catch (emailErr) {
+                // Don't fail the request if confirmation fails - the main message was sent
+                console.error('Error sending contact confirmation:', emailErr.message);
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Message sent successfully'
+            });
+
+        } catch (error) {
+            console.error('Contact form error:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                message: error.message
+            });
+        }
+    }
+);
+
+/**
  * Handle Unsubscribe Request
  * Marks email as unsubscribed in preintake_emails collection
  */
@@ -1184,5 +1384,6 @@ module.exports = {
     verifyDemoEmail,
     getPreIntakeFirmStatus,
     confirmPracticeAreas,
-    handlePreIntakeUnsubscribe
+    handlePreIntakeUnsubscribe,
+    submitPreIntakeContact
 };

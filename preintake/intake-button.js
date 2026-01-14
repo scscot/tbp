@@ -30,6 +30,27 @@
     const CONFIG_URL = `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getWidgetConfig?firm=${firmId}`;
     const DEMO_URL = `https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/serveDemo?firm=${firmId}`;
 
+    // Request timeout (30 seconds)
+    const DEFAULT_TIMEOUT = 30000;
+
+    /**
+     * Fetch with timeout support
+     */
+    async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            return response;
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
     // State
     let config = null;
 
@@ -38,7 +59,7 @@
      */
     async function init() {
         try {
-            const response = await fetch(CONFIG_URL);
+            const response = await fetchWithTimeout(CONFIG_URL);
             if (response.ok) {
                 config = await response.json();
             }

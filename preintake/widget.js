@@ -43,6 +43,28 @@
     const CONFIG_URL = `${API_BASE}/getWidgetConfig?firm=${firmId}`;
     const CHAT_URL = `${API_BASE}/intakeChat`;
 
+    // Request timeout (30 seconds default, 60 for chat)
+    const DEFAULT_TIMEOUT = 30000;
+    const CHAT_TIMEOUT = 60000;
+
+    /**
+     * Fetch with timeout support
+     */
+    async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            return response;
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
     // Find container
     const container = document.getElementById('preintake');
     if (!container) {
@@ -124,7 +146,7 @@
     async function init() {
         try {
             // Fetch public config
-            const response = await fetch(CONFIG_URL);
+            const response = await fetchWithTimeout(CONFIG_URL);
             if (!response.ok) throw new Error('Failed to load config');
             config = await response.json();
 
@@ -710,7 +732,7 @@
         showTypingIndicator();
 
         try {
-            const response = await fetch(CHAT_URL, {
+            const response = await fetchWithTimeout(CHAT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -718,7 +740,7 @@
                     sessionId,
                     messages: conversationHistory,
                 }),
-            });
+            }, CHAT_TIMEOUT);
 
             hideTypingIndicator();
 
@@ -874,7 +896,7 @@
         // Send completion webhook
         try {
             const webhookUrl = `${API_BASE}/handleIntakeCompletion`;
-            await fetch(webhookUrl, {
+            await fetchWithTimeout(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

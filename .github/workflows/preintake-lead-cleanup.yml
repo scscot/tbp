@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd scripts && npm install firebase-admin && cd ..
+          cd scripts && npm install firebase-admin nodemailer && cd ..
           cd functions && npm install && cd ..
           echo "Dependencies installed"
 
@@ -59,6 +59,29 @@ jobs:
           echo "Starting PreIntake lead cleanup..."
           echo "Dry run: $DRY_RUN"
           node scripts/cleanup-stale-demos.js
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          node -e "
+          const nodemailer = require('nodemailer');
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.dreamhost.com',
+            port: 587,
+            secure: false,
+            auth: { user: process.env.PREINTAKE_SMTP_USER, pass: process.env.PREINTAKE_SMTP_PASS }
+          });
+          transporter.sendMail({
+            from: process.env.PREINTAKE_SMTP_USER,
+            to: 'scscot@gmail.com',
+            subject: '❌ GitHub Actions: PreIntake Lead Cleanup FAILED',
+            text: 'Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          }).then(() => console.log('Failure notification sent'))
+            .catch(err => console.error('Failed to send notification:', err.message));
+          "
 
       - name: Clean up
         if: always()

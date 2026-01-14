@@ -446,24 +446,40 @@ async function main() {
     // Load cumulative progress
     const progress = await loadProgress();
 
-    // Query CalBar contacts without websites
+    // Query CalBar contacts without websites AND not already checked
+    // We need to check for contacts that:
+    // 1. Have source == 'calbar'
+    // 2. Have website == '' (empty string)
+    // 3. Have NOT been checked before (domainChecked != true)
+    //
+    // Note: Firestore doesn't support != queries well, so we query all
+    // empty website contacts and filter out already-checked ones in memory
     let query = db.collection('preintake_emails')
         .where('source', '==', 'calbar')
         .where('website', '==', '');
 
     const snapshot = await query.get();
 
-    let contacts = snapshot.docs;
+    // Filter out contacts that have already been checked
+    const uncheckedContacts = snapshot.docs.filter(doc => {
+        const data = doc.data();
+        return data.domainChecked !== true;
+    });
+
+    console.log(`📊 Found ${snapshot.docs.length} contacts without websites`);
+    console.log(`   Already checked: ${snapshot.docs.length - uncheckedContacts.length}`);
+    console.log(`   Remaining to check: ${uncheckedContacts.length}`);
+
+    let contacts = uncheckedContacts;
     if (BATCH_SIZE && contacts.length > BATCH_SIZE) {
-        console.log(`📊 Found ${contacts.length} contacts without websites`);
         console.log(`   Processing first ${BATCH_SIZE} (BATCH_SIZE limit)\n`);
         contacts = contacts.slice(0, BATCH_SIZE);
     } else {
-        console.log(`📊 Found ${contacts.length} contacts without websites\n`);
+        console.log('');
     }
 
     if (contacts.length === 0) {
-        console.log('✅ All contacts already have websites!');
+        console.log('✅ All contacts have been checked (or have websites)!');
 
         // Still send notification email if not dry run
         if (!DRY_RUN) {
@@ -503,6 +519,15 @@ async function main() {
         if (isPersonalDomain(domain)) {
             console.log(`⏭️  ${stats.processed}. ${fullName}: Personal email (${domain})`);
             stats.personalEmail++;
+
+            // Mark as checked so we don't re-process
+            if (!DRY_RUN) {
+                await doc.ref.update({
+                    domainChecked: true,
+                    domainCheckedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    domainCheckResult: 'personal_email'
+                });
+            }
             continue;
         }
 
@@ -521,12 +546,25 @@ async function main() {
                     website: result.url,
                     websiteInferred: true,
                     websiteInferredAt: admin.firestore.FieldValue.serverTimestamp(),
-                    websiteConfidence: result.confidence
+                    websiteConfidence: result.confidence,
+                    domainChecked: true,
+                    domainCheckedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    domainCheckResult: 'found'
                 });
             }
         } else {
             console.log(`   ❌ Not found: ${result.reason}`);
             stats.websiteNotFound++;
+
+            // Mark as checked so we don't re-process
+            if (!DRY_RUN) {
+                await doc.ref.update({
+                    domainChecked: true,
+                    domainCheckedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    domainCheckResult: 'not_found',
+                    domainCheckReason: result.reason
+                });
+            }
         }
 
         await sleep(DELAY_BETWEEN_REQUESTS);

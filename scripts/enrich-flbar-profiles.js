@@ -163,14 +163,22 @@ async function getUnenrichedContacts(limit) {
     // - Has memberUrl (or barNumber to construct it)
     // - Website is empty or null
     // - Not already enriched (no enrichedAt timestamp)
+    //
+    // We fetch more docs than needed because some may already be enriched
+    // (enrichedAt exists but website is still empty = no website on profile)
+    const queryLimit = Math.max(limit * 10, 100);
+
     const snapshot = await db.collection('preintake_emails')
         .where('source', '==', 'flbar')
         .where('website', '==', '')
-        .limit(limit)
+        .limit(queryLimit)
         .get();
 
     const contacts = [];
     snapshot.forEach(doc => {
+        // Stop once we have enough
+        if (contacts.length >= limit) return;
+
         const data = doc.data();
         // Skip if already enriched
         if (data.enrichedAt) return;
@@ -200,6 +208,7 @@ async function updateContact(docId, enrichmentData) {
         enrichmentSource: 'flbar_profile'
     };
 
+    // Only set website if one was found on the profile
     if (enrichmentData.website) {
         updateData.website = enrichmentData.website;
     }

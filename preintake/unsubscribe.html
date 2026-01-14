@@ -208,6 +208,27 @@
     </footer>
 
     <script>
+        // Request timeout (30 seconds)
+        const DEFAULT_TIMEOUT = 30000;
+
+        /**
+         * Fetch with timeout support
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
         // Get email from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const email = urlParams.get('email');
@@ -237,7 +258,7 @@
             statusEl.style.display = 'block';
 
             try {
-                const response = await fetch('https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/handlePreIntakeUnsubscribe', {
+                const response = await fetchWithTimeout('https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/handlePreIntakeUnsubscribe', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

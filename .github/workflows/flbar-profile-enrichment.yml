@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd scripts && npm install firebase-admin cheerio
+          cd scripts && npm install firebase-admin cheerio@1.0.0
 
       - name: Setup Firebase credentials
         env:

@@ -362,24 +362,84 @@
     <div id="preintake-footer"></div>
 
     <script>
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
+        // Request timeout (30 seconds)
+        const DEFAULT_TIMEOUT = 30000;
+
+        /**
+         * Fetch with timeout support
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            // Create mailto link with form data
-            const subject = encodeURIComponent('Contact Form: ' + name);
-            const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
-
-            // Open email client
-            window.location.href = 'mailto:support@preintake.ai?subject=' + subject + '&body=' + body;
-
-            // Show success message
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const submitBtn = this.querySelector('.submit-btn');
             const messageDiv = document.getElementById('form-message');
-            messageDiv.textContent = 'Opening your email client... If it doesn\'t open, please email us directly at support@preintake.ai';
-            messageDiv.className = 'form-message success';
+
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            messageDiv.className = 'form-message';
+            messageDiv.style.display = 'none';
+
+            try {
+                const response = await fetchWithTimeout(
+                    'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/submitPreIntakeContact',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name, email, message })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Show success message
+                    messageDiv.textContent = 'Message sent successfully! We\'ll get back to you within 24 hours.';
+                    messageDiv.className = 'form-message success';
+                    // Reset form
+                    this.reset();
+                    // Track conversion
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'contact_form_submit', {
+                            'event_category': 'engagement',
+                            'event_label': 'contact_form'
+                        });
+                    }
+                } else {
+                    throw new Error(data.error || 'Failed to send message');
+                }
+            } catch (error) {
+                console.error('Contact form error:', error);
+                // Show error message with fallback
+                messageDiv.innerHTML = error.name === 'AbortError'
+                    ? 'Request timed out. Please try again or email us directly at <a href="mailto:support@preintake.ai">support@preintake.ai</a>'
+                    : (error.message || 'Something went wrong.') + ' You can also email us directly at <a href="mailto:support@preintake.ai">support@preintake.ai</a>';
+                messageDiv.className = 'form-message error';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
         });
     </script>
 </body>

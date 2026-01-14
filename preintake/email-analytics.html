@@ -449,6 +449,27 @@
         const CORRECT_PASSWORD = 'TeamBuildPro2024!';
         const API_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailAnalytics';
 
+        // Request timeout (30 seconds)
+        const DEFAULT_TIMEOUT = 30000;
+
+        /**
+         * Fetch with timeout support
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
         // Password handling
         const passwordOverlay = document.getElementById('password-overlay');
         const passwordInput = document.getElementById('password-input');
@@ -491,7 +512,7 @@
             refreshBtn.disabled = true;
 
             try {
-                const response = await fetch(API_ENDPOINT);
+                const response = await fetchWithTimeout(API_ENDPOINT);
                 if (!response.ok) throw new Error('Failed to fetch analytics');
                 const data = await response.json();
                 renderAnalytics(data);

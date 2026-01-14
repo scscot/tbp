@@ -676,6 +676,27 @@
         // Configuration
         const API_BASE = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net';
 
+        // Request timeout (30 seconds)
+        const DEFAULT_TIMEOUT = 30000;
+
+        /**
+         * Fetch with timeout support
+         */
+        async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
         // State
         let currentToken = null;
         let accountData = null;
@@ -777,7 +798,7 @@
             successEl.style.display = 'none';
 
             try {
-                const response = await fetch(`${API_BASE}/sendAccountAccessLink`, {
+                const response = await fetchWithTimeout(`${API_BASE}/sendAccountAccessLink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
@@ -810,7 +831,7 @@
          */
         async function verifyToken(token) {
             try {
-                const response = await fetch(`${API_BASE}/verifyAccountToken?token=${encodeURIComponent(token)}`);
+                const response = await fetchWithTimeout(`${API_BASE}/verifyAccountToken?token=${encodeURIComponent(token)}`);
 
                 if (!response.ok) {
                     const data = await response.json();
@@ -910,7 +931,7 @@
             btn.textContent = 'Saving...';
 
             try {
-                const response = await fetch(`${API_BASE}/updateAccountSettings`, {
+                const response = await fetchWithTimeout(`${API_BASE}/updateAccountSettings`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: currentToken, deliveryEmail: email })
@@ -950,7 +971,7 @@
             btn.innerHTML = `<div class="spinner" style="width: 20px; height: 20px; margin: 0;"></div> Opening...`;
 
             try {
-                const response = await fetch(`${API_BASE}/createBillingPortalSession`, {
+                const response = await fetchWithTimeout(`${API_BASE}/createBillingPortalSession`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: currentToken })
