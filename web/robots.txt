@@ -1,13 +1,22 @@
 # This robots.txt file controls how search engine crawlers index the site.
 
 User-agent: *
-
-# Allow all public pages
 Allow: /
 
-# NOTE: Test files temporarily unblocked so Google can see 410 Gone status from .htaccess
-# After Google removes them from index (1-2 weeks), re-add Disallow rules for:
-# - /test_*.html, /*-test.html, /*-backup.html, /*-temp.html, /*-mock.html, /index-*.html
+# Block admin/monitoring pages
+Disallow: /appstore-monitor.html
+Disallow: /email-stats.html
+Disallow: /firestore-monitor.html
+Disallow: /TBP-analytics.html
+
+# Block test/utility pages
+Disallow: /faq-test.html
+Disallow: /claim-google.html
+Disallow: /unsubscribe.html
+
+# Block legacy landing pages
+Disallow: /professionals.html
+Disallow: /prospects.html
 
 # Sitemap location
 Sitemap: https://teambuildpro.com/sitemap.xml
