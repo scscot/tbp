@@ -516,7 +516,7 @@
         </div>
 
         <div class="footer-links">
-            <a href="/">Back to PreIntake.ai</a> &bull;
+            <a href="/" id="back-link">Back to PreIntake.ai</a> &bull;
             <a href="mailto:support@preintake.ai">Need help?</a>
         </div>
     </div>
@@ -599,6 +599,13 @@
                         .substring(0, 2)
                         .toUpperCase();
                     firmLogoPlaceholder.textContent = initials;
+                }
+
+                // Update back link to preserve context
+                const backLink = document.getElementById('back-link');
+                if (backLink && firmId) {
+                    const firmNameEncoded = encodeURIComponent(firmData.firmName || '');
+                    backLink.href = `/?demo=${firmId}&firm=${firmNameEncoded}`;
                 }
 
                 // Show content
