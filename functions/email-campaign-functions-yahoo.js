@@ -9,8 +9,8 @@ const emailCampaignEnabledYahoo = defineString("EMAIL_CAMPAIGN_ENABLED_YAHOO", {
 const androidCampaignEnabledYahoo = defineString("ANDROID_CAMPAIGN_ENABLED_YAHOO", { default: "false" });
 const emailCampaignSyncEnabledYahoo = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED_YAHOO", { default: "false" });
 const emailCampaignBatchSizeYahoo = defineString("EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO", { default: "1" });
-const mailgunApiKey = defineString("MAILGUN_API_KEY");
-const mailgunDomain = defineString("MAILGUN_DOMAIN", { default: "hello.teambuildpro.com" });
+const mailgunApiKey = defineString("TBP_MAILGUN_API_KEY");
+const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambuildpro.com" });
 
 async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const form = new FormData();
@@ -30,7 +30,7 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   const selectedSubject = subjects[subjectIndex].subject;
   const subjectTag = subjects[subjectIndex].tag;
 
-  form.append('from', 'Stephen Scott <stephen@hello.teambuildpro.com>');
+  form.append('from', 'Stephen Scott <stephen@news.teambuildpro.com>');
   form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
   // form.append('bcc', 'Stephen Scott <scscot@gmail.com>');
   form.append('subject', selectedSubject);
@@ -87,7 +87,7 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
   }
 
   if (!apiKey) {
-    console.error("❌ YAHOO EMAIL CAMPAIGN: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO EMAIL CAMPAIGN: TBP_MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 
@@ -195,7 +195,7 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
   }
 
   if (!apiKey) {
-    console.error("❌ YAHOO ANDROID LAUNCH CAMPAIGN: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO ANDROID LAUNCH CAMPAIGN: TBP_MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 
@@ -232,7 +232,7 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
         const selectedSubject = `The Recruiting App Built for Direct Sales`;
         const selectedVersion = 'initial';
 
-        form.append('from', 'Stephen Scott <stephen@hello.teambuildpro.com>');
+        form.append('from', 'Stephen Scott <stephen@news.teambuildpro.com>');
         form.append('to', `${contact.firstName} ${contact.lastName} <${contact.email}>`);
         form.append('subject', selectedSubject);
         form.append('template', 'mailer');
@@ -326,7 +326,7 @@ const syncMailgunEventsYahoo = onSchedule({
   }
 
   if (!apiKey) {
-    console.error("❌ YAHOO MAILGUN EVENT SYNC: MAILGUN_API_KEY not configured");
+    console.error("❌ YAHOO MAILGUN EVENT SYNC: TBP_MAILGUN_API_KEY not configured");
     return { status: 'error', message: 'Missing API key' };
   }
 

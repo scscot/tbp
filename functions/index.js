@@ -131,6 +131,15 @@ const {
 } = require('./email-campaign-functions');
 
 // ==============================
+// Import Email Campaign Functions (Yahoo)
+// ==============================
+const {
+  sendHourlyEmailCampaignYahoo,
+  sendAndroidLaunchCampaignYahoo,
+  syncMailgunEventsYahoo,
+} = require('./email-campaign-functions-yahoo');
+
+// ==============================
 // Import Email Tracking Functions (SMTP Migration)
 // ==============================
 const {
@@ -367,6 +376,11 @@ module.exports = {
   // Email campaign (scheduled)
   sendHourlyEmailCampaign,
   sendAndroidLaunchCampaign,
+
+  // Email campaign Yahoo (scheduled)
+  sendHourlyEmailCampaignYahoo,
+  sendAndroidLaunchCampaignYahoo,
+  syncMailgunEventsYahoo,
 
   // Email tracking endpoints (SMTP migration)
   trackEmailOpen,
