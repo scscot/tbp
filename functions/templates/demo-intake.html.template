@@ -1653,6 +1653,26 @@
         </div>
     </div>
 
+    <!-- Demo Limit Reached Modal -->
+    <div id="demo-limit-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center; z-index: 10000;">
+        <div class="modal-content" style="background: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); max-width: 480px; margin: 1rem;">
+            <h3 style="margin: 0 0 1rem 0; color: #1a3a5c; font-size: 1.5rem;">Thanks for Trying the Demo</h3>
+            <p style="margin: 0 0 1.5rem 0; color: #4a5568; line-height: 1.6;">
+                Ready to go live on your website?
+            </p>
+            <a href="https://preintake.ai/create-account.html?firm={{LEAD_ID}}"
+               style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: linear-gradient(135deg, #c9a962, #b8860b); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease;">
+                Get Started
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+            <p style="margin: 1.5rem 0 0 0; font-size: 0.875rem; color: #718096;">
+                Questions? <a href="mailto:support@preintake.ai" style="color: #c9a962;">support@preintake.ai</a>
+            </p>
+        </div>
+    </div>
+
     <script>
         // Configuration
         const CONFIG = {
@@ -1760,6 +1780,39 @@
         function hasRecoverableSession() {
             const session = loadSession();
             return session && session.collectedData?.contact;
+        }
+
+        // Demo submission limiting
+        const SUBMISSION_COUNT_KEY = 'preintake_demo_count_{{LEAD_ID}}';
+        const MAX_DEMO_SUBMISSIONS = 10;
+
+        function getSubmissionCount() {
+            try {
+                const count = localStorage.getItem(SUBMISSION_COUNT_KEY);
+                return count ? parseInt(count, 10) : 0;
+            } catch (e) {
+                console.warn('Could not get submission count:', e);
+                return 0;
+            }
+        }
+
+        function incrementSubmissionCount() {
+            try {
+                const count = getSubmissionCount() + 1;
+                localStorage.setItem(SUBMISSION_COUNT_KEY, count.toString());
+                return count;
+            } catch (e) {
+                console.warn('Could not increment submission count:', e);
+                return 0;
+            }
+        }
+
+        function hasReachedSubmissionLimit() {
+            return getSubmissionCount() >= MAX_DEMO_SUBMISSIONS;
+        }
+
+        function showDemoLimitModal() {
+            document.getElementById('demo-limit-modal').style.display = 'flex';
         }
 
         // Screen management
@@ -2436,6 +2489,11 @@
                     return "Help content stored.";
 
                 case 'complete_intake':
+                    // Check demo submission limit BEFORE processing
+                    if (hasReachedSubmissionLimit()) {
+                        showDemoLimitModal();
+                        return "Demo submission limit reached.";
+                    }
                     collectedData.assessment = input;
                     // Check if GREEN or YELLOW - offer additional comments
                     if (input.routing === 'green' || input.routing === 'yellow') {
@@ -2518,7 +2576,7 @@
             };
 
             try {
-                await fetch(CONFIG.webhookUrl, {
+                const response = await fetch(CONFIG.webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2526,6 +2584,11 @@
                     },
                     body: JSON.stringify(payload)
                 });
+                // Increment demo submission count on successful delivery
+                if (response.ok) {
+                    const newCount = incrementSubmissionCount();
+                    console.log(`Demo submission ${newCount}/${MAX_DEMO_SUBMISSIONS} recorded`);
+                }
             } catch (error) {
                 console.error('Webhook error:', error);
             }
