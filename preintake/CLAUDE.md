@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-14
-**Version**: 3.1 (CalBar Attorney Scraper + practice area targeting)
+**Last Updated**: 2026-01-15
+**Version**: 3.3 (FL Bar scraper + Wix site validation fix)
 
 ---
 
@@ -1069,6 +1069,104 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
 | `website` | Firm website (if available) |
 | `randomIndex` | 0.0-0.1 range (prioritized in queue) |
 
+### Phase 25: Florida Bar Attorney Scraper (2026-01-14)
+- [x] **FL Bar Scraper Script** - `scripts/scrape-flbar-attorneys.js`
+  - Scrapes attorney contact information from Florida Bar website
+  - Two-step approach: (1) Search results for name/email, (2) Profile page for website/practice areas
+  - Handles Cloudflare email obfuscation (decode protected mailto links)
+  - Progress tracking to resume across daily runs
+  - Practice area mapping (B37 → Personal Injury, B28 → Immigration, etc.)
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/flbar-scraper.yml`
+  - Scheduled: Daily at 2am PST (10:00 UTC)
+  - Manual trigger with configurable practice area and max attorneys
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Profile Enrichment Script** - `scripts/enrich-flbar-profiles.js`
+  - Fetches FL Bar profile pages to extract website URLs
+  - Designed for slow rate (1 record per invocation) to avoid 429 rate limiting
+  - Updates Firestore with website, enrichedAt timestamp
+- [x] **Enrichment Workflow** - `.github/workflows/flbar-profile-enrichment.yml`
+  - Runs every 2 minutes (720 requests/day max)
+  - Processes 1 record per run to stay under rate limits
+- [x] **Backfill Script** - `scripts/backfill-flbar-member-urls.js`
+  - One-time script to add `memberUrl` field to existing FL Bar contacts
+  - Constructs URL from barNumber: `https://www.floridabar.org/directories/find-mbr/profile/?num={barNumber}`
+- [x] **Diagnostic/Reset Scripts**
+  - `scripts/diagnose-flbar-data.js` - Analyze FL Bar data distribution by source/practice area
+  - `scripts/reset-flbar-data.js` - Delete FL Bar contacts and reset scrape progress for clean re-scrape
+
+**FL Bar Practice Areas (Tier 1 - High Priority):**
+| Code | Practice Area |
+|------|---------------|
+| B37 | Personal Injury |
+| B28 | Immigration |
+| B49 | Workers Compensation |
+| B33 | Medical Malpractice |
+| B38 | Products Liability |
+| B47 | Toxic Torts |
+| B05 | Bankruptcy |
+| B30 | Labor & Employment |
+| B09 | Construction Law |
+| B29 | Insurance |
+| B31 | Legal Malpractice |
+| B39 | Professional Liability |
+
+**Firestore Fields** (in `preintake_emails` collection for FL Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"flbar"` |
+| `barNumber` | Florida Bar number |
+| `practiceArea` | Practice area from FL Bar |
+| `state` | `"FL"` |
+| `memberUrl` | FL Bar profile URL |
+| `website` | Firm website (from enrichment) |
+| `enrichedAt` | Timestamp of enrichment |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/flbar`):
+| Field | Description |
+|-------|-------------|
+| `scrapedPracticeAreaCodes` | Array of completed practice area codes |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+### Phase 26: Website Validation & UX Improvements (2026-01-15)
+- [x] **JavaScript-Heavy Site Validation Fix** - Added `stripNonContentHtml()` function
+  - Wix, Squarespace, and React sites were failing validation because first 15KB was framework JS
+  - New function strips: `<script>`, `<style>`, `<noscript>`, HTML comments, inline JSON, `<svg>` tags
+  - Reduces 1.2MB Wix HTML to ~100KB of actual content before Claude analysis
+  - Increased truncation limit from 15,000 to 20,000 characters
+  - Root cause: nm-llp.com (valid law firm) was rejected because Claude only saw framework code
+- [x] **Verification Email Text Simplification** - Cleaner, more user-focused copy
+  - Changed from "start building your custom AI intake demo" to "view your custom demo"
+  - Removed jargon ("AI intake") - recipient already knows what PreIntake.ai does
+  - "view" is clearer and more action-oriented than "start building"
+
+**`stripNonContentHtml()` Function:**
+```javascript
+function stripNonContentHtml(html) {
+    let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+    cleaned = cleaned.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
+    cleaned = cleaned.replace(/<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi, ' ');
+    cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, ' ');
+    cleaned = cleaned.replace(/<script[^>]*type="application\/json"[^>]*>[\s\S]*?<\/script>/gi, ' ');
+    cleaned = cleaned.replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, ' ');
+    cleaned = cleaned.replace(/\s+/g, ' ');
+    return cleaned.trim();
+}
+```
+
+**Validation Flow (Updated):**
+```
+1. Fetch website HTML (15s timeout)
+2. Strip non-content HTML (scripts, styles, SVGs, comments)
+3. Truncate cleaned HTML to 20,000 chars
+4. Send to Claude Haiku for law firm classification
+5. Require isLawFirm=true AND confidence >= 80%
+```
+
 ---
 
 ## Architecture
@@ -1117,7 +1215,12 @@ pending → analyzing → researching → generating_demo → demo_ready
 /scripts/
 ├── regenerate-preintake-demos.js    # Regenerate demos with latest template
 ├── analyze-click-rate.js            # Email click rate analysis
-└── send-preintake-campaign.js       # Email campaign sender
+├── send-preintake-campaign.js       # Email campaign sender
+├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper
+├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
+├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
+├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
+└── reset-flbar-data.js              # Reset FL Bar data for clean re-scrape
 ```
 
 ### Firebase Configuration
