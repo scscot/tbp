@@ -501,9 +501,12 @@ const getEmailAnalytics = onRequest(
                 });
 
                 // Calculate rates using unique opens/clicks (industry standard)
+                // Cap at 100% since Mailgun's "unique" may count multiple devices per recipient
                 if (mailgunStats.delivered > 0) {
-                    mailgunStats.openRate = ((mailgunStats.uniqueOpens / mailgunStats.delivered) * 100).toFixed(1);
-                    mailgunStats.clickRate = ((mailgunStats.uniqueClicks / mailgunStats.delivered) * 100).toFixed(1);
+                    const rawOpenRate = (mailgunStats.uniqueOpens / mailgunStats.delivered) * 100;
+                    const rawClickRate = (mailgunStats.uniqueClicks / mailgunStats.delivered) * 100;
+                    mailgunStats.openRate = Math.min(rawOpenRate, 100).toFixed(1);
+                    mailgunStats.clickRate = Math.min(rawClickRate, 100).toFixed(1);
                 } else {
                     mailgunStats.openRate = '0.0';
                     mailgunStats.clickRate = '0.0';
