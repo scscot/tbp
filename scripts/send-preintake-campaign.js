@@ -293,7 +293,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
     <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
       <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
       <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
-        PreIntake.ai · Los Angeles, California
+        Los Angeles, California
       </p>
       <p style="margin:10px 0 0 0;">
         <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>

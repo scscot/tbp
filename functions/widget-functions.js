@@ -10,6 +10,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const Anthropic = require('@anthropic-ai/sdk');
+const axios = require('axios');
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
@@ -447,6 +448,71 @@ const getEmailAnalytics = onRequest(
         try {
             const now = new Date();
 
+            // Fetch Mailgun stats for law.preintake.ai domain
+            let mailgunStats = null;
+            try {
+                const MAILGUN_DOMAIN = process.env.PREINTAKE_MAILGUN_DOMAIN || 'law.preintake.ai';
+                const MAILGUN_API_KEY = process.env.PREINTAKE_MAILGUN_API_KEY;
+
+                if (!MAILGUN_API_KEY) {
+                    console.warn('PREINTAKE_MAILGUN_API_KEY not set, skipping Mailgun stats');
+                    throw new Error('Mailgun API key not configured');
+                }
+
+                const mailgunBaseUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
+
+                const statsResponse = await axios.get(`${mailgunBaseUrl}/stats/total`, {
+                    auth: {
+                        username: 'api',
+                        password: MAILGUN_API_KEY
+                    },
+                    params: {
+                        event: ['accepted', 'delivered', 'failed', 'opened', 'clicked', 'unsubscribed', 'complained'],
+                        duration: '7d',
+                        resolution: 'day'
+                    }
+                });
+
+                // Extract totals from the stats response
+                const stats = statsResponse.data?.stats || [];
+                mailgunStats = {
+                    accepted: 0,
+                    delivered: 0,
+                    failed: 0,
+                    uniqueOpens: 0,
+                    totalOpens: 0,
+                    uniqueClicks: 0,
+                    totalClicks: 0,
+                    unsubscribed: 0,
+                    complained: 0
+                };
+
+                stats.forEach(day => {
+                    mailgunStats.accepted += day.accepted?.total || 0;
+                    mailgunStats.delivered += day.delivered?.total || 0;
+                    mailgunStats.failed += (day.failed?.permanent?.total || 0) + (day.failed?.temporary?.total || 0);
+                    // Use unique counts for rate calculations (one per recipient)
+                    mailgunStats.uniqueOpens += day.opened?.unique || 0;
+                    mailgunStats.totalOpens += day.opened?.total || 0;
+                    mailgunStats.uniqueClicks += day.clicked?.unique || 0;
+                    mailgunStats.totalClicks += day.clicked?.total || 0;
+                    mailgunStats.unsubscribed += day.unsubscribed?.total || 0;
+                    mailgunStats.complained += day.complained?.total || 0;
+                });
+
+                // Calculate rates using unique opens/clicks (industry standard)
+                if (mailgunStats.delivered > 0) {
+                    mailgunStats.openRate = ((mailgunStats.uniqueOpens / mailgunStats.delivered) * 100).toFixed(1);
+                    mailgunStats.clickRate = ((mailgunStats.uniqueClicks / mailgunStats.delivered) * 100).toFixed(1);
+                } else {
+                    mailgunStats.openRate = '0.0';
+                    mailgunStats.clickRate = '0.0';
+                }
+            } catch (mailgunError) {
+                console.error('Mailgun stats fetch error:', mailgunError.message);
+                // Continue without Mailgun stats
+            }
+
             // Calculate date boundaries in PST (UTC-8)
             // This ensures consistent "today" regardless of server timezone
             const PST_OFFSET = -8 * 60 * 60 * 1000; // -8 hours in ms
@@ -614,6 +680,8 @@ const getEmailAnalytics = onRequest(
                 activeLeads,
                 templateVersions,
                 leadDetails,
+                // Mailgun delivery & engagement stats (last 7 days)
+                mailgunStats,
             });
 
         } catch (error) {

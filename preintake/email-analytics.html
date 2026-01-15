@@ -642,6 +642,35 @@
                     </div>
                 </div>
 
+                <!-- Mailgun Delivery & Engagement (Last 7 Days) -->
+                ${data.mailgunStats ? `
+                <div class="click-rate-section" style="margin-bottom: 40px;">
+                    <h2>Mailgun Email Metrics (Last 7 Days)</h2>
+                    <div class="rate-cards">
+                        <div class="rate-card">
+                            <h4>Delivered</h4>
+                            <div class="rate-value" style="color: #10b981;">${data.mailgunStats.delivered}</div>
+                            <div class="rate-details">${data.mailgunStats.accepted} accepted</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Open Rate</h4>
+                            <div class="rate-value">${data.mailgunStats.openRate}%</div>
+                            <div class="rate-details">${data.mailgunStats.uniqueOpens} unique opens</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Click Rate</h4>
+                            <div class="rate-value">${data.mailgunStats.clickRate}%</div>
+                            <div class="rate-details">${data.mailgunStats.uniqueClicks} unique clicks</div>
+                        </div>
+                        <div class="rate-card">
+                            <h4>Failed</h4>
+                            <div class="rate-value" style="color: ${data.mailgunStats.failed > 0 ? '#ef4444' : '#10b981'};">${data.mailgunStats.failed}</div>
+                            <div class="rate-details">${data.mailgunStats.complained} complaints, ${data.mailgunStats.unsubscribed} unsubs</div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
                 <!-- Click Rate Section -->
                 <div class="click-rate-section">
                     <h2>Click Rate (Demo Views / Emails with Demos)</h2>
