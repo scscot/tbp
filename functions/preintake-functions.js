@@ -216,6 +216,28 @@ async function validateEmail(email) {
 }
 
 /**
+ * Strip script, style, and other non-content elements from HTML
+ * This is crucial for JavaScript-heavy frameworks like Wix, Squarespace, etc.
+ */
+function stripNonContentHtml(html) {
+    // Remove script tags and their content
+    let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+    // Remove style tags and their content
+    cleaned = cleaned.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
+    // Remove noscript tags
+    cleaned = cleaned.replace(/<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi, ' ');
+    // Remove HTML comments
+    cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, ' ');
+    // Remove inline JSON data (common in Wix/React sites)
+    cleaned = cleaned.replace(/<script[^>]*type="application\/json"[^>]*>[\s\S]*?<\/script>/gi, ' ');
+    // Remove SVG content (often large and not useful for classification)
+    cleaned = cleaned.replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, ' ');
+    // Collapse multiple whitespace
+    cleaned = cleaned.replace(/\s+/g, ' ');
+    return cleaned.trim();
+}
+
+/**
  * Validate that the website is a law firm or attorney website
  * Uses Claude AI to analyze the website content with high accuracy
  */
@@ -247,8 +269,12 @@ async function validateLawFirmWebsite(url) {
 
         const html = await response.text();
 
-        // Truncate HTML for Claude (first 15000 chars should capture key content)
-        const truncatedHtml = html.substring(0, 15000);
+        // Strip non-content HTML (scripts, styles, SVGs) before truncating
+        // This is crucial for JavaScript-heavy frameworks like Wix, Squarespace, etc.
+        const cleanedHtml = stripNonContentHtml(html);
+
+        // Truncate cleaned HTML for Claude (now contains actual content, not JS boilerplate)
+        const truncatedHtml = cleanedHtml.substring(0, 20000);
 
         // Call Claude to validate
         const anthropic = new Anthropic({
@@ -353,7 +379,7 @@ function generateVerificationEmail(name, website, verificationUrl) {
 
     <p>Hi ${firstName},</p>
 
-    <p>Thank you for your interest in PreIntake.ai! Please verify your email address to start building your custom AI intake demo for <strong>${website}</strong>.</p>
+    <p>Thank you for your interest in PreIntake.ai! Please verify your email address to view your custom AI intake demo for <strong>${website}</strong>.</p>
 
     <div style="text-align: center; margin: 30px 0;">
         <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Verify Email & Start Demo</a>
