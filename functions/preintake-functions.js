@@ -379,7 +379,7 @@ function generateVerificationEmail(name, website, verificationUrl) {
 
     <p>Hi ${firstName},</p>
 
-    <p>Thank you for your interest in PreIntake.ai! Please verify your email address to view your custom AI intake demo for <strong>${website}</strong>.</p>
+    <p>Thank you for your interest in PreIntake.ai! Please verify your email address to start your custom demo for <strong>${website}</strong>.</p>
 
     <div style="text-align: center; margin: 30px 0;">
         <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">Verify Email & Start Demo</a>
