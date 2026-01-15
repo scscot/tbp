@@ -13,7 +13,7 @@
  *   node scripts/scrape-flbar-attorneys.js
  *
  * Environment variables:
- *   PRACTICE_AREA_CODE - Specific practice area code to scrape (e.g., B37)
+ *   PRACTICE_AREA_CODE - Specific practice area code to scrape (e.g., P02 for Personal Injury)
  *   MAX_ATTORNEYS - Maximum attorneys to scrape per run (default: 500)
  *   DRY_RUN - If "true", don't write to Firestore
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
@@ -33,85 +33,96 @@ const path = require('path');
 
 const PRACTICE_AREAS = {
     // Tier 1: High priority (from practice-area-targets.md ranks 1-14)
-    'B37': 'Personal Injury',
-    'B28': 'Immigration',
-    'B49': 'Workers Compensation',
-    'B33': 'Medical Malpractice',
-    'B38': 'Products Liability',
-    'B47': 'Toxic Torts',
-    'B05': 'Bankruptcy',
-    'B30': 'Labor & Employment',
-    'B09': 'Construction Law',
-    'B29': 'Insurance',
-    'B31': 'Legal Malpractice',
-    'B39': 'Professional Liability',
+    // Codes from FL Bar website: https://www.floridabar.org/directories/find-mbr/
+    'P02': 'Personal Injury',
+    'I01': 'Immigration and Nationality',
+    'W02': 'Workers Compensation',
+    'W03': 'Workers Compensation (Claimant)',
+    'W04': 'Workers Compensation (Defense)',
+    'M04': 'Medical Malpractice',
+    'P04': 'Product Liability',
+    'T03': 'Toxic Torts',
+    'B02': 'Bankruptcy',
+    'L01': 'Labor and Employment',
+    'C11': 'Construction',
+    'I04': 'Insurance',
+    'L05': 'Legal Malpractice',
+    'P05': 'Professional Liability',
 
     // Tier 2: Moderate priority (ranks 15-25)
-    'B19': 'Family Law',
-    'B14': 'Criminal Law',
-    'B41': 'Real Estate',
-    'B18': 'Elder Law',
-    'B44': 'Trusts & Estates',
-    'B08': 'Civil Rights',
-    'B43': 'Taxation',
-    'B26': 'Health Care',
-    'B10': 'Condominium & HOA',
+    'F01': 'Family',
+    'C16': 'Criminal',
+    'C17': 'Criminal Appellate',
+    'R01': 'Real Estate',
+    'R02': 'Real Estate/Land Development',
+    'E02': 'Elder',
+    'T08': 'Trusts and Estates',
+    'W01': 'Wills, Trusts and Estates',
+    'C04': 'Civil Rights',
+    'T01': 'Tax',
+    'H01': 'Health',
+    'H02': 'Health Administration',
+    'C18': 'Condominium and Planned Development',
 
     // Tier 3: Lower priority but still consumer-facing
-    'B06': 'Business Law',
-    'B20': 'Government',
-    'B21': 'Government Contracts',
-    'B35': 'International Law',
-    'B36': 'International Trade',
-    'B02': 'Admiralty & Maritime',
-    'B03': 'Administrative Law',
-    'B04': 'Appellate Practice',
-    'B07': 'Civil Litigation',
-    'B11': 'Constitutional Law',
-    'B12': 'Consumer Protection',
-    'B13': 'Contracts',
-    'B15': 'Debtor & Creditor',
-    'B16': 'Education Law',
-    'B17': 'Eminent Domain',
-    'B22': 'Intellectual Property',
-    'B23': 'Juvenile Law',
-    'B24': 'Labor Relations',
-    'B25': 'Land Use & Zoning',
-    'B27': 'Immigration & Nationality',
-    'B32': 'Media & Communications',
-    'B34': 'Military Law',
-    'B40': 'Public Utilities',
-    'B42': 'Securities',
-    'B45': 'Trial Practice',
-    'B46': 'Environmental',
-    'B48': 'Transportation',
-    'B50': 'Wills & Probate'
+    'B04': 'Business',
+    'B05': 'Business and Taxation',
+    'G04': 'Government',
+    'G08': 'Government Contracts',
+    'I08': 'International',
+    'I10': 'International Business',
+    'A02': 'Admiralty and Maritime',
+    'A01': 'Administrative',
+    'A08': 'Appellate Practice',
+    'C03': 'Civil Litigation',
+    'C05': 'Civil Trial',
+    'C07': 'Commercial Litigation',
+    'C10': 'Constitutional',
+    'C12': 'Consumer',
+    'C13': 'Contracts',
+    'D01': 'Debtor and Creditor',
+    'E01': 'Education',
+    'E04': 'Eminent Domain',
+    'I05': 'Intellectual Property',
+    'J02': 'Juvenile',
+    'Z01': 'Zoning, Planning and Land Use',
+    'E08': 'Environmental and Land Use',
+    'E06': 'Environmental and Natural Resources',
+    'M02': 'Media',
+    'M06': 'Military/Veteran',
+    'P09': 'Public Utilities',
+    'S01': 'Securities',
+    'T06': 'Trial',
+    'T05': 'Transportation',
+    'P03': 'Probate and Trust Litigation',
+    'E10': 'Estate Planning',
+    'G09': 'Guardianship'
 };
 
 // Priority order for scraping (matches practice-area-targets.md)
 const PRACTICE_AREA_PRIORITY = [
-    'B37', // Personal Injury
-    'B28', // Immigration
-    'B49', // Workers Compensation
-    'B33', // Medical Malpractice
-    'B38', // Products Liability
-    'B47', // Toxic Torts
-    'B05', // Bankruptcy
-    'B30', // Labor & Employment
-    'B09', // Construction Law
-    'B29', // Insurance
-    'B31', // Legal Malpractice
-    'B39', // Professional Liability
-    'B19', // Family Law
-    'B14', // Criminal Law
-    'B41', // Real Estate
-    'B18', // Elder Law
-    'B44', // Trusts & Estates
-    'B08', // Civil Rights
-    'B43', // Taxation
-    'B26', // Health Care
-    'B10', // Condominium & HOA
-    'B06', // Business Law
+    'P02', // Personal Injury
+    'I01', // Immigration and Nationality
+    'W02', // Workers Compensation
+    'M04', // Medical Malpractice
+    'P04', // Product Liability
+    'T03', // Toxic Torts
+    'B02', // Bankruptcy
+    'L01', // Labor and Employment
+    'C11', // Construction
+    'I04', // Insurance
+    'L05', // Legal Malpractice
+    'P05', // Professional Liability
+    'F01', // Family
+    'C16', // Criminal
+    'R01', // Real Estate
+    'E02', // Elder
+    'T08', // Trusts and Estates
+    'C04', // Civil Rights
+    'T01', // Tax
+    'H01', // Health
+    'C18', // Condominium and Planned Development
+    'B04', // Business
 ];
 
 // Florida counties for location-based searching
