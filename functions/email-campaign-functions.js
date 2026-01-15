@@ -1,14 +1,14 @@
 /**
- * Team Build Pro Email Campaign Functions (SMTP Version)
+ * Team Build Pro Email Campaign Functions (Mailgun Version)
  *
- * Scheduled email campaigns using SMTP via nodemailer.
+ * Scheduled email campaigns using Mailgun API.
  * Sends emails with real-time open/click tracking via Cloud Functions.
  */
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { defineString } = require("firebase-functions/params");
 const { db } = require('./shared/utilities');
-const { sendTrackedEmail, verifyConnection, closeConnection } = require('./email-smtp-sender');
+const { sendTrackedEmail, verifyConnection, closeConnection } = require('./email-mailgun-sender');
 const { generateEmailHTML, generateEmailPlainText } = require('./email_templates/tbp-smtp-template');
 
 // =============================================================================
