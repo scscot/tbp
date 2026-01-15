@@ -20,7 +20,7 @@ const path = require('path');
 // Configuration
 const SUMMARY_FILE = path.join(__dirname, 'lead-gen-summary.json');
 const RECIPIENT = 'Stephen Scott <stephen@preintake.ai>';
-const FROM_ADDRESS = 'PreIntake Lead Gen <scott@legal.preintake.ai>';
+const FROM_ADDRESS = 'Stephen Scott <scott@legal.preintake.ai>';
 const SMTP_HOST = 'smtp.dreamhost.com';
 const SMTP_PORT = 587;
 
