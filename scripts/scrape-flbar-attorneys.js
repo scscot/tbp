@@ -212,7 +212,7 @@ async function sendNotificationEmail(subject, htmlContent) {
 
     try {
         const info = await transporter.sendMail({
-            from: `FL Bar Scraper <${smtpUser}>`,
+            from: 'FL Bar Scraper <scott@legal.preintake.ai>',
             to: 'stephen@preintake.ai',
             subject: subject,
             html: htmlContent
