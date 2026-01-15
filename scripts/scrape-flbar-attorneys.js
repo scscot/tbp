@@ -211,15 +211,23 @@ async function sendNotificationEmail(subject, htmlContent) {
     });
 
     try {
-        await transporter.sendMail({
-            from: `"FL Bar Scraper" <${smtpUser}>`,
-            to: 'Stephen Scott <stephen@preintake.ai>',
+        const info = await transporter.sendMail({
+            from: `FL Bar Scraper <${smtpUser}>`,
+            to: 'stephen@preintake.ai',
             subject: subject,
             html: htmlContent
         });
         console.log(`Email notification sent: ${subject}`);
+        console.log(`  Message ID: ${info.messageId}`);
+        console.log(`  Response: ${info.response}`);
     } catch (error) {
         console.error('Failed to send notification email:', error.message);
+        if (error.responseCode) {
+            console.error(`  SMTP Response Code: ${error.responseCode}`);
+        }
+        if (error.response) {
+            console.error(`  SMTP Response: ${error.response}`);
+        }
     }
 }
 
