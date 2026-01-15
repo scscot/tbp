@@ -632,7 +632,7 @@ async function sendScrapeSummary(summary) {
 
     try {
         const result = await transporter.sendMail({
-            from: 'Stephen Scott <scott@legal.preintake.ai>',
+            from: 'Stephen Scott <stephen@preintake.ai>',
             to: 'Stephen Scott <stephen@preintake.ai>',
             subject,
             html: generateEmailHTML(summary),
@@ -715,7 +715,7 @@ To retry this practice area, manually remove it from the permanentlySkipped arra
 
     try {
         const result = await transporter.sendMail({
-            from: 'Stephen Scott <scott@legal.preintake.ai>',
+            from: 'Stephen Scott <stephen@preintake.ai>',
             to: 'Stephen Scott <stephen@preintake.ai>',
             subject,
             html,

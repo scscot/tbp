@@ -6,7 +6,7 @@
  * to stephen@preintake.ai with the results.
  *
  * Environment Variables:
- *   PREINTAKE_SMTP_USER - SMTP username (scott@legal.preintake.ai)
+ *   PREINTAKE_SMTP_USER - SMTP username (stephen@preintake.ai)
  *   PREINTAKE_SMTP_PASS - SMTP password
  *
  * Usage:
@@ -20,7 +20,7 @@ const path = require('path');
 // Configuration
 const SUMMARY_FILE = path.join(__dirname, 'lead-gen-summary.json');
 const RECIPIENT = 'Stephen Scott <stephen@preintake.ai>';
-const FROM_ADDRESS = 'Stephen Scott <scott@legal.preintake.ai>';
+const FROM_ADDRESS = 'Stephen Scott <stephen@preintake.ai>';
 const SMTP_HOST = 'smtp.dreamhost.com';
 const SMTP_PORT = 587;
 

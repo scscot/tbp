@@ -22,7 +22,7 @@ on:
       batch_size:
         description: 'Number of emails to send'
         required: false
-        default: '20'
+        default: '10'
       skip_time_check:
         description: 'Bypass PT time window check'
         required: false
@@ -53,7 +53,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd scripts && npm install firebase-admin nodemailer && cd ..
+          cd scripts && npm install firebase-admin axios form-data && cd ..
           cd functions && npm install && cd ..
           echo "Dependencies installed"
 
@@ -67,10 +67,10 @@ jobs:
 
       - name: Send email batch
         env:
-          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
-          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size || '20' }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '10' }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
         run: |
           echo "Starting PreIntake email campaign..."
@@ -81,25 +81,16 @@ jobs:
       - name: Notify on failure
         if: failure()
         env:
-          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
-          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
         run: |
-          node -e "
-          const nodemailer = require('nodemailer');
-          const transporter = nodemailer.createTransport({
-            host: 'smtp.dreamhost.com',
-            port: 587,
-            secure: false,
-            auth: { user: process.env.PREINTAKE_SMTP_USER, pass: process.env.PREINTAKE_SMTP_PASS }
-          });
-          transporter.sendMail({
-            from: process.env.PREINTAKE_SMTP_USER,
-            to: 'scscot@gmail.com',
-            subject: '❌ GitHub Actions: PreIntake Email Campaign FAILED',
-            text: 'Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-          }).then(() => console.log('Failure notification sent'))
-            .catch(err => console.error('Failed to send notification:', err.message));
-          "
+          curl -s --user "api:$MAILGUN_API_KEY" \
+            https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages \
+            -F from="Stephen Scott <stephen@law.preintake.ai>" \
+            -F to="scscot@gmail.com" \
+            -F subject="❌ GitHub Actions: PreIntake Email Campaign FAILED" \
+            -F text="Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            && echo "Failure notification sent" || echo "Failed to send notification"
 
       - name: Clean up
         if: always()

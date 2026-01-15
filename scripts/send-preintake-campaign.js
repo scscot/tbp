@@ -4,7 +4,7 @@
  *
  * Sends outreach emails to law firms from Firestore preintake_emails collection.
  * Generates personalized demos for each contact BEFORE sending the email.
- * Uses Dreamhost SMTP via nodemailer.
+ * Uses Mailgun API for email delivery.
  *
  * SCHEDULE (PT Time Enforcement):
  *   - Days: Monday through Friday
@@ -13,8 +13,8 @@
  *   - Exits cleanly with code 0 if outside allowed window
  *
  * Environment Variables:
- *   PREINTAKE_SMTP_USER - SMTP username (scott@legal.preintake.ai)
- *   PREINTAKE_SMTP_PASS - SMTP password
+ *   MAILGUN_API_KEY - Mailgun API key
+ *   MAILGUN_DOMAIN - Mailgun sending domain (default: law.preintake.ai)
  *   ANTHROPIC_API_KEY - Anthropic API key for AI analysis
  *   BATCH_SIZE - Number of emails to send per run (default: 5)
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
@@ -23,16 +23,17 @@
  *
  * Usage:
  *   # Normal run (respects PT time window)
- *   PREINTAKE_SMTP_USER=xxx PREINTAKE_SMTP_PASS=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
+ *   MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
  *
  *   # Force run outside time window (for testing)
- *   SKIP_TIME_CHECK=true PREINTAKE_SMTP_USER=xxx PREINTAKE_SMTP_PASS=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
+ *   SKIP_TIME_CHECK=true MAILGUN_API_KEY=xxx ANTHROPIC_API_KEY=xxx node scripts/send-preintake-campaign.js
  *
  *   # Test mode (sends to test email, doesn't update Firestore)
  *   TEST_EMAIL=test@example.com SKIP_TIME_CHECK=true ... node scripts/send-preintake-campaign.js
  */
 
-const nodemailer = require('nodemailer');
+const axios = require('axios');
+const FormData = require('form-data');
 const path = require('path');
 
 // Import demo generation functions first
@@ -49,18 +50,17 @@ const admin = initFirebaseAdmin(serviceAccount, 'teambuilder-plus-fe74d.firebase
 const db = admin.firestore();
 db.settings({ databaseId: 'preintake' });
 
+// Mailgun configuration
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || 'law.preintake.ai';
+const MAILGUN_BASE_URL = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
+const FROM_ADDRESS = 'Stephen Scott <stephen@law.preintake.ai>';
+
 // Configuration
 const COLLECTION_NAME = 'preintake_emails';
 const LEADS_COLLECTION = 'preintake_leads';
-const FROM_ADDRESS = 'Stephen Scott <scott@legal.preintake.ai>';
-const SMTP_HOST = 'smtp.dreamhost.com';
-const SMTP_PORT = 587;
-const SEND_DELAY_MS = 1000; // 1 second between emails
+const SEND_DELAY_MS = 1000; // 1 second between emails (can be reduced with Mailgun)
 const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '5');
-
-// SMTP credentials from environment
-const SMTP_USER = process.env.PREINTAKE_SMTP_USER;
-const SMTP_PASS = process.env.PREINTAKE_SMTP_PASS;
 
 // Anthropic API key (required for demo generation)
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -494,19 +494,37 @@ function generateSubject(hasDemo) {
 }
 
 /**
- * Send email via SMTP (with HTML and plain-text versions)
+ * Send email via Mailgun API
  */
-async function sendEmail(transporter, to, subject, htmlContent, textContent) {
-    const mailOptions = {
-        from: FROM_ADDRESS,
-        to: to,
-        subject: subject,
-        html: htmlContent,
-        text: textContent
-    };
+async function sendViaMailgun(to, subject, htmlContent, textContent, tags = []) {
+    const form = new FormData();
 
-    const result = await transporter.sendMail(mailOptions);
-    return result;
+    form.append('from', FROM_ADDRESS);
+    form.append('to', to);
+    form.append('subject', subject);
+    form.append('html', htmlContent);
+    form.append('text', textContent);
+
+    // Enable tracking
+    form.append('o:tracking', 'yes');
+    form.append('o:tracking-opens', 'yes');
+    form.append('o:tracking-clicks', 'yes');
+
+    // Add tags for analytics
+    form.append('o:tag', 'preintake_campaign');
+    tags.forEach(tag => form.append('o:tag', tag));
+
+    const response = await axios.post(`${MAILGUN_BASE_URL}/messages`, form, {
+        headers: {
+            ...form.getHeaders(),
+            'Authorization': `Basic ${Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')}`
+        }
+    });
+
+    return {
+        messageId: response.data.id,
+        message: response.data.message
+    };
 }
 
 /**
@@ -535,9 +553,8 @@ async function runCampaign() {
     }
 
     // Validate environment
-    if (!SMTP_USER || !SMTP_PASS) {
-        console.error('❌ Missing SMTP credentials');
-        console.error('   Set PREINTAKE_SMTP_USER and PREINTAKE_SMTP_PASS environment variables');
+    if (!MAILGUN_API_KEY) {
+        console.error('❌ Missing MAILGUN_API_KEY environment variable');
         process.exit(1);
     }
 
@@ -549,7 +566,7 @@ async function runCampaign() {
     }
 
     console.log(`📊 Configuration:`);
-    console.log(`   SMTP Host: ${SMTP_HOST}:${SMTP_PORT}`);
+    console.log(`   Mailgun Domain: ${MAILGUN_DOMAIN}`);
     console.log(`   From: ${FROM_ADDRESS}`);
     console.log(`   Batch Size: ${BATCH_SIZE}`);
     console.log(`   Demo Generation: ${SKIP_DEMO_GEN ? 'DISABLED' : 'ENABLED'}`);
@@ -558,30 +575,7 @@ async function runCampaign() {
         console.log(`   ⚠️  Firestore records will NOT be marked as sent`);
     }
     console.log('');
-
-    // Create SMTP transporter
-    const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: false,
-        requireTLS: true,
-        auth: {
-            user: SMTP_USER,
-            pass: SMTP_PASS
-        },
-        tls: {
-            rejectUnauthorized: true
-        }
-    });
-
-    // Verify connection
-    try {
-        await transporter.verify();
-        console.log('✅ SMTP connection verified\n');
-    } catch (error) {
-        console.error('❌ SMTP connection failed:', error.message);
-        process.exit(1);
-    }
+    console.log('✅ Mailgun configured\n');
 
     // Generate batch ID
     const batchId = `batch_${Date.now()}`;
@@ -675,14 +669,14 @@ async function runCampaign() {
                 ? generateEmailPlainText(firmName, email, leadId, firstName)
                 : generateFallbackEmailPlainText(firmName, email, firstName);
 
-            // Send email (with both HTML and plain-text)
+            // Send email via Mailgun
             console.log(`   📤 Sending email to: ${formattedRecipient}`);
-            const result = await sendEmail(
-                transporter,
+            const result = await sendViaMailgun(
                 formattedRecipient,
                 subject,
                 html,
-                text
+                text,
+                [hasDemo ? 'with_demo' : 'no_demo']
             );
 
             // Only update Firestore if NOT in test mode
@@ -694,6 +688,7 @@ async function runCampaign() {
                     batchId: batchId,
                     errorMessage: '',
                     messageId: result.messageId || '',
+                    mailgunId: result.messageId || '',  // Mailgun message ID for event correlation
                     subjectLine: subject,
                     templateVersion: hasDemo ? 'v6-personalized-demo' : 'v6-generic'
                 };
