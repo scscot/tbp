@@ -352,9 +352,9 @@ function parseName(fullName) {
         return { firstName: parts[0], lastName: '' };
     }
 
-    // Last word is last name, everything else is first name
-    const lastName = parts.pop();
-    const firstName = parts.join(' ');
+    // First word is first name, last word is last name (middle names are discarded)
+    const firstName = parts[0];
+    const lastName = parts[parts.length - 1];
 
     return { firstName, lastName };
 }
