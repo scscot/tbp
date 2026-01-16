@@ -138,6 +138,12 @@ async function sendEmail(options) {
     form.append('o:tracking-opens', 'yes');
     form.append('o:tracking-clicks', 'yes');
 
+    // Add List-Unsubscribe headers (required by Gmail for bulk senders)
+    const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(to)}`;
+    const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
+    form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
+    form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+
     // Add tags for analytics
     form.append('o:tag', 'tbp_campaign');
     tags.forEach(tag => form.append('o:tag', tag));

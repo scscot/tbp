@@ -162,6 +162,12 @@ async function sendTestEmail(testEmail, template, apiKey, domain) {
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
 
+  // Add List-Unsubscribe headers (required by Gmail for bulk senders)
+  const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(testEmail)}`;
+  const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
+  form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
+  form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+
   try {
     const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
     const response = await axios.post(`${mailgunBaseUrl}/messages`, form, {
@@ -243,6 +249,12 @@ async function sendPersonalizedEmail(subscriber, template, apiKey, domain) {
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
+
+  // Add List-Unsubscribe headers (required by Gmail for bulk senders)
+  const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(email)}`;
+  const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
+  form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
+  form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
 
   const mailgunBaseUrl = `https://api.mailgun.net/v3/${domain}`;
   await axios.post(`${mailgunBaseUrl}/messages`, form, {

@@ -43,6 +43,13 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('o:tracking', 'yes');
   form.append('o:tracking-opens', 'yes');
   form.append('o:tracking-clicks', 'yes');
+
+  // Add List-Unsubscribe headers (required by Gmail for bulk senders)
+  const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+  const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
+  form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
+  form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+
   // Dec 10, 2025: Added UTM parameters for GA4 tracking
   // Mailgun open/click tracking is unreliable due to Gmail pre-fetching
   form.append('h:X-Mailgun-Variables', JSON.stringify({
@@ -242,6 +249,13 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
         form.append('o:tracking', 'yes');
         form.append('o:tracking-opens', 'yes');
         form.append('o:tracking-clicks', 'yes');
+
+        // Add List-Unsubscribe headers (required by Gmail for bulk senders)
+        const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
+        const unsubscribeEmail = 'unsubscribe@news.teambuildpro.com';
+        form.append('h:List-Unsubscribe', `<mailto:${unsubscribeEmail}?subject=Unsubscribe>, <${unsubscribeUrl}>`);
+        form.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+
         form.append('h:X-Mailgun-Variables', JSON.stringify({
           first_name: contact.firstName,
           last_name: contact.lastName,
