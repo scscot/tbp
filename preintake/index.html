@@ -1210,6 +1210,309 @@
             transform: none;
         }
 
+        /* Campaign Demo Modal (full-width iframe embed) */
+        .demo-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.95);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .demo-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .demo-modal-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demo-modal-close {
+            position: absolute;
+            top: -3rem;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: color 0.2s ease;
+        }
+
+        .demo-modal-close:hover {
+            color: white;
+        }
+
+        .demo-modal-close svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .demo-modal-iframe-wrapper {
+            position: relative;
+            width: 100%;
+            height: calc(90vh - 4rem);
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Floating Buttons (shown after demo modal closes) */
+        .floating-demo-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 9999;
+        }
+
+        .floating-demo-buttons.visible {
+            display: flex;
+        }
+
+        .get-started-btn {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(201, 169, 98, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(201, 169, 98, 0.5);
+        }
+
+        .view-demo-btn {
+            padding: 0.875rem 1.25rem;
+            background: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary-blue);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-demo-btn:hover {
+            background: var(--primary-blue);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .demo-modal-overlay {
+                padding: 0;
+            }
+
+            .demo-modal-container {
+                max-width: 100%;
+                height: 100%;
+            }
+
+            .demo-modal-close {
+                position: fixed;
+                top: 0.75rem;
+                right: 1rem;
+                z-index: 10001;
+            }
+
+            .demo-modal-iframe-wrapper {
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .floating-demo-buttons {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+
+        /* Account Already Active Modal */
+        .account-active-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.95);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+        }
+
+        .account-active-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .account-active-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .account-active-modal-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--success) 0%, #38a169 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .account-active-modal-icon svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .account-active-modal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .account-active-modal p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .account-active-modal-details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .account-active-modal-details-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .account-active-modal-details-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-active-modal-details-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .account-active-modal-details-value {
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .account-active-modal-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .account-active-modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.4);
+        }
+
+        .account-active-modal-contact {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .account-active-modal-contact a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .account-active-modal-contact a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .account-active-modal {
+                padding: 2rem 1.5rem;
+            }
+
+            .account-active-modal h2 {
+                font-size: 1.5rem;
+            }
+        }
+
         /* Empty state for no practice areas */
         .practice-tags-empty {
             text-align: center;
@@ -1348,6 +1651,31 @@
             font-size: 0.95rem;
             color: #64748b;
             line-height: 1.6;
+        }
+
+        .pricing-cta-container {
+            text-align: center;
+            margin-top: 2.5rem;
+        }
+
+        .pricing-get-started-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(201, 169, 98, 0.4);
+        }
+
+        .pricing-get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(201, 169, 98, 0.5);
         }
 
         /* Demo Callout Section */
@@ -2430,6 +2758,15 @@
             <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
                 Expert-level review tailored to your practice area. Every inquiry arrives in your inbox with a complete assessment. Cancel anytime—no long-term contracts.
             </p>
+            <!-- Get Started CTA (shown for ?demo= visitors) -->
+            <div class="pricing-cta-container" id="pricing-cta-container" style="display: none;">
+                <a href="#" class="pricing-get-started-btn" id="pricing-get-started-btn">
+                    Get Started
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -3305,6 +3642,8 @@
             // Campaign Demo Detection (?demo= parameter)
             // =====================================
             // For visitors arriving from email campaign with pre-generated demo
+            // Opens demo in a full-screen modal overlay
+            // If user already has a subscription, shows "Account Active" modal instead
             async function checkCampaignDemo() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const demoLeadId = urlParams.get('demo');
@@ -3312,11 +3651,39 @@
 
                 if (!demoLeadId) return false;
 
-                // Construct demo URL immediately from predictable pattern (no API wait needed)
-                const demoUrl = `https://preintake.ai/demo/${demoLeadId}`;
+                const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
                 const TRACK_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView';
 
-                // Show firm name IMMEDIATELY from URL (no API wait)
+                // Track visit first (before any checks)
+                fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
+
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Check subscription status FIRST
+                // If they have any subscription (active, cancelled, etc.), show Account Active modal
+                try {
+                    const statusResponse = await fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`);
+                    if (statusResponse.ok) {
+                        const statusData = await statusResponse.json();
+
+                        // If subscriptionStatus is NOT null, they have/had a subscription
+                        if (statusData.subscriptionStatus !== null) {
+                            // Show Account Already Active modal instead of demo
+                            showAccountActiveModal(statusData);
+                            return true;
+                        }
+                    }
+                } catch (err) {
+                    // If status check fails, proceed with demo (fail open)
+                    console.warn('Status check failed, proceeding with demo:', err);
+                }
+
+                // No subscription - proceed with demo modal flow
+                // Construct demo URL (embed=true hides sidebar CTA; firm name is embedded in demo config)
+                const demoUrl = `https://preintake.ai/demo/${demoLeadId}?embed=true`;
+
+                // Show firm name welcome banner
                 const welcomeBanner = document.getElementById('campaign-welcome');
                 const firmNameSpan = document.getElementById('campaign-firm-name');
                 if (firmNameFromUrl) {
@@ -3324,97 +3691,207 @@
                     welcomeBanner.classList.add('visible');
                 }
 
-                // Show campaign hero CTA IMMEDIATELY (no API wait)
-                const campaignHeroCta = document.getElementById('campaign-hero-cta');
-                const defaultHeroCta = document.getElementById('default-hero-cta');
-                if (campaignHeroCta && defaultHeroCta) {
-                    campaignHeroCta.href = demoUrl;
-                    campaignHeroCta.addEventListener('click', () => {
-                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
-                        sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
-                    });
-                    campaignHeroCta.style.display = 'inline-flex';
-                    defaultHeroCta.style.display = 'none';
+                // Setup modal elements
+                const modal = document.getElementById('demo-modal');
+                const iframe = document.getElementById('demo-modal-iframe');
+                const closeBtn = document.getElementById('demo-modal-close');
+                const floatingButtons = document.getElementById('floating-demo-buttons');
+                const getStartedBtn = document.getElementById('get-started-btn');
+                const viewDemoBtn = document.getElementById('view-demo-btn');
+
+                // Configure modal and buttons
+                getStartedBtn.href = `/create-account.html?firm=${demoLeadId}`;
+
+                // Hide the demo request form for ?demo= visitors (they already have a demo)
+                const demoSection = document.getElementById('demo');
+                if (demoSection) {
+                    demoSection.style.display = 'none';
                 }
 
-                // Hide sticky CTA immediately since we're showing the campaign CTA
+                // Show and configure the pricing section "Get Started" button
+                const pricingCtaContainer = document.getElementById('pricing-cta-container');
+                const pricingGetStartedBtn = document.getElementById('pricing-get-started-btn');
+                if (pricingCtaContainer && pricingGetStartedBtn) {
+                    pricingGetStartedBtn.href = `/create-account.html?firm=${demoLeadId}`;
+                    pricingCtaContainer.style.display = 'block';
+                }
+
+                // Modify the header "Demo" link to open the demo modal instead
+                const navDemoLink = document.getElementById('nav-demo-link');
+                if (navDemoLink) {
+                    navDemoLink.textContent = 'View Demo';
+                    navDemoLink.href = '#';
+                    navDemoLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openDemoModal();
+                    });
+                }
+
+                // Open modal function
+                function openDemoModal() {
+                    // Reload iframe fresh each time (add timestamp to bust cache)
+                    iframe.src = demoUrl + (demoUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+                    modal.classList.add('show');
+                    floatingButtons.classList.remove('visible');
+                    document.body.style.overflow = 'hidden';
+                    // Note: "view" is tracked when user clicks "Start Demo" in the iframe
+                    // (via postMessage from demo template)
+                }
+
+                // Listen for "demo-started" message from iframe (when user clicks "Start Demo")
+                window.addEventListener('message', function(e) {
+                    if (e.data?.type === 'demo-started' && e.data?.firmId === demoLeadId) {
+                        // Track actual demo view (user engaged with demo)
+                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
+                        sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
+                    }
+                });
+
+                // Close modal function
+                function closeDemoModal() {
+                    modal.classList.remove('show');
+                    floatingButtons.classList.add('visible');
+                    document.body.style.overflow = '';
+                    // Clear iframe to stop any ongoing processes
+                    iframe.src = 'about:blank';
+                }
+
+                // "End Demo" closes modal
+                closeBtn.addEventListener('click', closeDemoModal);
+
+                // "View Demo" floating button reopens modal
+                viewDemoBtn.addEventListener('click', openDemoModal);
+
+                // Close on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        closeDemoModal();
+                    }
+                });
+
+                // Close on overlay click (outside iframe container)
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeDemoModal();
+                    }
+                });
+
+                // Hide sticky CTA for campaign visitors
                 const stickyCta = document.getElementById('sticky-cta');
                 if (stickyCta) {
                     stickyCta.style.display = 'none';
                 }
 
-                // Track visit immediately (email CTA click)
-                fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
-
-                // Clean URL without refreshing page
-                window.history.replaceState({}, document.title, window.location.pathname);
-
-                // Show loading state for demo button (not for firm name)
-                formContainer.style.display = 'none';
-                document.getElementById('campaign-loading').style.display = 'flex';
-
-                try {
-                    // Fetch firm data from widget config endpoint
-                    const response = await fetchWithTimeout(`${CONFIG_ENDPOINT}?firmId=${demoLeadId}`);
-
-                    if (!response.ok) {
-                        throw new Error('Demo not found');
-                    }
-
-                    const data = await response.json();
-
-                    if (!data.demoUrl) {
-                        throw new Error('Demo URL not available');
-                    }
-
-                    // Hide loading state
-                    document.getElementById('campaign-loading').style.display = 'none';
-
-                    // Show personalized welcome banner (update if API has different name, or show if not from URL)
-                    if (!firmNameFromUrl) {
-                        firmNameSpan.textContent = data.firmName || 'Your Firm';
-                        welcomeBanner.classList.add('visible');
-                    }
-
-                    // Update section title
-                    document.getElementById('demo-section-title').textContent = 'Your Demo is Ready';
-
-                    // Configure and show the CTA view in demo section
-                    const ctaView = document.getElementById('campaign-cta-view');
-                    const ctaBtn = document.getElementById('campaign-demo-btn');
-                    ctaBtn.href = demoUrl; // Use pre-constructed URL
-                    // Track demo view when button is clicked
-                    ctaBtn.addEventListener('click', () => {
-                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
-                        sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
-                    });
-                    ctaView.classList.add('visible');
-
-                    // Hero CTA and sticky CTA already handled at start of function
-
-                    return true; // Handled campaign demo
-
-                } catch (error) {
-                    console.error('Campaign demo error:', error);
-                    // On error, fall back to showing normal form
-                    document.getElementById('campaign-loading').style.display = 'none';
-                    formContainer.style.display = 'block';
-                    return false;
+                // Hide default hero CTA
+                const defaultHeroCta = document.getElementById('default-hero-cta');
+                if (defaultHeroCta) {
+                    defaultHeroCta.style.display = 'none';
                 }
+
+                // Hide campaign hero CTA (no longer needed with modal)
+                const campaignHeroCta = document.getElementById('campaign-hero-cta');
+                if (campaignHeroCta) {
+                    campaignHeroCta.style.display = 'none';
+                }
+
+                // Open modal immediately
+                openDemoModal();
+
+                return true;
             }
 
-            // Check for ?firm= parameter first (no pre-generated demo)
-            // Then check for ?demo= parameter (pre-generated demo)
+            // Show Account Already Active modal for subscribers
+            function showAccountActiveModal(statusData) {
+                const modal = document.getElementById('account-active-modal');
+                const firmNameEl = document.getElementById('account-active-firm-name');
+                const statusEl = document.getElementById('account-active-status');
+                const emailEl = document.getElementById('account-active-email');
+                const closeBtn = document.getElementById('account-active-close-btn');
+
+                // Populate modal with firm data
+                firmNameEl.textContent = statusData.firmName || 'Your Firm';
+
+                // Format subscription status for display
+                const statusMap = {
+                    'active': 'Active',
+                    'cancelled': 'Cancelled',
+                    'past_due': 'Past Due',
+                    'unpaid': 'Unpaid',
+                    'trialing': 'Trial',
+                    'incomplete': 'Incomplete',
+                    'incomplete_expired': 'Expired'
+                };
+                statusEl.textContent = statusMap[statusData.subscriptionStatus] || statusData.subscriptionStatus || 'Active';
+
+                // Mask email for privacy (show first 3 chars and domain)
+                if (statusData.deliveryEmail) {
+                    const email = statusData.deliveryEmail;
+                    const atIndex = email.indexOf('@');
+                    if (atIndex > 3) {
+                        emailEl.textContent = email.substring(0, 3) + '***' + email.substring(atIndex);
+                    } else {
+                        emailEl.textContent = email;
+                    }
+                } else {
+                    emailEl.textContent = '(configured)';
+                }
+
+                // Show modal
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+
+                // Hide sticky CTA
+                const stickyCta = document.getElementById('sticky-cta');
+                if (stickyCta) {
+                    stickyCta.style.display = 'none';
+                }
+
+                // Hide demo section
+                const demoSection = document.getElementById('demo');
+                if (demoSection) {
+                    demoSection.style.display = 'none';
+                }
+
+                // Close modal handler
+                function closeAccountActiveModal() {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+
+                closeBtn.addEventListener('click', closeAccountActiveModal);
+
+                // Close on escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        closeAccountActiveModal();
+                    }
+                });
+
+                // Close on overlay click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeAccountActiveModal();
+                    }
+                });
+            }
+
+            // Check for ?demo= parameter first (pre-generated demo modal)
+            // Then check for ?firm= parameter (just welcome banner, no demo)
             // Finally check for verification token
-            const firmHandled = checkFirmParameter();
-            if (!firmHandled) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('demo')) {
+                // ?demo= takes priority - open demo modal
                 checkCampaignDemo().then(handled => {
                     if (!handled) {
                         checkVerificationToken();
                     }
                 });
+            } else if (urlParams.get('firm')) {
+                // ?firm= only (no demo) - just show welcome banner
+                checkFirmParameter();
+                checkVerificationToken();
             } else {
-                // Still need to check verification token even with firm parameter
+                // No special parameters - check verification token
                 checkVerificationToken();
             }
         });
@@ -3478,5 +3955,72 @@
             updateStickyVisibility();
         })();
     </script>
+
+    <!-- Campaign Demo Modal (for ?demo= visitors) -->
+    <div class="demo-modal-overlay" id="demo-modal">
+        <div class="demo-modal-container">
+            <button class="demo-modal-close" id="demo-modal-close">
+                End Demo
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="demo-modal-iframe-wrapper">
+                <iframe class="demo-modal-iframe" id="demo-modal-iframe" src="" title="PreIntake Demo"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buttons (shown after demo modal closes) -->
+    <div class="floating-demo-buttons" id="floating-demo-buttons">
+        <a href="#" class="get-started-btn" id="get-started-btn">
+            Get Started
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </a>
+        <button class="view-demo-btn" id="view-demo-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            View Demo
+        </button>
+    </div>
+
+    <!-- Account Already Active Modal (for subscribers who visit demo URL) -->
+    <div class="account-active-modal-overlay" id="account-active-modal">
+        <div class="account-active-modal">
+            <div class="account-active-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2>Your Account is Active</h2>
+            <p>Good news! Your PreIntake.ai subscription is already set up and delivering leads to your team.</p>
+            <div class="account-active-modal-details">
+                <div class="account-active-modal-details-row">
+                    <span class="account-active-modal-details-label">Firm</span>
+                    <span class="account-active-modal-details-value" id="account-active-firm-name">—</span>
+                </div>
+                <div class="account-active-modal-details-row">
+                    <span class="account-active-modal-details-label">Status</span>
+                    <span class="account-active-modal-details-value" id="account-active-status">Active</span>
+                </div>
+                <div class="account-active-modal-details-row">
+                    <span class="account-active-modal-details-label">Leads delivered to</span>
+                    <span class="account-active-modal-details-value" id="account-active-email">—</span>
+                </div>
+            </div>
+            <button class="account-active-modal-btn" id="account-active-close-btn">
+                Got It
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </button>
+            <p class="account-active-modal-contact">
+                Need help? <a href="mailto:support@preintake.ai">Contact support</a>
+            </p>
+        </div>
+    </div>
 </body>
 </html>

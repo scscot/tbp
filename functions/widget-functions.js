@@ -314,15 +314,21 @@ const serveDemo = onRequest(
     },
     async (req, res) => {
         try {
-            // Extract firmId from query params or URL path (/demo/FIRM_ID)
-            let firmId = req.query.firm || req.query.firmId;
+            // Extract firmId from URL path first (/demo/FIRM_ID), then fall back to query params
+            // Path takes priority because query param 'firm' may contain firm NAME (not ID)
+            let firmId = null;
 
-            // If not in query, try to extract from path (for /demo/:firmId rewrite)
-            if (!firmId && req.path) {
+            // First try to extract from path (for /demo/:firmId rewrite)
+            if (req.path) {
                 const pathMatch = req.path.match(/\/demo\/([a-zA-Z0-9]+)/);
                 if (pathMatch) {
                     firmId = pathMatch[1];
                 }
+            }
+
+            // Fall back to query param firmId (not 'firm' which may be the firm name)
+            if (!firmId) {
+                firmId = req.query.firmId;
             }
 
             if (!firmId) {

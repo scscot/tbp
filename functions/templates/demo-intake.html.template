@@ -39,6 +39,11 @@
             line-height: 1.6;
         }
 
+        /* Hide sidebar CTA when embedded in modal */
+        body.embed-mode .sidebar-cta {
+            display: none;
+        }
+
         .screen {
             display: none;
             min-height: 100vh;
@@ -1283,11 +1288,38 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
+        .onboarding-modal-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .onboarding-modal-logo span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
         .onboarding-modal-content h2 {
             font-family: 'Playfair Display', serif;
             color: var(--accent-gold);
             font-size: 1.75rem;
             margin-bottom: 1.25rem;
+        }
+
+        .onboarding-modal-content .firm-name {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+        }
+
+        .onboarding-modal-content .firm-name:empty {
+            display: none;
         }
 
         .onboarding-modal-content p {
@@ -1674,6 +1706,11 @@
     </div>
 
     <script>
+        // Detect embed mode (when loaded in modal iframe)
+        if (new URLSearchParams(window.location.search).get('embed') === 'true') {
+            document.body.classList.add('embed-mode');
+        }
+
         // Configuration
         const CONFIG = {
             firmName: '{{FIRM_NAME_JS}}',
@@ -2777,8 +2814,12 @@
     <!-- Onboarding Modal -->
     <div id="onboarding-modal" class="onboarding-modal">
         <div class="onboarding-modal-content">
+            <div class="onboarding-modal-logo">
+                <img src="https://preintake.ai/images/icon.png" alt="PreIntake.ai" width="32" height="32">
+                <span>PreIntake.ai</span>
+            </div>
             <h2>Welcome to Your Demo</h2>
-            <p>This demo shows how PreIntake.ai reviews inquiries for your firm.</p>
+            <div id="onboarding-firm-name" class="firm-name"></div>
             <p>When you're ready to go live, it embeds directly into your website—setup takes just minutes, and visitors never leave your site.</p>
             <button id="onboarding-modal-close" class="onboarding-modal-button">Start Demo</button>
         </div>
@@ -2789,6 +2830,12 @@
         (function() {
             const modal = document.getElementById('onboarding-modal');
             const closeBtn = document.getElementById('onboarding-modal-close');
+            const firmNameDiv = document.getElementById('onboarding-firm-name');
+
+            // Use firm name from embedded CONFIG (no URL param needed)
+            if (typeof CONFIG !== 'undefined' && CONFIG.firmName && firmNameDiv) {
+                firmNameDiv.textContent = CONFIG.firmName;
+            }
 
             if (sessionStorage.getItem('preintake_onboarding_seen')) {
                 modal.classList.add('hidden');
@@ -2797,6 +2844,14 @@
             closeBtn.addEventListener('click', function() {
                 modal.classList.add('hidden');
                 sessionStorage.setItem('preintake_onboarding_seen', 'true');
+
+                // Notify parent window that demo has actually started (for view tracking)
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'demo-started',
+                        firmId: '{{LEAD_ID}}'
+                    }, '*');
+                }
             });
         })();
     </script>

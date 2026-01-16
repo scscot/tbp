@@ -882,6 +882,12 @@ const getPreIntakeFirmStatus = onRequest(
                 // For intake page display logic
                 isLiveMode: data.subscriptionStatus === 'active',
 
+                // Subscription status (null if never subscribed, otherwise 'active', 'cancelled', etc.)
+                subscriptionStatus: data.subscriptionStatus || null,
+
+                // Delivery email (where leads are sent)
+                deliveryEmail: data.deliveryEmail || data.email || null,
+
                 // Demo URL if ready
                 demoUrl: data.demoUrl || null,
 

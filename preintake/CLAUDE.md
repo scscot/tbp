@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-15
-**Version**: 3.3 (FL Bar scraper + Wix site validation fix)
+**Last Updated**: 2026-01-16
+**Version**: 3.4 (Demo view tracking improvement)
 
 ---
 
@@ -1166,6 +1166,36 @@ function stripNonContentHtml(html) {
 4. Send to Claude Haiku for law firm classification
 5. Require isLawFirm=true AND confidence >= 80%
 ```
+
+### Phase 27: Demo View Tracking Improvement (2026-01-16)
+- [x] **View Tracking Moved to "Start Demo" Click** - More accurate engagement metrics
+  - Previously: `type=view` tracked when demo modal opened (page load with `?demo=`)
+  - Now: `type=view` tracked only when user clicks "Start Demo" button in onboarding modal
+  - `type=visit` still tracked on page load (email click attribution)
+  - Provides accurate distinction between "visited page" vs "engaged with demo"
+- [x] **Cross-Frame postMessage Implementation**
+  - Demo iframe sends `postMessage({ type: 'demo-started', firmId: '...' })` when Start Demo clicked
+  - Parent window (index.html) listens for message and triggers view tracking
+  - Uses `window.parent !== window` check to only send when embedded in iframe
+- [x] **Bulk Demo Update Script** - `scripts/update-demo-postmessage.js`
+  - Updated 156 existing demos in Firebase Storage with new postMessage code
+  - Dry-run mode for safe preview before applying changes
+  - Skips demos that are already updated or missing onboarding modal
+  - 2 older demos skipped (pre-onboarding modal versions)
+
+**Tracking Flow (Updated):**
+```
+1. User clicks email link (?demo=ABC) → type=visit tracked (email attribution)
+2. Demo modal opens automatically → No tracking yet
+3. User clicks "Start Demo" → postMessage sent to parent
+4. Parent receives message → type=view tracked + sessionStorage set
+5. Header shows "Get Started →" button (demo viewed)
+```
+
+**Files Modified:**
+- `preintake/index.html` - Added message listener, removed premature view tracking
+- `functions/templates/demo-intake.html.template` - Added postMessage on Start Demo click
+- `scripts/update-demo-postmessage.js` - New script for bulk demo updates
 
 ---
 

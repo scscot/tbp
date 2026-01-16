@@ -28,7 +28,7 @@
                     </button>
                     <nav class="nav-menu">
                         <a href="/">Home</a>
-                        <a href="/#demo">Demo</a>
+                        <a href="/#demo" id="nav-demo-link">Demo</a>
                         <a href="/#pricing">Pricing</a>
                         <a href="/about-us.html">About</a>
                         <a href="/faq.html">FAQs</a>
