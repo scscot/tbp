@@ -579,21 +579,21 @@
             document.getElementById('emailsSent24h').textContent = data.last24h.sent.toLocaleString();
             document.getElementById('emailsSentToday').textContent = data.today.sent.toLocaleString();
 
-            // Mailgun stats
-            if (data.mailgun) {
-                document.getElementById('delivered').textContent = data.mailgun.delivered.toLocaleString();
-                document.getElementById('opened').textContent = data.mailgun.opened.toLocaleString();
-                document.getElementById('openRate').textContent = `Open rate: ${data.mailgun.openRate}`;
-                document.getElementById('clicked').textContent = data.mailgun.clicked.toLocaleString();
-                document.getElementById('clickRate').textContent = `Click rate: ${data.mailgun.clickRate}`;
-                document.getElementById('failed').textContent = data.mailgun.failed.toLocaleString();
+            // Tracking stats (from Firestore)
+            if (data.tracking) {
+                document.getElementById('delivered').textContent = data.tracking.delivered.toLocaleString();
+                document.getElementById('opened').textContent = data.tracking.opened.toLocaleString();
+                document.getElementById('openRate').textContent = `Open rate: ${data.tracking.openRate}`;
+                document.getElementById('clicked').textContent = data.tracking.clicked.toLocaleString();
+                document.getElementById('clickRate').textContent = `Click rate: ${data.tracking.clickRate}`;
+                document.getElementById('failed').textContent = data.tracking.failed.toLocaleString();
 
-                document.getElementById('mgAccepted').textContent = data.mailgun.accepted.toLocaleString();
-                document.getElementById('mgDelivered').textContent = data.mailgun.delivered.toLocaleString();
-                document.getElementById('mgOpened').textContent = `${data.mailgun.opened} (${data.mailgun.openRate})`;
-                document.getElementById('mgClicked').textContent = `${data.mailgun.clicked} (${data.mailgun.clickRate})`;
-                document.getElementById('mgFailed').textContent = data.mailgun.failed.toLocaleString();
-                document.getElementById('mgEngagement').textContent = data.mailgun.engagementRate;
+                document.getElementById('mgAccepted').textContent = data.tracking.accepted.toLocaleString();
+                document.getElementById('mgDelivered').textContent = data.tracking.delivered.toLocaleString();
+                document.getElementById('mgOpened').textContent = `${data.tracking.opened} (${data.tracking.openRate})`;
+                document.getElementById('mgClicked').textContent = `${data.tracking.clicked} (${data.tracking.clickRate})`;
+                document.getElementById('mgFailed').textContent = data.tracking.failed.toLocaleString();
+                document.getElementById('mgEngagement').textContent = data.tracking.clickToOpenRate || '-';
             }
 
             // Recent sends
