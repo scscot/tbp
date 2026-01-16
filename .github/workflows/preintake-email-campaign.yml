@@ -65,12 +65,49 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
           echo "Firebase credentials configured"
 
+      - name: Calculate warming batch size
+        id: warming
+        run: |
+          # Read warming config
+          CONFIG=$(cat .github/warming-config.json)
+          START_DATE=$(echo $CONFIG | jq -r '.preintake.startDate')
+          MAX_BATCH=$(echo $CONFIG | jq -r '.preintake.maxBatchSize')
+
+          # Calculate weeks since start
+          START_EPOCH=$(date -d "$START_DATE" +%s)
+          NOW_EPOCH=$(date +%s)
+          DAYS_ELAPSED=$(( (NOW_EPOCH - START_EPOCH) / 86400 ))
+
+          # Handle negative days (before start date)
+          if [ $DAYS_ELAPSED -lt 0 ]; then
+            WEEK_NUM=1
+          else
+            WEEK_NUM=$(( (DAYS_ELAPSED / 7) + 1 ))
+          fi
+
+          # Get batch size for current week (cap at max week in schedule)
+          BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK_NUM" '
+            .preintake.schedule |
+            map(select(.week <= $week)) |
+            last |
+            .batchSize // .preintake.schedule[0].batchSize
+          ')
+
+          # Fallback to max if null or beyond schedule
+          if [ "$BATCH_SIZE" = "null" ] || [ -z "$BATCH_SIZE" ]; then
+            BATCH_SIZE=$MAX_BATCH
+          fi
+
+          echo "Warming week: $WEEK_NUM"
+          echo "Calculated batch size: $BATCH_SIZE"
+          echo "batch_size=$BATCH_SIZE" >> $GITHUB_OUTPUT
+
       - name: Send email batch
         env:
           MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
           MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size || '10' }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
         run: |
           echo "Starting PreIntake email campaign..."

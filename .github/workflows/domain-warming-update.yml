@@ -1,0 +1,152 @@
+name: Domain Warming - Update TBP Batch Sizes
+
+on:
+  schedule:
+    # Run every Monday at 6am PT (2pm UTC during PST, 1pm UTC during PDT)
+    # Using 2pm UTC covers both scenarios
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_week:
+        description: 'Force specific week number (optional)'
+        required: false
+        type: number
+
+jobs:
+  update-batch-sizes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculate current warming week
+        id: week
+        run: |
+          CONFIG=$(cat .github/warming-config.json)
+          START_DATE=$(echo $CONFIG | jq -r '.tbp.startDate')
+
+          # Calculate weeks since start
+          START_EPOCH=$(date -d "$START_DATE" +%s)
+          NOW_EPOCH=$(date +%s)
+          DAYS_ELAPSED=$(( (NOW_EPOCH - START_EPOCH) / 86400 ))
+
+          # Handle negative days (before start date)
+          if [ $DAYS_ELAPSED -lt 0 ]; then
+            WEEK_NUM=1
+          else
+            WEEK_NUM=$(( (DAYS_ELAPSED / 7) + 1 ))
+          fi
+
+          # Override if force_week provided
+          if [ -n "${{ inputs.force_week }}" ]; then
+            WEEK_NUM=${{ inputs.force_week }}
+          fi
+
+          echo "week=$WEEK_NUM" >> $GITHUB_OUTPUT
+          echo "Current warming week: $WEEK_NUM"
+
+      - name: Get batch size for current week
+        id: batch
+        run: |
+          CONFIG=$(cat .github/warming-config.json)
+          WEEK=${{ steps.week.outputs.week }}
+          MAX_BATCH=$(echo $CONFIG | jq -r '.tbp.maxBatchSize')
+
+          BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
+            .tbp.schedule |
+            map(select(.week <= $week)) |
+            last |
+            .batchSize
+          ')
+
+          # Fallback to max if beyond schedule
+          if [ "$BATCH_SIZE" = "null" ] || [ -z "$BATCH_SIZE" ]; then
+            BATCH_SIZE=$MAX_BATCH
+          fi
+
+          echo "batch_size=$BATCH_SIZE" >> $GITHUB_OUTPUT
+          echo "Batch size for week $WEEK: $BATCH_SIZE"
+
+      - name: Get current batch size from .env
+        id: current
+        run: |
+          ENV_FILE="functions/.env.teambuilder-plus-fe74d"
+          CURRENT_BATCH=$(grep "^EMAIL_CAMPAIGN_BATCH_SIZE=" $ENV_FILE | cut -d'=' -f2)
+          echo "current_batch=$CURRENT_BATCH" >> $GITHUB_OUTPUT
+          echo "Current batch size: $CURRENT_BATCH"
+
+      - name: Check if update needed
+        id: check
+        run: |
+          CURRENT=${{ steps.current.outputs.current_batch }}
+          NEW=${{ steps.batch.outputs.batch_size }}
+
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "No update needed - batch size already at $NEW"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Update needed: $CURRENT -> $NEW"
+          fi
+
+      - name: Update .env file
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          ENV_FILE="functions/.env.teambuilder-plus-fe74d"
+          NEW_BATCH=${{ steps.batch.outputs.batch_size }}
+
+          # Update EMAIL_CAMPAIGN_BATCH_SIZE
+          sed -i "s/^EMAIL_CAMPAIGN_BATCH_SIZE=.*/EMAIL_CAMPAIGN_BATCH_SIZE=$NEW_BATCH/" $ENV_FILE
+
+          # Update EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (keep in sync for when it's re-enabled)
+          sed -i "s/^EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO=.*/EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO=$NEW_BATCH/" $ENV_FILE
+
+          echo "Updated $ENV_FILE with batch size: $NEW_BATCH"
+          grep "BATCH_SIZE" $ENV_FILE
+
+      - name: Commit and push changes
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add functions/.env.teambuilder-plus-fe74d
+          git commit -m "Domain warming: Update TBP batch size to ${{ steps.batch.outputs.batch_size }} (week ${{ steps.week.outputs.week }})"
+          git push
+
+      - name: Setup Node.js
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Firebase CLI
+        if: steps.check.outputs.skip != 'true'
+        run: npm install -g firebase-tools
+
+      - name: Install function dependencies
+        if: steps.check.outputs.skip != 'true'
+        run: cd functions && npm ci
+
+      - name: Deploy Firebase Functions
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          firebase deploy --only functions --project teambuilder-plus-fe74d
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Warming Week**: ${{ steps.week.outputs.week }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Batch Size**: ${{ steps.batch.outputs.batch_size }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Previous Batch Size**: ${{ steps.current.outputs.current_batch }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.skip }}" = "true" ]; then
+            echo "- **Status**: No update needed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: Updated and deployed" >> $GITHUB_STEP_SUMMARY
+          fi
