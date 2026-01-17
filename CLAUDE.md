@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-01-12
+**Last Updated**: 2026-01-16
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1353,6 +1353,29 @@ After cleaning invalid emails from the database, current metrics from the past 2
      - DE: "Gebaut für Momentum. Designt zum Skalieren."
      - PT: "Construído para Momentum. Projetado para Escalar."
    - prospects.html pages don't have this section (no changes needed)
+
+### Week of Jan 16
+
+85. ✅ **CSS Consolidation (All 4 Sites)**:
+   - Moved inline CSS from index.html `<style>` blocks to external css/style.css files
+   - Reduced index.html file sizes by ~460 lines each (from ~800+ to ~367-368 lines)
+   - Added section header comment: `/* HOMEPAGE-SPECIFIC STYLES (moved from inline) */`
+   - Final css/style.css line counts: EN=1967, ES/PT/DE=2046
+   - Benefits: Better caching, easier maintenance, cleaner HTML
+
+86. ✅ **Mobile Menu Toggle Fix (34 Blog Files)**:
+   - Fixed non-responsive hamburger menu on blog pages
+   - Issue: JavaScript used `classList.toggle('active')` but CSS expected `.mobile-menu.open`
+   - Fix: Changed all blog files to use `classList.toggle('open')`
+   - Files fixed: web/blog.html + 33 blog post files across EN/ES/PT/DE sites
+   - components.js files already used correct 'open' class
+
+87. ✅ **Home Link Added to Sandwich Menus**:
+   - Added Home link as first item in mobile navigation menus
+   - Updated all 4 components.js files with new 'home' translation key:
+     - EN: "Home", ES: "Inicio", PT: "Início", DE: "Startseite"
+   - Updated all 4 delete-account.html files with localized Home links
+   - Blog posts with inline menus already had Home link (no changes needed)
 
 ---
 
