@@ -246,7 +246,7 @@ Tag 30: Beiläufige Erwähnung der Geschäftsmöglichkeit nach etablierter Bezie
         menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('active');
+          mobileMenu.classList.toggle('open');
         });
       }
 

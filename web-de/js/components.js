@@ -33,6 +33,7 @@
     // =========================================================================
     const translations = {
         en: {
+            home: 'Home',
             pricing: 'Pricing',
             faq: 'FAQ',
             freeScripts: 'Free Scripts',
@@ -47,6 +48,7 @@
             subtitle: 'AI Downline Builder'
         },
         es: {
+            home: 'Inicio',
             pricing: 'Precios',
             faq: 'Preguntas Frecuentes',
             freeScripts: 'Scripts Gratis',
@@ -61,6 +63,7 @@
             subtitle: 'Constructor de Redes con IA'
         },
         pt: {
+            home: 'Início',
             pricing: 'Preços',
             faq: 'Perguntas Frequentes',
             freeScripts: 'Scripts Grátis',
@@ -75,6 +78,7 @@
             subtitle: 'Construtor de Equipes com IA'
         },
         de: {
+            home: 'Startseite',
             pricing: 'Preise',
             faq: 'Häufige Fragen',
             freeScripts: 'Kostenlose Scripts',
@@ -225,6 +229,7 @@
             </button>
             <!-- Dropdown Menu -->
             <div id="mobile-menu" class="mobile-menu" role="menu">
+                <a href="/" role="menuitem">${t.home}</a>
                 <a href="/faq.html" role="menuitem">${t.faq}</a>
                 <a href="/scripts.html" role="menuitem">${t.freeScripts}</a>
                 <a href="/#pricing" role="menuitem">${t.pricing}</a>
