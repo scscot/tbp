@@ -287,7 +287,7 @@ function generateEmailHTML(firmName, email, leadId, firstName) {
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
           <strong>Stephen Scott</strong><br>
-          PreIntake.ai
+          Founder, PreIntake.ai
       </p>
     </div>
 
@@ -380,7 +380,7 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
           <strong>Stephen Scott</strong><br>
-          PreIntake.ai
+          Founder, PreIntake.ai
       </p>
     </div>
 
@@ -434,7 +434,7 @@ Not the right contact for intake? Feel free to forward — the demo link is spec
 
 Best,
 Stephen Scott
-PreIntake.ai
+Founder, PreIntake.ai
 
 ---
 PreIntake.ai · Los Angeles, California
@@ -479,7 +479,7 @@ Not the right contact for intake? Feel free to forward — the demo link is spec
 
 Best,
 Stephen Scott
-PreIntake.ai
+Founder, PreIntake.ai
 
 ---
 PreIntake.ai · Los Angeles, California
