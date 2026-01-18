@@ -574,10 +574,11 @@ async function runCampaign() {
         process.exit(1);
     }
 
-    if (!ANTHROPIC_API_KEY && !SKIP_DEMO_GEN) {
+    if (!ANTHROPIC_API_KEY && !SKIP_DEMO_GEN && !TEST_LEAD_ID && !TEST_DEMO_ID) {
         console.error('❌ Missing ANTHROPIC_API_KEY');
         console.error('   Set ANTHROPIC_API_KEY environment variable for demo generation');
         console.error('   Or set SKIP_DEMO_GEN=true to skip demo generation');
+        console.error('   Or set TEST_LEAD_ID=xxx to use an existing demo');
         process.exit(1);
     }
 
