@@ -1221,6 +1221,19 @@ function stripNonContentHtml(html) {
 - [x] **Bulk Demo Regeneration** - Updated all 160 demos with new template
   - Regenerated via `scripts/regenerate-preintake-demos.js --run`
   - All demos now include exit confirmation messaging support
+- [x] **Dynamic Sidebar Progress Steps** - Multi-practice firm UX enhancement
+  - Multi-practice firms initially show only "Basic Information" in sidebar
+  - Remaining progress steps populate dynamically after practice area is selected
+  - Single-practice firms show all steps immediately (no change)
+  - Added `isMultiPractice` flag injected at demo generation time
+  - Template conditionally renders sidebar based on `isMultiPractice` value
+- [x] **Firm-Specific Practice Area Detection** - Fixed sidebar not updating after selection
+  - `isPracticeAreaSelection()` previously used hardcoded keywords that missed specialized areas
+  - Example: "Writ of Habeas Corpus", "First Step Act" didn't match hardcoded keywords
+  - Added `FIRM_PRACTICE_AREAS` array injected at demo generation time
+  - Function now checks against firm's actual configured practice areas
+  - Flexible matching: exact match, contains, or contained-by logic
+  - All 160 demos regenerated with firm-specific practice area arrays
 
 **Exit Confirmation Modal Flow:**
 ```
@@ -1236,7 +1249,8 @@ function stripNonContentHtml(html) {
 - `preintake/index.html` - Added exit confirmation modal HTML/JS, 409 redirect logic
 - `preintake/css/styles.css` - Added `.exit-confirm-modal-*` CSS classes
 - `functions/preintake-functions.js` - Added `existingLeadId` to 409 responses
-- `functions/templates/demo-intake.html.template` - Added `firmEmail` and `intake-completed` postMessages
+- `functions/templates/demo-intake.html.template` - Added `firmEmail` and `intake-completed` postMessages, multi-practice sidebar logic, `FIRM_PRACTICE_AREAS` array, updated `isPracticeAreaSelection()`
+- `functions/demo-generator-functions.js` - Added `isMultiPractice` flag and `FIRM_PRACTICE_AREAS_JSON` placeholder injection
 - `scripts/send-preintake-campaign.js` - Added `&firm=` parameter to email demo URLs
 
 ---
