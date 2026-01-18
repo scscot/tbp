@@ -1995,18 +1995,15 @@
             }
         }
 
+        // Firm's actual practice areas (injected at demo generation time)
+        const FIRM_PRACTICE_AREAS = {{FIRM_PRACTICE_AREAS_JSON}};
+
         // Check if a value is a practice area selection
         function isPracticeAreaSelection(value) {
-            const practiceAreaKeywords = [
-                'personal injury', 'immigration', 'family law', 'family', 'tax',
-                'bankruptcy', 'criminal law', 'criminal defense', 'criminal',
-                'estate planning', 'estate', 'employment law', 'employment',
-                'workers compensation', 'workers comp', 'real estate',
-                'veterans law', 'veterans'
-            ];
             const lowerValue = value.toLowerCase();
-            return practiceAreaKeywords.some(keyword =>
-                lowerValue === keyword || lowerValue.includes(keyword)
+            // Check if the value matches any of the firm's configured practice areas
+            return FIRM_PRACTICE_AREAS.some(area =>
+                lowerValue === area || lowerValue.includes(area) || area.includes(lowerValue)
             );
         }
 

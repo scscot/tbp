@@ -265,6 +265,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{RETURN_URL}}': leadData.source === 'campaign'
             ? `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}`
             : 'https://preintake.ai',
+        '{{FIRM_PRACTICE_AREAS_JSON}}': JSON.stringify(practiceAreasList.map(a => a.name.toLowerCase())),
     };
 
     for (const [token, value] of Object.entries(replacements)) {
