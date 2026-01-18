@@ -1969,8 +1969,8 @@
             'default': ['Basic Information', 'Case Overview', 'Details', 'Qualification', 'Review']
         };
 
-        // Update progress sidebar when practice area is selected
-        function updateProgressSteps(practiceArea) {
+        // Populate progress sidebar when practice area is selected (renamed to avoid conflict with updateProgressSteps())
+        function populatePracticeAreaSteps(practiceArea) {
             const area = practiceArea.toLowerCase();
             let steps = PRACTICE_AREA_STEPS['default'];
 
@@ -1991,7 +1991,7 @@
                         <span class="step-text">${label}</span>
                     </div>`).join('');
 
-                console.log('Updated progress steps for:', practiceArea, '->', steps);
+                console.log('Populated progress steps for:', practiceArea, '->', steps);
             }
         }
 
@@ -2327,9 +2327,9 @@
                 btn.disabled = true;
             });
 
-            // Check if this is a practice area selection and update sidebar
+            // Check if this is a practice area selection and populate sidebar steps
             if (isPracticeAreaSelection(value)) {
-                updateProgressSteps(value);
+                populatePracticeAreaSteps(value);
             }
 
             addMessage(value, 'user');

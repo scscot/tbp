@@ -218,7 +218,7 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     const systemPrompt = generateSystemPrompt(firmName, practiceArea, state, analysis, deepResearch, practiceAreasList, isMultiPractice);
     const tools = generateTools(practiceArea);
     const detectButtonsFunction = generateDetectButtonsFunction(practiceArea, practiceAreasList, isMultiPractice);
-    const progressStepsHtml = generateProgressSteps(practiceArea);
+    const progressStepsHtml = generateProgressSteps(practiceArea, isMultiPractice);
     const loadingStagesHtml = generateLoadingStagesHtml(practiceArea);
     const loadingStagesJson = generateLoadingStagesJson(practiceArea);
     const declineResourcesHtml = generateDeclineResources(state);
@@ -2563,8 +2563,19 @@ function getPersonalInjuryButtonsContent() {
 
 /**
  * Generate progress steps HTML
+ * For multi-practice firms, only show "Basic Information" initially - the rest will populate dynamically
  */
-function generateProgressSteps(practiceArea) {
+function generateProgressSteps(practiceArea, isMultiPractice = false) {
+    if (isMultiPractice) {
+        // Multi-practice: only show "Basic Information" initially
+        // Additional steps will be added dynamically when user selects their practice area
+        return `
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-indicator">1<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
+                        <span class="step-text">Basic Information</span>
+                    </div>`;
+    }
+    // Single practice: show all steps from the start
     const steps = getProgressStepLabels(practiceArea);
     return steps.map((label, i) => `
                     <div class="progress-step${i === 0 ? ' active' : ''}" data-step="${i + 1}">
