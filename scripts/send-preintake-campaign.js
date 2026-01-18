@@ -20,6 +20,8 @@
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
  *   SKIP_TIME_CHECK - Set to 'true' to bypass PT time window check
  *   SKIP_DEMO_GEN - Set to 'true' to skip demo generation (for testing email only)
+ *   DOC_ID - Specific document ID to process (bypasses query)
+ *   TEST_DEMO_ID - Use existing demo lead ID for all emails (skips demo generation)
  *
  * Usage:
  *   # Normal run (respects PT time window)
@@ -73,6 +75,13 @@ const SKIP_TIME_CHECK = process.env.SKIP_TIME_CHECK === 'true';
 
 // Skip demo generation (for testing email only)
 const SKIP_DEMO_GEN = process.env.SKIP_DEMO_GEN === 'true';
+
+// Specific document ID to process (bypasses query, uses specific record)
+const DOC_ID = process.env.DOC_ID || null;
+
+// Test demo ID - use an existing demo lead ID for all emails (skips demo generation)
+// This is useful for testing the email flow without generating new demos each time
+const TEST_DEMO_ID = process.env.TEST_DEMO_ID || null;
 
 /**
  * Check if current time is within allowed PT business window
@@ -587,32 +596,44 @@ async function runCampaign() {
     // Phase 2: Contacts WITHOUT website URLs (fallback emails only)
     let allDocs = [];
 
-    // Phase 1: Get contacts with website URLs first
-    const withWebsiteSnapshot = await db.collection(COLLECTION_NAME)
-        .where('sent', '==', false)
-        .where('status', '==', 'pending')
-        .where('website', '!=', '')
-        .orderBy('website')  // Required when using != operator
-        .orderBy('randomIndex')
-        .limit(BATCH_SIZE)
-        .get();
-
-    allDocs = [...withWebsiteSnapshot.docs];
-    console.log(`📊 Found ${allDocs.length} contacts with website URLs`);
-
-    // Phase 2: If we need more contacts, get ones without websites
-    const remainingSlots = BATCH_SIZE - allDocs.length;
-    if (remainingSlots > 0) {
-        const withoutWebsiteSnapshot = await db.collection(COLLECTION_NAME)
+    // If specific document ID is provided, use that instead of querying
+    if (DOC_ID) {
+        console.log(`📋 Using specific document ID: ${DOC_ID}`);
+        const specificDoc = await db.collection(COLLECTION_NAME).doc(DOC_ID).get();
+        if (!specificDoc.exists) {
+            console.error(`❌ Document ${DOC_ID} not found in ${COLLECTION_NAME}`);
+            process.exit(1);
+        }
+        allDocs = [specificDoc];
+        console.log(`📊 Found document: ${specificDoc.data().firmName || specificDoc.data().email}`);
+    } else {
+        // Phase 1: Get contacts with website URLs first
+        const withWebsiteSnapshot = await db.collection(COLLECTION_NAME)
             .where('sent', '==', false)
             .where('status', '==', 'pending')
-            .where('website', '==', '')
+            .where('website', '!=', '')
+            .orderBy('website')  // Required when using != operator
             .orderBy('randomIndex')
-            .limit(remainingSlots)
+            .limit(BATCH_SIZE)
             .get();
 
-        allDocs = [...allDocs, ...withoutWebsiteSnapshot.docs];
-        console.log(`📊 Found ${withoutWebsiteSnapshot.size} contacts without website URLs`);
+        allDocs = [...withWebsiteSnapshot.docs];
+        console.log(`📊 Found ${allDocs.length} contacts with website URLs`);
+
+        // Phase 2: If we need more contacts, get ones without websites
+        const remainingSlots = BATCH_SIZE - allDocs.length;
+        if (remainingSlots > 0) {
+            const withoutWebsiteSnapshot = await db.collection(COLLECTION_NAME)
+                .where('sent', '==', false)
+                .where('status', '==', 'pending')
+                .where('website', '==', '')
+                .orderBy('randomIndex')
+                .limit(remainingSlots)
+                .get();
+
+            allDocs = [...allDocs, ...withoutWebsiteSnapshot.docs];
+            console.log(`📊 Found ${withoutWebsiteSnapshot.size} contacts without website URLs`);
+        }
     }
 
     if (allDocs.length === 0) {
@@ -644,8 +665,14 @@ async function runCampaign() {
             let demoUrl = null;
             let hasDemo = false;
 
+            // Use test demo ID if provided (for testing without generating new demos)
+            if (TEST_DEMO_ID) {
+                leadId = TEST_DEMO_ID;
+                hasDemo = true;
+                console.log(`   🧪 Using test demo ID: ${TEST_DEMO_ID}`);
+            }
             // Generate demo if we have a website URL and demo gen is enabled
-            if (website && !SKIP_DEMO_GEN) {
+            else if (website && !SKIP_DEMO_GEN) {
                 const demoResult = await generateDemoForContact(data);
                 if (demoResult.success) {
                     leadId = demoResult.leadId;

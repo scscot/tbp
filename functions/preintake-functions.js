@@ -689,17 +689,16 @@ const submitDemoRequest = onRequest(
             // Record the submission for rate limiting (only after validation passes)
             await recordIPSubmission(clientIP);
 
-            // Generate verification token (expires in 24 hours)
-            const verificationToken = generateVerificationToken();
-            const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+            // NEW FLOW: Skip verification, pre-generate demo, then send email with ?demo= link
+            // This matches the email campaign flow for instant demo loading
 
-            // Create lead document with pending verification status
+            // Create lead document - starts analysis immediately
             const leadData = {
                 name: name.trim(),
                 email: email.trim().toLowerCase(),
                 website: websiteUrl.href,
                 normalizedWebsite: normalizedUrl, // For duplicate detection
-                status: 'pending_verification', // pending_verification, pending, analyzing, researching, generating_demo, demo_ready
+                status: 'pending', // Start in 'pending' to trigger analysis immediately
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
                 source: 'landing_page',
@@ -712,76 +711,35 @@ const submitDemoRequest = onRequest(
                     reason: validation.reason,
                     matchedKeywords: validation.matchedKeywords || []
                 },
-                // Email verification
-                verificationToken: verificationToken,
-                verificationExpiry: verificationExpiry,
-                emailVerified: false,
+                // Skip verification - mark as already verified
+                emailVerified: true,
+                verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+                // Auto-confirm practice areas (skip confirmation modal)
+                // Demo generator will use detected practice areas automatically
+                autoConfirmed: true,
                 // Will be populated by analysis function later
                 analysis: null,
                 deepResearch: null,
                 demoUrl: null,
-                // Email tracking
-                verificationEmailSent: false,
+                // Email tracking - email sent AFTER demo is ready
+                demoReadyEmailSent: false,
                 confirmationSent: false,
                 notificationSent: false
             };
 
-            // Store in Firestore
+            // Store in Firestore - this triggers analyzePreIntakeLead function
             const docRef = await db.collection('preintake_leads').add(leadData);
             const leadId = docRef.id;
 
-            console.log(`PreIntake lead created (pending verification): ${leadId} - ${email}`);
+            console.log(`PreIntake lead created (auto-confirmed, starting analysis): ${leadId} - ${email}`);
 
-            // Create SMTP transporter and send verification email
-            const user = smtpUser.value();
-            const pass = smtpPass.value();
-
-            if (!user || !pass) {
-                console.error('SMTP credentials not configured');
-                return res.status(500).json({
-                    error: 'Email configuration error. Please try again later.'
-                });
-            }
-
-            const transporter = nodemailer.createTransport({
-                host: smtpHost.value(),
-                port: parseInt(smtpPort.value()),
-                secure: false,
-                requireTLS: true, // Force STARTTLS upgrade
-                auth: {
-                    user: user,
-                    pass: pass
-                },
-                tls: {
-                    rejectUnauthorized: false // Allow self-signed certs
-                }
-            });
-
-            // Send verification email
-            try {
-                const verificationUrl = `https://preintake.ai/?verify=${verificationToken}`;
-                const verifyHtml = generateVerificationEmail(name.trim(), websiteUrl.href, verificationUrl);
-                await sendEmail(
-                    transporter,
-                    `${name.trim()} <${email.trim().toLowerCase()}>`,
-                    'Verify Your Email - PreIntake.ai Demo Request',
-                    verifyHtml
-                );
-                await docRef.update({ verificationEmailSent: true });
-                console.log(`Verification email sent to ${email}`);
-            } catch (emailErr) {
-                console.error('Error sending verification email:', emailErr.message);
-                return res.status(500).json({
-                    error: 'Failed to send verification email. Please try again.'
-                });
-            }
-
-            // Return success - tell frontend to show "check your email" screen
+            // Return success - tell frontend to poll for status updates
+            // Frontend will show progress steps UI while demo is being generated
             return res.status(200).json({
                 success: true,
-                message: 'Verification email sent',
+                message: 'Demo generation started',
                 leadId: leadId,
-                requiresVerification: true,
+                status: 'processing',
                 email: email.trim().toLowerCase()
             });
 

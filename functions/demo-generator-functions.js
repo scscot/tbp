@@ -86,7 +86,39 @@ const generatePreIntakeDemo = onDocumentUpdated(
             // Upload to Firebase Storage
             const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
 
-            // Update Firestore with demo URL and default delivery config
+            console.log(`Demo generated for lead ${leadId}: ${demoUrl}`);
+
+            // Check if this is an auto-confirmed flow (from landing page form)
+            const isAutoConfirmed = afterData.autoConfirmed === true;
+
+            // Send notification emails BEFORE setting demo_ready
+            // This ensures frontend only shows "Check your email" after email is actually sent
+            try {
+                if (isAutoConfirmed) {
+                    // Auto-confirmed flow: Send email with ?demo= link for instant demo loading
+                    const demoLinkUrl = `https://preintake.ai/?demo=${leadId}`;
+
+                    // Send both emails in parallel for faster completion
+                    await Promise.all([
+                        sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
+                        sendAutoConfirmedDemoEmail(leadId, afterData, analysis, demoLinkUrl)
+                    ]);
+
+                    console.log(`Auto-confirmed demo email sent to ${afterData.email} with link: ${demoLinkUrl}`);
+                } else {
+                    // Manual flow: Send standard demo ready emails
+                    await Promise.all([
+                        sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
+                        sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl)
+                    ]);
+                }
+            } catch (emailError) {
+                console.error(`Email notification failed for ${leadId}:`, emailError.message);
+                // Continue to set demo_ready even if email fails - demo IS ready
+            }
+
+            // Update Firestore with demo URL and status AFTER email is sent
+            // Frontend polls for this status, so user sees "Check your email" only after email is sent
             await leadRef.update({
                 status: 'demo_ready',
                 demoUrl: demoUrl,
@@ -99,19 +131,10 @@ const generatePreIntakeDemo = onDocumentUpdated(
                     webhookUrl: null,
                     crmType: null
                 },
+                demoReadyEmailSent: true,
+                demoReadyEmailSentAt: FieldValue.serverTimestamp(),
                 updatedAt: FieldValue.serverTimestamp(),
             });
-
-            console.log(`Demo generated for lead ${leadId}: ${demoUrl}`);
-
-            // Send notification emails (wrapped in separate try-catch so email failures don't mark demo as failed)
-            try {
-                await sendDemoReadyEmail(leadId, afterData, analysis, demoUrl);
-                await sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl);
-            } catch (emailError) {
-                console.error(`Email notification failed for ${leadId}:`, emailError.message);
-                // Don't throw - demo is still ready, just notification failed
-            }
 
         } catch (error) {
             console.error(`Demo generation failed for lead ${leadId}:`, error.message);
@@ -2790,6 +2813,99 @@ async function sendDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
         console.log(`Demo ready email sent for lead ${leadId}`);
     } catch (error) {
         console.error('Error sending demo email:', error.message);
+    }
+}
+
+/**
+ * Send demo ready email for auto-confirmed flow (landing page form submission)
+ * Uses ?demo= link format for instant demo loading (matches campaign email experience)
+ */
+async function sendAutoConfirmedDemoEmail(leadId, leadData, analysis, demoLinkUrl) {
+    const user = smtpUser.value();
+    const pass = smtpPass.value();
+
+    if (!user || !pass) {
+        console.error('SMTP credentials not configured for auto-confirmed demo email');
+        return;
+    }
+
+    if (!leadData.email) {
+        console.error('No email address for auto-confirmed demo');
+        return;
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.dreamhost.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: { user, pass },
+        tls: { rejectUnauthorized: false },
+    });
+
+    const firmName = analysis.firmName || leadData.name || 'your firm';
+    const firstName = leadData.name ? leadData.name.split(' ')[0] : '';
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #0c1f3f; font-size: 24px; margin-bottom: 10px;">PreIntake.ai</h1>
+    </div>
+
+    <p>Hi${firstName ? ' ' + firstName : ''},</p>
+
+    <p>Your personalized AI intake demo for <strong>${firmName}</strong> is ready to view.</p>
+
+    <p>Click below to see how PreIntake.ai reviews inquiries for your practice areas, identifies qualified cases, and delivers detailed assessments to your team.</p>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="${demoLinkUrl}"
+           style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px;">
+            View Your Demo
+        </a>
+    </div>
+
+    <p style="color: #64748b; font-size: 14px;"><strong>What you'll experience:</strong></p>
+    <ul style="color: #64748b; font-size: 14px; margin: 15px 0; padding-left: 20px;">
+        <li>Conversational intake customized to your practice areas</li>
+        <li>Real-time case evaluation and qualification</li>
+        <li>Sample intake summary delivered to your inbox</li>
+    </ul>
+
+    <p style="color: #64748b; font-size: 14px;">This demo is private and accessible only via this email. Test it yourself or share with your team.</p>
+
+    <p style="margin-top: 30px;">
+        —<br>
+        <strong>Support Team</strong><br>
+        PreIntake.ai
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+    <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+        AI-Powered Legal Intake<br>
+        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
+    </p>
+</body>
+</html>`;
+
+    try {
+        await transporter.sendMail({
+            from: FROM_ADDRESS,
+            to: leadData.email,
+            subject: 'Your PreIntake.ai Demo is Ready',
+            html: htmlContent,
+        });
+        console.log(`Auto-confirmed demo email sent to ${leadData.email} for lead ${leadId}`);
+    } catch (error) {
+        console.error('Error sending auto-confirmed demo email:', error.message);
+        throw error; // Re-throw so caller knows email failed
     }
 }
 

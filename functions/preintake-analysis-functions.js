@@ -131,10 +131,15 @@ async function performAnalysis(leadId, leadData) {
         try {
             const deepResearchResult = await performDeepResearch(website, analysisResult);
 
-            // Update Firestore with deep research results
-            // Status is 'awaiting_confirmation' - user must confirm practice areas before demo generation
-            await leadRef.update({
-                status: 'awaiting_confirmation',
+            // Determine next status based on autoConfirmed flag
+            // If autoConfirmed=true (landing page form), skip confirmation and go straight to demo generation
+            // If autoConfirmed=false (manual/campaign flow), wait for user confirmation
+            const isAutoConfirmed = leadData.autoConfirmed === true;
+            const nextStatus = isAutoConfirmed ? 'generating_demo' : 'awaiting_confirmation';
+
+            // Build update payload
+            const updatePayload = {
+                status: nextStatus,
                 deepResearch: {
                     status: deepResearchResult.status || 'completed',
                     completedAt: FieldValue.serverTimestamp(),
@@ -149,23 +154,60 @@ async function performAnalysis(leadId, leadData) {
                     discoveredUrls: deepResearchResult.discoveredUrls || {},
                 },
                 updatedAt: FieldValue.serverTimestamp(),
-            });
+            };
 
-            console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Awaiting practice area confirmation.`);
+            // If auto-confirmed, set confirmedPracticeAreas from analysis results
+            if (isAutoConfirmed) {
+                const practiceAreas = analysisResult.practiceAreas || [];
+                const primaryArea = analysisResult.primaryPracticeArea || practiceAreas[0] || 'General Practice';
+                updatePayload.confirmedPracticeAreas = {
+                    areas: practiceAreas,
+                    primaryArea: primaryArea,
+                    confirmedAt: FieldValue.serverTimestamp(),
+                    autoConfirmed: true, // Flag to indicate this was auto-confirmed
+                };
+                console.log(`Auto-confirming practice areas for lead ${leadId}: ${practiceAreas.join(', ')} (primary: ${primaryArea})`);
+            }
+
+            await leadRef.update(updatePayload);
+
+            if (isAutoConfirmed) {
+                console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Auto-confirmed, starting demo generation.`);
+            } else {
+                console.log(`Deep research completed for lead ${leadId}: ${deepResearchResult.pagesAnalyzed} pages analyzed. Awaiting practice area confirmation.`);
+            }
 
         } catch (deepResearchError) {
             console.error(`Deep research failed for lead ${leadId}:`, deepResearchError.message);
 
-            // Still await confirmation even if deep research fails (will use initial analysis)
-            await leadRef.update({
-                status: 'awaiting_confirmation',
+            // Determine next status based on autoConfirmed flag (same logic even on failure)
+            const isAutoConfirmed = leadData.autoConfirmed === true;
+            const nextStatus = isAutoConfirmed ? 'generating_demo' : 'awaiting_confirmation';
+
+            const updatePayload = {
+                status: nextStatus,
                 deepResearch: {
                     status: 'failed',
                     error: deepResearchError.message,
                     completedAt: FieldValue.serverTimestamp(),
                 },
                 updatedAt: FieldValue.serverTimestamp(),
-            });
+            };
+
+            // If auto-confirmed, use initial analysis results for practice areas
+            if (isAutoConfirmed) {
+                const practiceAreas = analysisResult.practiceAreas || [];
+                const primaryArea = analysisResult.primaryPracticeArea || practiceAreas[0] || 'General Practice';
+                updatePayload.confirmedPracticeAreas = {
+                    areas: practiceAreas,
+                    primaryArea: primaryArea,
+                    confirmedAt: FieldValue.serverTimestamp(),
+                    autoConfirmed: true,
+                };
+                console.log(`Auto-confirming practice areas (deep research failed) for lead ${leadId}: ${practiceAreas.join(', ')} (primary: ${primaryArea})`);
+            }
+
+            await leadRef.update(updatePayload);
         }
 
         // Send analysis notification email (includes deep research data if available)

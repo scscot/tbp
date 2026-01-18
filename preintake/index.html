@@ -692,6 +692,55 @@
                 </div>
             </div>
 
+            <!-- Progress state for unified flow (hidden by default) -->
+            <div class="demo-form-container analyzing-state" id="progress-state" style="display: none;">
+                <div class="analyzing-spinner"></div>
+                <h3>Building Your Demo</h3>
+                <p>This typically takes about 60 seconds. You'll receive an email when your demo is ready.</p>
+                <div class="analyzing-steps">
+                    <div class="analyzing-step active" id="progress-validating">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span>Validating your information...</span>
+                    </div>
+                    <div class="analyzing-step" id="progress-analyzing">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <span>Analyzing your website...</span>
+                    </div>
+                    <div class="analyzing-step" id="progress-researching">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <span>Identifying practice areas...</span>
+                    </div>
+                    <div class="analyzing-step" id="progress-generating">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                        <span>Building your personalized demo...</span>
+                    </div>
+                    <div class="analyzing-step" id="progress-sending">
+                        <div class="analyzing-step-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <span>Sending your demo link...</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Building demo state (hidden by default) -->
             <div class="demo-form-container building-demo" id="building-demo" style="display: none;">
                 <div class="demo-success-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
@@ -1046,6 +1095,79 @@
         }
 
         // =====================================
+        // Progress Step Animation (Unified Flow)
+        // =====================================
+
+        function updateProgressStep(step) {
+            const steps = ['progress-validating', 'progress-analyzing', 'progress-researching', 'progress-generating', 'progress-sending'];
+            steps.forEach((stepId, index) => {
+                const stepEl = document.getElementById(stepId);
+                if (!stepEl) return;
+                if (index < step) {
+                    stepEl.classList.remove('active');
+                    stepEl.classList.add('complete');
+                } else if (index === step) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('complete');
+                } else {
+                    stepEl.classList.remove('active', 'complete');
+                }
+            });
+        }
+
+        // Map backend status to progress step number
+        function getProgressStepFromStatus(status) {
+            switch (status) {
+                case 'pending': return 0;
+                case 'analyzing': return 1;
+                case 'researching': return 2;
+                case 'generating_demo': return 3;
+                case 'demo_ready': return 4;
+                default: return 0;
+            }
+        }
+
+        // =====================================
+        // Poll for Auto-Confirmed Demo (Unified Flow)
+        // =====================================
+
+        async function pollForAutoConfirmedDemo(leadId, maxAttempts = 60) {
+            const pollInterval = 2000; // 2 seconds
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetchWithTimeout(`${STATUS_ENDPOINT}?leadId=${leadId}`);
+                    const data = await response.json();
+
+                    // Update progress step based on status
+                    const step = getProgressStepFromStatus(data.status);
+                    updateProgressStep(step);
+
+                    // Demo is ready when status is 'demo_ready'
+                    if (data.status === 'demo_ready') {
+                        updateProgressStep(5); // Show all 5 steps complete (index 5 marks 0-4 as complete)
+                        return { success: true, email: data.email };
+                    } else if (data.status === 'analysis_failed' || data.status === 'demo_failed') {
+                        throw new Error(data.error || 'Something went wrong. Please try again.');
+                    }
+
+                } catch (error) {
+                    console.error('Poll error:', error);
+                    if (error.message.includes('failed')) {
+                        throw error;
+                    }
+                }
+
+                attempts++;
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            // Timeout - but demo might still be processing
+            return { success: true, timedOut: true };
+        }
+
+        // =====================================
         // Poll for Analysis Results
         // =====================================
 
@@ -1102,7 +1224,7 @@
                     // Demo is ready when status is 'demo_ready' and demoUrl is available
                     if (data.status === 'demo_ready' && data.demoUrl) {
                         return data;
-                    } else if (data.status === 'generation_failed' || data.status === 'analysis_failed') {
+                    } else if (data.status === 'demo_failed' || data.status === 'analysis_failed') {
                         throw new Error(data.error || 'Demo generation failed. Please try again.');
                     }
 
@@ -1136,6 +1258,7 @@
             const verificationContainer = document.getElementById('verification-pending');
             const buildingContainer = document.getElementById('building-demo');
             const successContainer = document.getElementById('demo-success');
+            const progressContainer = document.getElementById('progress-state');
             const submitBtn = document.getElementById('submit-btn');
             const errorDiv = document.getElementById('form-error');
 
@@ -1334,7 +1457,48 @@
 
                     currentLeadId = data.leadId;
 
-                    // Check if verification is required (new flow)
+                    // NEW UNIFIED FLOW: Auto-confirm and wait for demo ready
+                    if (data.status === 'processing') {
+                        // Show progress UI and poll for demo completion
+                        formContainer.style.display = 'none';
+                        progressContainer.style.display = 'block';
+                        updateProgressStep(0); // Start at validating
+                        recordSubmission(); // Record for rate limiting
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+
+                        try {
+                            const result = await pollForAutoConfirmedDemo(currentLeadId);
+
+                            // Show "Check your email" screen
+                            progressContainer.style.display = 'none';
+                            document.getElementById('verification-email').textContent = data.email;
+                            verificationContainer.style.display = 'block';
+
+                            // Update the verification message for unified flow
+                            const checkEmailMsg = verificationContainer.querySelector('.check-email');
+                            if (checkEmailMsg) {
+                                checkEmailMsg.textContent = 'Click the link in the email to see your personalized AI intake demo.';
+                            }
+                            const expireMsg = verificationContainer.querySelector('p[style*="font-size: 0.85rem"]');
+                            if (expireMsg && !expireMsg.querySelector('a')) {
+                                expireMsg.textContent = 'Your demo link is ready. Check your inbox (or spam folder).';
+                            }
+                        } catch (pollError) {
+                            // Show timeout/error message but still tell them to check email
+                            progressContainer.style.display = 'none';
+                            document.getElementById('verification-email').textContent = data.email;
+                            verificationContainer.style.display = 'block';
+
+                            const checkEmailMsg = verificationContainer.querySelector('.check-email');
+                            if (checkEmailMsg) {
+                                checkEmailMsg.textContent = 'Your demo is taking a bit longer. You\'ll receive an email when it\'s ready.';
+                            }
+                        }
+                        return;
+                    }
+
+                    // Check if verification is required (legacy flow - kept for backward compatibility)
                     if (data.requiresVerification) {
                         // Show verification pending screen directly (no analyzing spinner flash)
                         formContainer.style.display = 'none';
@@ -1365,6 +1529,7 @@
                 } catch (error) {
                     showError(error.message || 'Something went wrong. Please try again.');
                     analyzingContainer.style.display = 'none';
+                    progressContainer.style.display = 'none';
                     formContainer.style.display = 'block';
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('loading');
