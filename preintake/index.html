@@ -945,50 +945,6 @@
             return { valid: true };
         }
 
-        // Validate email domain matches website domain
-        function validateEmailDomain(email, websiteUrl) {
-            const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
-            if (ADMIN_EMAILS.includes(email.toLowerCase())) {
-                return { valid: true };
-            }
-
-            try {
-                const emailDomain = email.split('@')[1].toLowerCase();
-                let url = websiteUrl.toLowerCase();
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
-                }
-                const urlObj = new URL(url);
-                let websiteDomain = urlObj.hostname;
-
-                if (websiteDomain.startsWith('www.')) {
-                    websiteDomain = websiteDomain.substring(4);
-                }
-
-                const getBaseDomain = (domain) => {
-                    const parts = domain.split('.');
-                    if (parts.length >= 2) {
-                        return parts.slice(-2).join('.');
-                    }
-                    return domain;
-                };
-
-                const emailBase = getBaseDomain(emailDomain);
-                const websiteBase = getBaseDomain(websiteDomain);
-
-                if (emailBase !== websiteBase) {
-                    return {
-                        valid: false,
-                        reason: `Your email domain (${emailDomain}) must match your firm's website domain (${websiteDomain}). Please use your firm email address.`
-                    };
-                }
-
-                return { valid: true };
-            } catch (e) {
-                return { valid: true };
-            }
-        }
-
         // =====================================
         // Practice Area Tag Management
         // =====================================
@@ -1412,15 +1368,6 @@
                 const emailValidation = isValidEmail(email);
                 if (!emailValidation.valid) {
                     showError(emailValidation.reason);
-                    emailInput.focus();
-                    emailInput.select();
-                    return;
-                }
-
-                // Validate email domain matches website domain
-                const domainValidation = validateEmailDomain(email, website);
-                if (!domainValidation.valid) {
-                    showError(domainValidation.reason);
                     emailInput.focus();
                     emailInput.select();
                     return;
