@@ -1719,7 +1719,7 @@
                 <p id="demo-confirmation-email" style="font-size: 1.1rem; color: var(--accent-gold); font-weight: 500; word-break: break-all;"></p>
                 <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.9rem;">Please check your inbox to see the lead notification email.</p>
             </div>
-            <button onclick="closeDemoConfirmation()" class="action-button primary" style="min-width: 120px;">
+            <button onclick="closeDemoConfirmation()" style="min-width: 140px; padding: 12px 32px; background: linear-gradient(135deg, #c9a962, #b8860b); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(201, 169, 98, 0.3);">
                 OK
             </button>
         </div>
