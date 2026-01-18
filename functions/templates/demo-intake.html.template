@@ -1946,6 +1946,70 @@
         // Loading stages (practice-area-specific)
         const LOADING_STAGES = {{LOADING_STAGES_JSON}};
 
+        // Practice area progress step labels (for dynamic sidebar updates)
+        const PRACTICE_AREA_STEPS = {
+            'personal injury': ['Basic Information', 'Incident Details', 'Liability Assessment', 'Injuries & Treatment', 'Insurance Details'],
+            'immigration': ['Basic Information', 'Immigration Status', 'Case Details', 'Application History', 'Review'],
+            'family law': ['Basic Information', 'Case Type', 'Family Details', 'Urgency Assessment', 'Review'],
+            'family': ['Basic Information', 'Case Type', 'Family Details', 'Urgency Assessment', 'Review'],
+            'tax': ['Basic Information', 'Tax Issue', 'IRS Situation', 'Resolution Options', 'Review'],
+            'bankruptcy': ['Basic Information', 'Financial Situation', 'Debt Details', 'Qualification', 'Review'],
+            'criminal law': ['Basic Information', 'Charges', 'Case Status', 'Court Details', 'Review'],
+            'criminal': ['Basic Information', 'Charges', 'Case Status', 'Court Details', 'Review'],
+            'criminal defense': ['Basic Information', 'Charges', 'Case Status', 'Court Details', 'Review'],
+            'estate planning': ['Basic Information', 'Planning Needs', 'Asset Overview', 'Special Circumstances', 'Review'],
+            'estate': ['Basic Information', 'Planning Needs', 'Asset Overview', 'Special Circumstances', 'Review'],
+            'employment law': ['Basic Information', 'Employment Issue', 'Timeline', 'Documentation', 'Review'],
+            'employment': ['Basic Information', 'Employment Issue', 'Timeline', 'Documentation', 'Review'],
+            'workers compensation': ['Basic Information', 'Injury Details', 'Employer Response', 'Medical Treatment', 'Review'],
+            'workers comp': ['Basic Information', 'Injury Details', 'Employer Response', 'Medical Treatment', 'Review'],
+            'real estate': ['Basic Information', 'Transaction Type', 'Property Details', 'Timeline', 'Review'],
+            'veterans law': ['Basic Information', 'Claim Type', 'Service History', 'Evidence', 'Review'],
+            'veterans': ['Basic Information', 'Claim Type', 'Service History', 'Evidence', 'Review'],
+            'default': ['Basic Information', 'Case Overview', 'Details', 'Qualification', 'Review']
+        };
+
+        // Update progress sidebar when practice area is selected
+        function updateProgressSteps(practiceArea) {
+            const area = practiceArea.toLowerCase();
+            let steps = PRACTICE_AREA_STEPS['default'];
+
+            // Find matching practice area
+            for (const [key, value] of Object.entries(PRACTICE_AREA_STEPS)) {
+                if (area.includes(key) || key.includes(area)) {
+                    steps = value;
+                    break;
+                }
+            }
+
+            // Update the sidebar HTML
+            const progressStepsContainer = document.querySelector('.progress-steps');
+            if (progressStepsContainer) {
+                progressStepsContainer.innerHTML = steps.map((label, i) => `
+                    <div class="progress-step${i === 0 ? ' completed' : (i === 1 ? ' active' : '')}" data-step="${i + 1}">
+                        <div class="step-indicator">${i + 1}<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
+                        <span class="step-text">${label}</span>
+                    </div>`).join('');
+
+                console.log('Updated progress steps for:', practiceArea, '->', steps);
+            }
+        }
+
+        // Check if a value is a practice area selection
+        function isPracticeAreaSelection(value) {
+            const practiceAreaKeywords = [
+                'personal injury', 'immigration', 'family law', 'family', 'tax',
+                'bankruptcy', 'criminal law', 'criminal defense', 'criminal',
+                'estate planning', 'estate', 'employment law', 'employment',
+                'workers compensation', 'workers comp', 'real estate',
+                'veterans law', 'veterans'
+            ];
+            const lowerValue = value.toLowerCase();
+            return practiceAreaKeywords.some(keyword =>
+                lowerValue === keyword || lowerValue.includes(keyword)
+            );
+        }
+
         // Start assessment - check for recoverable session first
         function startAssessment() {
             const session = loadSession();
@@ -2262,6 +2326,11 @@
             document.querySelectorAll('.info-help-button').forEach(btn => {
                 btn.disabled = true;
             });
+
+            // Check if this is a practice area selection and update sidebar
+            if (isPracticeAreaSelection(value)) {
+                updateProgressSteps(value);
+            }
 
             addMessage(value, 'user');
             conversationHistory.push({ role: "user", content: value });
