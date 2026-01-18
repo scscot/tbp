@@ -20,8 +20,9 @@
  *   TEST_EMAIL - Override recipient for testing (won't mark as sent)
  *   SKIP_TIME_CHECK - Set to 'true' to bypass PT time window check
  *   SKIP_DEMO_GEN - Set to 'true' to skip demo generation (for testing email only)
- *   DOC_ID - Specific document ID to process (bypasses query)
+ *   DOC_ID - Specific document ID from preintake_emails to process
  *   TEST_DEMO_ID - Use existing demo lead ID for all emails (skips demo generation)
+ *   TEST_LEAD_ID - Use existing preintake_leads doc for everything (simplest test mode)
  *
  * Usage:
  *   # Normal run (respects PT time window)
@@ -82,6 +83,10 @@ const DOC_ID = process.env.DOC_ID || null;
 // Test demo ID - use an existing demo lead ID for all emails (skips demo generation)
 // This is useful for testing the email flow without generating new demos each time
 const TEST_DEMO_ID = process.env.TEST_DEMO_ID || null;
+
+// Test lead ID - use an existing preintake_leads document for everything
+// Pulls contact data AND demo from this single document (simplest test mode)
+const TEST_LEAD_ID = process.env.TEST_LEAD_ID || null;
 
 /**
  * Check if current time is within allowed PT business window
@@ -596,8 +601,37 @@ async function runCampaign() {
     // Phase 2: Contacts WITHOUT website URLs (fallback emails only)
     let allDocs = [];
 
+    // If TEST_LEAD_ID is provided, use the existing preintake_leads document directly
+    if (TEST_LEAD_ID) {
+        console.log(`🧪 TEST MODE: Using existing lead ${TEST_LEAD_ID}`);
+        const leadDoc = await db.collection(LEADS_COLLECTION).doc(TEST_LEAD_ID).get();
+        if (!leadDoc.exists) {
+            console.error(`❌ Lead ${TEST_LEAD_ID} not found in ${LEADS_COLLECTION}`);
+            process.exit(1);
+        }
+        const leadData = leadDoc.data();
+        console.log(`📊 Found lead: ${leadData.name || leadData.analysis?.firmName || 'Unknown'}`);
+        console.log(`   Email: ${leadData.email}`);
+        console.log(`   Status: ${leadData.status}`);
+
+        // Create a fake doc object that matches expected structure
+        const fakeDoc = {
+            id: TEST_LEAD_ID,
+            ref: { update: async () => {} }, // No-op update for test mode
+            data: () => ({
+                firmName: leadData.name || leadData.analysis?.firmName || 'Test Firm',
+                email: leadData.email,
+                website: leadData.website,
+                firstName: leadData.name?.split(' ')[0] || '',
+                lastName: leadData.name?.split(' ').slice(1).join(' ') || '',
+                _isTestLead: true, // Flag to use this lead ID for demo URL
+                _testLeadId: TEST_LEAD_ID
+            })
+        };
+        allDocs = [fakeDoc];
+    }
     // If specific document ID is provided, use that instead of querying
-    if (DOC_ID) {
+    else if (DOC_ID) {
         console.log(`📋 Using specific document ID: ${DOC_ID}`);
         const specificDoc = await db.collection(COLLECTION_NAME).doc(DOC_ID).get();
         if (!specificDoc.exists) {
@@ -665,8 +699,14 @@ async function runCampaign() {
             let demoUrl = null;
             let hasDemo = false;
 
+            // Use test lead ID if this is from TEST_LEAD_ID mode
+            if (data._isTestLead) {
+                leadId = data._testLeadId;
+                hasDemo = true;
+                console.log(`   🧪 Using existing lead/demo: ${leadId}`);
+            }
             // Use test demo ID if provided (for testing without generating new demos)
-            if (TEST_DEMO_ID) {
+            else if (TEST_DEMO_ID) {
                 leadId = TEST_DEMO_ID;
                 hasDemo = true;
                 console.log(`   🧪 Using test demo ID: ${TEST_DEMO_ID}`);
