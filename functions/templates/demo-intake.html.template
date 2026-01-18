@@ -1346,6 +1346,46 @@
             transform: translateY(-2px);
             box-shadow: var(--shadow-glow);
         }
+
+        .onboarding-steps {
+            text-align: left;
+            margin: 1.5rem 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .onboarding-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.875rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .onboarding-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .onboarding-step-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--accent-gold);
+            margin-top: 2px;
+        }
+
+        .onboarding-step-email {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .onboarding-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 1.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -2625,6 +2665,14 @@
                 if (response.ok) {
                     const newCount = incrementSubmissionCount();
                     console.log(`Demo submission ${newCount}/${MAX_DEMO_SUBMISSIONS} recorded`);
+
+                    // Notify parent window that intake was completed (for exit confirmation)
+                    if (window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'intake-completed',
+                            firmId: '{{LEAD_ID}}'
+                        }, '*');
+                    }
                 }
             } catch (error) {
                 console.error('Webhook error:', error);
@@ -2820,6 +2868,30 @@
             </div>
             <h2>Welcome to Your Demo</h2>
             <div id="onboarding-firm-name" class="firm-name"></div>
+
+            <ul class="onboarding-steps">
+                <li class="onboarding-step">
+                    <svg class="onboarding-step-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Complete a sample intake conversation (~2 min)</span>
+                </li>
+                <li class="onboarding-step">
+                    <svg class="onboarding-step-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>See how inquiries are evaluated and summarized</span>
+                </li>
+                <li class="onboarding-step">
+                    <svg class="onboarding-step-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Receive a sample lead notification at <span id="onboarding-email" class="onboarding-step-email"></span></span>
+                </li>
+            </ul>
+
+            <div class="onboarding-divider"></div>
+
             <p>When you're ready to go live, it embeds directly into your website—setup takes just minutes, and visitors never leave your site.</p>
             <button id="onboarding-modal-close" class="onboarding-modal-button">Start Demo</button>
         </div>
@@ -2831,10 +2903,16 @@
             const modal = document.getElementById('onboarding-modal');
             const closeBtn = document.getElementById('onboarding-modal-close');
             const firmNameDiv = document.getElementById('onboarding-firm-name');
+            const emailSpan = document.getElementById('onboarding-email');
 
-            // Use firm name from embedded CONFIG (no URL param needed)
-            if (typeof CONFIG !== 'undefined' && CONFIG.firmName && firmNameDiv) {
-                firmNameDiv.textContent = CONFIG.firmName;
+            // Use firm name and email from embedded CONFIG
+            if (typeof CONFIG !== 'undefined') {
+                if (CONFIG.firmName && firmNameDiv) {
+                    firmNameDiv.textContent = CONFIG.firmName;
+                }
+                if (CONFIG.firmEmail && emailSpan) {
+                    emailSpan.textContent = CONFIG.firmEmail;
+                }
             }
 
             if (sessionStorage.getItem('preintake_onboarding_seen')) {
@@ -2849,7 +2927,8 @@
                 if (window.parent !== window) {
                     window.parent.postMessage({
                         type: 'demo-started',
-                        firmId: '{{LEAD_ID}}'
+                        firmId: '{{LEAD_ID}}',
+                        firmEmail: CONFIG.firmEmail || ''
                     }, '*');
                 }
             });

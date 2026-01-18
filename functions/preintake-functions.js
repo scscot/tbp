@@ -669,11 +669,12 @@ const submitDemoRequest = onRequest(
             if (existingLead) {
                 console.log(`Duplicate demo request blocked for ${normalizedUrl} - existing lead: ${existingLead.id}`);
 
-                // If demo is ready, return the existing demo URL
+                // If demo is ready, return the existing demo URL and leadId for redirect
                 if (existingLead.data.demoUrl) {
                     return res.status(409).json({
                         error: 'A demo has already been created for this website.',
                         existingDemoUrl: existingLead.data.demoUrl,
+                        existingLeadId: existingLead.id,
                         message: 'You can access your existing demo at the URL provided.'
                     });
                 }
@@ -681,6 +682,7 @@ const submitDemoRequest = onRequest(
                 // If demo is still being processed, inform the user
                 return res.status(409).json({
                     error: 'A demo request is already being processed for this website.',
+                    existingLeadId: existingLead.id,
                     status: existingLead.data.status,
                     message: 'Please check your email for the demo link, or wait for processing to complete.'
                 });

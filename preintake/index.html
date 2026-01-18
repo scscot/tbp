@@ -1441,6 +1441,12 @@
                     const data = await response.json();
 
                     if (!response.ok) {
+                        // Check if a demo already exists for this website (409 Conflict)
+                        if (response.status === 409 && data.existingLeadId) {
+                            // Redirect to existing demo
+                            window.location.href = `/?demo=${data.existingLeadId}`;
+                            return;
+                        }
                         // Check if this is a law firm validation error (400 status)
                         if (response.status === 400 && data.error && data.error.includes('law firm')) {
                             showValidationErrorModal(website, data.error);
@@ -1664,30 +1670,7 @@
                 // Clean URL
                 window.history.replaceState({}, document.title, window.location.pathname);
 
-                // Check subscription status FIRST
-                // If they have any subscription (active, cancelled, etc.), show Account Active modal
-                try {
-                    const statusResponse = await fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`);
-                    if (statusResponse.ok) {
-                        const statusData = await statusResponse.json();
-
-                        // If subscriptionStatus is NOT null, they have/had a subscription
-                        if (statusData.subscriptionStatus !== null) {
-                            // Show Account Already Active modal instead of demo
-                            showAccountActiveModal(statusData);
-                            return true;
-                        }
-                    }
-                } catch (err) {
-                    // If status check fails, proceed with demo (fail open)
-                    console.warn('Status check failed, proceeding with demo:', err);
-                }
-
-                // No subscription - proceed with demo modal flow
-                // Construct demo URL (embed=true hides sidebar CTA; firm name is embedded in demo config)
-                const demoUrl = `https://preintake.ai/demo/${demoLeadId}?embed=true`;
-
-                // Show firm name welcome banner
+                // Show firm name welcome banner IMMEDIATELY (before async API calls)
                 const welcomeBanner = document.getElementById('campaign-welcome');
                 const firmNameSpan = document.getElementById('campaign-firm-name');
                 if (firmNameFromUrl) {
@@ -1695,7 +1678,10 @@
                     welcomeBanner.classList.add('visible');
                 }
 
-                // Setup modal elements
+                // Construct demo URL (embed=true hides sidebar CTA; firm name is embedded in demo config)
+                const demoUrl = `https://preintake.ai/demo/${demoLeadId}?embed=true`;
+
+                // Setup modal elements IMMEDIATELY (before status check)
                 const modal = document.getElementById('demo-modal');
                 const iframe = document.getElementById('demo-modal-iframe');
                 const closeBtn = document.getElementById('demo-modal-close');
@@ -1742,38 +1728,94 @@
                     // (via postMessage from demo template)
                 }
 
-                // Listen for "demo-started" message from iframe (when user clicks "Start Demo")
+                // Track demo state for exit confirmation
+                let demoIntakeCompleted = false;
+                let demoFirmEmail = '';
+
+                // Listen for messages from iframe
                 window.addEventListener('message', function(e) {
+                    // Demo started - user clicked "Start Demo"
                     if (e.data?.type === 'demo-started' && e.data?.firmId === demoLeadId) {
                         // Track actual demo view (user engaged with demo)
                         fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
                         sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
+                        // Store firm email for exit confirmation modal
+                        if (e.data.firmEmail) {
+                            demoFirmEmail = e.data.firmEmail;
+                        }
+                    }
+                    // Intake completed - user finished the conversation and email was sent
+                    if (e.data?.type === 'intake-completed' && e.data?.firmId === demoLeadId) {
+                        demoIntakeCompleted = true;
                     }
                 });
 
-                // Close modal function
+                // Exit confirmation modal elements
+                const exitConfirmModal = document.getElementById('exit-confirm-modal');
+                const exitConfirmEmail = document.getElementById('exit-confirm-email');
+                const exitConfirmContinue = document.getElementById('exit-confirm-continue');
+                const exitConfirmEnd = document.getElementById('exit-confirm-end');
+
+                // Show exit confirmation modal
+                function showExitConfirmModal() {
+                    exitConfirmEmail.textContent = demoFirmEmail || 'your email';
+                    exitConfirmModal.classList.add('show');
+                }
+
+                // Hide exit confirmation modal
+                function hideExitConfirmModal() {
+                    exitConfirmModal.classList.remove('show');
+                }
+
+                // Continue demo button - just close confirmation modal
+                exitConfirmContinue.addEventListener('click', hideExitConfirmModal);
+
+                // End demo anyway button - close both modals
+                exitConfirmEnd.addEventListener('click', function() {
+                    hideExitConfirmModal();
+                    forceCloseDemoModal();
+                });
+
+                // Close modal function (with confirmation check)
                 function closeDemoModal() {
+                    // If intake not completed, show confirmation modal
+                    if (!demoIntakeCompleted && demoFirmEmail) {
+                        showExitConfirmModal();
+                        return;
+                    }
+                    forceCloseDemoModal();
+                }
+
+                // Force close demo modal (bypass confirmation)
+                function forceCloseDemoModal() {
                     modal.classList.remove('show');
                     floatingButtons.classList.add('visible');
                     document.body.style.overflow = '';
                     // Clear iframe to stop any ongoing processes
                     iframe.src = 'about:blank';
+                    // Reset completion state for next demo view
+                    demoIntakeCompleted = false;
                 }
 
-                // "End Demo" closes modal
+                // "End Demo" closes modal (with confirmation)
                 closeBtn.addEventListener('click', closeDemoModal);
 
                 // "View Demo" floating button reopens modal
                 viewDemoBtn.addEventListener('click', openDemoModal);
 
-                // Close on escape key
+                // Close on escape key (with confirmation)
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && modal.classList.contains('show')) {
-                        closeDemoModal();
+                    if (e.key === 'Escape') {
+                        // First check if exit confirm modal is open
+                        if (exitConfirmModal.classList.contains('show')) {
+                            hideExitConfirmModal();
+                        } else if (modal.classList.contains('show')) {
+                            closeDemoModal();
+                        }
                     }
                 });
 
-                // Close on overlay click (outside iframe container)
+                // Close on overlay click (outside iframe container) - with confirmation
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         closeDemoModal();
@@ -1798,8 +1840,24 @@
                     campaignHeroCta.style.display = 'none';
                 }
 
-                // Open modal immediately
+                // Open modal immediately (don't wait for status check)
                 openDemoModal();
+
+                // Check subscription status in background (non-blocking)
+                // If they have an active subscription, close demo and show Account Active modal
+                fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`)
+                    .then(response => response.ok ? response.json() : null)
+                    .then(statusData => {
+                        if (statusData?.subscriptionStatus !== null) {
+                            // They have a subscription - close demo modal and show account active
+                            closeDemoModal();
+                            showAccountActiveModal(statusData);
+                        }
+                    })
+                    .catch(err => {
+                        // Status check failed - keep showing demo (fail open)
+                        console.warn('Status check failed:', err);
+                    });
 
                 return true;
             }
@@ -2024,6 +2082,32 @@
             <p class="account-active-modal-contact">
                 Need help? <a href="mailto:support@preintake.ai">Contact support</a>
             </p>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal (shown when user tries to end demo before completing intake) -->
+    <div class="exit-confirm-modal-overlay" id="exit-confirm-modal">
+        <div class="exit-confirm-modal">
+            <div class="exit-confirm-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h2>Complete the Demo?</h2>
+            <p>To see the full value of PreIntake.ai, complete the intake conversation. You'll receive a sample lead notification at:</p>
+            <p class="exit-confirm-modal-email" id="exit-confirm-email">—</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">This shows exactly what your team receives for every inquiry.</p>
+            <div class="exit-confirm-modal-buttons">
+                <button class="exit-confirm-btn-continue" id="exit-confirm-continue">
+                    Continue Demo
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </button>
+                <button class="exit-confirm-btn-end" id="exit-confirm-end">
+                    End Demo Anyway
+                </button>
+            </div>
         </div>
     </div>
 </body>

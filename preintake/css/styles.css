@@ -1448,6 +1448,137 @@ body {
     }
 }
 
+/* Exit Confirmation Modal (shown when user tries to end demo before completing) */
+.exit-confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 22, 40, 0.95);
+    z-index: 10001; /* Above demo modal */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 1.5rem;
+}
+
+.exit-confirm-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.exit-confirm-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.exit-confirm-modal-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.exit-confirm-modal-icon svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+}
+
+.exit-confirm-modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+.exit-confirm-modal p {
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.exit-confirm-modal-email {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.exit-confirm-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.exit-confirm-btn-continue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+    color: var(--primary-dark);
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.exit-confirm-btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(201, 169, 98, 0.4);
+}
+
+.exit-confirm-btn-end {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.exit-confirm-btn-end:hover {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+    .exit-confirm-modal {
+        padding: 2rem 1.5rem;
+    }
+
+    .exit-confirm-modal h2 {
+        font-size: 1.25rem;
+    }
+}
+
 /* Empty state for no practice areas */
 .practice-tags-empty {
     text-align: center;

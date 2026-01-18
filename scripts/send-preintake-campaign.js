@@ -231,7 +231,8 @@ async function generateDemoForContact(contactData) {
 function generateEmailHTML(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
     // Direct link to personalized demo via homepage with ?demo= parameter
-    const demoUrl = `https://preintake.ai/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    // Include &firm= so homepage shows "Welcome [firmName]" banner immediately
+    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     // Add greeting if firstName is available
     const greeting = firstName ? `<p style="font-size: 16px;">Hello ${firstName},</p>\n\n      ` : '';

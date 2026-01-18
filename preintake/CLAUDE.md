@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-16
-**Version**: 3.4 (Demo view tracking improvement)
+**Last Updated**: 2026-01-18
+**Version**: 3.5 (Demo UX improvements - exit confirmation, duplicate redirect)
 
 ---
 
@@ -1196,6 +1196,48 @@ function stripNonContentHtml(html) {
 - `preintake/index.html` - Added message listener, removed premature view tracking
 - `functions/templates/demo-intake.html.template` - Added postMessage on Start Demo click
 - `scripts/update-demo-postmessage.js` - New script for bulk demo updates
+
+### Phase 28: Demo UX Improvements (2026-01-18)
+- [x] **Duplicate Demo Redirect** - Auto-route users to existing demos
+  - When user submits form and demo already exists (409 response), redirect to existing demo
+  - Backend returns `existingLeadId` in 409 response for redirect
+  - Frontend detects 409 + `existingLeadId` and redirects to `/?demo=${existingLeadId}`
+  - Eliminates confusing "demo already exists" error message
+- [x] **Exit Confirmation Modal** - Prevent premature demo abandonment
+  - When user tries to close demo before completing intake, show confirmation modal
+  - Modal displays firm email and explains value of completing the demo
+  - "Continue Demo" button dismisses modal and returns to conversation
+  - "End Demo Anyway" button closes demo and returns to homepage with welcome banner
+  - Triggered by: close button, Escape key, or overlay click
+  - CSS class `.exit-confirm-modal-overlay` with smooth transitions
+- [x] **Demo Template postMessage Enhancements**
+  - Added `firmEmail` to `demo-started` postMessage for exit confirmation
+  - Added new `intake-completed` postMessage when webhook succeeds
+  - Parent window tracks completion state (`demoIntakeCompleted`, `demoFirmEmail`)
+- [x] **Email URL Enhancement** - Added `&firm=` parameter to demo URLs
+  - Campaign emails now include firm name in demo link
+  - Homepage shows "Welcome [firmName]" banner immediately on click
+  - URL format: `?demo={leadId}&firm={firmName}&utm_source=email...`
+- [x] **Bulk Demo Regeneration** - Updated all 160 demos with new template
+  - Regenerated via `scripts/regenerate-preintake-demos.js --run`
+  - All demos now include exit confirmation messaging support
+
+**Exit Confirmation Modal Flow:**
+```
+1. User clicks "Start Demo" → demoFirmEmail captured from postMessage
+2. User attempts to close demo (before intake completion)
+3. Exit confirmation modal appears with firm email displayed
+4. "Continue Demo" → Modal dismissed, demo continues
+5. "End Demo Anyway" → Demo closed, return to homepage with welcome banner
+6. If intake completes (webhook success) → Future close actions skip confirmation
+```
+
+**Files Modified:**
+- `preintake/index.html` - Added exit confirmation modal HTML/JS, 409 redirect logic
+- `preintake/css/styles.css` - Added `.exit-confirm-modal-*` CSS classes
+- `functions/preintake-functions.js` - Added `existingLeadId` to 409 responses
+- `functions/templates/demo-intake.html.template` - Added `firmEmail` and `intake-completed` postMessages
+- `scripts/send-preintake-campaign.js` - Added `&firm=` parameter to email demo URLs
 
 ---
 
