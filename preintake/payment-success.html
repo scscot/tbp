@@ -344,6 +344,101 @@
             text-decoration: underline;
         }
 
+        /* Hosted URL Section Styles */
+        .hosted-url-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hosted-url-box {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.15) 0%, rgba(201, 169, 98, 0.05) 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .hosted-url-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .hosted-url-value {
+            color: var(--accent-gold);
+            font-size: 1.25rem;
+            font-weight: 600;
+            word-break: break-all;
+            margin-bottom: 1rem;
+        }
+
+        .hosted-url-value a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        .hosted-url-value a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-url-btn {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-url-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(201, 169, 98, 0.4);
+        }
+
+        .usage-tips {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            margin-top: 1.5rem;
+        }
+
+        .usage-tips h4 {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .usage-tips ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .usage-tips li {
+            padding: 0.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .usage-tips li::before {
+            content: "✓";
+            color: var(--accent-gold);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .usage-tips strong {
+            color: var(--text-light);
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
@@ -429,7 +524,39 @@
                     </div>
                 </div>
 
-                <div class="next-steps">
+                <!-- HOSTED URL SECTION (for subscribers without websites) -->
+                <div id="hosted-section" class="hosted-url-section" style="display: none;">
+                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--accent-gold);">Your Intake Page is Ready!</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Share this link with potential clients to start receiving qualified inquiries:</p>
+
+                    <div class="hosted-url-box">
+                        <p class="hosted-url-label">Your Intake URL</p>
+                        <p class="hosted-url-value">
+                            <a id="hosted-url-link" href="#" target="_blank"></a>
+                        </p>
+                        <button class="copy-url-btn" onclick="copyHostedUrl()">Copy URL</button>
+                    </div>
+
+                    <div class="usage-tips">
+                        <h4>How to Use Your Intake Page</h4>
+                        <ul>
+                            <li><strong>Email signature:</strong> Add your intake URL to your email signature</li>
+                            <li><strong>Business cards:</strong> Include the URL or a QR code</li>
+                            <li><strong>Social media:</strong> Share in your LinkedIn bio or posts</li>
+                            <li><strong>Advertising:</strong> Use as the landing page for your ads</li>
+                            <li><strong>Referrals:</strong> Share with referral sources to send you qualified leads</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(72, 187, 120, 0.1); border: 1px solid rgba(72, 187, 120, 0.3); border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--success);">
+                            <strong>Lead Delivery:</strong> All completed intakes will be sent to <span id="hosted-delivery-email" style="color: var(--accent-gold);"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- EMBED CODE SECTION (for subscribers with websites) -->
+                <div id="embed-section" class="next-steps">
                     <h3>How to Add Intake Form to Your Website</h3>
 
                     <div class="step">
@@ -566,16 +693,22 @@
         const firmNameEl = document.getElementById('firm-name');
         const deliveryEmailEl = document.getElementById('delivery-email');
         const emailDeveloperBtn = document.getElementById('email-developer-btn');
+        const hostedSectionEl = document.getElementById('hosted-section');
+        const embedSectionEl = document.getElementById('embed-section');
+        const hostedUrlLinkEl = document.getElementById('hosted-url-link');
+        const hostedDeliveryEmailEl = document.getElementById('hosted-delivery-email');
+        const subtitleEl = document.querySelector('.subtitle');
 
         // Embed type state
         let currentEmbedType = 'button';
+        let hostedIntakeUrl = null;
 
         /**
          * Initialize page
          */
         async function init() {
             if (!sessionId || !firmId) {
-                showContent();
+                showContent(true); // Default to embed mode
                 firmNameEl.textContent = 'Your Firm';
                 updateFirmIdCodes(firmId || 'YOUR_FIRM_ID');
                 deliveryEmailEl.textContent = 'your email';
@@ -592,12 +725,35 @@
 
                 const data = await response.json();
 
-                // Update UI
+                // Update basic UI
                 firmNameEl.textContent = data.firmName || 'Your Firm';
                 updateFirmIdCodes(firmId);
-                deliveryEmailEl.textContent = data.customerEmail || 'your email';
 
-                showContent();
+                // Now fetch lead data to check hasWebsite
+                let hasWebsite = true; // Default to true (embed mode)
+                let customerEmail = data.customerEmail || 'your email';
+
+                try {
+                    const leadResponse = await fetchWithTimeout(`${API_BASE}/getPreIntakeFirmStatus?leadId=${firmId}`);
+                    if (leadResponse.ok) {
+                        const leadData = await leadResponse.json();
+                        hostedIntakeUrl = leadData.hostedIntakeUrl || null;
+                        customerEmail = leadData.deliveryEmail || data.customerEmail || 'your email';
+                        // Only use hosted mode if we have a valid hostedIntakeUrl
+                        // Fall back to embed mode if hasWebsite is false but no hostedIntakeUrl (edge case)
+                        hasWebsite = leadData.hasWebsite !== false || !hostedIntakeUrl;
+                    }
+                } catch (leadError) {
+                    console.warn('Could not fetch lead data:', leadError);
+                    // Continue with default (embed mode)
+                }
+
+                deliveryEmailEl.textContent = customerEmail;
+                if (hostedDeliveryEmailEl) {
+                    hostedDeliveryEmailEl.textContent = customerEmail;
+                }
+
+                showContent(hasWebsite);
                 triggerConfetti();
 
             } catch (error) {
@@ -606,18 +762,54 @@
                 firmNameEl.textContent = 'Your Firm';
                 updateFirmIdCodes(firmId);
                 deliveryEmailEl.textContent = 'your email';
-                showContent();
+                showContent(true); // Default to embed mode
                 triggerConfetti();
             }
         }
 
         /**
          * Show content and hide loading
+         * @param {boolean} hasWebsite - Whether subscriber has a website
          */
-        function showContent() {
+        function showContent(hasWebsite = true) {
             loadingEl.style.display = 'none';
             contentEl.style.display = 'block';
-            setupEmailDeveloperButton();
+
+            if (hasWebsite) {
+                // Show embed code section for users with websites
+                embedSectionEl.style.display = 'block';
+                hostedSectionEl.style.display = 'none';
+                emailDeveloperBtn.style.display = 'inline-flex';
+                subtitleEl.textContent = "Your PreIntake.ai account is now active. Here's how to add AI-powered intake to your website.";
+                setupEmailDeveloperButton();
+            } else {
+                // Show hosted URL section for users without websites
+                embedSectionEl.style.display = 'none';
+                hostedSectionEl.style.display = 'block';
+                emailDeveloperBtn.style.display = 'none';
+                subtitleEl.textContent = "Your PreIntake.ai account is now active. Share your intake URL to start receiving qualified inquiries.";
+
+                // Set hosted URL if available
+                if (hostedIntakeUrl && hostedUrlLinkEl) {
+                    hostedUrlLinkEl.href = hostedIntakeUrl;
+                    hostedUrlLinkEl.textContent = hostedIntakeUrl;
+                }
+            }
+        }
+
+        /**
+         * Copy hosted URL to clipboard
+         */
+        function copyHostedUrl() {
+            if (!hostedIntakeUrl) return;
+
+            navigator.clipboard.writeText(hostedIntakeUrl).then(() => {
+                const btn = document.querySelector('.copy-url-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy URL';
+                }, 2000);
+            });
         }
 
         /**

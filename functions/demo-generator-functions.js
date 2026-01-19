@@ -3005,6 +3005,120 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
     }
 }
 
+/**
+ * Map bar profile practice area to our system prompt practice areas
+ * Bar profiles use various naming conventions that need normalization
+ */
+function mapBarPracticeArea(barPracticeArea) {
+    const mapping = {
+        'personal injury': 'Personal Injury',
+        'personal injury law': 'Personal Injury',
+        'criminal law': 'Criminal Defense',
+        'criminal defense': 'Criminal Defense',
+        'family law': 'Family Law',
+        'domestic relations': 'Family Law',
+        'bankruptcy': 'Bankruptcy',
+        'bankruptcy law': 'Bankruptcy',
+        'immigration': 'Immigration',
+        'immigration law': 'Immigration',
+        'estate planning': 'Estate Planning',
+        'wills & trusts': 'Estate Planning',
+        'wills and trusts': 'Estate Planning',
+        'probate': 'Estate Planning',
+        'trusts and estates': 'Estate Planning',
+        'employment law': 'Employment Law',
+        'labor law': 'Employment Law',
+        'labor and employment': 'Employment Law',
+        'tax law': 'Tax/IRS',
+        'taxation': 'Tax/IRS',
+        'tax': 'Tax/IRS',
+        'workers compensation': 'Workers\' Compensation',
+        'workers\' compensation': 'Workers\' Compensation',
+        'worker\'s compensation': 'Workers\' Compensation',
+        'real estate': 'Real Estate',
+        'real property': 'Real Estate',
+        'real estate law': 'Real Estate',
+    };
+
+    const normalized = (barPracticeArea || '').toLowerCase().trim();
+    return mapping[normalized] || 'General Practice';
+}
+
+/**
+ * Generate a demo using only bar profile data (no website analysis)
+ * Used for attorneys without websites in email campaigns
+ *
+ * @param {string} leadId - The lead document ID (for storage path)
+ * @param {object} contactData - Data from preintake_emails collection:
+ *   - firstName: Attorney first name
+ *   - lastName: Attorney last name
+ *   - practiceArea: Primary practice area from bar profile
+ *   - email: Attorney email
+ *   - state: State abbreviation (CA, FL, etc.)
+ *   - firmName: (optional) Firm name if available
+ *   - barNumber: Attorney bar number
+ * @returns {object} { htmlContent, configContent } from generateDemoFiles
+ */
+function generateBarProfileDemo(leadId, contactData) {
+    // Build firm name from contact data
+    const firmName = contactData.firmName ||
+        `${contactData.firstName} ${contactData.lastName}, Attorney at Law`;
+
+    // Map bar practice area to our system prompt practice areas
+    const mappedPracticeArea = mapBarPracticeArea(contactData.practiceArea);
+
+    // Build practice areas list (single area for bar profile demos)
+    const practiceAreas = [{
+        name: mappedPracticeArea,
+        percentage: 100
+    }];
+
+    // Construct minimal leadData object (matches what generateDemoFiles expects)
+    const leadData = {
+        name: firmName,
+        email: contactData.email,
+        website: '', // No website for bar profile contacts
+        source: 'bar_profile',
+        confirmedPracticeAreas: {
+            areas: [mappedPracticeArea],
+            primaryArea: mappedPracticeArea,
+            autoConfirmed: true
+        }
+    };
+
+    // Construct minimal analysis object (simulates website analysis results)
+    const analysis = {
+        firmName: firmName,
+        primaryPracticeArea: mappedPracticeArea,
+        practiceAreas: practiceAreas,
+        location: {
+            state: contactData.state || 'CA'
+        },
+        branding: {
+            logoUrl: null // Text-only logo (no website to scrape)
+        },
+        contactMethods: {
+            phone: '', // Not available from bar profile
+            email: contactData.email
+        }
+    };
+
+    // Construct minimal deepResearch object (no website to scrape)
+    const deepResearch = {
+        attorneys: [{
+            name: `${contactData.firstName} ${contactData.lastName}`,
+            title: 'Attorney at Law'
+        }],
+        caseResults: [],
+        firmDescription: '',
+        yearsInBusiness: null,
+        officeLocations: []
+    };
+
+    // Use existing generateDemoFiles function
+    return generateDemoFiles(leadId, leadData, analysis, deepResearch);
+}
+
 module.exports = {
     generatePreIntakeDemo,
     // Exported for widget-functions.js (server-side chat)
@@ -3023,4 +3137,7 @@ module.exports = {
     generateDemoFiles,
     uploadToStorage,
     initFirebaseAdmin,
+    // Exported for bar profile demo generation (attorneys without websites)
+    generateBarProfileDemo,
+    mapBarPracticeArea,
 };

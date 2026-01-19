@@ -365,6 +365,111 @@ const serveDemo = onRequest(
 );
 
 /**
+ * Serve the hosted intake page for website-less subscribers
+ * URL: /intake/{barNumber}
+ *
+ * Unlike serveDemo, this:
+ * 1. Uses barNumber instead of leadId for URL routing
+ * 2. Requires active subscription (not demo mode)
+ * 3. Serves in LIVE mode (not demo mode)
+ */
+const serveHostedIntake = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+    },
+    async (req, res) => {
+        try {
+            // Extract barNumber from URL path (/intake/BARNUMBER)
+            let barNumber = null;
+
+            if (req.path) {
+                const pathMatch = req.path.match(/\/intake\/([a-zA-Z0-9]+)/);
+                if (pathMatch) {
+                    barNumber = pathMatch[1];
+                }
+            }
+
+            // Fall back to query param
+            if (!barNumber) {
+                barNumber = req.query.barNumber || req.query.bar;
+            }
+
+            if (!barNumber) {
+                return res.status(400).send('Bar number required');
+            }
+
+            // Validate barNumber format (alphanumeric only)
+            if (!/^[a-zA-Z0-9]+$/.test(barNumber)) {
+                return res.status(400).send('Invalid bar number format');
+            }
+
+            // Look up lead by barNumber
+            const leadsSnapshot = await db.collection('preintake_leads')
+                .where('barNumber', '==', barNumber)
+                .limit(1)
+                .get();
+
+            if (leadsSnapshot.empty) {
+                return res.status(404).send('Intake page not found');
+            }
+
+            const leadDoc = leadsSnapshot.docs[0];
+            const leadId = leadDoc.id;
+            const data = leadDoc.data();
+
+            // Validate subscription status - must be active (not demo mode)
+            if (data.subscriptionStatus !== 'active') {
+                // Check for grace period
+                if (data.cancelAtPeriodEnd === true && data.currentPeriodEnd) {
+                    const periodEnd = data.currentPeriodEnd.toDate ? data.currentPeriodEnd.toDate() : new Date(data.currentPeriodEnd);
+                    if (periodEnd <= new Date()) {
+                        return res.status(403).send('This intake page is no longer active');
+                    }
+                } else {
+                    return res.status(404).send('Intake page not found');
+                }
+            }
+
+            // Get the demo HTML from Firebase Storage
+            const bucket = getStorage().bucket('teambuilder-plus-fe74d.firebasestorage.app');
+            const file = bucket.file(`preintake-demos/${leadId}/index.html`);
+
+            // Check if file exists
+            const [exists] = await file.exists();
+            if (!exists) {
+                return res.status(404).send('Intake page not found');
+            }
+
+            // Download the HTML
+            const [contents] = await file.download();
+            let html = contents.toString();
+
+            // Modify HTML to indicate LIVE mode (not demo mode)
+            // This disables the "demo sent to {email}" confirmation modal
+            html = html.replace(
+                'window.PREINTAKE_DEMO_MODE = true',
+                'window.PREINTAKE_DEMO_MODE = false'
+            );
+
+            // Also update any explicit demo mode checks
+            html = html.replace(
+                'const DEMO_MODE = true;',
+                'const DEMO_MODE = false;'
+            );
+
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minute cache
+            res.send(html);
+
+        } catch (error) {
+            console.error('serveHostedIntake error:', error);
+            return res.status(500).send('Error loading intake page');
+        }
+    }
+);
+
+/**
  * Track demo visits and views for click rate analytics
  * - type=visit: Records when someone clicks an email link (page load)
  * - type=view: Records when someone actually engages with the demo
@@ -704,6 +809,7 @@ module.exports = {
     getWidgetConfig,
     intakeChat,
     serveDemo,
+    serveHostedIntake,
     trackDemoView,
     getEmailAnalytics,
 };

@@ -851,6 +851,11 @@ const getPreIntakeFirmStatus = onRequest(
                 // Demo URL if ready
                 demoUrl: data.demoUrl || null,
 
+                // Website status for post-subscription flow (embed vs hosted URL)
+                hasWebsite: data.hasWebsite !== false, // Default to true if undefined
+                hostedIntakeUrl: data.hostedIntakeUrl || null,
+                barNumber: data.barNumber || null,
+
                 // Error info if failed
                 error: data.analysis?.error || null
             });

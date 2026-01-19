@@ -1253,6 +1253,96 @@ function stripNonContentHtml(html) {
 - `functions/demo-generator-functions.js` - Added `isMultiPractice` flag and `FIRM_PRACTICE_AREAS_JSON` placeholder injection
 - `scripts/send-preintake-campaign.js` - Added `&firm=` parameter to email demo URLs
 
+### Phase 29: Bar Profile Demos & Hosted Intake URLs (2026-01-18)
+- [x] **Bar Profile Demo Generation** - Demos for attorneys WITHOUT websites
+  - New `generateBarProfileDemo()` function in `demo-generator-functions.js`
+  - Uses bar profile data: firstName, lastName, practiceArea, email, state, barNumber
+  - Constructs firm name: "{firstName} {lastName}, Attorney at Law"
+  - Maps bar practice areas to PreIntake system prompts via `mapBarPracticeArea()`
+  - No website scraping or deep research required
+  - Opens up ~65% of contacts (~3,900 attorneys) who couldn't get personalized demos
+- [x] **Practice Area Mapping** - Normalizes bar profile practice areas
+  - Handles variations: "Criminal Law" → "Criminal Defense", "Wills & Trusts" → "Estate Planning"
+  - Falls back to "General Practice" for unmapped areas
+  - Case-insensitive matching with trim
+- [x] **3-Phase Email Campaign Priority** - Updated `send-preintake-campaign.js`
+  - Phase 1: Contacts WITH website URLs (personalized website-based demos)
+  - Phase 2: Contacts WITHOUT website, WITH bar data (`domainChecked=true`, `domainCheckResult` in `['not_found', 'personal_email']`)
+  - Phase 3: Contacts WITHOUT website, NOT domain-checked (fallback email only)
+- [x] **Hosted Intake URLs** - Post-subscription delivery for website-less attorneys
+  - URL format: `preintake.ai/intake/{barNumber}`
+  - `serveHostedIntake` Cloud Function in `widget-functions.js`
+  - Looks up lead by barNumber, verifies active subscription
+  - Serves demo HTML in LIVE mode (not demo mode)
+  - Returns 404 for non-existent or inactive subscriptions
+- [x] **Firebase Hosting Rewrite** - Added `/intake/:barNumber` route
+  - Maps to `serveHostedIntake` function in `us-west1` region
+  - Sits alongside existing `/demo/:firmId` rewrite
+- [x] **Stripe Checkout Updates** - `stripe-functions.js` modifications
+  - `handleCheckoutComplete` now stores: `hasWebsite`, `deliveryMethod`, `hostedIntakeUrl`
+  - For website-less subscribers with barNumber: `hostedIntakeUrl` = `https://preintake.ai/intake/{barNumber}`
+  - `generateActivationEmail` sends dual-path emails (embed vs hosted instructions)
+- [x] **API Response Enhancement** - `getPreIntakeFirmStatus` returns new fields
+  - Added: `hasWebsite`, `hostedIntakeUrl`, `barNumber` to response
+  - `hasWebsite` defaults to `true` if undefined (backward compatibility)
+- [x] **Payment Success Page** - Dual-path UI in `payment-success.html`
+  - Detects `hasWebsite` from API response
+  - Website users: Shows embed code options (floating button, inline widget, direct URL, iframe)
+  - Hosted users: Shows hosted URL with copy button and sharing suggestions
+  - Edge case: Falls back to embed mode if `hasWebsite=false` but no `hostedIntakeUrl`
+
+**Data Flow (Bar Profile Demo):**
+```
+preintake_emails (domainChecked=true, domainCheckResult='not_found')
+    │
+    ▼
+send-preintake-campaign.js (Phase 2)
+    │
+    ├─ Create preintake_leads document
+    ├─ generateBarProfileDemo(leadId, contactData)
+    │   ├─ Firm name: "John Smith, Attorney at Law"
+    │   ├─ Practice area: mapped from bar profile
+    │   └─ No website scraping
+    ├─ Upload to Firebase Storage
+    └─ Send email with ?demo= link
+```
+
+**Post-Subscription Flow (Website-less):**
+```
+Stripe checkout completes
+    │
+    ▼
+handleCheckoutComplete (stripe-functions.js)
+    │
+    ├─ hasWebsite: false
+    ├─ deliveryMethod: 'hosted'
+    ├─ hostedIntakeUrl: 'https://preintake.ai/intake/{barNumber}'
+    │
+    ▼
+Redirect to payment-success.html
+    │
+    ├─ Detects no website
+    └─ Shows hosted URL section with sharing instructions
+```
+
+**Files Modified:**
+- `functions/demo-generator-functions.js` - Added `generateBarProfileDemo()` and `mapBarPracticeArea()`
+- `functions/widget-functions.js` - Added `serveHostedIntake` function
+- `functions/stripe-functions.js` - Updated `handleCheckoutComplete` and `generateActivationEmail`
+- `functions/preintake-functions.js` - Added `hasWebsite`, `hostedIntakeUrl`, `barNumber` to API response
+- `functions/index.js` - Added `serveHostedIntake` to imports and exports
+- `firebase.json` - Added `/intake/:barNumber` rewrite rule
+- `preintake/payment-success.html` - Added dual-path UI (embed vs hosted)
+- `scripts/send-preintake-campaign.js` - Added bar profile demo integration
+
+**Firestore Schema Updates (`preintake_leads`):**
+| Field | Type | Description |
+|-------|------|-------------|
+| `barNumber` | string | Attorney's bar number (unique ID for hosted URL) |
+| `hasWebsite` | boolean | Whether attorney has a website |
+| `hostedIntakeUrl` | string | Full URL: `https://preintake.ai/intake/{barNumber}` |
+| `deliveryMethod` | string | `'embed'` (has website) or `'hosted'` (no website) |
+
 ---
 
 ## Architecture

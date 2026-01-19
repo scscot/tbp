@@ -643,6 +643,13 @@
                         "functionId": "serveDemo",
                         "region": "us-west1"
                     }
+                },
+                {
+                    "source": "/intake/:barNumber",
+                    "function": {
+                        "functionId": "serveHostedIntake",
+                        "region": "us-west1"
+                    }
                 }
             ],
             "headers": [

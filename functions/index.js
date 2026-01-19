@@ -252,6 +252,7 @@ const {
   getWidgetConfig,
   intakeChat,
   serveDemo,
+  serveHostedIntake,
   trackDemoView,
   getEmailAnalytics,
 } = require('./widget-functions');
@@ -420,6 +421,7 @@ module.exports = {
   getWidgetConfig,
   intakeChat,
   serveDemo,
+  serveHostedIntake,
   trackDemoView,
   getEmailAnalytics,
 

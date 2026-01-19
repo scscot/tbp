@@ -42,7 +42,7 @@ const path = require('path');
 // Import demo generation functions first
 const { analyzeWebsite } = require('../functions/preintake-analysis-functions');
 const { performDeepResearch } = require('../functions/deep-research-functions');
-const { generateDemoFiles, uploadToStorage, initFirebaseAdmin } = require('../functions/demo-generator-functions');
+const { generateDemoFiles, uploadToStorage, initFirebaseAdmin, generateBarProfileDemo } = require('../functions/demo-generator-functions');
 
 // Initialize Firebase Admin using the functions' firebase-admin instance
 // This ensures uploadToStorage uses the same initialized app
@@ -220,6 +220,83 @@ async function generateDemoForContact(contactData) {
 
     } catch (error) {
         console.error(`   ❌ Demo generation failed: ${error.message}`);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Generate demo for a bar profile contact (no website)
+ * Uses only bar profile data: firstName, lastName, practiceArea, email, state
+ * Returns { success: boolean, leadId?: string, demoUrl?: string, error?: string }
+ */
+async function generateBarProfileDemoForContact(contactData) {
+    const { firstName, lastName, practiceArea, email, state, firmName, barNumber } = contactData;
+
+    if (!firstName || !lastName) {
+        return { success: false, error: 'Missing attorney name' };
+    }
+
+    try {
+        console.log(`   🔍 Generating bar profile demo for: ${firstName} ${lastName}`);
+
+        // Step 1: Create lead document
+        const leadId = db.collection(LEADS_COLLECTION).doc().id;
+
+        // Step 2: Generate demo using bar profile data
+        console.log(`   🏗️ Generating demo from bar profile...`);
+        const { htmlContent, configContent } = generateBarProfileDemo(leadId, {
+            firstName,
+            lastName,
+            practiceArea: practiceArea || 'General Practice',
+            email,
+            state: state || 'CA',
+            firmName,
+            barNumber
+        });
+
+        // Step 3: Upload to Firebase Storage
+        const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
+        console.log(`   ✓ Demo uploaded: ${demoUrl}`);
+
+        // Step 4: Build firm name
+        const generatedFirmName = firmName || `${firstName} ${lastName}, Attorney at Law`;
+
+        // Step 5: Save lead document with demo URL
+        const leadData = {
+            name: generatedFirmName,
+            email: email,
+            website: '', // No website
+            source: 'bar_profile_campaign',
+            barNumber: barNumber || null,
+            state: state || 'CA',
+            emailVerified: true,
+            autoConfirmed: true,
+            status: 'demo_ready',
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            demoUrl: demoUrl,
+            'demo.generatedAt': admin.firestore.FieldValue.serverTimestamp(),
+            'demo.version': '1.0.0',
+            // Minimal analysis (no website to scrape)
+            analysis: {
+                firmName: generatedFirmName,
+                primaryPracticeArea: practiceArea || 'General Practice',
+                location: { state: state || 'CA' }
+            },
+            // Practice areas from bar profile
+            confirmedPracticeAreas: {
+                primaryArea: practiceArea || 'General Practice',
+                areas: [practiceArea || 'General Practice'],
+                autoConfirmed: true
+            }
+        };
+
+        await db.collection(LEADS_COLLECTION).doc(leadId).set(leadData);
+
+        return { success: true, leadId, demoUrl };
+
+    } catch (error) {
+        console.error(`   ❌ Bar profile demo generation failed: ${error.message}`);
         return { success: false, error: error.message };
     }
 }
@@ -502,10 +579,135 @@ Unsubscribe: ${unsubscribeUrl}`;
 }
 
 /**
- * Generate subject line
- * Different subjects for personalized demo vs fallback email
+ * Generate email HTML for bar profile contacts (attorneys without websites)
+ * More personalized messaging acknowledging we built the demo from their bar profile
  */
-function generateSubject(hasDemo) {
+function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practiceArea, state) {
+    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
+    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+
+    // Format practice area for display
+    const displayPracticeArea = practiceArea || 'legal';
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<![endif]-->
+</head>
+<body style="margin:0; padding:0; background-color:#f8fafc;">
+  <div style="display:none; max-height:0; overflow:hidden;">
+    I noticed you practice ${displayPracticeArea} in ${state || 'California'}—built you a quick demo.
+  </div>
+
+  <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
+
+    <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
+      <h1 style="margin:0; padding:0; font-weight:600; line-height:1.2;">
+        <span style="display:block; font-size:24px; color:#c9a962;">
+          <span style="color:#ffffff;">Pre</span>Intake<span style="color:#ffffff;">.ai</span>
+        </span>
+        <span style="display:block; margin-top:4px; font-size:14px; font-weight:400; color:#ffffff; line-height:1.4;">
+          Pre-Screen Every Inquiry — Tailored to Your Practice Area
+        </span>
+      </h1>
+    </div>
+
+    <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+      <p style="font-size: 16px;">Hi${firstName ? ' ' + firstName : ''},</p>
+
+      <p style="font-size: 16px;">I noticed from your ${state || 'state'} Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
+
+      <p style="font-size: 16px;">I built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.</p>
+
+      <div style="text-align: center; margin: 25px 0;">
+          <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">See Your Personalized Demo →</a>
+      </div>
+
+      <p style="font-size: 16px;">It takes 2 minutes to try. Every inquiry gets evaluated and routed:</p>
+
+      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
+          <li><strong style="color: #28a745;">QUALIFIED</strong> — Strong case, priority follow-up</li>
+          <li><strong style="color: #ffc107;">NEEDS REVIEW</strong> — May need documentation</li>
+          <li><strong style="color: #dc3545;">NOT A FIT</strong> — Polite decline with resources</li>
+      </ul>
+
+      <p style="font-size: 16px; margin-top: 16px;">
+          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
+      </p>
+
+      <p style="font-size: 16px;">If it's useful, great. If not, no worries—just wanted to share something that might help.</p>
+
+      <p style="font-size: 16px; margin-top: 20px;">
+          Best,<br>
+          <strong>Stephen Scott</strong><br>
+          Founder, PreIntake.ai
+      </p>
+    </div>
+
+    <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">
+      <a href="https://preintake.ai" style="color:#c9a962;">preintake.ai</a>
+      <p style="margin:10px 0 0 0; font-size:11px; color:#94a3b8;">
+        Los Angeles, California
+      </p>
+      <p style="margin:10px 0 0 0;">
+        <a href="${unsubscribeUrl}" style="color:#94a3b8; text-decoration:underline;">Unsubscribe</a>
+      </p>
+    </div>
+</body>
+</html>`;
+}
+
+/**
+ * Generate plain-text version of bar profile email
+ */
+function generateBarProfileEmailPlainText(firmName, email, leadId, firstName, practiceArea, state) {
+    const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
+    const demoUrl = `https://preintake.ai/?demo=${leadId}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+
+    const displayPracticeArea = practiceArea || 'legal';
+
+    return `PreIntake.ai
+Pre-Screen Every Inquiry — Tailored to Your Practice Area
+
+Hi${firstName ? ' ' + firstName : ''},
+
+I noticed from your ${state || 'state'} Bar profile that you practice ${displayPracticeArea}.
+
+I built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.
+
+See Your Personalized Demo: ${demoUrl}
+
+It takes 2 minutes to try. Every inquiry gets evaluated and routed:
+
+• QUALIFIED — Strong case, priority follow-up
+• NEEDS REVIEW — May need documentation
+• NOT A FIT — Polite decline with resources
+
+Zero Data Retention — Inquiry content is processed and delivered, not retained.
+
+If it's useful, great. If not, no worries—just wanted to share something that might help.
+
+Best,
+Stephen Scott
+Founder, PreIntake.ai
+
+---
+PreIntake.ai · Los Angeles, California
+Unsubscribe: ${unsubscribeUrl}`;
+}
+
+/**
+ * Generate subject line
+ * Different subjects based on email type
+ */
+function generateSubject(hasDemo, isBarProfile = false) {
+    if (isBarProfile) {
+        return 'I built you a personalized intake demo';
+    }
     // Same subject for both personalized and fallback emails
     return 'Pre-screen every inquiry before it reaches your team';
 }
@@ -643,7 +845,7 @@ async function runCampaign() {
         allDocs = [specificDoc];
         console.log(`📊 Found document: ${specificDoc.data().firmName || specificDoc.data().email}`);
     } else {
-        // Phase 1: Get contacts with website URLs first
+        // Phase 1: Get contacts with website URLs first (can generate website-based demos)
         const withWebsiteSnapshot = await db.collection(COLLECTION_NAME)
             .where('sent', '==', false)
             .where('status', '==', 'pending')
@@ -656,19 +858,56 @@ async function runCampaign() {
         allDocs = [...withWebsiteSnapshot.docs];
         console.log(`📊 Found ${allDocs.length} contacts with website URLs`);
 
-        // Phase 2: If we need more contacts, get ones without websites
-        const remainingSlots = BATCH_SIZE - allDocs.length;
+        // Phase 2: If we need more contacts, get bar profile contacts (no website, but have bar data)
+        // These have domainChecked=true AND domainCheckResult='not_found' or 'personal_email'
+        let remainingSlots = BATCH_SIZE - allDocs.length;
         if (remainingSlots > 0) {
-            const withoutWebsiteSnapshot = await db.collection(COLLECTION_NAME)
+            // Query for 'not_found' contacts first
+            const notFoundSnapshot = await db.collection(COLLECTION_NAME)
                 .where('sent', '==', false)
                 .where('status', '==', 'pending')
-                .where('website', '==', '')
+                .where('domainChecked', '==', true)
+                .where('domainCheckResult', '==', 'not_found')
                 .orderBy('randomIndex')
                 .limit(remainingSlots)
                 .get();
 
-            allDocs = [...allDocs, ...withoutWebsiteSnapshot.docs];
-            console.log(`📊 Found ${withoutWebsiteSnapshot.size} contacts without website URLs`);
+            allDocs = [...allDocs, ...notFoundSnapshot.docs];
+            console.log(`📊 Found ${notFoundSnapshot.size} bar profile contacts (not_found)`);
+
+            // If still need more, get 'personal_email' contacts
+            remainingSlots = BATCH_SIZE - allDocs.length;
+            if (remainingSlots > 0) {
+                const personalEmailSnapshot = await db.collection(COLLECTION_NAME)
+                    .where('sent', '==', false)
+                    .where('status', '==', 'pending')
+                    .where('domainChecked', '==', true)
+                    .where('domainCheckResult', '==', 'personal_email')
+                    .orderBy('randomIndex')
+                    .limit(remainingSlots)
+                    .get();
+
+                allDocs = [...allDocs, ...personalEmailSnapshot.docs];
+                console.log(`📊 Found ${personalEmailSnapshot.size} bar profile contacts (personal_email)`);
+            }
+        }
+
+        // Phase 3: If still need more, get any remaining contacts without websites (fallback only)
+        remainingSlots = BATCH_SIZE - allDocs.length;
+        if (remainingSlots > 0) {
+            const fallbackSnapshot = await db.collection(COLLECTION_NAME)
+                .where('sent', '==', false)
+                .where('status', '==', 'pending')
+                .where('website', '==', '')
+                .where('domainChecked', '==', false)
+                .orderBy('randomIndex')
+                .limit(remainingSlots)
+                .get();
+
+            allDocs = [...allDocs, ...fallbackSnapshot.docs];
+            if (fallbackSnapshot.size > 0) {
+                console.log(`📊 Found ${fallbackSnapshot.size} contacts for fallback emails`);
+            }
         }
     }
 
@@ -685,7 +924,11 @@ async function runCampaign() {
 
     for (const doc of allDocs) {
         const data = doc.data();
-        const { firmName, email, website, firstName, lastName } = data;
+        const { firmName, email, website, firstName, lastName, practiceArea, state, barNumber, domainChecked, domainCheckResult } = data;
+
+        // Determine if this is a bar profile contact (no website, but has bar data)
+        const isBarProfileContact = domainChecked === true &&
+            (domainCheckResult === 'not_found' || domainCheckResult === 'personal_email');
 
         // Use test email if in test mode, otherwise use actual email
         const recipientEmail = TEST_EMAIL || email;
@@ -694,12 +937,19 @@ async function runCampaign() {
         const recipientName = (firstName && lastName) ? `${firstName} ${lastName}` : firmName;
         const formattedRecipient = `${recipientName} <${recipientEmail}>`;
 
+        // Generate firm name for bar profile contacts
+        const displayFirmName = firmName || (firstName && lastName ? `${firstName} ${lastName}, Attorney at Law` : 'Law Firm');
+
         try {
-            console.log(`\n📧 Processing ${firmName} (${recipientEmail})...`);
+            console.log(`\n📧 Processing ${displayFirmName} (${recipientEmail})...`);
+            if (isBarProfileContact) {
+                console.log(`   📋 Bar profile contact (${domainCheckResult})`);
+            }
 
             let leadId = null;
             let demoUrl = null;
             let hasDemo = false;
+            let isBarProfile = false;
 
             // Use test lead ID if this is from TEST_LEAD_ID mode
             if (data._isTestLead) {
@@ -725,20 +975,54 @@ async function runCampaign() {
                     console.log(`   ⚠️ Demo generation failed: ${demoResult.error}`);
                     console.log(`   📧 Sending fallback email instead...`);
                 }
-            } else if (!website) {
-                console.log(`   ⚠️ No website URL - sending fallback email`);
+            }
+            // Generate bar profile demo for contacts without websites but with bar data
+            else if (isBarProfileContact && !SKIP_DEMO_GEN) {
+                const demoResult = await generateBarProfileDemoForContact(data);
+                if (demoResult.success) {
+                    leadId = demoResult.leadId;
+                    demoUrl = demoResult.demoUrl;
+                    hasDemo = true;
+                    isBarProfile = true;
+                    demosGenerated++;
+                } else {
+                    console.log(`   ⚠️ Bar profile demo generation failed: ${demoResult.error}`);
+                    console.log(`   📧 Sending fallback email instead...`);
+                }
+            } else if (!website && !isBarProfileContact) {
+                console.log(`   ⚠️ No website URL and no bar profile data - sending fallback email`);
             } else if (SKIP_DEMO_GEN) {
                 console.log(`   ⚠️ Demo generation disabled - sending fallback email`);
             }
 
             // Generate subject, HTML, and plain-text versions
-            const subject = generateSubject(hasDemo);
-            const html = hasDemo
-                ? generateEmailHTML(firmName, email, leadId, firstName)
-                : generateFallbackEmailHTML(firmName, email, firstName);
-            const text = hasDemo
-                ? generateEmailPlainText(firmName, email, leadId, firstName)
-                : generateFallbackEmailPlainText(firmName, email, firstName);
+            const subject = generateSubject(hasDemo, isBarProfile);
+            let html, text;
+
+            if (isBarProfile && hasDemo) {
+                // Use bar profile email template
+                html = generateBarProfileEmailHTML(displayFirmName, email, leadId, firstName, practiceArea, state);
+                text = generateBarProfileEmailPlainText(displayFirmName, email, leadId, firstName, practiceArea, state);
+            } else if (hasDemo) {
+                // Use standard personalized email template
+                html = generateEmailHTML(displayFirmName, email, leadId, firstName);
+                text = generateEmailPlainText(displayFirmName, email, leadId, firstName);
+            } else {
+                // Use fallback email template
+                html = generateFallbackEmailHTML(displayFirmName, email, firstName);
+                text = generateFallbackEmailPlainText(displayFirmName, email, firstName);
+            }
+
+            // Build Mailgun tags for analytics
+            const mailgunTags = [];
+            if (hasDemo) {
+                mailgunTags.push('with_demo');
+                if (isBarProfile) {
+                    mailgunTags.push('bar_profile');
+                }
+            } else {
+                mailgunTags.push('no_demo');
+            }
 
             // Send email via Mailgun
             console.log(`   📤 Sending email to: ${formattedRecipient}`);
@@ -747,11 +1031,19 @@ async function runCampaign() {
                 subject,
                 html,
                 text,
-                [hasDemo ? 'with_demo' : 'no_demo']
+                mailgunTags
             );
 
             // Only update Firestore if NOT in test mode
             if (!TEST_EMAIL) {
+                // Determine template version
+                let templateVersion = 'v6-generic';
+                if (isBarProfile && hasDemo) {
+                    templateVersion = 'v7-bar-profile-demo';
+                } else if (hasDemo) {
+                    templateVersion = 'v6-personalized-demo';
+                }
+
                 const updateData = {
                     sent: true,
                     sentTimestamp: admin.firestore.FieldValue.serverTimestamp(),
@@ -761,7 +1053,7 @@ async function runCampaign() {
                     messageId: result.messageId || '',
                     mailgunId: result.messageId || '',  // Mailgun message ID for event correlation
                     subjectLine: subject,
-                    templateVersion: hasDemo ? 'v6-personalized-demo' : 'v6-generic'
+                    templateVersion: templateVersion
                 };
 
                 // Add demo-related fields if demo was generated
@@ -770,6 +1062,7 @@ async function runCampaign() {
                     updateData.demoUrl = demoUrl;
                     updateData.preintakeLeadId = leadId;
                     updateData.demoGeneratedAt = admin.firestore.FieldValue.serverTimestamp();
+                    updateData.demoSource = isBarProfile ? 'bar_profile' : 'website';
                 }
 
                 await doc.ref.update(updateData);

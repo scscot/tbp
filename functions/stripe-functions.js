@@ -281,12 +281,19 @@ async function sendEmail(to, subject, htmlContent) {
 
 /**
  * Generate account activation email HTML for customer
+ * @param {string} firmName - The firm name
+ * @param {string} firmId - The lead ID
+ * @param {string} customerEmail - Customer's email
+ * @param {boolean} hasWebsite - Whether the subscriber has a website
+ * @param {string|null} hostedIntakeUrl - Hosted intake URL for website-less subscribers
  */
-function generateActivationEmail(firmName, firmId, customerEmail) {
-    const buttonEmbedCode = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"></script>`;
-    const pageEmbedCode = `<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>\n<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"></script>`;
+function generateActivationEmail(firmName, firmId, customerEmail, hasWebsite = true, hostedIntakeUrl = null) {
+    // For subscribers WITH a website - show embed code options
+    if (hasWebsite) {
+        const buttonEmbedCode = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"></script>`;
+        const pageEmbedCode = `<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>\n<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"></script>`;
 
-    return `
+        return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -334,6 +341,71 @@ ${pageEmbedCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
         <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin: 25px 0;">
             <p style="margin: 0; font-size: 14px; color: #92400e;">
                 <strong>Lead Delivery:</strong> Qualified leads will be sent to <strong>${customerEmail}</strong>.
+                Need leads delivered to a different email or your CRM? Just reply to this email.
+            </p>
+        </div>
+
+        <p style="margin-top: 30px; color: #64748b;">
+            Questions? Reply to this email or reach out at <a href="mailto:support@preintake.ai" style="color: #c9a962;">support@preintake.ai</a>.
+        </p>
+
+        <p style="margin-top: 25px;">
+            —<br>
+            <strong>Support Team</strong><br>
+            PreIntake.ai
+        </p>
+    </div>
+
+    <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+        <p style="margin: 0;">AI-Powered Legal Intake</p>
+        <a href="https://preintake.ai" style="color: #c9a962;">preintake.ai</a>
+    </div>
+</body>
+</html>
+`;
+    }
+
+    // For subscribers WITHOUT a website - show hosted intake URL
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+    <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+        <h1 style="color: #ffffff; font-size: 24px; margin: 0;">
+            <span style="color: #ffffff;">Pre</span><span style="color: #c9a962;">Intake</span><span style="color: #ffffff;">.ai</span>
+        </h1>
+    </div>
+
+    <div style="background: #ffffff; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #0c1f3f; text-align: center; margin-bottom: 20px;">Your Intake Page is Ready!</h2>
+
+        <p>Welcome to PreIntake.ai! Your AI-powered intake system for <strong>${firmName || 'your firm'}</strong> is now active.</p>
+
+        <!-- Hosted URL Display -->
+        <div style="background: linear-gradient(135deg, #0c1f3f 0%, #1a3a5c 100%); border-radius: 12px; padding: 25px; margin: 25px 0; text-align: center;">
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #94a3b8;">Share this link with potential clients:</p>
+            <a href="${hostedIntakeUrl}" style="display: inline-block; color: #c9a962; font-size: 18px; font-weight: 600; text-decoration: none; word-break: break-all;">${hostedIntakeUrl}</a>
+        </div>
+
+        <!-- How to Use -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="color: #0c1f3f; font-size: 16px; margin: 0 0 15px 0;">How to Use Your Intake Page</h3>
+            <ul style="margin: 0; padding-left: 20px; color: #475569;">
+                <li style="margin-bottom: 8px;"><strong>Email signature:</strong> Add your intake URL to your email signature</li>
+                <li style="margin-bottom: 8px;"><strong>Business cards:</strong> Include the URL or a QR code</li>
+                <li style="margin-bottom: 8px;"><strong>Social media:</strong> Share in your LinkedIn bio or posts</li>
+                <li style="margin-bottom: 8px;"><strong>Advertising:</strong> Use as the landing page for your ads</li>
+                <li style="margin-bottom: 0;"><strong>Referrals:</strong> Share with referral sources to send you qualified leads</li>
+            </ul>
+        </div>
+
+        <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin: 25px 0;">
+            <p style="margin: 0; font-size: 14px; color: #92400e;">
+                <strong>Lead Delivery:</strong> All completed intakes will be sent to <strong>${customerEmail}</strong>.
                 Need leads delivered to a different email or your CRM? Just reply to this email.
             </p>
         </div>
@@ -486,22 +558,37 @@ async function handleCheckoutComplete(session) {
         const firmName = leadData.analysis?.firmName || leadData.website || 'Your Firm';
         const customerEmail = session.customer_details?.email || leadData.email;
 
-        // Update lead document with subscription info
-        await db.collection('preintake_leads').doc(firmId).update({
+        // Determine if subscriber has a website
+        const hasWebsite = !!(leadData.website && leadData.website.trim());
+        const barNumber = leadData.barNumber || null;
+
+        // Build update object
+        const updateData = {
             status: 'active',
             stripeCustomerId: session.customer,
             stripeSubscriptionId: session.subscription,
             subscriptionStatus: 'active',
             deliveryEmail: customerEmail, // Default lead delivery to their email
+            hasWebsite: hasWebsite,
+            deliveryMethod: hasWebsite ? 'embed' : 'hosted',
             activatedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        };
+
+        // For website-less subscribers, set hosted intake URL
+        if (!hasWebsite && barNumber) {
+            updateData.hostedIntakeUrl = `https://preintake.ai/intake/${barNumber}`;
+        }
+
+        // Update lead document with subscription info
+        await db.collection('preintake_leads').doc(firmId).update(updateData);
 
         console.log(`Checkout complete for firm ${firmId}`);
 
         // Send activation email to customer
         try {
-            const customerHtml = generateActivationEmail(firmName, firmId, customerEmail);
+            const hostedIntakeUrl = !hasWebsite && barNumber ? `https://preintake.ai/intake/${barNumber}` : null;
+            const customerHtml = generateActivationEmail(firmName, firmId, customerEmail, hasWebsite, hostedIntakeUrl);
             await sendEmail(
                 customerEmail,
                 'Your PreIntake.ai Account is Active!',
