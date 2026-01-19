@@ -2691,17 +2691,14 @@ function generateDeclineResources(state) {
  */
 function getLandingHeadline(practiceArea, isMultiPractice) {
     // For multi-practice firms, use generic headline
-    if (isMultiPractice) return 'Free Legal Consultation';
+    if (isMultiPractice) return 'Free Consultation';
 
-    const area = practiceArea.toLowerCase();
-    if (area.includes('personal injury')) return 'Free Case Evaluation';
-    if (area.includes('immigration')) return 'Free Immigration Consultation';
-    if (area.includes('family')) return 'Free Family Law Consultation';
-    if (area.includes('tax')) return 'Free Tax Resolution Consultation';
-    if (area.includes('bankruptcy')) return 'Free Bankruptcy Evaluation';
-    if (area.includes('criminal')) return 'Free Criminal Defense Consultation';
-    if (area.includes('estate')) return 'Free Estate Planning Consultation';
-    return 'Free Legal Consultation';
+    // Single practice area: "Free {practiceArea} Consultation"
+    if (practiceArea) {
+        return `Free ${practiceArea} Consultation`;
+    }
+
+    return 'Free Consultation';
 }
 
 /**

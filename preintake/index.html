@@ -1596,6 +1596,72 @@
             }
 
             // =====================================
+            // Completed Demo Handler (?completed= parameter)
+            // =====================================
+            // For visitors returning from a completed demo intake
+            // Shows welcome banner, sets up Get Started buttons, hides demo form
+            function handleCompletedDemo() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const leadId = urlParams.get('completed');
+                const firmName = urlParams.get('firm');
+
+                if (!leadId) return false;
+
+                // Clean URL without refreshing page
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Show personalized welcome banner with firm name
+                if (firmName) {
+                    const welcomeBanner = document.getElementById('campaign-welcome');
+                    const firmNameSpan = document.getElementById('campaign-firm-name');
+                    if (welcomeBanner && firmNameSpan) {
+                        firmNameSpan.textContent = decodeURIComponent(firmName);
+                        welcomeBanner.classList.add('visible');
+                    }
+                }
+
+                // Hide the demo request form (they already completed a demo)
+                const demoSection = document.getElementById('demo');
+                if (demoSection) {
+                    demoSection.style.display = 'none';
+                }
+
+                // Show and configure the pricing section "Get Started" button
+                const pricingCtaContainer = document.getElementById('pricing-cta-container');
+                const pricingGetStartedBtn = document.getElementById('pricing-get-started-btn');
+                if (pricingCtaContainer && pricingGetStartedBtn) {
+                    pricingGetStartedBtn.href = `/create-account.html?firm=${leadId}`;
+                    pricingCtaContainer.style.display = 'block';
+                }
+
+                // Setup floating buttons for "Get Started" and "View Demo Again"
+                const floatingButtons = document.getElementById('floating-demo-buttons');
+                const getStartedBtn = document.getElementById('get-started-btn');
+                const viewDemoBtn = document.getElementById('view-demo-btn');
+
+                if (floatingButtons && getStartedBtn && viewDemoBtn) {
+                    getStartedBtn.href = `/create-account.html?firm=${leadId}`;
+                    viewDemoBtn.textContent = 'View Demo Again';
+                    viewDemoBtn.href = '#';
+                    viewDemoBtn.onclick = (e) => {
+                        e.preventDefault();
+                        // Redirect back to demo
+                        window.location.href = `/?demo=${leadId}&firm=${encodeURIComponent(firmName || '')}`;
+                    };
+                    floatingButtons.classList.add('visible');
+                }
+
+                // Update sticky CTA to link to create account
+                const stickyCta = document.getElementById('sticky-cta');
+                if (stickyCta) {
+                    stickyCta.href = `/create-account.html?firm=${leadId}`;
+                    stickyCta.textContent = 'Get Started →';
+                }
+
+                return true;
+            }
+
+            // =====================================
             // Campaign Demo Detection (?demo= parameter)
             // =====================================
             // For visitors arriving from email campaign with pre-generated demo
@@ -1885,6 +1951,7 @@
             }
 
             // Check for ?demo= parameter first (pre-generated demo modal)
+            // Then check for ?completed= parameter (returned from completed demo)
             // Then check for ?firm= parameter (just welcome banner, no demo)
             // Finally check for verification token
             const urlParams = new URLSearchParams(window.location.search);
@@ -1895,6 +1962,10 @@
                         checkVerificationToken();
                     }
                 });
+            } else if (urlParams.get('completed')) {
+                // ?completed= - user returned from completed demo intake
+                // Show welcome banner, set up Get Started buttons, hide demo form
+                handleCompletedDemo();
             } else if (urlParams.get('firm')) {
                 // ?firm= only (no demo) - just show welcome banner
                 checkFirmParameter();

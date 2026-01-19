@@ -942,6 +942,23 @@
             height: 20px;
         }
 
+        .submission-complete-message {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .submission-complete-message svg {
+            flex-shrink: 0;
+        }
+
         .results-disclaimer {
             max-width: 800px;
             margin: 2rem auto 0 auto;
@@ -1595,7 +1612,7 @@
                 </a>
             </div>
 
-            <!-- Return to Firm (Live Mode only) -->
+            <!-- Return to Firm (Live Mode with website) -->
             <div id="return-to-firm" class="actions-section" style="display: none;">
                 <a href="#" id="return-button" class="action-button primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1603,6 +1620,16 @@
                     </svg>
                     Return to <span id="return-firm-name"></span>
                 </a>
+            </div>
+
+            <!-- Submission Complete (Live Mode without website - hosted intake) -->
+            <div id="submission-complete" class="actions-section" style="display: none;">
+                <div class="submission-complete-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #28a745;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Your inquiry has been submitted. <span id="complete-firm-name"></span> will contact you soon.</span>
+                </div>
             </div>
         </div>
         <p class="results-disclaimer">
@@ -1932,9 +1959,13 @@
             document.getElementById('demo-confirmation-overlay').classList.add('active');
         }
 
-        // Close demo confirmation modal
+        // Close demo confirmation modal and redirect to homepage
         function closeDemoConfirmation() {
-            document.getElementById('demo-confirmation-overlay').classList.remove('active');
+            // Redirect to PreIntake.ai homepage with firm name for welcome banner
+            // User can learn about the product, pricing, and "Get Started" or "View Demo" again
+            const firmName = encodeURIComponent(CONFIG.firmName);
+            const leadId = '{{LEAD_ID}}';
+            window.location.href = `https://preintake.ai/?firm=${firmName}&completed=${leadId}`;
         }
 
         // System prompt (practice-area-specific)
@@ -2831,15 +2862,26 @@
             const bottomActions = document.getElementById('bottom-actions');
             const preintakePromo = document.getElementById('preintake-promo');
             const returnToFirm = document.getElementById('return-to-firm');
+            const submissionComplete = document.getElementById('submission-complete');
 
             if (firmStatus.isLiveMode) {
-                // Live Mode: Show only "Return to Firm" button
+                // Live Mode: Hide demo-related elements
                 if (bottomActions) bottomActions.style.display = 'none';
                 if (preintakePromo) preintakePromo.style.display = 'none';
-                if (returnToFirm && firmStatus.firmWebsite) {
-                    returnToFirm.style.display = 'flex';
-                    document.getElementById('return-button').href = firmStatus.firmWebsite;
-                    document.getElementById('return-firm-name').textContent = firmStatus.firmName;
+
+                if (firmStatus.firmWebsite) {
+                    // Has website: Show "Return to Firm" button
+                    if (returnToFirm) {
+                        returnToFirm.style.display = 'flex';
+                        document.getElementById('return-button').href = firmStatus.firmWebsite;
+                        document.getElementById('return-firm-name').textContent = firmStatus.firmName;
+                    }
+                } else {
+                    // No website (hosted intake): Show submission complete message
+                    if (submissionComplete) {
+                        submissionComplete.style.display = 'flex';
+                        document.getElementById('complete-firm-name').textContent = firmStatus.firmName;
+                    }
                 }
             } else {
                 // Demo Mode: Show only preintake-promo
