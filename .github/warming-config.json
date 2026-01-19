@@ -1,6 +1,6 @@
 {
   "preintake": {
-    "startDate": "2026-01-15",
+    "startDate": "2026-01-12",
     "maxBatchSize": 100,
     "schedule": [
       { "week": 1, "batchSize": 5 },
@@ -12,7 +12,7 @@
     ]
   },
   "tbp": {
-    "startDate": "2026-01-15",
+    "startDate": "2026-01-12",
     "maxBatchSize": 100,
     "schedule": [
       { "week": 1, "batchSize": 6 },
