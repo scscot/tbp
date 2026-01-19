@@ -1391,14 +1391,6 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Updated `functions/email-campaign-functions-yahoo.js` with `getDynamicBatchSizeYahoo()` function
    - Both TBP Cloud Functions now read batch size from Firestore first, with .env fallback
 
-89. ✅ **PreIntake Dynamic Batch Size**:
-   - Updated `scripts/send-preintake-campaign.js` to read batch size from Firestore
-   - Added secondary Firebase Admin app instance (`configApp`) for reading from default database
-   - Added `getDynamicBatchSize()` function that reads `preintakeBatchSize` from `config/emailCampaign`
-   - Falls back to `BATCH_SIZE` environment variable if Firestore value not set
-   - Batch size resolution: Firestore → .env fallback
-   - Current Week 2 batch sizes: TBP=12, PreIntake=10
-
 ---
 
 ## 📞 Contact & Support
