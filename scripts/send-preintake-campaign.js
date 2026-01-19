@@ -49,7 +49,15 @@ const { generateDemoFiles, uploadToStorage, initFirebaseAdmin, generateBarProfil
 const serviceAccount = require('../secrets/serviceAccountKey.json');
 const admin = initFirebaseAdmin(serviceAccount, 'teambuilder-plus-fe74d.firebasestorage.app');
 
-// Use the dedicated 'preintake' database
+// Create a secondary app instance for reading config from DEFAULT database
+// (The config/emailCampaign document is in the default database, not preintake)
+const configApp = admin.apps.find(app => app?.name === 'configApp') ||
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  }, 'configApp');
+const configDb = configApp.firestore();
+
+// Use the dedicated 'preintake' database for campaign data
 const db = admin.firestore();
 db.settings({ databaseId: 'preintake' });
 
@@ -63,7 +71,28 @@ const FROM_ADDRESS = 'Stephen Scott <stephen@law.preintake.ai>';
 const COLLECTION_NAME = 'preintake_emails';
 const LEADS_COLLECTION = 'preintake_leads';
 const SEND_DELAY_MS = 1000; // 1 second between emails (can be reduced with Mailgun)
-const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '5');
+const ENV_BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '5');
+
+/**
+ * Get batch size from Firestore config document, falling back to .env value
+ * This allows GitHub Actions to update batch sizes without modifying the script
+ * Reads from DEFAULT database config/emailCampaign document
+ */
+async function getDynamicBatchSize() {
+  try {
+    const configDoc = await configDb.collection('config').doc('emailCampaign').get();
+    if (configDoc.exists && configDoc.data().preintakeBatchSize) {
+      const firestoreBatchSize = configDoc.data().preintakeBatchSize;
+      console.log(`📊 Using Firestore batch size: ${firestoreBatchSize}`);
+      return firestoreBatchSize;
+    }
+  } catch (error) {
+    console.log(`⚠️ Could not read Firestore config: ${error.message}`);
+  }
+  // Fallback to environment variable
+  console.log(`📊 Using .env fallback batch size: ${ENV_BATCH_SIZE}`);
+  return ENV_BATCH_SIZE;
+}
 
 // Anthropic API key (required for demo generation)
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -752,6 +781,9 @@ async function sendViaMailgun(to, subject, htmlContent, textContent, tags = []) 
 async function runCampaign() {
     console.log('📧 PreIntake.ai Email Campaign (with Demo Generation)');
     console.log('======================================================\n');
+
+    // Get dynamic batch size from Firestore (or fall back to env)
+    const BATCH_SIZE = await getDynamicBatchSize();
 
     // Check PT business window (unless bypassed)
     if (!SKIP_TIME_CHECK) {

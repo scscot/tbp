@@ -27,6 +27,8 @@ jobs:
         id: week
         run: |
           CONFIG=$(cat .github/warming-config.json)
+
+          # Use TBP start date for week calculation (both campaigns start same date)
           START_DATE=$(echo $CONFIG | jq -r '.tbp.startDate')
 
           # Calculate weeks since start
@@ -49,27 +51,40 @@ jobs:
           echo "week=$WEEK_NUM" >> $GITHUB_OUTPUT
           echo "Current warming week: $WEEK_NUM"
 
-      - name: Get batch size for current week
+      - name: Get batch sizes for current week
         id: batch
         run: |
           CONFIG=$(cat .github/warming-config.json)
           WEEK=${{ steps.week.outputs.week }}
-          MAX_BATCH=$(echo $CONFIG | jq -r '.tbp.maxBatchSize')
 
-          BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
+          # TBP batch size
+          TBP_MAX_BATCH=$(echo $CONFIG | jq -r '.tbp.maxBatchSize')
+          TBP_BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
             .tbp.schedule |
             map(select(.week <= $week)) |
             last |
             .batchSize
           ')
-
-          # Fallback to max if beyond schedule
-          if [ "$BATCH_SIZE" = "null" ] || [ -z "$BATCH_SIZE" ]; then
-            BATCH_SIZE=$MAX_BATCH
+          if [ "$TBP_BATCH_SIZE" = "null" ] || [ -z "$TBP_BATCH_SIZE" ]; then
+            TBP_BATCH_SIZE=$TBP_MAX_BATCH
           fi
 
-          echo "batch_size=$BATCH_SIZE" >> $GITHUB_OUTPUT
-          echo "Batch size for week $WEEK: $BATCH_SIZE"
+          # PreIntake batch size
+          PREINTAKE_MAX_BATCH=$(echo $CONFIG | jq -r '.preintake.maxBatchSize')
+          PREINTAKE_BATCH_SIZE=$(echo $CONFIG | jq -r --argjson week "$WEEK" '
+            .preintake.schedule |
+            map(select(.week <= $week)) |
+            last |
+            .batchSize
+          ')
+          if [ "$PREINTAKE_BATCH_SIZE" = "null" ] || [ -z "$PREINTAKE_BATCH_SIZE" ]; then
+            PREINTAKE_BATCH_SIZE=$PREINTAKE_MAX_BATCH
+          fi
+
+          echo "batch_size=$TBP_BATCH_SIZE" >> $GITHUB_OUTPUT
+          echo "preintake_batch_size=$PREINTAKE_BATCH_SIZE" >> $GITHUB_OUTPUT
+          echo "TBP batch size for week $WEEK: $TBP_BATCH_SIZE"
+          echo "PreIntake batch size for week $WEEK: $PREINTAKE_BATCH_SIZE"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -82,9 +97,6 @@ jobs:
       - name: Update Firestore config document
         id: update
         run: |
-          NEW_BATCH=${{ steps.batch.outputs.batch_size }}
-          WEEK=${{ steps.week.outputs.week }}
-
           node << 'EOF'
           const admin = require('firebase-admin');
 
@@ -95,38 +107,45 @@ jobs:
           });
 
           const db = admin.firestore();
-          const newBatch = parseInt(process.env.NEW_BATCH);
+          const tbpBatch = parseInt(process.env.TBP_BATCH);
+          const preintakeBatch = parseInt(process.env.PREINTAKE_BATCH);
           const week = parseInt(process.env.WEEK);
 
           async function updateConfig() {
             const configRef = db.collection('config').doc('emailCampaign');
 
-            // Get current value
+            // Get current values
             const doc = await configRef.get();
-            const currentBatch = doc.exists ? doc.data().batchSize : null;
+            const currentTbpBatch = doc.exists ? doc.data().batchSize : null;
+            const currentPreintakeBatch = doc.exists ? doc.data().preintakeBatchSize : null;
 
-            console.log(`Current batch size: ${currentBatch || 'not_set'}`);
-            console.log(`Target batch size: ${newBatch}`);
+            console.log(`Current TBP batch size: ${currentTbpBatch || 'not_set'}`);
+            console.log(`Target TBP batch size: ${tbpBatch}`);
+            console.log(`Current PreIntake batch size: ${currentPreintakeBatch || 'not_set'}`);
+            console.log(`Target PreIntake batch size: ${preintakeBatch}`);
 
-            if (currentBatch === newBatch) {
+            const tbpChanged = currentTbpBatch !== tbpBatch;
+            const preintakeChanged = currentPreintakeBatch !== preintakeBatch;
+
+            if (!tbpChanged && !preintakeChanged) {
               console.log('No update needed');
-              console.log(`::set-output name=skip::true`);
-              console.log(`::set-output name=current_batch::${currentBatch}`);
               return;
             }
 
             // Update Firestore
             await configRef.set({
-              batchSize: newBatch,
-              batchSizeYahoo: newBatch,
+              batchSize: tbpBatch,
+              batchSizeYahoo: tbpBatch,
+              preintakeBatchSize: preintakeBatch,
               warmingWeek: week,
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
               updatedBy: 'github-actions'
             }, { merge: true });
 
-            console.log(`Updated Firestore config with batch size: ${newBatch}`);
-            console.log(`::set-output name=skip::false`);
-            console.log(`::set-output name=current_batch::${currentBatch || 'not_set'}`);
+            console.log(`Updated Firestore config:`);
+            console.log(`  - TBP batch size: ${tbpBatch}`);
+            console.log(`  - PreIntake batch size: ${preintakeBatch}`);
+            console.log(`  - Warming week: ${week}`);
           }
 
           updateConfig()
@@ -138,7 +157,8 @@ jobs:
           EOF
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          NEW_BATCH: ${{ steps.batch.outputs.batch_size }}
+          TBP_BATCH: ${{ steps.batch.outputs.batch_size }}
+          PREINTAKE_BATCH: ${{ steps.batch.outputs.preintake_batch_size }}
           WEEK: ${{ steps.week.outputs.week }}
 
       - name: Summary
@@ -146,5 +166,6 @@ jobs:
           echo "## Domain Warming Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Warming Week**: ${{ steps.week.outputs.week }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Target Batch Size**: ${{ steps.batch.outputs.batch_size }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **TBP Batch Size**: ${{ steps.batch.outputs.batch_size }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **PreIntake Batch Size**: ${{ steps.batch.outputs.preintake_batch_size }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: Updated Firestore config/emailCampaign document" >> $GITHUB_STEP_SUMMARY
