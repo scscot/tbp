@@ -4,6 +4,31 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { db } = require('./shared/utilities');
 
+// =============================================================================
+// DYNAMIC BATCH SIZE (from Firestore config, with .env fallback)
+// =============================================================================
+
+/**
+ * Get batch size from Firestore config document, falling back to .env value
+ * This allows GitHub Actions to update batch sizes without redeploying functions
+ */
+async function getDynamicBatchSizeYahoo(envFallback) {
+  try {
+    const configDoc = await db.collection('config').doc('emailCampaign').get();
+    if (configDoc.exists && configDoc.data().batchSizeYahoo) {
+      const firestoreBatchSize = configDoc.data().batchSizeYahoo;
+      console.log(`📊 Using Firestore batch size (Yahoo): ${firestoreBatchSize}`);
+      return firestoreBatchSize;
+    }
+  } catch (error) {
+    console.log(`⚠️ Could not read Firestore config: ${error.message}`);
+  }
+  // Fallback to environment variable
+  const fallbackSize = parseInt(envFallback);
+  console.log(`📊 Using .env fallback batch size (Yahoo): ${fallbackSize}`);
+  return fallbackSize;
+}
+
 // Define parameters for v2 functions - Yahoo-specific campaign
 const emailCampaignEnabledYahoo = defineString("EMAIL_CAMPAIGN_ENABLED_YAHOO", { default: "false" });
 const androidCampaignEnabledYahoo = defineString("ANDROID_CAMPAIGN_ENABLED_YAHOO", { default: "false" });
@@ -84,7 +109,6 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
 
   // Get parameter values - use Yahoo-specific settings
   const campaignEnabled = emailCampaignEnabledYahoo.value().toLowerCase() === 'true';
-  const batchSize = parseInt(emailCampaignBatchSizeYahoo.value());
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -98,6 +122,8 @@ const sendHourlyEmailCampaignYahoo = onSchedule({
     return { status: 'error', message: 'Missing API key' };
   }
 
+  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
+  const batchSize = await getDynamicBatchSizeYahoo(emailCampaignBatchSizeYahoo.value());
   console.log(`📧 YAHOO EMAIL CAMPAIGN: Batch size set to ${batchSize}`);
 
   try {
@@ -192,7 +218,6 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
   console.log("📧 YAHOO ANDROID LAUNCH CAMPAIGN: Starting resend batch");
 
   const campaignEnabled = androidCampaignEnabledYahoo.value().toLowerCase() === 'true';
-  const batchSize = parseInt(emailCampaignBatchSizeYahoo.value());
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
@@ -206,6 +231,8 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
     return { status: 'error', message: 'Missing API key' };
   }
 
+  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
+  const batchSize = await getDynamicBatchSizeYahoo(emailCampaignBatchSizeYahoo.value());
   console.log(`📧 YAHOO ANDROID LAUNCH CAMPAIGN: Batch size set to ${batchSize}`);
 
   try {

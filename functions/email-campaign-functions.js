@@ -26,6 +26,31 @@ const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { defau
 const SEND_DELAY_MS = 1000;
 
 // =============================================================================
+// DYNAMIC BATCH SIZE (from Firestore config, with .env fallback)
+// =============================================================================
+
+/**
+ * Get batch size from Firestore config document, falling back to .env value
+ * This allows GitHub Actions to update batch sizes without redeploying functions
+ */
+async function getDynamicBatchSize(envFallback) {
+  try {
+    const configDoc = await db.collection('config').doc('emailCampaign').get();
+    if (configDoc.exists && configDoc.data().batchSize) {
+      const firestoreBatchSize = configDoc.data().batchSize;
+      console.log(`📊 Using Firestore batch size: ${firestoreBatchSize}`);
+      return firestoreBatchSize;
+    }
+  } catch (error) {
+    console.log(`⚠️ Could not read Firestore config: ${error.message}`);
+  }
+  // Fallback to environment variable
+  const fallbackSize = parseInt(envFallback);
+  console.log(`📊 Using .env fallback batch size: ${fallbackSize}`);
+  return fallbackSize;
+}
+
+// =============================================================================
 // SEASONAL SIGN-OFF
 // =============================================================================
 
@@ -266,7 +291,8 @@ const sendHourlyEmailCampaign = onSchedule({
   memory: "512MiB",
   timeoutSeconds: 120
 }, async () => {
-  const batchSize = parseInt(emailCampaignBatchSize.value());
+  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
+  const batchSize = await getDynamicBatchSize(emailCampaignBatchSize.value());
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.main,
@@ -282,7 +308,8 @@ const sendAndroidLaunchCampaign = onSchedule({
   memory: "512MiB",
   timeoutSeconds: 120
 }, async () => {
-  const batchSize = parseInt(emailCampaignBatchSize.value());
+  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
+  const batchSize = await getDynamicBatchSize(emailCampaignBatchSize.value());
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.android,
