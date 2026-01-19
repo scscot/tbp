@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-18
-**Version**: 3.5 (Demo UX improvements - exit confirmation, duplicate redirect)
+**Last Updated**: 2026-01-19
+**Version**: 3.6 (Dynamic batch size from Firestore)
 
 ---
 
@@ -762,6 +762,22 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
 | `subjectLine` | Subject line used |
 | `templateVersion` | Template version (v4-generic) |
 | `randomIndex` | Random number for shuffled sending order |
+
+**Dynamic Batch Size (2026-01-19):**
+- [x] **Firestore-Based Batch Size** - Domain warming automation
+  - Batch size now read from Firestore `config/emailCampaign` document (in default TBP database)
+  - Added `getDynamicBatchSize()` function to `scripts/send-preintake-campaign.js`
+  - Uses secondary Firebase Admin app instance (`configApp`) to read from default database
+  - Falls back to `BATCH_SIZE` environment variable if Firestore value not set
+  - GitHub Actions workflow `.github/workflows/domain-warming-update.yml` updates `preintakeBatchSize` weekly
+  - Domain warming schedule in `.github/warming-config.json`:
+    - Week 1: 5 emails/batch
+    - Week 2: 10 emails/batch
+    - Week 3: 20 emails/batch
+    - Week 4: 40 emails/batch
+    - Week 5: 75 emails/batch
+    - Week 6+: 100 emails/batch (max)
+  - Batch size resolution: Firestore → .env fallback
 
 ### Phase 19: Homepage Conversion Optimization (2026-01-06)
 - [x] **Section Reordering** - Optimized page flow for conversion

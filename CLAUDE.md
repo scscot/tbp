@@ -1377,6 +1377,28 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Updated all 4 delete-account.html files with localized Home links
    - Blog posts with inline menus already had Home link (no changes needed)
 
+### Week of Jan 19
+
+88. ✅ **Domain Warming Workflow - PreIntake Integration**:
+   - Updated `.github/workflows/domain-warming-update.yml` to manage both TBP and PreIntake batch sizes
+   - Workflow now calculates batch sizes for both campaigns from `.github/warming-config.json`
+   - Firestore `config/emailCampaign` document now stores:
+     - `batchSize` - TBP main campaign
+     - `batchSizeYahoo` - TBP Yahoo campaign
+     - `preintakeBatchSize` - PreIntake campaign
+     - `warmingWeek` - Current warming week number
+   - Updated `functions/email-campaign-functions.js` with `getDynamicBatchSize()` function
+   - Updated `functions/email-campaign-functions-yahoo.js` with `getDynamicBatchSizeYahoo()` function
+   - Both TBP Cloud Functions now read batch size from Firestore first, with .env fallback
+
+89. ✅ **PreIntake Dynamic Batch Size**:
+   - Updated `scripts/send-preintake-campaign.js` to read batch size from Firestore
+   - Added secondary Firebase Admin app instance (`configApp`) for reading from default database
+   - Added `getDynamicBatchSize()` function that reads `preintakeBatchSize` from `config/emailCampaign`
+   - Falls back to `BATCH_SIZE` environment variable if Firestore value not set
+   - Batch size resolution: Firestore → .env fallback
+   - Current Week 2 batch sizes: TBP=12, PreIntake=10
+
 ---
 
 ## 📞 Contact & Support
