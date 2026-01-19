@@ -12,6 +12,9 @@ const crypto = require('crypto');
 const dns = require('dns').promises;
 const Anthropic = require('@anthropic-ai/sdk');
 
+// Import demo generation functions for hosted solution
+const { generateBarProfileDemo, uploadToStorage } = require('./demo-generator-functions');
+
 // Ensure Firebase is initialized
 if (!admin.apps.length) {
     admin.initializeApp();
@@ -602,7 +605,7 @@ const submitDemoRequest = onRequest(
                            req.ip ||
                            'unknown';
 
-            const { name, email, website, practiceAreas } = req.body;
+            const { name, email, website, practiceAreas, firmName, primaryArea, hosted } = req.body;
 
             // Admin bypass for rate limiting
             const ADMIN_EMAILS = ['scscot@gmail.com'];
@@ -620,6 +623,133 @@ const submitDemoRequest = onRequest(
                 }
             }
 
+            // HOSTED SOLUTION: No website required
+            if (hosted === true) {
+                // Validate required fields for hosted solution
+                if (!name || !email || !firmName || !practiceAreas || practiceAreas.length === 0) {
+                    return res.status(400).json({
+                        error: 'Missing required fields',
+                        required: ['name', 'email', 'firmName', 'practiceAreas']
+                    });
+                }
+
+                // Validate email
+                const emailValidation = await validateEmail(email);
+                if (!emailValidation.isValid) {
+                    console.log(`Email validation failed for ${email}: ${emailValidation.reason}`);
+                    return res.status(400).json({
+                        error: emailValidation.reason,
+                        field: 'email'
+                    });
+                }
+
+                // Check for duplicate by email (since no website)
+                const normalizedEmail = email.trim().toLowerCase();
+                const existingByEmail = await db.collection('preintake_leads')
+                    .where('email', '==', normalizedEmail)
+                    .where('hosted', '==', true)
+                    .limit(1)
+                    .get();
+
+                if (!existingByEmail.empty) {
+                    const existingDoc = existingByEmail.docs[0];
+                    const existingData = existingDoc.data();
+                    console.log(`Duplicate hosted demo request blocked for ${normalizedEmail} - existing lead: ${existingDoc.id}`);
+
+                    if (existingData.demoUrl) {
+                        return res.status(409).json({
+                            error: 'A demo has already been created for this email.',
+                            existingDemoUrl: existingData.demoUrl,
+                            existingLeadId: existingDoc.id
+                        });
+                    }
+
+                    return res.status(409).json({
+                        error: 'A demo request is already being processed for this email.',
+                        existingLeadId: existingDoc.id,
+                        status: existingData.status
+                    });
+                }
+
+                // Record the submission for rate limiting
+                await recordIPSubmission(clientIP);
+
+                // Create lead document for hosted solution
+                const leadData = {
+                    name: name.trim(),
+                    email: normalizedEmail,
+                    firmName: firmName.trim(),
+                    hosted: true,
+                    hasWebsite: false,
+                    status: 'generating_demo',
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    source: 'landing_page_hosted',
+                    practiceAreas: practiceAreas,
+                    primaryArea: primaryArea || practiceAreas[0],
+                    emailVerified: true,
+                    verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    autoConfirmed: true,
+                    demoUrl: null,
+                    demoReadyEmailSent: false,
+                    confirmationSent: false,
+                    notificationSent: false
+                };
+
+                // Store in Firestore
+                const docRef = await db.collection('preintake_leads').add(leadData);
+                const leadId = docRef.id;
+                console.log(`PreIntake hosted lead created: ${leadId} - ${normalizedEmail}`);
+
+                // Generate demo directly (no website analysis needed)
+                try {
+                    const contactData = {
+                        firstName: name.trim().split(' ')[0],
+                        lastName: name.trim().split(' ').slice(1).join(' ') || '',
+                        practiceArea: primaryArea || practiceAreas[0],
+                        email: normalizedEmail,
+                        firmName: firmName.trim()
+                    };
+
+                    // Generate demo content
+                    const { htmlContent, configContent } = generateBarProfileDemo(leadId, contactData, practiceAreas);
+
+                    // Upload to Firebase Storage
+                    const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
+
+                    // Update lead with demo URL
+                    await docRef.update({
+                        demoUrl: demoUrl,
+                        status: 'demo_ready',
+                        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    console.log(`Hosted demo generated: ${leadId} - ${demoUrl}`);
+
+                    // Send demo ready email
+                    await sendHostedDemoReadyEmail(normalizedEmail, name.trim(), firmName.trim(), demoUrl, leadId);
+                    await docRef.update({ demoReadyEmailSent: true });
+
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Demo generated',
+                        leadId: leadId,
+                        status: 'processing',
+                        email: normalizedEmail
+                    });
+
+                } catch (genError) {
+                    console.error(`Hosted demo generation failed for ${leadId}:`, genError);
+                    await docRef.update({
+                        status: 'demo_failed',
+                        error: genError.message,
+                        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                    throw genError;
+                }
+            }
+
+            // STANDARD FLOW: Website-based demo
             // Validate required fields
             if (!name || !email || !website) {
                 return res.status(400).json({
@@ -1376,11 +1506,287 @@ const handlePreIntakeUnsubscribe = onRequest(
     }
 );
 
+/**
+ * Generate a unique 6-character intake code
+ * Uses characters that are easy to read and type (no 0, O, 1, I)
+ */
+function generateIntakeCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+/**
+ * Generate demo ready email HTML for hosted solution prospect
+ */
+function generateHostedDemoReadyEmail(firstName, firmName, demoUrl) {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #0c1f3f; font-size: 24px; margin-bottom: 10px;">PreIntake.ai</h1>
+    </div>
+
+    <p>Hi ${firstName},</p>
+
+    <p>Your custom AI intake demo for <strong>${firmName}</strong> is ready!</p>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="${demoUrl}"
+           style="background: linear-gradient(135deg, #c9a962, #b8984a); color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+            View Your Demo →
+        </a>
+    </div>
+
+    <p>This demo shows exactly how PreIntake.ai will handle client inquiries for your practice areas. Try it yourself—submit a test inquiry to see how the screening works.</p>
+
+    <p>After reviewing your demo, you can activate your account to start using it with real clients. Your hosted intake page will be available immediately after activation.</p>
+
+    <p>Questions? Reply to this email—I'd love to help.</p>
+
+    <p style="margin-top: 30px;">Best,<br>
+    <strong>Stephen Scott</strong><br>
+    Founder, PreIntake.ai</p>
+
+    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+    <p style="font-size: 12px; color: #666;">© 2025 PreIntake.ai. All rights reserved.</p>
+</body>
+</html>
+    `;
+}
+
+/**
+ * Send demo ready email for hosted solution
+ */
+async function sendHostedDemoReadyEmail(email, name, firmName, demoUrl, leadId) {
+    const firstName = name.split(' ')[0];
+    const emailHtml = generateHostedDemoReadyEmail(firstName, firmName, demoUrl);
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.dreamhost.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: smtpUser.value(),
+                pass: smtpPass.value()
+            }
+        });
+
+        await sendEmail(
+            transporter,
+            email,
+            `Your PreIntake.ai Demo for ${firmName} is Ready`,
+            emailHtml
+        );
+
+        console.log(`Hosted demo ready email sent to ${email} for lead ${leadId}`);
+    } catch (error) {
+        console.error(`Failed to send hosted demo ready email to ${email}:`, error);
+        // Don't throw - email failure shouldn't block the flow
+    }
+}
+
+/**
+ * Handle hosted demo request form submission
+ * For attorneys without websites - uses practice area selection instead
+ */
+const submitHostedDemoRequest = onRequest(
+    {
+        cors: true,
+        region: 'us-west1',
+        secrets: [smtpUser, smtpPass],
+        timeoutSeconds: 60,
+    },
+    async (req, res) => {
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        try {
+            const { name, email, firmName, phone, state, practiceAreas, source } = req.body;
+
+            // Validate required fields
+            if (!name || !email || !firmName || !state) {
+                return res.status(400).json({
+                    error: 'Missing required fields',
+                    message: 'Please provide name, email, firm name, and state.'
+                });
+            }
+
+            if (!practiceAreas || !Array.isArray(practiceAreas) || practiceAreas.length === 0) {
+                return res.status(400).json({
+                    error: 'Missing practice areas',
+                    message: 'Please select at least one practice area.'
+                });
+            }
+
+            // Validate email
+            const emailValidation = await validateEmail(email.toLowerCase().trim());
+            if (!emailValidation.isValid) {
+                return res.status(400).json({
+                    error: 'Invalid email',
+                    message: emailValidation.reason
+                });
+            }
+
+            // Check IP rate limit
+            const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+            const rateLimit = await checkIPRateLimit(clientIP);
+            if (!rateLimit.allowed) {
+                return res.status(429).json({
+                    error: 'Rate limited',
+                    message: 'Too many submissions. Please try again tomorrow.'
+                });
+            }
+
+            // Generate unique 6-character intake code
+            let intakeCode = generateIntakeCode();
+
+            // Ensure code is unique
+            let attempts = 0;
+            while (attempts < 10) {
+                const existingCode = await db.collection('preintake_leads')
+                    .where('intakeCode', '==', intakeCode)
+                    .limit(1)
+                    .get();
+
+                if (existingCode.empty) break;
+                intakeCode = generateIntakeCode();
+                attempts++;
+            }
+
+            if (attempts >= 10) {
+                console.error('Failed to generate unique intake code after 10 attempts');
+                return res.status(500).json({ error: 'Failed to generate unique code' });
+            }
+
+            // Parse name into firstName/lastName
+            const nameParts = name.trim().split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ') || nameParts[0];
+
+            // Create lead document
+            const leadRef = db.collection('preintake_leads').doc();
+            const leadId = leadRef.id;
+
+            const leadData = {
+                name: firmName,
+                email: email.toLowerCase().trim(),
+                website: '', // No website for hosted solution
+                phone: phone || null,
+                state: state,
+                firstName: firstName,
+                lastName: lastName,
+                practiceAreas: {
+                    breakdown: practiceAreas.reduce((acc, area) => {
+                        acc[area] = Math.floor(100 / practiceAreas.length);
+                        return acc;
+                    }, {}),
+                    otherName: null
+                },
+                primaryPracticeArea: practiceAreas[0],
+                intakeCode: intakeCode,
+                source: source || 'hosted_landing_page',
+                status: 'generating_demo',
+                hasWebsite: false,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            };
+
+            await leadRef.set(leadData);
+
+            // Record IP submission for rate limiting
+            await recordIPSubmission(clientIP);
+
+            // Generate demo using bar profile demo generator (no website analysis needed)
+            const contactData = {
+                firstName,
+                lastName,
+                practiceArea: practiceAreas[0], // Primary for single-practice fallback
+                email: email.toLowerCase().trim(),
+                state: state,
+                firmName: firmName,
+                intakeCode: intakeCode,
+            };
+
+            const { htmlContent, configContent } = generateBarProfileDemo(leadId, contactData, practiceAreas);
+
+            // Upload to storage
+            await uploadToStorage(leadId, htmlContent, configContent);
+
+            // Update lead status
+            await leadRef.update({
+                status: 'demo_ready',
+                demoGeneratedAt: admin.firestore.FieldValue.serverTimestamp(),
+                demoUrl: `https://preintake.ai/?demo=${leadId}`,
+                hostedIntakeUrl: `https://preintake.ai/intake/${intakeCode}`,
+            });
+
+            // Send demo ready email
+            const demoUrl = `https://preintake.ai/?demo=${leadId}`;
+            const emailHtml = generateHostedDemoReadyEmail(firstName, firmName, demoUrl);
+
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.dreamhost.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: smtpUser.value(),
+                    pass: smtpPass.value()
+                }
+            });
+
+            await sendEmail(transporter, email, `Your ${firmName} Intake Demo is Ready`, emailHtml);
+
+            // Also notify Stephen of new hosted demo
+            const notifyHtml = `
+                <p>New hosted demo request:</p>
+                <ul>
+                    <li><strong>Name:</strong> ${name}</li>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Firm:</strong> ${firmName}</li>
+                    <li><strong>State:</strong> ${state}</li>
+                    <li><strong>Practice Areas:</strong> ${practiceAreas.join(', ')}</li>
+                    <li><strong>Intake Code:</strong> ${intakeCode}</li>
+                </ul>
+                <p><a href="${demoUrl}">View Demo</a></p>
+            `;
+            await sendEmail(transporter, 'stephen@preintake.ai', `New Hosted Demo: ${firmName}`, notifyHtml);
+
+            console.log(`Hosted demo created: ${leadId} for ${firmName} (${intakeCode})`);
+
+            return res.json({
+                success: true,
+                leadId: leadId,
+                intakeCode: intakeCode,
+                demoUrl: demoUrl,
+                message: 'Your demo has been created! Check your email for the link.'
+            });
+
+        } catch (error) {
+            console.error('submitHostedDemoRequest error:', error);
+            return res.status(500).json({
+                error: 'Internal server error',
+                message: error.message
+            });
+        }
+    }
+);
+
 module.exports = {
     submitDemoRequest,
     verifyDemoEmail,
     getPreIntakeFirmStatus,
     confirmPracticeAreas,
     handlePreIntakeUnsubscribe,
-    submitPreIntakeContact
+    submitPreIntakeContact,
+    submitHostedDemoRequest
 };

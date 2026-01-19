@@ -404,11 +404,19 @@ const serveHostedIntake = onRequest(
                 return res.status(400).send('Invalid bar number format');
             }
 
-            // Look up lead by barNumber
-            const leadsSnapshot = await db.collection('preintake_leads')
-                .where('barNumber', '==', barNumber)
+            // Look up lead by intakeCode first (new hosted solution)
+            let leadsSnapshot = await db.collection('preintake_leads')
+                .where('intakeCode', '==', barNumber)
                 .limit(1)
                 .get();
+
+            // Fallback to barNumber lookup (campaign-sourced leads, backwards compatibility)
+            if (leadsSnapshot.empty) {
+                leadsSnapshot = await db.collection('preintake_leads')
+                    .where('barNumber', '==', barNumber)
+                    .limit(1)
+                    .get();
+            }
 
             if (leadsSnapshot.empty) {
                 return res.status(404).send('Intake page not found');

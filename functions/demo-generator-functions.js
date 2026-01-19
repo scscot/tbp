@@ -3056,28 +3056,31 @@ function mapBarPracticeArea(barPracticeArea) {
  *   - barNumber: Attorney bar number
  * @returns {object} { htmlContent, configContent } from generateDemoFiles
  */
-function generateBarProfileDemo(leadId, contactData) {
+function generateBarProfileDemo(leadId, contactData, practiceAreasOverride = null) {
     // Build firm name from contact data
     const firmName = contactData.firmName ||
         `${contactData.firstName} ${contactData.lastName}, Attorney at Law`;
 
-    // Map bar practice area to our system prompt practice areas
-    const mappedPracticeArea = mapBarPracticeArea(contactData.practiceArea);
+    // If practiceAreasOverride array provided, use it; otherwise use single practiceArea
+    const areasToUse = practiceAreasOverride || [contactData.practiceArea || 'General Practice'];
 
-    // Build practice areas list (single area for bar profile demos)
-    const practiceAreas = [{
-        name: mappedPracticeArea,
-        percentage: 100
-    }];
+    // Build practice areas list with equal percentages
+    const practiceAreas = areasToUse.map((area) => ({
+        name: mapBarPracticeArea(area),
+        percentage: Math.floor(100 / areasToUse.length)
+    }));
+
+    // Get primary practice area (first in list)
+    const mappedPracticeArea = practiceAreas[0].name;
 
     // Construct minimal leadData object (matches what generateDemoFiles expects)
     const leadData = {
         name: firmName,
         email: contactData.email,
         website: '', // No website for bar profile contacts
-        source: 'bar_profile',
+        source: practiceAreasOverride ? 'hosted_landing_page' : 'bar_profile',
         confirmedPracticeAreas: {
-            areas: [mappedPracticeArea],
+            areas: practiceAreas.map(pa => pa.name),
             primaryArea: mappedPracticeArea,
             autoConfirmed: true
         }

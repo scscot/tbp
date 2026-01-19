@@ -16,8 +16,8 @@
     <meta name="keywords" content="legal intake software, intelligent legal intake, law firm client intake, automated legal screening, legal chatbot, virtual receptionist law firm, client intake automation, legal CRM integration, inquiry screening software">
     <meta name="author" content="PreIntake.ai">
     <link rel="canonical" href="https://preintake.ai/">
-    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
-    <link rel="apple-touch-icon" href="/images/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="images/icon.svg">
+    <link rel="apple-touch-icon" href="images/icon.svg">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -66,9 +66,9 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <!-- Shared Header/Footer Components -->
-    <script src="/js/components.js"></script>
+    <script src="js/components.js"></script>
     <style>
         /* Page-specific overrides can go here if needed */
     </style>
@@ -652,9 +652,53 @@
                         <label for="website">Firm Website</label>
                         <input type="url" id="website" name="website" placeholder="https://smithlaw.com" required>
                     </div>
-
+                    <p class="hosted-toggle" style="margin-top: -0.5rem; margin-bottom: 0;">Don't have a website? <a href="#" id="show-hosted-form">Try our hosted solution →</a></p>
                     <button type="submit" class="demo-submit" id="submit-btn">Analyze My Website & Build My Demo</button>
-                    <p style="color: white; font-style: italic; margin-top: 0.30rem; font-size: 0.9rem;">Takes ~1 minute. Demo ready in minutes.</p>
+                    <p style="color: white; font-style: italic; margin-top: 0.30rem; font-size: 0.9rem;">Demo ready in about a minute.</p>
+                </form>
+            </div>
+
+            <!-- Hosted Form (for firms without websites) -->
+            <div class="demo-form-container" id="hosted-form-container" style="display: none;">
+                <form class="demo-form" id="hosted-form">
+                    <div class="form-error" id="hosted-form-error"></div>
+                    <!-- Honeypot field for spam protection (hidden) -->
+                    <div class="honeypot-field" style="position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden;">
+                        <label for="hosted_company_fax">Fax Number</label>
+                        <input type="text" id="hosted_company_fax" name="company_fax" tabindex="-1" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-name">Your Name</label>
+                        <input type="text" id="hosted-name" name="name" placeholder="Jane Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-email">Email Address</label>
+                        <input type="email" id="hosted-email" name="email" placeholder="jane@smithlaw.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-firm-name">Firm Name</label>
+                        <input type="text" id="hosted-firm-name" name="firmName" placeholder="Smith Law Group" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-practice-area">Practice Area(s) <span style="font-weight: 400; font-style: italic;">— Hold Ctrl/Cmd to select multiple</span></label>
+                        <select id="hosted-practice-area" name="practiceArea" multiple required size="5">
+                            <option value="Personal Injury">Personal Injury</option>
+                            <option value="Immigration">Immigration</option>
+                            <option value="Family Law">Family Law</option>
+                            <option value="Criminal Defense">Criminal Defense</option>
+                            <option value="Bankruptcy">Bankruptcy</option>
+                            <option value="Estate Planning">Estate Planning</option>
+                            <option value="Employment Law">Employment Law</option>
+                            <option value="Workers Compensation">Workers Compensation</option>
+                            <option value="Real Estate">Real Estate</option>
+                            <option value="Tax Law">Tax Law</option>
+                            <option value="Business Law">Business Law</option>
+                            <option value="General Practice">General Practice</option>
+                        </select>
+                    </div>
+                    <p class="hosted-toggle" style="margin-top: -0.5rem; margin-bottom: 0;">Have a website? <a href="#" id="show-website-form">Use website-based setup →</a></p>
+                    <button type="submit" class="demo-submit" id="hosted-submit-btn">Build My Hosted Demo</button>
+                    <p style="color: white; font-style: italic; margin-top: 0.30rem; font-size: 0.9rem;">Demo ready in under a minute.</p>
                 </form>
             </div>
 
@@ -1225,6 +1269,28 @@
             const modalCancelBtn = document.getElementById('modal-cancel-btn');
             const modalConfirmBtn = document.getElementById('modal-confirm-btn');
 
+            // Hosted form elements
+            const hostedFormContainer = document.getElementById('hosted-form-container');
+            const hostedForm = document.getElementById('hosted-form');
+            const showHostedFormLink = document.getElementById('show-hosted-form');
+            const showWebsiteFormLink = document.getElementById('show-website-form');
+            const hostedSubmitBtn = document.getElementById('hosted-submit-btn');
+            const hostedErrorDiv = document.getElementById('hosted-form-error');
+
+            // Toggle to hosted form
+            showHostedFormLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                formContainer.style.display = 'none';
+                hostedFormContainer.style.display = 'block';
+            });
+
+            // Toggle back to website form
+            showWebsiteFormLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                hostedFormContainer.style.display = 'none';
+                formContainer.style.display = 'block';
+            });
+
             // Add practice area button handler
             addPracticeBtn.addEventListener('click', function() {
                 addPracticeArea(addPracticeInput.value);
@@ -1486,6 +1552,149 @@
                     formContainer.style.display = 'block';
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('loading');
+                }
+            });
+
+            // Helper to show errors on hosted form
+            function showHostedError(message) {
+                hostedErrorDiv.textContent = message;
+                hostedErrorDiv.classList.add('show');
+            }
+
+            // Hosted Form submission (no website required)
+            hostedForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                hostedErrorDiv.classList.remove('show');
+
+                // Check honeypot
+                const honeypot = document.getElementById('hosted_company_fax').value;
+                if (honeypot) {
+                    hostedFormContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+                    return;
+                }
+
+                const name = document.getElementById('hosted-name').value.trim();
+                const email = document.getElementById('hosted-email').value.trim();
+                const firmName = document.getElementById('hosted-firm-name').value.trim();
+                const practiceAreaSelect = document.getElementById('hosted-practice-area');
+                const practiceAreas = Array.from(practiceAreaSelect.selectedOptions).map(opt => opt.value);
+
+                // Debug logging
+                console.log('Hosted form submission debug:', {
+                    name,
+                    email,
+                    firmName,
+                    practiceAreasCount: practiceAreas.length,
+                    practiceAreas,
+                    selectElement: practiceAreaSelect ? 'found' : 'NOT FOUND'
+                });
+
+                const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
+                const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+
+                if (!isAdmin) {
+                    const rateCheck = checkRateLimit();
+                    if (!rateCheck.allowed) {
+                        showHostedError('Too many requests. Please try again tomorrow.');
+                        return;
+                    }
+                }
+
+                if (!name || !email || !firmName || practiceAreas.length === 0) {
+                    console.log('Frontend validation failed: practiceAreas.length =', practiceAreas.length);
+                    showHostedError('Please fill in all fields and select at least one practice area.');
+                    return;
+                }
+
+                const emailValidation = isValidEmail(email);
+                if (!emailValidation.valid) {
+                    showHostedError(emailValidation.reason);
+                    document.getElementById('hosted-email').focus();
+                    document.getElementById('hosted-email').select();
+                    return;
+                }
+
+                // Show loading state
+                hostedSubmitBtn.disabled = true;
+                hostedSubmitBtn.classList.add('loading');
+
+                try {
+                    // Submit form data with hosted flag (no website)
+                    const requestBody = {
+                        name,
+                        email,
+                        firmName,
+                        practiceAreas,
+                        primaryArea: practiceAreas[0],
+                        hosted: true  // Flag to indicate hosted solution (no website)
+                    };
+                    console.log('Sending request body:', JSON.stringify(requestBody, null, 2));
+
+                    const response = await fetchWithTimeout(SUBMIT_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Check if a demo already exists for this email (409 Conflict)
+                        if (response.status === 409 && data.existingLeadId) {
+                            window.location.href = `/?demo=${data.existingLeadId}`;
+                            return;
+                        }
+                        if (data.field === 'email') {
+                            document.getElementById('hosted-email').focus();
+                            document.getElementById('hosted-email').select();
+                        }
+                        throw new Error(data.error || 'Something went wrong. Please try again.');
+                    }
+
+                    currentLeadId = data.leadId;
+
+                    // Show progress UI and poll for demo completion
+                    hostedFormContainer.style.display = 'none';
+                    progressContainer.style.display = 'block';
+                    updateProgressStep(0);
+                    recordSubmission();
+                    hostedSubmitBtn.disabled = false;
+                    hostedSubmitBtn.classList.remove('loading');
+
+                    try {
+                        const result = await pollForAutoConfirmedDemo(currentLeadId);
+
+                        // Show "Check your email" screen
+                        progressContainer.style.display = 'none';
+                        document.getElementById('verification-email').textContent = data.email;
+                        verificationContainer.style.display = 'block';
+
+                        const checkEmailMsg = verificationContainer.querySelector('.check-email');
+                        if (checkEmailMsg) {
+                            checkEmailMsg.textContent = 'Click the link in the email to see your personalized AI intake demo.';
+                        }
+                        const expireMsg = verificationContainer.querySelector('p[style*="font-size: 0.85rem"]');
+                        if (expireMsg && !expireMsg.querySelector('a')) {
+                            expireMsg.textContent = 'Your demo link is ready. Check your inbox (or spam folder).';
+                        }
+                    } catch (pollError) {
+                        progressContainer.style.display = 'none';
+                        document.getElementById('verification-email').textContent = data.email;
+                        verificationContainer.style.display = 'block';
+
+                        const checkEmailMsg = verificationContainer.querySelector('.check-email');
+                        if (checkEmailMsg) {
+                            checkEmailMsg.textContent = 'Your demo is taking a bit longer. You\'ll receive an email when it\'s ready.';
+                        }
+                    }
+
+                } catch (error) {
+                    showHostedError(error.message || 'Something went wrong. Please try again.');
+                    progressContainer.style.display = 'none';
+                    hostedFormContainer.style.display = 'block';
+                    hostedSubmitBtn.disabled = false;
+                    hostedSubmitBtn.classList.remove('loading');
                 }
             });
 
