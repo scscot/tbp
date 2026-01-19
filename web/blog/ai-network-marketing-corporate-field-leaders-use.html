@@ -421,7 +421,7 @@
         menuBtn.addEventListener('click', function() {
           const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
           menuBtn.setAttribute('aria-expanded', !isExpanded);
-          mobileMenu.classList.toggle('open');
+          mobileMenu.classList.toggle('active');
         });
       }
 
