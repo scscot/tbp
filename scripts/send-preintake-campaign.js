@@ -600,7 +600,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
   <div style="display:none; max-height:0; overflow:hidden;">
-    I noticed you practice ${displayPracticeArea} in ${state || 'California'}—built you a quick demo.
+    We noticed you practice ${displayPracticeArea} in ${state || 'California'}—built you a quick demo.
   </div>
 
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
@@ -619,9 +619,9 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="font-size: 16px;">Hi${firstName ? ' ' + firstName : ''},</p>
 
-      <p style="font-size: 16px;">I noticed from your ${state || 'state'} Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
+      <p style="font-size: 16px;">We noticed from your ${state || 'state'} Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
 
-      <p style="font-size: 16px;">I built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.</p>
+      <p style="font-size: 16px;">We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.</p>
 
       <div style="text-align: center; margin: 25px 0;">
           <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">See Your Personalized Demo →</a>
@@ -675,9 +675,9 @@ Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
 Hi${firstName ? ' ' + firstName : ''},
 
-I noticed from your ${state || 'state'} Bar profile that you practice ${displayPracticeArea}.
+We noticed from your ${state || 'state'} Bar profile that you practice ${displayPracticeArea}.
 
-I built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.
+We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.
 
 See Your Personalized Demo: ${demoUrl}
 
