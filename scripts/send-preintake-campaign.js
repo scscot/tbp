@@ -292,7 +292,7 @@ async function generateBarProfileDemoForContact(contactData) {
             lastName,
             practiceArea: practiceArea || 'General Practice',
             email,
-            state: state || 'CA',
+            state: state || null,
             firmName,
             barNumber
         });
@@ -316,7 +316,7 @@ async function generateBarProfileDemoForContact(contactData) {
             website: '', // No website
             source: 'bar_profile_campaign',
             barNumber: barNumber || null,
-            state: state || 'CA',
+            state: state || null,
             emailVerified: true,
             autoConfirmed: true,
             status: 'demo_ready',
@@ -331,7 +331,7 @@ async function generateBarProfileDemoForContact(contactData) {
             analysis: {
                 firmName: generatedFirmName,
                 primaryPracticeArea: practiceArea || 'General Practice',
-                location: { state: state || 'CA' }
+                location: { state: state || null }
             },
             // Practice areas from bar profile
             confirmedPracticeAreas: {
@@ -657,7 +657,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
   <div style="display:none; max-height:0; overflow:hidden;">
-    We noticed you practice ${displayPracticeArea} in ${state || 'California'}—built you a quick demo.
+    We noticed you practice ${displayPracticeArea}${state ? ' in ' + state : ''}—built you a quick demo.
   </div>
 
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
@@ -676,7 +676,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="font-size: 16px;">Hi${firstName ? ' ' + firstName : ''},</p>
 
-      <p style="font-size: 16px;">We noticed from your ${state || 'state'} Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
+      <p style="font-size: 16px;">We noticed from your ${state ? state + ' ' : ''}Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
 
       <p style="font-size: 16px;">We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.</p>
 
@@ -732,7 +732,7 @@ Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
 Hi${firstName ? ' ' + firstName : ''},
 
-We noticed from your ${state || 'state'} Bar profile that you practice ${displayPracticeArea}.
+We noticed from your ${state ? state + ' ' : ''}Bar profile that you practice ${displayPracticeArea}.
 
 We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.
 
