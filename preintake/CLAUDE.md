@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-19
-**Version**: 3.7 (6-digit intake codes & short URLs)
+**Last Updated**: 2026-01-20
+**Version**: 3.8 (Firm name styling + campaign consolidation)
 
 ---
 
@@ -1419,6 +1419,51 @@ Firebase Hosting rewrite → serveIntakeByCode function
     ├─ Verify lead exists and has active subscription
     └─ Serve demo HTML in LIVE mode
 ```
+
+### Phase 31: Firm Name Styling & Campaign Consolidation (2026-01-20)
+- [x] **Option 5 Firm Name Styling** - Border frame + serif font for all demo firm name locations
+  - Applied to 4 locations: landing screen (`.logo-text`), chat header (`.chat-header-logo`), results screen (`.results-logo`), onboarding modal (`.firm-name`)
+  - Georgia/Times New Roman serif font
+  - Gold border frame: `1px solid rgba(201, 169, 98, 0.4)` with 4px border-radius
+  - Intelligent word wrapping for long firm names: `word-wrap`, `overflow-wrap`, `hyphens: auto`
+  - Consistent sizing: 1.75rem (landing/modal), 1.5rem (results), 1.25rem (chat header)
+  - All 188 existing demos regenerated with new styling
+- [x] **Email Campaign Query Consolidation** - Merged Phase 1 and Phase 2 queries
+  - Previously: Sequential phases (website contacts first, then bar profile contacts)
+  - Now: Single parallel query system combining all "ready" contacts
+  - Three Firestore queries run in parallel: website contacts, bar profile (not_found), bar profile (personal_email)
+  - Results combined, deduplicated by document ID, sorted by `randomIndex`, sliced to batch size
+  - Ensures fair distribution across contact types in each batch
+- [x] **Bar Profile Email Messaging Update** - Improved email copy
+  - New opening: Acknowledges bar profile source and practice area
+  - Emphasizes hosted intake URL works without a website
+  - Clearer value proposition: case summary, qualification rating, plain-English explanation
+  - Zero data retention trust signal included
+
+**Firm Name Styling CSS:**
+```css
+/* Landing screen / Onboarding modal */
+.logo-text, .onboarding-modal-content .firm-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--accent-gold);
+    letter-spacing: 0.5px;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(201, 169, 98, 0.4);
+    border-radius: 4px;
+    display: inline-block;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.3;
+}
+```
+
+**Files Modified:**
+- `functions/templates/demo-intake.html.template` - Updated `.logo-text`, `.chat-header-logo`, `.results-logo`, `.firm-name` CSS
+- `scripts/send-preintake-campaign.js` - Consolidated query system, updated `generateBarProfileEmailHTML` and `generateBarProfileEmailPlainText`
 
 ---
 
