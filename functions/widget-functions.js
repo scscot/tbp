@@ -104,16 +104,41 @@ const getWidgetConfig = onRequest(
             const analysis = data.analysis || {};
             const _deepResearch = data.deepResearch || {};
 
-            // Build practice areas list from breakdown
-            const practiceBreakdown = data.practiceAreas?.breakdown || {};
-            const otherPracticeAreaName = data.practiceAreas?.otherName || null;
-            const practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
+            // Build practice areas list
+            // Handle both formats:
+            // - Website-based: data.practiceAreas?.breakdown is an object { "PI": 50, "Family": 50 }
+            // - Hosted leads: data.practiceAreas is an array ["Personal Injury", "Family Law"]
+            let practiceAreasList = [];
+            if (data.practiceAreas?.breakdown && typeof data.practiceAreas.breakdown === 'object') {
+                // Website-based leads use breakdown object
+                const practiceBreakdown = data.practiceAreas.breakdown;
+                const otherPracticeAreaName = data.practiceAreas?.otherName || null;
+                practiceAreasList = buildPracticeAreasList(practiceBreakdown, otherPracticeAreaName);
+            } else if (Array.isArray(data.practiceAreas)) {
+                // Hosted leads store practice areas as array
+                // Convert to the expected format with equal percentages
+                const percentage = Math.floor(100 / data.practiceAreas.length);
+                practiceAreasList = data.practiceAreas.map(name => ({
+                    name: name,
+                    percentage: percentage
+                }));
+            }
 
-            // For campaign-sourced leads, prioritize data.name (from contact database)
-            // over analysis.firmName (scraped from website, often unreliable)
-            const firmName = data.source === 'campaign'
-                ? (data.name || analysis.firmName || 'Law Firm')
-                : (analysis.firmName || data.name || 'Law Firm');
+            // Determine firm name based on lead source:
+            // - Campaign leads: data.name (from contact database)
+            // - Hosted leads: data.firmName (entered in form)
+            // - Website leads: analysis.firmName (scraped)
+            let firmName = 'Law Firm';
+            if (data.hosted === true || data.hasWebsite === false) {
+                // Hosted leads - use firmName directly
+                firmName = data.firmName || data.name || 'Law Firm';
+            } else if (data.source === 'campaign') {
+                // Campaign leads - prioritize data.name
+                firmName = data.name || analysis.firmName || 'Law Firm';
+            } else {
+                // Website-based leads - use analysis.firmName
+                firmName = analysis.firmName || data.firmName || data.name || 'Law Firm';
+            }
 
             // Return ONLY public data
             return res.json({
@@ -365,13 +390,16 @@ const serveDemo = onRequest(
 );
 
 /**
- * Serve the hosted intake page for website-less subscribers
- * URL: /intake/{barNumber}
+ * Serve the hosted intake page for subscribers (with or without websites)
+ * URL formats:
+ *   - /{intakeCode} - short URL (6-char alphanumeric code, e.g., /ABC123)
+ *   - /intake/{intakeCode} - legacy format with /intake/ prefix
  *
  * Unlike serveDemo, this:
- * 1. Uses barNumber instead of leadId for URL routing
+ * 1. Uses intakeCode (6-char code generated during demo creation) for URL routing
  * 2. Requires active subscription (not demo mode)
  * 3. Serves in LIVE mode (not demo mode)
+ * 4. Falls back to barNumber lookup for backwards compatibility
  */
 const serveHostedIntake = onRequest(
     {
@@ -380,40 +408,50 @@ const serveHostedIntake = onRequest(
     },
     async (req, res) => {
         try {
-            // Extract barNumber from URL path (/intake/BARNUMBER)
-            let barNumber = null;
+            // Extract intakeCode from URL path
+            // Supports both formats:
+            //   /intake/CODE - legacy format with /intake/ prefix
+            //   /CODE - short URL format (6-char alphanumeric)
+            let intakeCode = null;
 
             if (req.path) {
-                const pathMatch = req.path.match(/\/intake\/([a-zA-Z0-9]+)/);
-                if (pathMatch) {
-                    barNumber = pathMatch[1];
+                // Try /intake/CODE format first
+                const intakeMatch = req.path.match(/\/intake\/([a-zA-Z0-9]+)/);
+                if (intakeMatch) {
+                    intakeCode = intakeMatch[1];
+                } else {
+                    // Try short URL format /CODE (matches 6-char uppercase alphanumeric)
+                    const shortMatch = req.path.match(/^\/([A-Z0-9]{6})$/);
+                    if (shortMatch) {
+                        intakeCode = shortMatch[1];
+                    }
                 }
             }
 
             // Fall back to query param
-            if (!barNumber) {
-                barNumber = req.query.barNumber || req.query.bar;
+            if (!intakeCode) {
+                intakeCode = req.query.intakeCode || req.query.code || req.query.barNumber || req.query.bar;
             }
 
-            if (!barNumber) {
-                return res.status(400).send('Bar number required');
+            if (!intakeCode) {
+                return res.status(400).send('Intake code required');
             }
 
-            // Validate barNumber format (alphanumeric only)
-            if (!/^[a-zA-Z0-9]+$/.test(barNumber)) {
-                return res.status(400).send('Invalid bar number format');
+            // Validate intakeCode format (alphanumeric only)
+            if (!/^[a-zA-Z0-9]+$/.test(intakeCode)) {
+                return res.status(400).send('Invalid intake code format');
             }
 
             // Look up lead by intakeCode first (new hosted solution)
             let leadsSnapshot = await db.collection('preintake_leads')
-                .where('intakeCode', '==', barNumber)
+                .where('intakeCode', '==', intakeCode)
                 .limit(1)
                 .get();
 
             // Fallback to barNumber lookup (campaign-sourced leads, backwards compatibility)
             if (leadsSnapshot.empty) {
                 leadsSnapshot = await db.collection('preintake_leads')
-                    .where('barNumber', '==', barNumber)
+                    .where('barNumber', '==', intakeCode)
                     .limit(1)
                     .get();
             }

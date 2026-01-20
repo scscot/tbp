@@ -676,8 +676,69 @@
                         <input type="email" id="hosted-email" name="email" placeholder="jane@smithlaw.com" required>
                     </div>
                     <div class="form-group">
-                        <label for="hosted-firm-name">Firm Name</label>
-                        <input type="text" id="hosted-firm-name" name="firmName" placeholder="Smith Law Group" required>
+                        <label for="hosted-firm-name">Firm Name <span style="font-weight: 400; font-style: italic;">(optional)</span></label>
+                        <input type="text" id="hosted-firm-name" name="firmName" placeholder="Smith Law Group">
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-phone">Phone Number <span style="font-weight: 400; font-style: italic;">(optional)</span></label>
+                        <input type="tel" id="hosted-phone" name="phone" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label for="hosted-state">State</label>
+                        <select id="hosted-state" name="state" required>
+                            <option value="">Select your state...</option>
+                            <option value="Alabama">Alabama</option>
+                            <option value="Alaska">Alaska</option>
+                            <option value="Arizona">Arizona</option>
+                            <option value="Arkansas">Arkansas</option>
+                            <option value="California" selected>California</option>
+                            <option value="Colorado">Colorado</option>
+                            <option value="Connecticut">Connecticut</option>
+                            <option value="Delaware">Delaware</option>
+                            <option value="Florida">Florida</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Hawaii">Hawaii</option>
+                            <option value="Idaho">Idaho</option>
+                            <option value="Illinois">Illinois</option>
+                            <option value="Indiana">Indiana</option>
+                            <option value="Iowa">Iowa</option>
+                            <option value="Kansas">Kansas</option>
+                            <option value="Kentucky">Kentucky</option>
+                            <option value="Louisiana">Louisiana</option>
+                            <option value="Maine">Maine</option>
+                            <option value="Maryland">Maryland</option>
+                            <option value="Massachusetts">Massachusetts</option>
+                            <option value="Michigan">Michigan</option>
+                            <option value="Minnesota">Minnesota</option>
+                            <option value="Mississippi">Mississippi</option>
+                            <option value="Missouri">Missouri</option>
+                            <option value="Montana">Montana</option>
+                            <option value="Nebraska">Nebraska</option>
+                            <option value="Nevada">Nevada</option>
+                            <option value="New Hampshire">New Hampshire</option>
+                            <option value="New Jersey">New Jersey</option>
+                            <option value="New Mexico">New Mexico</option>
+                            <option value="New York">New York</option>
+                            <option value="North Carolina">North Carolina</option>
+                            <option value="North Dakota">North Dakota</option>
+                            <option value="Ohio">Ohio</option>
+                            <option value="Oklahoma">Oklahoma</option>
+                            <option value="Oregon">Oregon</option>
+                            <option value="Pennsylvania">Pennsylvania</option>
+                            <option value="Rhode Island">Rhode Island</option>
+                            <option value="South Carolina">South Carolina</option>
+                            <option value="South Dakota">South Dakota</option>
+                            <option value="Tennessee">Tennessee</option>
+                            <option value="Texas">Texas</option>
+                            <option value="Utah">Utah</option>
+                            <option value="Vermont">Vermont</option>
+                            <option value="Virginia">Virginia</option>
+                            <option value="Washington">Washington</option>
+                            <option value="West Virginia">West Virginia</option>
+                            <option value="Wisconsin">Wisconsin</option>
+                            <option value="Wyoming">Wyoming</option>
+                            <option value="District of Columbia">District of Columbia</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="hosted-practice-area">Practice Area(s) <span style="font-weight: 400; font-style: italic;">— Hold Ctrl/Cmd to select multiple</span></label>
@@ -1115,6 +1176,42 @@
             });
         }
 
+        // Set progress step labels for hosted forms (no website to analyze)
+        function setHostedProgressLabels() {
+            const stepLabels = {
+                'progress-validating': 'Validating your information...',
+                'progress-analyzing': 'Configuring your practice areas...',
+                'progress-researching': 'Building your personalized demo...',
+                'progress-generating': 'Finalizing demo content...',
+                'progress-sending': 'Sending your demo link...'
+            };
+            for (const [stepId, label] of Object.entries(stepLabels)) {
+                const stepEl = document.getElementById(stepId);
+                if (stepEl) {
+                    const spanEl = stepEl.querySelector('span');
+                    if (spanEl) spanEl.textContent = label;
+                }
+            }
+        }
+
+        // Reset progress step labels to website-based defaults
+        function setWebsiteProgressLabels() {
+            const stepLabels = {
+                'progress-validating': 'Validating your information...',
+                'progress-analyzing': 'Analyzing your website...',
+                'progress-researching': 'Identifying practice areas...',
+                'progress-generating': 'Building your personalized demo...',
+                'progress-sending': 'Sending your demo link...'
+            };
+            for (const [stepId, label] of Object.entries(stepLabels)) {
+                const stepEl = document.getElementById(stepId);
+                if (stepEl) {
+                    const spanEl = stepEl.querySelector('span');
+                    if (spanEl) spanEl.textContent = label;
+                }
+            }
+        }
+
         // Map backend status to progress step number
         function getProgressStepFromStatus(status) {
             switch (status) {
@@ -1132,13 +1229,35 @@
         // =====================================
 
         async function pollForAutoConfirmedDemo(leadId, maxAttempts = 60) {
+            // Validate leadId
+            if (!leadId) {
+                console.error('pollForAutoConfirmedDemo: leadId is undefined or empty');
+                throw new Error('Invalid lead ID. Please try again.');
+            }
+
             const pollInterval = 2000; // 2 seconds
             let attempts = 0;
+            let consecutiveErrors = 0;
+            const maxConsecutiveErrors = 5; // Stop after 5 consecutive errors
 
             while (attempts < maxAttempts) {
                 try {
-                    const response = await fetchWithTimeout(`${STATUS_ENDPOINT}?leadId=${leadId}`);
+                    const pollUrl = `${STATUS_ENDPOINT}?leadId=${leadId}`;
+                    const response = await fetchWithTimeout(pollUrl);
+
+                    if (!response.ok) {
+                        console.error(`Poll HTTP error: ${response.status} ${response.statusText}`);
+                        consecutiveErrors++;
+                        if (consecutiveErrors >= maxConsecutiveErrors) {
+                            throw new Error('Unable to check demo status. Please refresh the page.');
+                        }
+                        attempts++;
+                        await new Promise(resolve => setTimeout(resolve, pollInterval));
+                        continue;
+                    }
+
                     const data = await response.json();
+                    consecutiveErrors = 0; // Reset on success
 
                     // Update progress step based on status
                     const step = getProgressStepFromStatus(data.status);
@@ -1153,9 +1272,14 @@
                     }
 
                 } catch (error) {
-                    console.error('Poll error:', error);
-                    if (error.message.includes('failed')) {
+                    console.error('Poll error:', error.message || error);
+                    if (error.message && (error.message.includes('failed') || error.message.includes('Invalid lead'))) {
                         throw error;
+                    }
+                    consecutiveErrors++;
+                    if (consecutiveErrors >= maxConsecutiveErrors) {
+                        console.error('Too many consecutive polling errors, stopping');
+                        throw new Error('Unable to check demo status. Please refresh the page.');
                     }
                 }
 
@@ -1480,6 +1604,7 @@
                     if (data.status === 'processing') {
                         // Show progress UI and poll for demo completion
                         formContainer.style.display = 'none';
+                        setWebsiteProgressLabels(); // Ensure website-specific step labels
                         progressContainer.style.display = 'block';
                         updateProgressStep(0); // Start at validating
                         recordSubmission(); // Record for rate limiting
@@ -1576,19 +1701,13 @@
 
                 const name = document.getElementById('hosted-name').value.trim();
                 const email = document.getElementById('hosted-email').value.trim();
-                const firmName = document.getElementById('hosted-firm-name').value.trim();
+                const firmNameInput = document.getElementById('hosted-firm-name').value.trim();
+                // Default firm name to user's name if not provided (e.g., "Jane Smith, Attorney at Law")
+                const firmName = firmNameInput || `${name}, Attorney at Law`;
+                const phone = document.getElementById('hosted-phone').value.trim();
+                const state = document.getElementById('hosted-state').value;
                 const practiceAreaSelect = document.getElementById('hosted-practice-area');
                 const practiceAreas = Array.from(practiceAreaSelect.selectedOptions).map(opt => opt.value);
-
-                // Debug logging
-                console.log('Hosted form submission debug:', {
-                    name,
-                    email,
-                    firmName,
-                    practiceAreasCount: practiceAreas.length,
-                    practiceAreas,
-                    selectElement: practiceAreaSelect ? 'found' : 'NOT FOUND'
-                });
 
                 const ADMIN_EMAILS = ['scscot@gmail.com', 'rparr@executionists.com'];
                 const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
@@ -1601,9 +1720,8 @@
                     }
                 }
 
-                if (!name || !email || !firmName || practiceAreas.length === 0) {
-                    console.log('Frontend validation failed: practiceAreas.length =', practiceAreas.length);
-                    showHostedError('Please fill in all fields and select at least one practice area.');
+                if (!name || !email || !state || practiceAreas.length === 0) {
+                    showHostedError('Please fill in all required fields, select your state, and select at least one practice area.');
                     return;
                 }
 
@@ -1625,11 +1743,12 @@
                         name,
                         email,
                         firmName,
+                        phone: phone || null,
+                        state,
                         practiceAreas,
                         primaryArea: practiceAreas[0],
                         hosted: true  // Flag to indicate hosted solution (no website)
                     };
-                    console.log('Sending request body:', JSON.stringify(requestBody, null, 2));
 
                     const response = await fetchWithTimeout(SUBMIT_ENDPOINT, {
                         method: 'POST',
@@ -1656,6 +1775,7 @@
 
                     // Show progress UI and poll for demo completion
                     hostedFormContainer.style.display = 'none';
+                    setHostedProgressLabels(); // Use hosted-specific step labels
                     progressContainer.style.display = 'block';
                     updateProgressStep(0);
                     recordSubmission();
@@ -1867,6 +1987,12 @@
                     stickyCta.textContent = 'Get Started →';
                 }
 
+                // Hide the "Create Your Custom Demo" hero CTA
+                const defaultHeroCta = document.getElementById('default-hero-cta');
+                if (defaultHeroCta) {
+                    defaultHeroCta.style.display = 'none';
+                }
+
                 return true;
             }
 
@@ -1970,6 +2096,12 @@
                     if (e.data?.type === 'intake-completed' && e.data?.firmId === demoLeadId) {
                         demoIntakeCompleted = true;
                     }
+                    // Demo complete - user clicked OK on success modal, redirect to homepage
+                    if (e.data?.type === 'demo-complete-redirect' && e.data?.firmId === demoLeadId) {
+                        // Close modal first, then redirect parent window
+                        forceCloseDemoModal();
+                        window.location.href = e.data.redirectUrl || '/';
+                    }
                 });
 
                 // Exit confirmation modal elements
@@ -2017,6 +2149,11 @@
                     iframe.src = 'about:blank';
                     // Reset completion state for next demo view
                     demoIntakeCompleted = false;
+                    // Hide hero CTA since demo was viewed
+                    const defaultHeroCta = document.getElementById('default-hero-cta');
+                    if (defaultHeroCta) {
+                        defaultHeroCta.style.display = 'none';
+                    }
                 }
 
                 // "End Demo" closes modal (with confirmation)
@@ -2182,8 +2319,39 @@
             } else {
                 // No special parameters - check verification token
                 checkVerificationToken();
+
+                // Check if user has previously viewed a demo in this session
+                checkPreviouslyViewedDemo();
             }
         });
+
+        // =====================================
+        // Previously Viewed Demo Handler
+        // =====================================
+        // For users returning to homepage after viewing a demo
+        // Hides hero CTA and shows floating buttons with correct links
+        function checkPreviouslyViewedDemo() {
+            const viewedDemoId = sessionStorage.getItem('tbp_demo_viewed');
+            if (!viewedDemoId) return;
+
+            // Hide the "Create Your Custom Demo" hero CTA
+            const defaultHeroCta = document.getElementById('default-hero-cta');
+            if (defaultHeroCta) {
+                defaultHeroCta.style.display = 'none';
+            }
+
+            // Show floating buttons with correct demo link
+            const floatingButtons = document.getElementById('floating-demo-buttons');
+            const getStartedBtn = document.getElementById('get-started-btn');
+            const viewDemoBtn = document.getElementById('view-demo-btn');
+
+            if (floatingButtons && getStartedBtn && viewDemoBtn) {
+                getStartedBtn.href = `/create-account.html?firm=${viewedDemoId}`;
+                viewDemoBtn.textContent = 'View Demo Again';
+                viewDemoBtn.href = `/?demo=${viewedDemoId}`;
+                floatingButtons.classList.add('visible');
+            }
+        }
 
         // Validation error modal functions
         function showValidationErrorModal(url, errorMessage) {

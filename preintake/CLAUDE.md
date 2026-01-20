@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-01-19
-**Version**: 3.6 (Dynamic batch size from Firestore)
+**Version**: 3.7 (6-digit intake codes & short URLs)
 
 ---
 
@@ -1359,6 +1359,67 @@ Redirect to payment-success.html
 | `hostedIntakeUrl` | string | Full URL: `https://preintake.ai/intake/{barNumber}` |
 | `deliveryMethod` | string | `'embed'` (has website) or `'hosted'` (no website) |
 
+### Phase 30: 6-Digit Intake Codes & Short URLs (2026-01-19)
+- [x] **6-Digit Alphanumeric Intake Codes** - Human-friendly short URLs
+  - New `generateUniqueIntakeCode()` function generates 6-character codes (A-Z, 0-9, no ambiguous chars)
+  - Excludes: O, 0, I, 1, L to prevent confusion
+  - Collision detection: Regenerates if code exists in `preintake_intake_codes` collection
+  - Code stored in both lead document (`intakeCode`) and lookup collection
+  - Generated during demo creation in `generatePreIntakeDemo()`
+- [x] **Short URL Routing** - Clean intake page URLs
+  - Format: `https://preintake.ai/{6-char-code}` (e.g., `preintake.ai/3K38GP`)
+  - Firebase Hosting rewrite rule: `/{code}` → `serveIntakeByCode` Cloud Function
+  - Function looks up code → finds leadId → serves demo HTML
+  - Replaces long `/intake/{barNumber}` URLs for hosted subscribers
+- [x] **Hosted Intake URL Updates** - Uses new short codes
+  - `handleCheckoutComplete` now stores `hostedIntakeUrl` with short code format
+  - Activation emails include the short URL
+  - Example: `https://preintake.ai/3K38GP` instead of `/intake/123456`
+- [x] **Resend Activation Email Endpoint** - Admin utility
+  - New `resendActivationEmail` Cloud Function in `stripe-functions.js`
+  - Simple secret-based auth (`?secret=resend2026`)
+  - Usage: `GET /resendActivationEmail?leadId=ABC&secret=resend2026`
+  - Fetches lead data and regenerates/resends activation email
+- [x] **Simplified Activation Email** - Cleaner design for hosted subscribers
+  - Kept branded header with PreIntake.ai logo
+  - Simplified body: Just the essentials (firm name, URL, delivery email, signature)
+  - Removed complex boxes and unnecessary styling
+  - Signature: "Support Team / PreIntake.ai" (not Stephen)
+- [x] **Payment Success Page CSS Fix** - Header consistency
+  - Removed conflicting `.logo` CSS that was overriding header component styles
+  - Header now matches index.html appearance
+
+**New Firestore Collection:**
+| Collection | Purpose |
+|------------|---------|
+| `preintake_intake_codes` | Lookup table: `{code}` → `{leadId, createdAt}` |
+
+**New Firestore Fields (`preintake_leads`):**
+| Field | Type | Description |
+|-------|------|-------------|
+| `intakeCode` | string | 6-character alphanumeric code for short URL |
+
+**Files Modified:**
+- `functions/demo-generator-functions.js` - Added `generateUniqueIntakeCode()`, stores code during demo generation
+- `functions/widget-functions.js` - Added `serveIntakeByCode` function for short URL routing
+- `functions/stripe-functions.js` - Added `resendActivationEmail`, updated `hostedIntakeUrl` to use short codes, simplified email template
+- `functions/index.js` - Added `serveIntakeByCode` and `resendActivationEmail` exports
+- `firebase.json` - Added `/:code` rewrite rule for short URLs
+- `preintake/payment-success.html` - Removed conflicting `.logo` CSS
+
+**Short URL Flow:**
+```
+User visits https://preintake.ai/3K38GP
+    │
+    ▼
+Firebase Hosting rewrite → serveIntakeByCode function
+    │
+    ├─ Look up code in preintake_intake_codes collection
+    ├─ Get leadId from lookup result
+    ├─ Verify lead exists and has active subscription
+    └─ Serve demo HTML in LIVE mode
+```
+
 ---
 
 ## Architecture
@@ -1645,6 +1706,9 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `stripeWebhook` | HTTP | Handle Stripe subscription events |
 | `verifyCheckoutSession` | HTTP | Verify payment status |
 | `serveDemo` | HTTP | Proxy demo HTML for CORS bypass |
+| `serveIntakeByCode` | HTTP | Serve intake page by 6-digit short code |
+| `serveHostedIntake` | HTTP | Serve hosted intake by bar number |
+| `resendActivationEmail` | HTTP | Admin endpoint to resend activation emails |
 | `getWidgetConfig` | HTTP | Return widget configuration |
 | `intakeChat` | HTTP | AI chat endpoint |
 
@@ -1660,12 +1724,16 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `/stripeWebhook` | POST | Stripe webhook handler |
 | `/verifyCheckoutSession` | GET | Verify checkout completion |
 | `/demo/:firmId` | GET | Serve demo intake page |
+| `/:code` | GET | Serve intake by 6-digit short code |
+| `/intake/:barNumber` | GET | Serve hosted intake by bar number |
+| `/resendActivationEmail` | GET | Admin: resend activation email |
 
 ### Firestore Collections (preintake database)
 
 | Collection | Purpose |
 |------------|---------|
 | `preintake_leads` | Lead records with status, analysis, delivery config |
+| `preintake_intake_codes` | Short code → leadId lookup table |
 | `intake_dedup` | Deduplication records (leadId_email_phone) |
 | `preintake_rate_limits` | IP rate limiting records |
 

@@ -266,6 +266,7 @@ const {
   getStripeConfig,
   stripeWebhook,
   verifyCheckoutSession,
+  resendActivationEmail,
 } = require('./stripe-functions');
 
 // ==============================
@@ -432,6 +433,7 @@ module.exports = {
   getStripeConfig,
   stripeWebhook,
   verifyCheckoutSession,
+  resendActivationEmail,
 
   // ========== ACCOUNT PORTAL FUNCTIONS ==========
   sendAccountAccessLink,

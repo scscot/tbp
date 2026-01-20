@@ -645,7 +645,14 @@
                     }
                 },
                 {
-                    "source": "/intake/:barNumber",
+                    "source": "/intake/:intakeCode",
+                    "function": {
+                        "functionId": "serveHostedIntake",
+                        "region": "us-west1"
+                    }
+                },
+                {
+                    "source": "/:intakeCode",
                     "function": {
                         "functionId": "serveHostedIntake",
                         "region": "us-west1"

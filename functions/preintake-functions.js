@@ -605,7 +605,7 @@ const submitDemoRequest = onRequest(
                            req.ip ||
                            'unknown';
 
-            const { name, email, website, practiceAreas, firmName, primaryArea, hosted } = req.body;
+            const { name, email, website, practiceAreas, firmName, primaryArea, hosted, state, phone } = req.body;
 
             // Admin bypass for rate limiting
             const ADMIN_EMAILS = ['scscot@gmail.com'];
@@ -687,6 +687,8 @@ const submitDemoRequest = onRequest(
                     source: 'landing_page_hosted',
                     practiceAreas: practiceAreas,
                     primaryArea: primaryArea || practiceAreas[0],
+                    state: state || 'California', // Default to California if not provided
+                    phone: phone || null, // Optional
                     emailVerified: true,
                     verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
                     autoConfirmed: true,
@@ -986,8 +988,8 @@ const getPreIntakeFirmStatus = onRequest(
                 hostedIntakeUrl: data.hostedIntakeUrl || null,
                 barNumber: data.barNumber || null,
 
-                // Error info if failed
-                error: data.analysis?.error || null
+                // Error info if failed (check both hosted error and analysis error)
+                error: data.error || data.analysis?.error || null
             });
         } catch (error) {
             console.error('Error fetching firm status:', error);
@@ -1568,7 +1570,9 @@ function generateHostedDemoReadyEmail(firstName, firmName, demoUrl) {
  */
 async function sendHostedDemoReadyEmail(email, name, firmName, demoUrl, leadId) {
     const firstName = name.split(' ')[0];
-    const emailHtml = generateHostedDemoReadyEmail(firstName, firmName, demoUrl);
+    // Use branded URL for better UX (opens demo in modal over homepage)
+    const brandedDemoUrl = `https://preintake.ai/?demo=${leadId}`;
+    const emailHtml = generateHostedDemoReadyEmail(firstName, firmName, brandedDemoUrl);
 
     try {
         const transporter = nodemailer.createTransport({
@@ -1727,7 +1731,7 @@ const submitHostedDemoRequest = onRequest(
                 status: 'demo_ready',
                 demoGeneratedAt: admin.firestore.FieldValue.serverTimestamp(),
                 demoUrl: `https://preintake.ai/?demo=${leadId}`,
-                hostedIntakeUrl: `https://preintake.ai/intake/${intakeCode}`,
+                hostedIntakeUrl: `https://preintake.ai/${intakeCode}`,
             });
 
             // Send demo ready email

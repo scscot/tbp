@@ -48,6 +48,40 @@ const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
 const STORAGE_BUCKET = 'teambuilder-plus-fe74d.firebasestorage.app';
 
 /**
+ * Generate a unique 6-digit alphanumeric intake code
+ * Uses uppercase letters and numbers, excluding confusing characters (0, O, I, 1, L)
+ * @param {Object} db - Firestore database instance
+ * @returns {Promise<string>} Unique 6-character code
+ */
+async function generateUniqueIntakeCode(db) {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // Excludes 0, O, I, 1, L
+    const maxAttempts = 10;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        // Generate random 6-character code
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        // Check if code already exists
+        const existingDocs = await db.collection('preintake_leads')
+            .where('intakeCode', '==', code)
+            .limit(1)
+            .get();
+
+        if (existingDocs.empty) {
+            return code;
+        }
+        console.log(`Intake code ${code} already exists, generating new one (attempt ${attempt + 1})`);
+    }
+
+    // Fallback: use timestamp-based code if all random attempts fail
+    const timestamp = Date.now().toString(36).toUpperCase().slice(-6);
+    return timestamp;
+}
+
+/**
  * Firestore trigger: Generate demo when deep research completes
  * Triggers when status changes from 'researching' to 'generating_demo'
  * Uses dedicated 'preintake' database (separate from default TBP database)
@@ -77,11 +111,53 @@ const generatePreIntakeDemo = onDocumentUpdated(
         const leadRef = db.collection('preintake_leads').doc(leadId);
 
         try {
-            const analysis = afterData.analysis || {};
-            const deepResearch = afterData.deepResearch || {};  // Top level, not under analysis
+            let htmlContent, configContent;
+            let analysis = afterData.analysis || {};
 
-            // Generate the demo HTML
-            const { htmlContent, configContent } = generateDemoFiles(leadId, afterData, analysis, deepResearch);
+            // Check if this is a hosted lead (no website, from landing page form)
+            if (afterData.hosted === true || afterData.hasWebsite === false) {
+                console.log(`Generating hosted demo for lead ${leadId} (no website)`);
+
+                // Extract first/last name from full name
+                const nameParts = (afterData.name || '').trim().split(/\s+/);
+                const firstName = nameParts[0] || '';
+                const lastName = nameParts.slice(1).join(' ') || '';
+
+                // Build contactData for generateBarProfileDemo
+                const contactData = {
+                    firstName,
+                    lastName,
+                    email: afterData.email,
+                    firmName: afterData.firmName || `${firstName} ${lastName}, Attorney at Law`,
+                    practiceArea: afterData.primaryArea || (afterData.practiceAreas?.[0]) || 'General Practice',
+                    state: afterData.state || 'CA',
+                    phone: afterData.phone || ''
+                };
+
+                // Use practiceAreas array if available (hosted form collects multiple)
+                const practiceAreasOverride = Array.isArray(afterData.practiceAreas) && afterData.practiceAreas.length > 0
+                    ? afterData.practiceAreas
+                    : null;
+
+                const result = generateBarProfileDemo(leadId, contactData, practiceAreasOverride);
+                htmlContent = result.htmlContent;
+                configContent = result.configContent;
+
+                // Build synthetic analysis object for email functions
+                analysis = {
+                    firmName: contactData.firmName,
+                    primaryPracticeArea: contactData.practiceArea,
+                    location: { state: contactData.state }
+                };
+            } else {
+                // Standard website-based lead with analysis data
+                const deepResearch = afterData.deepResearch || {};  // Top level, not under analysis
+
+                // Generate the demo HTML
+                const result = generateDemoFiles(leadId, afterData, analysis, deepResearch);
+                htmlContent = result.htmlContent;
+                configContent = result.configContent;
+            }
 
             // Upload to Firebase Storage
             const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
@@ -117,11 +193,18 @@ const generatePreIntakeDemo = onDocumentUpdated(
                 // Continue to set demo_ready even if email fails - demo IS ready
             }
 
+            // Generate unique 6-digit intake code for hosted URL
+            const intakeCode = await generateUniqueIntakeCode(db);
+            const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+            console.log(`Generated intake code ${intakeCode} for lead ${leadId}`);
+
             // Update Firestore with demo URL and status AFTER email is sent
             // Frontend polls for this status, so user sees "Check your email" only after email is sent
             await leadRef.update({
                 status: 'demo_ready',
                 demoUrl: demoUrl,
+                intakeCode: intakeCode,
+                hostedIntakeUrl: hostedIntakeUrl,
                 'demo.generatedAt': FieldValue.serverTimestamp(),
                 'demo.version': '1.0.0',
                 // Default delivery config - email to the prospect who requested demo
@@ -183,6 +266,9 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
     }
     const isMultiPractice = practiceAreasList.length > 1;
     const _otherPracticeAreaName = null; // Not used in new flow
+
+    // Determine if this is a hosted lead (no website)
+    const isHosted = leadData.hosted === true || leadData.hasWebsite === false;
 
     const state = analysis.location?.state || 'CA';
     const phone = analysis.contactMethods?.phone || '';
@@ -266,6 +352,19 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
             ? `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}`
             : 'https://preintake.ai',
         '{{FIRM_PRACTICE_AREAS_JSON}}': JSON.stringify(practiceAreasList.map(a => a.name.toLowerCase())),
+        // Hosted vs website-based lead text
+        '{{ONBOARDING_GO_LIVE_TEXT}}': isHosted
+            ? 'When you\'re ready to go live, share your personalized intake link directly with potential clients—no website required.'
+            : 'When you\'re ready to go live, it embeds directly into your website—setup takes just minutes, and visitors never leave your site.',
+        '{{SIDEBAR_CTA_TEXT}}': isHosted
+            ? 'Like what you see? Get your personalized intake link to share with potential clients.'
+            : 'Like what you see? Add PreIntake.ai to your website today.',
+        '{{PROMO_TEXT}}': isHosted
+            ? `Get <strong>PreIntake.ai</strong> for <strong>${firmName}</strong>.`
+            : `Add <strong>PreIntake.ai</strong> to the <strong>${firmName}</strong> website.`,
+        '{{DEMO_LIMIT_TEXT}}': isHosted
+            ? 'Ready to get your personalized intake link?'
+            : 'Ready to go live on your website?',
     };
 
     for (const [token, value] of Object.entries(replacements)) {
@@ -415,6 +514,8 @@ CRITICAL RULES:
 2. Do NOT use markdown formatting. Write in plain text only.
 3. Wait for the user to answer before moving to the next question.
 4. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+5. DO NOT call any tools during Phase 1 (contact collection). Only respond with text asking for name, then phone, then email.
+6. DO NOT call collect_contact_info until you have explicitly received ALL THREE: name, phone, AND email from the user.
 
 ## RESPONSE BUTTONS - IMPORTANT:
 When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
@@ -478,6 +579,8 @@ CRITICAL RULES:
 2. Do NOT use markdown formatting. Write in plain text only.
 3. Wait for the user to answer before moving to the next question.
 4. NATURAL CONVERSATION: Reference specific details from the user's previous answers naturally.
+5. DO NOT call any tools during Phase 1 (contact collection). Only respond with text asking for name, then phone, then email.
+6. DO NOT call collect_contact_info until you have explicitly received ALL THREE: name, phone, AND email from the user.
 
 ## RESPONSE BUTTONS - IMPORTANT:
 When you ask a question that has specific answer options, you MUST include them at the end of your response using this exact format:
@@ -2947,6 +3050,9 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
     const firmName = analysis.firmName || 'your firm';
     const firstName = leadData.name ? leadData.name.split(' ')[0] : '';
 
+    // Use branded URL instead of direct storage URL for better UX
+    const brandedDemoUrl = `https://preintake.ai/?demo=${leadId}`;
+
     const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -2959,7 +3065,7 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
     <p>We've analyzed your website and built a working intake form customized to your practice areas and qualification criteria. This demo shows how prospective clients would interact with your AI-powered intake system.</p>
 
     <p style="margin: 30px 0;">
-        <a href="${demoUrl}"
+        <a href="${brandedDemoUrl}"
            style="background: #0c1f3f; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 16px;">
             View Your Demo
         </a>
@@ -2984,7 +3090,7 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
 
     <hr style="margin-top: 40px; border: none; border-top: 1px solid #e2e8f0;">
     <p style="font-size: 12px; color: #64748b;">
-        Demo URL: <a href="${demoUrl}" style="color: #64748b;">${demoUrl}</a>
+        Demo URL: <a href="${brandedDemoUrl}" style="color: #64748b;">${brandedDemoUrl}</a>
     </p>
 </body>
 </html>`;
@@ -3079,6 +3185,9 @@ function generateBarProfileDemo(leadId, contactData, practiceAreasOverride = nul
         email: contactData.email,
         website: '', // No website for bar profile contacts
         source: practiceAreasOverride ? 'hosted_landing_page' : 'bar_profile',
+        // CRITICAL: Set hosted flags so generateDemoFiles shows correct sidebar CTA text
+        hosted: true,
+        hasWebsite: false,
         confirmedPracticeAreas: {
             areas: practiceAreas.map(pa => pa.name),
             primaryArea: mappedPracticeArea,

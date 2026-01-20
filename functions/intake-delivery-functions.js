@@ -161,7 +161,8 @@ const handleIntakeCompletion = onRequest(
  */
 async function deliverViaEmail(transporter, payload, config, leadData) {
     try {
-        const firmName = leadData.analysis?.firmName || 'Your Firm';
+        // Check analysis.firmName (website-based demos) OR direct firmName (hosted demos)
+        const firmName = leadData.analysis?.firmName || leadData.firmName || 'Your Firm';
         const htmlSummary = generateIntakeSummary(payload, firmName);
 
         const leadName = payload.lead?.name || 'New Inquiry';
@@ -263,7 +264,8 @@ async function logDelivery(leadId, method, success) {
  */
 async function notifyIntakeComplete(transporter, payload, leadData, deliveryResult) {
     try {
-        const firmName = leadData.analysis?.firmName || 'Unknown Firm';
+        // Check analysis.firmName (website-based demos) OR direct firmName (hosted demos)
+        const firmName = leadData.analysis?.firmName || leadData.firmName || 'Unknown Firm';
         const leadName = payload.lead?.name || 'Unknown';
         const routing = payload.routing || 'unknown';
 
@@ -325,7 +327,8 @@ async function sendConversionEmail(transporter, leadId, leadData) {
         return;
     }
 
-    const firmName = leadData.analysis?.firmName || 'Your Firm';
+    // Check analysis.firmName (website-based demos) OR direct firmName (hosted demos)
+    const firmName = leadData.analysis?.firmName || leadData.firmName || 'Your Firm';
     const toEmail = leadData.email;
     const firstName = leadData.name?.split(' ')[0] || '';
     const accountUrl = `https://preintake.ai/create-account.html?firm=${leadId}`;

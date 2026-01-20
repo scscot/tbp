@@ -52,6 +52,12 @@ const analyzePreIntakeLead = onDocumentCreated(
             return;
         }
 
+        // Skip analysis for hosted leads (no website to analyze)
+        if (leadData.hasWebsite === false || leadData.hosted === true) {
+            console.log(`Lead ${leadId} is a hosted solution lead - no website analysis needed, skipping`);
+            return;
+        }
+
         // Skip analysis if email verification is pending (will be triggered after verification)
         if (leadData.status === 'pending_verification' || leadData.emailVerified !== true) {
             console.log(`Lead ${leadId} is pending email verification - skipping analysis for now`);

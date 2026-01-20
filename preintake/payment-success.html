@@ -77,23 +77,6 @@
             z-index: 1;
         }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .logo a {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text-light);
-            text-decoration: none;
-        }
-
-        .logo span {
-            color: var(--accent-gold);
-        }
-
         .card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -491,10 +474,6 @@
         <canvas id="confetti" class="confetti"></canvas>
 
         <div class="container">
-        <div class="logo">
-            <a href="/">Pre<span>Intake</span>.ai</a>
-        </div>
-
         <div class="card">
             <div id="loading" class="loading">
                 <div class="spinner"></div>
@@ -707,38 +686,43 @@
          * Initialize page
          */
         async function init() {
-            if (!sessionId || !firmId) {
-                showContent(true); // Default to embed mode
+            // If no firmId at all, show default embed mode
+            if (!firmId) {
+                showContent(true);
                 firmNameEl.textContent = 'Your Firm';
-                updateFirmIdCodes(firmId || 'YOUR_FIRM_ID');
+                updateFirmIdCodes('YOUR_FIRM_ID');
                 deliveryEmailEl.textContent = 'your email';
                 return;
             }
 
             try {
-                // Verify checkout session
-                const response = await fetchWithTimeout(`${API_BASE}/verifyCheckoutSession?sessionId=${sessionId}`);
+                let firmName = 'Your Firm';
+                let customerEmail = 'your email';
+                let hasWebsite = true; // Default to true (embed mode)
 
-                if (!response.ok) {
-                    throw new Error('Could not verify session');
+                // If we have a session_id, verify it first
+                if (sessionId) {
+                    try {
+                        const response = await fetchWithTimeout(`${API_BASE}/verifyCheckoutSession?sessionId=${sessionId}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            firmName = data.firmName || firmName;
+                            customerEmail = data.customerEmail || customerEmail;
+                        }
+                    } catch (sessionError) {
+                        console.warn('Could not verify session:', sessionError);
+                        // Continue to fetch lead data
+                    }
                 }
 
-                const data = await response.json();
-
-                // Update basic UI
-                firmNameEl.textContent = data.firmName || 'Your Firm';
-                updateFirmIdCodes(firmId);
-
-                // Now fetch lead data to check hasWebsite
-                let hasWebsite = true; // Default to true (embed mode)
-                let customerEmail = data.customerEmail || 'your email';
-
+                // Fetch lead data to check hasWebsite (works with or without session_id)
                 try {
                     const leadResponse = await fetchWithTimeout(`${API_BASE}/getPreIntakeFirmStatus?leadId=${firmId}`);
                     if (leadResponse.ok) {
                         const leadData = await leadResponse.json();
                         hostedIntakeUrl = leadData.hostedIntakeUrl || null;
-                        customerEmail = leadData.deliveryEmail || data.customerEmail || 'your email';
+                        customerEmail = leadData.deliveryEmail || customerEmail;
+                        firmName = leadData.firmName || firmName;
                         // Only use hosted mode if we have a valid hostedIntakeUrl
                         // Fall back to embed mode if hasWebsite is false but no hostedIntakeUrl (edge case)
                         hasWebsite = leadData.hasWebsite !== false || !hostedIntakeUrl;
@@ -748,6 +732,9 @@
                     // Continue with default (embed mode)
                 }
 
+                // Update UI
+                firmNameEl.textContent = firmName;
+                updateFirmIdCodes(firmId);
                 deliveryEmailEl.textContent = customerEmail;
                 if (hostedDeliveryEmailEl) {
                     hostedDeliveryEmailEl.textContent = customerEmail;
@@ -757,8 +744,8 @@
                 triggerConfetti();
 
             } catch (error) {
-                console.error('Verification error:', error);
-                // Still show success (payment was successful if they got here)
+                console.error('Initialization error:', error);
+                // Still show success with defaults
                 firmNameEl.textContent = 'Your Firm';
                 updateFirmIdCodes(firmId);
                 deliveryEmailEl.textContent = 'your email';
@@ -846,13 +833,14 @@
 
         /**
          * Copy embed code to clipboard
+         * Note: Use \x3C and \x3E to escape < and > so HTML parser doesn't interpret script tags
          */
         function copyEmbedCode(type) {
             let code;
             if (type === 'button') {
-                code = `<script src="https://preintake.ai/intake-button.js" data-firm="${firmId}" data-position="bottom-right"><\/script>`;
+                code = '\x3Cscript src="https://preintake.ai/intake-button.js" data-firm="' + firmId + '" data-position="bottom-right"\x3E\x3C/script\x3E';
             } else {
-                code = `<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>\n<script src="https://preintake.ai/intake-page.js" data-firm="${firmId}"><\/script>`;
+                code = '\x3Cdiv id="preintake-form" style="width: 100%; min-height: 700px;"\x3E\x3C/div\x3E\n\x3Cscript src="https://preintake.ai/intake-page.js" data-firm="' + firmId + '"\x3E\x3C/script\x3E';
             }
 
             navigator.clipboard.writeText(code).then(() => {
@@ -870,6 +858,9 @@
         function setupEmailDeveloperButton() {
             const currentFirmId = firmId || 'YOUR_FIRM_ID';
             const subject = encodeURIComponent('PreIntake.ai - Website Integration Instructions');
+            // Use \x3C and \x3E to escape < and > so HTML parser doesn't interpret script tags
+            const scriptOpen = '\x3Cscript';
+            const scriptClose = '\x3C/script\x3E';
             const body = encodeURIComponent(`Hi,
 
 Please add the PreIntake.ai intake form to our website. This enables AI-powered client screening on our site.
@@ -880,7 +871,7 @@ OPTION 1: FLOATING BUTTON (Recommended)
 ---------------------------------------
 Add this code before </body> on any page. A floating button will appear that opens the intake form in a modal.
 
-<script src="https://preintake.ai/intake-button.js" data-firm="${currentFirmId}" data-position="bottom-right"></script>
+${scriptOpen} src="https://preintake.ai/intake-button.js" data-firm="${currentFirmId}" data-position="bottom-right"${scriptClose}
 
 Position options: bottom-right, bottom-left, bottom-center, top-right, top-left, top-center
 
@@ -889,8 +880,8 @@ OPTION 2: FULL PAGE EMBED
 -------------------------
 Add this code to a dedicated "Free Case Evaluation" page. The form will fill the container.
 
-<div id="preintake-form" style="width: 100%; min-height: 700px;"></div>
-<script src="https://preintake.ai/intake-page.js" data-firm="${currentFirmId}"></script>
+\x3Cdiv id="preintake-form" style="width: 100%; min-height: 700px;"\x3E\x3C/div\x3E
+${scriptOpen} src="https://preintake.ai/intake-page.js" data-firm="${currentFirmId}"${scriptClose}
 
 Style the container div to control dimensions.
 
