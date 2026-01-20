@@ -63,15 +63,42 @@ const PRACTICE_AREAS = {
     11: 'Civil Rights',
     56: 'Taxation',
     33: 'Health Care',
-    65: 'Homeowner Association Law'
+    65: 'Homeowner Association Law',
+    // Tier 3: Additional high-value areas (ranks 26-36)
+    55: 'Social Security',
+    64: 'Wrongful Termination',
+    20: 'Debtor/Creditor',
+    15: 'Consumer Protection',
+    3: 'Adoption',
+    38: 'Juvenile Law',
+    8: 'Appellate',
+    12: 'Collections',
+    40: 'Land Use/Zoning',
+    17: 'Contracts',
+    18: 'Corporate/Securities',
+    // Tier 4: Medium priority niche areas (ranks 37-46)
+    35: 'Intellectual Property',
+    26: 'Environmental/Natural Resources',
+    47: 'Military/Veterans',
+    21: 'Education',
+    23: 'Eminent Domain',
+    25: 'Entertainment/Sports',
+    45: 'LGBTQ Law',
+    50: 'Patent',
+    59: 'Trademark/Trade Secrets',
+    49: 'Nonprofit/Tax Exempt'
 };
 
 // Priority order for scraping (based on practice-area-targets.md)
 const PRACTICE_AREA_ORDER = [
-    // Tier 1: High priority
+    // Tier 1: High priority (14 areas)
     51, 34, 63, 46, 52, 58, 9, 42, 16, 66, 36, 10, 43, 53,
-    // Tier 2: Moderate priority
-    29, 19, 54, 22, 60, 61, 62, 11, 56, 33, 65
+    // Tier 2: Moderate priority (11 areas)
+    29, 19, 54, 22, 60, 61, 62, 11, 56, 33, 65,
+    // Tier 3: Additional high-value areas (11 areas)
+    55, 64, 20, 15, 3, 38, 8, 12, 40, 17, 18,
+    // Tier 4: Medium priority niche areas (10 areas)
+    35, 26, 47, 21, 23, 25, 45, 50, 59, 49
 ];
 
 // Configuration
