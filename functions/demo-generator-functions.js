@@ -3249,4 +3249,6 @@ module.exports = {
     // Exported for bar profile demo generation (attorneys without websites)
     generateBarProfileDemo,
     mapBarPracticeArea,
+    // Exported for intake code generation (used by campaign script)
+    generateUniqueIntakeCode,
 };

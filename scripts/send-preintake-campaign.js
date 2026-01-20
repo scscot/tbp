@@ -42,7 +42,7 @@ const path = require('path');
 // Import demo generation functions first
 const { analyzeWebsite } = require('../functions/preintake-analysis-functions');
 const { performDeepResearch } = require('../functions/deep-research-functions');
-const { generateDemoFiles, uploadToStorage, initFirebaseAdmin, generateBarProfileDemo } = require('../functions/demo-generator-functions');
+const { generateDemoFiles, uploadToStorage, initFirebaseAdmin, generateBarProfileDemo, generateUniqueIntakeCode } = require('../functions/demo-generator-functions');
 
 // Initialize Firebase Admin using the functions' firebase-admin instance
 // This ensures uploadToStorage uses the same initialized app
@@ -238,14 +238,28 @@ async function generateDemoForContact(contactData) {
         const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
         console.log(`   ✓ Demo uploaded: ${demoUrl}`);
 
-        // Step 6: Save lead document with demo URL
+        // Step 6: Generate unique 6-digit intake code for short URL
+        const intakeCode = await generateUniqueIntakeCode(db);
+        const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+        console.log(`   ✓ Generated intake code: ${intakeCode}`);
+
+        // Step 7: Save lead document with demo URL and intake code
         leadData.demoUrl = demoUrl;
+        leadData.intakeCode = intakeCode;
+        leadData.hostedIntakeUrl = hostedIntakeUrl;
         leadData['demo.generatedAt'] = admin.firestore.FieldValue.serverTimestamp();
         leadData['demo.version'] = '1.0.0';
+        // Default delivery config - email to the contact
+        leadData.deliveryConfig = {
+            method: 'email',
+            emailAddress: email,
+            webhookUrl: null,
+            crmType: null
+        };
 
         await db.collection(LEADS_COLLECTION).doc(leadId).set(leadData);
 
-        return { success: true, leadId, demoUrl };
+        return { success: true, leadId, demoUrl, intakeCode, hostedIntakeUrl };
 
     } catch (error) {
         console.error(`   ❌ Demo generation failed: ${error.message}`);
@@ -287,10 +301,15 @@ async function generateBarProfileDemoForContact(contactData) {
         const demoUrl = await uploadToStorage(leadId, htmlContent, configContent);
         console.log(`   ✓ Demo uploaded: ${demoUrl}`);
 
-        // Step 4: Build firm name
+        // Step 4: Generate unique 6-digit intake code for short URL
+        const intakeCode = await generateUniqueIntakeCode(db);
+        const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+        console.log(`   ✓ Generated intake code: ${intakeCode}`);
+
+        // Step 5: Build firm name
         const generatedFirmName = firmName || `${firstName} ${lastName}, Attorney at Law`;
 
-        // Step 5: Save lead document with demo URL
+        // Step 6: Save lead document with demo URL and intake code
         const leadData = {
             name: generatedFirmName,
             email: email,
@@ -304,6 +323,8 @@ async function generateBarProfileDemoForContact(contactData) {
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             demoUrl: demoUrl,
+            intakeCode: intakeCode,
+            hostedIntakeUrl: hostedIntakeUrl,
             'demo.generatedAt': admin.firestore.FieldValue.serverTimestamp(),
             'demo.version': '1.0.0',
             // Minimal analysis (no website to scrape)
@@ -317,12 +338,19 @@ async function generateBarProfileDemoForContact(contactData) {
                 primaryArea: practiceArea || 'General Practice',
                 areas: [practiceArea || 'General Practice'],
                 autoConfirmed: true
+            },
+            // Default delivery config - email to the contact
+            deliveryConfig: {
+                method: 'email',
+                emailAddress: email,
+                webhookUrl: null,
+                crmType: null
             }
         };
 
         await db.collection(LEADS_COLLECTION).doc(leadId).set(leadData);
 
-        return { success: true, leadId, demoUrl };
+        return { success: true, leadId, demoUrl, intakeCode, hostedIntakeUrl };
 
     } catch (error) {
         console.error(`   ❌ Bar profile demo generation failed: ${error.message}`);
