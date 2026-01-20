@@ -98,11 +98,21 @@
         }
 
         .logo-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.75rem;
+            font-weight: 400;
             color: var(--accent-gold);
-            letter-spacing: 2px;
+            letter-spacing: 0.5px;
+            padding: 1rem 1.5rem;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .landing-headline {
@@ -328,9 +338,17 @@
         }
 
         .chat-header-logo {
-            font-family: 'Playfair Display', serif;
+            font-family: Georgia, 'Times New Roman', serif;
             font-size: 1.25rem;
+            font-weight: 400;
             color: var(--accent-gold);
+            letter-spacing: 0.5px;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 4px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.3;
         }
 
         .chat-header-disclosure {
@@ -790,10 +808,19 @@
         }
 
         .results-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
             color: var(--accent-gold);
+            letter-spacing: 0.5px;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 4px;
+            display: inline-block;
             margin-bottom: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.3;
         }
 
         .results-title {
@@ -1328,11 +1355,23 @@
         }
 
         .onboarding-modal-content .firm-name {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 500;
-            margin-bottom: 1.25rem;
+            font-size: 1.75rem;
+            color: var(--accent-gold);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 100%;
+            /* Intelligent word wrapping for long firm names */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .onboarding-modal-content .firm-name:empty {

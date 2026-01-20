@@ -656,10 +656,6 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <!--<![endif]-->
 </head>
 <body style="margin:0; padding:0; background-color:#f8fafc;">
-  <div style="display:none; max-height:0; overflow:hidden;">
-    We noticed you practice ${displayPracticeArea}${state ? ' in ' + state : ''}—built you a quick demo.
-  </div>
-
   <div style="max-width:600px; margin:0 auto; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#1a1a2e;">
 
     <div style="background-color:#0c1f3f; background:linear-gradient(135deg,#0c1f3f 0%,#1a3a5c 100%); padding:20px; border-radius:12px 12px 0 0; text-align:center;">
@@ -676,27 +672,31 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
     <div style="background:#ffffff; padding:30px; border-radius:0 0 12px 12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
       <p style="font-size: 16px;">Hi${firstName ? ' ' + firstName : ''},</p>
 
-      <p style="font-size: 16px;">We noticed from your ${state ? state + ' ' : ''}Bar profile that you practice <strong>${displayPracticeArea}</strong>.</p>
+      <p style="font-size: 16px;">I came across your ${state ? state + ' ' : ''}Bar profile and saw that you handle <strong>${displayPracticeArea}</strong> matters.</p>
 
-      <p style="font-size: 16px;">We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.</p>
+      <p style="font-size: 16px;">Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.</p>
+
+      <p style="font-size: 16px;">Each inquiry is reviewed and delivered with:</p>
+
+      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
+          <li>A case summary tailored to ${displayPracticeArea}</li>
+          <li>A qualification rating: qualified, needs review, or not a fit</li>
+          <li>A plain-English explanation of why</li>
+      </ul>
+
+      <p style="font-size: 16px; margin-top: 16px;">
+          <strong style="color: #c9a962;">Zero data retention.</strong> Inquiry content is processed and delivered to you, not stored.
+      </p>
+
+      <p style="font-size: 16px;">Based on public Bar information, I put together a short demo showing how this would work for <strong>${firmName}</strong>.</p>
 
       <div style="text-align: center; margin: 25px 0;">
           <a href="${demoUrl}" style="display: inline-block; background: linear-gradient(135deg, #c9a962 0%, #b8944f 100%); color: #0c1f3f; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px;">See Your Personalized Demo →</a>
       </div>
 
-      <p style="font-size: 16px;">It takes 2 minutes to try. Every inquiry gets evaluated and routed:</p>
+      <p style="font-size: 16px;">It takes about two minutes to review. No setup. No commitment.</p>
 
-      <ul style="color: #1a1a2e; padding-left: 20px; font-size: 16px;">
-          <li><strong style="color: #28a745;">QUALIFIED</strong> — Strong case, priority follow-up</li>
-          <li><strong style="color: #ffc107;">NEEDS REVIEW</strong> — May need documentation</li>
-          <li><strong style="color: #dc3545;">NOT A FIT</strong> — Polite decline with resources</li>
-      </ul>
-
-      <p style="font-size: 16px; margin-top: 16px;">
-          <strong style="color: #c9a962;">Zero Data Retention</strong> — Inquiry content is processed and delivered, not retained.
-      </p>
-
-      <p style="font-size: 16px;">If it's useful, great. If not, no worries—just wanted to share something that might help.</p>
+      <p style="font-size: 16px;">If it saves you a few interruptions a week, it's doing its job. If not, feel free to ignore it.</p>
 
       <p style="font-size: 16px; margin-top: 20px;">
           Best,<br>
@@ -732,21 +732,25 @@ Pre-Screen Every Inquiry — Tailored to Your Practice Area
 
 Hi${firstName ? ' ' + firstName : ''},
 
-We noticed from your ${state ? state + ' ' : ''}Bar profile that you practice ${displayPracticeArea}.
+I came across your ${state ? state + ' ' : ''}Bar profile and saw that you handle ${displayPracticeArea} matters.
 
-We've built you a quick demo showing how AI can pre-screen your intake inquiries—qualifying leads and flagging issues before they reach your desk.
+Most intake systems assume you have a website. This one doesn't. It works as a simple hosted intake link you can share anywhere you currently accept inquiries—email signature, referral partners, even a text message.
+
+Each inquiry is reviewed and delivered with:
+
+• A case summary tailored to ${displayPracticeArea}
+• A qualification rating: qualified, needs review, or not a fit
+• A plain-English explanation of why
+
+Zero data retention. Inquiry content is processed and delivered to you, not stored.
+
+Based on public Bar information, I put together a short demo showing how this would work for ${firmName}.
 
 See Your Personalized Demo: ${demoUrl}
 
-It takes 2 minutes to try. Every inquiry gets evaluated and routed:
+It takes about two minutes to review. No setup. No commitment.
 
-• QUALIFIED — Strong case, priority follow-up
-• NEEDS REVIEW — May need documentation
-• NOT A FIT — Polite decline with resources
-
-Zero Data Retention — Inquiry content is processed and delivered, not retained.
-
-If it's useful, great. If not, no worries—just wanted to share something that might help.
+If it saves you a few interruptions a week, it's doing its job. If not, feel free to ignore it.
 
 Best,
 Stephen Scott
@@ -860,9 +864,10 @@ async function runCampaign() {
     // Generate batch ID
     const batchId = `batch_${Date.now()}`;
 
-    // Query unsent emails in two phases:
-    // Phase 1: Contacts WITH website URLs (can generate personalized demos)
-    // Phase 2: Contacts WITHOUT website URLs (fallback emails only)
+    // Query all "ready" contacts together, ordered by randomIndex:
+    // - Contacts WITH website URLs (website-based demos)
+    // - Contacts with domainChecked=true but no website (bar profile demos)
+    // Contacts not yet processed by infer-calbar-websites.js are skipped until ready.
     let allDocs = [];
 
     // If TEST_LEAD_ID is provided, use the existing preintake_leads document directly
@@ -905,70 +910,58 @@ async function runCampaign() {
         allDocs = [specificDoc];
         console.log(`📊 Found document: ${specificDoc.data().firmName || specificDoc.data().email}`);
     } else {
-        // Phase 1: Get contacts with website URLs first (can generate website-based demos)
-        const withWebsiteSnapshot = await db.collection(COLLECTION_NAME)
-            .where('sent', '==', false)
-            .where('status', '==', 'pending')
-            .where('website', '!=', '')
-            .orderBy('website')  // Required when using != operator
-            .orderBy('randomIndex')
-            .limit(BATCH_SIZE)
-            .get();
+        // Query all "ready" contacts in parallel (Firestore doesn't support OR queries)
+        // Then combine, dedupe, sort by randomIndex, and take top BATCH_SIZE
+        const queryLimit = BATCH_SIZE * 2; // Fetch extra to ensure we have enough after sorting
 
-        allDocs = [...withWebsiteSnapshot.docs];
-        console.log(`📊 Found ${allDocs.length} contacts with website URLs`);
-
-        // Phase 2: If we need more contacts, get bar profile contacts (no website, but have bar data)
-        // These have domainChecked=true AND domainCheckResult='not_found' or 'personal_email'
-        let remainingSlots = BATCH_SIZE - allDocs.length;
-        if (remainingSlots > 0) {
-            // Query for 'not_found' contacts first
-            const notFoundSnapshot = await db.collection(COLLECTION_NAME)
+        const [withWebsiteSnapshot, notFoundSnapshot, personalEmailSnapshot] = await Promise.all([
+            // Contacts with website URLs
+            db.collection(COLLECTION_NAME)
+                .where('sent', '==', false)
+                .where('status', '==', 'pending')
+                .where('website', '!=', '')
+                .orderBy('website')
+                .orderBy('randomIndex')
+                .limit(queryLimit)
+                .get(),
+            // Bar profile contacts (not_found)
+            db.collection(COLLECTION_NAME)
                 .where('sent', '==', false)
                 .where('status', '==', 'pending')
                 .where('domainChecked', '==', true)
                 .where('domainCheckResult', '==', 'not_found')
                 .orderBy('randomIndex')
-                .limit(remainingSlots)
-                .get();
-
-            allDocs = [...allDocs, ...notFoundSnapshot.docs];
-            console.log(`📊 Found ${notFoundSnapshot.size} bar profile contacts (not_found)`);
-
-            // If still need more, get 'personal_email' contacts
-            remainingSlots = BATCH_SIZE - allDocs.length;
-            if (remainingSlots > 0) {
-                const personalEmailSnapshot = await db.collection(COLLECTION_NAME)
-                    .where('sent', '==', false)
-                    .where('status', '==', 'pending')
-                    .where('domainChecked', '==', true)
-                    .where('domainCheckResult', '==', 'personal_email')
-                    .orderBy('randomIndex')
-                    .limit(remainingSlots)
-                    .get();
-
-                allDocs = [...allDocs, ...personalEmailSnapshot.docs];
-                console.log(`📊 Found ${personalEmailSnapshot.size} bar profile contacts (personal_email)`);
-            }
-        }
-
-        // Phase 3: If still need more, get any remaining contacts without websites (fallback only)
-        remainingSlots = BATCH_SIZE - allDocs.length;
-        if (remainingSlots > 0) {
-            const fallbackSnapshot = await db.collection(COLLECTION_NAME)
+                .limit(queryLimit)
+                .get(),
+            // Bar profile contacts (personal_email)
+            db.collection(COLLECTION_NAME)
                 .where('sent', '==', false)
                 .where('status', '==', 'pending')
-                .where('website', '==', '')
-                .where('domainChecked', '==', false)
+                .where('domainChecked', '==', true)
+                .where('domainCheckResult', '==', 'personal_email')
                 .orderBy('randomIndex')
-                .limit(remainingSlots)
-                .get();
+                .limit(queryLimit)
+                .get()
+        ]);
 
-            allDocs = [...allDocs, ...fallbackSnapshot.docs];
-            if (fallbackSnapshot.size > 0) {
-                console.log(`📊 Found ${fallbackSnapshot.size} contacts for fallback emails`);
+        console.log(`📊 Query results:`);
+        console.log(`   - With website: ${withWebsiteSnapshot.size}`);
+        console.log(`   - Bar profile (not_found): ${notFoundSnapshot.size}`);
+        console.log(`   - Bar profile (personal_email): ${personalEmailSnapshot.size}`);
+
+        // Combine all docs, dedupe by ID, sort by randomIndex, take top BATCH_SIZE
+        const docMap = new Map();
+        [...withWebsiteSnapshot.docs, ...notFoundSnapshot.docs, ...personalEmailSnapshot.docs].forEach(doc => {
+            if (!docMap.has(doc.id)) {
+                docMap.set(doc.id, doc);
             }
-        }
+        });
+
+        allDocs = Array.from(docMap.values())
+            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0))
+            .slice(0, BATCH_SIZE);
+
+        console.log(`📊 Combined and sorted: ${allDocs.length} contacts (from ${docMap.size} unique)`);
     }
 
     if (allDocs.length === 0) {
@@ -1050,7 +1043,9 @@ async function runCampaign() {
                     console.log(`   📧 Sending fallback email instead...`);
                 }
             } else if (!website && !isBarProfileContact) {
-                console.log(`   ⚠️ No website URL and no bar profile data - sending fallback email`);
+                // This shouldn't happen since Phase 3 was removed - contacts without website
+                // AND without domainChecked=true should not be queried. Log as unexpected.
+                console.log(`   ⚠️ UNEXPECTED: Contact has no website and domainChecked!=true - sending fallback email`);
             } else if (SKIP_DEMO_GEN) {
                 console.log(`   ⚠️ Demo generation disabled - sending fallback email`);
             }
