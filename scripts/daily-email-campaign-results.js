@@ -22,7 +22,7 @@ db.settings({ databaseId: "preintake" });
 // SMTP config
 const smtpUser = process.env.PREINTAKE_SMTP_USER;
 const smtpPass = process.env.PREINTAKE_SMTP_PASS;
-const RECIPIENT_EMAIL = "sscot@gmail.com";
+const RECIPIENT_EMAIL = "scscot@gmail.com";
 
 /**
  * Check if a date is today (in PST timezone)
