@@ -736,6 +736,27 @@ async function getProfileExtras(barNumber) {
 }
 
 // ============================================================================
+// EXISTING DATA LOADING
+// ============================================================================
+
+/**
+ * Load existing FL Bar bar numbers for efficient skip-before-fetch
+ * This allows us to skip attorneys we already have without re-processing
+ */
+async function loadExistingBarNumbers() {
+    const barNumbers = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .where('source', '==', 'flbar')
+        .select('barNumber')
+        .get();
+    snapshot.forEach(doc => {
+        const barNum = doc.data().barNumber;
+        if (barNum) barNumbers.add(barNum.toString());
+    });
+    return barNumbers;
+}
+
+// ============================================================================
 // PROGRESS TRACKING
 // ============================================================================
 
@@ -777,19 +798,22 @@ async function saveProgress(progress) {
 // MAIN SCRAPING LOGIC
 // ============================================================================
 
-async function scrapePracticeArea(practiceAreaCode) {
+async function scrapePracticeArea(practiceAreaCode, existingBarNumbers) {
     const practiceName = PRACTICE_AREAS[practiceAreaCode] || practiceAreaCode;
     console.log(`\nScraping ${practiceName} (${practiceAreaCode})...`);
     console.log('-'.repeat(50));
 
     const stats = {
         pages_scraped: 0,
+        total_counties: FLORIDA_COUNTIES.length,
         counties_scraped: 0,
+        all_counties_scraped: false,
         attorneys_found: 0,
         with_email: 0,
         with_website: 0,
         no_email: 0,
         duplicates_skipped: 0,
+        bar_number_skipped: 0,
         inserted: 0,
         errors: 0
     };
@@ -853,9 +877,16 @@ async function scrapePracticeArea(practiceAreaCode) {
                     if (totalScraped >= MAX_ATTORNEYS) break;
 
                     stats.attorneys_found++;
+
+                    // Skip if barNumber already exists in DB (avoids re-processing)
+                    if (existingBarNumbers.has(attorney.barNumber.toString())) {
+                        stats.bar_number_skipped++;
+                        continue;
+                    }
+
                     const emailLower = attorney.email.toLowerCase();
 
-                    // Skip duplicates
+                    // Skip duplicates by email
                     if (existingEmails.has(emailLower)) {
                         stats.duplicates_skipped++;
                         continue;
@@ -917,6 +948,7 @@ async function scrapePracticeArea(practiceAreaCode) {
                     }
 
                     existingEmails.add(emailLower);
+                    existingBarNumbers.add(attorney.barNumber.toString());
                     stats.inserted++;
                     totalScraped++;
 
@@ -956,6 +988,9 @@ async function scrapePracticeArea(practiceAreaCode) {
         await batch.commit();
         console.log(`   ✓ Committed final batch of ${batchCount} contacts`);
     }
+
+    // Track if all counties were fully scraped (not stopped early due to MAX_ATTORNEYS)
+    stats.all_counties_scraped = (stats.counties_scraped >= FLORIDA_COUNTIES.length) && (totalScraped < MAX_ATTORNEYS);
 
     return stats;
 }
@@ -1132,10 +1167,15 @@ async function main() {
     console.log(`\nTarget: ${practiceName} (${practiceAreaCode})`);
     console.log(`Max attorneys: ${MAX_ATTORNEYS}\n`);
 
+    // Load existing bar numbers for efficient skip-before-processing
+    console.log('Loading existing bar numbers...');
+    const existingBarNumbers = await loadExistingBarNumbers();
+    console.log(`Loaded ${existingBarNumbers.size} existing bar numbers\n`);
+
     const startTime = Date.now();
 
     try {
-        const stats = await scrapePracticeArea(practiceAreaCode);
+        const stats = await scrapePracticeArea(practiceAreaCode, existingBarNumbers);
 
         // Check error rate
         const ERROR_THRESHOLD = 0.10;
@@ -1144,14 +1184,18 @@ async function main() {
         const errorRate = stats.attorneys_found > 0 ? stats.errors / stats.attorneys_found : 0;
         let scrapeSuccessful = false;
 
-        if (errorRate < ERROR_THRESHOLD) {
-            // Success - mark practice area as completed
+        if (errorRate < ERROR_THRESHOLD && stats.all_counties_scraped) {
+            // Success - mark practice area as completed (only if ALL counties were scraped)
             if (!progress.scrapedPracticeAreaCodes.includes(practiceAreaCode)) {
                 progress.scrapedPracticeAreaCodes.push(practiceAreaCode);
             }
             delete progress.failedAttempts[practiceAreaCode];
             scrapeSuccessful = true;
-            console.log(`\nPractice area completed (error rate: ${(errorRate * 100).toFixed(1)}%)`);
+            console.log(`\n✅ Practice area completed successfully (error rate: ${(errorRate * 100).toFixed(1)}%)`);
+        } else if (errorRate < ERROR_THRESHOLD && !stats.all_counties_scraped) {
+            // Low error rate but didn't scrape all counties - practice area incomplete
+            console.log(`\n⏳ Practice area incomplete (${stats.counties_scraped}/${stats.total_counties} counties processed - will continue next run)`);
+            scrapeSuccessful = true; // Not a failure, just incomplete
         } else {
             // High error rate - track failed attempt
             const currentAttempts = (progress.failedAttempts[practiceAreaCode] || 0) + 1;
@@ -1184,12 +1228,15 @@ async function main() {
         console.log('\n============================');
         console.log('Summary');
         console.log('============================');
+        console.log(`   Counties scraped: ${stats.counties_scraped}/${stats.total_counties}`);
         console.log(`   Pages scraped: ${stats.pages_scraped}`);
         console.log(`   Attorneys found: ${stats.attorneys_found}`);
+        console.log(`   Bar number skipped: ${stats.bar_number_skipped}`);
         console.log(`   With website: ${stats.with_website}`);
         console.log(`   Duplicates skipped: ${stats.duplicates_skipped}`);
         console.log(`   Inserted: ${stats.inserted}`);
         console.log(`   Errors: ${stats.errors}`);
+        console.log(`   All counties scraped: ${stats.all_counties_scraped}`);
         console.log(`   Duration: ${duration} minutes`);
         console.log(`\n   Total FL Bar attorneys in DB: ${totalInDb.toLocaleString()}`);
         console.log(`   Practice areas completed: ${progress.scrapedPracticeAreaCodes.length}/${PRACTICE_AREA_PRIORITY.length}`);

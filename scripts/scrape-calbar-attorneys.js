@@ -542,6 +542,22 @@ async function emailExists(email) {
 }
 
 /**
+ * Load existing CalBar bar numbers for efficient skip-before-fetch
+ */
+async function loadExistingBarNumbers() {
+    const barNumbers = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .where('source', '==', 'calbar')
+        .select('barNumber')
+        .get();
+    snapshot.forEach(doc => {
+        const barNum = doc.data().barNumber;
+        if (barNum) barNumbers.add(barNum.toString());
+    });
+    return barNumbers;
+}
+
+/**
  * Load progress from Firestore
  */
 async function loadProgress() {
@@ -873,7 +889,7 @@ To retry this practice area, manually remove it from the permanentlySkipped arra
 /**
  * Scrape a single practice area
  */
-async function scrapePracticeArea(practiceAreaId) {
+async function scrapePracticeArea(practiceAreaId, existingBarNumbers) {
     const practiceAreaName = PRACTICE_AREAS[practiceAreaId];
     console.log(`\n📋 Practice Area: ${practiceAreaName} (ID: ${practiceAreaId})`);
     console.log('─'.repeat(50));
@@ -881,10 +897,13 @@ async function scrapePracticeArea(practiceAreaId) {
     const stats = {
         pages_scraped: 0,
         attorneys_found: 0,
+        total_pages: 0,
+        all_pages_scraped: false,
         with_website: 0,
         with_email: 0,
         no_email: 0,
         duplicates_skipped: 0,
+        bar_number_skipped: 0,
         inserted: 0,
         errors: 0
     };
@@ -926,6 +945,7 @@ async function scrapePracticeArea(practiceAreaId) {
 
             if (pageNumber === 1) {
                 totalPages = getTotalPages($);
+                stats.total_pages = totalPages;
                 console.log(`   Total pages: ${totalPages}`);
             }
 
@@ -947,6 +967,9 @@ async function scrapePracticeArea(practiceAreaId) {
         }
     }
 
+    // Track if all pages were scraped (important for completion logic)
+    stats.all_pages_scraped = (pageNumber > totalPages);
+
     // Limit to MAX_ATTORNEYS
     if (allBarNumbers.length > MAX_ATTORNEYS) {
         console.log(`   Limiting to ${MAX_ATTORNEYS} attorneys (found ${allBarNumbers.length})`);
@@ -955,6 +978,9 @@ async function scrapePracticeArea(practiceAreaId) {
 
     stats.attorneys_found = allBarNumbers.length;
     console.log(`\n👥 Processing ${allBarNumbers.length} attorneys...`);
+    if (!stats.all_pages_scraped) {
+        console.log(`   ⚠️  Not all pages scraped (stopped at page ${pageNumber - 1}/${totalPages})`);
+    }
 
     // Process each attorney detail page
     const batch = db.batch();
@@ -966,6 +992,12 @@ async function scrapePracticeArea(practiceAreaId) {
 
         if ((i + 1) % 50 === 0 || i === allBarNumbers.length - 1) {
             console.log(`   Processing ${i + 1}/${allBarNumbers.length}...`);
+        }
+
+        // Skip if barNumber already exists in DB (avoids re-fetching profile page)
+        if (existingBarNumbers.has(barNumber.toString())) {
+            stats.bar_number_skipped++;
+            continue;
         }
 
         const result = await parseDetailPage(barNumber, practiceAreaName);
@@ -1028,6 +1060,11 @@ async function main() {
     // Initialize Firebase
     initFirebase();
 
+    // Load existing bar numbers for efficient skip-before-fetch
+    console.log('📥 Loading existing CalBar bar numbers...');
+    const existingBarNumbers = await loadExistingBarNumbers();
+    console.log(`   Loaded ${existingBarNumbers.size} existing bar numbers\n`);
+
     // Load progress
     const progress = await loadProgress();
     console.log(`📊 Previous progress: ${progress.scrapedPracticeAreaIds.length} practice areas completed`);
@@ -1063,7 +1100,7 @@ async function main() {
     }
 
     // Scrape the practice area
-    const stats = await scrapePracticeArea(practiceAreaId);
+    const stats = await scrapePracticeArea(practiceAreaId, existingBarNumbers);
 
     // Check error rate and update progress accordingly
     const ERROR_THRESHOLD = 0.10; // 10% error rate threshold
@@ -1076,8 +1113,8 @@ async function main() {
     const practiceAreaName = PRACTICE_AREAS[practiceAreaId];
     let scrapeSuccessful = false;
 
-    if (errorRate < ERROR_THRESHOLD) {
-        // Success - mark practice area as completed
+    if (errorRate < ERROR_THRESHOLD && stats.all_pages_scraped) {
+        // Success - mark practice area as completed (only if ALL pages were scraped)
         if (!progress.scrapedPracticeAreaIds.includes(practiceAreaId)) {
             progress.scrapedPracticeAreaIds.push(practiceAreaId);
         }
@@ -1085,6 +1122,10 @@ async function main() {
         delete progress.failedAttempts[practiceAreaId];
         scrapeSuccessful = true;
         console.log(`\n✅ Practice area completed successfully (error rate: ${(errorRate * 100).toFixed(1)}%)`);
+    } else if (errorRate < ERROR_THRESHOLD && !stats.all_pages_scraped) {
+        // Low error rate but didn't scrape all pages - practice area incomplete
+        console.log(`\n⏳ Practice area incomplete (${stats.pages_scraped}/${stats.total_pages} pages processed - will continue next run)`);
+        scrapeSuccessful = true; // Not a failure, just incomplete
     } else {
         // High error rate - track failed attempt
         const currentAttempts = (progress.failedAttempts[practiceAreaId] || 0) + 1;
@@ -1108,7 +1149,7 @@ async function main() {
 
     progress.lastRunDate = new Date().toISOString();
     progress.totalInserted = (progress.totalInserted || 0) + stats.inserted;
-    progress.totalSkipped = (progress.totalSkipped || 0) + stats.no_email + stats.duplicates_skipped;
+    progress.totalSkipped = (progress.totalSkipped || 0) + stats.no_email + stats.duplicates_skipped + stats.bar_number_skipped;
     await saveProgress(progress);
 
     // Get total in database
@@ -1123,6 +1164,7 @@ async function main() {
     console.log(`   With email: ${stats.with_email}`);
     console.log(`   No email (skipped): ${stats.no_email}`);
     console.log(`   Duplicates (skipped): ${stats.duplicates_skipped}`);
+    console.log(`   Bar# already in DB (skipped): ${stats.bar_number_skipped}`);
     console.log(`   ✅ Inserted: ${stats.inserted}`);
     console.log(`   ❌ Errors: ${stats.errors}`);
     console.log(`   Error rate: ${(errorRate * 100).toFixed(1)}%`);

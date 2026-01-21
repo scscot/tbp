@@ -223,6 +223,26 @@ async function loadExistingEmails() {
     return emails;
 }
 
+/**
+ * Load existing InBar profile IDs for efficient skip-before-fetch
+ */
+async function loadExistingProfileIds() {
+    const profileIds = new Set();
+    try {
+        const snapshot = await db.collection('preintake_emails')
+            .where('source', '==', 'inbar')
+            .select('profileId')
+            .get();
+        snapshot.forEach(doc => {
+            const id = doc.data().profileId;
+            if (id) profileIds.add(id.toString());
+        });
+    } catch (err) {
+        console.error('Error loading existing profile IDs:', err.message);
+    }
+    return profileIds;
+}
+
 async function getTotalAttorneysInDb() {
     try {
         const snapshot = await db.collection('preintake_emails')
@@ -302,7 +322,12 @@ async function scrapeAllAttorneys() {
 
     console.log('Loading existing emails...');
     const existingEmails = await loadExistingEmails();
-    console.log(`Loaded ${existingEmails.size} existing emails\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    // Load existing profileIds for efficient skip-before-fetch
+    console.log('Loading existing profile IDs...');
+    const existingProfileIds = await loadExistingProfileIds();
+    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
 
     console.log('Launching browser...\n');
     const browser = await puppeteer.launch({
@@ -384,9 +409,16 @@ async function scrapeAllAttorneys() {
             // Fetch vCards for all profiles (no practice area filtering for Indiana)
             let pageInserted = 0;
             let pageSkipped = 0;
+            let skippedExisting = 0;
 
             for (const profile of profiles) {
                 if (insertedThisRun >= MAX_ATTORNEYS) break;
+
+                // Skip if profileId already exists in database
+                if (existingProfileIds.has(profile.profileId.toString())) {
+                    skippedExisting++;
+                    continue;
+                }
 
                 // Fetch vCard
                 const vcardResult = await fetchVCard(profile.profileId);
@@ -411,7 +443,7 @@ async function scrapeAllAttorneys() {
                 }
             }
 
-            console.log(`     ✓ Inserted ${pageInserted}, Skipped ${pageSkipped}`);
+            console.log(`     ✓ Inserted ${pageInserted}, Skipped ${pageSkipped}, SkippedExisting ${skippedExisting}`);
             totalSkipped += pageSkipped;
 
             // Save progress

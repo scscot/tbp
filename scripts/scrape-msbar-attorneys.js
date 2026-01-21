@@ -256,6 +256,26 @@ async function loadExistingEmails() {
     return emails;
 }
 
+/**
+ * Load existing MsBar profile IDs for efficient skip-before-fetch
+ */
+async function loadExistingProfileIds() {
+    const profileIds = new Set();
+    try {
+        const snapshot = await db.collection('preintake_emails')
+            .where('source', '==', 'msbar')
+            .select('profileId')
+            .get();
+        snapshot.forEach(doc => {
+            const id = doc.data().profileId;
+            if (id) profileIds.add(id.toString());
+        });
+    } catch (err) {
+        console.error('Error loading existing profile IDs:', err.message);
+    }
+    return profileIds;
+}
+
 async function getTotalAttorneysInDb() {
     try {
         const snapshot = await db.collection('preintake_emails')
@@ -334,7 +354,11 @@ async function scrapeAllAttorneys() {
 
     console.log('Loading existing emails...');
     const existingEmails = await loadExistingEmails();
-    console.log(`Loaded ${existingEmails.size} existing emails\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    console.log('Loading existing profile IDs...');
+    const existingProfileIds = await loadExistingProfileIds();
+    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
 
     console.log('Launching browser...\n');
     const browser = await puppeteer.launch({
@@ -419,6 +443,7 @@ async function scrapeAllAttorneys() {
             // Filter for relevant practice areas and fetch vCards
             let pageInserted = 0;
             let pageSkipped = 0;
+            let pageSkippedExisting = 0;
 
             for (const profile of profiles) {
                 if (totalInserted >= MAX_ATTORNEYS) break;
@@ -426,6 +451,12 @@ async function scrapeAllAttorneys() {
                 const matchedArea = matchesPracticeArea(profile.cardText);
                 if (!matchedArea) {
                     pageSkipped++;
+                    continue;
+                }
+
+                // Skip if profileId already exists in database
+                if (existingProfileIds.has(profile.profileId.toString())) {
+                    pageSkippedExisting++;
                     continue;
                 }
 
@@ -452,7 +483,7 @@ async function scrapeAllAttorneys() {
                 }
             }
 
-            console.log(`     ✓ Inserted ${pageInserted}, Skipped ${pageSkipped}`);
+            console.log(`     ✓ Inserted ${pageInserted}, Skipped ${pageSkipped}, SkippedExisting ${pageSkippedExisting}`);
             totalSkipped += pageSkipped;
 
             // Save progress

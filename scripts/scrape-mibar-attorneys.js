@@ -361,6 +361,26 @@ function parseVCard(vcardText) {
 }
 
 // ============================================================================
+// EXISTING DATA LOADING
+// ============================================================================
+
+/**
+ * Load existing MiBar profile IDs for efficient skip-before-fetch
+ */
+async function loadExistingProfileIds() {
+    const profileIds = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .where('source', '==', 'mibar')
+        .select('profileId')
+        .get();
+    snapshot.forEach(doc => {
+        const id = doc.data().profileId;
+        if (id) profileIds.add(id.toString());
+    });
+    return profileIds;
+}
+
+// ============================================================================
 // PROGRESS TRACKING
 // ============================================================================
 
@@ -481,7 +501,7 @@ async function goToNextPage(page, currentPage) {
 // MAIN SCRAPING FUNCTION
 // ============================================================================
 
-async function scrapeCategory(browser, category, existingEmails) {
+async function scrapeCategory(browser, category, existingEmails, existingProfileIds) {
     const { id, name } = category;
 
     console.log(`\n${'='.repeat(60)}`);
@@ -496,7 +516,9 @@ async function scrapeCategory(browser, category, existingEmails) {
         vcardsFetched: 0,
         inserted: 0,
         skipped: 0,
-        errors: 0
+        skippedExisting: 0,
+        errors: 0,
+        all_profiles_scraped: false
     };
 
     const page = await browser.newPage();
@@ -535,6 +557,7 @@ async function scrapeCategory(browser, category, existingEmails) {
 
         // Extract profile IDs from each page
         let currentPage = 1;
+        let allPagesScraped = false;
         while (currentPage <= totalPages && allProfileIds.length < MAX_ATTORNEYS) {
             console.log(`   Page ${currentPage}/${totalPages}...`);
 
@@ -544,10 +567,16 @@ async function scrapeCategory(browser, category, existingEmails) {
             allProfileIds.push(...pageIds);
             stats.profilesFetched += pageIds.length;
 
-            if (currentPage < totalPages && allProfileIds.length < MAX_ATTORNEYS) {
+            if (currentPage >= totalPages) {
+                allPagesScraped = true;
+                break;
+            }
+
+            if (allProfileIds.length < MAX_ATTORNEYS) {
                 const hasNext = await goToNextPage(page, currentPage);
                 if (!hasNext) {
                     console.log('     No more pages');
+                    allPagesScraped = true;
                     break;
                 }
             }
@@ -557,11 +586,21 @@ async function scrapeCategory(browser, category, existingEmails) {
 
         console.log(`   Total profiles collected: ${allProfileIds.length}`);
 
+        // Track whether all profiles will be processed
+        const allToProcess = Math.min(allProfileIds.length, MAX_ATTORNEYS);
+        let processedCount = 0;
+
         // Fetch vCards and insert into Firestore
         console.log(`   Fetching vCards...`);
 
         for (let i = 0; i < allProfileIds.length && i < MAX_ATTORNEYS; i++) {
             const profileId = allProfileIds[i];
+
+            // Skip if profileId already exists in database (efficient skip-before-fetch)
+            if (existingProfileIds.has(profileId.toString())) {
+                stats.skippedExisting++;
+                continue;
+            }
 
             try {
                 const vcardText = await fetchVCard(profileId);
@@ -652,6 +691,7 @@ async function scrapeCategory(browser, category, existingEmails) {
                     console.log(`     Error fetching profile ${profileId}: ${error.message}`);
                 }
             }
+            processedCount++;
         }
 
         // Commit remaining batch
@@ -660,7 +700,11 @@ async function scrapeCategory(browser, category, existingEmails) {
             console.log(`     Committed final batch of ${batchCount}`);
         }
 
-        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, Errors ${stats.errors}`);
+        // Determine if all profiles were scraped (all pages done AND all profiles processed)
+        stats.all_profiles_scraped = allPagesScraped && (processedCount >= allProfileIds.length || processedCount >= MAX_ATTORNEYS);
+
+        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, Errors ${stats.errors}`);
+        console.log(`   All profiles scraped: ${stats.all_profiles_scraped}`);
 
     } catch (error) {
         console.error(`   Fatal error: ${error.message}`);
@@ -757,7 +801,12 @@ async function main() {
         const email = doc.data().email?.toLowerCase();
         if (email) existingEmails.add(email);
     });
-    console.log(`Loaded ${existingEmails.size} existing emails\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    // Load existing profile IDs for efficient skip-before-fetch
+    console.log('Loading existing MiBar profile IDs...');
+    const existingProfileIds = await loadExistingProfileIds();
+    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
 
     const startTime = Date.now();
 
@@ -786,13 +835,17 @@ async function main() {
                 break;
             }
 
-            const stats = await scrapeCategory(browser, category, existingEmails);
+            const stats = await scrapeCategory(browser, category, existingEmails, existingProfileIds);
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
 
-            // Mark category complete
-            if (!progress.completedCategoryIds.includes(category.id)) {
+            // Only mark category complete if ALL profiles were scraped
+            // This prevents premature completion when MAX_ATTORNEYS limit is hit mid-category
+            if (stats.all_profiles_scraped && !progress.completedCategoryIds.includes(category.id)) {
                 progress.completedCategoryIds.push(category.id);
+                console.log(`   ✓ Category ${category.name} marked as complete`);
+            } else if (!stats.all_profiles_scraped) {
+                console.log(`   ⚠ Category ${category.name} NOT marked complete (hit MAX_ATTORNEYS limit)`);
             }
 
             // Save progress after each category

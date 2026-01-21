@@ -1,0 +1,88 @@
+name: Washington State Bar Attorney Scraper
+
+on:
+  schedule:
+    # Daily at 04:00 UTC = 8:00 PM PST (avoids conflict with other scrapers)
+    - cron: '0 4 * * *'
+
+  workflow_dispatch:
+    inputs:
+      practice_area_slug:
+        description: 'Practice area slug (e.g., "Personal Injury", "Bankruptcy")'
+        required: false
+      max_attorneys:
+        description: 'Max attorneys to scrape'
+        required: false
+        default: '500'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install browser dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgbm1 libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libasound2
+
+      - name: Install dependencies
+        run: cd scripts && npm install firebase-admin puppeteer nodemailer
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Run scraper
+        env:
+          PRACTICE_AREA_SLUG: ${{ inputs.practice_area_slug }}
+          MAX_ATTORNEYS: ${{ inputs.max_attorneys || '500' }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: node scripts/scrape-wsba-attorneys.js
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          node -e "
+          const nodemailer = require('nodemailer');
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.dreamhost.com',
+            port: 587,
+            secure: false,
+            auth: { user: process.env.PREINTAKE_SMTP_USER, pass: process.env.PREINTAKE_SMTP_PASS }
+          });
+          transporter.sendMail({
+            from: process.env.PREINTAKE_SMTP_USER,
+            to: 'scscot@gmail.com',
+            subject: 'GitHub Actions: WSBA Scraper FAILED',
+            text: 'Workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          }).then(() => console.log('Failure notification sent'))
+            .catch(err => console.error('Failed to send notification:', err.message));
+          "
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"

@@ -456,6 +456,22 @@ async function getTotalAttorneysInDb() {
     return snapshot.data().count;
 }
 
+/**
+ * Load existing OhBar member IDs for efficient skip-before-fetch
+ */
+async function loadExistingMemberIds() {
+    const memberIds = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .where('source', '==', 'ohbar')
+        .select('memberId')
+        .get();
+    snapshot.forEach(doc => {
+        const id = doc.data().memberId;
+        if (id) memberIds.add(id.toString());
+    });
+    return memberIds;
+}
+
 // ============================================================================
 // PUPPETEER SCRAPING FUNCTIONS
 // ============================================================================
@@ -548,7 +564,7 @@ async function getResultsCount(page) {
 // MAIN SCRAPING FUNCTION
 // ============================================================================
 
-async function scrapeTarget(browser, target, existingEmails) {
+async function scrapeTarget(browser, target, existingEmails, existingMemberIds) {
     const { practiceAreaId, practiceAreaName, city } = target;
     const targetLabel = city ? `${practiceAreaName} + ${city}` : practiceAreaName;
 
@@ -564,6 +580,7 @@ async function scrapeTarget(browser, target, existingEmails) {
         cards_loaded: 0,
         attorneys_with_email: 0,
         inserted: 0,
+        skippedExisting: 0,
         errors: 0,
         hit_cap: false
     };
@@ -654,9 +671,18 @@ async function scrapeTarget(browser, target, existingEmails) {
 
         // Process attorneys
         for (const attorney of attorneys) {
+            // Skip if memberId already exists (efficient skip-before-fetch)
+            if (attorney.memberId && existingMemberIds.has(attorney.memberId.toString())) {
+                stats.skippedExisting++;
+                continue;
+            }
+
             const emailLower = attorney.email.toLowerCase();
 
-            if (existingEmails.has(emailLower)) continue;
+            if (existingEmails.has(emailLower)) {
+                stats.skippedExisting++;
+                continue;
+            }
 
             const { firstName, lastName } = parseName(attorney.fullName);
             if (!firstName || !lastName) {
@@ -731,7 +757,7 @@ async function scrapeTarget(browser, target, existingEmails) {
             console.log(`   ✓ Committed final batch of ${batchCount}`);
         }
 
-        console.log(`   ✓ Inserted ${stats.inserted} new attorneys`);
+        console.log(`   ✓ Inserted ${stats.inserted}, Skipped existing ${stats.skippedExisting}`);
 
     } catch (error) {
         console.error(`   Error: ${error.message}`);
@@ -824,7 +850,12 @@ async function main() {
         const email = doc.data().email?.toLowerCase();
         if (email) existingEmails.add(email);
     });
-    console.log(`Loaded ${existingEmails.size} existing emails\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    // Load existing member IDs for efficient skip-before-fetch
+    console.log('Loading existing OhBar member IDs...');
+    const existingMemberIds = await loadExistingMemberIds();
+    console.log(`Loaded ${existingMemberIds.size} existing member IDs\n`);
 
     const startTime = Date.now();
 
@@ -848,7 +879,7 @@ async function main() {
                 break;
             }
 
-            const stats = await scrapeTarget(browser, target, existingEmails);
+            const stats = await scrapeTarget(browser, target, existingEmails, existingMemberIds);
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
 

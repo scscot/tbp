@@ -285,6 +285,22 @@ async function getTotalAttorneysInDb() {
     return snapshot.data().count;
 }
 
+/**
+ * Load existing GaBar profile IDs for efficient skip-before-fetch
+ */
+async function loadExistingProfileIds() {
+    const profileIds = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .where('source', '==', 'gabar')
+        .select('profileId')
+        .get();
+    snapshot.forEach(doc => {
+        const id = doc.data().profileId;
+        if (id) profileIds.add(id.toString());
+    });
+    return profileIds;
+}
+
 // ============================================================================
 // PUPPETEER SCRAPING FUNCTIONS
 // ============================================================================
@@ -485,7 +501,7 @@ async function goToNextPage(page, currentPage) {
 // MAIN SCRAPING FUNCTION
 // ============================================================================
 
-async function scrapeSection(browser, section, existingEmails) {
+async function scrapeSection(browser, section, existingEmails, existingProfileIds) {
     const { code, name } = section;
 
     console.log(`\n${'='.repeat(60)}`);
@@ -499,7 +515,9 @@ async function scrapeSection(browser, section, existingEmails) {
         profilesFetched: 0,
         inserted: 0,
         skipped: 0,
-        errors: 0
+        skippedExisting: 0,
+        errors: 0,
+        all_profiles_scraped: false
     };
 
     const page = await browser.newPage();
@@ -566,8 +584,17 @@ async function scrapeSection(browser, section, existingEmails) {
         // Visit each profile page to extract details
         console.log(`   Extracting profile details...`);
 
-        for (let i = 0; i < allProfileIds.length && i < MAX_ATTORNEYS; i++) {
+        let processedCount = 0;
+        for (let i = 0; i < allProfileIds.length && processedCount < MAX_ATTORNEYS; i++) {
             const profileId = allProfileIds[i];
+
+            // Skip if profileId already exists in database
+            if (existingProfileIds.has(profileId.toString())) {
+                stats.skippedExisting++;
+                continue;
+            }
+
+            processedCount++;
 
             try {
                 const profileUrl = `${BASE_URL}/member-directory/?id=${profileId}`;
@@ -665,7 +692,11 @@ async function scrapeSection(browser, section, existingEmails) {
             console.log(`     Committed final batch of ${batchCount}`);
         }
 
-        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, Errors ${stats.errors}`);
+        // Track whether all profiles were scraped (not stopped by MAX_ATTORNEYS limit)
+        const allProfilesProcessed = (processedCount + stats.skippedExisting) >= allProfileIds.length;
+        stats.all_profiles_scraped = allProfilesProcessed || processedCount >= MAX_ATTORNEYS && allProfileIds.length <= MAX_ATTORNEYS;
+
+        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, Errors ${stats.errors}`);
 
     } catch (error) {
         console.error(`   Fatal error: ${error.message}`);
@@ -762,7 +793,12 @@ async function main() {
         const email = doc.data().email?.toLowerCase();
         if (email) existingEmails.add(email);
     });
-    console.log(`Loaded ${existingEmails.size} existing emails\n`);
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    // Load existing profileIds for efficient skip-before-fetch
+    console.log('Loading existing profile IDs...');
+    const existingProfileIds = await loadExistingProfileIds();
+    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
 
     const startTime = Date.now();
 
@@ -791,13 +827,16 @@ async function main() {
                 break;
             }
 
-            const stats = await scrapeSection(browser, section, existingEmails);
+            const stats = await scrapeSection(browser, section, existingEmails, existingProfileIds);
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
 
-            // Mark section complete
-            if (!progress.completedSectionCodes.includes(section.code)) {
+            // Mark section complete ONLY if all profiles were scraped
+            if (stats.all_profiles_scraped && !progress.completedSectionCodes.includes(section.code)) {
                 progress.completedSectionCodes.push(section.code);
+                console.log(`   ✓ Section ${section.name} marked as complete`);
+            } else if (!stats.all_profiles_scraped) {
+                console.log(`   ⚠ Section ${section.name} NOT marked complete (hit MAX_ATTORNEYS limit)`);
             }
 
             // Save progress after each section
