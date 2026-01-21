@@ -35,6 +35,104 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
+// ============================================================================
+// STATE INFERENCE FROM WEBSITE
+// ============================================================================
+
+const STATE_PATTERNS = [
+    { pattern: /\bAlabama\b|\b,\s*AL\b|\bBirmingham,?\s*AL/i, state: 'AL' },
+    { pattern: /\bAlaska\b|\b,\s*AK\b|\bAnchorage,?\s*AK/i, state: 'AK' },
+    { pattern: /\bArizona\b|\b,\s*AZ\b|\bPhoenix,?\s*AZ|\bTucson,?\s*AZ|\bScottsdale/i, state: 'AZ' },
+    { pattern: /\bArkansas\b|\b,\s*AR\b|\bLittle Rock,?\s*AR/i, state: 'AR' },
+    { pattern: /\bCalifornia\b|\b,\s*CA\b|\bLos Angeles|\bSan Francisco|\bSan Diego|\bSacramento|\bOakland|\bSan Jose/i, state: 'CA' },
+    { pattern: /\bColorado\b|\b,\s*CO\b|\bDenver,?\s*CO|\bBoulder,?\s*CO/i, state: 'CO' },
+    { pattern: /\bConnecticut\b|\b,\s*CT\b|\bHartford,?\s*CT|\bNew Haven,?\s*CT/i, state: 'CT' },
+    { pattern: /\bDelaware\b|\b,\s*DE\b|\bWilmington,?\s*DE/i, state: 'DE' },
+    { pattern: /\bFlorida\b|\b,\s*FL\b|\bMiami|\bOrlando|\bTampa|\bJacksonville,?\s*FL/i, state: 'FL' },
+    { pattern: /\bGeorgia\b|\b,\s*GA\b|\bAtlanta,?\s*GA/i, state: 'GA' },
+    { pattern: /\bHawaii\b|\b,\s*HI\b|\bHonolulu/i, state: 'HI' },
+    { pattern: /\bIdaho\b|\b,\s*ID\b|\bBoise,?\s*ID/i, state: 'ID' },
+    { pattern: /\bIllinois\b|\b,\s*IL\b|\bChicago|\bSpringfield,?\s*IL/i, state: 'IL' },
+    { pattern: /\bIndiana\b|\b,\s*IN\b|\bIndianapolis/i, state: 'IN' },
+    { pattern: /\bIowa\b|\b,\s*IA\b|\bDes Moines/i, state: 'IA' },
+    { pattern: /\bKansas\b|\b,\s*KS\b|\bWichita,?\s*KS|\bTopeka/i, state: 'KS' },
+    { pattern: /\bKentucky\b|\b,\s*KY\b|\bLouisville,?\s*KY|\bLexington,?\s*KY/i, state: 'KY' },
+    { pattern: /\bLouisiana\b|\b,\s*LA\b|\bNew Orleans|\bBaton Rouge/i, state: 'LA' },
+    { pattern: /\bMaine\b|\b,\s*ME\b|\bPortland,?\s*ME/i, state: 'ME' },
+    { pattern: /\bMaryland\b|\b,\s*MD\b|\bBaltimore|\bBethesda,?\s*MD/i, state: 'MD' },
+    { pattern: /\bMassachusetts\b|\b,\s*MA\b|\bBoston|\bCambridge,?\s*MA/i, state: 'MA' },
+    { pattern: /\bMichigan\b|\b,\s*MI\b|\bDetroit|\bAnn Arbor|\bGrand Rapids/i, state: 'MI' },
+    { pattern: /\bMinnesota\b|\b,\s*MN\b|\bMinneapolis|\bSt\.?\s*Paul,?\s*MN/i, state: 'MN' },
+    { pattern: /\bMississippi\b|\b,\s*MS\b|\bJackson,?\s*MS/i, state: 'MS' },
+    { pattern: /\bMissouri\b|\b,\s*MO\b|\bSt\.?\s*Louis|\bKansas City,?\s*MO/i, state: 'MO' },
+    { pattern: /\bMontana\b|\b,\s*MT\b|\bBillings,?\s*MT/i, state: 'MT' },
+    { pattern: /\bNebraska\b|\b,\s*NE\b|\bOmaha|\bLincoln,?\s*NE/i, state: 'NE' },
+    { pattern: /\bNevada\b|\b,\s*NV\b|\bLas Vegas|\bReno,?\s*NV/i, state: 'NV' },
+    { pattern: /\bNew Hampshire\b|\b,\s*NH\b|\bManchester,?\s*NH/i, state: 'NH' },
+    { pattern: /\bNew Jersey\b|\b,\s*NJ\b|\bNewark,?\s*NJ|\bJersey City/i, state: 'NJ' },
+    { pattern: /\bNew Mexico\b|\b,\s*NM\b|\bAlbuquerque|\bSanta Fe,?\s*NM/i, state: 'NM' },
+    { pattern: /\bNew York\b|\b,\s*NY\b|\bManhattan|\bBrooklyn|\bQueens|\bBronx|\bLong Island/i, state: 'NY' },
+    { pattern: /\bNorth Carolina\b|\b,\s*NC\b|\bCharlotte,?\s*NC|\bRaleigh/i, state: 'NC' },
+    { pattern: /\bNorth Dakota\b|\b,\s*ND\b|\bFargo,?\s*ND/i, state: 'ND' },
+    { pattern: /\bOhio\b|\b,\s*OH\b|\bCleveland|\bColumbus,?\s*OH|\bCincinnati/i, state: 'OH' },
+    { pattern: /\bOklahoma\b|\b,\s*OK\b|\bOklahoma City|\bTulsa/i, state: 'OK' },
+    { pattern: /\bOregon\b|\b,\s*OR\b|\bPortland,?\s*OR|\bSalem,?\s*OR/i, state: 'OR' },
+    { pattern: /\bPennsylvania\b|\b,\s*PA\b|\bPhiladelphia|\bPittsburgh/i, state: 'PA' },
+    { pattern: /\bRhode Island\b|\b,\s*RI\b|\bProvidence/i, state: 'RI' },
+    { pattern: /\bSouth Carolina\b|\b,\s*SC\b|\bCharleston,?\s*SC|\bColumbia,?\s*SC/i, state: 'SC' },
+    { pattern: /\bSouth Dakota\b|\b,\s*SD\b|\bSioux Falls/i, state: 'SD' },
+    { pattern: /\bTennessee\b|\b,\s*TN\b|\bNashville|\bMemphis/i, state: 'TN' },
+    { pattern: /\bTexas\b|\b,\s*TX\b|\bHouston|\bDallas|\bAustin,?\s*TX|\bSan Antonio/i, state: 'TX' },
+    { pattern: /\bUtah\b|\b,\s*UT\b|\bSalt Lake City/i, state: 'UT' },
+    { pattern: /\bVermont\b|\b,\s*VT\b|\bBurlington,?\s*VT/i, state: 'VT' },
+    { pattern: /\bVirginia\b|\b,\s*VA\b|\bRichmond,?\s*VA|\bArlington,?\s*VA|\bNorfolk/i, state: 'VA' },
+    { pattern: /\bWashington\b|\b,\s*WA\b|\bSeattle|\bTacoma|\bSpokane/i, state: 'WA' },
+    { pattern: /\bWest Virginia\b|\b,\s*WV\b|\bCharleston,?\s*WV/i, state: 'WV' },
+    { pattern: /\bWisconsin\b|\b,\s*WI\b|\bMilwaukee|\bMadison,?\s*WI/i, state: 'WI' },
+    { pattern: /\bWyoming\b|\b,\s*WY\b|\bCheyenne/i, state: 'WY' },
+    { pattern: /\bWashington,?\s*D\.?C\.?|\bDistrict of Columbia/i, state: 'DC' },
+];
+
+/**
+ * Infer state from website content
+ * @param {string} websiteUrl - The website URL to analyze
+ * @returns {Promise<string|null>} - State code or null if cannot infer
+ */
+async function inferStateFromWebsite(websiteUrl) {
+    if (!websiteUrl) return null;
+
+    try {
+        // Normalize URL
+        let url = websiteUrl;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            timeout: 10000
+        });
+
+        if (!response.ok) return null;
+
+        const html = await response.text();
+        const textContent = html.substring(0, 50000); // Check first 50KB
+
+        for (const { pattern, state } of STATE_PATTERNS) {
+            if (pattern.test(textContent)) {
+                return state;
+            }
+        }
+
+        return null;
+    } catch (error) {
+        // Silently fail - website may be down or blocked
+        return null;
+    }
+}
+
 // Practice area ID to name mapping
 const PRACTICE_AREAS = {
     // Tier 1: High priority (ranks 1-14)
@@ -346,6 +444,24 @@ async function parseDetailPage(barNumber, practiceAreaName) {
         const firmName = extractFirmName($);
         const website = extractWebsite($);
 
+        // For CalBar, state is always CA, but add defensive logic in case
+        // the data has an empty state - try to infer from website
+        let state = 'CA';
+        if (!state || state === '') {
+            if (website) {
+                const inferredState = await inferStateFromWebsite(website);
+                if (inferredState) {
+                    state = inferredState;
+                } else {
+                    // Cannot infer state, skip this contact
+                    return { success: false, reason: 'no_state' };
+                }
+            } else {
+                // No website to infer from and no state, skip this contact
+                return { success: false, reason: 'no_state' };
+            }
+        }
+
         return {
             success: true,
             data: {
@@ -355,7 +471,7 @@ async function parseDetailPage(barNumber, practiceAreaName) {
                 email,
                 website,
                 practiceArea: practiceAreaName,
-                state: 'CA',
+                state,
                 source: 'calbar',
                 barNumber: barNumber,
                 sent: false,

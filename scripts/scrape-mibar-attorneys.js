@@ -153,6 +153,102 @@ function sleepWithJitter(baseMs) {
     return sleep(Math.max(500, baseMs + jitter));
 }
 
+// ============================================================================
+// STATE INFERENCE FROM WEBSITE
+// ============================================================================
+
+const STATE_PATTERNS = [
+    { pattern: /\bAlabama\b|\b,\s*AL\b|\bBirmingham,?\s*AL/i, state: 'AL' },
+    { pattern: /\bAlaska\b|\b,\s*AK\b|\bAnchorage,?\s*AK/i, state: 'AK' },
+    { pattern: /\bArizona\b|\b,\s*AZ\b|\bPhoenix,?\s*AZ/i, state: 'AZ' },
+    { pattern: /\bArkansas\b|\b,\s*AR\b|\bLittle Rock,?\s*AR/i, state: 'AR' },
+    { pattern: /\bCalifornia\b|\b,\s*CA\b|\bLos Angeles,?\s*CA|\bSan Francisco,?\s*CA|\bSan Diego,?\s*CA/i, state: 'CA' },
+    { pattern: /\bColorado\b|\b,\s*CO\b|\bDenver,?\s*CO/i, state: 'CO' },
+    { pattern: /\bConnecticut\b|\b,\s*CT\b|\bHartford,?\s*CT/i, state: 'CT' },
+    { pattern: /\bDelaware\b|\b,\s*DE\b|\bWilmington,?\s*DE/i, state: 'DE' },
+    { pattern: /\bFlorida\b|\b,\s*FL\b|\bMiami,?\s*FL|\bTampa,?\s*FL|\bOrlando,?\s*FL/i, state: 'FL' },
+    { pattern: /\bGeorgia\b|\b,\s*GA\b|\bAtlanta,?\s*GA/i, state: 'GA' },
+    { pattern: /\bHawaii\b|\b,\s*HI\b|\bHonolulu,?\s*HI/i, state: 'HI' },
+    { pattern: /\bIdaho\b|\b,\s*ID\b|\bBoise,?\s*ID/i, state: 'ID' },
+    { pattern: /\bIllinois\b|\b,\s*IL\b|\bChicago,?\s*IL/i, state: 'IL' },
+    { pattern: /\bIndiana\b|\b,\s*IN\b|\bIndianapolis,?\s*IN/i, state: 'IN' },
+    { pattern: /\bIowa\b|\b,\s*IA\b|\bDes Moines,?\s*IA/i, state: 'IA' },
+    { pattern: /\bKansas\b|\b,\s*KS\b|\bWichita,?\s*KS/i, state: 'KS' },
+    { pattern: /\bKentucky\b|\b,\s*KY\b|\bLouisville,?\s*KY/i, state: 'KY' },
+    { pattern: /\bLouisiana\b|\b,\s*LA\b|\bNew Orleans,?\s*LA/i, state: 'LA' },
+    { pattern: /\bMaine\b|\b,\s*ME\b|\bPortland,?\s*ME/i, state: 'ME' },
+    { pattern: /\bMaryland\b|\b,\s*MD\b|\bBaltimore,?\s*MD/i, state: 'MD' },
+    { pattern: /\bMassachusetts\b|\b,\s*MA\b|\bBoston,?\s*MA/i, state: 'MA' },
+    { pattern: /\bMichigan\b|\b,\s*MI\b|\bDetroit,?\s*MI|\bGrand Rapids,?\s*MI/i, state: 'MI' },
+    { pattern: /\bMinnesota\b|\b,\s*MN\b|\bMinneapolis,?\s*MN/i, state: 'MN' },
+    { pattern: /\bMississippi\b|\b,\s*MS\b|\bJackson,?\s*MS/i, state: 'MS' },
+    { pattern: /\bMissouri\b|\b,\s*MO\b|\bSt\.?\s*Louis,?\s*MO|\bKansas City,?\s*MO/i, state: 'MO' },
+    { pattern: /\bMontana\b|\b,\s*MT\b|\bBillings,?\s*MT/i, state: 'MT' },
+    { pattern: /\bNebraska\b|\b,\s*NE\b|\bOmaha,?\s*NE/i, state: 'NE' },
+    { pattern: /\bNevada\b|\b,\s*NV\b|\bLas Vegas,?\s*NV/i, state: 'NV' },
+    { pattern: /\bNew Hampshire\b|\b,\s*NH\b|\bManchester,?\s*NH/i, state: 'NH' },
+    { pattern: /\bNew Jersey\b|\b,\s*NJ\b|\bNewark,?\s*NJ/i, state: 'NJ' },
+    { pattern: /\bNew Mexico\b|\b,\s*NM\b|\bAlbuquerque,?\s*NM/i, state: 'NM' },
+    { pattern: /\bNew York\b|\b,\s*NY\b|\bNew York City,?\s*NY|\bBrooklyn,?\s*NY|\bManhattan/i, state: 'NY' },
+    { pattern: /\bNorth Carolina\b|\b,\s*NC\b|\bCharlotte,?\s*NC/i, state: 'NC' },
+    { pattern: /\bNorth Dakota\b|\b,\s*ND\b|\bFargo,?\s*ND/i, state: 'ND' },
+    { pattern: /\bOhio\b|\b,\s*OH\b|\bColumbus,?\s*OH|\bCleveland,?\s*OH/i, state: 'OH' },
+    { pattern: /\bOklahoma\b|\b,\s*OK\b|\bOklahoma City,?\s*OK/i, state: 'OK' },
+    { pattern: /\bOregon\b|\b,\s*OR\b|\bPortland,?\s*OR/i, state: 'OR' },
+    { pattern: /\bPennsylvania\b|\b,\s*PA\b|\bPhiladelphia,?\s*PA|\bPittsburgh,?\s*PA/i, state: 'PA' },
+    { pattern: /\bRhode Island\b|\b,\s*RI\b|\bProvidence,?\s*RI/i, state: 'RI' },
+    { pattern: /\bSouth Carolina\b|\b,\s*SC\b|\bCharleston,?\s*SC/i, state: 'SC' },
+    { pattern: /\bSouth Dakota\b|\b,\s*SD\b|\bSioux Falls,?\s*SD/i, state: 'SD' },
+    { pattern: /\bTennessee\b|\b,\s*TN\b|\bNashville,?\s*TN|\bMemphis,?\s*TN/i, state: 'TN' },
+    { pattern: /\bTexas\b|\b,\s*TX\b|\bHouston,?\s*TX|\bDallas,?\s*TX|\bAustin,?\s*TX/i, state: 'TX' },
+    { pattern: /\bUtah\b|\b,\s*UT\b|\bSalt Lake City,?\s*UT/i, state: 'UT' },
+    { pattern: /\bVermont\b|\b,\s*VT\b|\bBurlington,?\s*VT/i, state: 'VT' },
+    { pattern: /\bVirginia\b|\b,\s*VA\b|\bRichmond,?\s*VA|\bVirginia Beach,?\s*VA/i, state: 'VA' },
+    { pattern: /\bWashington\b|\b,\s*WA\b|\bSeattle,?\s*WA|\bTacoma,?\s*WA/i, state: 'WA' },
+    { pattern: /\bWest Virginia\b|\b,\s*WV\b|\bCharleston,?\s*WV/i, state: 'WV' },
+    { pattern: /\bWisconsin\b|\b,\s*WI\b|\bMilwaukee,?\s*WI|\bMadison,?\s*WI/i, state: 'WI' },
+    { pattern: /\bWyoming\b|\b,\s*WY\b|\bCheyenne,?\s*WY/i, state: 'WY' },
+    { pattern: /\bDistrict of Columbia\b|\b,\s*DC\b|\bWashington,?\s*DC/i, state: 'DC' }
+];
+
+/**
+ * Attempt to infer state from a website URL by fetching and analyzing its content
+ */
+async function inferStateFromWebsite(websiteUrl) {
+    if (!websiteUrl) return null;
+
+    try {
+        let url = websiteUrl;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            timeout: 10000
+        });
+
+        if (!response.ok) return null;
+
+        const html = await response.text();
+        // Only check first 50KB of content for efficiency
+        const textContent = html.substring(0, 50000);
+
+        for (const { pattern, state } of STATE_PATTERNS) {
+            if (pattern.test(textContent)) {
+                return state;
+            }
+        }
+
+        return null;
+    } catch (error) {
+        // Silently fail - website might be down or invalid
+        return null;
+    }
+}
+
 /**
  * Fetch vCard data for a profile ID
  */
@@ -486,6 +582,26 @@ async function scrapeCategory(browser, category, existingEmails) {
                     continue;
                 }
 
+                // Defensive state handling - skip contacts with empty state that can't be inferred
+                let state = vcard.state || 'MI';
+                if (!state || state === '') {
+                    if (vcard.website) {
+                        const inferredState = await inferStateFromWebsite(vcard.website);
+                        if (inferredState) {
+                            state = inferredState;
+                            console.log(`     → Inferred state ${state} from website for ${vcard.firstName} ${vcard.lastName}`);
+                        } else {
+                            console.log(`     ⚠ Skipping ${vcard.firstName} ${vcard.lastName}: empty state, couldn't infer from website`);
+                            stats.skipped++;
+                            continue;
+                        }
+                    } else {
+                        console.log(`     ⚠ Skipping ${vcard.firstName} ${vcard.lastName}: empty state, no website to infer from`);
+                        stats.skipped++;
+                        continue;
+                    }
+                }
+
                 // Create document
                 const docData = {
                     firstName: vcard.firstName,
@@ -496,7 +612,7 @@ async function scrapeCategory(browser, category, existingEmails) {
                     website: vcard.website,
                     practiceArea: name,
                     city: vcard.city,
-                    state: vcard.state || 'MI',
+                    state: state,
                     source: 'mibar',
                     barNumber: '',
                     memberUrl: `${BASE_URL}/api/public/profiles/${profileId}/download-vcard`,
