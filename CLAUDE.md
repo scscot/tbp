@@ -559,22 +559,40 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Domain**: hello.teambuildpro.com
 - **Tracking**: Opens, clicks, and delivery status enabled
 
-### Main Campaign (Mailgun - Automated)
+### Main Campaign (SMTP - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
-- **Tags**: `winning_combination`, `2version`
-- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (even hours)
+- **Tags**: `tbp_campaign`, `tracked`
+- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (6 runs/day)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
-- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE (configurable)
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
+- **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
-### Yahoo Campaign (Mailgun - Automated)
+### Yahoo Campaign (SMTP - Automated)
 - **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
-- **Tags**: `yahoo_campaign`, `2version`
+- **Tags**: `yahoo_campaign`, `tracked`
 - **Schedule**: 7am, 9am, 11am, 1pm, 3pm, 5pm PT (odd hours, offset from main)
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
-- **Batch Size**: EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO (configurable)
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeYahoo` (automated by GitHub Actions)
 - **Purpose**: Separate campaign for Yahoo/AOL email addresses which require different sending patterns
+
+### Automated Domain Warming System
+- **Workflow**: `.github/workflows/domain-warming-update.yml`
+- **Config**: `.github/warming-config.json`
+- **Schedule**: Runs every Monday at 6am PT
+- **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
+- **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `batchSizeYahoo`, `warmingWeek`
+- **TBP Warming Schedule** (started 2026-01-12):
+  | Week | Batch Size | Emails/Day |
+  |------|------------|------------|
+  | 1 | 6 | 36 |
+  | 2 | 12 | 72 |
+  | 3 | 25 | 150 |
+  | 4 | 50 | 300 |
+  | 5 | 75 | 450 |
+  | 6+ | 100 | 600 |
+- **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Performance (Post-Cleanup, as of Nov 27, 2025)
 After cleaning invalid emails from the database, current metrics from the past 24 hours:
@@ -1220,14 +1238,11 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Successfully imported 13,298 new SMTP-validated contacts
    - Total contacts in Firestore: 17,913 (13,953 unsent)
 
-71. ✅ **Email Campaign Batch Size Increases**:
-   - Main campaign: 15 → 75 emails per batch
-   - Yahoo campaign: 5 → 10 emails per batch
-   - Updated `functions/.env.teambuilder-plus-fe74d`:
-     - `EMAIL_CAMPAIGN_BATCH_SIZE=75`
-     - `EMAIL_CAMPAIGN_BATCH_SIZE_YAHOO=10`
-   - Daily capacity increased: ~450 main + ~60 Yahoo = ~510 emails/day
-   - Estimated completion: ~27 days for remaining 13,953 unsent contacts
+71. ✅ **Email Campaign Batch Size Increases** (superseded by automated warming - see item 88):
+   - Now managed by `.github/workflows/domain-warming-update.yml`
+   - Batch sizes stored in Firestore `config/emailCampaign` document
+   - Cloud Functions read from Firestore first, fall back to .env values
+   - See "Automated Domain Warming System" section for current schedule
 
 72. ✅ **Cross-Page Referral Tracking for Google Play Attribution**:
    - Added `referral-tracking.js` to blog posts and company pages
@@ -1307,14 +1322,12 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Matches site styling with header/footer components
    - Unsubscribe link in email footer points directly to page
 
-81. ✅ **Domain Warmup Strategy**:
-   - Starting with `EMAIL_CAMPAIGN_BATCH_SIZE=2` (12 emails/day)
+81. ✅ **Domain Warmup Strategy** (now automated - see item 88):
+   - Automated via `.github/workflows/domain-warming-update.yml`
+   - Configuration in `.github/warming-config.json`
+   - Batch sizes increase weekly via GitHub Actions → Firestore
    - Schedule: 6 runs/day (8am, 10am, 12pm, 2pm, 4pm, 6pm PT)
-   - Warmup plan:
-     - Week 1: 12/day (batch size 2)
-     - Week 2: 18/day (batch size 3)
-     - Week 3: 30/day (batch size 5)
-     - Week 4+: Scale based on deliverability metrics
+   - Week 1: 36/day → Week 6+: 600/day (see "Automated Domain Warming System" section above)
    - Monitor: delivery rate >95%, bounce rate <2%, no spam folder placement
 
 82. ✅ **Campaign Configuration Updated**:

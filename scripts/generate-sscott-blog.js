@@ -496,18 +496,7 @@ function generateBlogHTML(blogPost) {
   </style>
 </head>
 <body>
-  <nav class="main-nav">
-    <div class="container">
-      <a href="/" class="logo">Stephen Scott</a>
-      <ul class="nav-links">
-        <li><a href="/books.html">Books</a></li>
-        <li><a href="/blog.html" style="color: var(--color-primary);">Blog</a></li>
-        <li><a href="/podcasts.html">Podcasts</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/contact.html">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div id="ss-header"></div>
 
   <main class="blog-wrapper">
     <div class="container">
@@ -552,18 +541,8 @@ function generateBlogHTML(blogPost) {
     </div>
   </main>
 
-  <footer class="main-footer">
-    <div class="container">
-      <p>&copy; ${new Date().getFullYear()} Stephen Scott. All rights reserved.</p>
-      <p>
-        <a href="/books.html">Books</a> &bull;
-        <a href="/blog.html">Blog</a> &bull;
-        <a href="/podcasts.html">Podcasts</a> &bull;
-        <a href="/about.html">About</a> &bull;
-        <a href="/contact.html">Contact</a>
-      </p>
-    </div>
-  </footer>
+  <div id="ss-footer"></div>
+  <script src="/js/components.js"></script>
 </body>
 </html>`;
 }

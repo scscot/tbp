@@ -21,30 +21,7 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-  <nav class="main-nav">
-    <div class="container">
-      <a href="index.html" class="logo">Stephen Scott</a>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul class="nav-links">
-        <li><a href="books.html">Books</a></li>
-        <li><a href="podcasts.html">Podcasts</a></li>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li class="nav-cta"><a href="https://teambuildpro.com" target="_blank" rel="noopener">Try Team Build Pro</a></li>
-      </ul>
-    </div>
-  </nav>
-  <script>
-    document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-      this.classList.toggle('active');
-      document.querySelector('.nav-links').classList.toggle('active');
-    });
-  </script>
+  <div id="ss-header"></div>
 
   <main>
     <section class="section">
@@ -77,17 +54,7 @@
     </section>
   </main>
 
-  <footer class="main-footer">
-    <div class="container">
-      <p>&copy; 2025 Stephen Scott. All rights reserved.</p>
-      <p>
-        <a href="books.html">Books</a> •
-        <a href="blog.html">Blog</a> •
-        <a href="podcasts.html">Podcasts</a> •
-        <a href="about.html">About</a> •
-        <a href="contact.html">Contact</a>
-      </p>
-    </div>
-  </footer>
+  <div id="ss-footer"></div>
+  <script src="/js/components.js"></script>
 </body>
 </html>
