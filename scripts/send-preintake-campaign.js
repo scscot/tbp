@@ -117,6 +117,23 @@ const TEST_DEMO_ID = process.env.TEST_DEMO_ID || null;
 // Pulls contact data AND demo from this single document (simplest test mode)
 const TEST_LEAD_ID = process.env.TEST_LEAD_ID || null;
 
+// Exclude Yahoo/AOL emails during domain warming (set to 'true' to enable)
+// Yahoo/AOL use aggressive spam filtering and can hurt sender reputation during warming
+const EXCLUDE_YAHOO_AOL = process.env.EXCLUDE_YAHOO_AOL === 'true';
+
+// Yahoo/AOL domains to exclude during warming
+const YAHOO_AOL_DOMAINS = ['yahoo.com', 'yahoo.co.uk', 'yahoo.ca', 'yahoo.com.au', 'yahoo.co.in', 'ymail.com', 'aol.com', 'aim.com'];
+
+/**
+ * Check if an email address is from Yahoo/AOL (should be excluded during warming)
+ */
+function isYahooAolEmail(email) {
+    if (!email) return false;
+    const domain = email.split('@')[1]?.toLowerCase();
+    if (!domain) return false;
+    return YAHOO_AOL_DOMAINS.includes(domain) || domain.startsWith('yahoo.');
+}
+
 /**
  * Check if current time is within allowed PT business window
  * Returns { allowed: boolean, reason: string, ptTime: string }
@@ -854,6 +871,7 @@ async function runCampaign() {
     console.log(`   From: ${FROM_ADDRESS}`);
     console.log(`   Batch Size: ${BATCH_SIZE}`);
     console.log(`   Demo Generation: ${SKIP_DEMO_GEN ? 'DISABLED' : 'ENABLED'}`);
+    console.log(`   Yahoo/AOL Exclusion: ${EXCLUDE_YAHOO_AOL ? 'ENABLED (domain warming)' : 'DISABLED'}`);
     if (TEST_EMAIL) {
         console.log(`   ⚠️  TEST MODE: All emails will be sent to ${TEST_EMAIL}`);
         console.log(`   ⚠️  Firestore records will NOT be marked as sent`);
@@ -958,8 +976,20 @@ async function runCampaign() {
         });
 
         allDocs = Array.from(docMap.values())
-            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0))
-            .slice(0, BATCH_SIZE);
+            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
+
+        // Filter out Yahoo/AOL emails during domain warming
+        if (EXCLUDE_YAHOO_AOL) {
+            const beforeFilter = allDocs.length;
+            allDocs = allDocs.filter(doc => !isYahooAolEmail(doc.data().email));
+            const filtered = beforeFilter - allDocs.length;
+            if (filtered > 0) {
+                console.log(`🛡️  Excluded ${filtered} Yahoo/AOL emails (domain warming mode)`);
+            }
+        }
+
+        // Take top BATCH_SIZE after filtering
+        allDocs = allDocs.slice(0, BATCH_SIZE);
 
         console.log(`📊 Combined and sorted: ${allDocs.length} contacts (from ${docMap.size} unique)`);
     }

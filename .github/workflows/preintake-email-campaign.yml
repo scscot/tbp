@@ -109,10 +109,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
+          # Exclude Yahoo/AOL during domain warming (remove this line when warming is complete)
+          EXCLUDE_YAHOO_AOL: 'true'
         run: |
           echo "Starting PreIntake email campaign..."
           echo "Batch size: $BATCH_SIZE"
           echo "Skip time check: $SKIP_TIME_CHECK"
+          echo "Yahoo/AOL exclusion: $EXCLUDE_YAHOO_AOL"
           node scripts/send-preintake-campaign.js
 
       - name: Notify on failure
