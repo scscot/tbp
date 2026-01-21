@@ -1,10 +1,18 @@
 name: PreIntake Lead Generation
 
+# DISABLED: Lead gen data quality is significantly lower than bar scraper data.
+# - No firstName/lastName fields (0% vs 100% for scrapers)
+# - firmName contains attorney names, not firm names
+# - Generic emails (info@, contact@) instead of direct attorney contacts
+# - Data mismatches between names and emails
+# - No bar number verification
+# Manual trigger still available for future testing.
+
 on:
-  schedule:
-    # Daily at 3am PT (10:00 UTC during PDT, 11:00 UTC during PST)
-    # Using 10:00 UTC - runs at 3am PDT / 2am PST
-    - cron: '0 10 * * *'
+  # schedule:
+  #   # Daily at 3am PT (10:00 UTC during PDT, 11:00 UTC during PST)
+  #   # Using 10:00 UTC - runs at 3am PDT / 2am PST
+  #   - cron: '0 10 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:

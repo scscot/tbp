@@ -147,7 +147,8 @@ async function importEmails() {
                 batchId: '',
                 unsubscribedAt: null,
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                randomIndex: Math.random() // For pseudo-random ordering
+                randomIndex: Math.random(), // For pseudo-random ordering
+                source: 'lead_gen' // From PreIntake Lead Generation workflow
             };
 
             batch.set(docRef, docData);

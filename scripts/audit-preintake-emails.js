@@ -15,8 +15,6 @@ admin.initializeApp({
 const db = admin.firestore();
 db.settings({ databaseId: "preintake" });
 
-const validSources = ["mibar", "flbar", "calbar", "ohbar"];
-
 async function audit() {
     console.log("🔍 Auditing preintake_emails collection...\n");
 
@@ -37,9 +35,12 @@ async function audit() {
         missingFirmName: [],
         missingPracticeArea: [],
         missingState: [],
-        invalidSource: [],
+        missingSource: [],
         undefinedFields: []
     };
+
+    // Track source distribution (source-independent)
+    const sourceDistribution = {};
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const validStatuses = ["pending", "sent", "failed", "unsubscribed"];
@@ -101,9 +102,11 @@ async function audit() {
             issues.missingState.push({ id, email: d.email });
         }
 
-        // Source validation
-        if (!validSources.includes(d.source)) {
-            issues.invalidSource.push({ id, source: d.source });
+        // Source tracking (source-independent)
+        const source = d.source || 'missing';
+        sourceDistribution[source] = (sourceDistribution[source] || 0) + 1;
+        if (!d.source) {
+            issues.missingSource.push({ id, email: d.email });
         }
 
         // Check for string "undefined" values in any field
@@ -144,7 +147,7 @@ async function audit() {
     console.log(`❌ Missing 'randomIndex': ${issues.missingRandomIndex.length}`);
     console.log(`❌ Invalid 'randomIndex' type: ${issues.invalidRandomIndex.length}`);
 
-    console.log(`❌ Invalid source: ${issues.invalidSource.length}`);
+    console.log(`❌ Missing source: ${issues.missingSource.length}`);
 
     console.log("\n" + "=" .repeat(60));
     console.log("DATA QUALITY ISSUES (may affect personalization):");
@@ -169,12 +172,23 @@ async function audit() {
         issues.undefinedFields.forEach(i => console.log(`   - ${i.id}: ${i.field}="${i.value}"`));
     }
 
+    // Source distribution
+    console.log("\n" + "=" .repeat(60));
+    console.log("SOURCE DISTRIBUTION:");
+    console.log("=" .repeat(60));
+    Object.entries(sourceDistribution)
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([source, count]) => {
+            const pct = ((count / snapshot.size) * 100).toFixed(1);
+            console.log(`   ${source}: ${count} (${pct}%)`);
+        });
+
     // Summary
     const criticalCount = issues.missingEmail.length + issues.invalidEmail.length +
         issues.missingSent.length + issues.invalidSent.length +
         issues.missingStatus.length + issues.invalidStatus.length +
         issues.missingRandomIndex.length + issues.invalidRandomIndex.length +
-        issues.invalidSource.length;
+        issues.missingSource.length;
 
     const qualityCount = issues.missingFirstName.length + issues.missingLastName.length +
         issues.missingFirmName.length + issues.missingPracticeArea.length +
