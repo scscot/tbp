@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-01-20
-**Version**: 3.8 (Firm name styling + campaign consolidation)
+**Version**: 3.9 (Ohio Bar attorney scraper)
 
 ---
 
@@ -1465,6 +1465,60 @@ Firebase Hosting rewrite → serveIntakeByCode function
 - `functions/templates/demo-intake.html.template` - Updated `.logo-text`, `.chat-header-logo`, `.results-logo`, `.firm-name` CSS
 - `scripts/send-preintake-campaign.js` - Consolidated query system, updated `generateBarProfileEmailHTML` and `generateBarProfileEmailPlainText`
 
+### Phase 32: Ohio Bar Attorney Scraper (2026-01-20)
+- [x] **Ohio Bar Scraper Script** - `scripts/scrape-ohiobar-attorneys.js`
+  - Scrapes attorney contact information from Ohio Bar Association website (ohiobar.org)
+  - Uses Puppeteer for React SPA interaction (checkbox-based filtering, not URL params)
+  - ~25% of attorneys have visible email addresses as mailto links
+  - Handles 100-result cap per search via Practice Area + City subdivision
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/ohbar-scraper.yml`
+  - Scheduled: Daily at 4am PST (12:00 UTC)
+  - Offset from CalBar (12am PST) and FLBar (2am PST) to avoid overlap
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Checkbox-Based Filtering** - React SPA requires UI interaction
+  - URL-based filtering doesn't work (React app ignores URL params)
+  - Two sets of alphabet tabs (A-D, E-K, L-R, S-Z): one for cities, one for practice areas
+  - Practice area checkboxes: `filterPracticeAreasOption{PracticeAreaName}`
+  - City checkboxes: `filterLocationsOption{index}` with value = city name
+  - Helper functions: `getPracticeAreaTab()`, `getCityTab()`, `clickAlphabetTab()`, `clickPracticeAreaCheckbox()`, `clickCityCheckbox()`
+
+**Ohio Bar Practice Areas (46 total, Tier 1 shown):**
+| Priority | Practice Area |
+|----------|---------------|
+| 1 | Personal Injury and Product Liability |
+| 2 | Immigration |
+| 3 | Workers Compensation |
+| 4 | Bankruptcy |
+| 5 | Labor/Employment |
+| 6 | Construction |
+| 7 | Insurance |
+| 8 | Litigation |
+
+**Firestore Fields** (in `preintake_emails` collection for Ohio Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"ohbar"` |
+| `barNumber` | Ohio Bar number (if available) |
+| `practiceArea` | Practice area from Ohio Bar |
+| `state` | `"OH"` |
+| `memberUrl` | Ohio Bar profile URL |
+| `website` | Firm website (if available) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/ohbar`):
+| Field | Description |
+|-------|-------------|
+| `completedPracticeAreaIds` | Array of fully scraped practice area indices |
+| `practiceAreaIdsNeedingCities` | Practice areas that hit 100 cap, need city subdivision |
+| `completedCityCombos` | Array of completed `{practiceAreaId}_{city}` combinations |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
 ---
 
 ## Architecture
@@ -1515,6 +1569,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── analyze-click-rate.js            # Email click rate analysis
 ├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper
+├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
