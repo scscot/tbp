@@ -2,9 +2,9 @@ name: Mississippi Bar Attorney Scraper
 
 on:
   schedule:
-    # Daily at 00:00 UTC (4:00 PM PST)
-    # Offset from NEBar (22:00 UTC)
-    - cron: '0 0 * * *'
+    # Daily at 22:00 UTC (2:00 PM PST)
+    # Offset from NEBar (20:00 UTC)
+    - cron: '0 22 * * *'
   workflow_dispatch:
     inputs:
       max_attorneys:
