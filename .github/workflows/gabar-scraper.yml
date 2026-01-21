@@ -1,0 +1,76 @@
+name: Georgia Bar Attorney Scraper
+
+on:
+  schedule:
+    # Daily at 18:00 UTC (10:00 AM PST)
+    # Offset from CalBar (10:00 UTC), FlBar (12:00 UTC), OhBar (14:00 UTC), MiBar (16:00 UTC)
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      max_attorneys:
+        description: 'Max attorneys to scrape per run'
+        default: '500'
+      dry_run:
+        description: 'Dry run (no Firestore writes)'
+        default: 'false'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: scripts/package-lock.json
+
+      - name: Install dependencies
+        run: cd scripts && npm install
+
+      - name: Install Chrome dependencies for Puppeteer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libgbm1 \
+            libasound2t64
+
+      - name: Write service account key
+        run: |
+          mkdir -p secrets
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > secrets/serviceAccountKey.json
+
+      - name: Run Georgia Bar scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          MAX_ATTORNEYS: ${{ github.event.inputs.max_attorneys || '500' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: node scripts/scrape-gabar-attorneys.js
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -rf secrets/
+
+      - name: Upload summary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gabar-scrape-summary
+          path: scripts/gabar-scrape-summary.json
+          retention-days: 30
+          if-no-files-found: ignore

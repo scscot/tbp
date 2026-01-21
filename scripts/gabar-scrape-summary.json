@@ -1,0 +1,65 @@
+{
+  "run_date": "2026-01-21T18:08:03.777Z",
+  "sections": [
+    {
+      "sectionCode": "FAMIL09",
+      "sectionName": "Family Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 3,
+      "skipped": 2,
+      "errors": 0
+    },
+    {
+      "sectionCode": "CRIMI07",
+      "sectionName": "Criminal Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 5,
+      "errors": 0
+    },
+    {
+      "sectionCode": "IMMIG46",
+      "sectionName": "Immigration Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 5,
+      "errors": 0
+    },
+    {
+      "sectionCode": "BANKR05",
+      "sectionName": "Bankruptcy Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 1,
+      "skipped": 4,
+      "errors": 0
+    },
+    {
+      "sectionCode": "WORKE21",
+      "sectionName": "Workers' Compensation Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 1,
+      "skipped": 4,
+      "errors": 0
+    }
+  ],
+  "totalInserted": 5,
+  "totalInDb": 0,
+  "progress": {
+    "completedSectionCodes": [
+      "FAMIL09",
+      "CRIMI07",
+      "IMMIG46",
+      "BANKR05",
+      "WORKE21"
+    ],
+    "totalInserted": 5,
+    "lastRunDate": "2026-01-21T18:07:59.643Z"
+  },
+  "duration": "2.1 minutes",
+  "dry_run": true
+}
