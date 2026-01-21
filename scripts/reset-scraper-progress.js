@@ -61,6 +61,11 @@ const SCRAPERS_TO_RESET = {
         doc: 'preintake_scrape_progress/ohbar',
         field: 'completedCategoryIds',
         description: 'Ohio Bar'
+    },
+    ncbar: {
+        doc: 'preintake_scrape_progress/ncbar',
+        field: 'scrapedSpecializations',
+        description: 'North Carolina Bar'
     }
 };
 
