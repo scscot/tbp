@@ -1,0 +1,40 @@
+{
+  "run_date": "2026-01-21T03:35:25.765Z",
+  "categories": [
+    {
+      "categoryId": "127",
+      "categoryName": "Criminal Defense",
+      "totalResults": 1528,
+      "profilesFetched": 114,
+      "vcardsFetched": 100,
+      "inserted": 74,
+      "skipped": 26,
+      "errors": 0
+    },
+    {
+      "categoryId": "3",
+      "categoryName": "Bankruptcy",
+      "totalResults": 417,
+      "profilesFetched": 117,
+      "vcardsFetched": 100,
+      "inserted": 69,
+      "skipped": 31,
+      "errors": 0
+    }
+  ],
+  "totalInserted": 143,
+  "totalInDb": 143,
+  "progress": {
+    "completedCategoryIds": [
+      "264",
+      "210",
+      "172",
+      "127",
+      "3"
+    ],
+    "totalInserted": 143,
+    "lastRunDate": "2026-01-21T03:35:22.025Z"
+  },
+  "duration": "2.5 minutes",
+  "dry_run": false
+}

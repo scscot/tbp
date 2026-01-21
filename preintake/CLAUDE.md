@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-01-20
-**Version**: 3.9 (Ohio Bar attorney scraper)
+**Version**: 4.1 (Michigan Bar scraper operational, database cleanup complete)
 
 ---
 
@@ -1519,6 +1519,101 @@ Firebase Hosting rewrite → serveIntakeByCode function
 | `totalInserted` | Cumulative attorneys inserted |
 | `totalSkipped` | Cumulative attorneys skipped |
 
+### Phase 33: Michigan Bar Attorney Scraper (2026-01-20)
+- [x] **Michigan Bar Scraper Script** - `scripts/scrape-mibar-attorneys.js`
+  - Scrapes attorney contact information from State Bar of Michigan website (sbm.reliaguide.com)
+  - Uses Puppeteer for React SPA (ReliaGuide platform)
+  - Key innovation: Uses vCard API (`/api/public/profiles/{id}/download-vcard`) to get complete attorney data
+  - vCard provides: email, phone, firm name, website, city, state
+  - Emails NOT visible in search results - must fetch vCard for each profile
+  - Pagination: ~40 results per page (numbered pages, not Load More)
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/mibar-scraper.yml`
+  - Scheduled: Daily at 6am PST (14:00 UTC)
+  - Offset from CalBar (12am), FLBar (2am), OhBar (4am) to avoid overlap
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **vCard API Discovery** - Reliable email extraction method
+  - Search results only show name and "Add to contact" button
+  - vCard API endpoint returns complete attorney data
+  - URL format: `https://sbm.reliaguide.com/api/public/profiles/{profileId}/download-vcard`
+  - Profile IDs extracted from card links on search results page
+
+**Michigan Bar Practice Areas (21 categories discovered via API):**
+
+| Tier | ID | Practice Area | Est. Attorneys |
+|------|-----|---------------|----------------|
+| **Tier 1** | 264 | Personal Injury | 1,267 |
+| | 210 | Immigration & Naturalization | 441 |
+| | 172 | Family Law | 1,754 |
+| | 127 | Criminal Defense | 1,528 |
+| | 3 | Bankruptcy | 417 |
+| | 594 | Workers Compensation | 213 |
+| | 454 | Medical Malpractice | 297 |
+| | 359 | Wrongful Death | - |
+| **Tier 2** | 228 | Labor & Employment | - |
+| | 285 | Real Estate | - |
+| | 277 | Probate & Estate Planning | - |
+| | 179 | Elder Law & Advocacy | - |
+| | 321 | Social Security | - |
+| | 120 | Consumer Law | - |
+| | 96 | Civil Rights | - |
+| **Tier 3** | 74 | Business Law | - |
+| | 326 | Tax | - |
+| | 483 | Civil Litigation | - |
+| | 215 | Intellectual Property | - |
+| | 116 | Construction Law | - |
+
+**Category Discovery Method:** Michigan Bar uses ReliaGuide platform with a public API at `/api/public/category-lookups?sort=flatSortOrder,category,asc&size=1000` that returns all 404 categories with their IDs. URL filtering requires BOTH `category.equals={name}` AND `categoryId.equals={id}` parameters.
+
+**Firestore Fields** (in `preintake_emails` collection for Michigan Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"mibar"` |
+| `profileId` | ReliaGuide profile ID |
+| `practiceArea` | Practice area from search filter |
+| `state` | `"MI"` (or from vCard) |
+| `memberUrl` | vCard API URL |
+| `website` | Firm website (from vCard) |
+| `city` | City (from vCard address) |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/mibar`):
+| Field | Description |
+|-------|-------------|
+| `completedCategoryIds` | Array of fully scraped category IDs |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+
+**vCard API Requirements:**
+- **Critical**: Must include `Accept: text/vcard` header - without it, API returns HTML instead of vCard data
+- Headers required: `Accept: text/vcard, text/x-vcard, text/plain, */*`, `User-Agent`, `Referer`
+- State field in vCard contains attorney's business address state (not necessarily "MI")
+- Attorneys licensed in Michigan may practice in other states (TX, IL, CA, etc.)
+
+**vCard Data Flow:**
+```
+Search results page → Extract profile IDs from cards
+    │
+    ▼
+For each profile ID:
+    │
+    ├─ Fetch https://sbm.reliaguide.com/api/public/profiles/{id}/download-vcard
+    │   └─ (with Accept: text/vcard header!)
+    ├─ Parse vCard format (N:, FN:, EMAIL:, TEL:, ORG:, URL:, ADR:)
+    ├─ Skip if no email
+    ├─ Dedupe against existing emails in Firestore
+    └─ Insert into preintake_emails collection
+```
+
+**Database Cleanup (2026-01-20):**
+- Deleted 141 legacy records with `practiceArea == 'Unknown'`
+- Deleted 379 non-scraper records with `source == undefined`
+- Remaining records: 7,229 (all from calbar, flbar, ohbar, mibar)
+- Audit results: 0 critical issues, 341 records missing firmName (have firstName/lastName fallback)
+
 ---
 
 ## Architecture
@@ -1570,10 +1665,13 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper
 ├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
+├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (Puppeteer/vCard API)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
-└── reset-flbar-data.js              # Reset FL Bar data for clean re-scrape
+├── reset-flbar-data.js              # Reset FL Bar data for clean re-scrape
+├── analyze-sources.js               # Analyze preintake_emails by source (scraper vs legacy)
+└── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
 ```
 
 ### Firebase Configuration
