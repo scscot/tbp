@@ -1366,10 +1366,10 @@
             border-radius: 4px;
             display: inline-block;
             max-width: 100%;
-            /* Intelligent word wrapping for long firm names */
+            /* Word wrapping: break between words only, never mid-word */
             word-wrap: break-word;
             overflow-wrap: break-word;
-            hyphens: auto;
+            hyphens: none;
             text-align: center;
             line-height: 1.3;
         }
