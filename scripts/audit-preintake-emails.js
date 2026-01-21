@@ -2,9 +2,11 @@
 /**
  * Audit preintake_emails collection for data integrity
  * Checks all fields used by send-preintake-campaign.js
+ * Sends email alert if critical issues are found
  */
 
 const admin = require("firebase-admin");
+const nodemailer = require("nodemailer");
 const path = require("path");
 const serviceAccount = require(path.join(__dirname, "..", "secrets", "serviceAccountKey.json"));
 
@@ -248,10 +250,85 @@ async function audit() {
         });
     }
 
-    return { issues, criticalCount, qualityCount };
+    return { issues, criticalCount, qualityCount, totalRecords: snapshot.size, sourceDistribution };
 }
 
-audit().then(() => process.exit(0)).catch(e => {
+async function sendAlertEmail(auditResult) {
+    const { criticalCount, qualityCount, totalRecords, issues, sourceDistribution } = auditResult;
+
+    // Only send if SMTP credentials are available
+    if (!process.env.PREINTAKE_SMTP_USER || !process.env.PREINTAKE_SMTP_PASS) {
+        console.log("\n⚠️  SMTP credentials not configured - skipping email alert");
+        return;
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.dreamhost.com",
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.PREINTAKE_SMTP_USER,
+            pass: process.env.PREINTAKE_SMTP_PASS
+        }
+    });
+
+    // Build issue details
+    const issueDetails = [];
+    if (issues.missingEmail.length > 0) issueDetails.push(`Missing email: ${issues.missingEmail.length}`);
+    if (issues.invalidEmail.length > 0) issueDetails.push(`Invalid email format: ${issues.invalidEmail.length}`);
+    if (issues.missingSent.length > 0) issueDetails.push(`Missing 'sent' field: ${issues.missingSent.length}`);
+    if (issues.invalidSent.length > 0) issueDetails.push(`Invalid 'sent' type: ${issues.invalidSent.length}`);
+    if (issues.missingStatus.length > 0) issueDetails.push(`Missing 'status' field: ${issues.missingStatus.length}`);
+    if (issues.invalidStatus.length > 0) issueDetails.push(`Invalid 'status' value: ${issues.invalidStatus.length}`);
+    if (issues.missingRandomIndex.length > 0) issueDetails.push(`Missing 'randomIndex': ${issues.missingRandomIndex.length}`);
+    if (issues.invalidRandomIndex.length > 0) issueDetails.push(`Invalid 'randomIndex' type: ${issues.invalidRandomIndex.length}`);
+    if (issues.missingSource.length > 0) issueDetails.push(`Missing source: ${issues.missingSource.length}`);
+
+    // Source distribution
+    const sourceLines = Object.entries(sourceDistribution)
+        .sort((a, b) => b[1] - a[1])
+        .map(([source, count]) => `  ${source}: ${count} (${((count / totalRecords) * 100).toFixed(1)}%)`)
+        .join('\n');
+
+    const emailBody = `
+PreIntake Email Collection Audit - CRITICAL ISSUES FOUND
+
+Total Records: ${totalRecords}
+Critical Issues: ${criticalCount}
+Quality Issues: ${qualityCount}
+
+CRITICAL ISSUES:
+${issueDetails.map(d => `  ❌ ${d}`).join('\n')}
+
+SOURCE DISTRIBUTION:
+${sourceLines}
+
+Action Required: Fix these issues before running the email campaign.
+
+---
+This is an automated alert from the PreIntake audit workflow.
+    `.trim();
+
+    try {
+        await transporter.sendMail({
+            from: process.env.PREINTAKE_SMTP_USER,
+            to: "scscot@gmail.com",
+            subject: `⚠️ PreIntake Audit: ${criticalCount} Critical Issues Found`,
+            text: emailBody
+        });
+        console.log("\n📧 Alert email sent to scscot@gmail.com");
+    } catch (err) {
+        console.error("\n❌ Failed to send alert email:", err.message);
+    }
+}
+
+audit().then(async (result) => {
+    if (result.criticalCount > 0) {
+        await sendAlertEmail(result);
+        process.exit(1); // Exit with error code if critical issues found
+    }
+    process.exit(0);
+}).catch(e => {
     console.error(e);
     process.exit(1);
 });
