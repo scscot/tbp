@@ -54,7 +54,7 @@ jobs:
             libxdamage1 \
             libxfixes3 \
             libxrandr2 \
-            libasound2
+            libasound2t64
 
       - name: Install npm dependencies
         run: |
