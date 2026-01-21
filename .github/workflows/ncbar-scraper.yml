@@ -62,9 +62,11 @@ jobs:
           npm install firebase-admin puppeteer nodemailer
 
       - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           mkdir -p secrets
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > secrets/serviceAccountKey.json
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
 
       - name: Run NC Bar scraper
         env:
