@@ -14,6 +14,10 @@
  * - Deduplication against existing Firestore records
  * - Progress tracking for resume capability
  *
+ * Firebase Authentication:
+ * - Uses FIREBASE_SERVICE_ACCOUNT env var (JSON string) in GitHub Actions
+ * - Falls back to secrets/serviceAccountKey.json for local development
+ *
  * Usage:
  *   DRY_RUN=true node scripts/scrape-kybar-attorneys.js
  *   PRACTICE_AREA="Personal Injury" MAX_ATTORNEYS=100 node scripts/scrape-kybar-attorneys.js
@@ -27,6 +31,8 @@
 const puppeteer = require('puppeteer');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 
 // ============================================================================
 // Configuration
@@ -94,16 +100,23 @@ let db;
 
 function initFirebase() {
     if (admin.apps.length === 0) {
-        // Check for service account file or use application default credentials
-        const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-        if (serviceAccountPath) {
-            const serviceAccount = require(serviceAccountPath);
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount)
-            });
+        let serviceAccount;
+
+        // First try FIREBASE_SERVICE_ACCOUNT env var (GitHub Actions)
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+            serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
         } else {
-            admin.initializeApp();
+            // Fall back to local file (local development)
+            const serviceAccountPath = path.join(__dirname, '..', 'secrets', 'serviceAccountKey.json');
+            if (!fs.existsSync(serviceAccountPath)) {
+                throw new Error(`Service account key not found. Set FIREBASE_SERVICE_ACCOUNT env var or place key at ${serviceAccountPath}`);
+            }
+            serviceAccount = require(serviceAccountPath);
         }
+
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+        });
     }
 
     db = admin.firestore();
