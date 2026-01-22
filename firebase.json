@@ -56,18 +56,7 @@
             ],
             "cleanUrls": false,
             "trailingSlash": false,
-            "redirects": [
-                {
-                    "source": "/professionals.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/prospects.html",
-                    "destination": "/",
-                    "type": 301
-                }
-            ],
+            "redirects": [],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",
@@ -383,16 +372,6 @@
             "trailingSlash": false,
             "redirects": [
                 {
-                    "source": "/professionals.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/prospects.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
                     "source": "/delete-account.html",
                     "destination": "https://teambuildpro.com/delete-account.html",
                     "type": 301
@@ -439,16 +418,6 @@
             "trailingSlash": false,
             "redirects": [
                 {
-                    "source": "/professionals.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/prospects.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
                     "source": "/delete-account.html",
                     "destination": "https://teambuildpro.com/delete-account.html",
                     "type": 301
@@ -494,16 +463,6 @@
             "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [
-                {
-                    "source": "/professionals.html",
-                    "destination": "/",
-                    "type": 301
-                },
-                {
-                    "source": "/prospects.html",
-                    "destination": "/",
-                    "type": 301
-                },
                 {
                     "source": "/delete-account.html",
                     "destination": "https://teambuildpro.com/delete-account.html",

@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-20
-**Version**: 4.1 (Michigan Bar scraper operational, database cleanup complete)
+**Last Updated**: 2026-01-22
+**Version**: 4.2 (Kentucky Bar scraper with county subdivision)
 
 ---
 
@@ -1677,6 +1677,170 @@ For each profile ID:
 - All results displayed on single page per practice area (no pagination needed)
 - Select link clicking: `row.querySelector('a').click()` where text === 'Select'
 
+### Phase 35: Kentucky Bar Attorney Scraper (2026-01-22)
+- [x] **Kentucky Bar Scraper Script** - `scripts/scrape-kybar-attorneys.js`
+  - Scrapes attorney contact information from Kentucky Bar website (kybar.org)
+  - Uses Puppeteer for iframe-based CV5 CGI application interaction
+  - Kentucky Bar uses DNN (DotNetNuke) CMS wrapper with iframe-loaded search content
+  - AJAX-based search results with 12 attorneys per page
+  - Profile links use `onclick="openLawyerInfo('customerCode')"` pattern
+  - "Back to Results" button navigation between profile and results views
+  - 20 practice areas covering PI, Immigration, Workers Comp, Bankruptcy, etc.
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/kybar-scraper.yml`
+  - Scheduled: Daily at 8am PST (16:00 UTC)
+  - Offset from CalBar (12am), FLBar (2am), OhBar (4am), MiBar (6am), MoBar (3am)
+  - Manual trigger with practice_area, max_attorneys, dry_run inputs
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **CV5/DNN Architecture**
+  - Main page loads iframe from `https://kybar.org/cv5/cgi-bin/utilities.dll/openpage?WRP=LawyerLocator.htm`
+  - Search form submits to `../utilities.dll/customList`
+  - Profile view shows in `#lawyerLocatorInfo` div, results in `#lawyerLocatorResults`
+  - jQuery-based show/hide transitions between views
+  - Practice area dropdown: `select[name="PRACTICEAREA"]`
+
+**Kentucky Bar Practice Areas (20 total):**
+| Priority | Value | Practice Area |
+|----------|-------|---------------|
+| 1 | 44 | Personal Injury |
+| 2 | 29 | Immigration and Naturalization |
+| 3 | 54 | Workers Compensation |
+| 4 | 5 | Bankruptcy |
+| 5 | 13 | Criminal Law |
+| 6 | 20 | Family Law |
+| 7 | 15 | Elder Law |
+| 8 | 19 | Estate Planning |
+| 9 | 32 | Labor and Employment Law |
+| 10 | 48 | Social Security Disability |
+| ... | ... | (10 more practice areas) |
+
+**Firestore Fields** (in `preintake_emails` collection for Kentucky Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"kybar"` |
+| `customerCode` | Kentucky Bar member code |
+| `practiceArea` | Practice area from KY Bar |
+| `state` | `"KY"` |
+| `website` | Firm website (if available) |
+| `city` | City (from address) |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/kybar`):
+| Field | Description |
+|-------|-------------|
+| `completedPracticeAreaIds` | Array of fully completed practice area value codes |
+| `currentPracticeAreaId` | Practice area currently being scraped (for resume) |
+| `currentPage` | Current page number within practice area (for resume) |
+| `practiceAreaIdsNeedingCounties` | Practice areas with 500+ results needing county subdivision |
+| `completedCountyCombos` | Object: `{practiceAreaId: [completedCounties]}` |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+**Key Technical Details:**
+- Personal Injury category has ~2,341 attorneys
+- 12 results per page with pagination links
+- Email addresses displayed in profile view as mailto links
+- Name parsing handles suffixes (Jr, II, III, etc.)
+- City extraction from address line (handles multi-line addresses)
+
+- [x] **County Subdivision Feature** (2026-01-22)
+  - Practice areas with 500+ attorneys automatically subdivided by county
+  - 120 Kentucky counties available for subdivision
+  - Two-phase scraping approach:
+    - Phase 1: Process practice areas already in county subdivision queue
+    - Phase 2: Process remaining practice areas, detect if subdivision needed
+  - Progress tracking includes:
+    - `practiceAreaIdsNeedingCounties`: Array of practice area IDs requiring county subdivision
+    - `completedCountyCombos`: Object mapping practice area ID → array of completed county names
+    - `currentPracticeAreaId` and `currentPage`: Resume capability for interrupted scrapes
+  - County filter uses `select[name="COUNTY"]` dropdown
+  - Example: Personal Injury (2,341 total) → Adair county (2 attorneys), Jefferson county (548 attorneys)
+
+**County Subdivision Flow:**
+```
+Practice Area has >500 results?
+    │
+    ├── YES → Add to practiceAreaIdsNeedingCounties
+    │         └── Next run: Scrape county-by-county (120 counties)
+    │
+    └── NO → Scrape normally with pagination
+```
+
+### Phase 36: Georgia Bar Attorney Scraper (2026-01-22)
+- [x] **Georgia Bar Scraper Script** - `scripts/scrape-gabar-attorneys.js`
+  - Scrapes attorney contact information from Georgia Bar website (gabar.org)
+  - Uses Puppeteer for JavaScript-rendered member directory
+  - Member directory URL format: `https://www.gabar.org/member-directory/?memberGroup={code}`
+  - Profile URLs use hash-based IDs: `?id=E271939B14FB7B41ED5BCDF5B1B810CC`
+  - 20 practice areas (member groups) covering PI, Family Law, Criminal, Immigration, etc.
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/gabar-scraper.yml`
+  - Scheduled: Daily at 10am PST (18:00 UTC)
+  - Offset from other scrapers to avoid overlap
+  - Manual trigger with max_attorneys, dry_run inputs
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Performance Optimization** (2026-01-22)
+  - Reduced DELAY_BETWEEN_PROFILES from 1000ms to 300ms
+  - Changed `waitUntil: 'networkidle2'` to `'domcontentloaded'` (faster page loads)
+  - Reduced default MAX_ATTORNEYS from 500 to 300 to fit within 90-minute timeout
+  - Reduced page wait time from 1000ms to 500ms for JS rendering
+  - Result: 16 sections in 8.6 minutes vs 4 sections in 90 minutes previously
+
+**Georgia Bar Practice Areas (20 total):**
+| Tier | Code | Practice Area |
+|------|------|---------------|
+| **Tier 1** | FAMIL09 | Family Law |
+| | CRIMI07 | Criminal Law |
+| | IMMIG46 | Immigration Law |
+| | BANKR05 | Bankruptcy Law |
+| | WORKE21 | Workers' Compensation Law |
+| | LABOR15 | Labor & Employment Law |
+| | GENER11 | General Practice & Trial |
+| | ELDER40 | Elder Law |
+| **Tier 2** | REALP19 | Real Property Law |
+| | CONSU48 | Consumer Law |
+| | TORTI13 | Tort & Insurance Practice |
+| | HEALT36 | Health Law |
+| | ENVIR08 | Environmental Law |
+| | INTEL38 | Intellectual Property Law |
+| | CORPO06 | Corporate Counsel |
+| **Tier 3** | BUSIN04 | Business Law |
+| | TAXAT20 | Tax Law |
+| | FINAN10 | Fiduciary Law |
+| | ADMIN01 | Administrative Law |
+| | APPEL02 | Appellate Practice |
+
+**Firestore Fields** (in `preintake_emails` collection for Georgia Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"gabar"` |
+| `profileId` | Hash-based profile ID (e.g., E271939B14FB7B41ED5BCDF5B1B810CC) |
+| `practiceArea` | Practice area from GA Bar |
+| `state` | `"GA"` (inferred or from address) |
+| `memberUrl` | Georgia Bar profile URL |
+| `website` | Firm website (if available) |
+| `barNumber` | Georgia Bar number (if found) |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/gabar`):
+| Field | Description |
+|-------|-------------|
+| `completedSectionCodes` | Array of fully scraped practice area codes |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+
+**Key Technical Details:**
+- Georgia Bar uses JavaScript to render profile content (requires Puppeteer, not fetch)
+- Profile IDs are 32-character hex hashes extracted from profile links
+- Email addresses displayed on profile pages as mailto links
+- Some sections return 0 results (data availability issue on GA Bar side)
+- Efficient skip-before-fetch using preloaded profileId set
+
 ---
 
 ## Architecture
@@ -1729,6 +1893,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper
 ├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
 ├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (Puppeteer/vCard API)
+├── scrape-mobar-attorneys.js        # Missouri Bar attorney scraper (Puppeteer/ASP.NET)
+├── scrape-kybar-attorneys.js        # Kentucky Bar attorney scraper (Puppeteer/iframe CV5)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
