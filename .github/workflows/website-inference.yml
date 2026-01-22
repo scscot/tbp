@@ -2,15 +2,19 @@ name: Website Inference (All Sources)
 
 on:
   schedule:
-    # Daily at 10:00pm PST (06:00 UTC)
-    # Runs before scrapers start (08:00 UTC), processes all sources
-    - cron: '0 6 * * *'
+    # Run 4x daily to process contacts in batches (avoids timeout)
+    # 6am, 10am, 2pm, 6pm PST (14:00, 18:00, 22:00, 02:00 UTC)
+    - cron: '0 14 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 22 * * *'
+    - cron: '0 2 * * *'
 
   workflow_dispatch:
     inputs:
       batch_size:
-        description: 'Number of contacts to process (leave empty for all)'
+        description: 'Number of contacts to process (default: 1500)'
         required: false
+        default: '1500'
         type: string
       dry_run:
         description: 'Dry run (preview only, no changes)'
@@ -50,11 +54,13 @@ jobs:
 
       - name: Run website inference
         env:
-          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          # Use input batch_size if provided, otherwise use default (1200)
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '1200' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
         run: |
+          echo "Processing batch of $BATCH_SIZE contacts..."
           node scripts/infer-websites.js
 
       - name: Cleanup

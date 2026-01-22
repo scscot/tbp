@@ -489,14 +489,17 @@ async function main() {
     Object.entries(sourceCounts).sort((a, b) => b[1] - a[1]).forEach(([source, count]) => {
         console.log(`   ${source}: ${count}`);
     });
-    console.log(`   Total to check: ${uncheckedContacts.length}`);
+    console.log(`   Total remaining: ${uncheckedContacts.length}`);
 
     let contacts = uncheckedContacts;
+    const totalRemaining = uncheckedContacts.length;
     if (BATCH_SIZE && contacts.length > BATCH_SIZE) {
-        console.log(`   Processing first ${BATCH_SIZE} (BATCH_SIZE limit)\n`);
+        console.log(`   Processing: ${BATCH_SIZE} (of ${totalRemaining} remaining)`);
+        const runsNeeded = Math.ceil(totalRemaining / BATCH_SIZE);
+        console.log(`   Estimated runs to complete: ${runsNeeded}\n`);
         contacts = contacts.slice(0, BATCH_SIZE);
     } else {
-        console.log('');
+        console.log(`   Processing: all ${contacts.length}\n`);
     }
 
     if (contacts.length === 0) {
@@ -605,6 +608,18 @@ async function main() {
     if (domainsChecked > 0) {
         const successRate = ((stats.websiteFound / domainsChecked) * 100).toFixed(1);
         console.log(`\n   Success rate: ${successRate}% (of non-personal emails)`);
+    }
+
+    // Show remaining count
+    const remaining = totalRemaining - stats.processed;
+    if (remaining > 0) {
+        console.log(`\n   📋 Remaining to check: ${remaining} contacts`);
+        if (BATCH_SIZE) {
+            const runsNeeded = Math.ceil(remaining / BATCH_SIZE);
+            console.log(`   Estimated runs to complete: ${runsNeeded}`);
+        }
+    } else {
+        console.log('\n   🎉 All contacts have been checked!');
     }
 
     // Update cumulative progress
