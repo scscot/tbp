@@ -253,12 +253,12 @@ async function audit() {
     return { issues, criticalCount, qualityCount, totalRecords: snapshot.size, sourceDistribution };
 }
 
-async function sendAlertEmail(auditResult) {
+async function sendAuditEmail(auditResult) {
     const { criticalCount, qualityCount, totalRecords, issues, sourceDistribution } = auditResult;
 
     // Only send if SMTP credentials are available
     if (!process.env.PREINTAKE_SMTP_USER || !process.env.PREINTAKE_SMTP_PASS) {
-        console.log("\n⚠️  SMTP credentials not configured - skipping email alert");
+        console.log("\n⚠️  SMTP credentials not configured - skipping email");
         return;
     }
 
@@ -272,17 +272,26 @@ async function sendAlertEmail(auditResult) {
         }
     });
 
-    // Build issue details
-    const issueDetails = [];
-    if (issues.missingEmail.length > 0) issueDetails.push(`Missing email: ${issues.missingEmail.length}`);
-    if (issues.invalidEmail.length > 0) issueDetails.push(`Invalid email format: ${issues.invalidEmail.length}`);
-    if (issues.missingSent.length > 0) issueDetails.push(`Missing 'sent' field: ${issues.missingSent.length}`);
-    if (issues.invalidSent.length > 0) issueDetails.push(`Invalid 'sent' type: ${issues.invalidSent.length}`);
-    if (issues.missingStatus.length > 0) issueDetails.push(`Missing 'status' field: ${issues.missingStatus.length}`);
-    if (issues.invalidStatus.length > 0) issueDetails.push(`Invalid 'status' value: ${issues.invalidStatus.length}`);
-    if (issues.missingRandomIndex.length > 0) issueDetails.push(`Missing 'randomIndex': ${issues.missingRandomIndex.length}`);
-    if (issues.invalidRandomIndex.length > 0) issueDetails.push(`Invalid 'randomIndex' type: ${issues.invalidRandomIndex.length}`);
-    if (issues.missingSource.length > 0) issueDetails.push(`Missing source: ${issues.missingSource.length}`);
+    // Build critical issue details
+    const criticalDetails = [];
+    if (issues.missingEmail.length > 0) criticalDetails.push(`Missing email: ${issues.missingEmail.length}`);
+    if (issues.invalidEmail.length > 0) criticalDetails.push(`Invalid email format: ${issues.invalidEmail.length}`);
+    if (issues.missingSent.length > 0) criticalDetails.push(`Missing 'sent' field: ${issues.missingSent.length}`);
+    if (issues.invalidSent.length > 0) criticalDetails.push(`Invalid 'sent' type: ${issues.invalidSent.length}`);
+    if (issues.missingStatus.length > 0) criticalDetails.push(`Missing 'status' field: ${issues.missingStatus.length}`);
+    if (issues.invalidStatus.length > 0) criticalDetails.push(`Invalid 'status' value: ${issues.invalidStatus.length}`);
+    if (issues.missingRandomIndex.length > 0) criticalDetails.push(`Missing 'randomIndex': ${issues.missingRandomIndex.length}`);
+    if (issues.invalidRandomIndex.length > 0) criticalDetails.push(`Invalid 'randomIndex' type: ${issues.invalidRandomIndex.length}`);
+    if (issues.missingSource.length > 0) criticalDetails.push(`Missing source: ${issues.missingSource.length}`);
+
+    // Build quality issue details
+    const qualityDetails = [];
+    if (issues.missingFirstName.length > 0) qualityDetails.push(`Missing firstName: ${issues.missingFirstName.length}`);
+    if (issues.missingLastName.length > 0) qualityDetails.push(`Missing lastName: ${issues.missingLastName.length}`);
+    if (issues.missingFirmName.length > 0) qualityDetails.push(`Missing firmName: ${issues.missingFirmName.length}`);
+    if (issues.missingPracticeArea.length > 0) qualityDetails.push(`Missing practiceArea: ${issues.missingPracticeArea.length}`);
+    if (issues.missingState.length > 0) qualityDetails.push(`Missing state: ${issues.missingState.length}`);
+    if (issues.undefinedFields.length > 0) qualityDetails.push(`String 'undefined'/'null' values: ${issues.undefinedFields.length}`);
 
     // Source distribution
     const sourceLines = Object.entries(sourceDistribution)
@@ -290,42 +299,62 @@ async function sendAlertEmail(auditResult) {
         .map(([source, count]) => `  ${source}: ${count} (${((count / totalRecords) * 100).toFixed(1)}%)`)
         .join('\n');
 
-    const emailBody = `
-PreIntake Email Collection Audit - CRITICAL ISSUES FOUND
+    // Determine subject and status based on issues
+    const statusIcon = criticalCount > 0 ? '⚠️' : '✅';
+    const statusText = criticalCount > 0 ? `${criticalCount} Critical Issues` : 'All Clear';
+    const subject = `${statusIcon} PreIntake Audit: ${statusText} (${totalRecords.toLocaleString()} records)`;
 
-Total Records: ${totalRecords}
+    const criticalSection = criticalCount > 0
+        ? `CRITICAL ISSUES (${criticalCount}):\n${criticalDetails.map(d => `  ❌ ${d}`).join('\n')}\n\n`
+        : `CRITICAL ISSUES: None ✅\n\n`;
+
+    const qualitySection = qualityCount > 0
+        ? `QUALITY ISSUES (${qualityCount}):\n${qualityDetails.map(d => `  ⚠️ ${d}`).join('\n')}\n\n`
+        : `QUALITY ISSUES: None ✅\n\n`;
+
+    const actionLine = criticalCount > 0
+        ? 'Action Required: Fix critical issues before running the email campaign.'
+        : 'Status: Database is healthy - email campaign can run safely.';
+
+    const emailBody = `
+PreIntake Email Collection Audit Report
+${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+
+SUMMARY
+-------
+Total Records: ${totalRecords.toLocaleString()}
 Critical Issues: ${criticalCount}
 Quality Issues: ${qualityCount}
 
-CRITICAL ISSUES:
-${issueDetails.map(d => `  ❌ ${d}`).join('\n')}
-
-SOURCE DISTRIBUTION:
+${criticalSection}${qualitySection}SOURCE DISTRIBUTION:
 ${sourceLines}
 
-Action Required: Fix these issues before running the email campaign.
+${actionLine}
 
 ---
-This is an automated alert from the PreIntake audit workflow.
+This is an automated daily report from the PreIntake audit workflow.
     `.trim();
 
     try {
         await transporter.sendMail({
             from: process.env.PREINTAKE_SMTP_USER,
             to: "scscot@gmail.com",
-            subject: `⚠️ PreIntake Audit: ${criticalCount} Critical Issues Found`,
+            subject,
             text: emailBody
         });
-        console.log("\n📧 Alert email sent to scscot@gmail.com");
+        console.log("\n📧 Audit report email sent to scscot@gmail.com");
     } catch (err) {
-        console.error("\n❌ Failed to send alert email:", err.message);
+        console.error("\n❌ Failed to send audit email:", err.message);
     }
 }
 
 audit().then(async (result) => {
+    // Always send audit email (daily report)
+    await sendAuditEmail(result);
+
+    // Exit with error code if critical issues found
     if (result.criticalCount > 0) {
-        await sendAlertEmail(result);
-        process.exit(1); // Exit with error code if critical issues found
+        process.exit(1);
     }
     process.exit(0);
 }).catch(e => {
