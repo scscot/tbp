@@ -66,9 +66,9 @@ const PRACTICE_AREAS = [
 // ============================================================================
 
 const BASE_URL = 'https://www.gabar.org';
-const DELAY_BETWEEN_PAGES = 3000;
-const DELAY_BETWEEN_PROFILES = 1000;
-const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
+const DELAY_BETWEEN_PAGES = 2000;
+const DELAY_BETWEEN_PROFILES = 300; // Reduced from 1000ms - Georgia Bar can handle faster requests
+const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 300; // Reduced to ensure completion within timeout
 const DRY_RUN = process.env.DRY_RUN === 'true';
 
 // ============================================================================
@@ -581,7 +581,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
         console.log(`   Total profiles collected: ${allProfileIds.length}`);
         stats.profilesFetched = allProfileIds.length;
 
-        // Visit each profile page to extract details
+        // Visit each profile page to extract details (Puppeteer required for JS-rendered content)
         console.log(`   Extracting profile details...`);
 
         let processedCount = 0;
@@ -599,10 +599,11 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
             try {
                 const profileUrl = `${BASE_URL}/member-directory/?id=${profileId}`;
                 await page.goto(profileUrl, {
-                    waitUntil: 'networkidle2',
-                    timeout: 30000
+                    waitUntil: 'domcontentloaded', // Faster than networkidle2
+                    timeout: 20000
                 });
-                await sleep(1000);
+                // Shorter wait - just enough for JS to render
+                await sleep(500);
 
                 const details = await extractProfileDetails(page);
 
@@ -620,19 +621,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
                 }
 
                 // Default to GA for Georgia Bar members
-                let state = details.state || 'GA';
-                if (!state || state === '') {
-                    if (details.website) {
-                        const inferredState = await inferStateFromWebsite(details.website);
-                        if (inferredState) {
-                            state = inferredState;
-                        } else {
-                            state = 'GA';
-                        }
-                    } else {
-                        state = 'GA';
-                    }
-                }
+                const state = details.state || 'GA';
 
                 // Create document
                 const docData = {
@@ -672,11 +661,12 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
                 }
 
                 // Progress logging
-                if ((i + 1) % 25 === 0) {
+                if ((i + 1) % 50 === 0) {
                     console.log(`     Processed ${i + 1}/${Math.min(allProfileIds.length, MAX_ATTORNEYS)}`);
                 }
 
-                await sleepWithJitter(DELAY_BETWEEN_PROFILES);
+                // Minimal delay between profiles
+                await sleep(DELAY_BETWEEN_PROFILES);
 
             } catch (error) {
                 stats.errors++;
@@ -686,6 +676,9 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
             }
         }
 
+        // Progress summary
+        console.log(`     Processed ${processedCount} profiles`);
+
         // Commit remaining batch
         if (batchCount > 0 && !DRY_RUN) {
             await batch.commit();
@@ -694,7 +687,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
 
         // Track whether all profiles were scraped (not stopped by MAX_ATTORNEYS limit)
         const allProfilesProcessed = (processedCount + stats.skippedExisting) >= allProfileIds.length;
-        stats.all_profiles_scraped = allProfilesProcessed || processedCount >= MAX_ATTORNEYS && allProfileIds.length <= MAX_ATTORNEYS;
+        stats.all_profiles_scraped = allProfilesProcessed || (processedCount >= MAX_ATTORNEYS && allProfileIds.length <= MAX_ATTORNEYS);
 
         console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, Errors ${stats.errors}`);
 

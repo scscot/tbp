@@ -1,65 +1,162 @@
 {
-  "run_date": "2026-01-21T18:08:03.777Z",
+  "run_date": "2026-01-22T23:09:10.314Z",
   "sections": [
-    {
-      "sectionCode": "FAMIL09",
-      "sectionName": "Family Law",
-      "totalResults": 25,
-      "profilesFetched": 25,
-      "inserted": 3,
-      "skipped": 2,
-      "errors": 0
-    },
-    {
-      "sectionCode": "CRIMI07",
-      "sectionName": "Criminal Law",
-      "totalResults": 25,
-      "profilesFetched": 25,
-      "inserted": 0,
-      "skipped": 5,
-      "errors": 0
-    },
-    {
-      "sectionCode": "IMMIG46",
-      "sectionName": "Immigration Law",
-      "totalResults": 25,
-      "profilesFetched": 25,
-      "inserted": 0,
-      "skipped": 5,
-      "errors": 0
-    },
-    {
-      "sectionCode": "BANKR05",
-      "sectionName": "Bankruptcy Law",
-      "totalResults": 25,
-      "profilesFetched": 25,
-      "inserted": 1,
-      "skipped": 4,
-      "errors": 0
-    },
     {
       "sectionCode": "WORKE21",
       "sectionName": "Workers' Compensation Law",
       "totalResults": 25,
       "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 10,
+      "skippedExisting": 1,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "LABOR15",
+      "sectionName": "Labor & Employment Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 10,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "GENER11",
+      "sectionName": "General Practice & Trial",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 10,
+      "skippedExisting": 2,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "ELDER40",
+      "sectionName": "Elder Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
       "inserted": 1,
-      "skipped": 4,
-      "errors": 0
+      "skipped": 9,
+      "skippedExisting": 2,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "REALP19",
+      "sectionName": "Real Property Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 10,
+      "skippedExisting": 1,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "CONSU48",
+      "sectionName": "Consumer Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 1,
+      "skipped": 9,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "TORTI13",
+      "sectionName": "Tort & Insurance Practice",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 0,
+      "skipped": 10,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "HEALT36",
+      "sectionName": "Health Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 2,
+      "skipped": 8,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "ENVIR08",
+      "sectionName": "Environmental Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 1,
+      "skipped": 9,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "INTEL38",
+      "sectionName": "Intellectual Property Law",
+      "totalResults": 0,
+      "profilesFetched": 0,
+      "inserted": 0,
+      "skipped": 0,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "CORPO06",
+      "sectionName": "Corporate Counsel",
+      "totalResults": 0,
+      "profilesFetched": 0,
+      "inserted": 0,
+      "skipped": 0,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "BUSIN04",
+      "sectionName": "Business Law",
+      "totalResults": 0,
+      "profilesFetched": 0,
+      "inserted": 0,
+      "skipped": 0,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
+    },
+    {
+      "sectionCode": "TAXAT20",
+      "sectionName": "Tax Law",
+      "totalResults": 25,
+      "profilesFetched": 25,
+      "inserted": 8,
+      "skipped": 2,
+      "skippedExisting": 0,
+      "errors": 0,
+      "all_profiles_scraped": false
     }
   ],
-  "totalInserted": 5,
-  "totalInDb": 0,
+  "totalInserted": 13,
+  "totalInDb": 364,
   "progress": {
     "completedSectionCodes": [
       "FAMIL09",
       "CRIMI07",
       "IMMIG46",
-      "BANKR05",
-      "WORKE21"
+      "BANKR05"
     ],
-    "totalInserted": 5,
-    "lastRunDate": "2026-01-21T18:07:59.643Z"
+    "totalInserted": 377,
+    "lastRunDate": "2026-01-22T23:09:06.125Z"
   },
-  "duration": "2.1 minutes",
+  "duration": "3.9 minutes",
   "dry_run": true
 }
