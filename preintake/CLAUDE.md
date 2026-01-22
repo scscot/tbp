@@ -1614,6 +1614,69 @@ For each profile ID:
 - Remaining records: 7,229 (all from calbar, flbar, ohbar, mibar)
 - Audit results: 0 critical issues, 341 records missing firmName (have firstName/lastName fallback)
 
+### Phase 34: Missouri Bar Attorney Scraper (2026-01-21)
+- [x] **Missouri Bar Scraper Script** - `scripts/scrape-mobar-attorneys.js`
+  - Scrapes attorney contact information from Missouri Bar website (mobar.org)
+  - Uses Puppeteer for ASP.NET WebForms interaction (ViewState, GridView/FormView pattern)
+  - Click-based navigation: clicks "Select" links directly instead of calling `__doPostBack()` (avoids strict mode errors)
+  - MoBar displays ALL search results on single page (no pagination needed)
+  - 26 practice areas covering PI, Immigration, Family, Bankruptcy, Criminal, etc.
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/mobar-scraper.yml`
+  - Scheduled: Daily at 3am PST (11:00 UTC)
+  - Offset from other scrapers to avoid overlap
+  - Manual trigger with practice_area, max_attorneys, dry_run inputs
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **ASP.NET GridView/FormView Pattern**
+  - Search results displayed in `#ctl00_store_GridView1` table
+  - Profile details loaded in `#ctl00_store_FormView1` after clicking "Select"
+  - ViewState managed automatically by Puppeteer page navigation
+  - Select link clicking approach avoids strict mode function access errors
+
+**Missouri Bar Practice Areas (26 total):**
+| Priority | Value | Practice Area |
+|----------|-------|---------------|
+| 1 | 46 | Personal Injury |
+| 2 | 40 | Immigration Law |
+| 3 | 35 | Family Law |
+| 4 | 11 | Bankruptcy |
+| 5 | 12 | Bankruptcy - Personal |
+| 6 | 29 | Criminal Law |
+| 7 | 5 | Workers' Comp - Employee |
+| 8 | 31 | Elder Law |
+| 9 | 33 | Estate Planning and Trusts |
+| 10 | 4 | Social Security |
+| ... | ... | (16 more practice areas) |
+
+**Firestore Fields** (in `preintake_emails` collection for Missouri Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"mobar"` |
+| `practiceArea` | Practice area from MoBar |
+| `state` | `"MO"` |
+| `memberUrl` | MoBar search results URL |
+| `website` | Firm website (if available) |
+| `city` | City (line-by-line extraction) |
+| `randomIndex` | Random for queue ordering |
+
+**Note:** MoBar does not expose bar numbers on attorney profiles.
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/mobar`):
+| Field | Description |
+|-------|-------------|
+| `scrapedPracticeAreaIds` | Array of completed practice area value codes |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+**Key Technical Details:**
+- Personal Injury category alone has 815 attorneys
+- City extraction uses line-by-line parsing (handles newlines in FormView text)
+- All results displayed on single page per practice area (no pagination needed)
+- Select link clicking: `row.querySelector('a').click()` where text === 'Select'
+
 ---
 
 ## Architecture
