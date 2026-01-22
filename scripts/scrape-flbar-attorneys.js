@@ -311,7 +311,7 @@ async function sendNotificationEmail(subject, htmlContent) {
     try {
         const info = await transporter.sendMail({
             from: 'Stephen Scott <stephen@preintake.ai>',
-            to: 'Stephen Scott <stephen@preintake.ai>',
+            to: 'Stephen Scott <scscot@gmail.com>',
             subject: subject,
             html: htmlContent
         });

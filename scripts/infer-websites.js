@@ -201,7 +201,7 @@ Overall Success Rate: ${totalSuccessRate}%
     try {
         await transporter.sendMail({
             from: 'Stephen Scott <stephen@preintake.ai>',
-            to: 'Stephen Scott <stephen@preintake.ai>',
+            to: 'Stephen Scott <scscot@gmail.com>',
             subject,
             html: htmlContent,
             text: plainText
