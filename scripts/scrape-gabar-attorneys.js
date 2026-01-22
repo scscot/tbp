@@ -16,7 +16,7 @@
  *   node scripts/scrape-gabar-attorneys.js
  *
  * Environment variables:
- *   MAX_ATTORNEYS - Maximum attorneys to process per run (default: 500)
+ *   MAX_ATTORNEYS - Maximum attorneys to process per section (default: 300)
  *   DRY_RUN - If "true", don't write to Firestore
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
  *   PREINTAKE_SMTP_PASS - SMTP password for notifications
@@ -68,7 +68,8 @@ const PRACTICE_AREAS = [
 const BASE_URL = 'https://www.gabar.org';
 const DELAY_BETWEEN_PAGES = 2000;
 const DELAY_BETWEEN_PROFILES = 300; // Reduced from 1000ms - Georgia Bar can handle faster requests
-const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 300; // Reduced to ensure completion within timeout
+const MAX_ATTORNEYS_PER_SECTION = parseInt(process.env.MAX_ATTORNEYS) || 300; // Per-section limit
+const MAX_RUN_TIME_MS = 70 * 60 * 1000; // 70 minutes - stop before 90-minute GitHub Actions timeout
 const DRY_RUN = process.env.DRY_RUN === 'true';
 
 // ============================================================================
@@ -554,7 +555,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
         let currentPage = 1;
         let consecutiveEmptyPages = 0;
 
-        while (allProfileIds.length < MAX_ATTORNEYS && consecutiveEmptyPages < 3) {
+        while (allProfileIds.length < MAX_ATTORNEYS_PER_SECTION && consecutiveEmptyPages < 3) {
             console.log(`   Page ${currentPage}...`);
 
             const pageIds = await extractProfileIds(page);
@@ -585,7 +586,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
         console.log(`   Extracting profile details...`);
 
         let processedCount = 0;
-        for (let i = 0; i < allProfileIds.length && processedCount < MAX_ATTORNEYS; i++) {
+        for (let i = 0; i < allProfileIds.length && processedCount < MAX_ATTORNEYS_PER_SECTION; i++) {
             const profileId = allProfileIds[i];
 
             // Skip if profileId already exists in database
@@ -662,7 +663,7 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
 
                 // Progress logging
                 if ((i + 1) % 50 === 0) {
-                    console.log(`     Processed ${i + 1}/${Math.min(allProfileIds.length, MAX_ATTORNEYS)}`);
+                    console.log(`     Processed ${i + 1}/${Math.min(allProfileIds.length, MAX_ATTORNEYS_PER_SECTION)}`);
                 }
 
                 // Minimal delay between profiles
@@ -685,9 +686,9 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
             console.log(`     Committed final batch of ${batchCount}`);
         }
 
-        // Track whether all profiles were scraped (not stopped by MAX_ATTORNEYS limit)
+        // Track whether all profiles were scraped (not stopped by per-section limit)
         const allProfilesProcessed = (processedCount + stats.skippedExisting) >= allProfileIds.length;
-        stats.all_profiles_scraped = allProfilesProcessed || (processedCount >= MAX_ATTORNEYS && allProfileIds.length <= MAX_ATTORNEYS);
+        stats.all_profiles_scraped = allProfilesProcessed || (processedCount >= MAX_ATTORNEYS_PER_SECTION && allProfileIds.length <= MAX_ATTORNEYS_PER_SECTION);
 
         console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, Errors ${stats.errors}`);
 
@@ -814,9 +815,11 @@ async function main() {
                 continue;
             }
 
-            // Check if we've hit MAX_ATTORNEYS
-            if (totalInsertedThisRun >= MAX_ATTORNEYS) {
-                console.log(`\nReached MAX_ATTORNEYS limit (${MAX_ATTORNEYS})`);
+            // Check if approaching timeout (70 minutes)
+            const elapsedMs = Date.now() - startTime;
+            if (elapsedMs > MAX_RUN_TIME_MS) {
+                const elapsedMins = (elapsedMs / 1000 / 60).toFixed(1);
+                console.log(`\nApproaching timeout (${elapsedMins} min), stopping to save progress`);
                 break;
             }
 
@@ -829,7 +832,7 @@ async function main() {
                 progress.completedSectionCodes.push(section.code);
                 console.log(`   ✓ Section ${section.name} marked as complete`);
             } else if (!stats.all_profiles_scraped) {
-                console.log(`   ⚠ Section ${section.name} NOT marked complete (hit MAX_ATTORNEYS limit)`);
+                console.log(`   ⚠ Section ${section.name} NOT marked complete (hit per-section limit)`);
             }
 
             // Save progress after each section
