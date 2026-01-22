@@ -602,8 +602,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                     continue;
                 }
 
-                // Skip if no email
-                if (!profile.email || !profile.email.includes('@')) {
+                // Skip if no email or invalid format
+                if (!profile.email || !profile.email.includes('@') || !profile.email.includes('.')) {
                     stats.noEmail++;
                     continue;
                 }

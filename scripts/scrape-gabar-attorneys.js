@@ -606,8 +606,8 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
 
                 const details = await extractProfileDetails(page);
 
-                // Skip if no email
-                if (!details.email || !details.email.includes('@')) {
+                // Skip if no email or invalid format
+                if (!details.email || !details.email.includes('@') || !details.email.includes('.')) {
                     stats.skipped++;
                     continue;
                 }

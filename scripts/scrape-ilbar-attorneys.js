@@ -568,7 +568,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 
                 const vcard = parseVCard(vcardText);
 
-                if (!vcard.email || !vcard.email.includes('@')) {
+                if (!vcard.email || !vcard.email.includes('@') || !vcard.email.includes('.')) {
                     stats.skipped++;
                     continue;
                 }

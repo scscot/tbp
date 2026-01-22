@@ -608,8 +608,8 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 
                 const vcard = parseVCard(vcardText);
 
-                // Skip if no email
-                if (!vcard.email || !vcard.email.includes('@')) {
+                // Skip if no email or invalid format
+                if (!vcard.email || !vcard.email.includes('@') || !vcard.email.includes('.')) {
                     stats.skipped++;
                     continue;
                 }

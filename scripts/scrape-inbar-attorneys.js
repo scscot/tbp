@@ -257,7 +257,8 @@ async function getTotalAttorneysInDb() {
 }
 
 async function insertAttorney(attorney, existingEmails) {
-    if (!attorney.email) {
+    // Validate email exists and has proper format (contains @ and .)
+    if (!attorney.email || !attorney.email.includes('@') || !attorney.email.includes('.')) {
         return { success: false, reason: 'no_email' };
     }
 
