@@ -66,6 +66,11 @@ const SCRAPERS_TO_RESET = {
         doc: 'preintake_scrape_progress/ncbar',
         field: 'scrapedSpecializations',
         description: 'North Carolina Bar'
+    },
+    mobar: {
+        doc: 'preintake_scrape_progress/mobar',
+        field: 'scrapedPracticeAreaIds',
+        description: 'Missouri Bar'
     }
 };
 

@@ -1,0 +1,91 @@
+name: Missouri Bar Attorney Scraper
+
+on:
+  schedule:
+    # Run daily at 3:00 AM PST (11:00 UTC) - offset from other scrapers
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+    inputs:
+      practice_area:
+        description: 'Specific practice area ID to scrape (optional)'
+        required: false
+        type: string
+      max_attorneys:
+        description: 'Max attorneys to scrape'
+        required: false
+        default: '500'
+        type: string
+      dry_run:
+        description: 'Dry run mode (no database writes)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Puppeteer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgbm1 \
+            libnss3 \
+            libatk-bridge2.0-0 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libasound2t64
+
+      - name: Install npm dependencies
+        run: |
+          cd scripts
+          npm install firebase-admin puppeteer nodemailer
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+
+      - name: Run Missouri Bar scraper
+        env:
+          PRACTICE_AREA: ${{ inputs.practice_area || '' }}
+          MAX_ATTORNEYS: ${{ inputs.max_attorneys || '500' }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+        run: |
+          node scripts/scrape-mobar-attorneys.js
+
+      - name: Upload scrape summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobar-scrape-summary
+          path: scripts/mobar-scrape-summary.json
+          if-no-files-found: ignore
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -rf secrets/
