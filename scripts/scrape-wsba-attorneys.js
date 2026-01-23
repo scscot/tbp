@@ -541,7 +541,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
         console.log(`   Total results: ${stats.totalResults}`);
 
         if (stats.totalResults === 0) {
-            console.log('   No results found');
+            console.log('   No results found - marking as complete (no data available)');
+            stats.all_profiles_scraped = true; // Mark as complete so we don't retry
             await page.close();
             return stats;
         }
