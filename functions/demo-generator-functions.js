@@ -3116,33 +3116,70 @@ async function sendProspectDemoReadyEmail(leadId, leadData, analysis, demoUrl) {
  */
 function mapBarPracticeArea(barPracticeArea) {
     const mapping = {
+        // Personal Injury variations
         'personal injury': 'Personal Injury',
         'personal injury law': 'Personal Injury',
+        'personal injury and product liability': 'Personal Injury',
+        // Products/Product Liability
+        'products liability': 'Personal Injury',
+        'product liability': 'Personal Injury',
+        // Medical Malpractice
+        'medical malpractice': 'Personal Injury',
+        'medical malpractice law': 'Personal Injury',
+        // Wrongful Death
+        'wrongful death': 'Personal Injury',
+        // Criminal Defense variations
         'criminal law': 'Criminal Defense',
         'criminal defense': 'Criminal Defense',
+        'criminal law (state)': 'Criminal Defense',
+        'criminal law (federal)': 'Criminal Defense',
+        // Family Law
         'family law': 'Family Law',
         'domestic relations': 'Family Law',
+        // Bankruptcy
         'bankruptcy': 'Bankruptcy',
         'bankruptcy law': 'Bankruptcy',
+        'bankruptcy - personal': 'Bankruptcy',
+        // Immigration variations
         'immigration': 'Immigration',
         'immigration law': 'Immigration',
+        'immigration and nationality': 'Immigration',
+        'immigration & naturalization': 'Immigration',
+        // Estate Planning
         'estate planning': 'Estate Planning',
         'wills & trusts': 'Estate Planning',
         'wills and trusts': 'Estate Planning',
         'probate': 'Estate Planning',
         'trusts and estates': 'Estate Planning',
+        'estate planning and trusts': 'Estate Planning',
+        // Employment Law variations
         'employment law': 'Employment Law',
         'labor law': 'Employment Law',
         'labor and employment': 'Employment Law',
+        'labor & employment': 'Employment Law',
+        'labor/employment': 'Employment Law',
+        // Tax
         'tax law': 'Tax/IRS',
         'taxation': 'Tax/IRS',
         'tax': 'Tax/IRS',
+        // Workers' Compensation variations
         'workers compensation': 'Workers\' Compensation',
         'workers\' compensation': 'Workers\' Compensation',
         'worker\'s compensation': 'Workers\' Compensation',
+        'workers\' comp - employee': 'Workers\' Compensation',
+        // Real Estate
         'real estate': 'Real Estate',
         'real property': 'Real Estate',
         'real estate law': 'Real Estate',
+        // Construction Law
+        'construction': 'Real Estate',
+        'construction law': 'Real Estate',
+        // Toxic Torts (map to Personal Injury as closest match)
+        'toxic torts': 'Personal Injury',
+        // Elder Law
+        'elder law': 'Estate Planning',
+        // Social Security
+        'social security': 'Employment Law',
     };
 
     const normalized = (barPracticeArea || '').toLowerCase().trim();
