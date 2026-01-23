@@ -23,7 +23,8 @@ const nodemailer = require('nodemailer');
 // Configuration
 // ============================================================================
 
-const BASE_URL = 'https://www.okbar.org/freelegalanswers/findalawyerinterim/';
+// The OK Bar uses an eWeb system that redirects - use the direct URL
+const BASE_URL = 'https://www.okbar.org/eweb/startpage.aspx?site=FALWEB';
 const RESULTS_PER_PAGE = 30;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const DELAY_BETWEEN_PAGES = 2000;
@@ -260,7 +261,21 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
 
   // Navigate to search page
   await page.goto(BASE_URL, { waitUntil: 'networkidle2', timeout: 60000 });
-  await page.waitForSelector('#C_2_2_ValueDropDownList0', { timeout: 30000 });
+
+  // Wait for page to fully load and form to be ready
+  await new Promise(r => setTimeout(r, 2000));
+
+  // Wait for the practice area dropdown
+  try {
+    await page.waitForSelector('#C_2_2_ValueDropDownList0', { timeout: 30000 });
+  } catch (err) {
+    // Log the page URL and HTML snippet for debugging
+    const currentUrl = page.url();
+    const bodyHtml = await page.evaluate(() => document.body.innerHTML.substring(0, 2000));
+    console.error(`Failed to find dropdown. Current URL: ${currentUrl}`);
+    console.error(`Page HTML snippet: ${bodyHtml.substring(0, 500)}...`);
+    throw err;
+  }
 
   // Select practice area from dropdown
   await page.select('#C_2_2_ValueDropDownList0', practiceArea.id);
