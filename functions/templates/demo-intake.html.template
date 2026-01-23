@@ -1403,6 +1403,25 @@
             box-shadow: var(--shadow-glow);
         }
 
+        .onboarding-escape-link {
+            display: {{ESCAPE_LINK_DISPLAY}};
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .onboarding-escape-link a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .onboarding-escape-link a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
         .onboarding-steps {
             text-align: left;
             margin: 1.5rem 0;
@@ -3075,6 +3094,11 @@
 
             <p id="onboarding-go-live-text">{{ONBOARDING_GO_LIVE_TEXT}}</p>
             <button id="onboarding-modal-close" class="onboarding-modal-button">Start Demo</button>
+
+            <div class="onboarding-escape-link">
+                Not at <span id="escape-firm-name"></span>?<br>
+                <a href="https://preintake.ai/" target="_top">Create a demo for your current firm &rarr;</a>
+            </div>
         </div>
     </div>
 
@@ -3093,6 +3117,11 @@
                 }
                 if (CONFIG.firmEmail && emailSpan) {
                     emailSpan.textContent = CONFIG.firmEmail;
+                }
+                // Populate escape link firm name
+                const escapeFirmName = document.getElementById('escape-firm-name');
+                if (CONFIG.firmName && escapeFirmName) {
+                    escapeFirmName.textContent = CONFIG.firmName;
                 }
             }
 

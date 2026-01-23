@@ -331,6 +331,7 @@ async function generateBarProfileDemoForContact(contactData) {
             name: generatedFirmName,
             email: email,
             website: '', // No website
+            hasWebsite: false, // Flag for demo template (hides "Not at this firm?" link)
             source: 'bar_profile_campaign',
             barNumber: barNumber || null,
             state: state || null,
