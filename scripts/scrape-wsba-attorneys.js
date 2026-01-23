@@ -215,48 +215,92 @@ async function getTotalAttorneysInDb() {
  * Extract license numbers from search results table
  * The WSBA search results show a table with License Number as the first column
  */
-async function extractLicenseNumbers(page) {
+async function extractAttorneysFromSearchResults(page) {
     return await page.evaluate(() => {
-        const licenseNumbers = [];
+        const attorneys = [];
+        const seenLicenseNumbers = new Set();
+
+        // Helper: Parse first name from WSBA "First Name" column
+        // WSBA includes middle names/initials in the first name column: "Jerry D." or "Maxine S. Daniels"
+        // We want just the first name: "Jerry" or "Maxine"
+        function parseFirstName(rawFirstName) {
+            if (!rawFirstName) return '';
+            // Split by space and take only the first word
+            const parts = rawFirstName.trim().split(/\s+/);
+            return parts[0] || '';
+        }
 
         // The results are in a table with columns: License Number, First Name, Last Name, City, Status, Phone
-        // Try to find table rows with license number data
+        // Extract ALL data from the search results table since profile pages are unreliable for names
         const tables = document.querySelectorAll('table');
 
         for (const table of tables) {
             const rows = table.querySelectorAll('tr');
             for (const row of rows) {
                 const cells = row.querySelectorAll('td');
-                if (cells.length >= 2) {
-                    // First cell should be license number
-                    const firstCell = cells[0].textContent?.trim();
+                // Need at least 4 cells: License Number, First Name, Last Name, City
+                if (cells.length >= 4) {
+                    const licenseNumber = cells[0].textContent?.trim();
+                    const rawFirstName = cells[1].textContent?.trim();
+                    const lastName = cells[2].textContent?.trim();
+                    const city = cells[3].textContent?.trim();
+
                     // License numbers are numeric
-                    if (firstCell && /^\d+$/.test(firstCell)) {
-                        licenseNumbers.push(firstCell);
+                    if (licenseNumber && /^\d+$/.test(licenseNumber) && !seenLicenseNumbers.has(licenseNumber)) {
+                        seenLicenseNumbers.add(licenseNumber);
+                        attorneys.push({
+                            licenseNumber,
+                            firstName: parseFirstName(rawFirstName),
+                            lastName: lastName || '',
+                            city: city || ''
+                        });
                     }
                 }
             }
         }
 
-        // Also look for links that might contain license numbers
-        const links = document.querySelectorAll('a[href*="LegalProfile"], a[href*="Usr_ID"]');
-        links.forEach(link => {
-            const match = link.href.match(/Usr_ID=(\d+)/);
-            if (match && !licenseNumbers.includes(match[1])) {
-                licenseNumbers.push(match[1]);
-            }
-        });
+        // Also try GridView format (ASP.NET)
+        if (attorneys.length === 0) {
+            const gridRows = document.querySelectorAll('[class*="GridView"] tr, [id*="GridView"] tr');
+            for (const row of gridRows) {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 4) {
+                    const licenseNumber = cells[0].textContent?.trim();
+                    const rawFirstName = cells[1].textContent?.trim();
+                    const lastName = cells[2].textContent?.trim();
+                    const city = cells[3].textContent?.trim();
 
-        // Try to find license numbers in GridView or DataGrid format (ASP.NET)
-        const gridCells = document.querySelectorAll('[class*="GridView"] td:first-child, [id*="GridView"] td:first-child');
-        gridCells.forEach(cell => {
-            const text = cell.textContent?.trim();
-            if (text && /^\d+$/.test(text) && !licenseNumbers.includes(text)) {
-                licenseNumbers.push(text);
+                    if (licenseNumber && /^\d+$/.test(licenseNumber) && !seenLicenseNumbers.has(licenseNumber)) {
+                        seenLicenseNumbers.add(licenseNumber);
+                        attorneys.push({
+                            licenseNumber,
+                            firstName: parseFirstName(rawFirstName),
+                            lastName: lastName || '',
+                            city: city || ''
+                        });
+                    }
+                }
             }
-        });
+        }
 
-        return [...new Set(licenseNumbers)]; // Dedupe
+        // Fallback: if no table data found, try to get license numbers from links (but no names)
+        if (attorneys.length === 0) {
+            const links = document.querySelectorAll('a[href*="LegalProfile"], a[href*="Usr_ID"]');
+            links.forEach(link => {
+                const match = link.href.match(/Usr_ID=(\d+)/);
+                if (match && !seenLicenseNumbers.has(match[1])) {
+                    seenLicenseNumbers.add(match[1]);
+                    attorneys.push({
+                        licenseNumber: match[1],
+                        firstName: '',
+                        lastName: '',
+                        city: ''
+                    });
+                }
+            });
+        }
+
+        return attorneys;
     });
 }
 
@@ -450,13 +494,42 @@ async function scrapeProfile(page, usrId) {
                 result.phone = phoneMatch[0];
             }
 
-            // Extract firm name - look for "Firm:" or "Company:" labels
-            // WSBA uses "Firm or Employer:" format - match full phrase first to avoid capturing "or Employer:"
-            const firmMatch = bodyText.match(/(?:Firm\s+or\s+Employer|Firm|Company|Organization|Employer)[:\s]+([^\n]+)/i);
-            if (firmMatch) {
-                let firmName = firmMatch[1].trim();
-                // Clean up any remaining "or Employer:" that might be captured
-                firmName = firmName.replace(/^or\s+Employer[:\s]*/i, '').trim();
+            // Extract firm name - WSBA uses "Firm or Employer:" format
+            // Only use regex extraction since HTML fallback picks up navigation elements
+            let firmName = '';
+
+            // Look for labeled field patterns with the firm name after the label
+            // The firm name is typically on a single line after "Firm or Employer:"
+            const firmPatterns = [
+                // Match "Firm or Employer:" then capture text until newline or tab
+                /Firm\s+or\s+Employer[:\s\t]+([A-Za-z0-9][^\n\r]+)/i,
+                /(?:^|\n)Employer[:\s\t]+([A-Za-z0-9][^\n\r]+)/im,
+                /(?:^|\n)Firm[:\s\t]+([A-Za-z0-9][^\n\r]+)/im,
+                /(?:^|\n)Company[:\s\t]+([A-Za-z0-9][^\n\r]+)/im
+            ];
+
+            for (const pattern of firmPatterns) {
+                const match = bodyText.match(pattern);
+                if (match && match[1]) {
+                    let extracted = match[1].trim();
+                    // Clean up any accidental "or Employer:" capture
+                    extracted = extracted.replace(/^or\s+Employer[:\s]*/i, '').trim();
+                    // Skip navigation/junk text and non-firm-name patterns
+                    const junkWords = ['cart', 'store', 'login', 'home', 'menu', 'search', 'sign in', 'register', 'office type', 'solo practice', 'wsba members'];
+                    const lowerExtracted = extracted.toLowerCase();
+                    const hasJunk = junkWords.some(w => lowerExtracted.includes(w));
+                    // Skip if it looks like navigation or is too short
+                    if (!hasJunk && extracted.length >= 3 && extracted.length < 200) {
+                        // Additional validation: should look like a firm name (has letters, maybe numbers/punctuation)
+                        if (/[A-Za-z]{2,}/.test(extracted)) {
+                            firmName = extracted;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (firmName) {
                 result.firmName = firmName;
             }
 
@@ -551,7 +624,8 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
     let batch = db.batch();
     let batchCount = 0;
     const BATCH_SIZE = 400;
-    const allLicenseNumbers = [];
+    const allAttorneys = []; // Objects with {licenseNumber, firstName, lastName, city}
+    const seenLicenseNumbers = new Set();
 
     try {
         // Navigate to search results
@@ -575,24 +649,25 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             return stats;
         }
 
-        // Extract license numbers from all pages
+        // Extract attorneys from all pages (get names from search results, not profile pages)
         let pageNum = 1;
         let hasMore = true;
 
-        while (hasMore && allLicenseNumbers.length < MAX_ATTORNEYS) {
+        while (hasMore && allAttorneys.length < MAX_ATTORNEYS) {
             console.log(`   Page ${pageNum}...`);
 
-            const pageNumbers = await extractLicenseNumbers(page);
-            console.log(`     Found ${pageNumbers.length} license numbers on page`);
+            const pageAttorneys = await extractAttorneysFromSearchResults(page);
+            console.log(`     Found ${pageAttorneys.length} attorneys on page`);
 
-            // Add new numbers (dedupe)
-            for (const num of pageNumbers) {
-                if (!allLicenseNumbers.includes(num)) {
-                    allLicenseNumbers.push(num);
+            // Add new attorneys (dedupe by license number)
+            for (const attorney of pageAttorneys) {
+                if (!seenLicenseNumbers.has(attorney.licenseNumber)) {
+                    seenLicenseNumbers.add(attorney.licenseNumber);
+                    allAttorneys.push(attorney);
                 }
             }
 
-            if (allLicenseNumbers.length >= MAX_ATTORNEYS) {
+            if (allAttorneys.length >= MAX_ATTORNEYS) {
                 console.log(`     Reached MAX_ATTORNEYS limit`);
                 break;
             }
@@ -608,13 +683,15 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             }
         }
 
-        console.log(`   Total license numbers collected: ${allLicenseNumbers.length}`);
+        console.log(`   Total attorneys collected: ${allAttorneys.length}`);
 
-        // Now fetch each profile
+        // Now fetch each profile to get email, phone, firmName, website
+        // Names come from search results (more reliable than profile page extraction)
         console.log(`   Fetching profiles...`);
 
-        for (let i = 0; i < allLicenseNumbers.length && i < MAX_ATTORNEYS; i++) {
-            const licenseNum = allLicenseNumbers[i];
+        for (let i = 0; i < allAttorneys.length && i < MAX_ATTORNEYS; i++) {
+            const attorney = allAttorneys[i];
+            const licenseNum = attorney.licenseNumber;
             stats.profilesFetched++;
 
             // Skip if barNumber already exists in DB (avoids re-fetching profile)
@@ -644,16 +721,21 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                     continue;
                 }
 
+                // Use names from search results (reliable), fall back to profile extraction if needed
+                const firstName = attorney.firstName || profile.firstName || '';
+                const lastName = attorney.lastName || profile.lastName || '';
+                const city = attorney.city || profile.city || '';
+
                 // Create document
                 const docData = {
-                    firstName: profile.firstName,
-                    lastName: profile.lastName,
-                    firmName: profile.firmName || `${profile.firstName} ${profile.lastName}, Attorney at Law`,
+                    firstName: firstName,
+                    lastName: lastName,
+                    firmName: profile.firmName || (firstName && lastName ? `${firstName} ${lastName}, Attorney at Law` : ''),
                     email: emailLower,
                     phone: profile.phone,
                     website: profile.website,
                     practiceArea: displayName,
-                    city: profile.city,
+                    city: city,
                     state: profile.state || DEFAULT_STATE,
                     source: SOURCE,
                     barNumber: profile.barNumber || licenseNum,
@@ -683,7 +765,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
 
                 // Progress logging
                 if ((i + 1) % 25 === 0) {
-                    console.log(`     Processed ${i + 1}/${Math.min(allLicenseNumbers.length, MAX_ATTORNEYS)} (${stats.inserted} inserted)`);
+                    console.log(`     Processed ${i + 1}/${Math.min(allAttorneys.length, MAX_ATTORNEYS)} (${stats.inserted} inserted)`);
                 }
 
                 await sleepWithJitter(DELAY_BETWEEN_PROFILES);
