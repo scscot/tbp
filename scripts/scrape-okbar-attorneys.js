@@ -23,10 +23,9 @@ const nodemailer = require('nodemailer');
 // Configuration
 // ============================================================================
 
-// The OK Bar uses an eWeb system (ASP.NET WebForms)
-// The WordPress page at /freelegalanswers/findalawyerinterim/ doesn't load the form properly
-// We must use the direct eWeb URL instead
-const BASE_URL = 'https://www.okbar.org/eweb/startpage.aspx?site=FALWEB';
+// The OK Bar uses an eWeb system (ASP.NET WebForms) hosted on ams.okbar.org subdomain
+// The main www.okbar.org site just links to this - the eWeb system is separate
+const BASE_URL = 'https://ams.okbar.org/eweb/startpage.aspx?site=FALWEB';
 const RESULTS_PER_PAGE = 30;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const DELAY_BETWEEN_PAGES = 2000;
