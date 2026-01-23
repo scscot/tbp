@@ -47,8 +47,8 @@ const analyzePreIntakeLead = onDocumentCreated(
         const leadData = snap.data();
 
         // Skip analysis for campaign-sourced leads (already processed with demo)
-        if (leadData.source === 'campaign') {
-            console.log(`Lead ${leadId} is from email campaign - already processed, skipping analysis`);
+        if (leadData.source === 'campaign' || leadData.source === 'bar_profile_campaign') {
+            console.log(`Lead ${leadId} is from email campaign (${leadData.source}) - already processed, skipping analysis`);
             return;
         }
 
