@@ -3096,8 +3096,8 @@
             <button id="onboarding-modal-close" class="onboarding-modal-button">Start Demo</button>
 
             <div class="onboarding-escape-link">
-                Not at <span id="escape-firm-name"></span>?<br>
-                <a href="https://preintake.ai/" target="_top">Create a demo for your current firm &rarr;</a>
+                This demo is customized for "<span id="escape-firm-name"></span>".<br>
+                Want one for your firm? <a href="https://preintake.ai/" target="_top">Visit PreIntake.ai &rarr;</a>
             </div>
         </div>
     </div>

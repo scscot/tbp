@@ -135,6 +135,59 @@ function isYahooAolEmail(email) {
 }
 
 /**
+ * Clean firm name by removing address information
+ * Some bar associations concatenate firm name with address in their data
+ * Example: "Lisa L. Cullaro, P.A.PO Box 271150Tampa, FL 33688-1150"
+ * Should become: "Lisa L. Cullaro, P.A."
+ */
+function cleanFirmName(firmText) {
+    if (!firmText) return '';
+
+    let cleaned = firmText.trim();
+
+    // Pattern 1: PO Box (with or without space after number)
+    // "Firm NamePO Box 123..." or "Firm Name PO Box 123..."
+    const poBoxMatch = cleaned.match(/^(.+?)\s*PO\s*Box/i);
+    if (poBoxMatch) {
+        return poBoxMatch[1].trim();
+    }
+
+    // Pattern 2: Street number followed by text (standard address)
+    // "Firm Name123 Main St" or "Firm Name 123 Main St"
+    const streetMatch = cleaned.match(/^(.+?)(\d+\s*[A-Za-z])/);
+    if (streetMatch && streetMatch[1].length > 3) {
+        return streetMatch[1].trim();
+    }
+
+    // Pattern 3: State abbreviation + ZIP code
+    // "Firm Name, Tampa, FL 33688"
+    const stateZipMatch = cleaned.match(/^(.+?),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s+\d{5}/);
+    if (stateZipMatch) {
+        return stateZipMatch[1].trim();
+    }
+
+    // Pattern 4: 5-digit ZIP code anywhere (last resort)
+    // "Firm Name...33688-1150"
+    const zipMatch = cleaned.match(/^(.+?)\d{5}(-\d{4})?/);
+    if (zipMatch && zipMatch[1].length > 3) {
+        // Make sure we didn't just grab a tiny prefix
+        const candidate = zipMatch[1].trim();
+        // Remove trailing comma, city name fragments
+        const finalCleaned = candidate.replace(/,\s*[A-Za-z\s]*$/, '').trim();
+        if (finalCleaned.length > 3) {
+            return finalCleaned;
+        }
+    }
+
+    // No address patterns found - return as-is (unless it starts with a number)
+    if (!cleaned.match(/^\d/)) {
+        return cleaned;
+    }
+
+    return '';
+}
+
+/**
  * Check if current time is within allowed PT business window
  * Returns { allowed: boolean, reason: string, ptTime: string }
  */
@@ -323,8 +376,9 @@ async function generateBarProfileDemoForContact(contactData) {
         const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
         console.log(`   ✓ Generated intake code: ${intakeCode}`);
 
-        // Step 5: Build firm name
-        const generatedFirmName = firmName || `${firstName} ${lastName}, Attorney at Law`;
+        // Step 5: Build firm name (clean any address info from scraper data)
+        const cleanedFirmName = cleanFirmName(firmName);
+        const generatedFirmName = cleanedFirmName || `${firstName} ${lastName}, Attorney at Law`;
 
         // Step 6: Save lead document with demo URL and intake code
         const leadData = {
@@ -1018,11 +1072,12 @@ async function runCampaign() {
         const recipientEmail = TEST_EMAIL || email;
 
         // Format recipient with name: "First Last <email>" or "FirmName <email>"
-        const recipientName = (firstName && lastName) ? `${firstName} ${lastName}` : firmName;
+        const cleanedFirmNameForDisplay = cleanFirmName(firmName);
+        const recipientName = (firstName && lastName) ? `${firstName} ${lastName}` : cleanedFirmNameForDisplay;
         const formattedRecipient = `${recipientName} <${recipientEmail}>`;
 
-        // Generate firm name for bar profile contacts
-        const displayFirmName = firmName || (firstName && lastName ? `${firstName} ${lastName}, Attorney at Law` : 'Law Firm');
+        // Generate firm name for bar profile contacts (clean any address info)
+        const displayFirmName = cleanedFirmNameForDisplay || (firstName && lastName ? `${firstName} ${lastName}, Attorney at Law` : 'Law Firm');
 
         try {
             console.log(`\n📧 Processing ${displayFirmName} (${recipientEmail})...`);

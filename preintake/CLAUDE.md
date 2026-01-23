@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-01-22
-**Version**: 4.2 (Kentucky Bar scraper with county subdivision)
+**Version**: 4.3 (All 12 bar scrapers documented: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, OH)
 
 ---
 
@@ -1841,6 +1841,277 @@ Practice Area has >500 results?
 - Some sections return 0 results (data availability issue on GA Bar side)
 - Efficient skip-before-fetch using preloaded profileId set
 
+### Phase 37: Illinois Bar Attorney Scraper (2026-01-22)
+- [x] **Illinois Bar Scraper Script** - `scripts/scrape-ilbar-attorneys.js`
+  - Scrapes attorney contact information from Illinois State Bar Association website (isba.reliaguide.com)
+  - Uses Puppeteer + vCard API (ReliaGuide platform - same as Michigan)
+  - Supports category URL filtering: `category.equals={name}&categoryId.equals={id}`
+  - 20 practice areas with category IDs (IDs consistent across ReliaGuide sites)
+  - vCard API provides: email, phone, firm name, website, city, state
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/ilbar-scraper.yml`
+  - Scheduled: Daily (time offset from other scrapers)
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**Illinois Bar Practice Areas (20 total):**
+| Tier | ID | Practice Area |
+|------|-----|---------------|
+| **Tier 1** | 264 | Personal Injury |
+| | 210 | Immigration & Naturalization |
+| | 172 | Family Law |
+| | 127 | Criminal Defense |
+| | 3 | Bankruptcy |
+| | 594 | Workers Compensation |
+| | 454 | Medical Malpractice |
+| | 359 | Wrongful Death |
+| **Tier 2** | 228 | Labor & Employment |
+| | 285 | Real Estate |
+| | 277 | Probate & Estate Planning |
+| | 179 | Elder Law & Advocacy |
+| | 321 | Social Security |
+| | 120 | Consumer Law |
+| | 96 | Civil Rights |
+| **Tier 3** | 74 | Business Law |
+| | 326 | Tax |
+| | 483 | Civil Litigation |
+| | 215 | Intellectual Property |
+| | 116 | Construction Law |
+
+**Firestore Fields** (in `preintake_emails` collection for Illinois Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"ilbar"` |
+| `profileId` | ReliaGuide profile ID |
+| `practiceArea` | Practice area from search filter |
+| `state` | `"IL"` (or from vCard) |
+| `memberUrl` | vCard API URL |
+| `website` | Firm website (from vCard) |
+| `city` | City (from vCard address) |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/ilbar`):
+| Field | Description |
+|-------|-------------|
+| `completedCategoryIds` | Array of fully scraped category IDs |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+
+**Key Technical Details:**
+- Same ReliaGuide platform as Michigan Bar (sbm.reliaguide.com)
+- Category URL filtering supported (unlike Mississippi/Nebraska)
+- vCard API requires `Accept: text/vcard` header
+- Category IDs shared across all ReliaGuide bar sites (264 = Personal Injury, etc.)
+
+### Phase 38: Indiana Bar Attorney Scraper (2026-01-22)
+- [x] **Indiana Bar Scraper Script** - `scripts/scrape-inbar-attorneys.js`
+  - Scrapes attorney contact information from Indiana State Bar Association website (inbar.reliaguide.com)
+  - Uses Puppeteer + vCard API (ReliaGuide platform)
+  - **UNIQUE: NO practice areas exposed** - scrapes ALL attorneys without filtering
+  - vCard API provides: email, phone, firm name, website, city, state
+  - Progress tracking with page-based resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/inbar-scraper.yml`
+  - Scheduled: Daily (time offset from other scrapers)
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**Indiana Bar Unique Characteristics:**
+- Indiana's ReliaGuide site does NOT expose practice areas in the search interface
+- No category filtering available - must scrape all attorneys
+- Practice area field stored as empty string: `practiceArea: ''`
+- Relies on page-based progress tracking instead of category-based
+
+**Firestore Fields** (in `preintake_emails` collection for Indiana Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"inbar"` |
+| `profileId` | ReliaGuide profile ID |
+| `practiceArea` | Empty string (not available) |
+| `state` | `"IN"` (or from vCard) |
+| `memberUrl` | vCard API URL |
+| `website` | Firm website (from vCard) |
+| `city` | City (from vCard address) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/inbar`):
+| Field | Description |
+|-------|-------------|
+| `lastPage` | Last successfully scraped page number |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+### Phase 39: Mississippi Bar Attorney Scraper (2026-01-22)
+- [x] **Mississippi Bar Scraper Script** - `scripts/scrape-msbar-attorneys.js`
+  - Scrapes attorney contact information from Mississippi Bar website (msbar.reliaguide.com)
+  - Uses Puppeteer + vCard API (ReliaGuide platform)
+  - **No category URL filtering** - uses keyword matching in card text instead
+  - 18 target practice areas for filtering via text matching
+  - vCard API provides: email, phone, firm name, website, city, state
+  - Progress tracking with page-based resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/msbar-scraper.yml`
+  - Scheduled: Daily (time offset from other scrapers)
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**Mississippi Bar Practice Areas (18 target keywords):**
+| Priority | Practice Area Keyword |
+|----------|----------------------|
+| 1 | Personal Injury |
+| 2 | Immigration |
+| 3 | Workers Compensation |
+| 4 | Bankruptcy |
+| 5 | Family Law |
+| 6 | Criminal |
+| 7 | Medical Malpractice |
+| 8 | Elder Law |
+| 9 | Estate Planning |
+| 10 | Labor |
+| 11 | Employment |
+| 12 | Social Security |
+| 13 | Consumer |
+| 14 | Civil Rights |
+| 15 | Construction |
+| 16 | Real Estate |
+| 17 | Probate |
+| 18 | Tax |
+
+**Firestore Fields** (in `preintake_emails` collection for Mississippi Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"msbar"` |
+| `profileId` | ReliaGuide profile ID |
+| `practiceArea` | Matched practice area keyword |
+| `state` | `"MS"` (or from vCard) |
+| `memberUrl` | vCard API URL |
+| `website` | Firm website (from vCard) |
+| `city` | City (from vCard address) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/msbar`):
+| Field | Description |
+|-------|-------------|
+| `lastPage` | Last successfully scraped page number |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+**Key Technical Details:**
+- ReliaGuide platform but WITHOUT category URL filtering support
+- Practice area detection via keyword matching in card text/categories
+- Same vCard API pattern as other ReliaGuide scrapers
+
+### Phase 40: Nebraska Bar Attorney Scraper (2026-01-22)
+- [x] **Nebraska Bar Scraper Script** - `scripts/scrape-nebar-attorneys.js`
+  - Scrapes attorney contact information from Nebraska State Bar Association website (nebar.reliaguide.com)
+  - Uses Puppeteer + vCard API (ReliaGuide platform)
+  - **No category URL filtering** - uses keyword matching in card text instead (same as Mississippi)
+  - 18 target practice areas for filtering via text matching
+  - vCard API provides: email, phone, firm name, website, city, state
+  - Progress tracking with page-based resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/nebar-scraper.yml`
+  - Scheduled: Daily (time offset from other scrapers)
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**Nebraska Bar Practice Areas (18 target keywords):**
+Same as Mississippi Bar - uses identical keyword matching approach:
+- Personal Injury, Immigration, Workers Compensation, Bankruptcy, Family Law
+- Criminal, Medical Malpractice, Elder Law, Estate Planning, Labor
+- Employment, Social Security, Consumer, Civil Rights, Construction
+- Real Estate, Probate, Tax
+
+**Firestore Fields** (in `preintake_emails` collection for Nebraska Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"nebar"` |
+| `profileId` | ReliaGuide profile ID |
+| `practiceArea` | Matched practice area keyword |
+| `state` | `"NE"` (or from vCard) |
+| `memberUrl` | vCard API URL |
+| `website` | Firm website (from vCard) |
+| `city` | City (from vCard address) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/nebar`):
+| Field | Description |
+|-------|-------------|
+| `lastPage` | Last successfully scraped page number |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+### Phase 41: North Carolina Bar Attorney Scraper (2026-01-22)
+- [x] **North Carolina Bar Scraper Script** - `scripts/scrape-ncbar-attorneys.js`
+  - Scrapes attorney contact information from NC State Bar portal (portal.ncbar.gov)
+  - **DIFFERENT PLATFORM** - Not ReliaGuide, uses NC State Bar's custom portal
+  - Uses Puppeteer for dropdown-based specialization filtering
+  - 18 specializations available via dropdown selector
+  - Profile page scraping (no vCard API) - extracts from `dl-horizontal` structure
+  - Progress tracking by specialization across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/ncbar-scraper.yml`
+  - Scheduled: Daily (time offset from other scrapers)
+  - Manual trigger with configurable max attorneys and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**North Carolina Bar Specializations (18 total):**
+| Priority | Specialization |
+|----------|---------------|
+| 1 | Workers' Compensation |
+| 2 | Immigration Law |
+| 3 | Family Law |
+| 4 | Criminal Law |
+| 5 | Bankruptcy Law |
+| 6 | Elder Law |
+| 7 | Estate Planning and Probate Law |
+| 8 | Real Property Law - Residential |
+| 9 | Real Property Law - Business, Commercial and Industrial |
+| 10 | Social Security Disability Law |
+| 11 | Appellate Practice |
+| 12 | Trademark Law |
+| 13 | Federal and State Tax Law |
+| 14 | Utilities Law |
+| 15 | Privacy and Information Security Law |
+| 16 | Creditors' Rights |
+| 17 | Marital, Family, and Juvenile Law |
+| 18 | Consumer Protection Law |
+
+**Firestore Fields** (in `preintake_emails` collection for North Carolina Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"ncbar"` |
+| `barNumber` | NC State Bar number (unique ID) |
+| `practiceArea` | Specialization from dropdown |
+| `state` | `"NC"` |
+| `memberUrl` | NC State Bar profile URL |
+| `website` | Firm website (if available) |
+| `city` | City (from address) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/ncbar`):
+| Field | Description |
+|-------|-------------|
+| `scrapedSpecializations` | Array of completed specialization names |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+**Key Technical Details:**
+- Uses `barNumber` field instead of `profileId` (different platform)
+- Profile data extracted from `dl-horizontal` definition list structure
+- Dropdown-based filtering (not checkbox or URL-based)
+- No vCard API - direct HTML profile page scraping
+
 ---
 
 ## Architecture
@@ -1890,11 +2161,18 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── regenerate-preintake-demos.js    # Regenerate demos with latest template
 ├── analyze-click-rate.js            # Email click rate analysis
 ├── send-preintake-campaign.js       # Email campaign sender
-├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper
-├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
-├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (Puppeteer/vCard API)
-├── scrape-mobar-attorneys.js        # Missouri Bar attorney scraper (Puppeteer/ASP.NET)
+├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)
+├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper (Cloudflare obfuscation)
+├── scrape-gabar-attorneys.js        # Georgia Bar attorney scraper (Puppeteer/JS-rendered)
+├── scrape-ilbar-attorneys.js        # Illinois Bar attorney scraper (ReliaGuide/vCard API)
+├── scrape-inbar-attorneys.js        # Indiana Bar attorney scraper (ReliaGuide/no practice areas)
 ├── scrape-kybar-attorneys.js        # Kentucky Bar attorney scraper (Puppeteer/iframe CV5)
+├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (ReliaGuide/vCard API)
+├── scrape-mobar-attorneys.js        # Missouri Bar attorney scraper (Puppeteer/ASP.NET)
+├── scrape-msbar-attorneys.js        # Mississippi Bar attorney scraper (ReliaGuide/keyword matching)
+├── scrape-ncbar-attorneys.js        # North Carolina Bar attorney scraper (Puppeteer/dropdown)
+├── scrape-nebar-attorneys.js        # Nebraska Bar attorney scraper (ReliaGuide/keyword matching)
+├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution

@@ -30,6 +30,51 @@ db.settings({ databaseId: 'preintake' });
 
 const DRY_RUN = !process.argv.includes('--run');
 
+/**
+ * Clean firm name by removing address information that may be concatenated
+ * Handles cases like "Lisa L. Cullaro, P.A.PO Box 271150Tampa, FL 33688-1150"
+ * @param {string} firmText - Raw firm text that may contain address
+ * @returns {string} Cleaned firm name
+ */
+function cleanFirmName(firmText) {
+    if (!firmText) return '';
+    let cleaned = firmText.trim();
+
+    // Pattern 1: PO Box (with or without space after number)
+    const poBoxMatch = cleaned.match(/^(.+?)\s*PO\s*Box/i);
+    if (poBoxMatch) {
+        return poBoxMatch[1].trim();
+    }
+
+    // Pattern 2: Street number followed by text (standard address)
+    const streetMatch = cleaned.match(/^(.+?)(\d+\s*[A-Za-z])/);
+    if (streetMatch && streetMatch[1].length > 3) {
+        return streetMatch[1].trim();
+    }
+
+    // Pattern 3: State abbreviation + ZIP code
+    const stateZipMatch = cleaned.match(/^(.+?),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s+\d{5}/);
+    if (stateZipMatch) {
+        return stateZipMatch[1].trim();
+    }
+
+    // Pattern 4: 5-digit ZIP code anywhere (last resort)
+    const zipMatch = cleaned.match(/^(.+?)\d{5}(-\d{4})?/);
+    if (zipMatch && zipMatch[1].length > 3) {
+        const candidate = zipMatch[1].trim();
+        const finalCleaned = candidate.replace(/,\s*[A-Za-z\s]*$/, '').trim();
+        if (finalCleaned.length > 3) {
+            return finalCleaned;
+        }
+    }
+
+    // No address patterns found - return as-is (unless it starts with a number)
+    if (!cleaned.match(/^\d/)) {
+        return cleaned;
+    }
+    return '';
+}
+
 async function main() {
     console.log('='.repeat(70));
     console.log('Regenerate Bar Profile Demos');
@@ -79,7 +124,11 @@ async function main() {
                 const lastName = nameParts.slice(1).join(' ') || '';
                 const state = leadData.state || null;
                 const barNumber = leadData.barNumber || null;
-                const firmName = leadData.name;
+
+                // Clean firm name to remove any address info from scraper data
+                const rawFirmName = leadData.name || '';
+                const cleanedFirmName = cleanFirmName(rawFirmName);
+                const firmName = cleanedFirmName || `${firstName} ${lastName}, Attorney at Law`;
 
                 // Regenerate demo with mapped practice area
                 console.log(`   🏗️ Regenerating demo...`);

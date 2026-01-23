@@ -365,8 +365,8 @@ function generateDemoFiles(leadId, leadData, analysis, deepResearch) {
         '{{DEMO_LIMIT_TEXT}}': isHosted
             ? 'Ready to get your personalized intake link?'
             : 'Ready to go live on your website?',
-        // Hide escape link for hosted/bar profile demos (no website to "escape" from)
-        '{{ESCAPE_LINK_DISPLAY}}': isHosted ? 'none' : 'block',
+        // Show escape link for ALL demos (allows bar profile contacts to create demo for current firm)
+        '{{ESCAPE_LINK_DISPLAY}}': 'block',
     };
 
     for (const [token, value] of Object.entries(replacements)) {

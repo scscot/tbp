@@ -457,6 +457,59 @@ function parseName(fullName) {
     return { firstName, lastName };
 }
 
+/**
+ * Clean firm name by removing address information
+ * Florida Bar data often has firm name concatenated with address
+ * Example: "Lisa L. Cullaro, P.A.PO Box 271150Tampa, FL 33688-1150"
+ * Should become: "Lisa L. Cullaro, P.A."
+ */
+function cleanFirmName(firmText) {
+    if (!firmText) return '';
+
+    let cleaned = firmText.trim();
+
+    // Pattern 1: PO Box (with or without space after number)
+    // "Firm NamePO Box 123..." or "Firm Name PO Box 123..."
+    const poBoxMatch = cleaned.match(/^(.+?)\s*PO\s*Box/i);
+    if (poBoxMatch) {
+        return poBoxMatch[1].trim();
+    }
+
+    // Pattern 2: Street number followed by text (standard address)
+    // "Firm Name123 Main St" or "Firm Name 123 Main St"
+    const streetMatch = cleaned.match(/^(.+?)(\d+\s*[A-Za-z])/);
+    if (streetMatch && streetMatch[1].length > 3) {
+        return streetMatch[1].trim();
+    }
+
+    // Pattern 3: State abbreviation + ZIP code
+    // "Firm Name, Tampa, FL 33688"
+    const stateZipMatch = cleaned.match(/^(.+?),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s+\d{5}/);
+    if (stateZipMatch) {
+        return stateZipMatch[1].trim();
+    }
+
+    // Pattern 4: 5-digit ZIP code anywhere (last resort)
+    // "Firm Name...33688-1150"
+    const zipMatch = cleaned.match(/^(.+?)\d{5}(-\d{4})?/);
+    if (zipMatch && zipMatch[1].length > 3) {
+        // Make sure we didn't just grab a tiny prefix
+        const candidate = zipMatch[1].trim();
+        // Remove trailing comma, city name fragments
+        const finalCleaned = candidate.replace(/,\s*[A-Za-z\s]*$/, '').trim();
+        if (finalCleaned.length > 3) {
+            return finalCleaned;
+        }
+    }
+
+    // Pattern 5: If text doesn't start with a number, return as-is
+    if (!cleaned.match(/^\d/)) {
+        return cleaned;
+    }
+
+    return '';
+}
+
 // ============================================================================
 // SEARCH RESULTS PARSING
 // ============================================================================
@@ -520,14 +573,7 @@ async function parseSearchResults(practiceAreaCode, county, pageNum) {
             const firmEl = profileContact.find('p').first();
             if (firmEl.length) {
                 const firmText = firmEl.text().trim();
-                // Address starts with a number - extract firm name before that
-                const addressMatch = firmText.match(/^(.+?)(\d+\s)/);
-                if (addressMatch) {
-                    firmName = addressMatch[1].trim();
-                } else if (firmText && !firmText.match(/^\d/)) {
-                    // No address found, use full text if it doesn't start with number
-                    firmName = firmText;
-                }
+                firmName = cleanFirmName(firmText);
             }
 
             // Extract phone (Office phone preferred)
