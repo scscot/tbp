@@ -172,6 +172,49 @@ async function getExistingEmails(db) {
 // Data Extraction Helpers
 // ============================================================================
 
+/**
+ * Parse name in "First Last" format, handling common suffixes
+ */
+function parseName(nameStr) {
+    if (!nameStr) return { firstName: '', lastName: '' };
+
+    // Remove extra whitespace
+    nameStr = nameStr.trim().replace(/\s+/g, ' ');
+
+    // Common suffixes to remove from name parsing
+    const suffixes = ['Jr', 'Jr.', 'Sr', 'Sr.', 'II', 'III', 'IV', 'Esq', 'Esq.'];
+
+    // Remove suffix if present at end
+    let cleanedName = nameStr;
+    for (const suffix of suffixes) {
+        const suffixPattern = new RegExp(`[,\\s]+${suffix}$`, 'i');
+        cleanedName = cleanedName.replace(suffixPattern, '').trim();
+    }
+
+    // Split on comma first (might be "Last, First" format)
+    if (cleanedName.includes(',')) {
+        const parts = cleanedName.split(',').map(p => p.trim());
+        if (parts.length >= 2) {
+            const lastName = parts[0];
+            const firstNames = parts[1].split(' ');
+            const firstName = firstNames[0] || '';
+            return { firstName, lastName };
+        }
+    }
+
+    // Space-separated (First Last)
+    const spaceParts = cleanedName.split(' ');
+    if (spaceParts.length >= 2) {
+        return {
+            firstName: spaceParts[0],
+            lastName: spaceParts[spaceParts.length - 1]
+        };
+    }
+
+    // Single word - treat as first name
+    return { firstName: cleanedName, lastName: '' };
+}
+
 function extractAttorneyData(card) {
   // Attorney cards have structure:
   // <div class="span4 pad10">
@@ -186,6 +229,8 @@ function extractAttorneyData(card) {
   // </div>
 
   const data = {
+    firstName: null,
+    lastName: null,
     firmName: null,
     email: null,
     phone: null,
@@ -195,10 +240,13 @@ function extractAttorneyData(card) {
     state: 'OK'
   };
 
-  // Extract firm/attorney name from <strong> tag
+  // Extract attorney name from <strong> tag
+  // Oklahoma Bar displays attorney names (not firm names) in the <strong> tag
   const strongEl = card.querySelector('strong');
   if (strongEl) {
-    data.firmName = strongEl.textContent.trim();
+    const fullName = strongEl.textContent.trim();
+    // Store original as firmName for backward compatibility
+    data.firmName = fullName;
   }
 
   // Extract email from mailto link
@@ -408,11 +456,23 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
         continue;
       }
 
+      // Parse the name from firmName (which contains the attorney name)
+      const { firstName, lastName } = parseName(attorney.firmName);
+
+      // Skip if we can't extract both first and last name
+      if (!firstName || !lastName) {
+        console.log(`  Skipping ${attorney.email}: could not parse name from "${attorney.firmName}"`);
+        stats.totalSkipped++;
+        continue;
+      }
+
       // Add to database
       if (!DRY_RUN) {
         const docData = {
           email: attorney.email,
-          firmName: attorney.firmName,
+          firstName: firstName,
+          lastName: lastName,
+          firmName: attorney.firmName, // Keep original for reference
           phone: attorney.phone || null,
           website: attorney.website || null,
           address: attorney.address || null,
