@@ -355,14 +355,49 @@ async function extractProfileDetails(page) {
             barNumber: ''
         };
 
+        const bodyText = document.body.innerText;
+
         // Try to extract name from h1, h2, or specific class
-        const nameEl = document.querySelector('h1, h2, .member-name, .attorney-name, [class*="name"]');
+        const nameEl = document.querySelector('h1, h2, .member-name, .attorney-name, [class*="name"], .profile-name, .member-info h1, .member-info h2');
         if (nameEl) {
             details.fullName = nameEl.textContent.trim();
-            const nameParts = details.fullName.split(/\s+/);
+            // Clean up name - remove suffixes for parsing
+            let cleanName = details.fullName.replace(/,?\s*(Esq\.?|Jr\.?|Sr\.?|II|III|IV|P\.?C\.?|LLC|PLLC)$/gi, '').trim();
+            const nameParts = cleanName.split(/\s+/).filter(p => p.length > 0);
             if (nameParts.length >= 2) {
                 details.firstName = nameParts[0];
                 details.lastName = nameParts[nameParts.length - 1];
+            }
+        }
+
+        // Fallback: Try page title for name
+        if ((!details.firstName || !details.lastName) && document.title) {
+            const titleParts = document.title.split(/[-|–—]/)[0].trim().split(/\s+/);
+            // Filter out common non-name words
+            const filteredParts = titleParts.filter(p =>
+                p.length > 1 &&
+                !/^(georgia|state|bar|association|member|directory|profile|attorney|lawyer|find|search|legal)$/i.test(p)
+            );
+            if (filteredParts.length >= 2) {
+                if (!details.firstName) details.firstName = filteredParts[0];
+                if (!details.lastName) details.lastName = filteredParts[filteredParts.length - 1];
+            }
+        }
+
+        // Fallback: Look for labeled name fields in page text
+        if (!details.firstName || !details.lastName) {
+            const firstNameMatch = bodyText.match(/(?:First\s*Name)[:\s]+([A-Za-z]+)/i);
+            const lastNameMatch = bodyText.match(/(?:Last\s*Name)[:\s]+([A-Za-z]+)/i);
+            if (firstNameMatch && !details.firstName) details.firstName = firstNameMatch[1].trim();
+            if (lastNameMatch && !details.lastName) details.lastName = lastNameMatch[1].trim();
+        }
+
+        // Fallback: Look for "Name:" label
+        if (!details.firstName || !details.lastName) {
+            const nameMatch = bodyText.match(/\bName[:\s]+([A-Z][a-z]+)\s+([A-Z][a-z]+)/);
+            if (nameMatch) {
+                if (!details.firstName) details.firstName = nameMatch[1];
+                if (!details.lastName) details.lastName = nameMatch[2];
             }
         }
 

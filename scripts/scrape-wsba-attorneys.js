@@ -396,7 +396,8 @@ async function scrapeProfile(page, usrId) {
             const bodyHtml = document.body.innerHTML;
 
             // Extract name from page title or header
-            const nameHeader = document.querySelector('h1, h2, .attorney-name, .profile-name');
+            // Try multiple selectors since WSBA page structure varies
+            const nameHeader = document.querySelector('h1, h2, .attorney-name, .profile-name, .member-name, [class*="Name"], [id*="Name"]');
             if (nameHeader) {
                 result.fullName = nameHeader.textContent.trim();
                 // Try to split name
@@ -404,6 +405,29 @@ async function scrapeProfile(page, usrId) {
                 if (nameParts.length >= 2) {
                     result.firstName = nameParts[0];
                     result.lastName = nameParts[nameParts.length - 1];
+                }
+            }
+
+            // If name not found via header, try looking for labeled fields
+            if (!result.firstName || !result.lastName) {
+                // Try "First Name:" or "Name:" labels
+                const firstNameMatch = bodyText.match(/(?:First\s*Name)[:\s]+([A-Za-z]+)/i);
+                const lastNameMatch = bodyText.match(/(?:Last\s*Name)[:\s]+([A-Za-z]+)/i);
+                if (firstNameMatch) result.firstName = firstNameMatch[1].trim();
+                if (lastNameMatch) result.lastName = lastNameMatch[1].trim();
+
+                // Try page title (often contains attorney name)
+                if ((!result.firstName || !result.lastName) && document.title) {
+                    const titleParts = document.title.split(/[-|–—]/)[0].trim().split(/\s+/);
+                    // Filter out common words that aren't names
+                    const filteredParts = titleParts.filter(p =>
+                        p.length > 1 &&
+                        !/^(wsba|attorney|lawyer|profile|directory|legal|washington|state|bar|association)$/i.test(p)
+                    );
+                    if (filteredParts.length >= 2) {
+                        if (!result.firstName) result.firstName = filteredParts[0];
+                        if (!result.lastName) result.lastName = filteredParts[filteredParts.length - 1];
+                    }
                 }
             }
 
@@ -427,9 +451,13 @@ async function scrapeProfile(page, usrId) {
             }
 
             // Extract firm name - look for "Firm:" or "Company:" labels
-            const firmMatch = bodyText.match(/(?:Firm|Company|Organization|Employer)[:\s]+([^\n]+)/i);
+            // WSBA uses "Firm or Employer:" format - match full phrase first to avoid capturing "or Employer:"
+            const firmMatch = bodyText.match(/(?:Firm\s+or\s+Employer|Firm|Company|Organization|Employer)[:\s]+([^\n]+)/i);
             if (firmMatch) {
-                result.firmName = firmMatch[1].trim();
+                let firmName = firmMatch[1].trim();
+                // Clean up any remaining "or Employer:" that might be captured
+                firmName = firmName.replace(/^or\s+Employer[:\s]*/i, '').trim();
+                result.firmName = firmName;
             }
 
             // Extract bar number from URL or page
