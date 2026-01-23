@@ -1,0 +1,64 @@
+name: PreIntake Mailgun Event Sync
+
+on:
+  schedule:
+    # Run 15 minutes after each campaign window to capture events
+    # Campaign runs at: 16:30, 17:30, 20:30, 21:30 UTC (Mon-Fri)
+    # Sync runs at: 16:45, 17:45, 20:45, 21:45 UTC (Mon-Fri)
+    - cron: '45 16,17,20,21 * * 1-5'
+
+  # Allow manual trigger for testing or catch-up syncs
+  workflow_dispatch:
+    inputs:
+      lookback_hours:
+        description: 'Hours to look back for events'
+        required: false
+        default: '2'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  sync-events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm install firebase-admin axios && cd ..
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Sync Mailgun events to Firestore
+        env:
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+          LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '2' }}
+        run: |
+          echo "Starting Mailgun event sync..."
+          echo "Lookback: $LOOKBACK_HOURS hours"
+          node scripts/sync-preintake-mailgun-events.js
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
