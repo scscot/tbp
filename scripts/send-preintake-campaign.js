@@ -135,6 +135,74 @@ function isYahooAolEmail(email) {
 }
 
 /**
+ * Validate contact data quality before sending email
+ * Skips contacts with junk or missing data to protect sender reputation
+ * Returns { valid: boolean, issues: string[] }
+ */
+function validateContactData(data) {
+    const issues = [];
+    const { firstName, lastName, firmName, email } = data;
+
+    // Junk patterns that indicate bad scraper data
+    const junkPatterns = [
+        /\bcart\b/i, /\blogin\b/i, /\bstore\b/i, /\bmenu\b/i, /\bsearch\b/i,
+        /office type/i, /solo practice/i, /sign in/i, /register/i,
+        /\bhome\b/i, /wsba members/i, /bar association/i, /or employer/i,
+        /^\d+$/, // Pure numbers
+        /^[^a-zA-Z]*$/ // No letters at all
+    ];
+
+    // Helper to check if a string contains junk
+    const hasJunk = (str) => {
+        if (!str) return false;
+        return junkPatterns.some(p => p.test(str));
+    };
+
+    // Helper to check if string looks like a real name (not junk)
+    const isValidName = (str) => {
+        if (!str || str.trim().length < 2) return false;
+        if (hasJunk(str)) return false;
+        // Must start with a letter and be reasonable length
+        if (!/^[A-Za-z]/.test(str.trim())) return false;
+        if (str.trim().length > 50) return false; // Names shouldn't be super long
+        return true;
+    };
+
+    // Validate email exists
+    if (!email || !email.includes('@')) {
+        issues.push('Missing or invalid email');
+    }
+
+    // Validate firstName
+    if (!firstName || firstName.trim().length < 2) {
+        issues.push('Missing firstName');
+    } else if (hasJunk(firstName)) {
+        issues.push(`Junk in firstName: "${firstName}"`);
+    } else if (!isValidName(firstName)) {
+        issues.push(`Invalid firstName: "${firstName}"`);
+    }
+
+    // Validate lastName
+    if (!lastName || lastName.trim().length < 2) {
+        issues.push('Missing lastName');
+    } else if (hasJunk(lastName)) {
+        issues.push(`Junk in lastName: "${lastName}"`);
+    } else if (!isValidName(lastName)) {
+        issues.push(`Invalid lastName: "${lastName}"`);
+    }
+
+    // Validate firmName if provided (it's okay to be empty - we generate fallback)
+    if (firmName && hasJunk(firmName)) {
+        issues.push(`Junk in firmName: "${firmName}"`);
+    }
+
+    return {
+        valid: issues.length === 0,
+        issues
+    };
+}
+
+/**
  * Clean firm name by removing address information
  * Some bar associations concatenate firm name with address in their data
  * Example: "Lisa L. Cullaro, P.A.PO Box 271150Tampa, FL 33688-1150"
@@ -1058,11 +1126,29 @@ async function runCampaign() {
 
     let sent = 0;
     let failed = 0;
+    let skipped = 0;
     let demosGenerated = 0;
 
     for (const doc of allDocs) {
         const data = doc.data();
         const { firmName, email, website, firstName, lastName, practiceArea, state, barNumber, domainChecked, domainCheckResult } = data;
+
+        // Validate contact data quality before processing
+        const validation = validateContactData(data);
+        if (!validation.valid) {
+            console.log(`\n⚠️  Skipping ${email}: ${validation.issues.join(', ')}`);
+            skipped++;
+
+            // Mark as skipped in Firestore (so we don't keep retrying)
+            if (!TEST_EMAIL) {
+                await doc.ref.update({
+                    status: 'skipped_bad_data',
+                    skipReason: validation.issues.join('; '),
+                    skippedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            continue;
+        }
 
         // Determine if this is a bar profile contact (no website, but has bar data)
         const isBarProfileContact = domainChecked === true &&
@@ -1240,6 +1326,7 @@ async function runCampaign() {
     console.log(`   Total processed: ${allDocs.length}`);
     console.log(`   Successfully sent: ${sent}`);
     console.log(`   Demos generated: ${demosGenerated}`);
+    console.log(`   Skipped (bad data): ${skipped}`);
     console.log(`   Failed: ${failed}`);
     if (sent > 0) {
         console.log(`   Success rate: ${((sent / (sent + failed)) * 100).toFixed(1)}%`);
