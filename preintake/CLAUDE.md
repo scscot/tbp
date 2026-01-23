@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-22
-**Version**: 4.3 (All 12 bar scrapers documented: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, OH)
+**Last Updated**: 2026-01-23
+**Version**: 4.4 (All 13 bar scrapers documented: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, OH, OK)
 
 ---
 
@@ -2111,6 +2111,63 @@ Same as Mississippi Bar - uses identical keyword matching approach:
 - Profile data extracted from `dl-horizontal` definition list structure
 - Dropdown-based filtering (not checkbox or URL-based)
 - No vCard API - direct HTML profile page scraping
+
+### Phase 42: Oklahoma Bar Attorney Scraper (2026-01-23)
+- [x] **Oklahoma Bar Scraper Script** - `scripts/scrape-okbar-attorneys.js`
+  - Scrapes attorney contact information from Oklahoma Bar Association website (okbar.org)
+  - Uses Puppeteer for ASP.NET WebForms interaction (ViewState, __doPostBack pagination)
+  - Practice area dropdown with GUID values
+  - Results displayed in card layout (30 per page, `.span4.pad10` divs)
+  - 28 practice areas covering PI, Immigration, Workers Comp, Bankruptcy, etc.
+  - Progress tracking to resume across daily runs
+  - Email notification with scrape summary
+- [x] **GitHub Actions Workflow** - `.github/workflows/okbar-scraper.yml`
+  - Scheduled: Daily at 5am PST (13:00 UTC)
+  - Offset from other scrapers to avoid overlap
+  - Manual trigger with configurable practice area, max attorneys, and dry run options
+  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
+  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+
+**Oklahoma Bar Practice Areas (28 total, Tier 1 shown):**
+| Priority | GUID | Practice Area |
+|----------|------|---------------|
+| 1 | 42bf5bee-4391-47d5-a345-c087d95218bb | Personal Injury |
+| 2 | 9228489f-4de3-488c-b010-af15b24393c2 | Immigration |
+| 3 | e28b10db-031a-49d0-9f66-5c85ad83db06 | Workers Compensation |
+| 4 | 3d36c3fe-7452-4c9b-a57c-c8d716bb320e | Medical Malpractice |
+| 5 | 03b5886f-5930-4880-86b4-d8edbd8f6193 | Bankruptcy - Business |
+| 6 | 7f535e77-313e-486c-a87e-857f045b20bf | Bankruptcy - Personal |
+| 7 | ece86f4a-38e9-4c7a-baad-5105c5ed7ca1 | Criminal Defense |
+| 8 | fa60e988-d18f-454a-8b79-5d2a66c0d2d2 | Family Law |
+| 9 | f1ef4137-dff3-447c-ba42-6f087afd8c00 | Divorce |
+| 10 | beda2a47-a52d-4e83-84ec-80936083240a | Adoption |
+
+**Firestore Fields** (in `preintake_emails` collection for Oklahoma Bar contacts):
+| Field | Description |
+|-------|-------------|
+| `source` | `"okbar"` |
+| `practiceArea` | Practice area from OK Bar |
+| `state` | `"OK"` (or from address parsing) |
+| `website` | Firm website (if available) |
+| `city` | City (from address) |
+| `randomIndex` | Random for queue ordering |
+
+**Scrape Progress Tracking** (in `preintake_scrape_progress/okbar`):
+| Field | Description |
+|-------|-------------|
+| `completedPracticeAreaIds` | Array of completed practice area GUIDs |
+| `lastRunDate` | ISO timestamp of last run |
+| `totalInserted` | Cumulative attorneys inserted |
+| `totalSkipped` | Cumulative attorneys skipped |
+
+**Key Technical Details:**
+- ASP.NET WebForms with ViewState - uses `__doPostBack()` for pagination
+- Pagination uses 0-indexed arguments (page 2 = argument '1')
+- Practice area dropdown: `#C_2_2_ValueDropDownList0`
+- Search button: `#C_2_2_ButtonFindGo`
+- Attorney data extracted from `.span4.pad10` card divs
+- Email from `mailto:` links, phone from `tel:` links
+- Does not expose bar numbers (no `barNumber` field)
 
 ---
 

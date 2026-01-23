@@ -1,0 +1,79 @@
+name: Oklahoma Bar Scraper
+
+on:
+  schedule:
+    # Run daily at 5am PST (13:00 UTC)
+    # Offset from other scrapers: CalBar (12am), FLBar (2am), MoBar (3am), OhBar (4am), MiBar (6am), KyBar (8am), GaBar (10am)
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      practice_area:
+        description: 'Practice area GUID to scrape (leave empty for all remaining)'
+        required: false
+        type: string
+      max_attorneys:
+        description: 'Maximum attorneys to scrape'
+        required: false
+        default: '500'
+        type: string
+      dry_run:
+        description: 'Dry run (no database writes)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install puppeteer firebase-admin nodemailer
+
+      - name: Install Puppeteer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2t64 \
+            libatk-bridge2.0-0 \
+            libatk1.0-0 \
+            libcups2 \
+            libdrm2 \
+            libgbm1 \
+            libgtk-3-0 \
+            libnspr4 \
+            libnss3 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxkbcommon0 \
+            libxrandr2 \
+            xdg-utils
+
+      - name: Run Oklahoma Bar scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          MAX_ATTORNEYS: ${{ inputs.max_attorneys || '500' }}
+        run: |
+          cd scripts
+          ARGS=""
+          if [ -n "${{ inputs.practice_area }}" ]; then
+            ARGS="$ARGS --practice-area=${{ inputs.practice_area }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node scrape-okbar-attorneys.js $ARGS
