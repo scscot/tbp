@@ -1,0 +1,53 @@
+name: NSBA Attorney Scraper
+
+on:
+  schedule:
+    # Run daily at 5am PST (13:00 UTC)
+    # Offset from other scrapers: CalBar (12am), FLBar (2am), MoBar (3am), OhBar (4am)
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      max_attorneys:
+        description: 'Maximum attorneys to scrape'
+        required: false
+        default: '500'
+      dry_run:
+        description: 'Dry run (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          npm install puppeteer firebase-admin nodemailer
+
+      - name: Run NSBA scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
+          PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          MAX_ATTORNEYS: ${{ github.event.inputs.max_attorneys || '500' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: node scripts/scrape-nsba-attorneys.js
+
+      - name: Upload debug screenshot on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshot
+          path: /tmp/nsba-debug.png
+          if-no-files-found: ignore
