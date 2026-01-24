@@ -1,8 +1,10 @@
 name: Indiana Bar Attorney Scraper
 
 # DISABLED: Indiana Bar does not expose email addresses in their vCard API.
-# Tested 15+ profiles - 0 had emails. Not viable for email outreach.
-# Manual trigger still available for future testing.
+# Tested 2026-01-23: Found 20 profiles, fetched vCards for all 20, 0 had emails.
+# vCard API returns empty responses or vCards without EMAIL field.
+# Same issue as Georgia Bar - not viable for email outreach.
+# Manual trigger available for future testing if Indiana Bar changes their policy.
 
 on:
   # schedule:
