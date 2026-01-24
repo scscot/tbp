@@ -496,27 +496,38 @@ async function scrapeAllAttorneys() {
 
             // Check for next page (use page.evaluate for React compatibility)
             if (currentPage < totalPages) {
-                const clicked = await page.evaluate((nextPageNum) => {
+                const clickResult = await page.evaluate((nextPageNum) => {
                     // Try clicking the specific page number first
                     const items = document.querySelectorAll('.ant-pagination-item');
                     for (const item of items) {
                         if (item.textContent?.trim() === String(nextPageNum)) {
                             item.click();
-                            return true;
+                            return { clicked: true, method: 'pageNumber' };
                         }
                     }
-                    // Fall back to clicking the "next" button
-                    const nextBtn = document.querySelector('.ant-pagination-next:not(.ant-pagination-disabled)');
-                    if (nextBtn) {
-                        nextBtn.click();
-                        return true;
+                    // Fall back to clicking the "next" button (try multiple selectors)
+                    const nextSelectors = [
+                        '.ant-pagination-next:not(.ant-pagination-disabled)',
+                        '.ant-pagination-next button',
+                        '.ant-pagination-next',
+                        'li.ant-pagination-next'
+                    ];
+                    for (const selector of nextSelectors) {
+                        const nextBtn = document.querySelector(selector);
+                        if (nextBtn && !nextBtn.classList.contains('ant-pagination-disabled')) {
+                            nextBtn.click();
+                            return { clicked: true, method: selector };
+                        }
                     }
-                    return false;
+                    // Debug: log what pagination elements exist
+                    const paginationHtml = document.querySelector('.ant-pagination')?.outerHTML?.substring(0, 500) || 'no pagination found';
+                    return { clicked: false, method: 'none', debug: paginationHtml };
                 }, currentPage + 1);
 
-                if (clicked) {
+                if (clickResult.clicked) {
                     await delay(DELAY_BETWEEN_PAGES);
                 } else {
+                    console.log(`     Pagination failed: ${clickResult.debug}`);
                     hasMorePages = false;
                 }
             } else {
