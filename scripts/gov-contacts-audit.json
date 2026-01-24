@@ -1,0 +1,6962 @@
+{
+  "timestamp": "2026-01-24T19:46:56.556Z",
+  "totalRecords": 15550,
+  "govContactsCount": 557,
+  "percentageGov": "3.58",
+  "byCategory": {
+    "court": 112,
+    "city_govt": 32,
+    "federal_gov": 291,
+    "county": 82,
+    "prosecutor": 48,
+    "ssa": 8,
+    "govt_dept": 51,
+    "state_govt": 12,
+    "public_defender": 57,
+    "attorney_general": 37,
+    "legal_aid": 26,
+    "state_us": 28,
+    "state_gov": 9,
+    "va": 2,
+    "military": 10,
+    "county_govt": 2
+  },
+  "bySource": {
+    "wsba": 12,
+    "ilbar": 7,
+    "calbar": 116,
+    "flbar": 86,
+    "okbar": 13,
+    "mibar": 236,
+    "msbar": 5,
+    "ncbar": 42,
+    "mobar": 13,
+    "ohbar": 16,
+    "kybar": 11
+  },
+  "contacts": [
+    {
+      "id": "07zJSqkh1OMtVsx4jg3W",
+      "email": "rlmount@cawh.org",
+      "firmName": "Airway Heights Municipal Court",
+      "name": "Richard Mount",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "0ADR7E8Gmi1TjmzAREEs",
+      "email": "jamesleomcknight@gmail.com",
+      "firmName": "City of Chicago",
+      "name": "James McKnight",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "0CQxYkNKsvpI5JZouQN9",
+      "email": "kristin_smith@cacb.uscourts.gov",
+      "firmName": "U.S. Bankruptcy Court",
+      "name": "Kristin Smith",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "0KaOAokAfbxYQ3U7CNmU",
+      "email": "eugenia.a.izmaylova@usps.gov",
+      "firmName": "United States Postal Service",
+      "name": "Eugenia Izmaylova",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "0ZijFkjSOZKSfioitK3R",
+      "email": "ryan.johannes@ssa.gov",
+      "firmName": "Ryan Jeffrey Johannes",
+      "name": "Ryan Johannes",
+      "source": "okbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy - Personal",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "0q18jr90sLaqAWOpekWQ",
+      "email": "jmiller@manisteecountymi.gov",
+      "firmName": "Manistee County Prosecutor",
+      "name": "Jordan Miller",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "0sS86inKq2dSPbrHNffV",
+      "email": "jenny@rogerscountylaw.com",
+      "firmName": "Jennifer Lynn Sanbrano",
+      "name": "Jennifer Sanbrano",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "0yx7HfU6ivS7vEuMZ7LU",
+      "email": "marti.kirby@ssa.gov",
+      "firmName": "Social Security Admin ODAR",
+      "name": "Martha Kirby",
+      "source": "msbar",
+      "state": "CA",
+      "practiceArea": "Social Security",
+      "categories": [
+        "federal_gov",
+        "ssa"
+      ]
+    },
+    {
+      "id": "15oVcTGWQaNhg33reNVz",
+      "email": "pamela.tracy@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Pamela Tracy",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "1Cg1HeaU0UaQbam5vvKh",
+      "email": "brian.fliflet@illinois.gov",
+      "firmName": "Illinois Department of Revenue",
+      "name": "Brian Fliflet",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "1D7eeX8MoY00DwQcj4Lq",
+      "email": "shanna.mcdaniel@dhcs.ca.gov",
+      "firmName": "State of California",
+      "name": "Shanna McDaniel",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "1ZnzLFYRJsemGyBW1PvT",
+      "email": "rheimbuc@waynecountymi.gov",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Robert Heimbuch",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "1aYH9eMuiQ3itBYWQOtP",
+      "email": "rmcnally@shiawassee.net",
+      "firmName": "Shiawassee County Prosecutor's Office",
+      "name": "Richard McNally",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "1fA4Z70p38HxgJ04qIxB",
+      "email": "edehn@dir.ca.gov",
+      "firmName": "Department of Industrial Relations",
+      "name": "Elizabeth Dehn",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "1imQMblVGwPjN2bgFPeG",
+      "email": "fadewale@spokanecity.org",
+      "firmName": "Office of the Public Defender",
+      "name": "Francis Adewale",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "1klG8eMdUi3luULrEXlB",
+      "email": "rhawrylo@geneseecountymi.gov",
+      "firmName": "7th Circuit Court",
+      "name": "Rachel Hawrylo",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "1q0dFJ2ofStaZh8DhhMA",
+      "email": "hoj@coa.nccourts.org",
+      "firmName": "North Carolina Court of AppealsP.O. Box 888",
+      "name": "Judge Hampson",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Appellate Practice",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "1r7VSHCHJImBnw5wsRfu",
+      "email": "r.sills@hotmail.com",
+      "firmName": "Social Security Administration",
+      "name": "Pamela Stallbaumer",
+      "source": "msbar",
+      "state": "KS",
+      "practiceArea": "Social Security",
+      "categories": [
+        "ssa"
+      ]
+    },
+    {
+      "id": "2O9zryNeJaDWuI6GQJhy",
+      "email": "brandon.elyakim@myfloridalegal.com",
+      "firmName": "Florida Office of the Attorney GeneralThe Capitol # PL-01Tallahassee, FL 32399",
+      "name": "Brandon Elyakim",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "2au3JQLeCN0qDa8d3Evs",
+      "email": "mwoolery@montcalm.us",
+      "firmName": "Montcalm County Prosecutor",
+      "name": "Marc Woolery",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Wrongful Death",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "2fN7NBpYJQLDlIDR3dI2",
+      "email": "dwright@da.lacounty.gov",
+      "firmName": "DA Los Angeles County",
+      "name": "Daniel Wright",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "2qhJ03y9JYiq9uRCd9WW",
+      "email": "danielle.l.schopp@hud.gov",
+      "firmName": "US Dept of Housing & Urban Development",
+      "name": "Danielle Schopp",
+      "source": "mibar",
+      "state": "DC",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "2wTYWNA5SvM4zUyd7kaI",
+      "email": "scott@echlawmo.com",
+      "firmName": "Jefferson City Municipal Judge / Evans Crow Halcomb",
+      "name": "Scott Evans",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "2yMIAsG8RbmVRlcyx0w2",
+      "email": "kimberly.d.pellini2@nccourts.org",
+      "firmName": "District Attorneys Office200 East Colonial Avenue",
+      "name": "Kimberly Pellini",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "3DJAx4FGYvuBjSYHDWG9",
+      "email": "sheydak@lassd.org",
+      "firmName": "Legal Aid Society of San Diego",
+      "name": "Sheyda Khonji",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "3TgOENDsc7qA7A8WUuak",
+      "email": "sfsarkany@gmail.com",
+      "firmName": "U.S. Department of Justice",
+      "name": "Sergio Sarkany",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "3fyRBJk6zdou9idHLrJf",
+      "email": "bridgej@co.skagit.wa.us",
+      "firmName": "Skagit County Public Defender's Office",
+      "name": "Bridge Joyce",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "state_us",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "3gQh0gmCQTcOf0lsMUbD",
+      "email": "ljc@bollwerktatlow.com",
+      "firmName": "Federal Public Defenders",
+      "name": "Lucas Cusack",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "3kAJ4IAgr7iB6MvUwcbV",
+      "email": "jill.oliver@dac.state.ok.us",
+      "firmName": "Jill Denise Oliver",
+      "name": "Jill Oliver",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "3oGe92TTQnYkC6RtVk1O",
+      "email": "jamie.kirk@oag.texas.gov",
+      "firmName": "Jamie Nicole Kirk",
+      "name": "Jamie Kirk",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Bankruptcy - Business",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "3s2KxRrTkQtWxnPl1wrz",
+      "email": "dsetareh@lafla.org",
+      "firmName": "Legal Aid Foundation Of LA",
+      "name": "Daliah Setareh",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "3zIn9bgiZQA080T3l9lS",
+      "email": "anne_cucchiara@mied.uscourts.gov",
+      "firmName": "United States District Court",
+      "name": "Anne Cucchiara",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "3ztX9Q7encGiFGhJAzWV",
+      "email": "chrystal.kay@randolphcountync.gov",
+      "firmName": "Randolph County Department of Soical ServicesPO Box 3239",
+      "name": "Chrystal Kay",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov",
+        "county",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "42i5LEBjJuCsPNLFUQ41",
+      "email": "kazalewski@dir.ca.gov",
+      "firmName": "CA Workers' Compensation Appeals Board",
+      "name": "Katherine Zalewski",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4BCMio9W0tFFE1dbRnAF",
+      "email": "hbennett@sao10.com",
+      "firmName": "Office of State Attorney, 10th JudicialDrawer Sa, P.o. Box",
+      "name": "Harold Bennett",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor",
+        "court"
+      ]
+    },
+    {
+      "id": "4E8huriaPMhhObF4xgYR",
+      "email": "landa.low@dot.ca.gov",
+      "firmName": "CalTrans/Legal",
+      "name": "Landa Low",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4Nd4rc4xAXJJPyKtZ9S4",
+      "email": "sena.lizenbee@floridastateguard.fl.gov",
+      "firmName": "Sena M. Lizenbee",
+      "name": "Sena Lizenbee",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4OyauJNo0Cvuk85SsmzK",
+      "email": "matelskid@michigan.gov",
+      "firmName": "Michigan Dept of Treasury",
+      "name": "David Matelski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4Y1wYYMLgXLWCqRzba0r",
+      "email": "mayororeilly@ci.dearborn.mi.us",
+      "firmName": "",
+      "name": "John O'Reilly",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "4YSXFSYrrMiOxGtC32ik",
+      "email": "ljoya@lacsn.org",
+      "firmName": "Legal Aid Center of Southern Nevada",
+      "name": "Leslie Joya",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "4dk1HFXtRhMF7M1zo1J3",
+      "email": "spaethkm@bcohio.gov",
+      "firmName": "",
+      "name": "Keith Spaeth",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Agricultural",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4eZEAada2ucKrieylAvy",
+      "email": "caleb.tarsi@lvd-nsn.gov",
+      "firmName": "LVD Band of Lake Superior Chippewa Indians",
+      "name": "Caleb Tarsi",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "4ey2xsplRmbZ2vzQOLNl",
+      "email": "jamila.gooden@myfloridacfo.com",
+      "firmName": "Department of Financial ServicesThe Atrium Suite",
+      "name": "Jamila Gooden",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Insurance",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "4l8aTT2wjAEREquBJG3x",
+      "email": "srocco@miottawa.org",
+      "firmName": "Ottawa County Circuit Court",
+      "name": "Sarah Rocco",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "4ns7vFHoJh03Ql9DauDQ",
+      "email": "lawrence.bragg@doj.ca.gov",
+      "firmName": "Office of Attorney General",
+      "name": "Robert Bragg",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "4v9th8Pxq9Gkf07XZYR7",
+      "email": "wbaucino@yahoo.com",
+      "firmName": "Guilford County Public Defender's OfficePO Box 2368",
+      "name": "Wayne Baucino",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "4vbpTeSpXZJiJOYlaqOj",
+      "email": "nicholas.hnatiuk@dot.ca.gov",
+      "firmName": "CalTrans",
+      "name": "Nicholas Hnatiuk",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "53MzclfuJfsaLBsIzXb7",
+      "email": "angela.hollowell-fuentes@nlrb.gov",
+      "firmName": "National Labor Relations Board",
+      "name": "Angela Hollowell-Fuentes",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "58r80X0lpgr2EgcKiac7",
+      "email": "hutchison.meltzer@doj.ca.gov",
+      "firmName": "CA Dept of Justice",
+      "name": "Hutchison Meltzer",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "59DJhmTUH8su4hIFUMoM",
+      "email": "finchr@michigan.gov",
+      "firmName": "Michigan Office of Administrative Hearings and Rules",
+      "name": "Richard Finch",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "5BZa0YGLGSK4hfFUiYbg",
+      "email": "jim.dusek@myfloridacfo.com",
+      "firmName": "Florida Department of Financial Services",
+      "name": "James Dusek",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "5HUwqDxqGAQZiXhLmSBX",
+      "email": "michael.gibbs@macombgov.org",
+      "firmName": "16th Circuit Court Juvenile Division",
+      "name": "Michael Gibbs",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "5Rni3lslMBAsD4VJe9E9",
+      "email": "amanda_eicher@monroemi.org",
+      "firmName": "1st District Court",
+      "name": "Amanda Eicher",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "5Saoo8LAh9DisvBnfPAO",
+      "email": "paul.henderson@sfgov.org",
+      "firmName": "SF Department of Police Accountability",
+      "name": "Paul Henderson",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "5WeMnAf0mvveZabhAROf",
+      "email": "lindermanrichelewm@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Marla Linderman Richelew",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "5eLhGy1B15fTRBk6vFEE",
+      "email": "thausmann@isabellacounty.org",
+      "firmName": "Isabella County Public Defender Office",
+      "name": "Thomas Hausmann",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "5fU0TacHgGoILA77DwXJ",
+      "email": "lambh1@michigan.gov",
+      "firmName": "State of Michigan",
+      "name": "Heather Lamb",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "5gR70vksZafpvhmQ3Pi7",
+      "email": "hoffmanb5@michigan.gov",
+      "firmName": "State of Michigan, Department of Attorney General",
+      "name": "Bonita Hoffman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "5glWrBlITzeVwdtNrFIg",
+      "email": "jaeverett@starkcountyohio.gov",
+      "firmName": "",
+      "name": "Julie Everett",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Insurance",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "5p1Z6V2L6ALN0AnItRox",
+      "email": "kingstone@courts.mi.gov",
+      "firmName": "Michigan Supreme Court",
+      "name": "Elizabeth Kingston",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "5zyuZ8iCLH1bm9uU2fdX",
+      "email": "mary.c.wilson@nccourts.org",
+      "firmName": "Wake Public Defenders Office300 S. Salisbury St.  Suite 5000",
+      "name": "Mary Wilson",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (Juvenile)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "61i180FJn75Ncal2Vfd1",
+      "email": "dgonzales1@waynecountymi.gov",
+      "firmName": "Wayne County",
+      "name": "Danielle Gonzales",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "64rr5ntf3RTj7xLPm0B1",
+      "email": "dlynch2@waynecountymi.gov",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Dinah Lynch",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "66231499QHbwdql3I7Ib",
+      "email": "jmcmurtry@berriencounty.org",
+      "firmName": "Berrien County Prosecutor's Office",
+      "name": "Julie McMurtry",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "67h0Y3MR7vKmeaZZxL1K",
+      "email": "pa_kwasnik@ingham.org",
+      "firmName": "Ingham County Prosecutor's Office",
+      "name": "Steven Kwasnik",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "67kdjSbNeINOkdYyAoT2",
+      "email": "millerd@washtenaw.org",
+      "firmName": "22nd Circuit Court",
+      "name": "Darren Miller",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "6ENppyYGvXYiTqq7lmnQ",
+      "email": "fguerrier@wpb.org",
+      "firmName": "City of West Palm Beach",
+      "name": "Florence Harewood",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "6Hnrl1z606N8vJo8M7Sx",
+      "email": "jrozencweig@lawestmi.org",
+      "firmName": "Legal Aid of Western Michigan",
+      "name": "Jason Rozencweig",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "6XuIlwb4ZTrrDaBJQgfX",
+      "email": "rnorton@dir.ca.gov",
+      "firmName": "State of CA Division of Workers Comp",
+      "name": "Robert Norton",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "6cInrSeFEdUpQkeqUoAO",
+      "email": "robert.mcseveney@usdoj.gov",
+      "firmName": "United States Immigration Court",
+      "name": "Robert McSeveney",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "6fcyaIm2X0ylXjsvvCxo",
+      "email": "sara.cherryweber@oids.ok.gov",
+      "firmName": "Sara Cherry Weber",
+      "name": "Sara Weber",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "6kWGXSl0DW4ZVfSyOozJ",
+      "email": "jmiskey@bhspa.com",
+      "firmName": "Bagwell Holt Smith111 Cloister Court Suite 200",
+      "name": "John Miskey,",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "6l1a7d6b4KBwLG3dkaTZ",
+      "email": "jcoghlan@kankakeecountyil.gov",
+      "firmName": "Kankakee County State's Attorney",
+      "name": "John Coghlan",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "6wvMDvMdiHBrk08zeBgJ",
+      "email": "daniel.king@detroitmi.gov",
+      "firmName": "City of Detroit Law Department",
+      "name": "Daniel King",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "75FyCpWduiXAGbSt9fAe",
+      "email": "davin.reust@usdoj.gov",
+      "firmName": "United States Attorney's Office - Eastern District of Michigan",
+      "name": "Davin Reust",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "79enNep1qH6QRGUuPSy5",
+      "email": "johnsogz@scps.k12.fl.us",
+      "firmName": "Seminole County Public Schools",
+      "name": "Gregg Johnson",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "7IDOURW7lJ2XN3YbtL6f",
+      "email": "cparks76@msn.com",
+      "firmName": "Department of Veterans Affairs",
+      "name": "Catherine Parks",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "govt_dept",
+        "va"
+      ]
+    },
+    {
+      "id": "7P950OoKwa270pVgyGwO",
+      "email": "honsekira@codb.us",
+      "firmName": "City of Daytona BeachPO Box 2451Daytona Beach, FL 32115-2451",
+      "name": "Kira Honse",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "7PMtONLw8Dn6C8sCjNvl",
+      "email": "jparnell@lp-plc.com",
+      "firmName": "Grosse Pointe Park Municipal Court",
+      "name": "John Parnell",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "7YimYJHDnTlRFDF5P0BI",
+      "email": "tammy.fitting@usdoj.gov",
+      "firmName": "US Department of Justice",
+      "name": "Tammy Fitting",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "7ejL70d0zC0AjPBM5VmR",
+      "email": "ctober@miottawa.org",
+      "firmName": "Ottawa County Public Defender Office",
+      "name": "Christine Tober",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "7fuNrcoWAtgsBFmlX8sV",
+      "email": "tommy.rogers@ssa.gov",
+      "firmName": "Office of Disability Adjudication and Review",
+      "name": "Tommy Rogers",
+      "source": "msbar",
+      "state": "OK",
+      "practiceArea": "Disability",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "7lyqOMs50daYHINzDtEj",
+      "email": "delicia.coleman@detroitmi.gov",
+      "firmName": "City of Detroit and Board of Ethics Respectively",
+      "name": "Delicia Taylor Coleman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "7nLCGoGSJ1hdhYtnPbSL",
+      "email": "ollie.garmon@ssa.gov",
+      "firmName": "Social Security Admin OHO",
+      "name": "Ollie Garmon",
+      "source": "msbar",
+      "state": "GA",
+      "practiceArea": "Social Security",
+      "categories": [
+        "federal_gov",
+        "ssa"
+      ]
+    },
+    {
+      "id": "7oeEKZCxJ3DRBDyGeIvu",
+      "email": "ashley.reyes@doj.ca.gov",
+      "firmName": "California Department of Justice",
+      "name": "Ashley Reyes",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "7zitN1I9JO3O9fNeEjmD",
+      "email": "brazelr@hcfl.gov",
+      "firmName": "Hillsborough County Attorney's OfficePO Box 1110Tampa, FL 33601-1110",
+      "name": "Robert Brazel",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "82xVowB6hMBBto0aN0ue",
+      "email": "shanedavis@co.pinellas.fl.us",
+      "firmName": "Office of the Public Defender 6th JCFCriminal Justice Center",
+      "name": "Shane Davis",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "state_us",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "8DgwJD7gh9wYAhIGfBL8",
+      "email": "anitasimonej@hotmail.com",
+      "firmName": "Wayne County Circuit Court-FOC Referee Department",
+      "name": "Anita Jennings",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "8LahfMFw1Pf7zpAYgJmL",
+      "email": "joe.ashbaker@oag.ok.gov",
+      "firmName": "Joseph Leonard Ashbaker, Jr.",
+      "name": "Joseph Ashbaker",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "8QAuAC8buiHwTTPj4TFN",
+      "email": "lisa.thomas@doah.state.fl.us",
+      "firmName": "Office of Judges of Compensation Claims",
+      "name": "Lisa Thomas",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "8SItGG2dWnOCRfKnD0K2",
+      "email": "matyjaszekm@washtenaw.org",
+      "firmName": "Washtenaw County Circuit Court",
+      "name": "Marie Matyjaszek",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "8WsBoO0n10Vgs6B0rooD",
+      "email": "whill@saginawcounty.com",
+      "firmName": "Saginaw County Juvenile Court",
+      "name": "William Hill",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "8Ykb87NifDJgBsqAILjh",
+      "email": "george.bedell@flofr.gov",
+      "firmName": "Office of Financial Regulation",
+      "name": "George Bedell",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Insurance",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "8qIIdNhlROq8IysnS1XB",
+      "email": "jessens@vanburencountymi.gov",
+      "firmName": "Van Buren County Public Defender Office",
+      "name": "Scott Jessen",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "8vbKi88d2F7vfFDv3qPM",
+      "email": "whites43@michigan.gov",
+      "firmName": "State of Michigan Dept of Attorney General-Children & Youth Services",
+      "name": "Stephanie White",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "8wZi8ZmgbIiNafKgDPpe",
+      "email": "anand.ramaswamy@usdoj.gov",
+      "firmName": "United States Attorney's OfficeMiddle District of North Carolina 101 S. Edgeworth",
+      "name": "Anand Ramaswamy",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "91FO4bYjAXBRsPRCgd5m",
+      "email": "kimberly.stephens@detroitmi.gov",
+      "firmName": "",
+      "name": "Kimberly Stephens",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "920sDWH1hXBAcavFb3CY",
+      "email": "macgregora@oakgov.com",
+      "firmName": "Oakland County Prosecutor's Office",
+      "name": "Amy MacGregor",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "9AtfbEFM1d80aY6oyzQa",
+      "email": "breshears@piatcheklawfirm.com",
+      "firmName": "Christian County Prosecutor's Office",
+      "name": "Kara Breshears",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "9Dd8HxmgZIq6vNdW4rO0",
+      "email": "tburke@burlingame.org",
+      "firmName": "City of Burlingame",
+      "name": "Tamar Burke",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "9co228fnBAIvTUonugBr",
+      "email": "obrienp@courts.mi.gov",
+      "firmName": "Michigan Supreme Court",
+      "name": "Patrick O'Brien",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "9etxNegBIqQ3rulzdWkJ",
+      "email": "alison.daw@atg.wa.gov",
+      "firmName": "OFFICE OF THE ATTORNEY GENERAL",
+      "name": "Alison Daw",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "9g2puDsXDztsHQJq31GJ",
+      "email": "ljenkins@ncdoj.gov",
+      "firmName": "",
+      "name": "Laura Jenkins",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Workers' Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "9hCX0BExuNz1eN68Ukuh",
+      "email": "joannef@lassd.org",
+      "firmName": "Legal Aid Society of San Diego",
+      "name": "Joanne Franciscus",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "9jlIV2cCH8qqdJdKDbKt",
+      "email": "laverne.andreasen@jaxlegalaid.org",
+      "firmName": "Jacksonville Area Legal Aid, Inc.",
+      "name": "La Andreasen",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "9mKWn3wqjDRkfVuWiBOG",
+      "email": "lourise.holloman@hhs.gov",
+      "firmName": "US Dept of Health and Human Services",
+      "name": "Lourise Holloman",
+      "source": "mibar",
+      "state": "GA",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "9oLqtghcVULz7XQw043J",
+      "email": "carol.field@myfloridalegal.com",
+      "firmName": "Office of the Attorney General",
+      "name": "Carol Field",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "9qQJWnuS2yi6rKN4gmi8",
+      "email": "dborell@co.lucas.oh.us",
+      "firmName": "Lucas County Prosecutors Office",
+      "name": "David Borell",
+      "source": "mibar",
+      "state": "OH",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "9yWbTiFK7DJyRPA4K6U6",
+      "email": "monettecr@co.muskegon.mi.us",
+      "firmName": "Muskegon County Probate Court",
+      "name": "Craig Monette",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "AJDQZtg4Kuu8QUr5hWuX",
+      "email": "kwpopham@starkcountyohio.gov",
+      "firmName": "",
+      "name": "Kevin Popham",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Health Care",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "AXtu4vFwo2B7DDpMCGSz",
+      "email": "frances.rogers@escondido.gov",
+      "firmName": "City of Escondido City Attorney",
+      "name": "Frances Rogers",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "AzbmK73eiDmNDfrWmQ6B",
+      "email": "achase@alamedaca.gov",
+      "firmName": "City of Alameda",
+      "name": "Aaron Chase",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "B9AwCX5fiD9xWeoiz4PU",
+      "email": "martha.snow@3rdcc.org",
+      "firmName": "3rd Circuit Court",
+      "name": "Martha Snow",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "BBtWVaIo5ThLE6sCAQPf",
+      "email": "ames_chamberlin@fd.org",
+      "firmName": "Federal Public Defender's Office301 North Elm St. Ste. 410",
+      "name": "Ames Chamberlin",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "BQtMxKz8nBlOWs46leml",
+      "email": "jtadams1913@gmail.com",
+      "firmName": "Scotland County District Attorney's Office",
+      "name": "Jamie Adams",
+      "source": "mibar",
+      "state": "NC",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "BrhtkBQIUD0iKylUwDR7",
+      "email": "jhand@kramerandhand.com",
+      "firmName": "Associate Circuit Judge, Division 11",
+      "name": "Julianne Hand",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "BuYZHZqNcEsKnYmvgRk2",
+      "email": "szaccor@sao17.state.fl.us",
+      "firmName": "Ofc. Of the State Attorney, 17th Circuit",
+      "name": "Stephen Zaccor",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "state_gov",
+        "state_us",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "BxBDKHIK6YBD1ivc9443",
+      "email": "corinne.porcher@fdacs.gov",
+      "firmName": "Dept. of Agriculture and Consumer Svcs.",
+      "name": "Corinne Porcher",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "CGqOsdjPCBG4YWxPooG5",
+      "email": "tkelly@dir.ca.gov",
+      "firmName": "Department of Industrial Relations/DWC",
+      "name": "Todd Kelly",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "CK6NfPC4Xrq4rwwPJpsO",
+      "email": "wienczewskik@michigan.gov",
+      "firmName": "Michigan Office of Administrative Hearings and Rules",
+      "name": "Katherine Wienczewski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "CN2gycLjhruoYLutUQ4l",
+      "email": "sjones@dir.ca.gov",
+      "firmName": "Division of Labor Standards Enforcement",
+      "name": "Scott Jones",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "CSFMenrNZQtGnMqb6HPo",
+      "email": "allison.b.garren@nccourts.org",
+      "firmName": "Cleveland County Public Defender Office315-B Patton Drive",
+      "name": "Allison Garren",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "CYG2klzWENssksletneF",
+      "email": "mangan@thurmanlaw.com",
+      "firmName": "U.S. Army",
+      "name": "David Mangan",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "CZOr5fFXvBOa939kAzL9",
+      "email": "ryan.helfrich@gmail.com",
+      "firmName": "Circuit Judge - 20th Judicial Circuit",
+      "name": "Ryan Helfrich",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "Cqob66lzevU6X8QCfhLU",
+      "email": "preeti.bajwa@doj.ca.gov",
+      "firmName": "Office of the Attorney General",
+      "name": "Preeti Bajwa",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "CwWIyIWiR5W3SftphBXc",
+      "email": "david.j.bedells.mil@army.mil",
+      "firmName": "National Guard Bureau",
+      "name": "David Bedells",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "D6HoYpH5whJOQ34E3QoU",
+      "email": "leslie_carr@monroemi.org",
+      "firmName": "38th Circuit Court, Juvenile Division",
+      "name": "Leslie Carr",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "D8lbSrggpBjCnBOZxRI8",
+      "email": "kamil.koleczko@macombgov.org",
+      "firmName": "Macomb County Office of Public Defender",
+      "name": "Kamil Koleczko",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "D9oJYJ0vvylVMOszP59W",
+      "email": "courtney.marshall@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Courtney Marshall",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "DARHlytcuOXsRZFp9q4L",
+      "email": "benjaminbraun@miamibeachfl.gov",
+      "firmName": "City Attorney Office of Miami Beach",
+      "name": "Benjamin Braun",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "DFqahDNffkm5PYK9ZaH1",
+      "email": "gleesonk@michigan.gov",
+      "firmName": "Transportation Division",
+      "name": "Kathleen Gleeson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "DIksRuvtmWKEvuLZ1d0T",
+      "email": "saima.mohsin@usdoj.gov",
+      "firmName": "United States Attorney's Office",
+      "name": "Saima Mohsin",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "DUdhBKsniXxUuVRAgiBR",
+      "email": "mitchel.weiss.civ@us.navy.mil",
+      "firmName": "US Navy Fleet Readiness Center SoutheastOffice of Counsel, Code 11.0PO Box 16Jacksonville, FL 32212-0016",
+      "name": "Mitchel Weiss",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "Dmn3EjNzFtyH233ciEgk",
+      "email": "astoner@co.lucas.oh.us",
+      "firmName": "Lucas County Juvenile Court",
+      "name": "Amy Stoner",
+      "source": "mibar",
+      "state": "OH",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "DrobuojmZPJ7fK9T3fk2",
+      "email": "larnell.france@dot.ca.gov",
+      "firmName": "California Department Of Transportation",
+      "name": "Larnell France",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "DvFtKsgrsXFn5fzqHcmc",
+      "email": "kathleen_gleason@fd.org",
+      "firmName": "Federal Public Defender's Office301 N Elm St Suite 410",
+      "name": "Kathleen Gleason",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (Federal)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "E7dknlkdwAqW2EjoIgLK",
+      "email": "dennis.donahue@3rdcc.org",
+      "firmName": "Third Circuit Court",
+      "name": "Dennis Donahue",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "EFn2rnTOP5WhOkYDzJ4v",
+      "email": "jboufford@waynecounty.com",
+      "firmName": "Wayne County Corporation Counsel",
+      "name": "John Boufford",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "EPGsOROQDQauEanqK3qw",
+      "email": "amika@brevardlegalaid.org",
+      "firmName": "Brevard County Legal Aid",
+      "name": "Amika Jeffries",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "EjbXXi8UpvGkNh5zjRhz",
+      "email": "barrett.o.poppler@nccourts.org",
+      "firmName": "District Attorney's Office232 N. Main Street",
+      "name": "Barrett Poppler",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "F5dmajY9I51571AqmxMa",
+      "email": "jvanderhorst@arlegalaid.org",
+      "firmName": "Legal Aid of Arkansas",
+      "name": "Jonathan Vander Horst",
+      "source": "mibar",
+      "state": "AR",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "F8vdY6MihvKOM1uG2NJz",
+      "email": "beth.aurilio@mahoningcountyoh.gov",
+      "firmName": "",
+      "name": "Beth Aurilio",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Criminal",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "FAIGFKn1jUn6Tus48Uzk",
+      "email": "sanam.yasseri@nlrb.gov",
+      "firmName": "National Labor Relations Board",
+      "name": "Sanam Yasseri",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "FKCanuoZug8znFERWxUC",
+      "email": "xgaleano@dir.ca.gov",
+      "firmName": "Department of Industrial Relations",
+      "name": "Xiomara Galeano",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "FL75L0vUWH00QIg20ap4",
+      "email": "jonesmk@kalamazoocity.org",
+      "firmName": "City of Kalamazoo",
+      "name": "Marcia Jones",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "FLYhqMRJHR04R3rJegvj",
+      "email": "dafountain@mqtco.org",
+      "firmName": "Marquette County Prosecutor’s Office",
+      "name": "Dakota Fountain",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "FNSDcqXwPCMhHC8bpZ6v",
+      "email": "bwickwire@deltacountymi.org",
+      "firmName": "Delta County",
+      "name": "Beth Wickwire",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "FRzFjOKc14thVXt2eQZq",
+      "email": "paul.r.brown@dot.ca.gov",
+      "firmName": "CalTrans/Legal",
+      "name": "Paul Brown",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "FTT3xUV4KPujHbe3i9bk",
+      "email": "lizzette.francisco@doah.state.fl.us",
+      "firmName": "Lizzette City Francisco",
+      "name": "Lizzette Francisco",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "FbGeNeWZ6n907VlRhoe5",
+      "email": "tara.lynch@parks.ca.gov",
+      "firmName": "California State Parks",
+      "name": "Tara Lynch",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "FjnAF52wCk4ZIX9N2CNx",
+      "email": "debora.fridie@fldjj.gov",
+      "firmName": "FL Department of Juvenile Justice",
+      "name": "Debora Fridie",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "FtTtBSFPECuS4ox1k4rn",
+      "email": "joanne.chen@doj.ca.gov",
+      "firmName": "Office of the Attorney General",
+      "name": "Joanne Chen",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "FvOjDmES3zngea6sjfMP",
+      "email": "huntscullyr@michigan.gov",
+      "firmName": "Michigan Dept of Attorney General",
+      "name": "Risa Hunt-Scully",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "G14Pi4Z8Huxrcwn4epZq",
+      "email": "kboriolo@dir.ca.gov",
+      "firmName": "Workers Compensation Appeals Board",
+      "name": "Kathleen Boriolo",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "G1qoWTgoIPdUbDWEj9mE",
+      "email": "mreimers@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Marie Reimers",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "G6Uo56Q3Wk72b3AwNzIt",
+      "email": "gary.henry@deq.ok.gov",
+      "firmName": "Gary Lynn Henry",
+      "name": "Gary Henry",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Bankruptcy - Personal",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "GDqlBdcEDCAqMHAWuHeF",
+      "email": "rmckee@riversideca.gov",
+      "firmName": "Riverside City Attorney's Office",
+      "name": "Rebecca McKee)",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "GDsLLwC6s38tYlHq6WIO",
+      "email": "michael.v.fosterii@irscounsel.treas.gov",
+      "firmName": "Office of Chief Counsel - IRS",
+      "name": "Michael Foster",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "GFBYjlSNMRfNIwOplVIX",
+      "email": "lbruno@sa15.org",
+      "firmName": "Office of the State Attorney",
+      "name": "Lindsay Bruno",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "GOLo83Bgm9PDNAoFM44Q",
+      "email": "brice@sechrestlaw.com",
+      "firmName": "Circuit Judge",
+      "name": "Brice Sechrest",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "GTRH1Z6YD9kiVIVri4Hk",
+      "email": "brantleyg@leoncountyfl.gov",
+      "firmName": "Leon County Attorney's Office",
+      "name": "Gretchen Brantley",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "Gmyze3mNAnvd0tutrRAx",
+      "email": "cory.johnson@kalcounty.gov",
+      "firmName": "Kalamazoo County Prosecutor's Office",
+      "name": "Cory Johnson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "GorHfmgEuVocuYwUE63g",
+      "email": "elizabeth.eggert@pokagonband-nsn.gov",
+      "firmName": "Pokagon Band of Potawatomi Indians",
+      "name": "Elizabeth Eggert",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "GqdLxdhR9Oi8TVHnkjoH",
+      "email": "malaika.billups@lacity.org",
+      "firmName": "City of Los Angeles",
+      "name": "Malaika Billups",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "GvDVyXmy4V58t4cnHj8h",
+      "email": "bbacon@sfwmd.gov",
+      "firmName": "South Florida Water Management District",
+      "name": "Belinda Bacon",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "GxzfcMAuPer3B1RiPCjD",
+      "email": "btaratuta@waynecounty.com",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Brittany Taratuta",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "GyEFbf7NBdHdAcFyMaus",
+      "email": "rebekah.fletcher@atg.wa.gov",
+      "firmName": "Washington State Office of the Attorney General",
+      "name": "Rebekah Fletcher",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "H4vFE5YZ0xE9ExpzhL0L",
+      "email": "joseph.macaluso@cdcr.ca.gov",
+      "firmName": "Cal. Dept. of Corr. Legal Affairs",
+      "name": "Joseph Macaluso",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "H9gdt31VwG1FKzEmWfCC",
+      "email": "janet@capefearfamilylaw.com",
+      "firmName": "Cape Fear Family Law5101 Dunlea Court Suite 202",
+      "name": "Janet Gemmell",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "HBqMuVLp57Qr6QykzDhq",
+      "email": "ddobrin@dir.ca.gov",
+      "firmName": "Workers' Compensation Appeals Board",
+      "name": "Daniel Dobrin",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "HMlPolJHlOSpDsch2An8",
+      "email": "caroline.johnson5@va.gov",
+      "firmName": "U.S. Department of Veterans Affairs",
+      "name": "Caroline Johnson",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov",
+        "govt_dept",
+        "va"
+      ]
+    },
+    {
+      "id": "HSaoNOMOOpS6isdTcYPI",
+      "email": "sswanson@benzieco.gov",
+      "firmName": "Benzie County Prosecuting Attorney's Office",
+      "name": "Sara Swanson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "HVCprI8ogoxrW86VzxAl",
+      "email": "rosselln1@michigan.gov",
+      "firmName": "Delta County Friend of the Court",
+      "name": "Nicholas Rossell",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "Hlr6k5DuubfkvaGuoVmJ",
+      "email": "nicholas.liedtke@asm.ca.gov",
+      "firmName": "CA Assembly",
+      "name": "Nicholas Liedtke",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "HpFxGVWcKKSNoVIxaSkf",
+      "email": "jwinsemius@allegancounty.org",
+      "firmName": "Office of the Prosecuting Attorney Allegan County",
+      "name": "Jessica Winsemius",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "Ht1eyey6z2xastWmWh5Q",
+      "email": "ddelaurentis@mahoningcountyoh.gov",
+      "firmName": "",
+      "name": "Dominic DeLaurentis",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "HtztrXnUrxwaXQ4H28If",
+      "email": "rayflojo@hotmail.com",
+      "firmName": "City of St. Louis Law Department",
+      "name": "Raymond Flojo",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "I5XBgNyNWoskph4sWm3Y",
+      "email": "yvonne.hauscarriague@insurance.ca.gov",
+      "firmName": "Dept of Insurance",
+      "name": "Yvonne Hauscarriague",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "I6PFVv64Ibk1r6NPOLPf",
+      "email": "judgefarhat-court@3rdcc.org",
+      "firmName": "3rd Circuit Court",
+      "name": "Helal Farhat",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "I7csig6HDzgnwi4GilCx",
+      "email": "erik.kverne@myfloridalegal.com",
+      "firmName": "Florida Office of the Attorney GeneralPL-",
+      "name": "Erik Kverne",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "I8CgjSvyRSvcZ8arhnwu",
+      "email": "krtott@kalcounty.com",
+      "firmName": "Office of the Prosecuting Attorney Kalamazoo County",
+      "name": "Kristin Totten",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "ILO21NlDrmW36TR3a2IQ",
+      "email": "lassnerc@michigan.gov",
+      "firmName": "Michigan Office of Administrative Hearings and Rules",
+      "name": "Caralyce Lassner",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ISQUDEnNm5b8cZOxk7Tf",
+      "email": "cderouin@ironmi.org",
+      "firmName": "Iron County Prosecutor's Office",
+      "name": "Chad DeRouin",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "IfYMhLycjUAZ0sRuwzLd",
+      "email": "ed.williams@pokagonband-nsn.gov",
+      "firmName": "Pokagon Band of Potawatomi Indians",
+      "name": "J. Williams",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Iiq0MkQjnvhYev2YphaJ",
+      "email": "jschroder@defendironcounty.com",
+      "firmName": "Iron Defense/Iron County Public Defender's Office",
+      "name": "Jeffrey Schroder",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "IuywE4SUSYjxDo8sbsYB",
+      "email": "ian.dougherty@sen.ca.gov",
+      "firmName": "California Senate Judiciary Committee",
+      "name": "Ian Dougherty",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "IxVeir6PMdvFNPqCg4U7",
+      "email": "steven.kelly@dot.ca.gov",
+      "firmName": "State of California",
+      "name": "Steven Kelly",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "J1JOjTKBFq9CRnpS4WS5",
+      "email": "laura.macfarlane@doj.ca.gov",
+      "firmName": "CA DOJ/Office of the Attorney General",
+      "name": "Laura Macfarlane",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "J8VxzywRODWH0xp1aBJZ",
+      "email": "olson1ac@gmail.com",
+      "firmName": "Legal Aid of NorthWest Texas",
+      "name": "Ashlee Olson",
+      "source": "mibar",
+      "state": "TX",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "JAySGGAjiX7TYEnR5tPo",
+      "email": "phillip.shine@usdoj.gov",
+      "firmName": "Office of the U.S. Trustee",
+      "name": "Phillip Shine",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "JLAr2yloZDcDoz47RGWT",
+      "email": "prlund33@gmail.com",
+      "firmName": "Delta County Probate Court",
+      "name": "Perry Lund",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "JPHabYYvkZvMjEhnUaSL",
+      "email": "attorneymcho@gmail.com",
+      "firmName": "U.S. Department of Homeland Security",
+      "name": "Minah Cho",
+      "source": "mibar",
+      "state": "PA",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "Jb2MLJaCup5IWFjw3flK",
+      "email": "james.cochran@ohioago.gov",
+      "firmName": "",
+      "name": "Jim Cochran",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Administrative and Regulatory",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "JpFoZbRE1YN09iPvuGfD",
+      "email": "shelley_abel@ncwba.uscourts.gov",
+      "firmName": "Bankruptcy Administrator for WDNC401 W. Trade St. Suite 2400",
+      "name": "Shelley Abel",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Bankruptcy Law (Business)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Jpn5xivqIQMZu5vtvbeZ",
+      "email": "doremirean@co.muskegon.mi.us",
+      "firmName": "Muskegon County Public Defender's Office",
+      "name": "Angella Doremire",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "Jt2s1WLKqq6IxgN2gPvj",
+      "email": "ediaz-weaver@dir.ca.gov",
+      "firmName": "DLSE - Labor Commissioner's Office",
+      "name": "Edelmira Diaz-Weaver",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "K3ZMf6EMQowhSeORGkxN",
+      "email": "celeste.harris@ic.nc.gov",
+      "firmName": "",
+      "name": "Celeste Harris",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Workers' Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "KBGHeVCjDp5CbWW7qsxq",
+      "email": "jkuptz@cityofflint.com",
+      "firmName": "City of Flint, Department of Law",
+      "name": "Joseph Kuptz",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "govt_dept",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "Kjos7U1wyYQ59PylMl39",
+      "email": "ambrozaitism@clareco.net",
+      "firmName": "55th Circuit Court",
+      "name": "Michelle Ambrozaitis",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "L9d2Z3gGROos31uwyylU",
+      "email": "greg.mathews@ohioago.gov",
+      "firmName": "",
+      "name": "Gregory Mathews",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Corporate/Business",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "LB87aL1kLZUTccyxkmFx",
+      "email": "rodney.edwards@palmbayfl.gov",
+      "firmName": "Palm Bay City Attorney Office",
+      "name": "Rodney Edwards",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "LBsMbSmFlYTBAWhJnoiW",
+      "email": "ugomma.mwin@dgs.ca.gov",
+      "firmName": "",
+      "name": "Ugomma Mwin",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "LF3ZQrn410LeqHttZrHy",
+      "email": "solivero@sao10.com",
+      "firmName": "Office of the State AttorneyCircuit",
+      "name": "Shiobhan Olivero",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "LN3HpRw6rbOAltA7dXBL",
+      "email": "dstruble@calhouncountymi.gov",
+      "firmName": "Calhoun County Prosecutor's Office",
+      "name": "Darren Struble",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "LRv2uPXgvT2mb9qSYoXq",
+      "email": "ofoland@baylegal.org",
+      "firmName": "Bay Areal Legal Aid",
+      "name": "Oliver Foland",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "LWVxeCNqUbsnWgNrm36X",
+      "email": "nadinekalasho@gmail.com",
+      "firmName": "CODE Legal Aid Inc",
+      "name": "Nadine Khalil",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "LXiVpeH3ZzFZ7p1Gl4qT",
+      "email": "lisa.kinney@wisconsin.gov",
+      "firmName": "",
+      "name": "Lisa Kinney",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "LbAYWRqIFbkwWGzaXz7l",
+      "email": "john.bergman@tucsonaz.gov",
+      "firmName": "City of Tucson",
+      "name": "John Bergman",
+      "source": "mibar",
+      "state": "AZ",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "LiT7IZyHCyYwQozmlF1a",
+      "email": "jason.blumberg@usdoj.gov",
+      "firmName": "Office of The US Trustee",
+      "name": "Jason Blumberg",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Lo267jBGeglp7ZrEEjGQ",
+      "email": "bridgetduignan@isba.org",
+      "firmName": "Cook County Circuit Court",
+      "name": "Bridget Duignan",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "LrDjpDEfY5IWUG8iaSvr",
+      "email": "april.rocke@yolocounty.gov",
+      "firmName": "County of Yolo",
+      "name": "April Rocke",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "county",
+        "county_govt"
+      ]
+    },
+    {
+      "id": "LuSiKNrrnm8Ad2nVr7GH",
+      "email": "dunfieldn@vanburencountymi.gov",
+      "firmName": "Van Buren Public Defender's Office",
+      "name": "Nichole Dunfield",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "LviokFCKhAAgyJC6HlQ6",
+      "email": "debrown@sfwmd.gov",
+      "firmName": "South Florida Water Management District",
+      "name": "Derek Brown",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "LyxU7F3SDBxKVRnZBf8o",
+      "email": "james.a.carbonell@ice.dhs.gov",
+      "firmName": "James A Carbonell",
+      "name": "James Carbonell",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "M7Woy6ClRj8wzylzTeEC",
+      "email": "gail.carelli@dhhs.nc.gov",
+      "firmName": "NC DHHS, 101 Blair Drive, Adams Bldg.2001 Mail Service Center",
+      "name": "Gail Carelli",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "MA3xoZPxN1DmKUYFHCyY",
+      "email": "dionne.fortner@johnstonnc.gov",
+      "firmName": "PO Box 1049, Smithfield, NC  275277",
+      "name": "Dionne Fortner",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "MDqmQFUXE6LBQhBsHDgs",
+      "email": "william.mcconico@36thdc.org",
+      "firmName": "36th District Court",
+      "name": "William McConico",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "MO1wGoJCISTSRS0wOcAf",
+      "email": "mruggirello@courts.mi.gov",
+      "firmName": "Michigan Court of Appeals",
+      "name": "Maria Ruggirello",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "MPFyRY2vIY8kLfEMw8XD",
+      "email": "json-revoredo@counsel.lacounty.gov",
+      "firmName": "Office of the County Counsel",
+      "name": "Joan Son-Revoredo",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "MQSWh4qOBUqy9iiXkOWq",
+      "email": "youmyla.mcqueen@cdcr.ca.gov",
+      "firmName": "Office of Legal Affairs",
+      "name": "Youmyla McQueen",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "MSt8yvDZ4j3dOUqOjko3",
+      "email": "mcravens@lexingtonky.gov",
+      "firmName": "Official Address Information",
+      "name": "Michael Stephen Cravens",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Criminal Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "MTdUXO9vuUAZfFcAVYgM",
+      "email": "troutson@dir.ca.gov",
+      "firmName": "Dept. of Industrial Relations",
+      "name": "Thomas Routson",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "MftfII7yTNyoRngZ5xmr",
+      "email": "jmcmahan@sjcourts.org",
+      "firmName": "Superior Court of California, County of San Joaquin",
+      "name": "Jennifer McMahan",
+      "source": "mibar",
+      "state": "CA",
+      "practiceArea": "Wrongful Death",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "Mw8cr9OgzgJbtXBWniVz",
+      "email": "genna.beier@sfgov.org",
+      "firmName": "San Francisco Public Defender Office",
+      "name": "Genna Beier",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "N7ClQRCFbMqN6SofJ6WN",
+      "email": "slenn@duo-county.com",
+      "firmName": "Official Address Information",
+      "name": "Elizabeth G Lenn",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "NRVQG9Yau0Hd8VYpeU8H",
+      "email": "jessica.buck@kyret.ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Jessica Karen Buck",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Criminal Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "NoebFK52o5HxFMaw9pTa",
+      "email": "kenneth.maccollom@stpete.org",
+      "firmName": "City Of St. Petersburg",
+      "name": "Kenneth MacCollom",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Product Liability",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "O4NQoGP6E40VeIMQ87Jv",
+      "email": "jack.thorp@dac.state.ok.us",
+      "firmName": "Noel Jackson Thorp",
+      "name": "Noel Thorp",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "OF4YhCvENI7XAr4P6BZm",
+      "email": "leeann.whitmore@doj.ca.gov",
+      "firmName": "Office of the Attorney General",
+      "name": "LeeAnn Whitmore",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "OJyjRZOpwK86ZNZlpHVz",
+      "email": "thomas_h_fulton@kywb.uscourts.gov",
+      "firmName": "US Bankruptcy Court Judge",
+      "name": "Thomas Fulton",
+      "source": "msbar",
+      "state": "KY",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "OVlDnpUe74kZZ7STJzFb",
+      "email": "cylenthia.miller@3rdcc.org",
+      "firmName": "3rd Circuit Court",
+      "name": "Cylenthia Miller",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "OXNUky1WORpCrTyzB9KI",
+      "email": "kdodge@ftc.gov",
+      "firmName": "Federal Trade Commission",
+      "name": "Karen Dodge",
+      "source": "mibar",
+      "state": "IL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "OzIC9vB0ViTD6hj4jpu6",
+      "email": "eselwocki@waynecountymi.gov",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Edwin Selwocki",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "P1F8pJVeHDCQSTZALeDY",
+      "email": "hiltnerp@detroitmi.gov",
+      "firmName": "City of Detroit",
+      "name": "Philip Hiltner",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "P94Mc7k9r2zxT1OcEOMs",
+      "email": "grahame4@michigan.gov",
+      "firmName": "State of Michigan",
+      "name": "Erin Graham",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "PL9DWxMWT2bOr3vVeKHM",
+      "email": "sriddell@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Sean Riddell",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "PqQgH74uNw1hCgFTmhML",
+      "email": "esabree@waynecountymi.gov",
+      "firmName": "Office of the Wayne County Treasurer",
+      "name": "Eric Sabree",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "Py29Kbn32efei1O6WNwf",
+      "email": "erik.johnson@dac.state.ok.us",
+      "firmName": "Erik Christopher Johnson",
+      "name": "Erik Johnson",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "Py95TgxFaTi1Jnz5uPx3",
+      "email": "atslaw248@gmail.com",
+      "firmName": "50th District Court",
+      "name": "Angelena Thomas-Scruggs",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "Q8tEm24ceIwjWLw9YD68",
+      "email": "gjustislaw@gmail.com",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Gregory Justis",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "QLLoQdRp5p0Qh7OqKXj9",
+      "email": "jhenry@manisteecountymi.gov",
+      "firmName": "Manistee County Probate Court",
+      "name": "Jared Henry",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "QOuZXOg5nLt8AjxvItdP",
+      "email": "cfeddersen@usa.net",
+      "firmName": "State of California-WCAB",
+      "name": "Clint Feddersen",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_govt"
+      ]
+    },
+    {
+      "id": "QSSmfWpYvkTeMURe0zxl",
+      "email": "lpisupat@law.nyc.gov",
+      "firmName": "Office of Corporation Counsel",
+      "name": "Lavanya Pisupati",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "QozHCWGQy2r2lsFgocjj",
+      "email": "alexander.landback@lakelandgov.net",
+      "firmName": "City of Lakeland- City Attorney's Office",
+      "name": "Alexander Landback",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "QunO35FvvfaUcDmo4xPD",
+      "email": "joshua.johnson@doj.ca.gov",
+      "firmName": "California Department of Justice",
+      "name": "Joshua Johnson",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "R83B8tQVNbof9r670rYl",
+      "email": "awhite@miottawa.org",
+      "firmName": "Office of the Public Defender",
+      "name": "Anna White",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "RAEGG1WVmdtrOrbOTtJa",
+      "email": "jimmie_birley@mied.uscourts.gov",
+      "firmName": "U.S. District Court for the E.D. Mich.",
+      "name": "Jimmie II",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "RMRyjDhPZUVHYcdC6cYw",
+      "email": "sasha.m.jones8.civ@army.mil",
+      "firmName": "Office of the Staff Judge Advocate",
+      "name": "Sasha Jones",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "military",
+        "court"
+      ]
+    },
+    {
+      "id": "RTlJXyiiIfD2sklq1SVJ",
+      "email": "kertz@kertzlaw.com",
+      "firmName": "State of Missouri 21st Judicial Circuit",
+      "name": "Daniel Kertz",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_govt",
+        "court"
+      ]
+    },
+    {
+      "id": "RUIUoaipDh1Ja7vyTdAb",
+      "email": "jcapurro@dir.ca.gov",
+      "firmName": "DIR/WCAB",
+      "name": "Joseph Capurro",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "RWpptYLTmse90b3hOmS1",
+      "email": "soyeon.oum@calcivilrights.ca.gov",
+      "firmName": "Cal. Civil Rights Dept.",
+      "name": "Soyeon Oum",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "RoCThC6H4VxdUg5kHIww",
+      "email": "acurleylaw@gmail.com",
+      "firmName": "Dent County Prosecutor",
+      "name": "Andrew Curley",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "RxbXnYiPa8lfKeqchWSx",
+      "email": "llcorg@kalcounty.com",
+      "firmName": "Kalamazoo County",
+      "name": "Lynn Corgan",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "S035Jn7r80ZviR51GBxw",
+      "email": "anali@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Aneerah Ali",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "S217zLc5YfAxFJSS0Vh6",
+      "email": "kdochenetz@berriencounty.org",
+      "firmName": "Berrien County Prosecutor's Office",
+      "name": "Kacee Dochenetz",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "SA6MfWrJH3JI7sdqwDUB",
+      "email": "fegil@detroitmi.gov",
+      "firmName": "City of Detroit Law Dept",
+      "name": "Linda Fegins",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "SDrBk9AsCD4OV7U5gcwk",
+      "email": "sbaum@miottawa.org",
+      "firmName": "Ottawa County Prosecutor's Office",
+      "name": "Shawna Baum",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "SJYWF1sWCz2z6p9iqOLc",
+      "email": "christopher.hunt@myfloridalegal.com",
+      "firmName": "Office of the Attorney GeneralThe Capitol # PL-01Tallahassee, FL 32399",
+      "name": "Christopher Hunt",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Insurance",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "SLVkQlwdEyPffe347VD1",
+      "email": "dylan.radke@cc.cccounty.us",
+      "firmName": "Office of County Counsel",
+      "name": "Dylan Radke",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "SNDytO8CiVIyps3wynGG",
+      "email": "nbagdasarian@counsel.lacounty.gov",
+      "firmName": "Ofc County Counsel",
+      "name": "Narbeh Bagdasarian",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "SRiNC0MrOCDdPw153Zni",
+      "email": "david.swan@biia.wa.gov",
+      "firmName": "Board of Ind Ins Appeals",
+      "name": "David Swan",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ScPFCRsjzRBT7UYjCdzM",
+      "email": "chase.whittaker@doj.ca.gov",
+      "firmName": "California Department of Justice",
+      "name": "Chase Whittaker",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "SeMPAJIkVT7hk2WiupZz",
+      "email": "thomas.vanderostyne@louisvilleky.gov",
+      "firmName": "Official Address Information",
+      "name": "Thomas Allen Van De Rostyne",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "SzxghwG512diNxE3OR2Q",
+      "email": "prosanderson@dickinsoncountymi.gov",
+      "firmName": "",
+      "name": "Abbey Anderson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "TBh7hARDH9EaTPJxR0wG",
+      "email": "dqwigginton@starkcountyohio.gov",
+      "firmName": "",
+      "name": "David Wigginton",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Litigation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "TDzVtfYVyuDG3fLQMMbw",
+      "email": "kim.erin@pbgc.gov",
+      "firmName": "Pension Benefit Guaranty Corp",
+      "name": "Erin Kim",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "TJZa9tHwooKkbEr60uvL",
+      "email": "adrian.cranford@macombgov.org",
+      "firmName": "Macomb County Public Defender's Office",
+      "name": "Adrian Cranford",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "TQuA9GFJxwGjLmPXOvYY",
+      "email": "skhan@scscourt.org",
+      "firmName": "Superior Court of California, Santa Clara County",
+      "name": "Shehnaz Khan",
+      "source": "mibar",
+      "state": "CA",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "ThfcyCnIrYjd4tu8oJUz",
+      "email": "ramon.flores@venturacounty.gov",
+      "firmName": "Ventura County Counsel's Office",
+      "name": "Ramon Flores",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "TnvHUlJr6PMpRzddcYFD",
+      "email": "perry.tirrell@clo.ok.gov",
+      "firmName": "Perry Ryan Tirrell",
+      "name": "Perry Tirrell",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "TsgzE3nPPS9VLC0vW6ge",
+      "email": "lees@sacda.org",
+      "firmName": "Sacramento District Attorney's Office",
+      "name": "Stella Lee",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "TxwX24iSSrhvUczrabv8",
+      "email": "rdente@cityftmyers.com",
+      "firmName": "City of Fort Myers",
+      "name": "Ronald Dente",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "U0BCHwNIqSAk1X2ndIr1",
+      "email": "lisa.damphousse@3rdcc.org",
+      "firmName": "Wayne County Circuit Court",
+      "name": "Lisa Damphousse",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "U9BmgIz8aihbwtRMl7zD",
+      "email": "edward.hill@3rdcc.org",
+      "firmName": "3rd Judicial Circuit-Juvenile",
+      "name": "Edward Hill",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "UM5Gdhr9YCShvcV67Ozu",
+      "email": "kattwood@gtcountymi.gov",
+      "firmName": "Grand Traverse County Prosecutor's Office",
+      "name": "Kyle Attwood",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "UN5nHdyR3MM19DNDRz7G",
+      "email": "thomen@dir.ca.gov",
+      "firmName": "Department of Industrial Relations",
+      "name": "Tammy Homen",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "UNpv45YkIUo7IfLkUdhf",
+      "email": "josearrojo@miamisao.com",
+      "firmName": "Miami-Dade State Attorney",
+      "name": "Jose Arrojo",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "UWKZFYUGtPQXnKIGvUli",
+      "email": "mlock@ncdoj.gov",
+      "firmName": "",
+      "name": "Meghan Lock",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "UWOtwdosG6Nt3fOOC2VD",
+      "email": "edykhuizen@miottawa.org",
+      "firmName": "Ottawa County Office of the Public Defender",
+      "name": "Emily Dykhuizen",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "UY7STzaLlBBVx1Cf6yQQ",
+      "email": "rebecca_hicks@monroemi.org",
+      "firmName": "Monroe County Friend of the Court",
+      "name": "Rebecca Hicks",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "Ub9OVbHMh9LEEI0IiISo",
+      "email": "mspaak@migrantlegalaid.com",
+      "firmName": "Migrant Legal Aid",
+      "name": "Molly Spaak",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "UfQ1kA9vbaVf4L7bCVl2",
+      "email": "bswain@alachuacounty.us",
+      "firmName": "Alachua County Attorney's Office",
+      "name": "Robert Swain",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "UuO5QkjCLgAihTYqPvxB",
+      "email": "alibby@mqtco.org",
+      "firmName": "Marquette County Public Defender",
+      "name": "Amber Libby",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "Uw50Kj0XF7s9bFTVOre0",
+      "email": "amy.august@dsh.ca.gov",
+      "firmName": "CA Dept of State Hospitals",
+      "name": "Amy August",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "V0iFLPI0R9L31su2VAFy",
+      "email": "dcrowell@pinellascounty.org",
+      "firmName": "Pinellas County Attorney's Office",
+      "name": "Donald Crowell",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "V7nvpFK9ftBkoKABbXv5",
+      "email": "danielle.obannon@doj.ca.gov",
+      "firmName": "DOJ-Office of the Attorney General",
+      "name": "Danielle O'Bannon",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "VqlxER8N4HWeWWDp6ZcC",
+      "email": "knudson.james@flsenate.gov",
+      "firmName": "Florida Senate Banking and Ins. Comm.James I Knudson, II",
+      "name": "James Knudson",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Insurance",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Vs3pF2rDxjBpHZdzWl85",
+      "email": "watkinsonw@michigan.gov",
+      "firmName": "Workers' Compensation Board of Magistrates",
+      "name": "William Watkinson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "Vx3qQF6a5ydhSZ2hnT8g",
+      "email": "mbenedict@kalso.org",
+      "firmName": "Kalkaska County Prosecutor",
+      "name": "Matthew Benedict",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "W5pUClp3ElWlE3xsH0UA",
+      "email": "schmidtl7@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Lindsay Schmidt",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "WC05OMsAtguVYOeyjOMv",
+      "email": "dhuft@manisteecountymi.gov",
+      "firmName": "Manistee-Benzie Public Defender's Office",
+      "name": "David Huft",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "WLMjFpX64RQYT1E3URD0",
+      "email": "brian.hogan@dhhs.nc.gov",
+      "firmName": "NC Department of Health and Human Services, Divisi2416 Mail Service Center",
+      "name": "Brian Hogan",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Social Security Disability",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "WOfdhlRLCbOjLiPQlX0C",
+      "email": "mblaney@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Mary Blaney",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "WZ8J4dPlS2IMXUNVSOkT",
+      "email": "detheridge@ingham.org",
+      "firmName": "Office of the Public Defender",
+      "name": "Henry Etheridge",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "WZKTWuVi2fhqY0nZZ4eS",
+      "email": "silvia.hoeg@doah.state.fl.us",
+      "firmName": "Judges of Compensation Claims Orlando",
+      "name": "Silvia Hoeg",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "WaWMZbGoJwQSKRABcXZv",
+      "email": "andrew.c.cochran3@nccourts.org",
+      "firmName": "Hoke County District Attorney's OfficeP.O. Box 429",
+      "name": "Andrew Cochran",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "WuEEQJ9cIHHJbysdfYhU",
+      "email": "deyounglaw@gmail.com",
+      "firmName": "Allegan County Friend of the Court",
+      "name": "Michael DeYoung",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "WvxR7NlZd39hp1zpfAgA",
+      "email": "pshelton@dir.ca.gov",
+      "firmName": "Lodi WCAB",
+      "name": "Parker Shelton",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Wysl5zMit2NeULLXBxIg",
+      "email": "hpark@dir.ca.gov",
+      "firmName": "Department of Industrial Relations",
+      "name": "Henry Park",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "XJvfxptLpX0FoC3RqZvT",
+      "email": "taylorjamesonesq@gmail.com",
+      "firmName": "Genesee County Friend of the Court",
+      "name": "Taylor Karam",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "XexRA7t0kfDeEqlxk64c",
+      "email": "jkaplan@illinoiscourts.gov",
+      "firmName": "Appellate Court of Illinois 2nd District",
+      "name": "Jeffrey Kaplan",
+      "source": "mibar",
+      "state": "IL",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "XnHmVvFwbP5ZqZ4DQnE9",
+      "email": "victoria.lencione@3rdcc.org",
+      "firmName": "Third Judicial Circuit Court",
+      "name": "Victoria Lencione",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "XreOweVsM8i7UoQpkVuK",
+      "email": "graham.anderson@detroitmi.gov",
+      "firmName": "City of Detroit Law Department",
+      "name": "Graham Anderson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "XsIivpvbpmmScWs7dwCh",
+      "email": "anne.mccarthy@3rdcc.org",
+      "firmName": "3rd Circuit Court",
+      "name": "Anne McCarthy",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "XuNqT6E9qgrf4jR6SZJD",
+      "email": "shaun.mcpherron@montcourt.oh.gov",
+      "firmName": "",
+      "name": "Shaun McPherron",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Criminal",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "Y4kpoAA7f6IbinpCTr3W",
+      "email": "jmflores@tularecounty.ca.gov",
+      "firmName": "Tulare County Counsel",
+      "name": "Jennifer Flores)",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "YeJlq6f3wJT1Givbil62",
+      "email": "chris.thomas@calhr.ca.gov",
+      "firmName": "California Dept of Human Resources",
+      "name": "Christopher Thomas",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "YiTMItuPax1V8qmyANkm",
+      "email": "eunice@leecountylegalaid.org",
+      "firmName": "Lee County Legal Aid Society",
+      "name": "Eunice Linot",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "county",
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "YlTqUpVkSbRcuQPTL8RX",
+      "email": "ejipp@allegancounty.org",
+      "firmName": "48th Circuit Court",
+      "name": "Emily Jipp",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "Z9yTJn1jBRGDHOYNe2Cz",
+      "email": "cbriseno@berriencounty.org",
+      "firmName": "Berrien County Public Defender Office",
+      "name": "Carri Briseno",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "ZDrv1BJuPugCaU1FmXI0",
+      "email": "giovanattin@michigan.gov",
+      "firmName": "Dept of Attorney General",
+      "name": "Neil Giovanatti",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "ZGaCgGJN2gV0go0lzEPn",
+      "email": "keith@numinenlaw.com",
+      "firmName": "Keweenaw County Probate Court",
+      "name": "Keith DeForge",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "ZK89EGp391uHQrudZClX",
+      "email": "susan.speckert@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Susan Bryson Speckert",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ZYoRQNoMAeX50HMkKP56",
+      "email": "bhatakeyama@dir.ca.gov",
+      "firmName": "Division Of Workers' Compensation",
+      "name": "Bryce Hatakeyama",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ZjO16g8VhKQkRdx8tUEp",
+      "email": "ltlaucht@traversecitymi.gov",
+      "firmName": "City of Traverse City",
+      "name": "Lauren Trible-Laucht",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "Zl9yWhiIAVU8yf0MMFwk",
+      "email": "janese_caruthers@fd.org",
+      "firmName": "Federal Public Defender",
+      "name": "Janese Caruthers",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "ZnNrrKAgIFLfQMcxJBVh",
+      "email": "dennerb@michigan.gov",
+      "firmName": "Michigan Dept of Attorney General",
+      "name": "William Denner",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "ZpWjd3Fzr1fD3Sdv9GC3",
+      "email": "swearsjo@co.muskegon.mi.us",
+      "firmName": "Muskegon County Prosecutor's Office",
+      "name": "Jordan Swears",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "Zq76Vs3MMd6RUN1FcgxT",
+      "email": "venkata.konkala@calbar.ca.gov",
+      "firmName": "Los Angeles County Public Defender",
+      "name": "Test Lawyer",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Products Liability",
+      "categories": [
+        "federal_gov",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "a97KsrOxmzAwEJVlaL4S",
+      "email": "follmerd@stlucieclerk.gov",
+      "firmName": "Clerk of the Circuit Court - SLC",
+      "name": "Donna DeMarchi",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "aLKwqJAdkaJlEbDM4OAG",
+      "email": "hilary.baker@houghtoncounty.net",
+      "firmName": "Houghton County Prosecutor's Office",
+      "name": "Hilary Baker",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "aQII5Dj7YEGviExalPGX",
+      "email": "robert.l.brooks2@nccourts.org",
+      "firmName": "Chatham County Public Defender's OfficeP.O. Box 1871",
+      "name": "Robert Brooks",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "aalRkxXKSxaci26TC1GF",
+      "email": "jaiello@counsel.lacounty.gov",
+      "firmName": "Ofc of County Counsel",
+      "name": "Joyce Aiello",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "adFkOuea375pQnj7kVGB",
+      "email": "msaroki@waynecountymi.gov",
+      "firmName": "Wayne County Corporation Counsel",
+      "name": "Mayada Saroki",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "bCmCmxHTbv5Oae2H1Ggq",
+      "email": "adrian.acosta@usdoj.gov",
+      "firmName": "US Attorney's Office",
+      "name": "Adrian Acosta",
+      "source": "mibar",
+      "state": "TX",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "bDTSRWzz8e04V2QmIEPk",
+      "email": "ivarsson.atty@gmail.com",
+      "firmName": "Cumberland County Public Defender's OfficeSuite 237,  117 Dick Street",
+      "name": "Carl Ivarsson,",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "bPjbfYfMKUDjvE4A6ur7",
+      "email": "ingrid.wilson@cdcr.ca.gov",
+      "firmName": "CDCR",
+      "name": "Ingrid Wilson",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "boRfiaRsgZ0MyZPDYl3Y",
+      "email": "mkliemann@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Melissa Kliemann",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "br0tDlTxSAV4e3R6cKg0",
+      "email": "cjdoyle37@gmail.com",
+      "firmName": "Department of Justice",
+      "name": "Christopher Doyle",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "brQrBesuIPhhgXqVBbTO",
+      "email": "lfugazi@sjcourts.org",
+      "firmName": "Superior Court-San Joaquin County",
+      "name": "Lisa Fugazi",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "buOosXEv7CUO5AoxvoxR",
+      "email": "lpalmer@waynecountymi.gov",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Lori Palmer",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "bvp5Yk82WmoaGuoqLQ85",
+      "email": "dorothy.burnsed@fdc.myflorida.com",
+      "firmName": "Florida Department of Corrections",
+      "name": "Dorothy Burnsed",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "bwcX4emHpHFs3fwj0JFx",
+      "email": "kevin.branscum@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Kevin Ricky Branscum",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Social Security",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "cK7f6QGLJjYCKJ3PTSCC",
+      "email": "clomp02l@yahoo.com",
+      "firmName": "Federal Public Defenders Office251 N. Main St., Ste. 849",
+      "name": "Mireille Clough",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "cVhAH6DkgGGNYtLQfmTH",
+      "email": "megan.dailey@sbcglobal.net",
+      "firmName": "Stanislaus County Public Defenders Ofc",
+      "name": "Megan Dailey",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "cZEDFwXrKqr9myo0AWNg",
+      "email": "mapesj1@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Jeffrey Mapes",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "cfxRWWirjh9JtfBEbNUg",
+      "email": "parrishr@saccounty.gov",
+      "firmName": "Office of the County Counsel",
+      "name": "Robert Parrish",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "clSl1sbsBz2qieYwMU8q",
+      "email": "adolinska@yahoo.com",
+      "firmName": "U.S. Department of Justice/EOIR",
+      "name": "Agnieszka Dolinska",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "co8UJknkBq7yiE397j6W",
+      "email": "tomslagle@hotmail.com",
+      "firmName": "Dickinson County Probate Court",
+      "name": "Thomas Slagle",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "cuLb2RQx8ifPHcvrW0HH",
+      "email": "jkelly@mijackson.org",
+      "firmName": "Jackson County Probate Court",
+      "name": "Jennifer Kelly",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "cuZl2vv917ROaOgUol7J",
+      "email": "james.harmony@ice.dhs.gov",
+      "firmName": "Dhs/ice/Office of the Principal Legal Advisor",
+      "name": "James Harmony",
+      "source": "wsba",
+      "state": "AZ",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "cyVHsbMUDRcO4CdEd0sU",
+      "email": "may@dubailjudge.com",
+      "firmName": "Dubail Judge, P.C.",
+      "name": "Gregory May",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "cysQvvWJnfbbAasAqqe0",
+      "email": "treeves@legislature.mi.gov",
+      "firmName": "Legislative Service Bureau",
+      "name": "Timothy Reeves",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "czIpcsHaADnnBagdXk2c",
+      "email": "joehohler3@gmail.com",
+      "firmName": "36th Circuit Court - Family Division",
+      "name": "Joseph Hohler",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "d25cV4czwI6CbbR1H4qc",
+      "email": "jeffrey.curran@dot.ca.gov",
+      "firmName": "Caltrans",
+      "name": "Jeffrey Curran",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "d2hsc5HZQfxUIt9Ke9BK",
+      "email": "delphia.burton@36thdistrictcourt.org",
+      "firmName": "36th District Court",
+      "name": "Delphia Burton",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "d6cWO2vHXYzrMrSgF19k",
+      "email": "kelsey.sill@3rdcc.org",
+      "firmName": "Wayne County Third Circuit Court",
+      "name": "Kelsey Sill",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "d7bTFIyGQrttb5fbk2gW",
+      "email": "ltange@allegancounty.org",
+      "firmName": "57th District Court",
+      "name": "Laurie Tange",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "dEtnpyVHMlHfzKyJheGq",
+      "email": "matthew.w.cheney@usdoj.gov",
+      "firmName": "Office of the US Trustee",
+      "name": "Matthew Cheney",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "dFMbqtXaLxx4rUTe6r26",
+      "email": "cecile.kohl@oakland.k12.mi.us",
+      "firmName": "Oakland Schools",
+      "name": "Cecile Kohl",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "dNtmawEfyy79fsfqTwMU",
+      "email": "margaret.jacobo@ice.dhs.gov",
+      "firmName": "DHS/ICE/OPLA",
+      "name": "Margaret Jacobo",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "dXAUp5HIKgEyvbXxmxqz",
+      "email": "law111@gmail.com",
+      "firmName": "3rd Circuit Court",
+      "name": "Lawrence Elassal",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "daubcoOiwWKy2ylcBJLE",
+      "email": "erika.morgan@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Erika Morgan",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "doBRS3FEuHat9b2cvK47",
+      "email": "hanna.frost@buncombenc.gov",
+      "firmName": "PO Box 7408",
+      "name": "Hanna Frost",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "dw6jn41tdT1pDuNQB3IR",
+      "email": "allison_hunnicutt@flnd.uscourts.gov",
+      "firmName": "U.S. District CourtUnited States District Court",
+      "name": "Martha Hunnicutt",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Product Liability",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "dzwlRv3uhPMxwlJwHGzp",
+      "email": "drysdalecrownc@michigan.gov",
+      "firmName": "Michigan Dept of Attorney General",
+      "name": "Cassandra Drysdale-Crown",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "eErH2lzLqL3oMQ8UjSgK",
+      "email": "clangholz@miottawa.org",
+      "firmName": "Ottawa County Public Defender",
+      "name": "Christopher Langholz",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "eQb46vmNdMKZPoAWWczv",
+      "email": "joseph_niskar@fd.org",
+      "firmName": "Office of the Federal Public Defender, New Mexico",
+      "name": "Joseph Niskar",
+      "source": "mibar",
+      "state": "NM",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "eQhyYgzb8emSsMmUBCNi",
+      "email": "christopher.urban@macombgov.org",
+      "firmName": "Macomb County Prosecutor's Office",
+      "name": "Christopher Urban",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "eR1ZliiYm83FjZjIw3dZ",
+      "email": "arodriguez@pd10.org",
+      "firmName": "Law Office of the Public DefenderPolk County Courthouse, 3rd FloorPO Box 9000-PDBartow, FL 33831",
+      "name": "Angela Rodriguez",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "eXYr0UhcfzMT7ld05YNt",
+      "email": "martinjm@sandiego.gov",
+      "firmName": "Office of the San Diego City Attorney",
+      "name": "Jennifer Martin",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "egBIxhEUw7YZcQMGNs5n",
+      "email": "kathleen.mccarthy@3rdcc.org",
+      "firmName": "3rd Circuit Court",
+      "name": "Kathleen McCarthy",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "epvG4f9OtIFcPinAvyc3",
+      "email": "kathryn_koonce@nceb.uscourts.gov",
+      "firmName": "",
+      "name": "Kathryn Koonce",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Bankruptcy Law (Consumer)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "et1X6ILyN0sehfg6MwMZ",
+      "email": "brutonl@detroitmi.gov",
+      "firmName": "City of Detroit, Office of the Corporation Cousnel",
+      "name": "Linda Bruton",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "euYt6uA2lt4WJ6Ueu5Zq",
+      "email": "dsmothers@lincolnlegal.org",
+      "firmName": "Land of Lincoln Legal Aid",
+      "name": "Douglas Smothers",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "ey9ayHgC4GFJI7H6rkcz",
+      "email": "tucker.charns@nccourts.org",
+      "firmName": "Office of Indigent Defense Services123 West Main Street Suite 400",
+      "name": "D. Charns",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "f37SdBSLmhAZxLnW3FTj",
+      "email": "mhall@miottawa.org",
+      "firmName": "Ottawa County Office of the Public Defender",
+      "name": "Matthew Hall",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "f9dK3MwRB3vUQM7UIoYm",
+      "email": "eric.gloudemans@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Eric Gloudemans",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "fA80gsLqpzQUwUPxeqAX",
+      "email": "danielle.pham@usdoj.gov",
+      "firmName": "Dept of Justice (USTP)",
+      "name": "Danielle Pham",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "fVpfx7o5qxurokITiLT9",
+      "email": "christian.lewis@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "John Christian Lewis",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "fYt59GoiBLvfDjbAIgTv",
+      "email": "lauren_beaudry@monroemi.org",
+      "firmName": "Monroe County Prosecutors Office",
+      "name": "Lauren Beaudry",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "fbCa4Udt8hHsQTH3kqsE",
+      "email": "raymond.garant@cityofchicago.org",
+      "firmName": "City of Chicago, Department of Law",
+      "name": "Raymond Garant",
+      "source": "mibar",
+      "state": "IL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "govt_dept",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "fbMGWOVxsgXcaxDqnHTj",
+      "email": "joaquin.alvarez@flofr.gov",
+      "firmName": "Office of Financial Regulation",
+      "name": "Joaquin Alvarez",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "g9ytlerg014rRso8RwvJ",
+      "email": "refereedavisyancey-court@3rdcc.org",
+      "firmName": "Third Judicial Circuit of Michigan",
+      "name": "Gwendolyn Davis-Yancey",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "gPvHDAzWicS37k2cJuuV",
+      "email": "christopher_avery@ncmba.uscourts.gov",
+      "firmName": "",
+      "name": "Christopher Avery",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Bankruptcy Law (Consumer)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "gbYUNMDWnqwbGmVoWDUi",
+      "email": "gmueller@osa1.org",
+      "firmName": "Office of the State Attorney",
+      "name": "Gabriel Mueller",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "ges7wNRpQkDEdyg0afBe",
+      "email": "lisa.bradley@cityhall.lima.oh.us",
+      "firmName": "",
+      "name": "Lisa Bradley",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Personal Injury and Product Liability",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "h7kgvmGg952C8ezK0wly",
+      "email": "susan.meinders@dac.state.ok.us",
+      "firmName": "Susan Kotowski Meinders",
+      "name": "Susan Meinders",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Bankruptcy - Business",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "h8G9FJImcnAFWgkQFgOj",
+      "email": "mfindish@co.lucas.oh.us",
+      "firmName": "",
+      "name": "Marie Findish",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "hADR7t8jzJ4IWNdpZhFf",
+      "email": "christopher.garner@dac.state.ok.us",
+      "firmName": "Christopher Lee Garner",
+      "name": "Christopher Garner",
+      "source": "okbar",
+      "state": "OK",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_gov",
+        "state_us"
+      ]
+    },
+    {
+      "id": "hBUkC5W9I6zjXWonyz2i",
+      "email": "sadowskia1@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Adam Sadowski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "hBepLAQMC96ADF1j3iBh",
+      "email": "kfish2@ingham.org",
+      "firmName": "Ingham County Circuit Court",
+      "name": "Kaitlin Fish",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "hvtKqiT0DllnOIzFdhkw",
+      "email": "sarah_morehead@wawd.uscourts.gov",
+      "firmName": "U.S. District Court",
+      "name": "Sarah Morehead",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "hzC27zyR2NqPrUUFVo6D",
+      "email": "jbrakora@manisteecountymi.gov",
+      "firmName": "Manistee County Prosecutor's Office",
+      "name": "John Brakora",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "iDdb8hbfOvbsCboF11Ic",
+      "email": "tydavis@ncdivorcelaw.com",
+      "firmName": "Williams Family Law 115 Parkway Office Court Suite 200",
+      "name": "Teresa Davis",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "iDjsZFd5H8BNG3ZGaZHp",
+      "email": "brian_behr@nceba.uscourts.gov",
+      "firmName": "Office of U.S. Bankruptcy Admn434 Fayetteville St. Suite 640",
+      "name": "Brian Behr",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Bankruptcy Law (Consumer)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "iKIjsULXCszXnFG2pmKu",
+      "email": "christy.hawkins@nccourts.org",
+      "firmName": "P.O. Box 2468District Attorney's Office",
+      "name": "Christy Hawkins",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "iMpFQl8klSQYuvTrzd8e",
+      "email": "steven.p.hester.civ@us.navy.mil",
+      "firmName": "Navy Office of General Counsel",
+      "name": "Steven Hester",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "iSIh5EbihpastX7ItZwt",
+      "email": "brottw@antrimcountymi.gov",
+      "firmName": "Antrim County",
+      "name": "Wilson Brott",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "ikP812MWnxwnR7oZ24QT",
+      "email": "daniel.kinnicutt@usdoj.gov",
+      "firmName": "DOJ - Executive Office For Immigration Review",
+      "name": "Daniel Kinnicutt",
+      "source": "wsba",
+      "state": "TX",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "imHzHJB4bXxid7BQa1HM",
+      "email": "roldershaw@fortlauderdale.gov",
+      "firmName": "City of Fort Lauderdale",
+      "name": "Robert Oldershaw",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "iotIcIdqRKg6imPpyLcq",
+      "email": "ssanford@berriencounty.org",
+      "firmName": "Berrien County Public Defenders Office",
+      "name": "Scott Sanford",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "iuRVqwCgBSv8oyhrkUnH",
+      "email": "amarkey@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Ann Markey",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "j4wQVbnya1GTiLUJrSax",
+      "email": "martint28@michigan.gov",
+      "firmName": "Licensing and Regulatory Affairs - Michigan Indigent Defense Commission",
+      "name": "Tracey Martin",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "j6udpJY5IOx5YcuMmF57",
+      "email": "dawn.mccloud@detroitmi.gov",
+      "firmName": "City of Detroit",
+      "name": "Dawn McCloud",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "jaTcTK2Ih3lIGCO6WZYT",
+      "email": "cbeckett@champaigncountyil.gov",
+      "firmName": "Champaign County Circuit Court",
+      "name": "Chad Beckett",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Real Estate",
+      "categories": [
+        "federal_gov",
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "jbUu709fQQPPFKMt5mWB",
+      "email": "sandra.jarbo@ssa.gov",
+      "firmName": "Social Security Administration OHO",
+      "name": "Sandra Jalaba-Jarbo",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "ssa"
+      ]
+    },
+    {
+      "id": "jcdFhzKg9aaHbBAXmMpo",
+      "email": "peter.t.mccary@irscounsel.treas.gov",
+      "firmName": "I.R.S. Office of Chief Counsel",
+      "name": "Peter McCary",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "jgb1CF1Gewkc9vDqhbLQ",
+      "email": "dcozad@pd18.net",
+      "firmName": "Public Defender Eighteenth Judicial Circ",
+      "name": "David Cozad",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender",
+        "court"
+      ]
+    },
+    {
+      "id": "jlRVxmR9Uyvs5tsoferK",
+      "email": "adonofrio@mahoningcountyoh.gov",
+      "firmName": "",
+      "name": "Anthony Donofrio",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Criminal",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "jndCGCOK7MiNN9PqlMwi",
+      "email": "mradabaugh@a2gov.org",
+      "firmName": "City of Ann Arbor",
+      "name": "Margaret Radabaugh",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "jz4ovUokIZEoFzTVGCSg",
+      "email": "robert.s.banks@nccourts.org",
+      "firmName": "Yancey County District Attorney's Office110 Town Square Room 6",
+      "name": "Robert Banks",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "k4ExfWexxYBoSkfEDD0w",
+      "email": "mduhart@co.lucas.oh.us",
+      "firmName": "",
+      "name": "Myron Duhart",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "state_us"
+      ]
+    },
+    {
+      "id": "kPcN8qOAZpkP7F7Y6tIV",
+      "email": "hdeal@guilfordcountync.gov",
+      "firmName": "",
+      "name": "Heather Deal",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "kacpEhwKfthHNDazg5R5",
+      "email": "dorileo@aol.com",
+      "firmName": "9th Circuit Court",
+      "name": "Doreen Leo",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "kdKuyFd35se1SilN0tpq",
+      "email": "grant.lien@doj.ca.gov",
+      "firmName": "Office of the Attorney General",
+      "name": "Grant Lien",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "l1zPrT5m3vlwrZApX14p",
+      "email": "iana.benjamin@navy.mil",
+      "firmName": "United States Navy JAG Corps CivilianRegion Legal Services OfficeRanger St Bldg 4Jacksonville, FL 32212",
+      "name": "Iana Benjamin",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "lB8ML5juxrDNw2gLakR6",
+      "email": "manateecountylaw@aol.com",
+      "firmName": "John Paul Fleck, Jr.",
+      "name": "John Fleck",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "lD0ss2KXDTEHahHMnVTw",
+      "email": "john.odell@usdoj.gov",
+      "firmName": "U.S. Department of Justice (EOIR)",
+      "name": "John Odell",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "lOUKr22MM2U04cNPCcmz",
+      "email": "niccolas.grochowski@romi.gov",
+      "firmName": "City of Royal Oak",
+      "name": "Niccolas Grochowski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Wrongful Death",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "lW4dO6Nyu2gSDs5XnUfR",
+      "email": "ralph.schofield@flhealth.gov",
+      "firmName": "Florida Department of Health",
+      "name": "Ralph Schofield",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "leoMudsschTLmoPDZlu3",
+      "email": "erin.lincoln@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Erin Lincoln",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "lr9DUVIrKv6yPq3k6Rv8",
+      "email": "paul.eck@cmd.ca.gov",
+      "firmName": "California Military Department/CAL GUARD",
+      "name": "Paul Eck",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "lrEWDpXQfIFMJcY9UiLh",
+      "email": "elzingael@co.muskegon.mi.us",
+      "firmName": "Muskegon County Office of the Public Defender",
+      "name": "Elise Elzinga",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "state_us",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "lsHmNWHWZmJyqTBnNMto",
+      "email": "sterkenburga@kentwood.us",
+      "firmName": "62B District Court",
+      "name": "Amanda Sterkenburg",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "lsnSw4rTYcjV3K2SvhKg",
+      "email": "anne.lattime@longbeach.gov",
+      "firmName": "City of Long Beach",
+      "name": "Anne Lattime",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "ltDFRTbBxn6PXQEwzEcZ",
+      "email": "matthew.peterson415@gmail.com",
+      "firmName": "Ionia County Public Defender",
+      "name": "Matthew Peterson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "ltfyrhv0ep0UHZvIMJR4",
+      "email": "heather.chapman@wyomingmi.gov",
+      "firmName": "City of Wyoming",
+      "name": "Heather Chapman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "m1QdNfnLARYFV8lyNhsF",
+      "email": "tiakyta.willie@va.gov",
+      "firmName": "",
+      "name": "Tiakyta Willie",
+      "source": "mibar",
+      "state": "DC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "m5mdRhXKwzOar0bp0LrJ",
+      "email": "teresa.hoskins-hart@ssa.gov",
+      "firmName": "",
+      "name": "Teresa Hoskins-Hart",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Administrative and Regulatory",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "mDgsIAJcoXB4R2Wvzicm",
+      "email": "yon.k.alberdi@usdoj.gov",
+      "firmName": "8",
+      "name": "Yon Alberdi",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "mGxcQK5W90DwJMeMgKX8",
+      "email": "paul.arentz@cdcr.ca.gov",
+      "firmName": "CDCR Office of Legal Affairs",
+      "name": "Paul Arentz",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "mMUTOtKY62y84XWB0PYa",
+      "email": "deepesh.pandit@ocpubdef.com",
+      "firmName": "Orange County Public Defender",
+      "name": "Deepesh Pandit",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "mMaF2K9ae2nynPf2hBWx",
+      "email": "frank.brown@myfloridalegal.com",
+      "firmName": "Office of Attorney General",
+      "name": "Frank Brown",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "mYm2N69tdVoAk3NvZBoC",
+      "email": "gmcnally@casscountytitleoffice.com",
+      "firmName": "Jones Law Office",
+      "name": "Garrett McNally",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "mcVdDFX26jUMXFd6GOzH",
+      "email": "gregory.stephens@bcohio.gov",
+      "firmName": "",
+      "name": "Gregory Stephens",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Criminal",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "mchFkhe7zXwsSwHJB706",
+      "email": "ajamim@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Michael Ajami",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "meHgVmp7SRONCkEoRzGk",
+      "email": "heharj@cooley.edu",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Jasminder Hehar",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "mioJgthvyIsOfz4eo32Q",
+      "email": "skmoore@a2gov.org",
+      "firmName": "15th District Court",
+      "name": "Sharifa Moore",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "mnqGwlCAFVxYUpvUBRq7",
+      "email": "mcbryder@sacda.org",
+      "firmName": "Sacramento County District Attorney’s Office",
+      "name": "Rory McBryde",
+      "source": "mibar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "mnxIeoTvKAKoa1w60BRm",
+      "email": "krumbholzd@leoncountyfl.gov",
+      "firmName": "Leon County Attorney's OfficeLeon County Courthouse",
+      "name": "Daniel Krumbholz",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "n2H0t5GQzJmG0Rd8xtT1",
+      "email": "j.wisniewski@hillsdalecounty.gov",
+      "firmName": "Hillsdale County Prosecutor's Office",
+      "name": "Jamie Wisniewski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "nCKimBmZAWAPV9Gg8HRT",
+      "email": "jeff.giuliano@hamilton-oh.gov",
+      "firmName": "",
+      "name": "Jeff Giuliano",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Criminal",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "nFUBZlTsronfTOGAZFrp",
+      "email": "sgj@coa.nccourts.org",
+      "firmName": "NC Court of Appeals Chambers of Judge StadingPO Box 888",
+      "name": "Honorable Stading",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "naTDpHgJDpS9PYaZkOd4",
+      "email": "heather.burns@hhs.gov",
+      "firmName": "Office of Medicare Hearing and Appeals",
+      "name": "Heather Burns",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "neLGdNBITSLYCmuS4lu5",
+      "email": "catherine.sala@lenawee.mi.us",
+      "firmName": "Lenawee County Probate Court",
+      "name": "Catherine Sala",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "ngPV6UMyCBkXVTxRcdEZ",
+      "email": "klukowskinancyp@michigan.gov",
+      "firmName": "Tax Tribunal",
+      "name": "Nancy Klukowski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "noWeRgKrVzfhuNOEeah9",
+      "email": "wilsonm47@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Monica Wilson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "nz85mH2XhUX3KlpamYyy",
+      "email": "brian.j.moore@nccourts.org",
+      "firmName": "Office of the Public Defender  PO Box 2560",
+      "name": "Brian Moore",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "o39Vk33ZUwLIfwK5AjCY",
+      "email": "richard.bertelson@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Richard William Bertelson III",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Social Security",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "o5C5xRiCc8uXZKvTYN49",
+      "email": "jessenia.concepcion@myfloridalegal.com",
+      "firmName": "Office of the Attorney General",
+      "name": "Jessenia Concepcion",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "oVZKqvIxAZ7Fjd4wcPk8",
+      "email": "kfain@vercounty.org",
+      "firmName": "Office of the Public Defender",
+      "name": "Katy Fain",
+      "source": "ilbar",
+      "state": "IL",
+      "practiceArea": "Intellectual Property",
+      "categories": [
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "oVakz2xpA812nyyymamz",
+      "email": "katy.suttorp@jud.ca.gov",
+      "firmName": "Judicial Council of California",
+      "name": "Katy Suttorp",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "oYh4IcvZGr0LeKGGQYvp",
+      "email": "adam.cherensky@doj.ca.gov",
+      "firmName": "California Department of Justice",
+      "name": "Adam Cherensky",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "oZKQhICEweTYuXscWPaC",
+      "email": "mgardner@ohymlaw.com",
+      "firmName": "Appellate Judge",
+      "name": "Michael Gardner",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "ogP85z6Pdjy0etAmAjdR",
+      "email": "ozeirz@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "Zena Ozeir",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "onrbjbG4BJ5H7GfEfiEW",
+      "email": "adisley.m.cortez-rodriguez@usdoj.gov",
+      "firmName": "Dept of Justice- Off of the U S Trustee",
+      "name": "Adisley Rodriguez",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "p3uTrjCm7pNg5BImza1D",
+      "email": "j.m.harcrow@outlook.com",
+      "firmName": "Department of Justice - FBOP",
+      "name": "Jolene Harcrow",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "pH3ZtrUb7pxgs2AjdlS2",
+      "email": "maciej.lewandowski@flhealth.gov",
+      "firmName": "Florida Department of Health",
+      "name": "Maciej Lewandowski",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "pHhAuGAeNjYhVDgH02JZ",
+      "email": "carrierp@vanburencountymi.gov",
+      "firmName": "36th Circuit Court",
+      "name": "Paul Carrier",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "pKp055p47P9nvo9fTtPE",
+      "email": "cvreeland@branchcounty.gov",
+      "firmName": "Branch County Public Defender",
+      "name": "Christopher Vreeland",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "pLEYzFEyB2gYDc21QHzH",
+      "email": "lhrydziuszko@courts.mi.gov",
+      "firmName": "Michigan Court of Appeals",
+      "name": "Laurie Hrydziuszko",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "pSu6sitr7H5Y3sooIpBc",
+      "email": "patty.chan@usdoj.gov",
+      "firmName": "DOJ/Office of the US Trustee",
+      "name": "Patty Chan",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "pXPjdooK5mNb79lx0tSZ",
+      "email": "nancy.pham@usdoj.gov",
+      "firmName": "Dept of Justice",
+      "name": "Nancy Pham",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "pjGQjzTWlXuZX3Tcc8UK",
+      "email": "rong.kohtz@kohtzlaw.com",
+      "firmName": "Social Security Administration",
+      "name": "Rong Kohtz",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "ssa"
+      ]
+    },
+    {
+      "id": "q2qtgUkVdN1mPbxGVrc9",
+      "email": "sreichman@counsel.lacounty.gov",
+      "firmName": "Ofc County Counsel",
+      "name": "Sharon Reichman",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "qBDHA3b2YVFyFOu5zUnq",
+      "email": "jdowney@dir.ca.gov",
+      "firmName": "Workers' Compensation Appeals Board",
+      "name": "Jay Downey",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "qBqORUOGCULPYQh0wU6B",
+      "email": "jsims@calhouncountymi.gov",
+      "firmName": "Calhoun County Public Defender",
+      "name": "John Sims",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "qGsxU0AyFFrocBVVK6gK",
+      "email": "kinter.kj@gmail.com",
+      "firmName": "California Department of Justice",
+      "name": "Kaylee Kinter",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Toxic Torts",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "qHmsmRY1LTpvtJYRJpy3",
+      "email": "alicia.skillman@36thdistrictcourtmi.gov",
+      "firmName": "36th District Court",
+      "name": "Alicia Skillman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "qLkDOyxf6mQVUizW88mK",
+      "email": "meredith.denzler@dot.ca.gov",
+      "firmName": "State of California",
+      "name": "Meredith Denzler",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Construction Law",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "qbVXcvw2eo8Mip4ZazT8",
+      "email": "bennetty1@michigan.gov",
+      "firmName": "Michigan State Housing Development Authority (MSHDA)",
+      "name": "Yolanda Bennett",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "qi8ZVTWGzQEfYaAYxXIK",
+      "email": "conor.mclaughlin@usdoj.gov",
+      "firmName": "Office of the United States Trustee",
+      "name": "Conor McLaughlin",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "qidf8eQNpNK3YJOwyKFK",
+      "email": "jason.h.egan@usdoj.gov",
+      "firmName": "Office of the United States Trustee",
+      "name": "Jason Egan",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "qwqQViszSIFDEjMKGWfU",
+      "email": "zivianr@oakgov.com",
+      "firmName": "Oakland County Prosecutor's Office",
+      "name": "Robert Zivian",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "qzKrrt4RGpNxDLYCseH3",
+      "email": "joshua.e.adams@ice.dhs.gov",
+      "firmName": "Office of Principal Legal Advisor",
+      "name": "Joshua Adams",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "qzfrL5FvjD9l8RwVtyhU",
+      "email": "dhutchison@dir.ca.gov",
+      "firmName": "Workers' Compensation Appeals Board",
+      "name": "Desirae Hutchison",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "r7NCpKpW5BP64zYasWH1",
+      "email": "robert.gregg@myfloridalegal.com",
+      "firmName": "Office of the Attorney GeneralThe Capitol # Pl-01Tallahassee, FL 32399",
+      "name": "Robert Gregg",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "rKByz51vVK3RE4jXa3U9",
+      "email": "anna.adams2@usdoj.gov",
+      "firmName": "U.S. Department of Justice",
+      "name": "Anna Adams",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "rVhfPtHmtv5vV7LTM3Di",
+      "email": "ciara.mcgrane@lenawee.mi.us",
+      "firmName": "39th Circuit Court - Lenawee County",
+      "name": "Ciara McGrane",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "ruvg9mRSo6EAYPENNKL4",
+      "email": "diana.esquivel@doj.ca.gov",
+      "firmName": "Office of the Attorney General",
+      "name": "Diana Esquivel",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "rvWG5FEA2vuhL2VYXZD5",
+      "email": "mai.tran2@usdoj.gov",
+      "firmName": "United States Attorney's Office",
+      "name": "Mai Tran",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "rvgK3BjJlxJQeEAEi1vc",
+      "email": "david.hord@wake.gov",
+      "firmName": "Wake County Attorney's OfficeP.O. Box 550",
+      "name": "David Hord,",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "s3o0fZzU0C8CYLTlAG0F",
+      "email": "robert.biswas@ice.dhs.gov",
+      "firmName": "Department of Homeland Security",
+      "name": "Meghdut Biswas",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "sFdrduAI5JKFagB49Axz",
+      "email": "kristina.thompson@ic.nc.gov",
+      "firmName": "",
+      "name": "Kristina Thompson",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Workers' Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "sGk1cIZYkajsLhmFKsOB",
+      "email": "bbarthelemy@miottawa.org",
+      "firmName": "Ottawa County Public Defender Office",
+      "name": "Brandon Barthelemy",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "sNm26W8hoQDPs6KMdTCh",
+      "email": "brant.bowman@3rdcc.org",
+      "firmName": "Third Circuit Court, Criminal Division",
+      "name": "Brant Bowman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Wrongful Death",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "sTaatzWL89ACm2CorazW",
+      "email": "kanek@stjosephcountymi.org",
+      "firmName": "St. Joseph County Probate Court",
+      "name": "Kevin Kane",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "sZ4h9NThka1M6DGTakUb",
+      "email": "will.adams@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "William Hershel Adams II",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Criminal Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "scAN27VYGdinRuyc7gNY",
+      "email": "jjohnson@manisteecountymi.gov",
+      "firmName": "Manistee-Benzie Regional Public Defender's Office",
+      "name": "Jane Johnson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "soHmGNAK8bQhaolWb1GW",
+      "email": "timothy.griffiths@sen.ca.gov",
+      "firmName": "CA Senate Budget & Fiscal Review Com.",
+      "name": "Timothy Griffiths",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "sueqHOQg8hwhcKrqdvUt",
+      "email": "kerlyne.alexis-pinkins@detroitmi.gov",
+      "firmName": "City of Detroit Law Department",
+      "name": "Kerlyne Alexis-Pinkins",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "svBPZ9VhSEFB2Uokq8Kj",
+      "email": "anderson-kirkjulie@att.net",
+      "firmName": "Social Security Administration OHO",
+      "name": "Kirk Anderson",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "ssa"
+      ]
+    },
+    {
+      "id": "sxEjds0l4plhzJ2irDlV",
+      "email": "gillc1@michigan.gov",
+      "firmName": "Michigan Dept of Attorney General, Special Litigation",
+      "name": "Celeste Gill",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "sxmgDgV4f9Z5HWF5T3lJ",
+      "email": "cvazquez@dir.ca.gov",
+      "firmName": "State of CA - DLSE",
+      "name": "Cristina Vazquez",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "t4xGGTGDXy87WDYIcCXS",
+      "email": "gina.cammarano@ic.nc.gov",
+      "firmName": "",
+      "name": "Gina Cammarano",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Workers' Compensation",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "tAYATVQoFycBHwejKOVV",
+      "email": "joe.polzak@sarasotafl.gov",
+      "firmName": "Polzak Shamsey Mladinich PLLCPO Box 1000Sarasota, FL 34230-1000",
+      "name": "Joseph Polzak",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "tBo47aN4xdqq7frR54wa",
+      "email": "kfoster@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Kellie Maki Foster",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "tC5pSFAEnIDUhxgkaBvv",
+      "email": "sean.eaton.7@us.af.mil",
+      "firmName": "United States Air Force",
+      "name": "Sean Eaton",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "tCYYBc4mzDeGkW5czfdi",
+      "email": "kimberly.tallent@kentcountymi.gov",
+      "firmName": "Kent County Office of the Public Defender",
+      "name": "Kimberly Tallent",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "tJVee2inaRJ05nbwSnbO",
+      "email": "larry.watson@usdoj.gov",
+      "firmName": "Office of the US Trustee",
+      "name": "Larry Watson",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "tMLHztX10oaSF2CPMVmj",
+      "email": "matt.lynch@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Matthew Patterson Lynch",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Criminal Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "tPkb8luYbzDEGNFNR9ja",
+      "email": "john.nicholas@courts.mo.gov",
+      "firmName": "John Anthony Nicholas",
+      "name": "John Nicholas",
+      "source": "okbar",
+      "state": "MO",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "taodX72zjclWKCTkqLry",
+      "email": "david.weisberg@lacity.org",
+      "firmName": "City of Los Angeles",
+      "name": "David Weisberg",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "city_govt"
+      ]
+    },
+    {
+      "id": "tfNNgyXIIcdtwgW28N9R",
+      "email": "karrie.biron@lvd-nsn.gov",
+      "firmName": "Lac Vieux Desert Band of Lake Superior Chippewa Indians",
+      "name": "Karrie Biron",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "thZBmBcb4AELF8De60vW",
+      "email": "cmcqueen@counsel.lacounty.gov",
+      "firmName": "County Counsel/Worker's Compensation",
+      "name": "Carolyn McQueen",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "tpOCX7Bvvz3yF6iHWxJ3",
+      "email": "richard.lasseter@usdoj.gov",
+      "firmName": "Office of the U.S. Attorney (MDFL)",
+      "name": "Richard Lasseter",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "twZKRKdl8MNion8rcqkW",
+      "email": "norman.morrison@doj.ca.gov",
+      "firmName": "Cal. Dept. of Justice/Attorney General",
+      "name": "Norman IV",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "u0X5gwQ7CretVzW3evEr",
+      "email": "marissa.suarez@doj.ca.gov",
+      "firmName": "CA Office of the Attorney General",
+      "name": "Marissa Suarez",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "u43IvhkheCSKm9A7nkbZ",
+      "email": "dforziano@alachuacounty.us",
+      "firmName": "Alachua County Attorney's Office",
+      "name": "David Forziano",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Construction",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "uFlCTDMzDW9Ezixylosc",
+      "email": "pcorey@clsocal.org",
+      "firmName": "Community Legal Aid SoCal",
+      "name": "Pablo Schlueter-Corey",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "uPdwdNltG0R79l6Gd8eY",
+      "email": "amber.kourofsky@fdc.myflorida.com",
+      "firmName": "Florida Department of Corrections",
+      "name": "Amber Kourofsky",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "uQIGIsqFaitev0gmdoBe",
+      "email": "psielski@miottawa.org",
+      "firmName": "Ottawa County Office of the Public Defender",
+      "name": "Philip Sielski",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "uU8Q2iNl07cS6r8b5Z96",
+      "email": "cleitz@sao9.org",
+      "firmName": "Office of the State Attorney - 9th",
+      "name": "Cynthia Leitz",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "ukRVwpdgVoAhaD8hA2eL",
+      "email": "gilmorekr@co.muskegon.mi.us",
+      "firmName": "Muskegon County Prosecutor's Office",
+      "name": "Kristyn Gilmore",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "ukwW7GlZPCGK1FCawI14",
+      "email": "brandi.thompson@ssa.gov",
+      "firmName": "Social Security Administration",
+      "name": "Brandi Thompson",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "ssa"
+      ]
+    },
+    {
+      "id": "uwUzlIILSdA5Ggmncci4",
+      "email": "tricias@cassco.org",
+      "firmName": "Cass County Public Defender's Office",
+      "name": "Tricia Smith",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "v2HBLZJRbcD8Vcw6srsR",
+      "email": "mpmundrick@gmail.com",
+      "firmName": "Lucas County Court of Common Pleas - Juvenile Division",
+      "name": "Matthew Mundrick",
+      "source": "mibar",
+      "state": "OH",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "v3EFYQdvbfBLobYbxWjP",
+      "email": "brinnr@courts.mi.gov",
+      "firmName": "Judicial Tenure Commission",
+      "name": "Rebecca Jurva-Brinn",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "court"
+      ]
+    },
+    {
+      "id": "v56tWvibuXfxAmIhlN7B",
+      "email": "llevenson@pdo5.org",
+      "firmName": "Public Defenders Office",
+      "name": "Lee Levenson",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "vD8SpfquMB2TF7tuYLSh",
+      "email": "vmikho@lakeshorelegalaid.org",
+      "firmName": "Lakeshore Legal Aid",
+      "name": "Vivian Mikho",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "vDK1RoFH9lrZrl5of7Qs",
+      "email": "neil.floyd@usdoj.gov",
+      "firmName": "Charles Floyd, Attorney at Law",
+      "name": "Charles Floyd",
+      "source": "wsba",
+      "state": "WA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "vmaBUnD2kZJ3QcCFwc92",
+      "email": "alexander.sheldon-smith@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Alexander Sheldon-Smith",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "vu7sp293191FUpzzYdRn",
+      "email": "william.j.moore@usace.army.mil",
+      "firmName": "U.S. Army Corps of Engineers",
+      "name": "William Moore",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "military"
+      ]
+    },
+    {
+      "id": "wSBIpQqrXuFz1yF3aZtl",
+      "email": "elba.lumbi07@gmail.com",
+      "firmName": "US Department of Homeland Security",
+      "name": "Elba Lumbi",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Immigration and Nationality",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "wXrFQpVZQfLyuoil3XBP",
+      "email": "michael_ball@pd1.fl.gov",
+      "firmName": "Office of the Public Defender 1st Judici",
+      "name": "Michael Ball",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Insurance",
+      "categories": [
+        "federal_gov",
+        "public_defender"
+      ]
+    },
+    {
+      "id": "wdYOe2O9uvT6sXPbbeLL",
+      "email": "khalbritter@hr.lacounty.gov",
+      "firmName": "County of Los Angeles",
+      "name": "Kevin Halbritter",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "county",
+        "county_govt"
+      ]
+    },
+    {
+      "id": "wjxcIghkzS3oTMjFRNYK",
+      "email": "deonte.l.thomas@nccourts.org",
+      "firmName": "Public Defenders Office300 S. Salisbury Street, Suite 500",
+      "name": "Deonte' Thomas",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "wlp4gUozy4UEPUPWrUXV",
+      "email": "paddisong@detroitmi.gov",
+      "firmName": "City of Detroit Law Dept",
+      "name": "Gregory Paddison",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Wrongful Death",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "wmGDyCqwH9u2vXuRriKZ",
+      "email": "barnesje@co.muskegon.mi.us",
+      "firmName": "14th Circuit Court",
+      "name": "Jennifer Barnes",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "x2TDNzcVjasmWETP2oeX",
+      "email": "patricia.woodruff@3rdcc.org",
+      "firmName": "Wayne County Friend of the Court",
+      "name": "Patricia Woodruff",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "x5KPTWO89PlzS8aonVKM",
+      "email": "areisinger@dir.ca.gov",
+      "firmName": "Department of Industrial Relations",
+      "name": "Andrew Reisinger",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "xBpJUQMbZKiqYPjPjAuq",
+      "email": "arkingd@detroitmi.gov",
+      "firmName": "City of Detroit Law Dept",
+      "name": "Daniel Arking",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "city_govt"
+      ]
+    },
+    {
+      "id": "xPJyXTp4sTdtNiXejYWp",
+      "email": "adamsz@cooley.edu",
+      "firmName": "Muskegon County Family Court",
+      "name": "Zaneta Adams",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "xTFfgWXBWBEngDZuXb2R",
+      "email": "tfarquhar@pd4.coj.net",
+      "firmName": "Fourth Circuit Office of Public Defender",
+      "name": "Troy Farquhar",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "xTMcIyKZniCuWhY35wsp",
+      "email": "stacey_rubain@fd.org",
+      "firmName": "The Office of the Federal Public Defender301 N. Elm Street, Suite 410",
+      "name": "Stacey Rubain",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Criminal Law (State)",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "xXcRHByU1SilZBzBmO66",
+      "email": "mmaleki@clsocal.org",
+      "firmName": "Community Legal Aid SoCal",
+      "name": "Mahsa Maleki",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "xZfi3gjgMTDNf9cXqynS",
+      "email": "dshort@leelanau.gov",
+      "firmName": "Leelanau County",
+      "name": "Daniel Short",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "xdR9lYtgZiHA9zkfcH6F",
+      "email": "lszelenyi@dir.ca.gov",
+      "firmName": "STATE OF CALIFORNIA",
+      "name": "Lilla Szelenyi",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Workers Compensation",
+      "categories": [
+        "federal_gov",
+        "state_govt"
+      ]
+    },
+    {
+      "id": "xif6x1fKtT7H3fT8MvkN",
+      "email": "lee.rutila@3rdcc.org",
+      "firmName": "Wayne County Circuit Court/Friend of the Court",
+      "name": "Lee Rutila",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "xlmqlLK0YgOn4ROQdNni",
+      "email": "amason1@waynecounty.com",
+      "firmName": "Wayne County Corporation Counsel",
+      "name": "Allegra Mason",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "xmv8rVUKgnZmx1xAWEcu",
+      "email": "predhommew1@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "William Predhomme",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "xo4nXqmYMfAVVCTUz7Cf",
+      "email": "edward.garcia@doj.ca.gov",
+      "firmName": "Dept of Justice/Attorney General's Ofc.",
+      "name": "Edward Jr",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov",
+        "attorney_general"
+      ]
+    },
+    {
+      "id": "xy9DSTePuq9pAcwU2iHj",
+      "email": "efox@oceana.mi.us",
+      "firmName": "Oceana County Probate Court",
+      "name": "Eric Fox",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "state_us",
+        "court"
+      ]
+    },
+    {
+      "id": "y6SXQiOqwoDIoggUdVp2",
+      "email": "smovsisyan@waynecountymi.gov",
+      "firmName": "Wayne County Prosecutor's Office",
+      "name": "Sona Movsisyan",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "y70jEy3iqszL7xC9rnkZ",
+      "email": "jlynch@lynchlegalkc.com",
+      "firmName": "US Department of Transportation / FTA",
+      "name": "John Lynch",
+      "source": "mobar",
+      "state": "MO",
+      "practiceArea": "Personal Injury",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "yC43v7j3ktOtlXwax9Wm",
+      "email": "noveskeyg@washtenaw.org",
+      "firmName": "Washtenaw County Public Defender's Office",
+      "name": "Gina Noveskey",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "yZ69HV6ZB0o3x2PivZLL",
+      "email": "rachael.hawes@haywoodcountync.gov",
+      "firmName": "Haywood County Health and Human Services Agency157 Paragon Parkway, Suite 300",
+      "name": "Rachael Hawes",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Child Welfare",
+      "categories": [
+        "federal_gov",
+        "county"
+      ]
+    },
+    {
+      "id": "yeEnbPjBwnGy4IY2abVO",
+      "email": "jessford513@gmail.com",
+      "firmName": "Sixth Circuit Court of Appeals",
+      "name": "Jessica Ford",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "yfiYPWHQouZrJooT3DgF",
+      "email": "kerey.carpenter@perc.fl.gov",
+      "firmName": "Kerey Carpenter",
+      "name": "Kerey Carpenter",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "yg2XuoaSFYmvJwnPpR5K",
+      "email": "david_warren@nceb.uscourts.gov",
+      "firmName": "United States Bankruptcy Judge7707 Litcham Drive",
+      "name": "David Warren",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Bankruptcy Law (Consumer)",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "yj5YvBtgVkxPKXWlBLng",
+      "email": "abfutbol935@gmail.com",
+      "firmName": "Social Security Administration",
+      "name": "Justin Miller",
+      "source": "mibar",
+      "state": "AL",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "ssa"
+      ]
+    },
+    {
+      "id": "ylKr3Xht7t9IDiETSSuM",
+      "email": "eearley@dir.ca.gov",
+      "firmName": "CA Labor Commissioner's Office/DLSE",
+      "name": "Edna Earley",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Labor & Employment",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ynI2bMc3xl9RYLQMe0Js",
+      "email": "pkraus@miottawa.org",
+      "firmName": "20th Circuit Court",
+      "name": "Paul Kraus",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Family Law",
+      "categories": [
+        "court"
+      ]
+    },
+    {
+      "id": "yrgd0BOxVwdnwizHQWvo",
+      "email": "blair.lachman@kentcountymi.gov",
+      "firmName": "Kent County Prosecutor's Office",
+      "name": "Blair Lachman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Medical Malpractice",
+      "categories": [
+        "federal_gov",
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "yuUrFFAHxuqjKYpVEfIp",
+      "email": "michael.jones4@usdoj.gov",
+      "firmName": "Office of United States Trustee",
+      "name": "Michael Jones",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "yxBIAggHoHa6TXBiq2Wj",
+      "email": "renee.gordon@myfloridacfo.com",
+      "firmName": "Department of Financial ServicesSt Lucie Bldg",
+      "name": "Renée Gordon",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "yxqNDkvmSGOk5sbmlZp2",
+      "email": "sfenton@emmetcounty.org",
+      "firmName": "Emmet County Prosecutor's Office",
+      "name": "Stuart Fenton",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Bankruptcy",
+      "categories": [
+        "county",
+        "prosecutor"
+      ]
+    },
+    {
+      "id": "z4zPCwQGyMfGp0rqHbYY",
+      "email": "dteichman@berriencounty.org",
+      "firmName": "",
+      "name": "Donald Teichman",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county"
+      ]
+    },
+    {
+      "id": "zB8qmruPgA5tstWOYZLk",
+      "email": "jae.i.lee@ice.dhs.gov",
+      "firmName": "ICE - Office of Principal Legal Advisor",
+      "name": "Jae Lee",
+      "source": "calbar",
+      "state": "CA",
+      "practiceArea": "Immigration",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "zNUarIGuk66jmeaLz75G",
+      "email": "elysiap2@legalaidnc.org",
+      "firmName": "Legal Aid of NC1425 Promise Beacon Circle  Suite 201",
+      "name": "Elysia Jones",
+      "source": "ncbar",
+      "state": "NC",
+      "practiceArea": "Family Law",
+      "categories": [
+        "legal_aid"
+      ]
+    },
+    {
+      "id": "zUpUhTkiqTvODkuQJckv",
+      "email": "ashleigh.bailey@ky.gov",
+      "firmName": "Official Address Information",
+      "name": "Ashleigh Noel Bailey",
+      "source": "kybar",
+      "state": "KY",
+      "practiceArea": "Family Law",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "za3tzJyhWPL3XTlQlhrC",
+      "email": "mwandji@ingham.org",
+      "firmName": "Office of the Public Defender",
+      "name": "Melanie Wandji",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Immigration & Naturalization",
+      "categories": [
+        "public_defender"
+      ]
+    },
+    {
+      "id": "zeNpJwawMBAOUjXZd3Fg",
+      "email": "daol1@michigan.gov",
+      "firmName": "Michigan Department of Attorney General",
+      "name": "LeAnne Dao",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "federal_gov",
+        "attorney_general",
+        "govt_dept"
+      ]
+    },
+    {
+      "id": "zgZ1SRKMTpa7ndFsrNV1",
+      "email": "annmarie.obrien@dot.ohio.gov",
+      "firmName": "",
+      "name": "Ann O'Brien",
+      "source": "ohbar",
+      "state": "OH",
+      "practiceArea": "Insurance",
+      "categories": [
+        "federal_gov"
+      ]
+    },
+    {
+      "id": "ztqgB0slxdywYKq5J0V4",
+      "email": "pjancha@berriencounty.org",
+      "firmName": "5th District Court",
+      "name": "Paul Jancha",
+      "source": "mibar",
+      "state": "MI",
+      "practiceArea": "Criminal Defense",
+      "categories": [
+        "county",
+        "court"
+      ]
+    },
+    {
+      "id": "zyhULMUBbYYeEs3Qm0CF",
+      "email": "mildred.abdullah@floridarevenue.com",
+      "firmName": "Florida Department of Revenue",
+      "name": "Mildred Abdullah",
+      "source": "flbar",
+      "state": "FL",
+      "practiceArea": "Labor and Employment",
+      "categories": [
+        "govt_dept"
+      ]
+    }
+  ]
+}
