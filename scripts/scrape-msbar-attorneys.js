@@ -156,31 +156,35 @@ function parseVCard(vcardText) {
     const vcard = {};
 
     for (const line of lines) {
-        if (line.startsWith('FN:')) {
-            vcard.fullName = line.substring(3).trim();
-        } else if (line.startsWith('N:')) {
-            const parts = line.substring(2).split(';');
+        const trimmed = line.trim();
+
+        if (trimmed.startsWith('FN:')) {
+            vcard.fullName = trimmed.substring(3).trim();
+        } else if (trimmed.startsWith('N:')) {
+            const parts = trimmed.substring(2).split(';');
             vcard.lastName = parts[0]?.trim() || '';
             vcard.firstName = parts[1]?.trim() || '';
-        } else if (line.match(/^EMAIL/i)) {
-            const emailMatch = line.match(/EMAIL[^:]*:(.+)/i);
+        } else if (trimmed.match(/^EMAIL/i)) {
+            const emailMatch = trimmed.match(/EMAIL[^:]*:(.+)/i);
             if (emailMatch) {
                 vcard.email = emailMatch[1].trim().toLowerCase();
             }
-        } else if (line.match(/^TEL/i)) {
-            const telMatch = line.match(/TEL[^:]*:(.+)/i);
+        } else if (trimmed.match(/^TEL/i)) {
+            const telMatch = trimmed.match(/TEL[^:]*:(.+)/i);
             if (telMatch) {
                 vcard.phone = telMatch[1].trim();
             }
-        } else if (line.startsWith('ORG:')) {
-            vcard.org = line.substring(4).trim().replace(/\\,/g, ',');
-        } else if (line.match(/^URL/i)) {
-            const urlMatch = line.match(/URL[^:]*:(.+)/i);
-            if (urlMatch) {
-                vcard.website = urlMatch[1].trim();
+        } else if (trimmed.startsWith('ORG:')) {
+            vcard.org = trimmed.substring(4).trim().replace(/\\,/g, ',');
+        } else if (trimmed.includes('URL') && trimmed.includes('TYPE=work') && !trimmed.includes('reliaguide')) {
+            // Only extract work URLs that aren't ReliaGuide profile links
+            // Format: URL;TYPE=work:https://example.com
+            const urlPart = trimmed.split(':').slice(1).join(':');
+            if (urlPart) {
+                vcard.website = urlPart.trim();
             }
-        } else if (line.match(/^ADR/i)) {
-            const adrMatch = line.match(/ADR[^:]*:(.+)/i);
+        } else if (trimmed.match(/^ADR/i)) {
+            const adrMatch = trimmed.match(/ADR[^:]*:(.+)/i);
             if (adrMatch) {
                 const parts = adrMatch[1].split(';');
                 vcard.city = parts[3]?.trim() || '';
@@ -572,18 +576,19 @@ async function main() {
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-    let totalInserted = progress.totalInserted;
+    let insertedThisRun = 0;  // Track inserts THIS run for MAX_ATTORNEYS limit
+    let totalInserted = progress.totalInserted;  // Cumulative total for progress tracking
     const completedCategoryIds = [...progress.completedCategoryIds];
     const categoryResults = [];
 
     // Process each category
     for (const category of pendingCategories) {
-        if (totalInserted >= MAX_ATTORNEYS) {
+        if (insertedThisRun >= MAX_ATTORNEYS) {
             console.log(`\nReached max attorneys limit (${MAX_ATTORNEYS}), stopping.`);
             break;
         }
 
-        const remaining = MAX_ATTORNEYS - totalInserted;
+        const remaining = MAX_ATTORNEYS - insertedThisRun;
         const result = await scrapeByCategory(page, category, existingEmails, existingProfileIds, remaining);
 
         categoryResults.push({
@@ -592,6 +597,7 @@ async function main() {
             ...result
         });
 
+        insertedThisRun += result.inserted;
         totalInserted += result.inserted;
 
         // Mark category as complete (even if we hit max - we'll continue from next category on next run)
@@ -615,7 +621,7 @@ async function main() {
     console.log('SUMMARY');
     console.log('='.repeat(60));
     console.log(`Categories processed: ${categoryResults.length}`);
-    console.log(`Inserted this run: ${totalInserted - progress.totalInserted}`);
+    console.log(`Inserted this run: ${insertedThisRun}`);
     console.log(`Total MS Bar in DB: ${totalInDb}`);
     console.log();
 
@@ -629,7 +635,7 @@ async function main() {
     const emailHtml = `
         <h2>Mississippi Bar Scraper Complete</h2>
         <p><strong>Categories processed:</strong> ${categoryResults.length}</p>
-        <p><strong>Inserted this run:</strong> ${totalInserted - progress.totalInserted}</p>
+        <p><strong>Inserted this run:</strong> ${insertedThisRun}</p>
         <p><strong>Total MS Bar in DB:</strong> ${totalInDb}</p>
         ${DRY_RUN ? '<p><strong>*** DRY RUN - No data written ***</strong></p>' : ''}
         <h3>Category Breakdown</h3>
@@ -652,7 +658,7 @@ async function main() {
     fs.writeFileSync(summaryPath, JSON.stringify({
         timestamp: new Date().toISOString(),
         categoriesProcessed: categoryResults.length,
-        insertedThisRun: totalInserted - progress.totalInserted,
+        insertedThisRun,
         totalInDb,
         dryRun: DRY_RUN,
         categoryResults
