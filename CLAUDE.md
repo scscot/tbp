@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-01-16
+**Last Updated**: 2026-01-24
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -1211,13 +1211,14 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - App names localized: "Team Build Pro: IA Equipo" (ES), "Team Build Pro: IA Equipe" (PT), "Team Build Pro: KI Team" (DE)
    - All localized metadata, subtitles, descriptions, and keywords now live
 
-68. ✅ **Email Campaign A/B Test Disabled**:
-   - Disabled A/B testing in favor of Version A ('initial') template only
-   - Version A (personal style): 8.3% open rate, 2.1% failure rate
-   - Version B (marketing style): 2.4% open rate, 28.6% failure rate
-   - Analysis: Personal email style significantly outperforms marketing-style templates
-   - Updated `functions/email-campaign-functions.js` and `functions/email-campaign-functions-yahoo.js`
-   - Both now use hardcoded `templateVersion = 'initial'` instead of random selection
+68. ✅ **Email Campaign A/B Test Configuration** (Updated Jan 2026):
+   - **Current Status**: A/B testing is ACTIVE with strict alternation
+   - **V1 Subject**: "Not an opportunity. Just a tool." (tag: `not_opportunity`)
+   - **V2 Subject**: "What if your next recruit already had a team?" (tag: `prebuild_advantage`)
+   - **Alternation Logic**: Even-indexed emails → V1, Odd-indexed emails → V2
+   - Implementation in `functions/email-campaign-functions.js` lines 43-55, 158-160
+   - Both templates use Mailgun template `mailer` with version `v1` or `v2`
+   - **Historical Note** (Dec 2025): Original A/B test was temporarily disabled after Version A (personal style) outperformed Version B (marketing style) 8.3% vs 2.4% open rate
 
 69. ✅ **SMTP Email Validation System**:
    - Created `scripts/smtp-validate-emails.js` using deep-email-validator (Node.js)
@@ -1403,6 +1404,26 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Updated `functions/email-campaign-functions.js` with `getDynamicBatchSize()` function
    - Updated `functions/email-campaign-functions-yahoo.js` with `getDynamicBatchSizeYahoo()` function
    - Both TBP Cloud Functions now read batch size from Firestore first, with .env fallback
+
+### Week of Jan 24
+
+89. ✅ **Email Campaign A/B Testing Confirmed Active**:
+   - Verified A/B testing is currently ACTIVE via Mailgun API analysis
+   - Last 24h breakdown (Jan 24, 2026):
+     - Total campaign emails delivered: 72
+     - V1 "Not an opportunity. Just a tool.": 42 (58%)
+     - V2 "What if your next recruit already had a team?": 30 (41%)
+   - Implementation uses strict alternation: even-indexed → V1, odd-indexed → V2
+   - Code location: `functions/email-campaign-functions.js` lines 43-55 (AB_TEST_VARIANTS), 158-160 (alternation logic)
+   - Corrected documentation in item #68 (was incorrectly marked as disabled)
+
+90. ✅ **Push Notification System Validated**:
+   - Confirmed push notifications working via Firebase Cloud Logging analysis
+   - Notifications found for past 2 weeks:
+     - `profile_reminder` notifications: Jan 10, 15, 18, 20
+     - `trial_expired` notifications: Jan 15
+     - Badge updates working consistently
+   - Functions validated: `onNotificationCreated`, `sendDailyTeamGrowthNotifications`
 
 ---
 
