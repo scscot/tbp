@@ -39,10 +39,10 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 │         │                      │                        │               │
 │         └──────────────► de.teambuildpro.com ◄─────────┘               │
 │         │                      │                        │               │
-│    120+ Company           Localized              Localized             │
+│    114 Company            Localized              Localized             │
 │    Landing Pages       Content (ES/PT/DE)     Content (ES/PT/DE)      │
 │         │                      │                        │               │
-│    Blog (8 posts)         Blog (8 posts each)   Blog (8 posts each)   │
+│    Blog (18 posts)        Blog (17-18 each)     Blog (17-18 each)     │
 │         │                      │                        │               │
 │    FAQ/Books              FAQ/Books              FAQ/Books             │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -64,7 +64,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 ### How Each Component Drives Downloads
 
 **1. Main Website (teambuildpro.com)**
-- Primary SEO target with 120+ company-specific landing pages
+- Primary SEO target with 114 company-specific landing pages
 - Dynamic FAQ filtering for prospects vs professionals
 - Blog content targeting "AI recruiting" and "direct sales" keywords
 - Hero animation and CTA buttons directing to app stores
@@ -86,7 +86,7 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Author website blog posts can reference and link to Team Build Pro features
 - Bidirectional SEO benefit: author credibility boosts app trust, app success boosts author authority
 
-**4. Company Landing Pages (120+ pages)**
+**4. Company Landing Pages (114 pages EN/ES)**
 - Target long-tail keywords: "AI recruiting for [Company Name]"
 - Each page customized for specific direct sales companies
 - Captures search traffic from professionals in specific companies
@@ -116,8 +116,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 | Email Open Rate | 30.9% | 25%+ |
 | Email Click Rate | 5.5% | 3%+ |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
-| Blog Posts (per language) | 8 | 15+ |
-| Company Landing Pages | 120+ | 150+ |
+| Blog Posts (per language) | 17-18 | 25+ |
+| Company Landing Pages | 114 (EN/ES) | 150+ |
 | App Languages | 4 (EN, ES, PT, DE) | 4 |
 
 ### Cross-Linking Strategy
@@ -173,7 +173,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ### Platform
 - **Frontend**: Flutter (Dart) for iOS and Android
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
-- **Functions**: 50+ Cloud Functions handling real-time operations
+- **Functions**: 99 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
 - **Email**: Mailgun for all email delivery (campaigns and launch announcements)
 
@@ -189,33 +189,37 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 ├── scripts/               # Automation scripts
 │   ├── generate-ai-blog.js  # AI blog generation (Claude CLI)
 │   └── generate-blog.js     # Legacy blog generation
-├── .github/workflows/     # GitHub Actions automation
-│   └── weekly-blog.yml    # Twice-weekly blog automation (Mon/Thu 10am PST)
+├── .github/workflows/     # GitHub Actions automation (26 active workflows)
+│   ├── weekly-blog.yml              # Twice-weekly blog automation (Mon/Thu 10am PST)
+│   ├── weekly-sscott-blog.yml       # Stephen Scott blog automation
+│   ├── domain-warming-update.yml    # TBP/PreIntake domain warming batch sizes
+│   ├── preintake-*.yml              # 6 PreIntake workflows (lead gen, email campaign, analytics)
+│   └── *bar-scraper.yml             # 12 state bar association scraper workflows
 ├── web/                   # Public website files (English)
 │   ├── index.html        # Homepage
 │   ├── faq.html          # FAQ with dynamic filtering
 │   ├── books.html        # Books landing page
-│   ├── companies/        # Company-specific recruiting guides (120+ pages)
-│   └── blog/             # Blog posts (8 articles)
+│   ├── companies/        # Company-specific recruiting guides (114 pages)
+│   └── blog/             # Blog posts (18 articles)
 ├── web-es/                # Spanish website (es.teambuildpro.com)
 │   ├── index.html        # Spanish homepage
 │   ├── faq.html          # Spanish FAQ
 │   ├── books.html        # Spanish books page
-│   ├── blog/             # Spanish blog (8 translated posts)
+│   ├── blog/             # Spanish blog (18 translated posts)
 │   ├── sitemap.xml       # Spanish sitemap
 │   └── robots.txt        # Spanish search engine directives
 ├── web-pt/                # Portuguese website (pt.teambuildpro.com)
 │   ├── index.html        # Portuguese homepage
 │   ├── faq.html          # Portuguese FAQ
 │   ├── books.html        # Portuguese books page
-│   ├── blog/             # Portuguese blog (8 translated posts)
+│   ├── blog/             # Portuguese blog (18 translated posts)
 │   ├── sitemap.xml       # Portuguese sitemap
 │   └── robots.txt        # Portuguese search engine directives
 ├── web-de/                # German website (de.teambuildpro.com)
 │   ├── index.html        # German homepage (3x2 screenshot grid)
 │   ├── faq.html          # German FAQ
 │   ├── books.html        # German books page
-│   ├── blog/             # German blog (8 translated posts)
+│   ├── blog/             # German blog (17 translated posts)
 │   ├── sitemap.xml       # German sitemap
 │   └── robots.txt        # German search engine directives
 ├── sscott/                # Stephen Scott author website (stephenscott.us)
@@ -224,12 +228,19 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── books.html   # Author books catalog
 │   │   ├── books/       # 13 individual book pages
 │   │   ├── podcasts.html # Podcast listings
-│   │   └── blog.html    # Author blog
+│   │   ├── blog.html    # Author blog index
+│   │   └── blog/        # 15 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
 ├── analytics/             # Analytics workspace (GA4 + Mailgun)
 │   ├── fetch-combined-analytics.js  # Combined reporting
 │   ├── fetch-ga4-data.js           # Google Analytics 4 data
 │   └── package.json                # Analytics dependencies
+├── preintake/             # PreIntake.ai law firm intake product
+│   ├── CLAUDE.md         # PreIntake-specific knowledge base
+│   ├── index.html        # PreIntake landing page
+│   ├── faq.html          # PreIntake FAQ
+│   ├── email-analytics.html  # Email analytics dashboard
+│   └── *.html            # Various PreIntake pages (account, contact, etc.)
 └── documents/            # Documentation and metadata
 ```
 
@@ -343,16 +354,8 @@ All four main sites have identical structure:
 - `/faq.html` - Dynamic FAQ (audience-aware, 8 questions)
 - `/books.html` - Books landing page with AI/MLM book covers
 - `/blog.html` - Blog index
-- `/blog/` - 8 blog posts:
-  - ai-automation-transforms-direct-sales.html
-  - ai-recruiting-best-practices-2025.html
-  - ai-recruiting-platforms-failing-direct-sales.html
-  - qualify-new-recruits-30-days.html
-  - team-build-pro-november-2025-update.html
-  - young-living-recruiting-strategies.html
-  - ai-network-marketing-corporate-field-leaders-use.html
-  - use-ai-mlm-recruiting-without-losing-human-touch.html
-- `/companies.html` - 120+ company-specific recruiting guides
+- `/blog/` - 18 blog posts (auto-generated twice weekly via GitHub Actions)
+- `/companies.html` - 114 company-specific recruiting guides
 - `/companies/ai-recruiting-[company].html` - Individual company pages
 - `/contact_us.html` - Contact form
 - `/delete-account.html` - Account deletion (App Store requirement)
@@ -366,7 +369,7 @@ All four main sites have identical structure:
 - `/faq.html` - Spanish FAQ (8 questions with accordion)
 - `/books.html` - Spanish books page (MLM-Cover-ES.jpg)
 - `/blog.html` - Spanish blog index
-- `/blog/` - 8 translated blog posts (same titles as EN)
+- `/blog/` - 18 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (114 companies with pagination)
 - `/companies/` - 114 company-specific recruiting guides in Spanish
 - `/contact_us.html` - Spanish contact form
@@ -380,7 +383,7 @@ All four main sites have identical structure:
 - `/faq.html` - Portuguese FAQ (8 questions with accordion)
 - `/books.html` - Portuguese books page (MLM-Cover-BR.jpg)
 - `/blog.html` - Portuguese blog index
-- `/blog/` - 8 translated blog posts (same titles as EN)
+- `/blog/` - 18 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (39 companies with pagination)
 - `/companies/` - 39 company-specific recruiting guides in Portuguese
 - `/contact_us.html` - Portuguese contact form
@@ -394,7 +397,7 @@ All four main sites have identical structure:
 - `/faq.html` - German FAQ (8 questions with accordion)
 - `/books.html` - German books page (MLM-Cover-DE.jpg)
 - `/blog.html` - German blog index
-- `/blog/` - 8 translated blog posts (same titles as EN)
+- `/blog/` - 17 translated blog posts (same titles as EN)
 - `/companies.html` - Company recruiting guides index (20 companies with pagination)
 - `/companies/` - 20 company-specific recruiting guides in German
 - `/contact_us.html` - German contact form
@@ -739,691 +742,45 @@ After cleaning invalid emails from the database, current metrics from the past 2
 
 ---
 
-## 🔄 Recent Major Changes (as of Nov 2025)
-
-### Week of Nov 6
-1. ✅ Updated FAQ with dynamic audience filtering (prospect vs professional)
-2. ✅ Corrected message count from 8 to 16 throughout marketing materials
-3. ✅ Fixed category dropdown filtering on FAQ page
-4. ✅ Updated email campaign subject line and template
-5. ✅ Standardized 75% quit rate statistic (was inconsistent)
-6. ✅ Added "perpetual recruiting engine" messaging
-7. ✅ Removed "proven/prove" language from messaging
-
-### Week of Nov 12
-8. ✅ **Google Play Store Launch**: App now LIVE on Android (completed Nov 12)
-9. ✅ **Email CTA Strategy Update**: Changed from direct app store links to landing page routing
-   - Updated both `email-body-only-updated.html` and `email-template-updated.html`
-   - Implemented subtle text link CTA: "Learn more at TeamBuildPro.com"
-   - Rationale: Better cross-device experience, enables analytics/retargeting
-10. ✅ **Email Campaign Performance**: Achieving 30.9% open rate (2x industry average)
-11. ✅ **Mailgun Conversion**: Converted `sendLaunchCampaign.js` from SendGrid to Mailgun
-   - Created new `launch_campaign_mailgun.html` template
-   - Updated function to use Mailgun API with FormData
-   - Simplified personalization (uses Mailgun variable syntax)
-12. ✅ **Campaign Statistics Tracking**: Created monitoring scripts
-   - `count-todays-emails.js` for Firestore tracking
-   - `get-mailgun-stats.js` for delivery/engagement metrics
-13. ✅ **Website Updates**: Updated 115 company pages with Google Play Store link
-14. ✅ **App Store URL Update**: Updated all 121 website files with new App Store URL
-   - Changed from `team-build-pro-direct-sales` to `team-build-pro-ai-team-builder`
-   - URL slug updated to reflect app name change in App Store Connect
-   - Old URLs redirect automatically to new URLs (Apple's redirect behavior)
-   - Best practice: Use current URL format for SEO and consistency
-
-### Week of Nov 17
-15. ✅ **Multilingual Screen Localization**: Fully localized How It Works and Platform Management screens
-   - Added 31 new localization keys (18 for How It Works + 13 for Platform Management)
-   - Full translations in EN, ES, PT, DE for both screens
-   - Implemented placeholder support for dynamic content (e.g., `{bizOpp}` in Platform Management)
-   - Fixed import paths and removed unnecessary null-aware operators
-   - All changes verified with `flutter analyze` - no issues found
-16. ✅ **Android Build v1.0.61+91**: Created new AAB with all localization changes
-   - Build size: 55.6MB
-   - Includes all multilingual updates for How It Works and Platform Management screens
-   - Tree-shaking applied: MaterialIcons reduced by 98.9%
-17. ✅ **Build Cache Cleanup**: Optimized project storage
-   - Deleted Android cache directories (android/.gradle, android/build) - freed 43MB
-   - Cleaned Flutter build caches via `flutter clean`
-   - Project ready for fresh builds
-18. ✅ **German UI Text Overflow Fixes**: Fixed multilingual text display issues
-   - `lib/screens/dashboard_screen.dart`: Fixed stats card title overflow (reduced font size 18→16, added line height 1.2, enabled soft wrapping)
-   - `lib/screens/dashboard_screen.dart`: Fixed action card title overflow (wrapped Text in Flexible widget, enabled 2-line display)
-   - `lib/widgets/quick_prompts_widget.dart`: Fixed AI Coach welcome title overflow (wrapped Text in Flexible widget)
-   - Verified all fixes with German locale hot reload testing
-19. ✅ **Android Build v1.0.62+92**: Created AAB with German UI fixes
-   - Build size: 55.6MB
-   - All German text overflow issues resolved
-   - Committed and pushed to GitHub with detailed commit message
-20. ✅ **Major Disk Space Optimization**: Freed 14GB for iOS archive builds
-   - Deleted Gradle cache: 5.5GB (`~/.gradle/caches`)
-   - Deleted npm cache: 4.8GB (`~/.npm`)
-   - Deleted Xcode DerivedData: 3.8GB (kept 165MB for active project)
-   - Deleted CocoaPods cache: 155MB
-   - Disk space improved: 7.1GB → 21GB available (97% → 90% capacity)
-21. ✅ **iOS Build v1.0.64+94**: Prepared iOS release with debug symbols
-   - Fixed localization build issue (regenerated `build/l10n_missing.txt` via `flutter gen-l10n`)
-   - Successfully built iOS release with `flutter build ios --release --no-codesign`
-   - Build size: 69.5MB with proper dSYM files
-   - **Note**: Flutter.framework dSYM warning is a known Flutter issue and safe to ignore
-     - Apple accepts submissions with this warning
-     - Only Flutter's engine framework lacks dSYMs (app code has symbols)
-     - Crash reporting works normally for app code
-     - Thousands of Flutter apps in production with same warning
-
-### Week of Nov 21
-22. ✅ **Multi-Language Website Launch**: Complete Spanish and Portuguese websites
-   - Created web-es/ (es.teambuildpro.com) and web-pt/ (pt.teambuildpro.com) directories
-   - Fully localized homepages with 8 FAQ items (vs 6 on English site)
-   - Fixed FAQ navigation links to point to /faq.html instead of /#faq
-   - Added "View All Questions & Answers" button to both ES and PT homepages
-   - Fixed FAQ accordion functionality using CSS class-based toggle
-   - Contact forms with Google Analytics integration (internal IP filtering: 76.33.111.72)
-   - Privacy policy and terms of service pages in both languages
-   - Proper sitemap.xml files with hreflang tags for SEO
-
-23. ✅ **Firebase Hosting Configuration**: Multi-site setup
-   - Added ES and PT hosting targets to firebase.json
-   - Configured cache headers: HTML (no-cache), assets (1 year)
-   - Added 301 redirects for index.html → root path
-   - Successfully deployed both sites (157 files each)
-
-24. ✅ **Referral System Simplification** (v1.0.67+97):
-   - Removed message type targeting (&t=X parameter)
-   - Implemented language-specific domain routing
-   - Share screen now routes to es.teambuildpro.com or pt.teambuildpro.com based on language selection
-   - Cleaner URL structure: `https://es.teambuildpro.com/?new=ABC`
-   - Updated share_screen.dart to use `_buildTargetedLink()` with domain selection
-
-25. ✅ **Backend CORS Updates**:
-   - Added es.teambuildpro.com and pt.teambuildpro.com to CORS whitelist
-   - Updated functions/src/referrals.ts and compiled JavaScript files
-   - Ensures API access from all language-specific domains
-
-26. ✅ **SEO Improvements**:
-   - Simplified EN sitemap.xml from 100+ URLs to essential pages only
-   - Added hreflang tags linking EN/ES/PT versions for proper Google indexing
-   - All three sites now properly cross-reference each other for multilingual SEO
-
-27. ✅ **Email Campaign Utility Scripts**:
-   - Created reset-failed-contacts.js for recovering failed email deliveries
-   - Processes Mailgun CSV exports to reset contact status in Firestore
-   - Enables retry of failed email sends from campaign
-
-### Week of Nov 24
-28. ✅ **Android Launch Campaign (Phase 2)**:
-   - Created `sendAndroidLaunchCampaign` function in email-campaign-functions.js
-   - Created email_resend_version.html template with Android launch announcement
-   - Marked 2,077 pre-Nov 12 contacts for resend via mark-contacts-for-resend.js script
-   - Fixed incorrect Google Play Store URL (com.teambuildpro.app → com.scott.ultimatefix)
-   - Added ANDROID_CAMPAIGN_ENABLED environment variable for independent campaign control
-   - Status: Ready to deploy after Phase 1 completion
-
-29. ✅ **Mailgun Event Sync System**:
-   - Created `syncMailgunEvents` function in email-campaign-functions.js
-   - Automated sync of delivery/engagement data from Mailgun to Firestore
-   - Runs 10 minutes after each campaign window with 2-hour lookback
-   - Captures delivered, failed, opened, clicked events before 24-hour log expiration
-   - Stores deliveryStatus, timestamps, counts, and failure reasons in Firestore
-   - Added EMAIL_CAMPAIGN_SYNC_ENABLED environment variable
-   - Successfully tested with 24-hour window to capture initial 3pm batch data (300 delivered, 15 failed, 6 opened)
-   - Deployed and operational (Nov 24, 2025)
-
-30. ✅ **Email Campaign Subject Line Update**:
-   - Changed from "{{firstName}}, build your downline with AI-powered team tools"
-   - To "The Recruiting App Built for Direct Sales"
-   - Updated positioning aligns with new "AI Recruiting" branding
-   - Removes MLM terminology that was causing spam filter issues
-
-31. ✅ **Email Campaign Batch Size Increase**:
-   - Increased from 25 emails per run to 75 emails per run
-   - Daily capacity increased from 125 to 450 emails per day
-   - Completion timeline reduced from ~44 days to ~8 days
-   - Schedule remains 8am, 10am, 12pm, 1pm, 3pm, 6pm PT, Monday-Saturday
-
-32. ✅ **Stephen Scott Author Website Migration to Firebase**:
-   - Migrated stephenscott.us from Dreamhost to Firebase Hosting
-   - Created sscott/ directory with complete website rebuild
-   - 13 individual book pages with purchase links
-   - Podcasts page (425 lines) with iframe embeds
-   - About page (253 lines) with professional bio
-   - Contact form integrated with Cloud Function (submitStephenScottContact)
-   - Sitemap.xml (122 lines) for SEO
-   - 301 redirects for legacy /blogs, /shop, /product URLs
-   - Firebase hosting target: "sscott" pointing to sscott/public/
-   - Build automation scripts in sscott/scripts/
-
-33. ✅ **Bot Detection & Traffic Analysis System**:
-   - Implemented comprehensive JavaScript bot detection across all sites
-   - Created analyze-boardman-traffic.js (169 lines) for suspicious traffic investigation
-   - Created analyze-city-traffic.js (217 lines) for general traffic monitoring
-   - Browser fingerprinting and behavior analysis
-   - Pattern detection for bot identification
-   - Scripts: add-bot-detection.js, fix-bot-detection.js
-
-34. ✅ **Analytics Infrastructure (GA4 + Mailgun Integration)**:
-   - Created analytics/ workspace as separate npm project
-   - fetch-combined-analytics.js (511 lines): Combined GA4 + Mailgun reporting
-   - fetch-ga4-data.js (384 lines): Google Analytics 4 data extraction
-   - Cross-references website traffic with email campaign performance
-   - Service account authentication (ga4-service-account.json)
-   - Daily/weekly/monthly reporting capabilities
-   - Bot vs. human traffic differentiation
-
-35. ✅ **Books Landing Pages for All Languages**:
-   - Created books.html for English site with localized book covers
-   - Created books.html for Spanish site (es.teambuildpro.com)
-   - Created books.html for Portuguese site (pt.teambuildpro.com)
-   - AI/MLM book catalog with purchase links
-   - Consistent design across all three languages
-   - SEO-optimized with proper hreflang tags
-
-36. ✅ **Blog Expansion & Translation**:
-   - 8 blog posts created for English site (web/blog/)
-   - All 8 posts translated to Spanish (web-es/blog/)
-   - All 8 posts translated to Portuguese (web-pt/blog/)
-   - Blog index pages for all three languages
-   - Topics: AI automation, recruiting best practices, platform comparisons
-   - Localized meta tags and SEO optimization
-
-37. ✅ **Language Switcher Implementation**:
-   - Top-right placement on all EN/ES/PT pages
-   - Preserves query string parameters (?new=, ?ref=) across language switches
-   - Smart routing to corresponding pages in target language
-   - Mobile-optimized responsive design
-   - JavaScript-based with smooth user experience
-
-38. ✅ **App Localization Phase 1 (60+ Translation Keys)**:
-   - Created biz_opp_education_modal.dart widget for business opportunity education
-   - Localized 14 Flutter screens with full translations (EN, ES, PT, DE)
-   - Added 60+ new localization keys to app_*.arb files
-   - Placeholder support for dynamic content (e.g., {bizOpp})
-   - Database schema update: bizOppEducationShown field added to users collection
-   - Fixed import paths and null-aware operators
-   - Verified with flutter analyze - no issues
-
-39. ✅ **SEO & Cross-Site Integration**:
-   - Hreflang tags linking all language versions (EN/ES/PT/DE)
-   - Simplified EN sitemap.xml to essential pages only
-   - Complete sitemaps for ES, PT, and DE sites with cross-references
-   - Robots.txt files for all five sites (EN, ES, PT, DE, stephenscott.us)
-   - Proper canonical URL implementation across all sites
-   - Google Analytics integration with internal IP filtering (76.33.111.72)
-
-### Week of Nov 27
-40. ✅ **New Blog Post: AI Network Marketing for Corporate & Field Leaders**:
-   - Created ai-network-marketing-corporate-field-leaders-use.html for all three languages
-   - English: web/blog/ai-network-marketing-corporate-field-leaders-use.html
-   - Spanish: web-es/blog/ai-network-marketing-corporate-field-leaders-use.html
-   - Portuguese: web-pt/blog/ai-network-marketing-corporate-field-leaders-use.html
-   - Topic: How corporate executives and field leaders use AI for network marketing
-   - Fully translated content (not just machine translation)
-
-41. ✅ **ES/PT Blog Header/Footer Fixes**:
-   - Fixed minimal header/footer issue on ES/PT blog posts
-   - Previous: Blog posts had minimal navigation (logo only)
-   - Fixed: Full navigation matching homepage (hamburger menu, mobile menu, language switcher)
-   - Updated generate-ai-blog.js with proper ES/PT header/footer templates
-   - All existing and new blog posts now have consistent navigation across languages
-
-42. ✅ **Email Campaign Gmail Distribution Fix**:
-   - Identified issue: gmail.com contacts had high `randomIndex` values (0.82-0.95)
-   - Non-gmail contacts had low values (0.14-0.22), causing gmail to be stuck at back of queue
-   - Re-randomized 1,005 unsent contacts in Firestore with `Math.random()` values
-   - Verified fix: gmail addresses now evenly distributed (15 of first 20 contacts are gmail)
-   - Email campaign now properly includes gmail.com addresses in each batch
-
-43. ✅ **Automated Blog Generation Pipeline (GitHub Actions)**:
-   - Created fully automated blog generation system running twice weekly
-   - Schedule: Every Monday and Thursday at 10am PST (cron: '0 18 * * 1,4')
-   - Workflow file: `.github/workflows/weekly-blog.yml`
-   - **Pipeline stages**:
-     1. Research: Claude CLI analyzes industry trends from BusinessForHome.org, Direct Selling News, social media
-     2. Topic Selection: AI recommends 3-5 topics with relevance scores, selects top-scoring topic
-     3. Generation: Creates blog post in EN, ES, PT, DE using generate-ai-blog.js
-     4. Deploy: Auto-deploys to Firebase Hosting (all four language sites)
-     5. Notify: Sends email notification via Mailgun with results
-   - **New script flags added to generate-ai-blog.js**:
-     - `--research`: Research mode - analyze trends and recommend topics
-     - `--full-auto`: Full automation mode - research, generate, deploy, notify
-     - `--notify-email=EMAIL`: Recipient for notification emails (default: scscot@gmail.com)
-   - **Generated files**:
-     - `scripts/blog-recommendations.json`: Research results with topic recommendations
-     - `scripts/blog-response.json`: Blog generation response data
-   - **Required GitHub Secrets**:
-     - ANTHROPIC_API_KEY: For Claude CLI blog generation
-     - MAILGUN_API_KEY: For email notifications
-     - FIREBASE_SERVICE_ACCOUNT: For Firebase deployment
-   - **Manual trigger**: Supports workflow_dispatch for testing
-   - **Auto-commit**: Generated blog files committed back to repository by GitHub Actions bot
-
-44. ✅ **ES/PT Blog Template UI Enhancement**:
-   - Updated `generateTranslatedBlogHTML()` function in `scripts/generate-ai-blog.js`
-   - ES/PT blog posts now match EN template quality with full UI elements:
-     - Breadcrumb navigation (Home → Blog → Article)
-     - Category eyebrow badge with color-coded styling
-     - Improved typography with inline CSS
-     - Social share buttons (Twitter, LinkedIn, Facebook)
-     - App download CTA section with store badges
-     - Complete header/footer matching homepage navigation
-   - Regenerated existing ES/PT blog posts with updated template
-   - Deployed to Firebase Hosting (es and pt targets)
-
-45. ✅ **Blog Index Page Updates (ES/PT)**:
-   - Updated `web-es/blog.html` and `web-pt/blog.html`
-   - Added new blog post entries to index pages
-   - Consistent card layout and styling across all three languages
-
-46. ✅ **Sitemap Auto-Update Verification**:
-   - Confirmed `generate-ai-blog.js` automatically updates sitemaps via `updateSitemap()` function
-   - Updates EN sitemap (`web/sitemap.xml`)
-   - Updates ES sitemap (`web-es/sitemap.xml`)
-   - Updates PT sitemap (`web-pt/sitemap.xml`)
-   - New blog URLs properly added with correct lastmod dates
-
-47. ✅ **New Blog Post: AI in MLM Recruiting Without Losing Human Touch**:
-   - Generated via automated pipeline
-   - English: `web/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
-   - Spanish: `web-es/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
-   - Portuguese: `web-pt/blog/use-ai-mlm-recruiting-without-losing-human-touch.html`
-   - Topic: Balancing AI automation with authentic human connection in recruiting
-   - All three versions deployed with matching UI templates
-
-### Week of Nov 28
-48. ✅ **Stephen Scott Blog Generator (generate-sscott-blog.js)**:
-   - Created new automated blog generation script for stephenscott.us
-   - Located at: `scripts/generate-sscott-blog.js`
-   - Uses Anthropic Claude API directly (not CLI)
-   - **Modes**:
-     - `--full-auto`: Research trends → generate blog → deploy → email notification
-     - `--research`: Analyze industry trends and save recommendations
-     - `--generate "Title"`: Generate blog from specific title
-   - Auto-updates blog index (`sscott/public/blog.html`) and sitemap (`sscott/public/sitemap.xml`)
-   - Sends email notifications via Mailgun
-   - Valid categories: Recruiting Tips, Product Updates, Tutorials
-
-49. ✅ **Firebase cleanUrls Fix for stephenscott.us**:
-   - Changed `cleanUrls: true` to `cleanUrls: false` in firebase.json for sscott target
-   - Previous behavior: Firebase stripped `.html` extensions and redirected
-   - Fixed behavior: URLs now serve with `.html` extensions matching sitemap
-   - Important for SEO consistency between internal links, canonical URLs, and sitemap
-
-50. ✅ **Comprehensive SEO Audit & Fixes for stephenscott.us**:
-   - Fixed all internal navigation links to include `.html` extensions (20 files)
-   - Fixed canonical URLs to include `.html` extensions (all pages)
-   - Fixed og:url tags to include `.html` extensions (all pages)
-   - Updated generate-sscott-blog.js template with `.html` extensions
-   - Created missing author images for social sharing:
-     - `assets/images/stephen-scott-og.jpg` (1200x630px, SS logo design)
-     - `assets/images/stephen-scott-about.jpg`
-     - `assets/images/stephen-scott-twitter.jpg`
-   - Removed dead `generate-sitemap` script reference from sscott/package.json
-
-51. ✅ **Comprehensive SEO Audit & Fixes for Team Build Pro Sites (web/, web-es/, web-pt/)**:
-   - **web/ (English)**:
-     - Fixed `books.html` canonical (had trailing slash `/books/` instead of `/books.html`)
-     - Fixed inconsistent `www.` prefix in canonical/og:url tags (contact_us, privacy_policy, terms_of_service)
-     - Added missing canonical tag to `faq.html`
-     - Added missing canonical tag to `companies.html`
-     - Fixed 114 company pages with wrong og:url path (`/learning/` → `/companies/`)
-   - **web-es/ (Spanish)**:
-     - Added missing canonical tag to `faq.html`
-   - **web-pt/ (Portuguese)**:
-     - Added missing canonical tag to `faq.html`
-   - All sites verified: hreflang tags, robots.txt, sitemaps, CSS/image references
-
-52. ✅ **SEO Best Practices Documentation**:
-   - Canonical URLs: Tells search engines the "official" version of a page
-   - Prevents duplicate content penalties from multiple URL variations
-   - Consolidates link equity to single URL
-   - Controls what appears in search results
-   - After SEO fixes, sitemaps should be resubmitted to Google Search Console
-
-### Week of Nov 30
-53. ✅ **German Website (web-de/) Launch**:
-   - Created complete German website at de.teambuildpro.com
-   - Full content translation: index.html, faq.html, books.html, blog.html, contact_us.html, claim.html
-   - Legal pages: privacy_policy.html (Datenschutzrichtlinie), terms_of_service.html (Nutzungsbedingungen)
-   - 8 blog posts translated to German (same slugs as EN/ES/PT)
-   - Custom 3x2 grid layout for app screenshots (6 screenshots, CSS override)
-   - sitemap.xml and robots.txt with proper hreflang tags
-   - Firebase hosting target: "de" pointing to web-de/
-   - Deployed to de.teambuildpro.com
-
-54. ✅ **German Blog Automation Support**:
-   - Modified `scripts/generate-ai-blog.js` for German (DE) support
-   - Added German language name and de.teambuildpro.com base URL in translation prompts
-   - Added German date formatting (de-DE locale) in updateBlogIndex and generateTranslatedBlogHTML
-   - Added German category badges: RECRUITING-TIPPS, PRODUKT-UPDATES, TUTORIALS
-   - Added German featured badge (EMPFOHLEN) and read more text (Artikel lesen →)
-   - Added German "by" text (Von)
-   - Added complete German localized strings for HTML generation (navigation, sharing, CTA, footer)
-   - Added Step 6/7 German translation in runFullAutomation workflow
-   - Updated output summary to include German file path
-   - Updated `.github/workflows/weekly-blog.yml`:
-     - Added web-de/blog/*.html to git add
-     - Added web-de/blog.html to git add
-     - Added web-de/sitemap.xml to git add
-     - Added scripts/german-translation.json to git add
-
-55. ✅ **Share Screen German Domain Routing**:
-   - Modified `lib/screens/share_screen.dart` for German referral links
-   - Added German domain routing in `_buildTargetedLink()` method
-   - German messages now route to de.teambuildpro.com instead of teambuildpro.com
-   - Pattern: `https://de.teambuildpro.com/?new=ABC` for German language selection
-
-56. ✅ **Google Play Console Subtitles (80 chars)**:
-   - Added Google Subtitle field to all App Store Description documents
-   - Google Play allows 80 characters vs App Store's 30-character limit
-   - Keyword-optimized subtitles for better discoverability:
-     - EN: "AI-Powered MLM & Direct Sales Recruiting App | Downline Builder & Team Tracker" (79 chars)
-     - ES: "App de Reclutamiento MLM y Ventas Directas con IA | Constructor de Equipo" (73 chars)
-     - PT: "App de Recrutamento MLM e Vendas Diretas com IA | Construtor de Equipe" (70 chars)
-     - DE: "KI-gestützte MLM & Direktvertrieb Recruiting-App | Downline & Team Builder" (75 chars)
-   - Updated documents/App_Store_Description.md, _ES.md, _PT.md, _DE.md
-
-57. ✅ **Android Build v1.0.70+100**:
-   - Created new Android App Bundle (AAB) release
-   - Build size: 53MB
-   - Tree-shaking applied: MaterialIcons reduced by 98.9%
-   - Ready for Google Play Console upload
-
-58. ✅ **App Store Localizations Submitted**:
-   - Submitted localizations to both Google Play Console and App Store Connect
-   - German (de-DE): Team Build Pro: KI Team
-   - Portuguese (pt-BR): Team Build Pro: IA Equipe
-   - Spanish (es-419 Latin America): Team Build Pro: IA Equipo
-   - All localized metadata: app name, subtitle/short description, full description, keywords
-
-### Week of Dec 1
-59. ✅ **Multi-Locale Company Pages Index (companies.html)**:
-   - Created `web-es/companies.html` with all 114 Spanish company cards and pagination (20 per page, 6 pages)
-   - Created `web-pt/companies.html` with all 39 Portuguese company cards and pagination
-   - Created `web-de/companies.html` with all 20 German company cards and pagination
-   - All pages feature:
-     - Client-side JavaScript pagination
-     - Language switcher preserving query strings
-     - Consistent header/footer navigation
-     - Bot detection and Google Analytics integration
-     - Responsive grid layout (3 columns → 2 → 1 on mobile)
-
-60. ✅ **Footer Consistency Update (All Locales)**:
-   - Standardized footer links across all ES, PT, and DE pages
-   - Added missing "Books" and "Recruiting Guides" links to all locale footers
-   - Updated footer link text for consistency:
-     - ES: Precios, Preguntas Frecuentes, Libros, Guías de Reclutamiento, Contacto, Política de Privacidad, Términos de Servicio
-     - PT: Preços, Perguntas Frequentes, Livros, Guias de Recrutamento, Contato, Política de Privacidade, Termos de Serviço
-     - DE: Preise, Häufige Fragen, Bücher, Recruiting-Leitfäden, Kontakt, Datenschutzrichtlinie, Nutzungsbedingungen
-   - Updated all main pages: index.html, faq.html, books.html, blog.html, contact_us.html, privacy_policy.html, terms_of_service.html
-
-61. ✅ **Sitemap Updates for Company Pages**:
-   - Added `companies.html` index page to DE sitemap with hreflang tags
-   - Added `companies.html` + 75 company page entries to ES sitemap
-   - PT sitemap already had all 39 company pages + companies.html
-   - All sitemaps now include proper cross-locale hreflang references
-
-62. ✅ **Translation Quality Audit (PT & DE Company Pages)**:
-   - Verified high-quality translations on sample company pages (Herbalife, Vorwerk)
-   - PT pages: Proper Portuguese terminology (Recrutamento, Guias, Construção de Equipes)
-   - DE pages: Proper German terminology (KI-Recruiting, Vertriebspartner, Teamaufbau)
-   - Navigation fully localized (Startseite, Screenshots, Preise, FAQ, Bücher, Kontakt)
-   - Breadcrumbs properly translated (Recruiting-Leitfäden, Guias de Recrutamento)
-
-63. ✅ **URL Consistency Fix (books/ → books.html)**:
-   - Fixed 281 files across all sites with `href="/books/"` → `href="/books.html"`
-   - Fixed og:url and canonical URLs in web/books.html and web/books/index.html
-   - Ensures consistent URL structure without trailing slashes
-
-64. ✅ **Comprehensive Internal Link Audit & Fixes**:
-   - Audited all internal links across EN, ES, PT, and DE websites
-   - Fixed blog post link: `30-day-pre-qualification-system.html` → `qualify-new-recruits-30-days.html` (all 4 sites)
-   - Fixed 14 broken company cross-reference links in EN/ES (mapped to existing companies):
-     - gold-canyon → scentsy, celebrating-home → pampered-chef, ctfo → kannaway
-     - hempworx → kannaway, natura → avon, organo-gold → dxn
-     - origami-owl → paparazzi, powur → ambit-energy, rainbow-vacuum → vorwerk
-     - southwestern-advantage → cutco, tlc → total-life-changes, utility-warehouse → ambit-energy
-   - Fixed 37 broken company cross-references in PT site (mapped to existing PT companies)
-   - Fixed 2 broken company cross-references in DE site (enagic → herbalife, pampered-chef → vorwerk)
-   - Removed non-existent blog-post.css references from ES/PT/DE blog posts
-   - Fixed relative `index.html` → `/` in privacy/terms pages
-
-65. ✅ **German Book Cover (MLM-Cover-DE.jpg)**:
-   - Added high-resolution German book cover (1200x1920 pixels, 447KB)
-   - Source: `/Users/sscott/Downloads/MLM Cover DE.png` converted to JPEG at 95% quality
-   - Removed incorrect MLM-Cover-ES.jpg that was in web-de folder
-   - Cover displays properly on de.teambuildpro.com/books.html
-
-66. ✅ **Sandwich Menu Consistency (ES/PT/DE)**:
-   - Added missing "Books" link to all three non-EN sites:
-     - ES: Libros → /books.html
-     - PT: Livros → /books.html
-     - DE: Bücher → /books.html
-   - Fixed contact links from absolute URLs to relative paths
-     - Was: `https://es.teambuildpro.com/contact_us.html`
-     - Now: `/contact_us.html`
-   - All sandwich menus now match EN site structure with 6 items:
-     Screenshots, Pricing, FAQ, Blog, Books, Contact
-
-### Week of Dec 2
-67. ✅ **App Version 1.0.70+100 Approved (iOS & Android)**:
-   - Both App Store Connect and Google Play Console approved the localized build
-   - Live production servers now include full ES, PT, DE localizations
-   - App names localized: "Team Build Pro: IA Equipo" (ES), "Team Build Pro: IA Equipe" (PT), "Team Build Pro: KI Team" (DE)
-   - All localized metadata, subtitles, descriptions, and keywords now live
-
-68. ✅ **Email Campaign A/B Test Configuration** (Updated Jan 2026):
-   - **Current Status**: A/B testing is ACTIVE with strict alternation
-   - **V1 Subject**: "Not an opportunity. Just a tool." (tag: `not_opportunity`)
-   - **V2 Subject**: "What if your next recruit already had a team?" (tag: `prebuild_advantage`)
-   - **Alternation Logic**: Even-indexed emails → V1, Odd-indexed emails → V2
-   - Implementation in `functions/email-campaign-functions.js` lines 43-55, 158-160
-   - Both templates use Mailgun template `mailer` with version `v1` or `v2`
-   - **Historical Note** (Dec 2025): Original A/B test was temporarily disabled after Version A (personal style) outperformed Version B (marketing style) 8.3% vs 2.4% open rate
-
-69. ✅ **SMTP Email Validation System**:
-   - Created `scripts/smtp-validate-emails.js` using deep-email-validator (Node.js)
-   - Features: Progress saving/resume, rate limiting, categorization (valid/invalid/unverifiable)
-   - Validated 18,334 Gmail addresses:
-     - Valid: 16,364 (89.3%)
-     - Invalid: 0 (0%)
-     - Unverifiable: 1,970 (10.7%) - includes typos and non-existent accounts
-   - Discovery: Gmail allows SMTP verification, but Yahoo/AOL/Live.com block it
-   - Output: `emails/smtp_validated/valid_emails.csv` (Firestore-ready format)
-
-70. ✅ **Firestore Email Import Script**:
-   - Created `scripts/import-validated-emails.js` for importing validated emails
-   - Imports to `emailCampaigns/master/contacts` collection
-   - Generates `randomIndex` (0-1) for queue ordering to ensure even distribution
-   - Sets `sent=false`, `status='pending'` for new contacts
-   - Skips contacts that already exist (preserves sent status)
-   - Successfully imported 13,298 new SMTP-validated contacts
-   - Total contacts in Firestore: 17,913 (13,953 unsent)
-
-71. ✅ **Email Campaign Batch Size Increases** (superseded by automated warming - see item 88):
-   - Now managed by `.github/workflows/domain-warming-update.yml`
-   - Batch sizes stored in Firestore `config/emailCampaign` document
-   - Cloud Functions read from Firestore first, fall back to .env values
-   - See "Automated Domain Warming System" section for current schedule
-
-72. ✅ **Cross-Page Referral Tracking for Google Play Attribution**:
-   - Added `referral-tracking.js` to blog posts and company pages
-   - Captures referral codes from URL parameters (?new= or ?ref=)
-   - Mints referral tokens via `issueReferralV2` Cloud Function
-   - Updates Google Play links with `referrer` parameter for attribution
-   - Uses sessionStorage for cross-page persistence within browser session
-
-73. ✅ **Site-Wide Top Invite Bar**:
-   - Extended referral-tracking.js to show sponsor info on ALL pages
-   - Creates dynamic "Invited by [Name]" bar with sponsor avatar
-   - Reads from sessionStorage (same key as index.html inline code)
-   - Added to 328 files: books, faq, contact, companies, blog, privacy, terms pages
-   - Localized labels for all 4 languages:
-     - EN: "Invited by" / "Recommended by"
-     - ES: "Invitado por" / "Recomendado por"
-     - PT: "Convidado por" / "Recomendado por"
-     - DE: "Eingeladen von" / "Empfohlen von"
-
-74. ✅ **Localized Referral Tracking Scripts**:
-   - Created `web-es/js/referral-tracking.js` (Spanish labels)
-   - Created `web-pt/js/referral-tracking.js` (Portuguese labels)
-   - Created `web-de/js/referral-tracking.js` (German labels)
-   - All scripts maintain same functionality as EN version
-   - sessionStorage keys match for cross-domain consistency
-
-75. ✅ **App Store URL Standardization**:
-   - Changed all App Store URLs to simplified format: `https://apps.apple.com/us/app/id6751211622`
-   - Previous formats had app name slug which could change
-   - Updated 328 files across all 4 sites (EN/ES/PT/DE)
-   - 927 URL occurrences standardized
-   - Benefits: Future-proof, consistent, shorter, easier to maintain
-   - Google Play URLs unchanged: `https://play.google.com/store/apps/details?id=com.scott.ultimatefix`
-
-76. ✅ **Comprehensive Website Audit**:
-   - Audited referral-tracking.js presence on all pages across EN/ES/PT/DE
-   - Verified CTA buttons (App Store + Google Play links) on all pages
-   - Confirmed invite bar CSS exists in all 4 css/style.css files
-   - Verified sessionStorage key consistency (`tbp_referral`)
-   - All localized labels verified correct
-
-77. ✅ **Knowledge Base Update (Dec 2 Session)**:
-   - Updated TEAM_BUILD_PRO_KNOWLEDGE.md with Week of Dec 2 changes (#67-77)
-   - Copied to CLAUDE.md for AI assistant context
-
-### Week of Jan 11
-
-78. ✅ **Email Campaign SMTP Migration**:
-   - Migrated email campaign from Mailgun API to SMTP via Dreamhost nodemailer
-   - Created new sending domain: `news.teambuildpro.com`
-   - Achieved 10/10 mail-tester.com score with proper DNS configuration:
-     - SPF: `v=spf1 include:netblocks.dreamhost.com include:relay.mailchannels.net ~all`
-     - DKIM: Configured via Dreamhost panel
-     - DMARC: `v=DMARC1; p=none; rua=mailto:dmarc@teambuildpro.com`
-   - FROM address: `Stephen Scott <stephen@news.teambuildpro.com>`
-   - Files updated:
-     - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
-     - `functions/.env.teambuilder-plus-fe74d` - TBP_SMTP_* credentials
-
-79. ✅ **Email Template Redesign (Joe's Recommendations)**:
-   - Rewrote `functions/email_templates/tbp-smtp-template.js` with personal note style
-   - Subject line: "Not an opportunity. Just a tool." (disarms MLM skepticism)
-   - Template features:
-     - System sans-serif font stack (`-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto...`)
-     - 16px font size, 1.6 line height, #1a1a1a text color
-     - 16px paragraph spacing for calm, readable layout
-     - Inline CTA link (not button): "take a look here: teambuildpro.com"
-     - Link color #1a73e8 with underline
-     - Left-aligned (not centered) for personal email feel
-   - Opening line: "I'm not recruiting you, and this isn't an opportunity."
-   - Removed open tracking pixel (was triggering Gmail "suspicious" warnings)
-   - Click tracking preserved via `trackEmailClick` Cloud Function endpoint
-
-80. ✅ **Unsubscribe Page Created**:
-   - Created `web/unsubscribe.html` - simple confirmation page
-   - Static page (no database update needed for one-time campaign)
-   - Matches site styling with header/footer components
-   - Unsubscribe link in email footer points directly to page
-
-81. ✅ **Domain Warmup Strategy** (now automated - see item 88):
-   - Automated via `.github/workflows/domain-warming-update.yml`
-   - Configuration in `.github/warming-config.json`
-   - Batch sizes increase weekly via GitHub Actions → Firestore
-   - Schedule: 6 runs/day (8am, 10am, 12pm, 2pm, 4pm, 6pm PT)
-   - Week 1: 36/day → Week 6+: 600/day (see "Automated Domain Warming System" section above)
-   - Monitor: delivery rate >95%, bounce rate <2%, no spam folder placement
-
-82. ✅ **Campaign Configuration Updated**:
-   - Updated `functions/email-campaign-functions.js`:
-     - Subject: "Not an opportunity. Just a tool." (tag: `not_opportunity`)
-     - UTM campaign: `tbp_smtp_campaign`
-   - Tracking metrics available:
-     - Sends: Firestore `sent: true`
-     - Clicks: `trackEmailClick` endpoint → Firestore `clickedAt`
-     - Opens: Not tracked (pixel removed for deliverability)
-
-### Week of Jan 12
-
-83. ✅ **Testimonial Section Added to All Sites**:
-   - Added testimonial card featuring 5-star App Store review from "Arya N."
-   - Review title: "Customizable and implemented on day one"
-   - CSS styles added to all 4 language sites (css/style.css)
-   - HTML sections added to 12 pages total:
-     - web/index.html, web/professionals.html, web/prospects.html
-     - web-es/index.html, web-es/professionals.html, web-es/prospects.html
-     - web-de/index.html, web-de/professionals.html, web-de/prospects.html
-     - web-pt/index.html, web-pt/professionals.html, web-pt/prospects.html
-   - Full translations for ES, DE, PT:
-     - ES: "Lo Que Dicen Los Usuarios" / "Personalizable e implementado desde el primer día"
-     - DE: "Was Nutzer Sagen" / "Anpassbar und vom ersten Tag an implementiert"
-     - PT: "O Que Os Usuários Estão Dizendo" / "Personalizável e implementado desde o primeiro dia"
-   - Gold filled star icons using Material Symbols (`font-variation-settings: 'FILL' 1`)
-   - Gradient avatar background, verified badge with source label
-
-84. ✅ **Screenshots Section H2 Headline Update**:
-   - Changed from "Your AI Recruiting Toolkit" to "Built for Momentum. Designed to Scale."
-   - Rationale: Previous headline was generic/basic, new headline is outcome-focused
-   - Updated 8 files (index.html and professionals.html for each language):
-     - EN: "Built for Momentum. Designed to Scale."
-     - ES: "Construido para el Impulso. Diseñado para Escalar."
-     - DE: "Gebaut für Momentum. Designt zum Skalieren."
-     - PT: "Construído para Momentum. Projetado para Escalar."
-   - prospects.html pages don't have this section (no changes needed)
-
-### Week of Jan 16
-
-85. ✅ **CSS Consolidation (All 4 Sites)**:
-   - Moved inline CSS from index.html `<style>` blocks to external css/style.css files
-   - Reduced index.html file sizes by ~460 lines each (from ~800+ to ~367-368 lines)
-   - Added section header comment: `/* HOMEPAGE-SPECIFIC STYLES (moved from inline) */`
-   - Final css/style.css line counts: EN=1967, ES/PT/DE=2046
-   - Benefits: Better caching, easier maintenance, cleaner HTML
-
-86. ✅ **Mobile Menu Toggle Fix (34 Blog Files)**:
-   - Fixed non-responsive hamburger menu on blog pages
-   - Issue: JavaScript used `classList.toggle('active')` but CSS expected `.mobile-menu.open`
-   - Fix: Changed all blog files to use `classList.toggle('open')`
-   - Files fixed: web/blog.html + 33 blog post files across EN/ES/PT/DE sites
-   - components.js files already used correct 'open' class
-
-87. ✅ **Home Link Added to Sandwich Menus**:
-   - Added Home link as first item in mobile navigation menus
-   - Updated all 4 components.js files with new 'home' translation key:
-     - EN: "Home", ES: "Inicio", PT: "Início", DE: "Startseite"
-   - Updated all 4 delete-account.html files with localized Home links
-   - Blog posts with inline menus already had Home link (no changes needed)
-
-### Week of Jan 19
-
-88. ✅ **Domain Warming Workflow - PreIntake Integration**:
-   - Updated `.github/workflows/domain-warming-update.yml` to manage both TBP and PreIntake batch sizes
-   - Workflow now calculates batch sizes for both campaigns from `.github/warming-config.json`
-   - Firestore `config/emailCampaign` document now stores:
-     - `batchSize` - TBP main campaign
-     - `batchSizeYahoo` - TBP Yahoo campaign
-     - `preintakeBatchSize` - PreIntake campaign
-     - `warmingWeek` - Current warming week number
-   - Updated `functions/email-campaign-functions.js` with `getDynamicBatchSize()` function
-   - Updated `functions/email-campaign-functions-yahoo.js` with `getDynamicBatchSizeYahoo()` function
-   - Both TBP Cloud Functions now read batch size from Firestore first, with .env fallback
-
-### Week of Jan 24
-
-89. ✅ **Email Campaign A/B Testing Confirmed Active**:
-   - Verified A/B testing is currently ACTIVE via Mailgun API analysis
-   - Last 24h breakdown (Jan 24, 2026):
-     - Total campaign emails delivered: 72
-     - V1 "Not an opportunity. Just a tool.": 42 (58%)
-     - V2 "What if your next recruit already had a team?": 30 (41%)
-   - Implementation uses strict alternation: even-indexed → V1, odd-indexed → V2
-   - Code location: `functions/email-campaign-functions.js` lines 43-55 (AB_TEST_VARIANTS), 158-160 (alternation logic)
-   - Corrected documentation in item #68 (was incorrectly marked as disabled)
-
-90. ✅ **Push Notification System Validated**:
-   - Confirmed push notifications working via Firebase Cloud Logging analysis
-   - Notifications found for past 2 weeks:
-     - `profile_reminder` notifications: Jan 10, 15, 18, 20
-     - `trial_expired` notifications: Jan 15
-     - Badge updates working consistently
-   - Functions validated: `onNotificationCreated`, `sendDailyTeamGrowthNotifications`
+## 🔄 Recent Changes & Milestones
+
+### Key Milestones (Nov 2025 - Jan 2026)
+
+**App Launches & Localizations**
+- ✅ **Google Play Store Launch** (Nov 12, 2025): Android app live
+- ✅ **Multi-Language Websites** (Nov 21-30): Launched ES, PT, DE sites with full content parity
+- ✅ **App Store Localizations** (Dec 2025): App names localized across iOS and Android
+  - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
+
+**Email Campaign Infrastructure**
+- ✅ **Mailgun Integration**: Campaign emails, event sync, A/B testing
+- ✅ **A/B Testing Active**: V1 "Not an opportunity. Just a tool." vs V2 "What if your next recruit already had a team?" (strict alternation)
+- ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
+- ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
+
+**Automation Systems**
+- ✅ **Automated Blog Generation**: Twice-weekly (Mon/Thu) via GitHub Actions + Claude CLI
+  - Generates posts in EN, ES, PT, DE
+  - Auto-deploys to Firebase Hosting
+  - Scripts: `generate-ai-blog.js`, `generate-sscott-blog.js`
+- ✅ **Bar Scraper Workflows**: 12 state bar scrapers for attorney data (PreIntake)
+- ✅ **PreIntake Campaign Workflows**: 6 workflows for law firm outreach
+
+**Website Enhancements**
+- ✅ **Referral Tracking**: Cross-page tracking with sessionStorage, "Invited by" bar on all pages
+- ✅ **Testimonial Section**: 5-star review from "Arya N." on all homepage variants
+- ✅ **App Store URLs Standardized**: Simplified format `apps.apple.com/us/app/id6751211622` across 328 files
+- ✅ **SEO Audits**: Canonical URLs, hreflang tags, sitemaps verified across all sites
+
+### Current System Status (Jan 2026)
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Email A/B Testing | Active | V1/V2 strict alternation |
+| Push Notifications | Working | profile_reminder, trial_expired verified |
+| Blog Automation | Running | Mon/Thu schedule, 4 languages |
+| Domain Warming | Week 2 | TBP=12, PreIntake=10 per batch |
+| Bar Scrapers | Active | 12 state workflows |
 
 ---
 

@@ -512,14 +512,6 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] Update `detectQuestionButtons` to show firm's practice areas dynamically
 - [x] Embed practice area breakdown in generated demo config
 
-**Intake Flow (Multi-Practice Firms):**
-```
-1. Collect name, phone, email
-2. "What type of legal matter do you need help with?"
-   → [Personal Injury] [Family Law] [Bankruptcy] (firm-specific buttons)
-3. Branch to selected practice area's question flow
-```
-
 ### Phase 8: Intake Delivery System
 - [x] Create `intake-delivery-functions.js` with `handleIntakeCompletion`
 - [x] Email delivery with professional HTML summary (default for demos)
@@ -528,11 +520,6 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] Store `deliveryConfig` in Firestore with lead document
 - [x] Export `handleIntakeCompletion` in index.js
 - [x] Deploy functions
-
-**Data Flow (No Retention):**
-```
-Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via email/webhook → Discard data
-```
 
 ### Phase 9: Account Creation & Payment
 - [x] Create `/preintake/create-account.html` page
@@ -569,10 +556,6 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 | `currentPeriodEnd` | Subscription period end date |
 | `conversionEmailSent` | Boolean - Conversion email already sent (prevents duplicates) |
 | `conversionEmailSentAt` | Timestamp of conversion email delivery |
-
-**Bug Fixes (2025-12-30):**
-- [x] **Demo template create-account links** - Fixed missing `?firm={{LEAD_ID}}` parameter in `demo-intake.html.template` (lines 1332, 1427)
-- [x] **Stripe webhook signature verification** - Updated `STRIPE_WEBHOOK_SECRET` to match Stripe Dashboard; added debug logging for signature mismatches
 
 ### Phase 10: Embeddable Widget
 - [x] Create `intake-button.js` - floating button that opens intake modal
@@ -634,31 +617,6 @@ Intake completes → sendWebhook() → handleIntakeCompletion → Deliver via em
 - [x] **robots.txt** - Created with sitemap reference and disallow rules
 - [x] **Stripe Promo Codes** - Enabled `allow_promotion_codes: true` for discounts
 
-**SEO-Optimized Pages:**
-| Page | Priority | Keywords Focus |
-|------|----------|----------------|
-| index.html | 1.0 | AI legal intake, automated client screening, law firm intake software |
-| about-us.html | 0.8 | Legal tech company, AI intake mission |
-| faq.html | 0.8 | Legal intake FAQ, AI screening questions |
-| contact-us.html | 0.7 | Legal software support, demo request |
-| privacy-policy.html | 0.3 | Data protection, GDPR/CCPA compliance |
-| terms-of-service.html | 0.3 | Service agreement, subscription terms |
-
-**Noindexed Pages:**
-- create-account.html, payment-success.html, widget-test.html, intake-button-test.html, preintake.html
-
-**Session Recovery Flow:**
-```
-User starts intake → Contact info collected → saveSession() to localStorage
-         ↓
-User closes browser
-         ↓
-User returns (within 24 hours) → loadSession() → Show recovery modal
-         ↓
-"Continue" → Restore conversation history → Resume from last message
-"Start Fresh" → clearSession() → Begin new intake
-```
-
 ### Phase 15: Project Audit (2025-12-30)
 - [x] **Frontend HTML Audit** - Validated all 11 HTML files for structure and consistency
 - [x] **Frontend JavaScript Audit** - Checked 4 JS files for syntax errors and patterns
@@ -675,25 +633,6 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 - [x] **Logo Size Increase** - Increased logo text and icon from 1.5rem to 1.75rem
 - [x] **Header/Footer Background** - Changed from gradient to solid `#0a1628` for better contrast
 
-**Branding Updates:**
-| Element | Before | After |
-|---------|--------|-------|
-| Header background | `linear-gradient(135deg, #0c1f3f, #1a3a5c)` | `#0a1628` (solid) |
-| Footer background | `#0c1f3f` | `#0a1628` (matches header) |
-| Logo font size | 1.5rem | 1.75rem |
-| Logo icon | None | `/images/icon.svg` (1.75rem) |
-| Favicon | None | `/images/icon.svg` (all pages) |
-
-**Audit Summary:**
-| Category | Files | Status |
-|----------|-------|--------|
-| Frontend HTML | 11 | ✅ Pass |
-| Frontend JavaScript | 4 | ✅ Pass |
-| Backend Functions | 8 | ✅ Pass |
-| Pricing Consistency | All | ✅ Pass |
-| Security | All | ✅ Pass |
-| API Endpoints | All | ✅ Pass |
-
 ### Phase 17: Email & UX Improvements (2025-12-31)
 - [x] **Post-Demo Conversion Email** - Auto-send after first successful intake lead delivery
   - New `sendConversionEmail()` function in `intake-delivery-functions.js`
@@ -707,15 +646,6 @@ User returns (within 24 hours) → loadSession() → Show recovery modal
 - [x] **Firm Name Extraction** - Improved extraction logic from analysis data
 - [x] **Verification Email Re-click Fix** - Prevented page hang on second verification click
 - [x] **Demo Template UI Fixes** - Fixed sidebar-cta centering and logo issues
-
-**Conversion Email Flow:**
-```
-Intake completes → deliveryResult.success → Check conversionEmailSent flag
-     ↓
-If not sent AND status !== 'active' → sendConversionEmail()
-     ↓
-Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt=timestamp
-```
 
 ### Phase 18: Email Outreach Campaign (2026-01-03)
 - [x] **Email Campaign Script** - `scripts/send-preintake-campaign.js`
@@ -792,12 +722,7 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - CRM Integration Note (commented out with HIDDEN label)
 - [x] **Sticky CTA Update** - Changed from "Free Demo →" to "See It In Action →" (matches hero button)
 - [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-06
-- [x] **LinkedIn Ad Campaign Plan** - Created comprehensive campaign documentation (`LINKEDIN_AD_CAMPAIGN_PLAN.md`)
-  - Phased budget approach: $30/day (weeks 1-4) → $50-75/day (scaling)
-  - Target: PI attorneys at small-mid firms (2-50 employees)
-  - Unit economics: CPL <$25, Demo <$150, CAC <$1,000
-  - A/B testing: Lead Gen Forms vs Landing Page traffic
-  - Expansion roadmap: PI → Immigration → Family Law → Bankruptcy → Criminal Defense
+- [x] **LinkedIn Ad Campaign Plan** - Documentation in `LINKEDIN_AD_CAMPAIGN_PLAN.md`
 - [x] **Hero CTA Stacked Layout** - Redesigned hero button with two-line format
   - Primary: "See It In Action →" with arrow icon
   - Subtext: "Watch a real inquiry get evaluated and routed"
@@ -807,24 +732,6 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Answers "what's different after this runs?" question
 - [x] **Pricing Section Simplified** - Reduced risk-reversal text to essentials
   - Changed from multi-sentence value recap to: "Cancel anytime—no long-term contracts."
-
-**Final Page Structure:**
-```
-1. Hero (paralegal comparison H1, Zero Data Retention trust signal, sticky CTA)
-2. What Your Firm Receives (value proof)
-3. Routing Section (GREEN/YELLOW/RED mechanics)
-4. 3 Simple Steps (ease of implementation)
-5. Demo Form (id="demo") with outcome statement
-6. Practice Areas (supporting content)
-7. Trust & Privacy
-8. Pricing (with risk-reversal)
-9. Footer
-```
-
-**Hidden Sections (commented out for future restoration):**
-- Stats Bar
-- Problem Section
-- CRM Integration Note
 
 ### Phase 20: Hero Messaging Refinement (2026-01-08)
 - [x] **H1 Messaging Update** - Refined hero heading with paralegal comparison
@@ -843,48 +750,7 @@ Email sent → Update Firestore: conversionEmailSent=true, conversionEmailSentAt
   - Hero CTA commented out (available for restoration)
   - Sticky CTA appears after scroll: "See It In Action →"
 - [x] **Section Padding Standardization** - Consistent spacing across all sections
-  - Desktop: `padding: 4rem 2rem` (was 5rem/6rem in places)
-  - Mobile: `padding: 3rem 1.5rem`
-  - Applied to: `.hero`, `.section`, `.cta-section`
-- [x] **Hero Privacy Font Size** - Increased visibility of trust signal
-  - Changed from `0.875rem` to `1.05rem`
-- [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-08
-
-- [x] **Scroll Cue** - Tested and removed
-  - Added "See an example summary ↓" but removed after review
-  - Hero flows better without it; sticky CTA handles scroll motivation
-- [x] **Filtering Language Audit** - Comprehensive cleanup of filtering-implied language
-  - Changed "screen/screened/screening" → "review/reviewed/reviewing" throughout
-  - Changed "Screening Summary" → "Case Summary"
-  - Changed "Screening Rationale" → "Assessment Rationale"
-  - Changed "Screens:" → "Checks:" on all 6 practice area cards
-  - Changed "Does Not Qualify" → "Not a Fit" (also "Disqualifier:" → "Reason:")
-  - Changed "before it reaches your inbox" → "arrives in your inbox with"
-  - Changed "Your Infrastructure" → "Your Branded Experience" (removed inaccurate "never leave your domain" claim)
-  - Changed "Assistant:" → "Intake:" in transcript labels (avoids AI anxiety, cleaner abstraction)
-    - Updated `demo-intake.html.template` formatTranscript() function (2 places)
-    - Updated `intake-delivery-functions.js` email transcript formatting
-
-**Hero Messaging Evolution:**
-```
-Before: "AI That Screens Like Your Best Paralegal"
-After:  "AI That Reviews Inquiries
-         Like Your Best Paralegal"
-        - Creates safe mental bridge (paralegal comparison, not AI superiority claim)
-        - "Reviews" eliminates filtering ambiguity that "screens" carried
-        - Line break keeps "Like Your Best Paralegal" as complete phrase
-        - Focuses on artifact delivered (summary, assessment, recommendation)
-        - Keeps human in control ("ready for your review")
-```
-
-**Key Messaging Decisions:**
-| Choice | Selected | Rationale |
-|--------|----------|-----------|
-| "Reviews" vs "Screens" | Reviews | "Screens" implied filtering; "Reviews" = assessment without gatekeeping |
-| "review" vs "decision" | review | Keeps human in control, less pressure |
-| "delivered" vs "arrives" | delivered | Active voice, service-oriented |
-| Hero CTA vs Sticky CTA | Sticky | Encourages scroll, reduces bounce on cold traffic |
-| Scroll cue | Removed | Tested but removed; hero flows better without it |
+- [x] **Filtering Language Audit** - Changed "screen/screening" → "review/reviewing" terminology throughout
 
 ### Phase 21: Demo Improvements & Analytics (2026-01-10)
 - [x] **Template File Rename** - Renamed `demo-intake.html` → `demo-intake.html.template`
@@ -908,18 +774,6 @@ After:  "AI That Reviews Inquiries
 - [x] **Click Rate Analysis** - `scripts/analyze-click-rate.js`
   - Analyzes email campaign click-through rates
 
-**New Files:**
-| File | Purpose |
-|------|---------|
-| `scripts/regenerate-preintake-demos.js` | Regenerate demos with latest template |
-| `preintake/email-analytics.html` | Campaign analytics dashboard |
-| `scripts/analyze-click-rate.js` | Click rate analysis utility |
-
-**sessionStorage Keys (Campaign Tracking):**
-| Key | Purpose | Set By |
-|-----|---------|--------|
-| `tbp_demo_viewed` | Stores leadId when demo CTA clicked | `index.html` Campaign Hero CTA |
-
 ### Phase 22: Pre-Screen Positioning & Audit Fixes (2026-01-10)
 - [x] **H1 Messaging Update** - Changed from "Screen" to "Pre-Screen" positioning
   - Final H1: "Pre-Screen Every Inquiry Before They Reach Your Firm"
@@ -939,24 +793,6 @@ After:  "AI That Reviews Inquiries
   - Enhanced `initFirebaseAdmin()` JSDoc for script usage clarity
 - [x] **Sitemap Update** - Updated homepage lastmod to 2026-01-10
 
-**Hero Messaging Evolution (Final):**
-```
-Before: "Screen Every Inquiry Before It Reaches Your Firm"
-After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
-        - "Pre-Screen" encodes "sits in front of CRMs" in one word
-        - "They" (plural) works better than "It" for "Every Inquiry"
-        - Industry-standard terminology in legal ops
-        - Implies evaluation, not blocking
-```
-
-**Key Messaging Decisions (Phase 22):**
-| Choice | Selected | Rationale |
-|--------|----------|-----------|
-| "Pre-Screen" vs "Screen" | Pre-Screen | Clarifies position (before staff), industry terminology |
-| "They" vs "It" | They | Plural works better with "Every Inquiry" |
-| Practice-area in subtitle | Yes | Core differentiator, deserves hero placement |
-| "your firm's" vs "the firm's" | your firm's | More direct, personal tone |
-
 - [x] **Email Campaign Share Line** - Added forward/share encouragement to outreach emails
   - "If you're not the right contact for intake, feel free to forward this email — the demo link above is specific to **${firmName}**."
   - Plain-text URL below for forwarded emails where button may not render
@@ -964,27 +800,10 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
   - Rationale: Law firms are multi-stakeholder; first reader often isn't decision-maker
 
 ### Phase 23: Email & Homepage Messaging Alignment (2026-01-10)
-- [x] **Homepage Metadata Fix** - Updated meta/OG/Twitter descriptions from "Screen" to "Pre-screen"
-  - Lines 15, 26, 34 in `index.html` now consistent with hero H1 messaging
-  - Ensures link previews match homepage positioning
-- [x] **Email Subject Line Update** - Changed to "Pre-screen every inquiry before it reaches your team"
-  - Aligns with homepage "Pre-Screen" terminology
-  - Fallback email uses different subject: "We can build a custom intake demo for your firm"
-- [x] **Email Header Rewrite** - Changed from "Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7"
-  - New header: "Pre-Screen Every Inquiry — Tailored to Your Practice Area"
-  - Leads with core differentiator (pre-screening) + practice-area tailoring
-- [x] **Email Body Restructure** - Reordered to lead with practice-area differentiation
-  - Opens with: "Most intake tools treat every inquiry the same. PreIntake.ai is different..."
-  - Emphasizes practice-area-specific questions and criteria
+- [x] **Homepage Metadata Fix** - Updated meta/OG/Twitter descriptions to match "Pre-screen" terminology
+- [x] **Email Subject Line Update** - "Pre-screen every inquiry before it reaches your team"
+- [x] **Email Template Refresh** - Updated header, body, CTA, preheader for Pre-Screen positioning
 - [x] **Zero Data Retention Trust Signal** - Added to both email templates
-  - Gold-accented styling matches homepage
-  - "Inquiries are processed and delivered immediately, never stored on our servers."
-- [x] **CTA Button Update** - Changed from "See How It Works" to "View Your Firm's Demo"
-  - More personalized, matches demo link functionality
-  - Fallback email keeps "Request Your Demo" button
-- [x] **Preheader Alignment** - Updated inbox preview text
-  - Personalized: "Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}."
-  - Fallback: "We can build a custom intake demo tailored specifically to ${firmName}."
 - [x] **CAN-SPAM Compliance** - Added physical mailing address to email footer
   - "PreIntake.ai · 1543 Hamner Ave #247 · Norco, CA 92860"
   - Required for commercial email compliance
@@ -994,238 +813,30 @@ After:  "Pre-Screen Every Inquiry Before They Reach Your Firm"
 - [x] **Template Version Update** - Changed from `v5-personalized-demo` to `v6-personalized-demo`
   - Tracks email template evolution for analytics
 
-**Email Template v6 Changes Summary:**
-| Element | Before | After |
-|---------|--------|-------|
-| Subject | "A smarter way to review intake inquiries before staff engagement" | "Pre-screen every inquiry before it reaches your team" |
-| Header | "Practice-Specific AI Intake That Reviews and Qualifies Inquiries—24/7" | "Pre-Screen Every Inquiry — Tailored to Your Practice Area" |
-| CTA Button | "See How It Works" | "View Your Firm's Demo" |
-| Preheader | "How law firms reduce unqualified consultations without hiring more staff." | "Pre-screen every inquiry before it reaches your team—see how it works for ${firmName}." |
-| Trust Signal | None | "Zero Data Retention — Inquiries are processed and delivered immediately, never stored on our servers." |
-| Footer | URL + Unsubscribe only | URL + Physical Address + Unsubscribe |
-| Format | HTML only | HTML + Plain-text multipart |
-
 ### Phase 24: CalBar Attorney Scraper (2026-01-14)
-- [x] **CalBar Scraper Script** - `scripts/scrape-calbar-attorneys.js`
-  - Scrapes attorney contact information from California State Bar website
-  - Handles CSS-based email obfuscation (Cal Bar uses fake email spans with CSS `display:none`)
-  - Pagination support for large result sets
-  - Deduplication against existing Firestore records
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/calbar-scraper.yml`
-  - Scheduled: Daily at 2am PST (10:00 UTC)
-  - Manual trigger with configurable practice area and max attorneys
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **Website Inference Script** - `scripts/infer-calbar-websites.js`
-  - Attempts to discover law firm websites for CalBar contacts without websites
-  - Uses Google search and domain inference
-  - Scheduled via `.github/workflows/calbar-website-inference.yml` (daily at 3am PST)
-- [x] **Priority Reordering** - `scripts/update-calbar-random-index.js`
-  - Updates CalBar contacts' `randomIndex` to 0.0-0.1 range
-  - Prioritizes CalBar contacts in email campaign queue over other contacts
-
-**Practice Areas Targeted (25 total):**
-
-| Tier | Priority | ID | Practice Area |
-|------|----------|-----|---------------|
-| **Tier 1** | 1 | 51 | Personal Injury |
-| | 2 | 34 | Immigration |
-| | 3 | 63 | Workers Compensation |
-| | 4 | 46 | Medical Malpractice |
-| | 5 | 52 | Products Liability |
-| | 6 | 58 | Toxic Torts |
-| | 7 | 9 | Bankruptcy |
-| | 8 | 42 | Labor & Employment |
-| | 9 | 16 | Construction Law |
-| | 10 | 66 | Landlord-Tenant Law |
-| | 11 | 36 | Insurance |
-| | 12 | 10 | Business Law |
-| | 13 | 43 | Legal Malpractice |
-| | 14 | 53 | Professional Liability |
-| **Tier 2** | 15 | 29 | Family Law |
-| | 16 | 19 | Criminal Law |
-| | 17 | 54 | Real Estate |
-| | 18 | 22 | Elder Law |
-| | 19 | 60 | Trusts & Estates |
-| | 20 | 61 | Wills & Probate |
-| | 21 | 62 | White Collar Crime |
-| | 22 | 11 | Civil Rights |
-| | 23 | 56 | Taxation |
-| | 24 | 33 | Health Care |
-| | 25 | 65 | Homeowner Association Law |
-
-**Firestore Progress Tracking** (in `preintake_scrape_progress/calbar`):
-| Field | Description |
-|-------|-------------|
-| `scrapedPracticeAreaIds` | Array of completed practice area IDs |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped (no email or duplicate) |
-| `failedAttempts` | Object tracking failed attempts per practice area |
-| `permanentlySkipped` | Array of practice areas skipped after 3 failures |
-
-**Scraper Configuration:**
-| Setting | Value | Notes |
-|---------|-------|-------|
-| `MAX_ATTORNEYS` | 500 (default) | Max attorneys per run |
-| `DELAY_BETWEEN_PAGES` | 2000ms | Polite crawling |
-| `DELAY_BETWEEN_DETAILS` | 1000ms | Rate limit protection |
-| `ERROR_THRESHOLD` | 10% | Mark success if error rate < 10% |
-| `MAX_FAILED_ATTEMPTS` | 3 | Permanently skip after 3 failures |
-
-**New Firestore Fields** (in `preintake_emails` collection for CalBar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"calbar"` |
-| `barNumber` | California Bar number |
-| `practiceArea` | Practice area from Cal Bar |
-| `state` | `"CA"` |
-| `website` | Firm website (if available) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
+- [x] **CalBar Scraper** - `scripts/scrape-calbar-attorneys.js` (CSS email obfuscation handling)
+- [x] **GitHub Actions** - `.github/workflows/calbar-scraper.yml` (Daily 2am PST)
+- [x] **Website Inference** - `scripts/infer-calbar-websites.js` (Daily 3am PST)
+- **Source**: `"calbar"`, **State**: `"CA"`, 25 practice areas in 2 tiers
 
 ### Phase 25: Florida Bar Attorney Scraper (2026-01-14)
-- [x] **FL Bar Scraper Script** - `scripts/scrape-flbar-attorneys.js`
-  - Scrapes attorney contact information from Florida Bar website
-  - Two-step approach: (1) Search results for name/email, (2) Profile page for website/practice areas
-  - Handles Cloudflare email obfuscation (decode protected mailto links)
-  - Progress tracking to resume across daily runs
-  - Practice area mapping (B37 → Personal Injury, B28 → Immigration, etc.)
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/flbar-scraper.yml`
-  - Scheduled: Daily at 2am PST (10:00 UTC)
-  - Manual trigger with configurable practice area and max attorneys
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **Profile Enrichment Script** - `scripts/enrich-flbar-profiles.js`
-  - Fetches FL Bar profile pages to extract website URLs
-  - Designed for slow rate (1 record per invocation) to avoid 429 rate limiting
-  - Updates Firestore with website, enrichedAt timestamp
-- [x] **Enrichment Workflow** - `.github/workflows/flbar-profile-enrichment.yml`
-  - Runs every 2 minutes (720 requests/day max)
-  - Processes 1 record per run to stay under rate limits
-- [x] **Backfill Script** - `scripts/backfill-flbar-member-urls.js`
-  - One-time script to add `memberUrl` field to existing FL Bar contacts
-  - Constructs URL from barNumber: `https://www.floridabar.org/directories/find-mbr/profile/?num={barNumber}`
-- [x] **Diagnostic/Reset Scripts**
-  - `scripts/diagnose-flbar-data.js` - Analyze FL Bar data distribution by source/practice area
-  - `scripts/reset-flbar-data.js` - Delete FL Bar contacts and reset scrape progress for clean re-scrape
-
-**FL Bar Practice Areas (Tier 1 - High Priority):**
-| Code | Practice Area |
-|------|---------------|
-| B37 | Personal Injury |
-| B28 | Immigration |
-| B49 | Workers Compensation |
-| B33 | Medical Malpractice |
-| B38 | Products Liability |
-| B47 | Toxic Torts |
-| B05 | Bankruptcy |
-| B30 | Labor & Employment |
-| B09 | Construction Law |
-| B29 | Insurance |
-| B31 | Legal Malpractice |
-| B39 | Professional Liability |
-
-**Firestore Fields** (in `preintake_emails` collection for FL Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"flbar"` |
-| `barNumber` | Florida Bar number |
-| `practiceArea` | Practice area from FL Bar |
-| `state` | `"FL"` |
-| `memberUrl` | FL Bar profile URL |
-| `website` | Firm website (from enrichment) |
-| `enrichedAt` | Timestamp of enrichment |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/flbar`):
-| Field | Description |
-|-------|-------------|
-| `scrapedPracticeAreaCodes` | Array of completed practice area codes |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
+- [x] **FL Bar Scraper** - `scripts/scrape-flbar-attorneys.js` (Cloudflare email obfuscation, two-step scrape)
+- [x] **GitHub Actions** - `.github/workflows/flbar-scraper.yml` (Daily 2am PST)
+- [x] **Profile Enrichment** - `scripts/enrich-flbar-profiles.js` + workflow (2-min intervals for rate limiting)
+- **Source**: `"flbar"`, **State**: `"FL"`, 12 practice areas (B37=PI, B28=Immigration, etc.)
 
 ### Phase 26: Website Validation & UX Improvements (2026-01-15)
-- [x] **JavaScript-Heavy Site Validation Fix** - Added `stripNonContentHtml()` function
-  - Wix, Squarespace, and React sites were failing validation because first 15KB was framework JS
-  - New function strips: `<script>`, `<style>`, `<noscript>`, HTML comments, inline JSON, `<svg>` tags
-  - Reduces 1.2MB Wix HTML to ~100KB of actual content before Claude analysis
-  - Increased truncation limit from 15,000 to 20,000 characters
-  - Root cause: nm-llp.com (valid law firm) was rejected because Claude only saw framework code
+- [x] **JavaScript-Heavy Site Validation Fix** - Added `stripNonContentHtml()` to handle Wix/Squarespace/React sites
 - [x] **Verification Email Text Simplification** - Cleaner, more user-focused copy
-  - Changed from "start building your custom AI intake demo" to "view your custom demo"
-  - Removed jargon ("AI intake") - recipient already knows what PreIntake.ai does
-  - "view" is clearer and more action-oriented than "start building"
-
-**`stripNonContentHtml()` Function:**
-```javascript
-function stripNonContentHtml(html) {
-    let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
-    cleaned = cleaned.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
-    cleaned = cleaned.replace(/<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi, ' ');
-    cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, ' ');
-    cleaned = cleaned.replace(/<script[^>]*type="application\/json"[^>]*>[\s\S]*?<\/script>/gi, ' ');
-    cleaned = cleaned.replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, ' ');
-    cleaned = cleaned.replace(/\s+/g, ' ');
-    return cleaned.trim();
-}
-```
-
-**Validation Flow (Updated):**
-```
-1. Fetch website HTML (15s timeout)
-2. Strip non-content HTML (scripts, styles, SVGs, comments)
-3. Truncate cleaned HTML to 20,000 chars
-4. Send to Claude Haiku for law firm classification
-5. Require isLawFirm=true AND confidence >= 80%
-```
 
 ### Phase 27: Demo View Tracking Improvement (2026-01-16)
-- [x] **View Tracking Moved to "Start Demo" Click** - More accurate engagement metrics
-  - Previously: `type=view` tracked when demo modal opened (page load with `?demo=`)
-  - Now: `type=view` tracked only when user clicks "Start Demo" button in onboarding modal
-  - `type=visit` still tracked on page load (email click attribution)
-  - Provides accurate distinction between "visited page" vs "engaged with demo"
-- [x] **Cross-Frame postMessage Implementation**
-  - Demo iframe sends `postMessage({ type: 'demo-started', firmId: '...' })` when Start Demo clicked
-  - Parent window (index.html) listens for message and triggers view tracking
-  - Uses `window.parent !== window` check to only send when embedded in iframe
-- [x] **Bulk Demo Update Script** - `scripts/update-demo-postmessage.js`
-  - Updated 156 existing demos in Firebase Storage with new postMessage code
-  - Dry-run mode for safe preview before applying changes
-  - Skips demos that are already updated or missing onboarding modal
-  - 2 older demos skipped (pre-onboarding modal versions)
-
-**Tracking Flow (Updated):**
-```
-1. User clicks email link (?demo=ABC) → type=visit tracked (email attribution)
-2. Demo modal opens automatically → No tracking yet
-3. User clicks "Start Demo" → postMessage sent to parent
-4. Parent receives message → type=view tracked + sessionStorage set
-5. Header shows "Get Started →" button (demo viewed)
-```
-
-**Files Modified:**
-- `preintake/index.html` - Added message listener, removed premature view tracking
-- `functions/templates/demo-intake.html.template` - Added postMessage on Start Demo click
-- `scripts/update-demo-postmessage.js` - New script for bulk demo updates
+- [x] **View Tracking Moved to "Start Demo" Click** - More accurate engagement metrics (visit vs view distinction)
+- [x] **Cross-Frame postMessage Implementation** - Demo iframe communicates with parent window
+- [x] **Bulk Demo Update Script** - `scripts/update-demo-postmessage.js` updated 156 demos
 
 ### Phase 28: Demo UX Improvements (2026-01-18)
-- [x] **Duplicate Demo Redirect** - Auto-route users to existing demos
-  - When user submits form and demo already exists (409 response), redirect to existing demo
-  - Backend returns `existingLeadId` in 409 response for redirect
-  - Frontend detects 409 + `existingLeadId` and redirects to `/?demo=${existingLeadId}`
-  - Eliminates confusing "demo already exists" error message
-- [x] **Exit Confirmation Modal** - Prevent premature demo abandonment
-  - When user tries to close demo before completing intake, show confirmation modal
-  - Modal displays firm email and explains value of completing the demo
-  - "Continue Demo" button dismisses modal and returns to conversation
-  - "End Demo Anyway" button closes demo and returns to homepage with welcome banner
-  - Triggered by: close button, Escape key, or overlay click
-  - CSS class `.exit-confirm-modal-overlay` with smooth transitions
+- [x] **Duplicate Demo Redirect** - Auto-route users to existing demos (409 response handling)
+- [x] **Exit Confirmation Modal** - Prevent premature demo abandonment with confirmation prompt
 - [x] **Demo Template postMessage Enhancements**
   - Added `firmEmail` to `demo-started` postMessage for exit confirmation
   - Added new `intake-completed` postMessage when webhook succeeds
@@ -1235,946 +846,94 @@ function stripNonContentHtml(html) {
   - Homepage shows "Welcome [firmName]" banner immediately on click
   - URL format: `?demo={leadId}&firm={firmName}&utm_source=email...`
 - [x] **Bulk Demo Regeneration** - Updated all 160 demos with new template
-  - Regenerated via `scripts/regenerate-preintake-demos.js --run`
-  - All demos now include exit confirmation messaging support
-- [x] **Dynamic Sidebar Progress Steps** - Multi-practice firm UX enhancement
-  - Multi-practice firms initially show only "Basic Information" in sidebar
-  - Remaining progress steps populate dynamically after practice area is selected
-  - Single-practice firms show all steps immediately (no change)
-  - Added `isMultiPractice` flag injected at demo generation time
-  - Template conditionally renders sidebar based on `isMultiPractice` value
-- [x] **Firm-Specific Practice Area Detection** - Fixed sidebar not updating after selection
-  - `isPracticeAreaSelection()` previously used hardcoded keywords that missed specialized areas
-  - Example: "Writ of Habeas Corpus", "First Step Act" didn't match hardcoded keywords
-  - Added `FIRM_PRACTICE_AREAS` array injected at demo generation time
-  - Function now checks against firm's actual configured practice areas
-  - Flexible matching: exact match, contains, or contained-by logic
-  - All 160 demos regenerated with firm-specific practice area arrays
-
-**Exit Confirmation Modal Flow:**
-```
-1. User clicks "Start Demo" → demoFirmEmail captured from postMessage
-2. User attempts to close demo (before intake completion)
-3. Exit confirmation modal appears with firm email displayed
-4. "Continue Demo" → Modal dismissed, demo continues
-5. "End Demo Anyway" → Demo closed, return to homepage with welcome banner
-6. If intake completes (webhook success) → Future close actions skip confirmation
-```
-
-**Files Modified:**
-- `preintake/index.html` - Added exit confirmation modal HTML/JS, 409 redirect logic
-- `preintake/css/styles.css` - Added `.exit-confirm-modal-*` CSS classes
-- `functions/preintake-functions.js` - Added `existingLeadId` to 409 responses
-- `functions/templates/demo-intake.html.template` - Added `firmEmail` and `intake-completed` postMessages, multi-practice sidebar logic, `FIRM_PRACTICE_AREAS` array, updated `isPracticeAreaSelection()`
-- `functions/demo-generator-functions.js` - Added `isMultiPractice` flag and `FIRM_PRACTICE_AREAS_JSON` placeholder injection
-- `scripts/send-preintake-campaign.js` - Added `&firm=` parameter to email demo URLs
+- [x] **Dynamic Sidebar Progress Steps** - Multi-practice firm UX enhancement (`isMultiPractice` flag)
+- [x] **Firm-Specific Practice Area Detection** - Fixed sidebar via `FIRM_PRACTICE_AREAS` array injection
 
 ### Phase 29: Bar Profile Demos & Hosted Intake URLs (2026-01-18)
-- [x] **Bar Profile Demo Generation** - Demos for attorneys WITHOUT websites
-  - New `generateBarProfileDemo()` function in `demo-generator-functions.js`
-  - Uses bar profile data: firstName, lastName, practiceArea, email, state, barNumber
-  - Constructs firm name: "{firstName} {lastName}, Attorney at Law"
-  - Maps bar practice areas to PreIntake system prompts via `mapBarPracticeArea()`
-  - No website scraping or deep research required
-  - Opens up ~65% of contacts (~3,900 attorneys) who couldn't get personalized demos
-- [x] **Practice Area Mapping** - Normalizes bar profile practice areas
-  - Handles variations: "Criminal Law" → "Criminal Defense", "Wills & Trusts" → "Estate Planning"
-  - Falls back to "General Practice" for unmapped areas
-  - Case-insensitive matching with trim
-- [x] **3-Phase Email Campaign Priority** - Updated `send-preintake-campaign.js`
-  - Phase 1: Contacts WITH website URLs (personalized website-based demos)
-  - Phase 2: Contacts WITHOUT website, WITH bar data (`domainChecked=true`, `domainCheckResult` in `['not_found', 'personal_email']`)
-  - Phase 3: Contacts WITHOUT website, NOT domain-checked (fallback email only)
-- [x] **Hosted Intake URLs** - Post-subscription delivery for website-less attorneys
-  - URL format: `preintake.ai/intake/{barNumber}`
-  - `serveHostedIntake` Cloud Function in `widget-functions.js`
-  - Looks up lead by barNumber, verifies active subscription
-  - Serves demo HTML in LIVE mode (not demo mode)
-  - Returns 404 for non-existent or inactive subscriptions
-- [x] **Firebase Hosting Rewrite** - Added `/intake/:barNumber` route
-  - Maps to `serveHostedIntake` function in `us-west1` region
-  - Sits alongside existing `/demo/:firmId` rewrite
-- [x] **Stripe Checkout Updates** - `stripe-functions.js` modifications
-  - `handleCheckoutComplete` now stores: `hasWebsite`, `deliveryMethod`, `hostedIntakeUrl`
-  - For website-less subscribers with barNumber: `hostedIntakeUrl` = `https://preintake.ai/intake/{barNumber}`
-  - `generateActivationEmail` sends dual-path emails (embed vs hosted instructions)
-- [x] **API Response Enhancement** - `getPreIntakeFirmStatus` returns new fields
-  - Added: `hasWebsite`, `hostedIntakeUrl`, `barNumber` to response
-  - `hasWebsite` defaults to `true` if undefined (backward compatibility)
-- [x] **Payment Success Page** - Dual-path UI in `payment-success.html`
-  - Detects `hasWebsite` from API response
-  - Website users: Shows embed code options (floating button, inline widget, direct URL, iframe)
-  - Hosted users: Shows hosted URL with copy button and sharing suggestions
-  - Edge case: Falls back to embed mode if `hasWebsite=false` but no `hostedIntakeUrl`
-
-**Data Flow (Bar Profile Demo):**
-```
-preintake_emails (domainChecked=true, domainCheckResult='not_found')
-    │
-    ▼
-send-preintake-campaign.js (Phase 2)
-    │
-    ├─ Create preintake_leads document
-    ├─ generateBarProfileDemo(leadId, contactData)
-    │   ├─ Firm name: "John Smith, Attorney at Law"
-    │   ├─ Practice area: mapped from bar profile
-    │   └─ No website scraping
-    ├─ Upload to Firebase Storage
-    └─ Send email with ?demo= link
-```
-
-**Post-Subscription Flow (Website-less):**
-```
-Stripe checkout completes
-    │
-    ▼
-handleCheckoutComplete (stripe-functions.js)
-    │
-    ├─ hasWebsite: false
-    ├─ deliveryMethod: 'hosted'
-    ├─ hostedIntakeUrl: 'https://preintake.ai/intake/{barNumber}'
-    │
-    ▼
-Redirect to payment-success.html
-    │
-    ├─ Detects no website
-    └─ Shows hosted URL section with sharing instructions
-```
-
-**Files Modified:**
-- `functions/demo-generator-functions.js` - Added `generateBarProfileDemo()` and `mapBarPracticeArea()`
-- `functions/widget-functions.js` - Added `serveHostedIntake` function
-- `functions/stripe-functions.js` - Updated `handleCheckoutComplete` and `generateActivationEmail`
-- `functions/preintake-functions.js` - Added `hasWebsite`, `hostedIntakeUrl`, `barNumber` to API response
-- `functions/index.js` - Added `serveHostedIntake` to imports and exports
-- `firebase.json` - Added `/intake/:barNumber` rewrite rule
-- `preintake/payment-success.html` - Added dual-path UI (embed vs hosted)
-- `scripts/send-preintake-campaign.js` - Added bar profile demo integration
-
-**Firestore Schema Updates (`preintake_leads`):**
-| Field | Type | Description |
-|-------|------|-------------|
-| `barNumber` | string | Attorney's bar number (unique ID for hosted URL) |
-| `hasWebsite` | boolean | Whether attorney has a website |
-| `hostedIntakeUrl` | string | Full URL: `https://preintake.ai/intake/{barNumber}` |
-| `deliveryMethod` | string | `'embed'` (has website) or `'hosted'` (no website) |
+- [x] **Bar Profile Demo Generation** - `generateBarProfileDemo()` for attorneys WITHOUT websites
+- [x] **Practice Area Mapping** - `mapBarPracticeArea()` normalizes bar practice areas
+- [x] **3-Phase Email Campaign Priority** - Website contacts → Bar profile contacts → Fallback email
+- [x] **Hosted Intake URLs** - `serveHostedIntake` Cloud Function at `/intake/:barNumber`
+- [x] **Stripe Checkout Updates** - Stores `hasWebsite`, `deliveryMethod`, `hostedIntakeUrl`
+- [x] **Payment Success Page** - Dual-path UI (embed vs hosted)
 
 ### Phase 30: 6-Digit Intake Codes & Short URLs (2026-01-19)
-- [x] **6-Digit Alphanumeric Intake Codes** - Human-friendly short URLs
-  - New `generateUniqueIntakeCode()` function generates 6-character codes (A-Z, 0-9, no ambiguous chars)
-  - Excludes: O, 0, I, 1, L to prevent confusion
-  - Collision detection: Regenerates if code exists in `preintake_intake_codes` collection
-  - Code stored in both lead document (`intakeCode`) and lookup collection
-  - Generated during demo creation in `generatePreIntakeDemo()`
-- [x] **Short URL Routing** - Clean intake page URLs
-  - Format: `https://preintake.ai/{6-char-code}` (e.g., `preintake.ai/3K38GP`)
-  - Firebase Hosting rewrite rule: `/{code}` → `serveIntakeByCode` Cloud Function
-  - Function looks up code → finds leadId → serves demo HTML
-  - Replaces long `/intake/{barNumber}` URLs for hosted subscribers
-- [x] **Hosted Intake URL Updates** - Uses new short codes
-  - `handleCheckoutComplete` now stores `hostedIntakeUrl` with short code format
-  - Activation emails include the short URL
-  - Example: `https://preintake.ai/3K38GP` instead of `/intake/123456`
-- [x] **Resend Activation Email Endpoint** - Admin utility
-  - New `resendActivationEmail` Cloud Function in `stripe-functions.js`
-  - Simple secret-based auth (`?secret=resend2026`)
-  - Usage: `GET /resendActivationEmail?leadId=ABC&secret=resend2026`
-  - Fetches lead data and regenerates/resends activation email
-- [x] **Simplified Activation Email** - Cleaner design for hosted subscribers
-  - Kept branded header with PreIntake.ai logo
-  - Simplified body: Just the essentials (firm name, URL, delivery email, signature)
-  - Removed complex boxes and unnecessary styling
-  - Signature: "Support Team / PreIntake.ai" (not Stephen)
-- [x] **Payment Success Page CSS Fix** - Header consistency
-  - Removed conflicting `.logo` CSS that was overriding header component styles
-  - Header now matches index.html appearance
-
-**New Firestore Collection:**
-| Collection | Purpose |
-|------------|---------|
-| `preintake_intake_codes` | Lookup table: `{code}` → `{leadId, createdAt}` |
-
-**New Firestore Fields (`preintake_leads`):**
-| Field | Type | Description |
-|-------|------|-------------|
-| `intakeCode` | string | 6-character alphanumeric code for short URL |
-
-**Files Modified:**
-- `functions/demo-generator-functions.js` - Added `generateUniqueIntakeCode()`, stores code during demo generation
-- `functions/widget-functions.js` - Added `serveIntakeByCode` function for short URL routing
-- `functions/stripe-functions.js` - Added `resendActivationEmail`, updated `hostedIntakeUrl` to use short codes, simplified email template
-- `functions/index.js` - Added `serveIntakeByCode` and `resendActivationEmail` exports
-- `firebase.json` - Added `/:code` rewrite rule for short URLs
-- `preintake/payment-success.html` - Removed conflicting `.logo` CSS
-
-**Short URL Flow:**
-```
-User visits https://preintake.ai/3K38GP
-    │
-    ▼
-Firebase Hosting rewrite → serveIntakeByCode function
-    │
-    ├─ Look up code in preintake_intake_codes collection
-    ├─ Get leadId from lookup result
-    ├─ Verify lead exists and has active subscription
-    └─ Serve demo HTML in LIVE mode
-```
+- [x] **6-Digit Intake Codes** - `generateUniqueIntakeCode()` creates human-friendly short URLs (excludes O/0/I/1/L)
+- [x] **Short URL Routing** - `preintake.ai/{code}` → `serveIntakeByCode` Cloud Function
+- [x] **Resend Activation Email** - Admin endpoint `resendActivationEmail` for re-sending activation emails
+- **Collections**: `preintake_intake_codes` lookup table, `intakeCode` field on leads
 
 ### Phase 31: Firm Name Styling & Campaign Consolidation (2026-01-20)
 - [x] **Option 5 Firm Name Styling** - Border frame + serif font for all demo firm name locations
-  - Applied to 4 locations: landing screen (`.logo-text`), chat header (`.chat-header-logo`), results screen (`.results-logo`), onboarding modal (`.firm-name`)
-  - Georgia/Times New Roman serif font
-  - Gold border frame: `1px solid rgba(201, 169, 98, 0.4)` with 4px border-radius
-  - Intelligent word wrapping for long firm names: `word-wrap`, `overflow-wrap`, `hyphens: auto`
-  - Consistent sizing: 1.75rem (landing/modal), 1.5rem (results), 1.25rem (chat header)
-  - All 188 existing demos regenerated with new styling
-- [x] **Email Campaign Query Consolidation** - Merged Phase 1 and Phase 2 queries
-  - Previously: Sequential phases (website contacts first, then bar profile contacts)
-  - Now: Single parallel query system combining all "ready" contacts
-  - Three Firestore queries run in parallel: website contacts, bar profile (not_found), bar profile (personal_email)
-  - Results combined, deduplicated by document ID, sorted by `randomIndex`, sliced to batch size
-  - Ensures fair distribution across contact types in each batch
-- [x] **Bar Profile Email Messaging Update** - Improved email copy
-  - New opening: Acknowledges bar profile source and practice area
-  - Emphasizes hosted intake URL works without a website
-  - Clearer value proposition: case summary, qualification rating, plain-English explanation
-  - Zero data retention trust signal included
-
-**Firm Name Styling CSS:**
-```css
-/* Landing screen / Onboarding modal */
-.logo-text, .onboarding-modal-content .firm-name {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.75rem;
-    font-weight: 400;
-    color: var(--accent-gold);
-    letter-spacing: 0.5px;
-    padding: 1rem 1.5rem;
-    border: 1px solid rgba(201, 169, 98, 0.4);
-    border-radius: 4px;
-    display: inline-block;
-    max-width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.3;
-}
-```
-
-**Files Modified:**
-- `functions/templates/demo-intake.html.template` - Updated `.logo-text`, `.chat-header-logo`, `.results-logo`, `.firm-name` CSS
-- `scripts/send-preintake-campaign.js` - Consolidated query system, updated `generateBarProfileEmailHTML` and `generateBarProfileEmailPlainText`
+- [x] **Email Campaign Query Consolidation** - Single parallel query combining website + bar profile contacts
+- [x] **Bar Profile Email Messaging Update** - Improved copy for attorneys without websites
 
 ### Phase 32: Ohio Bar Attorney Scraper (2026-01-20)
-- [x] **Ohio Bar Scraper Script** - `scripts/scrape-ohiobar-attorneys.js`
-  - Scrapes attorney contact information from Ohio Bar Association website (ohiobar.org)
-  - Uses Puppeteer for React SPA interaction (checkbox-based filtering, not URL params)
-  - ~25% of attorneys have visible email addresses as mailto links
-  - Handles 100-result cap per search via Practice Area + City subdivision
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/ohbar-scraper.yml`
-  - Scheduled: Daily at 4am PST (12:00 UTC)
-  - Offset from CalBar (12am PST) and FLBar (2am PST) to avoid overlap
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **Checkbox-Based Filtering** - React SPA requires UI interaction
-  - URL-based filtering doesn't work (React app ignores URL params)
-  - Two sets of alphabet tabs (A-D, E-K, L-R, S-Z): one for cities, one for practice areas
-  - Practice area checkboxes: `filterPracticeAreasOption{PracticeAreaName}`
-  - City checkboxes: `filterLocationsOption{index}` with value = city name
-  - Helper functions: `getPracticeAreaTab()`, `getCityTab()`, `clickAlphabetTab()`, `clickPracticeAreaCheckbox()`, `clickCityCheckbox()`
-
-**Ohio Bar Practice Areas (46 total, Tier 1 shown):**
-| Priority | Practice Area |
-|----------|---------------|
-| 1 | Personal Injury and Product Liability |
-| 2 | Immigration |
-| 3 | Workers Compensation |
-| 4 | Bankruptcy |
-| 5 | Labor/Employment |
-| 6 | Construction |
-| 7 | Insurance |
-| 8 | Litigation |
-
-**Firestore Fields** (in `preintake_emails` collection for Ohio Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"ohbar"` |
-| `barNumber` | Ohio Bar number (if available) |
-| `practiceArea` | Practice area from Ohio Bar |
-| `state` | `"OH"` |
-| `memberUrl` | Ohio Bar profile URL |
-| `website` | Firm website (if available) |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/ohbar`):
-| Field | Description |
-|-------|-------------|
-| `completedPracticeAreaIds` | Array of fully scraped practice area indices |
-| `practiceAreaIdsNeedingCities` | Practice areas that hit 100 cap, need city subdivision |
-| `completedCityCombos` | Array of completed `{practiceAreaId}_{city}` combinations |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
+- [x] **Ohio Bar Scraper** - `scripts/scrape-ohiobar-attorneys.js` (Puppeteer, React SPA checkbox filtering)
+- [x] **GitHub Actions** - `.github/workflows/ohbar-scraper.yml` (Daily 4am PST)
+- **Source**: `"ohbar"`, **State**: `"OH"`, 46 practice areas with city subdivision for 100+ result caps
 
 ### Phase 33: Michigan Bar Attorney Scraper (2026-01-20)
-- [x] **Michigan Bar Scraper Script** - `scripts/scrape-mibar-attorneys.js`
-  - Scrapes attorney contact information from State Bar of Michigan website (sbm.reliaguide.com)
-  - Uses Puppeteer for React SPA (ReliaGuide platform)
-  - Key innovation: Uses vCard API (`/api/public/profiles/{id}/download-vcard`) to get complete attorney data
-  - vCard provides: email, phone, firm name, website, city, state
-  - Emails NOT visible in search results - must fetch vCard for each profile
-  - Pagination: ~40 results per page (numbered pages, not Load More)
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/mibar-scraper.yml`
-  - Scheduled: Daily at 6am PST (14:00 UTC)
-  - Offset from CalBar (12am), FLBar (2am), OhBar (4am) to avoid overlap
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **vCard API Discovery** - Reliable email extraction method
-  - Search results only show name and "Add to contact" button
-  - vCard API endpoint returns complete attorney data
-  - URL format: `https://sbm.reliaguide.com/api/public/profiles/{profileId}/download-vcard`
-  - Profile IDs extracted from card links on search results page
-
-**Michigan Bar Practice Areas (21 categories discovered via API):**
-
-| Tier | ID | Practice Area | Est. Attorneys |
-|------|-----|---------------|----------------|
-| **Tier 1** | 264 | Personal Injury | 1,267 |
-| | 210 | Immigration & Naturalization | 441 |
-| | 172 | Family Law | 1,754 |
-| | 127 | Criminal Defense | 1,528 |
-| | 3 | Bankruptcy | 417 |
-| | 594 | Workers Compensation | 213 |
-| | 454 | Medical Malpractice | 297 |
-| | 359 | Wrongful Death | - |
-| **Tier 2** | 228 | Labor & Employment | - |
-| | 285 | Real Estate | - |
-| | 277 | Probate & Estate Planning | - |
-| | 179 | Elder Law & Advocacy | - |
-| | 321 | Social Security | - |
-| | 120 | Consumer Law | - |
-| | 96 | Civil Rights | - |
-| **Tier 3** | 74 | Business Law | - |
-| | 326 | Tax | - |
-| | 483 | Civil Litigation | - |
-| | 215 | Intellectual Property | - |
-| | 116 | Construction Law | - |
-
-**Category Discovery Method:** Michigan Bar uses ReliaGuide platform with a public API at `/api/public/category-lookups?sort=flatSortOrder,category,asc&size=1000` that returns all 404 categories with their IDs. URL filtering requires BOTH `category.equals={name}` AND `categoryId.equals={id}` parameters.
-
-**Firestore Fields** (in `preintake_emails` collection for Michigan Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"mibar"` |
-| `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Practice area from search filter |
-| `state` | `"MI"` (or from vCard) |
-| `memberUrl` | vCard API URL |
-| `website` | Firm website (from vCard) |
-| `city` | City (from vCard address) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/mibar`):
-| Field | Description |
-|-------|-------------|
-| `completedCategoryIds` | Array of fully scraped category IDs |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-
-**vCard API Requirements:**
-- **Critical**: Must include `Accept: text/vcard` header - without it, API returns HTML instead of vCard data
-- Headers required: `Accept: text/vcard, text/x-vcard, text/plain, */*`, `User-Agent`, `Referer`
-- State field in vCard contains attorney's business address state (not necessarily "MI")
-- Attorneys licensed in Michigan may practice in other states (TX, IL, CA, etc.)
-
-**vCard Data Flow:**
-```
-Search results page → Extract profile IDs from cards
-    │
-    ▼
-For each profile ID:
-    │
-    ├─ Fetch https://sbm.reliaguide.com/api/public/profiles/{id}/download-vcard
-    │   └─ (with Accept: text/vcard header!)
-    ├─ Parse vCard format (N:, FN:, EMAIL:, TEL:, ORG:, URL:, ADR:)
-    ├─ Skip if no email
-    ├─ Dedupe against existing emails in Firestore
-    └─ Insert into preintake_emails collection
-```
-
-**Database Cleanup (2026-01-20):**
-- Deleted 141 legacy records with `practiceArea == 'Unknown'`
-- Deleted 379 non-scraper records with `source == undefined`
-- Remaining records: 7,229 (all from calbar, flbar, ohbar, mibar)
-- Audit results: 0 critical issues, 341 records missing firmName (have firstName/lastName fallback)
+- [x] **Michigan Bar Scraper** - `scripts/scrape-mibar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **GitHub Actions** - `.github/workflows/mibar-scraper.yml` (Daily 6am PST)
+- **Source**: `"mibar"`, **State**: `"MI"`, 21 practice areas via ReliaGuide category IDs
+- **vCard API**: `/api/public/profiles/{id}/download-vcard` provides email, phone, firm, website
 
 ### Phase 34: Missouri Bar Attorney Scraper (2026-01-21)
-- [x] **Missouri Bar Scraper Script** - `scripts/scrape-mobar-attorneys.js`
-  - Scrapes attorney contact information from Missouri Bar website (mobar.org)
-  - Uses Puppeteer for ASP.NET WebForms interaction (ViewState, GridView/FormView pattern)
-  - Click-based navigation: clicks "Select" links directly instead of calling `__doPostBack()` (avoids strict mode errors)
-  - MoBar displays ALL search results on single page (no pagination needed)
-  - 26 practice areas covering PI, Immigration, Family, Bankruptcy, Criminal, etc.
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/mobar-scraper.yml`
-  - Scheduled: Daily at 3am PST (11:00 UTC)
-  - Offset from other scrapers to avoid overlap
-  - Manual trigger with practice_area, max_attorneys, dry_run inputs
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **ASP.NET GridView/FormView Pattern**
-  - Search results displayed in `#ctl00_store_GridView1` table
-  - Profile details loaded in `#ctl00_store_FormView1` after clicking "Select"
-  - ViewState managed automatically by Puppeteer page navigation
-  - Select link clicking approach avoids strict mode function access errors
-
-**Missouri Bar Practice Areas (26 total):**
-| Priority | Value | Practice Area |
-|----------|-------|---------------|
-| 1 | 46 | Personal Injury |
-| 2 | 40 | Immigration Law |
-| 3 | 35 | Family Law |
-| 4 | 11 | Bankruptcy |
-| 5 | 12 | Bankruptcy - Personal |
-| 6 | 29 | Criminal Law |
-| 7 | 5 | Workers' Comp - Employee |
-| 8 | 31 | Elder Law |
-| 9 | 33 | Estate Planning and Trusts |
-| 10 | 4 | Social Security |
-| ... | ... | (16 more practice areas) |
-
-**Firestore Fields** (in `preintake_emails` collection for Missouri Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"mobar"` |
-| `practiceArea` | Practice area from MoBar |
-| `state` | `"MO"` |
-| `memberUrl` | MoBar search results URL |
-| `website` | Firm website (if available) |
-| `city` | City (line-by-line extraction) |
-| `randomIndex` | Random for queue ordering |
-
-**Note:** MoBar does not expose bar numbers on attorney profiles.
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/mobar`):
-| Field | Description |
-|-------|-------------|
-| `scrapedPracticeAreaIds` | Array of completed practice area value codes |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-**Key Technical Details:**
-- Personal Injury category alone has 815 attorneys
-- City extraction uses line-by-line parsing (handles newlines in FormView text)
-- All results displayed on single page per practice area (no pagination needed)
-- Select link clicking: `row.querySelector('a').click()` where text === 'Select'
+- [x] **Missouri Bar Scraper** - `scripts/scrape-mobar-attorneys.js` (ASP.NET WebForms, GridView/FormView)
+- [x] **GitHub Actions** - `.github/workflows/mobar-scraper.yml` (Daily 3am PST)
+- **Source**: `"mobar"`, **State**: `"MO"`, 26 practice areas, no pagination (all results on single page)
 
 ### Phase 35: Kentucky Bar Attorney Scraper (2026-01-22)
-- [x] **Kentucky Bar Scraper Script** - `scripts/scrape-kybar-attorneys.js`
-  - Scrapes attorney contact information from Kentucky Bar website (kybar.org)
-  - Uses Puppeteer for iframe-based CV5 CGI application interaction
-  - Kentucky Bar uses DNN (DotNetNuke) CMS wrapper with iframe-loaded search content
-  - AJAX-based search results with 12 attorneys per page
-  - Profile links use `onclick="openLawyerInfo('customerCode')"` pattern
-  - "Back to Results" button navigation between profile and results views
-  - 20 practice areas covering PI, Immigration, Workers Comp, Bankruptcy, etc.
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/kybar-scraper.yml`
-  - Scheduled: Daily at 8am PST (16:00 UTC)
-  - Offset from CalBar (12am), FLBar (2am), OhBar (4am), MiBar (6am), MoBar (3am)
-  - Manual trigger with practice_area, max_attorneys, dry_run inputs
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **CV5/DNN Architecture**
-  - Main page loads iframe from `https://kybar.org/cv5/cgi-bin/utilities.dll/openpage?WRP=LawyerLocator.htm`
-  - Search form submits to `../utilities.dll/customList`
-  - Profile view shows in `#lawyerLocatorInfo` div, results in `#lawyerLocatorResults`
-  - jQuery-based show/hide transitions between views
-  - Practice area dropdown: `select[name="PRACTICEAREA"]`
-
-**Kentucky Bar Practice Areas (20 total):**
-| Priority | Value | Practice Area |
-|----------|-------|---------------|
-| 1 | 44 | Personal Injury |
-| 2 | 29 | Immigration and Naturalization |
-| 3 | 54 | Workers Compensation |
-| 4 | 5 | Bankruptcy |
-| 5 | 13 | Criminal Law |
-| 6 | 20 | Family Law |
-| 7 | 15 | Elder Law |
-| 8 | 19 | Estate Planning |
-| 9 | 32 | Labor and Employment Law |
-| 10 | 48 | Social Security Disability |
-| ... | ... | (10 more practice areas) |
-
-**Firestore Fields** (in `preintake_emails` collection for Kentucky Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"kybar"` |
-| `customerCode` | Kentucky Bar member code |
-| `practiceArea` | Practice area from KY Bar |
-| `state` | `"KY"` |
-| `website` | Firm website (if available) |
-| `city` | City (from address) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/kybar`):
-| Field | Description |
-|-------|-------------|
-| `completedPracticeAreaIds` | Array of fully completed practice area value codes |
-| `currentPracticeAreaId` | Practice area currently being scraped (for resume) |
-| `currentPage` | Current page number within practice area (for resume) |
-| `practiceAreaIdsNeedingCounties` | Practice areas with 500+ results needing county subdivision |
-| `completedCountyCombos` | Object: `{practiceAreaId: [completedCounties]}` |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-**Key Technical Details:**
-- Personal Injury category has ~2,341 attorneys
-- 12 results per page with pagination links
-- Email addresses displayed in profile view as mailto links
-- Name parsing handles suffixes (Jr, II, III, etc.)
-- City extraction from address line (handles multi-line addresses)
-
-- [x] **County Subdivision Feature** (2026-01-22)
-  - Practice areas with 500+ attorneys automatically subdivided by county
-  - 120 Kentucky counties available for subdivision
-  - Two-phase scraping approach:
-    - Phase 1: Process practice areas already in county subdivision queue
-    - Phase 2: Process remaining practice areas, detect if subdivision needed
-  - Progress tracking includes:
-    - `practiceAreaIdsNeedingCounties`: Array of practice area IDs requiring county subdivision
-    - `completedCountyCombos`: Object mapping practice area ID → array of completed county names
-    - `currentPracticeAreaId` and `currentPage`: Resume capability for interrupted scrapes
-  - County filter uses `select[name="COUNTY"]` dropdown
-  - Example: Personal Injury (2,341 total) → Adair county (2 attorneys), Jefferson county (548 attorneys)
-
-**County Subdivision Flow:**
-```
-Practice Area has >500 results?
-    │
-    ├── YES → Add to practiceAreaIdsNeedingCounties
-    │         └── Next run: Scrape county-by-county (120 counties)
-    │
-    └── NO → Scrape normally with pagination
-```
+- [x] **Kentucky Bar Scraper** - `scripts/scrape-kybar-attorneys.js` (DNN/CV5 iframe, AJAX pagination)
+- [x] **GitHub Actions** - `.github/workflows/kybar-scraper.yml` (Daily 8am PST)
+- **Source**: `"kybar"`, **State**: `"KY"`, 20 practice areas with county subdivision for 500+ results
 
 ### Phase 36: Georgia Bar Attorney Scraper (2026-01-22)
-- [x] **Georgia Bar Scraper Script** - `scripts/scrape-gabar-attorneys.js`
-  - Scrapes attorney contact information from Georgia Bar website (gabar.org)
-  - Uses Puppeteer for JavaScript-rendered member directory
-  - Member directory URL format: `https://www.gabar.org/member-directory/?memberGroup={code}`
-  - Profile URLs use hash-based IDs: `?id=E271939B14FB7B41ED5BCDF5B1B810CC`
-  - 20 practice areas (member groups) covering PI, Family Law, Criminal, Immigration, etc.
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/gabar-scraper.yml`
-  - Scheduled: Daily at 10am PST (18:00 UTC)
-  - Offset from other scrapers to avoid overlap
-  - Manual trigger with max_attorneys, dry_run inputs
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-- [x] **Performance Optimization** (2026-01-22)
-  - Reduced DELAY_BETWEEN_PROFILES from 1000ms to 300ms
-  - Changed `waitUntil: 'networkidle2'` to `'domcontentloaded'` (faster page loads)
-  - Reduced default MAX_ATTORNEYS from 500 to 300 to fit within 90-minute timeout
-  - Reduced page wait time from 1000ms to 500ms for JS rendering
-  - Result: 16 sections in 8.6 minutes vs 4 sections in 90 minutes previously
-
-**Georgia Bar Practice Areas (20 total):**
-| Tier | Code | Practice Area |
-|------|------|---------------|
-| **Tier 1** | FAMIL09 | Family Law |
-| | CRIMI07 | Criminal Law |
-| | IMMIG46 | Immigration Law |
-| | BANKR05 | Bankruptcy Law |
-| | WORKE21 | Workers' Compensation Law |
-| | LABOR15 | Labor & Employment Law |
-| | GENER11 | General Practice & Trial |
-| | ELDER40 | Elder Law |
-| **Tier 2** | REALP19 | Real Property Law |
-| | CONSU48 | Consumer Law |
-| | TORTI13 | Tort & Insurance Practice |
-| | HEALT36 | Health Law |
-| | ENVIR08 | Environmental Law |
-| | INTEL38 | Intellectual Property Law |
-| | CORPO06 | Corporate Counsel |
-| **Tier 3** | BUSIN04 | Business Law |
-| | TAXAT20 | Tax Law |
-| | FINAN10 | Fiduciary Law |
-| | ADMIN01 | Administrative Law |
-| | APPEL02 | Appellate Practice |
-
-**Firestore Fields** (in `preintake_emails` collection for Georgia Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"gabar"` |
-| `profileId` | Hash-based profile ID (e.g., E271939B14FB7B41ED5BCDF5B1B810CC) |
-| `practiceArea` | Practice area from GA Bar |
-| `state` | `"GA"` (inferred or from address) |
-| `memberUrl` | Georgia Bar profile URL |
-| `website` | Firm website (if available) |
-| `barNumber` | Georgia Bar number (if found) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/gabar`):
-| Field | Description |
-|-------|-------------|
-| `completedSectionCodes` | Array of fully scraped practice area codes |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-
-**Key Technical Details:**
-- Georgia Bar uses JavaScript to render profile content (requires Puppeteer, not fetch)
-- Profile IDs are 32-character hex hashes extracted from profile links
-- Email addresses displayed on profile pages as mailto links
-- Some sections return 0 results (data availability issue on GA Bar side)
-- Efficient skip-before-fetch using preloaded profileId set
+- [x] **Georgia Bar Scraper** - `scripts/scrape-gabar-attorneys.js` (Puppeteer, JS-rendered directory)
+- [x] **GitHub Actions** - `.github/workflows/gabar-scraper.yml` (Daily 10am PST)
+- **Source**: `"gabar"`, **State**: `"GA"`, 20 member groups with hash-based profile IDs
 
 ### Phase 37: Illinois Bar Attorney Scraper (2026-01-22)
-- [x] **Illinois Bar Scraper Script** - `scripts/scrape-ilbar-attorneys.js`
-  - Scrapes attorney contact information from Illinois State Bar Association website (isba.reliaguide.com)
-  - Uses Puppeteer + vCard API (ReliaGuide platform - same as Michigan)
-  - Supports category URL filtering: `category.equals={name}&categoryId.equals={id}`
-  - 20 practice areas with category IDs (IDs consistent across ReliaGuide sites)
-  - vCard API provides: email, phone, firm name, website, city, state
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/ilbar-scraper.yml`
-  - Scheduled: Daily (time offset from other scrapers)
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-
-**Illinois Bar Practice Areas (20 total):**
-| Tier | ID | Practice Area |
-|------|-----|---------------|
-| **Tier 1** | 264 | Personal Injury |
-| | 210 | Immigration & Naturalization |
-| | 172 | Family Law |
-| | 127 | Criminal Defense |
-| | 3 | Bankruptcy |
-| | 594 | Workers Compensation |
-| | 454 | Medical Malpractice |
-| | 359 | Wrongful Death |
-| **Tier 2** | 228 | Labor & Employment |
-| | 285 | Real Estate |
-| | 277 | Probate & Estate Planning |
-| | 179 | Elder Law & Advocacy |
-| | 321 | Social Security |
-| | 120 | Consumer Law |
-| | 96 | Civil Rights |
-| **Tier 3** | 74 | Business Law |
-| | 326 | Tax |
-| | 483 | Civil Litigation |
-| | 215 | Intellectual Property |
-| | 116 | Construction Law |
-
-**Firestore Fields** (in `preintake_emails` collection for Illinois Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"ilbar"` |
-| `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Practice area from search filter |
-| `state` | `"IL"` (or from vCard) |
-| `memberUrl` | vCard API URL |
-| `website` | Firm website (from vCard) |
-| `city` | City (from vCard address) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/ilbar`):
-| Field | Description |
-|-------|-------------|
-| `completedCategoryIds` | Array of fully scraped category IDs |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-
-**Key Technical Details:**
-- Same ReliaGuide platform as Michigan Bar (sbm.reliaguide.com)
-- Category URL filtering supported (unlike Mississippi/Nebraska)
-- vCard API requires `Accept: text/vcard` header
-- Category IDs shared across all ReliaGuide bar sites (264 = Personal Injury, etc.)
+- [x] **Illinois Bar Scraper** - `scripts/scrape-ilbar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **GitHub Actions** - `.github/workflows/ilbar-scraper.yml` (Daily, time offset)
+- **Source**: `"ilbar"`, **State**: `"IL"`, same 20 categories as Michigan Bar (ReliaGuide shared IDs)
 
 ### Phase 38: Indiana Bar Attorney Scraper (2026-01-22)
-- [x] **Indiana Bar Scraper Script** - `scripts/scrape-inbar-attorneys.js`
-  - Scrapes attorney contact information from Indiana State Bar Association website (inbar.reliaguide.com)
-  - Uses Puppeteer + vCard API (ReliaGuide platform)
-  - **UNIQUE: NO practice areas exposed** - scrapes ALL attorneys without filtering
-  - vCard API provides: email, phone, firm name, website, city, state
-  - Progress tracking with page-based resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/inbar-scraper.yml`
-  - Scheduled: Daily (time offset from other scrapers)
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Indiana Bar Scraper** - `scripts/scrape-inbar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **GitHub Actions** - `.github/workflows/inbar-scraper.yml` (Daily, time offset)
+- **Source**: `"inbar"`, **State**: `"IN"`, **UNIQUE**: No practice areas exposed - scrapes ALL attorneys
 
-**Indiana Bar Unique Characteristics:**
-- Indiana's ReliaGuide site does NOT expose practice areas in the search interface
-- No category filtering available - must scrape all attorneys
-- Practice area field stored as empty string: `practiceArea: ''`
-- Relies on page-based progress tracking instead of category-based
-
-**Firestore Fields** (in `preintake_emails` collection for Indiana Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"inbar"` |
-| `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Empty string (not available) |
-| `state` | `"IN"` (or from vCard) |
-| `memberUrl` | vCard API URL |
-| `website` | Firm website (from vCard) |
-| `city` | City (from vCard address) |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/inbar`):
-| Field | Description |
-|-------|-------------|
-| `lastPage` | Last successfully scraped page number |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-### Phase 39: Mississippi Bar Attorney Scraper (2026-01-22, updated 2026-01-24)
-- [x] **Mississippi Bar Scraper Script** - `scripts/scrape-msbar-attorneys.js`
-  - Scrapes attorney contact information from Mississippi Bar website (msbar.reliaguide.com)
-  - Uses Puppeteer + vCard API (ReliaGuide platform)
-  - **Uses category URL filtering** - same pattern as Michigan Bar
-  - 20 practice areas with category IDs from ReliaGuide API
-  - vCard API provides: email, phone, firm name, website, city, state
-  - Progress tracking with category-based resume across daily runs
-  - **Requires non-headless browser** (MS Bar detects headless mode)
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/msbar-scraper.yml`
-  - Scheduled: Daily at 2pm PST (22:00 UTC)
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `xvfb-run` for non-headless browser in CI environment
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-
-**Mississippi Bar Practice Areas (20 categories with IDs):**
-| Tier | ID | Practice Area |
-|------|-----|---------------|
-| **Tier 1** | 264 | Personal Injury |
-| | 210 | Immigration & Naturalization |
-| | 172 | Family Law |
-| | 127 | Criminal Defense |
-| | 3 | Bankruptcy |
-| | 594 | Workers Compensation |
-| | 454 | Medical Malpractice |
-| | 359 | Wrongful Death |
-| **Tier 2** | 228 | Labor & Employment |
-| | 285 | Real Estate |
-| | 277 | Probate & Estate Planning |
-| | 179 | Elder Law & Advocacy |
-| | 321 | Social Security |
-| | 120 | Consumer Law |
-| | 96 | Civil Rights |
-| **Tier 3** | 74 | Business Law |
-| | 326 | Tax |
-| | 483 | Civil Litigation |
-| | 116 | Construction Law |
-| | 214 | Insurance |
-
-**Firestore Fields** (in `preintake_emails` collection for Mississippi Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"msbar"` |
-| `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Practice area from category filter |
-| `state` | `"MS"` (or from vCard) |
-| `memberUrl` | Full lawyer profile URL |
-| `website` | Firm website (from vCard) |
-| `city` | City (from vCard address) |
-| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/msbar`):
-| Field | Description |
-|-------|-------------|
-| `completedCategoryIds` | Array of fully scraped category IDs |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-**Key Technical Details:**
-- ReliaGuide platform WITH category URL filtering support (unlike initial assessment)
-- Category URL format: `/lawyer/search?category.equals={name}&categoryId.equals={id}&memberTypeId.equals=1`
-- Category IDs discovered via `/api/public/category-lookups` API (341 categories available)
-- **Non-headless mode required** - MS Bar blocks headless Chrome
-- Same vCard API pattern as other ReliaGuide scrapers
-- Practice areas visible as tags on search result cards
+### Phase 39: Mississippi Bar Attorney Scraper (2026-01-22)
+- [x] **Mississippi Bar Scraper** - `scripts/scrape-msbar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **GitHub Actions** - `.github/workflows/msbar-scraper.yml` (Daily 2pm PST)
+- **Source**: `"msbar"`, **State**: `"MS"`, same 20 categories as Michigan Bar + Insurance (214)
+- **Note**: Requires non-headless browser (`xvfb-run` in CI) - MS Bar detects headless mode
 
 ### Phase 40: Nebraska Bar Attorney Scraper (2026-01-22)
-- [x] **Nebraska Bar Scraper Script** - `scripts/scrape-nebar-attorneys.js`
-  - Scrapes attorney contact information from Nebraska State Bar Association website (nebar.reliaguide.com)
-  - Uses Puppeteer + vCard API (ReliaGuide platform)
-  - **No category URL filtering** - uses keyword matching in card text instead (same as Mississippi)
-  - 18 target practice areas for filtering via text matching
-  - vCard API provides: email, phone, firm name, website, city, state
-  - Progress tracking with page-based resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/nebar-scraper.yml`
-  - Scheduled: Daily (time offset from other scrapers)
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-
-**Nebraska Bar Practice Areas (18 target keywords):**
-Same as Mississippi Bar - uses identical keyword matching approach:
-- Personal Injury, Immigration, Workers Compensation, Bankruptcy, Family Law
-- Criminal, Medical Malpractice, Elder Law, Estate Planning, Labor
-- Employment, Social Security, Consumer, Civil Rights, Construction
-- Real Estate, Probate, Tax
-
-**Firestore Fields** (in `preintake_emails` collection for Nebraska Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"nebar"` |
-| `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Matched practice area keyword |
-| `state` | `"NE"` (or from vCard) |
-| `memberUrl` | vCard API URL |
-| `website` | Firm website (from vCard) |
-| `city` | City (from vCard address) |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/nebar`):
-| Field | Description |
-|-------|-------------|
-| `lastPage` | Last successfully scraped page number |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
+- [x] **Nebraska Bar Scraper** - `scripts/scrape-nebar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **GitHub Actions** - `.github/workflows/nebar-scraper.yml` (Daily, time offset)
+- **Source**: `"nebar"`, **State**: `"NE"`, 18 practice areas via keyword matching (no category URL filtering)
 
 ### Phase 41: North Carolina Bar Attorney Scraper (2026-01-22)
-- [x] **North Carolina Bar Scraper Script** - `scripts/scrape-ncbar-attorneys.js`
-  - Scrapes attorney contact information from NC State Bar portal (portal.ncbar.gov)
-  - **DIFFERENT PLATFORM** - Not ReliaGuide, uses NC State Bar's custom portal
-  - Uses Puppeteer for dropdown-based specialization filtering
-  - 18 specializations available via dropdown selector
-  - Profile page scraping (no vCard API) - extracts from `dl-horizontal` structure
-  - Progress tracking by specialization across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/ncbar-scraper.yml`
-  - Scheduled: Daily (time offset from other scrapers)
-  - Manual trigger with configurable max attorneys and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
-
-**North Carolina Bar Specializations (18 total):**
-| Priority | Specialization |
-|----------|---------------|
-| 1 | Workers' Compensation |
-| 2 | Immigration Law |
-| 3 | Family Law |
-| 4 | Criminal Law |
-| 5 | Bankruptcy Law |
-| 6 | Elder Law |
-| 7 | Estate Planning and Probate Law |
-| 8 | Real Property Law - Residential |
-| 9 | Real Property Law - Business, Commercial and Industrial |
-| 10 | Social Security Disability Law |
-| 11 | Appellate Practice |
-| 12 | Trademark Law |
-| 13 | Federal and State Tax Law |
-| 14 | Utilities Law |
-| 15 | Privacy and Information Security Law |
-| 16 | Creditors' Rights |
-| 17 | Marital, Family, and Juvenile Law |
-| 18 | Consumer Protection Law |
-
-**Firestore Fields** (in `preintake_emails` collection for North Carolina Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"ncbar"` |
-| `barNumber` | NC State Bar number (unique ID) |
-| `practiceArea` | Specialization from dropdown |
-| `state` | `"NC"` |
-| `memberUrl` | NC State Bar profile URL |
-| `website` | Firm website (if available) |
-| `city` | City (from address) |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/ncbar`):
-| Field | Description |
-|-------|-------------|
-| `scrapedSpecializations` | Array of completed specialization names |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-**Key Technical Details:**
-- Uses `barNumber` field instead of `profileId` (different platform)
-- Profile data extracted from `dl-horizontal` definition list structure
-- Dropdown-based filtering (not checkbox or URL-based)
-- No vCard API - direct HTML profile page scraping
+- [x] **North Carolina Bar Scraper** - `scripts/scrape-ncbar-attorneys.js` (Custom portal, NOT ReliaGuide)
+- [x] **GitHub Actions** - `.github/workflows/ncbar-scraper.yml` (Daily, time offset)
+- **Source**: `"ncbar"`, **State**: `"NC"`, 18 specializations via dropdown selector
 
 ### Phase 42: Oklahoma Bar Attorney Scraper (2026-01-23)
-- [x] **Oklahoma Bar Scraper Script** - `scripts/scrape-okbar-attorneys.js`
-  - Scrapes attorney contact information from Oklahoma Bar Association website (okbar.org)
-  - Uses Puppeteer for ASP.NET WebForms interaction (ViewState, __doPostBack pagination)
-  - Practice area dropdown with GUID values
-  - Results displayed in card layout (30 per page, `.span4.pad10` divs)
-  - 28 practice areas covering PI, Immigration, Workers Comp, Bankruptcy, etc.
-  - Progress tracking to resume across daily runs
-  - Email notification with scrape summary
-- [x] **GitHub Actions Workflow** - `.github/workflows/okbar-scraper.yml`
-  - Scheduled: Daily at 5am PST (13:00 UTC)
-  - Offset from other scrapers to avoid overlap
-  - Manual trigger with configurable practice area, max attorneys, and dry run options
-  - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
-  - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
+- [x] **Oklahoma Bar Scraper** - `scripts/scrape-okbar-attorneys.js` (ASP.NET WebForms, GUID practice areas)
+- [x] **GitHub Actions** - `.github/workflows/okbar-scraper.yml` (Daily 5am PST)
+- **Source**: `"okbar"`, **State**: `"OK"`, 28 practice areas with GUID values
 
-**Oklahoma Bar Practice Areas (28 total, Tier 1 shown):**
-| Priority | GUID | Practice Area |
-|----------|------|---------------|
-| 1 | 42bf5bee-4391-47d5-a345-c087d95218bb | Personal Injury |
-| 2 | 9228489f-4de3-488c-b010-af15b24393c2 | Immigration |
-| 3 | e28b10db-031a-49d0-9f66-5c85ad83db06 | Workers Compensation |
-| 4 | 3d36c3fe-7452-4c9b-a57c-c8d716bb320e | Medical Malpractice |
-| 5 | 03b5886f-5930-4880-86b4-d8edbd8f6193 | Bankruptcy - Business |
-| 6 | 7f535e77-313e-486c-a87e-857f045b20bf | Bankruptcy - Personal |
-| 7 | ece86f4a-38e9-4c7a-baad-5105c5ed7ca1 | Criminal Defense |
-| 8 | fa60e988-d18f-454a-8b79-5d2a66c0d2d2 | Family Law |
-| 9 | f1ef4137-dff3-447c-ba42-6f087afd8c00 | Divorce |
-| 10 | beda2a47-a52d-4e83-84ec-80936083240a | Adoption |
+### Phase 43: Washington State Bar Attorney Scraper (2026-01-23)
+- [x] **Washington State Bar Scraper** - `scripts/scrape-wsba-attorneys.js` (ASP.NET WebForms, ViewState pagination)
+- [x] **GitHub Actions** - `.github/workflows/wsba-scraper.yml` (Daily 8pm PST)
+- **Source**: `"wsba"`, **State**: `"WA"`, 24 practice areas with slug-based values
 
-**Firestore Fields** (in `preintake_emails` collection for Oklahoma Bar contacts):
-| Field | Description |
-|-------|-------------|
-| `source` | `"okbar"` |
-| `practiceArea` | Practice area from OK Bar |
-| `state` | `"OK"` (or from address parsing) |
-| `website` | Firm website (if available) |
-| `city` | City (from address) |
-| `randomIndex` | Random for queue ordering |
-
-**Scrape Progress Tracking** (in `preintake_scrape_progress/okbar`):
-| Field | Description |
-|-------|-------------|
-| `completedPracticeAreaIds` | Array of completed practice area GUIDs |
-| `lastRunDate` | ISO timestamp of last run |
-| `totalInserted` | Cumulative attorneys inserted |
-| `totalSkipped` | Cumulative attorneys skipped |
-
-**Key Technical Details:**
-- ASP.NET WebForms with ViewState - uses `__doPostBack()` for pagination
-- Pagination uses 0-indexed arguments (page 2 = argument '1')
-- Practice area dropdown: `#C_2_2_ValueDropDownList0`
-- Search button: `#C_2_2_ButtonFindGo`
-- Attorney data extracted from `.span4.pad10` card divs
-- Email from `mailto:` links, phone from `tel:` links
-- Does not expose bar numbers (no `barNumber` field)
+### Phase 44: Nebraska State Bar Association Attorney Scraper (2026-01-24)
+- [x] **Nebraska State Bar Scraper** - `scripts/scrape-nsba-attorneys.js` (YourMembership platform, Caesar cipher emails)
+- [x] **GitHub Actions** - `.github/workflows/nsba-scraper.yml` (Daily 5am PST)
+- **Source**: `"nsba"`, **State**: `"NE"`, iframe-based search with button pagination
 
 ---
 
@@ -2192,16 +951,22 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── index.html              # Landing page with demo request form
 ├── create-account.html     # Account activation + Stripe checkout
 ├── payment-success.html    # Post-payment success page
+├── account.html            # My Account page (subscriber portal)
 ├── about-us.html           # About us page
 ├── contact-us.html         # Contact form page
 ├── faq.html                # FAQ with accordion
 ├── email-analytics.html    # Campaign analytics dashboard
+├── how-it-works-schematic.html  # Visual schematic of PreIntake.ai flow
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
+├── unsubscribe.html        # Email unsubscribe confirmation page
+├── preintake.html          # Legacy intake page (standalone)
 ├── sitemap.xml             # SEO sitemap (6 pages)
 ├── robots.txt              # Search engine directives
 ├── intake-button.js        # Embeddable floating button
 ├── widget.js               # Embeddable inline widget
+├── intake-button-test.html # Widget test page (noindex)
+├── widget-test.html        # Another widget test page (noindex)
 ├── EMBED-INSTRUCTIONS.md   # Client embed documentation
 ├── CLAUDE.md               # Project documentation
 ├── js/
@@ -2223,6 +988,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 /scripts/
 ├── regenerate-preintake-demos.js    # Regenerate demos with latest template
+├── regenerate-bar-profile-demos.js  # Regenerate bar profile demos
 ├── analyze-click-rate.js            # Email click rate analysis
 ├── send-preintake-campaign.js       # Email campaign sender
 ├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)
@@ -2237,6 +1003,9 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── scrape-ncbar-attorneys.js        # North Carolina Bar attorney scraper (Puppeteer/dropdown)
 ├── scrape-nebar-attorneys.js        # Nebraska Bar attorney scraper (ReliaGuide/keyword matching)
 ├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
+├── scrape-okbar-attorneys.js        # Oklahoma Bar attorney scraper (simple HTML tables)
+├── scrape-wsba-attorneys.js         # Washington State Bar attorney scraper (Puppeteer/checkbox filtering)
+├── scrape-nsba-attorneys.js         # Nebraska State Bar Association attorney scraper (YourMembership)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
@@ -2324,80 +1093,14 @@ pending → analyzing → researching → generating_demo → demo_ready
 
 ## CRM Integration Research
 
-### CRM Categories (Important Distinction)
+**PreIntake.ai sits in front of intake CRMs** (Lawmatics, Clio Grow, Filevine) — we're a gatekeeper, not a data janitor.
 
-Legal CRMs fall into two categories—mixing them up leads to bad product decisions:
-
-| Category | Purpose | Examples |
-|----------|---------|----------|
-| **(A) Intake Conversion Engines** | Lead capture, screening, conversion | Lawmatics, Clio Grow, Law Ruler, Lead Docket |
-| **(B) Relationship/BD CRMs** | Client relationships, business development | InterAction+, Salesforce (raw) |
-
-**PreIntake.ai sits in front of Category A.** We're a gatekeeper, not a data janitor.
-
-### Target CRMs (Prioritized by ROI)
-
-**Tier 1 — Ship First** (removes #1 post-demo objection)
-
-| CRM | Market | Why Priority | Integration Scope |
-|-----|--------|--------------|-------------------|
-| **Lawmatics** | Mid-size PI, Immigration, Family | Dominates intake; firms say it "collects junk but doesn't screen" | Create/Update Lead, GREEN/YELLOW/RED mapping, transcript |
-| **Clio Grow** | Broad install base | Massive adoption, logo trust | New Lead, custom fields, calendar trigger for GREEN |
-| **Filevine** | PI-heavy firms | Standard in PI; high willingness to pay | Create Lead → Project (conditional), notes + flags |
-
-**Tier 2 — High-Volume PI** (prints money)
-
-| CRM | Market | Why Priority |
-|-----|--------|--------------|
-| **Law Ruler** | Hardcore PI intake teams | Obsessive about speed; weak AI screening today |
-| **SmartAdvocate** | Old-school PI | Deeply embedded; firms spend $50k+/mo on ads |
-
-**Tier 3 — Enterprise/Platform** (build after revenue momentum)
-
-| CRM | Notes |
-|-----|-------|
-| **Litify** | Salesforce underneath; longer sales cycles, compliance overhead |
-| **Salesforce (raw)** | Rarely used directly by small firms; accessed through Litify |
-
-**Tier 4 — Webhook Only** (let Zapier handle it)
-
-| CRM | Notes |
-|-----|-------|
-| **HubSpot** | Generic; webhook + Zapier covers at near-zero cost |
-| **Zoho** | Budget-focused; same approach |
-
-### Chat/Lead Services (Potential Partners/Competitors)
-
-| Service | Website | Notes |
-|---------|---------|-------|
-| Client Chat Live | clientchatlive.com | Live chat for law firms |
-| Ngage Live Chat | ngagelive.com | 24/7 managed chat |
-| ApexChat | apexchat.com | Legal chat widgets |
-| Captorra | captorra.com | Lead management |
-| Lead Docket | leaddocket.com | Legal intake + lead management (PI ecosystem) |
-| SCORPION | scorpion.co | Full-service legal marketing |
-
-### Integration Approach
-
-**Current State (Phase 1)**
+**Current State:**
 - Email delivery (default) ✅
 - Webhook delivery (Zapier, custom integrations) ✅
 - **This covers ~80% of buyers today**
 
-**Future Phases (Revisit After 5+ Paying Customers Request Same CRM)**
-
-| Phase | CRMs | Trigger |
-|-------|------|---------|
-| Phase 2 | Lawmatics, Clio Grow, Filevine | Repeated customer requests |
-| Phase 3 | Law Ruler, SmartAdvocate | PI market expansion |
-| Phase 4 | Litify | Enterprise demand |
-
-**Build Criteria:**
-- Don't build native integrations until 5+ paying customers ask for the same one
-- Track which CRMs customers request in a simple tally
-- Integrations should remove friction, not add feature bloat
-
-*Last reviewed: 2025-12-31 (based on market analysis from legal-CRM rankings)*
+**Build Criteria:** Don't build native CRM integrations until 5+ paying customers request the same one.
 
 ---
 
@@ -2475,8 +1178,7 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `stripeWebhook` | HTTP | Handle Stripe subscription events |
 | `verifyCheckoutSession` | HTTP | Verify payment status |
 | `serveDemo` | HTTP | Proxy demo HTML for CORS bypass |
-| `serveIntakeByCode` | HTTP | Serve intake page by 6-digit short code |
-| `serveHostedIntake` | HTTP | Serve hosted intake by bar number |
+| `serveHostedIntake` | HTTP | Serve intake by bar number OR 6-digit short code |
 | `resendActivationEmail` | HTTP | Admin endpoint to resend activation emails |
 | `getWidgetConfig` | HTTP | Return widget configuration |
 | `intakeChat` | HTTP | AI chat endpoint |
@@ -2493,8 +1195,8 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `/stripeWebhook` | POST | Stripe webhook handler |
 | `/verifyCheckoutSession` | GET | Verify checkout completion |
 | `/demo/:firmId` | GET | Serve demo intake page |
-| `/:code` | GET | Serve intake by 6-digit short code |
-| `/intake/:barNumber` | GET | Serve hosted intake by bar number |
+| `/:intakeCode` | GET | Serve hosted intake by 6-digit short code (via serveHostedIntake) |
+| `/intake/:barNumber` | GET | Serve hosted intake by bar number (via serveHostedIntake) |
 | `/resendActivationEmail` | GET | Admin: resend activation email |
 
 ### Firestore Collections (preintake database)
