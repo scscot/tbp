@@ -660,7 +660,9 @@ async function scrapeNSBAAttorneys() {
                 city: profileData.city || '',
                 phone: profileData.phone || '',
                 website: profileData.website || '',
-                practiceArea: profileData.practiceArea || 'General Practice',
+                practiceArea: (profileData.practiceArea && profileData.practiceArea !== 'None Selected')
+                    ? profileData.practiceArea
+                    : 'General Practice',
                 profileId: profileData.profileId,
                 memberUrl: profileData.memberUrl
             };
