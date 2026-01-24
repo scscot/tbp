@@ -386,11 +386,11 @@ async function scrapeAllAttorneys() {
         await page.goto(startUrl, { waitUntil: 'networkidle2', timeout: 60000 });
         await delay(3000);
 
-        // Get total results
+        // Get total results (ReliaGuide shows "Listing X of Y")
         const totalResults = await page.evaluate(() => {
             const text = document.body.innerText;
-            const match = text.match(/(\d[\d,]*)\s*results?/i);
-            return match ? parseInt(match[1].replace(/,/g, '')) : 0;
+            const match = text.match(/Listing\s+\d+\s+of\s+(\d+)/);
+            return match ? parseInt(match[1]) : 0;
         });
 
         const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
