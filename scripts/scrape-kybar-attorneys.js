@@ -33,6 +33,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const fs = require('fs');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -533,6 +534,14 @@ async function scrapePracticeArea(browser, practiceArea, maxAttorneys, progress,
                         continue;
                     }
 
+                    // Check for government/institutional contact
+                    if (isGovernmentContact(profileData.email, profileData.firmName)) {
+                        console.log(`    ⊘ Skipped (government): ${profileData.email}`);
+                        skipped++;
+                        await clickBackToResults(iframe);
+                        continue;
+                    }
+
                     // Insert into Firestore
                     if (DRY_RUN) {
                         console.log(`    [DRY RUN] Would insert:`, profileData);
@@ -733,6 +742,14 @@ async function scrapePracticeAreaWithCounty(browser, practiceArea, county, maxAt
                         skipped++;
 
                         // Click back to results
+                        await clickBackToResults(iframe);
+                        continue;
+                    }
+
+                    // Check for government/institutional contact
+                    if (isGovernmentContact(profileData.email, profileData.firmName)) {
+                        console.log(`    ⊘ Skipped (government): ${profileData.email}`);
+                        skipped++;
                         await clickBackToResults(iframe);
                         continue;
                     }

@@ -32,6 +32,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // CONFIGURATION
@@ -291,6 +292,11 @@ async function insertAttorney(attorney, existingEmails) {
             randomIndex: Math.random() * 0.1,
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         };
+
+        // Check for government/institutional contact
+        if (isGovernmentContact(docData.email, docData.firmName)) {
+            return { success: false, reason: 'government_contact' };
+        }
 
         await db.collection('preintake_emails').add(docData);
         existingEmails.add(emailLower);

@@ -28,6 +28,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (discovered from Michigan Bar API 2026-01-20)
@@ -662,6 +663,12 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                     randomIndex: Math.random() * 0.1, // Prioritize in queue
                     createdAt: admin.firestore.FieldValue.serverTimestamp()
                 };
+
+                // Check for government/institutional contact
+                if (isGovernmentContact(docData.email, docData.firmName)) {
+                    stats.govt_skipped = (stats.govt_skipped || 0) + 1;
+                    continue;
+                }
 
                 if (!DRY_RUN) {
                     const docRef = db.collection('preintake_emails').doc();

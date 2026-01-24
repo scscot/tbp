@@ -34,6 +34,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // STATE INFERENCE FROM WEBSITE
@@ -1021,6 +1022,13 @@ async function scrapePracticeArea(practiceAreaId, existingBarNumbers) {
         const exists = await emailExists(result.data.email);
         if (exists) {
             stats.duplicates_skipped++;
+            await sleepWithJitter(DELAY_BETWEEN_DETAILS);
+            continue;
+        }
+
+        // Check for government/institutional contact
+        if (isGovernmentContact(result.data.email, result.data.firmName)) {
+            stats.govt_skipped = (stats.govt_skipped || 0) + 1;
             await sleepWithJitter(DELAY_BETWEEN_DETAILS);
             continue;
         }

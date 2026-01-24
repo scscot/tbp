@@ -28,6 +28,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (NC Bar "Board Certified Specialist" dropdown values)
@@ -261,6 +262,11 @@ async function insertAttorney(attorney, existingEmails) {
             randomIndex: Math.random() * 0.1,  // Prioritize in email queue
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         };
+
+        // Check for government/institutional contact
+        if (isGovernmentContact(docData.email, docData.firmName)) {
+            return { success: false, reason: 'government_contact' };
+        }
 
         await db.collection('preintake_emails').add(docData);
         existingEmails.add(emailLower);

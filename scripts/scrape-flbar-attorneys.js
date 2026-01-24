@@ -25,6 +25,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // STATE INFERENCE FROM WEBSITE
@@ -986,6 +987,12 @@ async function scrapePracticeArea(practiceAreaCode, existingBarNumbers) {
                         randomIndex: Math.random() * 0.1, // Priority range (0.0-0.1)
                         createdAt: admin.firestore.FieldValue.serverTimestamp()
                     };
+
+                    // Check for government/institutional contact
+                    if (isGovernmentContact(emailLower, attorney.firmName)) {
+                        stats.govt_skipped = (stats.govt_skipped || 0) + 1;
+                        continue;
+                    }
 
                     if (!DRY_RUN) {
                         const docRef = db.collection('preintake_emails').doc();

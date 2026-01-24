@@ -18,6 +18,7 @@
 const puppeteer = require('puppeteer');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -485,6 +486,13 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
           randomIndex: Math.random(),
           createdAt: admin.firestore.FieldValue.serverTimestamp()
         };
+
+        // Check for government/institutional contact
+        if (isGovernmentContact(docData.email, docData.firmName)) {
+          console.log(`  ⊘ Skipped (government): ${attorney.email}`);
+          stats.govt_skipped = (stats.govt_skipped || 0) + 1;
+          continue;
+        }
 
         await db.collection('preintake_emails').add(docData);
         existingEmails.add(attorney.email.toLowerCase());
