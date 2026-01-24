@@ -560,41 +560,133 @@ async function scrapeNSBAAttorneys() {
         // Navigate to search page
         console.log(`Navigating to ${SEARCH_URL}...`);
         await page.goto(SEARCH_URL, { waitUntil: 'networkidle2', timeout: 60000 });
-        await delay(2000);
+        await delay(5000); // Give page more time to fully render (GitHub Actions can be slower)
 
-        // Click the Continue button to load all results
+        // Click the Continue button to load all results - with retry logic
         console.log('Looking for Continue button...');
 
-        // The Continue button might be in the form or directly visible
-        const continueClicked = await page.evaluate(() => {
-            // Look for a Continue or Search button
-            const buttons = document.querySelectorAll('input[type="submit"], button');
-            for (const btn of buttons) {
-                const value = btn.value || btn.textContent || '';
-                if (value.toLowerCase().includes('continue') || value.toLowerCase().includes('search')) {
-                    btn.click();
-                    return true;
+        // Helper function to find and click Continue button
+        const findAndClickContinue = async () => {
+            return await page.evaluate(() => {
+                // Strategy 1: Look for input[type="submit"] with Continue/Search value
+                const submitInputs = document.querySelectorAll('input[type="submit"]');
+                for (const inp of submitInputs) {
+                    const value = (inp.value || '').toLowerCase();
+                    if (value.includes('continue') || value.includes('search') || value.includes('submit')) {
+                        inp.click();
+                        return { clicked: true, method: 'submit-input', value: inp.value };
+                    }
                 }
-            }
 
-            // Also look for links
-            const links = document.querySelectorAll('a');
-            for (const link of links) {
-                if (link.textContent.toLowerCase().includes('continue')) {
-                    link.click();
-                    return true;
+                // Strategy 2: Look for button elements with Continue/Search text
+                const buttons = document.querySelectorAll('button');
+                for (const btn of buttons) {
+                    const text = (btn.textContent || '').toLowerCase();
+                    const value = (btn.value || '').toLowerCase();
+                    if (text.includes('continue') || text.includes('search') || value.includes('continue') || value.includes('search')) {
+                        btn.click();
+                        return { clicked: true, method: 'button', text: btn.textContent };
+                    }
                 }
-            }
 
-            return false;
+                // Strategy 3: Look for input[type="button"]
+                const buttonInputs = document.querySelectorAll('input[type="button"]');
+                for (const inp of buttonInputs) {
+                    const value = (inp.value || '').toLowerCase();
+                    if (value.includes('continue') || value.includes('search')) {
+                        inp.click();
+                        return { clicked: true, method: 'button-input', value: inp.value };
+                    }
+                }
+
+                // Strategy 4: Look for links with Continue text
+                const links = document.querySelectorAll('a');
+                for (const link of links) {
+                    const text = (link.textContent || '').toLowerCase();
+                    if (text.includes('continue')) {
+                        link.click();
+                        return { clicked: true, method: 'link', text: link.textContent };
+                    }
+                }
+
+                return { clicked: false };
+            });
+        };
+
+        // First, wait for page content to be loaded and debug what's available
+        const pageDebugInfo = await page.evaluate(() => {
+            const info = {
+                title: document.title,
+                url: window.location.href,
+                buttons: [],
+                inputs: [],
+                links: [],
+                forms: []
+            };
+
+            // Gather all buttons
+            document.querySelectorAll('button').forEach(btn => {
+                info.buttons.push({
+                    text: (btn.textContent || '').trim().substring(0, 50),
+                    value: btn.value || '',
+                    type: btn.type || '',
+                    className: btn.className || ''
+                });
+            });
+
+            // Gather all submit inputs
+            document.querySelectorAll('input[type="submit"], input[type="button"]').forEach(inp => {
+                info.inputs.push({
+                    value: inp.value || '',
+                    type: inp.type || '',
+                    name: inp.name || '',
+                    id: inp.id || ''
+                });
+            });
+
+            // Gather links with "continue" or "search" in text
+            document.querySelectorAll('a').forEach(link => {
+                const text = (link.textContent || '').toLowerCase();
+                if (text.includes('continue') || text.includes('search') || text.includes('submit')) {
+                    info.links.push({
+                        text: link.textContent.trim().substring(0, 50),
+                        href: link.href || ''
+                    });
+                }
+            });
+
+            // Count forms
+            info.forms = document.querySelectorAll('form').length;
+
+            return info;
         });
 
-        if (continueClicked) {
-            console.log('Clicked Continue button, waiting for results...');
-            await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 60000 }).catch(() => {});
-            await delay(5000);
-        } else {
-            console.log('No Continue button found, checking if results are already loaded...');
+        console.log('Page debug info:', JSON.stringify(pageDebugInfo, null, 2));
+
+        // Try to find and click Continue button with retry logic
+        let continueClicked = { clicked: false };
+        const maxRetries = 3;
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            continueClicked = await findAndClickContinue();
+
+            if (continueClicked.clicked) {
+                console.log(`Clicked Continue button via ${continueClicked.method} (attempt ${attempt}), waiting for results...`);
+                await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 60000 }).catch(() => {});
+                await delay(5000);
+                break;
+            } else {
+                console.log(`Continue button not found (attempt ${attempt}/${maxRetries}), waiting and retrying...`);
+                if (attempt < maxRetries) {
+                    await delay(3000); // Wait 3 seconds before retrying
+                }
+            }
+        }
+
+        if (!continueClicked.clicked) {
+            console.log('No Continue button found after retries, checking if results are already loaded...');
+            // Maybe the page already has results - wait a bit more for iframe to load
+            await delay(3000);
         }
 
         // Extract profile IDs from the iframe
