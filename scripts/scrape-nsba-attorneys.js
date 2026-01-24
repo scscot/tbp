@@ -223,47 +223,65 @@ async function extractProfileIdsFromIframe(page, maxAttorneys) {
                 break;
             }
 
-            // Look for next page link in iframe
-            // Common patterns: "Next", "›", ">", page numbers
-            const hasNext = await iframe.evaluate(() => {
-                // Look for next page links
-                const nextLinks = document.querySelectorAll('a.paging-next, a[title*="Next"], a.next, a[rel="next"]');
-                for (const link of nextLinks) {
-                    if (!link.classList.contains('disabled')) {
-                        link.click();
-                        return true;
+            // Look for next page in iframe
+            // NSBA uses BUTTONS for pagination (not links), with __doPostBack onclick handlers
+            const nextPageInfo = await iframe.evaluate((currentPageNum) => {
+                // Look for pagination buttons - NSBA uses <button> elements with numbers
+                const allButtons = document.querySelectorAll('button');
+                let nextPageButton = null;
+                const paginationInfo = [];
+
+                for (const btn of allButtons) {
+                    const text = btn.textContent.trim();
+                    const pageNum = parseInt(text);
+
+                    // Check if this is a page number button
+                    if (!isNaN(pageNum) && pageNum > 0 && pageNum <= 100) {
+                        const onclick = btn.getAttribute('onclick') || '';
+                        const btnClass = btn.className || '';
+
+                        // Skip the current active page (btn-primary) and find the next page
+                        if (pageNum === currentPageNum + 1 && !nextPageButton) {
+                            nextPageButton = btn;
+                            paginationInfo.push({ pageNum, class: btnClass, onclick: onclick.substring(0, 100), isNext: true });
+                        } else {
+                            paginationInfo.push({ pageNum, class: btnClass, onclick: onclick.substring(0, 50) });
+                        }
+                    }
+
+                    // Also look for "Next" button
+                    if (text.toLowerCase() === 'next' || text === '>' || text === '›' || text === '»') {
+                        if (!btn.disabled && !btn.classList.contains('disabled')) {
+                            nextPageButton = btn;
+                        }
                     }
                 }
 
-                // Look for numbered pagination - click next number
-                const pageLinks = document.querySelectorAll('.pagination a, .pager a, nav.pagination a');
-                const currentActive = document.querySelector('.pagination .active, .pager .active, nav.pagination .active');
-                if (currentActive) {
-                    const nextSibling = currentActive.parentElement?.nextElementSibling?.querySelector('a');
-                    if (nextSibling) {
-                        nextSibling.click();
-                        return true;
-                    }
-                }
-
-                // Look for "Show All" or "View All" links
+                // Also check for links in case the platform varies
                 const allLinks = document.querySelectorAll('a');
                 for (const link of allLinks) {
-                    const text = link.textContent.toLowerCase();
-                    if (text.includes('show all') || text.includes('view all') || text.includes('load more')) {
-                        link.click();
-                        return true;
+                    const text = link.textContent.trim();
+                    const pageNum = parseInt(text);
+                    if (pageNum === currentPageNum + 1 && !nextPageButton) {
+                        nextPageButton = link;
                     }
                 }
 
-                return false;
-            });
+                // Click the next page button if found
+                if (nextPageButton) {
+                    nextPageButton.click();
+                    return { clicked: true, paginationInfo };
+                }
 
-            if (hasNext) {
+                return { clicked: false, paginationInfo };
+            }, currentPage);
+
+            if (nextPageInfo.clicked) {
                 currentPage++;
                 // Wait for new page to load
                 await delay(DELAY_BETWEEN_PAGES);
             } else {
+                console.log(`  No more pages found after page ${currentPage}`);
                 hasMorePages = false;
             }
         }
