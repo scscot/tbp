@@ -35,25 +35,69 @@ const https = require('https');
 // ============================================================================
 
 const TARGET_PRACTICE_AREAS = [
+    // Tier 1: High-value intake areas
     'Personal Injury',
+    'Injury',                    // Catch partial matches
+    'Tort',                      // Tort law often includes PI
     'Immigration',
+    'Naturalization',            // Some bars use "Immigration & Naturalization"
     'Family Law',
+    'Family',                    // Catch "Family" alone
+    'Divorce',                   // Often listed separately
+    'Child Custody',
     'Criminal',
+    'Criminal Defense',
+    'Criminal Law',
+    'DUI',
+    'DWI',
     'Bankruptcy',
+    'Debtor',                    // "Debtor/Creditor" common in some bars
     'Workers Compensation',
+    'Workers\' Compensation',    // Apostrophe variant
+    'Worker\'s Compensation',    // Singular possessive
     'Medical Malpractice',
+    'Malpractice',               // General malpractice
     'Wrongful Death',
+
+    // Tier 2: Employment/Labor
     'Labor & Employment',
+    'Labor and Employment',
     'Employment Law',
+    'Employment',
+    'Labor Law',
+
+    // Tier 3: Property/Estate
     'Real Estate',
+    'Real Property',
     'Estate Planning',
     'Probate',
+    'Wills',
+    'Trusts',
     'Elder Law',
+
+    // Tier 4: Other valuable areas
     'Social Security',
+    'Disability',                // Social Security Disability
     'Consumer Law',
+    'Consumer Protection',
     'Civil Rights',
     'Civil Litigation',
+    'Litigation',                // General litigation
     'Tax',
+    'Taxation',
+
+    // Tier 5: Business/Commercial (high-value clients)
+    'Business Law',
+    'Business',
+    'Commercial',
+    'Corporate',
+    'Construction',
+    'Insurance',
+    'Product Liability',
+    'Products Liability',
+
+    // General Practice (catches many attorneys)
+    'General Practice',
 ];
 
 // ============================================================================
@@ -441,17 +485,28 @@ async function scrapeAllAttorneys() {
 
             console.log(`     Found ${profiles.length} profiles on page`);
 
+            // Debug: Show sample of practice area text from first page to understand naming
+            if (currentPage === 1 && profiles.length > 0) {
+                console.log(`\n     [DEBUG] Sample card text from first 3 profiles:`);
+                profiles.slice(0, 3).forEach((p, i) => {
+                    console.log(`       ${i + 1}. ${p.name}: "${p.cardText.substring(0, 200)}..."`);
+                });
+                console.log('');
+            }
+
             // Filter for relevant practice areas and fetch vCards
             let pageInserted = 0;
             let pageSkipped = 0;
             let pageSkippedExisting = 0;
+
+            let pageSkippedNoPractice = 0;
 
             for (const profile of profiles) {
                 if (totalInserted >= MAX_ATTORNEYS) break;
 
                 const matchedArea = matchesPracticeArea(profile.cardText);
                 if (!matchedArea) {
-                    pageSkipped++;
+                    pageSkippedNoPractice++;
                     continue;
                 }
 
@@ -484,8 +539,8 @@ async function scrapeAllAttorneys() {
                 }
             }
 
-            console.log(`     ✓ Inserted ${pageInserted}, Skipped ${pageSkipped}, SkippedExisting ${pageSkippedExisting}`);
-            totalSkipped += pageSkipped;
+            console.log(`     ✓ Inserted ${pageInserted}, SkippedNoPractice ${pageSkippedNoPractice}, SkippedOther ${pageSkipped}, SkippedExisting ${pageSkippedExisting}`);
+            totalSkipped += pageSkipped + pageSkippedNoPractice;
 
             // Save progress
             await saveProgress({
