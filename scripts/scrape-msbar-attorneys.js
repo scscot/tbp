@@ -494,11 +494,31 @@ async function scrapeAllAttorneys() {
                 totalSkipped
             });
 
-            // Check for next page
-            const nextBtn = await page.$('.ant-pagination-next:not(.ant-pagination-disabled)');
-            if (nextBtn && currentPage < totalPages) {
-                await nextBtn.click();
-                await delay(DELAY_BETWEEN_PAGES);
+            // Check for next page (use page.evaluate for React compatibility)
+            if (currentPage < totalPages) {
+                const clicked = await page.evaluate((nextPageNum) => {
+                    // Try clicking the specific page number first
+                    const items = document.querySelectorAll('.ant-pagination-item');
+                    for (const item of items) {
+                        if (item.textContent?.trim() === String(nextPageNum)) {
+                            item.click();
+                            return true;
+                        }
+                    }
+                    // Fall back to clicking the "next" button
+                    const nextBtn = document.querySelector('.ant-pagination-next:not(.ant-pagination-disabled)');
+                    if (nextBtn) {
+                        nextBtn.click();
+                        return true;
+                    }
+                    return false;
+                }, currentPage + 1);
+
+                if (clicked) {
+                    await delay(DELAY_BETWEEN_PAGES);
+                } else {
+                    hasMorePages = false;
+                }
             } else {
                 hasMorePages = false;
             }
