@@ -1945,67 +1945,74 @@ Practice Area has >500 results?
 | `totalInserted` | Cumulative attorneys inserted |
 | `totalSkipped` | Cumulative attorneys skipped |
 
-### Phase 39: Mississippi Bar Attorney Scraper (2026-01-22)
+### Phase 39: Mississippi Bar Attorney Scraper (2026-01-22, updated 2026-01-24)
 - [x] **Mississippi Bar Scraper Script** - `scripts/scrape-msbar-attorneys.js`
   - Scrapes attorney contact information from Mississippi Bar website (msbar.reliaguide.com)
   - Uses Puppeteer + vCard API (ReliaGuide platform)
-  - **No category URL filtering** - uses keyword matching in card text instead
-  - 18 target practice areas for filtering via text matching
+  - **Uses category URL filtering** - same pattern as Michigan Bar
+  - 20 practice areas with category IDs from ReliaGuide API
   - vCard API provides: email, phone, firm name, website, city, state
-  - Progress tracking with page-based resume across daily runs
+  - Progress tracking with category-based resume across daily runs
+  - **Requires non-headless browser** (MS Bar detects headless mode)
   - Email notification with scrape summary
 - [x] **GitHub Actions Workflow** - `.github/workflows/msbar-scraper.yml`
-  - Scheduled: Daily (time offset from other scrapers)
+  - Scheduled: Daily at 2pm PST (22:00 UTC)
   - Manual trigger with configurable max attorneys and dry run options
+  - Uses `xvfb-run` for non-headless browser in CI environment
   - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
   - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` for notifications
 
-**Mississippi Bar Practice Areas (18 target keywords):**
-| Priority | Practice Area Keyword |
-|----------|----------------------|
-| 1 | Personal Injury |
-| 2 | Immigration |
-| 3 | Workers Compensation |
-| 4 | Bankruptcy |
-| 5 | Family Law |
-| 6 | Criminal |
-| 7 | Medical Malpractice |
-| 8 | Elder Law |
-| 9 | Estate Planning |
-| 10 | Labor |
-| 11 | Employment |
-| 12 | Social Security |
-| 13 | Consumer |
-| 14 | Civil Rights |
-| 15 | Construction |
-| 16 | Real Estate |
-| 17 | Probate |
-| 18 | Tax |
+**Mississippi Bar Practice Areas (20 categories with IDs):**
+| Tier | ID | Practice Area |
+|------|-----|---------------|
+| **Tier 1** | 264 | Personal Injury |
+| | 210 | Immigration & Naturalization |
+| | 172 | Family Law |
+| | 127 | Criminal Defense |
+| | 3 | Bankruptcy |
+| | 594 | Workers Compensation |
+| | 454 | Medical Malpractice |
+| | 359 | Wrongful Death |
+| **Tier 2** | 228 | Labor & Employment |
+| | 285 | Real Estate |
+| | 277 | Probate & Estate Planning |
+| | 179 | Elder Law & Advocacy |
+| | 321 | Social Security |
+| | 120 | Consumer Law |
+| | 96 | Civil Rights |
+| **Tier 3** | 74 | Business Law |
+| | 326 | Tax |
+| | 483 | Civil Litigation |
+| | 116 | Construction Law |
+| | 214 | Insurance |
 
 **Firestore Fields** (in `preintake_emails` collection for Mississippi Bar contacts):
 | Field | Description |
 |-------|-------------|
 | `source` | `"msbar"` |
 | `profileId` | ReliaGuide profile ID |
-| `practiceArea` | Matched practice area keyword |
+| `practiceArea` | Practice area from category filter |
 | `state` | `"MS"` (or from vCard) |
-| `memberUrl` | vCard API URL |
+| `memberUrl` | Full lawyer profile URL |
 | `website` | Firm website (from vCard) |
 | `city` | City (from vCard address) |
-| `randomIndex` | Random for queue ordering |
+| `randomIndex` | 0.0-0.1 range (prioritized in queue) |
 
 **Scrape Progress Tracking** (in `preintake_scrape_progress/msbar`):
 | Field | Description |
 |-------|-------------|
-| `lastPage` | Last successfully scraped page number |
+| `completedCategoryIds` | Array of fully scraped category IDs |
 | `lastRunDate` | ISO timestamp of last run |
 | `totalInserted` | Cumulative attorneys inserted |
 | `totalSkipped` | Cumulative attorneys skipped |
 
 **Key Technical Details:**
-- ReliaGuide platform but WITHOUT category URL filtering support
-- Practice area detection via keyword matching in card text/categories
+- ReliaGuide platform WITH category URL filtering support (unlike initial assessment)
+- Category URL format: `/lawyer/search?category.equals={name}&categoryId.equals={id}&memberTypeId.equals=1`
+- Category IDs discovered via `/api/public/category-lookups` API (341 categories available)
+- **Non-headless mode required** - MS Bar blocks headless Chrome
 - Same vCard API pattern as other ReliaGuide scrapers
+- Practice areas visible as tags on search result cards
 
 ### Phase 40: Nebraska Bar Attorney Scraper (2026-01-22)
 - [x] **Nebraska Bar Scraper Script** - `scripts/scrape-nebar-attorneys.js`

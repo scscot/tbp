@@ -5,13 +5,15 @@
  * Scrapes attorney contact information from the Mississippi State Bar Association website
  * (msbar.reliaguide.com) and imports into preintake_emails collection.
  *
- * Strategy (for sites without category URL filtering):
- * 1. Navigate to search results (all attorneys)
- * 2. Extract profile IDs and practice areas from attorney cards
- * 3. Paginate through all results
- * 4. Filter for relevant practice areas
- * 5. Fetch vCard API for each matching profile to get email/phone/firm
- * 6. Insert into Firestore with deduplication
+ * Strategy (ReliaGuide platform with category URL filtering):
+ * 1. Iterate through target practice areas using category URL filters
+ * 2. For each practice area, paginate through search results
+ * 3. Extract profile IDs from attorney cards
+ * 4. Fetch vCard API for each profile to get email/phone/firm
+ * 5. Insert into Firestore with deduplication
+ *
+ * NOTE: MS Bar uses ReliaGuide (like MI Bar) with category URL filtering:
+ *   /lawyer/search?category.equals={name}&categoryId.equals={id}&memberTypeId.equals=1
  *
  * Usage:
  *   node scripts/scrape-msbar-attorneys.js
@@ -31,73 +33,36 @@ const path = require('path');
 const https = require('https');
 
 // ============================================================================
-// TARGET PRACTICE AREAS (keywords to match in attorney cards)
+// PRACTICE AREAS (discovered from MS Bar API 2026-01-24)
+// API endpoint: /api/public/category-lookups
 // ============================================================================
 
-const TARGET_PRACTICE_AREAS = [
-    // Tier 1: High-value intake areas
-    'Personal Injury',
-    'Injury',                    // Catch partial matches
-    'Tort',                      // Tort law often includes PI
-    'Immigration',
-    'Naturalization',            // Some bars use "Immigration & Naturalization"
-    'Family Law',
-    'Family',                    // Catch "Family" alone
-    'Divorce',                   // Often listed separately
-    'Child Custody',
-    'Criminal',
-    'Criminal Defense',
-    'Criminal Law',
-    'DUI',
-    'DWI',
-    'Bankruptcy',
-    'Debtor',                    // "Debtor/Creditor" common in some bars
-    'Workers Compensation',
-    'Workers\' Compensation',    // Apostrophe variant
-    'Worker\'s Compensation',    // Singular possessive
-    'Medical Malpractice',
-    'Malpractice',               // General malpractice
-    'Wrongful Death',
+const PRACTICE_AREAS = [
+    // Tier 1: High-value PreIntake practice areas
+    { id: '264', name: 'Personal Injury' },
+    { id: '210', name: 'Immigration & Naturalization' },
+    { id: '172', name: 'Family Law' },
+    { id: '127', name: 'Criminal Defense' },
+    { id: '3', name: 'Bankruptcy' },
+    { id: '594', name: 'Workers Compensation' },
+    { id: '454', name: 'Medical Malpractice' },
+    { id: '359', name: 'Wrongful Death' },
 
-    // Tier 2: Employment/Labor
-    'Labor & Employment',
-    'Labor and Employment',
-    'Employment Law',
-    'Employment',
-    'Labor Law',
+    // Tier 2: Additional practice areas
+    { id: '228', name: 'Labor & Employment' },
+    { id: '285', name: 'Real Estate' },
+    { id: '277', name: 'Probate & Estate Planning' },
+    { id: '179', name: 'Elder Law & Advocacy' },
+    { id: '321', name: 'Social Security' },
+    { id: '120', name: 'Consumer Law' },
+    { id: '96', name: 'Civil Rights' },
 
-    // Tier 3: Property/Estate
-    'Real Estate',
-    'Real Property',
-    'Estate Planning',
-    'Probate',
-    'Wills',
-    'Trusts',
-    'Elder Law',
-
-    // Tier 4: Other valuable areas
-    'Social Security',
-    'Disability',                // Social Security Disability
-    'Consumer Law',
-    'Consumer Protection',
-    'Civil Rights',
-    'Civil Litigation',
-    'Litigation',                // General litigation
-    'Tax',
-    'Taxation',
-
-    // Tier 5: Business/Commercial (high-value clients)
-    'Business Law',
-    'Business',
-    'Commercial',
-    'Corporate',
-    'Construction',
-    'Insurance',
-    'Product Liability',
-    'Products Liability',
-
-    // General Practice (catches many attorneys)
-    'General Practice',
+    // Tier 3: Business & Commercial
+    { id: '74', name: 'Business Law' },
+    { id: '326', name: 'Tax' },
+    { id: '483', name: 'Civil Litigation' },
+    { id: '116', name: 'Construction Law' },
+    { id: '214', name: 'Insurance' },
 ];
 
 // ============================================================================
@@ -109,7 +74,7 @@ const DELAY_BETWEEN_PAGES = 3000;
 const DELAY_BETWEEN_VCARDS = 500;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const DRY_RUN = process.env.DRY_RUN === 'true';
-const RESULTS_PER_PAGE = 40;
+const RESULTS_PER_PAGE = 40; // MS Bar shows ~40 per page
 
 // ============================================================================
 // FIREBASE INITIALIZATION
@@ -144,21 +109,46 @@ function initializeFirebase() {
 }
 
 // ============================================================================
+// EMAIL NOTIFICATION
+// ============================================================================
+
+async function sendNotificationEmail(subject, htmlContent) {
+    const smtpUser = process.env.PREINTAKE_SMTP_USER;
+    const smtpPass = process.env.PREINTAKE_SMTP_PASS;
+
+    if (!smtpUser || !smtpPass) {
+        console.log('SMTP credentials not configured, skipping email notification');
+        return;
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.dreamhost.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: { user: smtpUser, pass: smtpPass },
+        tls: { rejectUnauthorized: false }
+    });
+
+    try {
+        await transporter.sendMail({
+            from: smtpUser,
+            to: 'scscot@gmail.com',
+            subject,
+            html: htmlContent
+        });
+        console.log('Notification email sent');
+    } catch (err) {
+        console.error('Failed to send notification:', err.message);
+    }
+}
+
+// ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function matchesPracticeArea(cardText) {
-    const lowerText = cardText.toLowerCase();
-    for (const area of TARGET_PRACTICE_AREAS) {
-        if (lowerText.includes(area.toLowerCase())) {
-            return area;
-        }
-    }
-    return null;
 }
 
 function parseVCard(vcardText) {
@@ -241,7 +231,7 @@ async function fetchVCard(profileId) {
 // ============================================================================
 
 async function loadProgress() {
-    if (DRY_RUN) return { lastPage: 0, totalInserted: 0, totalSkipped: 0 };
+    if (DRY_RUN) return { completedCategoryIds: [], totalInserted: 0 };
 
     try {
         const progressRef = db.collection('preintake_scrape_progress').doc('msbar');
@@ -250,9 +240,8 @@ async function loadProgress() {
         if (doc.exists) {
             const data = doc.data();
             return {
-                lastPage: data.lastPage || 0,
+                completedCategoryIds: data.completedCategoryIds || [],
                 totalInserted: data.totalInserted || 0,
-                totalSkipped: data.totalSkipped || 0,
                 lastRunDate: data.lastRunDate
             };
         }
@@ -260,7 +249,7 @@ async function loadProgress() {
         console.error('Error loading progress:', err.message);
     }
 
-    return { lastPage: 0, totalInserted: 0, totalSkipped: 0 };
+    return { completedCategoryIds: [], totalInserted: 0 };
 }
 
 async function saveProgress(progress) {
@@ -381,81 +370,54 @@ async function insertAttorney(attorney, existingEmails) {
 // MAIN SCRAPER
 // ============================================================================
 
-async function scrapeAllAttorneys() {
-    console.log('Mississippi Bar Attorney Scraper');
-    console.log('='.repeat(60));
-    console.log('Scraping ALL attorneys, filtering by practice area');
-    console.log();
+async function scrapeByCategory(page, category, existingEmails, existingProfileIds, maxAttorneys) {
+    const { id, name } = category;
+    const url = `${BASE_URL}/lawyer/search?category.equals=${encodeURIComponent(name)}&categoryId.equals=${id}&memberTypeId.equals=1`;
 
-    if (DRY_RUN) {
-        console.log('*** DRY RUN MODE - No data will be written ***\n');
-    }
-
-    initializeFirebase();
-
-    const progress = await loadProgress();
-    console.log(`Progress: Starting from page ${progress.lastPage}`);
-    console.log(`Total inserted so far: ${progress.totalInserted}\n`);
-
-    console.log('Loading existing emails...');
-    const existingEmails = await loadExistingEmails();
-    console.log(`Loaded ${existingEmails.size} existing emails`);
-
-    console.log('Loading existing profile IDs...');
-    const existingProfileIds = await loadExistingProfileIds();
-    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
-
-    console.log('Launching browser...\n');
-    const browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
-
-    let totalInserted = progress.totalInserted;
-    let totalSkipped = progress.totalSkipped;
-    let currentPage = progress.lastPage;
-    let hasMorePages = true;
-
-    const startUrl = `${BASE_URL}/lawyer/search?memberTypeId.equals=1`;
+    console.log(`\n   Loading ${name} (ID: ${id})...`);
 
     try {
-        // Navigate to first page
-        console.log('='.repeat(60));
-        console.log('Starting scrape from: ' + startUrl);
-        console.log('='.repeat(60));
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
-        await page.goto(startUrl, { waitUntil: 'networkidle2', timeout: 60000 });
-        await delay(3000);
-
-        // Get total results (ReliaGuide shows "Listing X of Y")
-        const totalResults = await page.evaluate(() => {
-            const text = document.body.innerText;
-            const match = text.match(/Listing\s+\d+\s+of\s+(\d+)/);
-            return match ? parseInt(match[1]) : 0;
-        });
-
-        const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
-        console.log(`   Total results: ${totalResults}`);
-        console.log(`   Total pages: ${totalPages}`);
-
-        // If we have a starting page, navigate to it
-        if (currentPage > 0) {
-            console.log(`   Resuming from page ${currentPage + 1}...`);
-            for (let p = 0; p < currentPage; p++) {
-                const nextBtn = await page.$('.ant-pagination-next:not(.ant-pagination-disabled)');
-                if (nextBtn) {
-                    await nextBtn.click();
-                    await delay(DELAY_BETWEEN_PAGES);
-                }
-            }
+        // Wait for React app to render - look for the main layout container
+        try {
+            await page.waitForSelector('.ant-layout', { timeout: 30000 });
+        } catch (e) {
+            console.log(`     Failed to load page for ${name}`);
+            return { inserted: 0, skipped: 0, error: 'page_load_failed' };
         }
 
-        while (hasMorePages && totalInserted < MAX_ATTORNEYS) {
+        // Additional wait for content to fully render
+        await delay(3000);
+
+        // Get total results - look for listing count or card elements
+        const totalResults = await page.evaluate(() => {
+            const text = document.body.innerText;
+            // Try different patterns
+            let match = text.match(/Listing\s+\d+.*?of\s+(\d+)/i);
+            if (match) return parseInt(match[1]);
+
+            // Fallback: count visible cards
+            const cards = document.querySelectorAll('.ant-card');
+            return cards.length > 0 ? -1 : 0;  // -1 indicates cards found but no count
+        });
+
+        if (totalResults === 0) {
+            console.log(`     No results found for ${name}`);
+            return { inserted: 0, skipped: 0 };
+        }
+
+        // If totalResults is -1, we have cards but no count - assume at least 1 page
+        const estimatedTotal = totalResults > 0 ? totalResults : 40;  // Assume 1 page if count unknown
+        const totalPages = totalResults > 0 ? Math.ceil(totalResults / RESULTS_PER_PAGE) : 100;  // Max 100 pages if unknown
+        console.log(`     Found ${totalResults === -1 ? 'cards (count unknown)' : totalResults + ' attorneys'} (up to ${totalPages} pages)`);
+
+        let categoryInserted = 0;
+        let categorySkipped = 0;
+        let currentPage = 0;
+
+        while (currentPage < totalPages && categoryInserted < maxAttorneys) {
             currentPage++;
-            console.log(`\n   Page ${currentPage}/${totalPages}...`);
 
             // Extract profiles from current page
             const profiles = await page.evaluate(() => {
@@ -464,12 +426,8 @@ async function scrapeAllAttorneys() {
                     // URL format: /lawyer/{zip}-{state}-{FirstName}-{LastName}-{profileId}
                     const match = a.href.match(/\/lawyer\/[^/]+-(\d+)$/);
                     if (match) {
-                        // Get the card text (practice areas are usually in the card)
-                        const card = a.closest('[class*="card"]') || a.parentElement?.parentElement;
-                        const cardText = card ? card.innerText : '';
                         results.push({
                             profileId: match[1],
-                            cardText: cardText,
                             name: a.textContent.trim()
                         });
                     }
@@ -483,32 +441,12 @@ async function scrapeAllAttorneys() {
                 });
             });
 
-            console.log(`     Found ${profiles.length} profiles on page`);
-
-            // Debug: Show sample of practice area text from first page to understand naming
-            if (currentPage === 1 && profiles.length > 0) {
-                console.log(`\n     [DEBUG] Sample card text from first 3 profiles:`);
-                profiles.slice(0, 3).forEach((p, i) => {
-                    console.log(`       ${i + 1}. ${p.name}: "${p.cardText.substring(0, 200)}..."`);
-                });
-                console.log('');
-            }
-
-            // Filter for relevant practice areas and fetch vCards
             let pageInserted = 0;
-            let pageSkipped = 0;
             let pageSkippedExisting = 0;
-
-            let pageSkippedNoPractice = 0;
+            let pageSkippedNoEmail = 0;
 
             for (const profile of profiles) {
-                if (totalInserted >= MAX_ATTORNEYS) break;
-
-                const matchedArea = matchesPracticeArea(profile.cardText);
-                if (!matchedArea) {
-                    pageSkippedNoPractice++;
-                    continue;
-                }
+                if (categoryInserted >= maxAttorneys) break;
 
                 // Skip if profileId already exists in database
                 if (existingProfileIds.has(profile.profileId.toString())) {
@@ -516,82 +454,156 @@ async function scrapeAllAttorneys() {
                     continue;
                 }
 
-                // Fetch vCard
+                // Fetch vCard to get email
                 const vcardResult = await fetchVCard(profile.profileId);
                 await delay(DELAY_BETWEEN_VCARDS);
 
                 if (!vcardResult.success) {
-                    pageSkipped++;
+                    pageSkippedNoEmail++;
                     continue;
                 }
 
                 const vcard = vcardResult.data;
                 vcard.profileId = profile.profileId;
-                vcard.practiceArea = matchedArea;
+                vcard.practiceArea = name;
 
                 // Insert into database
                 const insertResult = await insertAttorney(vcard, existingEmails);
                 if (insertResult.success) {
                     pageInserted++;
-                    totalInserted++;
+                    categoryInserted++;
+                    existingProfileIds.add(profile.profileId.toString());
                 } else {
-                    pageSkipped++;
+                    pageSkippedNoEmail++;
                 }
             }
 
-            console.log(`     ✓ Inserted ${pageInserted}, SkippedNoPractice ${pageSkippedNoPractice}, SkippedOther ${pageSkipped}, SkippedExisting ${pageSkippedExisting}`);
-            totalSkipped += pageSkipped + pageSkippedNoPractice;
+            console.log(`     Page ${currentPage}/${totalPages}: +${pageInserted} new, ${pageSkippedExisting} existing, ${pageSkippedNoEmail} no email`);
+            categorySkipped += pageSkippedNoEmail;
 
-            // Save progress
-            await saveProgress({
-                lastPage: currentPage,
-                totalInserted,
-                totalSkipped
-            });
-
-            // Check for next page (use page.evaluate for React compatibility)
-            if (currentPage < totalPages) {
-                const clickResult = await page.evaluate((nextPageNum) => {
+            // Navigate to next page if needed
+            if (currentPage < totalPages && categoryInserted < maxAttorneys) {
+                const clicked = await page.evaluate((nextPageNum) => {
                     // Try clicking the specific page number first
                     const items = document.querySelectorAll('.ant-pagination-item');
                     for (const item of items) {
                         if (item.textContent?.trim() === String(nextPageNum)) {
                             item.click();
-                            return { clicked: true, method: 'pageNumber' };
+                            return true;
                         }
                     }
-                    // Fall back to clicking the "next" button (try multiple selectors)
-                    const nextSelectors = [
-                        '.ant-pagination-next:not(.ant-pagination-disabled)',
-                        '.ant-pagination-next button',
-                        '.ant-pagination-next',
-                        'li.ant-pagination-next'
-                    ];
-                    for (const selector of nextSelectors) {
-                        const nextBtn = document.querySelector(selector);
-                        if (nextBtn && !nextBtn.classList.contains('ant-pagination-disabled')) {
-                            nextBtn.click();
-                            return { clicked: true, method: selector };
-                        }
+                    // Fall back to next button
+                    const nextBtn = document.querySelector('.ant-pagination-next:not(.ant-pagination-disabled)');
+                    if (nextBtn) {
+                        nextBtn.click();
+                        return true;
                     }
-                    // Debug: log what pagination elements exist
-                    const paginationHtml = document.querySelector('.ant-pagination')?.outerHTML?.substring(0, 500) || 'no pagination found';
-                    return { clicked: false, method: 'none', debug: paginationHtml };
+                    return false;
                 }, currentPage + 1);
 
-                if (clickResult.clicked) {
+                if (clicked) {
                     await delay(DELAY_BETWEEN_PAGES);
                 } else {
-                    console.log(`     Pagination failed: ${clickResult.debug}`);
-                    hasMorePages = false;
+                    console.log(`     Pagination ended at page ${currentPage}`);
+                    break;
                 }
-            } else {
-                hasMorePages = false;
             }
         }
 
+        return { inserted: categoryInserted, skipped: categorySkipped };
+
     } catch (err) {
-        console.error('\n   Error during scraping:', err.message);
+        console.error(`     Error scraping ${name}:`, err.message);
+        return { inserted: 0, skipped: 0, error: err.message };
+    }
+}
+
+async function main() {
+    console.log('Mississippi Bar Attorney Scraper');
+    console.log('='.repeat(60));
+    console.log(`Target practice areas: ${PRACTICE_AREAS.length}`);
+    console.log(`Max attorneys per run: ${MAX_ATTORNEYS}`);
+
+    if (DRY_RUN) {
+        console.log('*** DRY RUN MODE - No data will be written ***');
+    }
+    console.log();
+
+    initializeFirebase();
+
+    const progress = await loadProgress();
+    console.log(`Previously completed categories: ${progress.completedCategoryIds.length}`);
+    console.log(`Total inserted so far: ${progress.totalInserted}\n`);
+
+    // Get pending categories
+    const pendingCategories = PRACTICE_AREAS.filter(
+        cat => !progress.completedCategoryIds.includes(cat.id)
+    );
+
+    if (pendingCategories.length === 0) {
+        console.log('All categories already scraped!');
+        console.log('Reset progress in Firestore to re-scrape.');
+        return;
+    }
+
+    console.log(`Categories remaining: ${pendingCategories.length}`);
+    console.log(pendingCategories.map(c => c.name).join(', '));
+    console.log();
+
+    console.log('Loading existing emails...');
+    const existingEmails = await loadExistingEmails();
+    console.log(`Loaded ${existingEmails.size} existing emails`);
+
+    console.log('Loading existing profile IDs...');
+    const existingProfileIds = await loadExistingProfileIds();
+    console.log(`Loaded ${existingProfileIds.size} existing profile IDs\n`);
+
+    console.log('Launching browser...\n');
+    const browser = await puppeteer.launch({
+        headless: false,  // MS Bar detects headless mode - requires xvfb in CI
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-blink-features=AutomationControlled'
+        ]
+    });
+
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+    let totalInserted = progress.totalInserted;
+    const completedCategoryIds = [...progress.completedCategoryIds];
+    const categoryResults = [];
+
+    // Process each category
+    for (const category of pendingCategories) {
+        if (totalInserted >= MAX_ATTORNEYS) {
+            console.log(`\nReached max attorneys limit (${MAX_ATTORNEYS}), stopping.`);
+            break;
+        }
+
+        const remaining = MAX_ATTORNEYS - totalInserted;
+        const result = await scrapeByCategory(page, category, existingEmails, existingProfileIds, remaining);
+
+        categoryResults.push({
+            categoryId: category.id,
+            name: category.name,
+            ...result
+        });
+
+        totalInserted += result.inserted;
+
+        // Mark category as complete (even if we hit max - we'll continue from next category on next run)
+        if (!result.error) {
+            completedCategoryIds.push(category.id);
+        }
+
+        // Save progress after each category
+        await saveProgress({
+            completedCategoryIds,
+            totalInserted
+        });
     }
 
     await browser.close();
@@ -602,16 +614,36 @@ async function scrapeAllAttorneys() {
     console.log('\n' + '='.repeat(60));
     console.log('SUMMARY');
     console.log('='.repeat(60));
-    console.log(`   Pages scraped: ${currentPage}`);
-    console.log(`   Inserted this run: ${totalInserted - progress.totalInserted}`);
-    console.log(`   Total Mississippi Bar in DB: ${totalInDb}`);
+    console.log(`Categories processed: ${categoryResults.length}`);
+    console.log(`Inserted this run: ${totalInserted - progress.totalInserted}`);
+    console.log(`Total MS Bar in DB: ${totalInDb}`);
+    console.log();
+
+    // Category breakdown
+    for (const result of categoryResults) {
+        const status = result.error ? `ERROR: ${result.error}` : `+${result.inserted}`;
+        console.log(`   ${result.name}: ${status}`);
+    }
 
     // Send notification email
-    await sendNotificationEmail({
-        pagesScraped: currentPage,
-        insertedThisRun: totalInserted - progress.totalInserted,
-        totalInDb
-    });
+    const emailHtml = `
+        <h2>Mississippi Bar Scraper Complete</h2>
+        <p><strong>Categories processed:</strong> ${categoryResults.length}</p>
+        <p><strong>Inserted this run:</strong> ${totalInserted - progress.totalInserted}</p>
+        <p><strong>Total MS Bar in DB:</strong> ${totalInDb}</p>
+        ${DRY_RUN ? '<p><strong>*** DRY RUN - No data written ***</strong></p>' : ''}
+        <h3>Category Breakdown</h3>
+        <ul>
+            ${categoryResults.map(r => `<li>${r.name}: +${r.inserted}${r.error ? ` (ERROR: ${r.error})` : ''}</li>`).join('')}
+        </ul>
+        <p><small>Timestamp: ${new Date().toISOString()}</small></p>
+    `;
+
+    const subject = DRY_RUN
+        ? '[DRY RUN] MS Bar Scraper Complete'
+        : 'MS Bar Scraper Complete';
+
+    await sendNotificationEmail(subject, emailHtml);
 
     console.log('\n✓ Scrape complete!');
 
@@ -619,67 +651,19 @@ async function scrapeAllAttorneys() {
     const summaryPath = path.join(__dirname, 'msbar-scrape-summary.json');
     fs.writeFileSync(summaryPath, JSON.stringify({
         timestamp: new Date().toISOString(),
-        pagesScraped: currentPage,
+        categoriesProcessed: categoryResults.length,
         insertedThisRun: totalInserted - progress.totalInserted,
         totalInDb,
-        dryRun: DRY_RUN
+        dryRun: DRY_RUN,
+        categoryResults
     }, null, 2));
-}
-
-// ============================================================================
-// EMAIL NOTIFICATION
-// ============================================================================
-
-async function sendNotificationEmail(summary) {
-    const smtpUser = process.env.PREINTAKE_SMTP_USER;
-    const smtpPass = process.env.PREINTAKE_SMTP_PASS;
-
-    if (!smtpUser || !smtpPass) {
-        console.log('SMTP credentials not configured, skipping email notification');
-        return;
-    }
-
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.dreamhost.com',
-        port: 587,
-        secure: false,
-        auth: { user: smtpUser, pass: smtpPass }
-    });
-
-    const subject = DRY_RUN
-        ? '[DRY RUN] Mississippi Bar Scraper Complete'
-        : 'Mississippi Bar Scraper Complete';
-
-    const text = `
-Mississippi Bar Attorney Scraper Summary
-========================================
-
-Pages Scraped: ${summary.pagesScraped}
-Inserted This Run: ${summary.insertedThisRun}
-Total Mississippi Bar in DB: ${summary.totalInDb}
-${DRY_RUN ? '\n*** DRY RUN - No data was written ***' : ''}
-
-Timestamp: ${new Date().toISOString()}
-    `.trim();
-
-    try {
-        await transporter.sendMail({
-            from: smtpUser,
-            to: 'scscot@gmail.com',
-            subject,
-            text
-        });
-        console.log('Notification email sent');
-    } catch (err) {
-        console.error('Failed to send notification email:', err.message);
-    }
 }
 
 // ============================================================================
 // ENTRY POINT
 // ============================================================================
 
-scrapeAllAttorneys().catch(err => {
+main().catch(err => {
     console.error('Fatal error:', err);
     process.exit(1);
 });

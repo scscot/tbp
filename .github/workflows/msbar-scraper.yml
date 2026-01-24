@@ -47,7 +47,8 @@ jobs:
             libxfixes3 \
             libxrandr2 \
             libgbm1 \
-            libasound2t64
+            libasound2t64 \
+            xvfb
 
       - name: Write service account key
         run: |
@@ -61,7 +62,7 @@ jobs:
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
           MAX_ATTORNEYS: ${{ github.event.inputs.max_attorneys || '500' }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
-        run: node scripts/scrape-msbar-attorneys.js
+        run: xvfb-run --auto-servernum node scripts/scrape-msbar-attorneys.js
 
       - name: Cleanup secrets
         if: always()
