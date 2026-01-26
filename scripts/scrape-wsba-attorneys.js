@@ -77,7 +77,7 @@ const SOURCE = 'wsba';
 const DEFAULT_STATE = 'WA';
 
 const DELAY_BETWEEN_PAGES = 3000;
-const DELAY_BETWEEN_PROFILES = 1500;
+const DELAY_BETWEEN_PROFILES = 800;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PRACTICE_AREA_SLUG = process.env.PRACTICE_AREA_SLUG || null;
@@ -410,8 +410,8 @@ async function scrapeProfile(page, usrId) {
     const url = `${PROFILE_URL}?Usr_ID=${usrId}`;
 
     try {
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-        await sleep(1000);
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
+        await sleep(500);
 
         const data = await page.evaluate(() => {
             const result = {
@@ -637,7 +637,7 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
             waitUntil: 'networkidle2',
             timeout: 60000
         });
-        await sleep(5000); // Wait longer for ASP.NET page to fully render
+        await sleep(3000); // Wait for ASP.NET page to render
 
         // Get total results
         stats.totalResults = await getResultsCount(page);
@@ -969,7 +969,7 @@ async function main() {
             }
 
             // Delay between practice areas
-            await sleepWithJitter(5000);
+            await sleepWithJitter(2000);
         }
 
         // Summary
