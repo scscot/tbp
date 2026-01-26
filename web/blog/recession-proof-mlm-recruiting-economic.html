@@ -136,30 +136,6 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
-
-<!-- Podcast Audio Schema for SEO -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AudioObject",
-  "name": "Listen: Recession-Proof MLM Recruiting: Why Economic Uncertainty Creates Your Best Prospects",
-  "description": "Discover ethical MLM recruiting strategies during economic uncertainty. Build trust with pre-qualification before financial commitment.",
-  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/recession-proof-mlm-recruiting-economic.mp3",
-  "encodingFormat": "audio/mpeg",
-  "duration": "PT5M",
-  "uploadDate": "2026-01-22",
-  "inLanguage": "en",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Team Build Pro",
-    "url": "https://teambuildpro.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
-    }
-  }
-}
-</script>
 </head>
 <body>
   <!-- Header -->
@@ -209,22 +185,6 @@
       </div>
 
       <article>
-
-<!-- Podcast Player Section -->
-<div class="podcast-player-section">
-  <div class="podcast-player-wrapper">
-    <span class="podcast-icon">🎧</span>
-    <div class="podcast-info">
-      <span class="podcast-label">Listen to this article</span>
-      <span class="podcast-duration">5 min</span>
-    </div>
-    <audio controls preload="metadata" class="podcast-audio" data-slug="recession-proof-mlm-recruiting-economic" data-lang="en">
-      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/recession-proof-mlm-recruiting-economic.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-</div>
-
         <p>While most network marketers panic when economic uncertainty hits, savvy recruiters recognize the truth: financial stress doesn't destroy your prospect pool—it reveals your most motivated candidates. The challenge isn't finding people who need additional income during tough times. The challenge is approaching them ethically, building genuine trust, and positioning your opportunity as a solution rather than exploitation.</p>
 
 <p>With 75% of recruits quitting in their first year under normal circumstances, recruiting during economic downturns requires a completely different approach. You can't afford to add financial pressure to someone already struggling. Instead, you need a system that builds confidence, provides value upfront, and proves your opportunity works before asking for any investment.</p>
@@ -515,52 +475,5 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
-
-<script>
-// Podcast tracking for GA4
-document.addEventListener('DOMContentLoaded', function() {
-  const audioElements = document.querySelectorAll('.podcast-audio');
-  audioElements.forEach(function(audio) {
-    const slug = audio.dataset.slug || 'unknown';
-    const lang = audio.dataset.lang || 'en';
-
-    audio.addEventListener('play', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_play', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    audio.addEventListener('ended', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_complete', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    // Track 50% completion
-    let halfTracked = false;
-    audio.addEventListener('timeupdate', function() {
-      if (!halfTracked && audio.currentTime > audio.duration / 2) {
-        halfTracked = true;
-        if (typeof gtag === 'function') {
-          gtag('event', 'podcast_halfway', {
-            'event_category': 'engagement',
-            'event_label': slug,
-            'language': lang
-          });
-        }
-      }
-    });
-  });
-});
-</script>
-
 </body>
 </html>
