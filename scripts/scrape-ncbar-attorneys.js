@@ -5,10 +5,10 @@
  * Scrapes attorney contact information from the NC State Bar website
  * (portal.ncbar.gov) and imports into preintake_emails collection.
  *
- * Strategy:
- * 1. Navigate to search page with Puppeteer
- * 2. Select specialization from dropdown and submit search
- * 3. Extract attorney IDs from search results (max 250 per search)
+ * Strategy: Last-name prefix approach
+ * 1. Search by 2-letter last name prefixes (AA-ZZ = 676 combinations)
+ * 2. If a prefix returns 250 results (server cap), subdivide to 3-letter prefixes
+ * 3. Extract attorney IDs from search results
  * 4. Navigate to each profile page to extract email/phone/firm
  * 5. Insert into Firestore with deduplication
  *
@@ -17,8 +17,9 @@
  *
  * Environment variables:
  *   MAX_ATTORNEYS - Maximum attorneys to process per run (default: 500)
+ *   MAX_COMBOS - Maximum prefix combinations to process per run (default: 50)
  *   DRY_RUN - If "true", don't write to Firestore
- *   SPECIALIZATION - Specific specialization to scrape (optional)
+ *   RESET_PROGRESS - If "true", reset scrape progress for fresh start
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
  *   PREINTAKE_SMTP_PASS - SMTP password for notifications
  */
@@ -31,34 +32,6 @@ const path = require('path');
 const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
-// PRACTICE AREAS (NC Bar "Board Certified Specialist" dropdown values)
-// ============================================================================
-
-const SPECIALIZATIONS = [
-    // Tier 1: High-value PreIntake practice areas
-    { value: 'Immigration Law', displayName: 'Immigration Law' },
-    { value: 'Family Law', displayName: 'Family Law' },
-    { value: 'Bankruptcy Law Consumer', displayName: 'Bankruptcy Law (Consumer)' },
-    { value: 'Bankruptcy Law Business', displayName: 'Bankruptcy Law (Business)' },
-    { value: 'Criminal Law State', displayName: 'Criminal Law (State)' },
-    { value: 'Criminal Law Federal', displayName: 'Criminal Law (Federal)' },
-    { value: 'Criminal Law Juvenile Delinquency', displayName: 'Criminal Law (Juvenile)' },
-    { value: "Worker's Compensation Law", displayName: "Workers' Compensation" },
-    { value: 'Elder Law', displayName: 'Elder Law' },
-    { value: 'Estate Planning and Probate', displayName: 'Estate Planning and Probate' },
-    { value: 'Social Security Disability Law', displayName: 'Social Security Disability' },
-
-    // Tier 2: Other specializations
-    { value: 'Real Property Law Residential', displayName: 'Real Property (Residential)' },
-    { value: 'Real Property Law Commercial', displayName: 'Real Property (Commercial)' },
-    { value: 'Child Welfare', displayName: 'Child Welfare' },
-    { value: 'Appellate Practice', displayName: 'Appellate Practice' },
-    { value: 'Privacy and Information Security Law', displayName: 'Privacy & Info Security' },
-    { value: 'Trademark Law', displayName: 'Trademark Law' },
-    { value: 'Utilities Law', displayName: 'Utilities Law' },
-];
-
-// ============================================================================
 // CONFIGURATION
 // ============================================================================
 
@@ -68,11 +41,30 @@ const PROFILE_URL = `${BASE_URL}/Verification/viewer.aspx`;
 const SOURCE = 'ncbar';
 const DEFAULT_STATE = 'NC';
 
+const RESULTS_CAP = 250;  // NC Bar server-side limit per search
 const DELAY_BETWEEN_PAGES = 2000;
 const DELAY_BETWEEN_PROFILES = 1000;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
+const MAX_COMBOS = parseInt(process.env.MAX_COMBOS) || 50;
 const DRY_RUN = process.env.DRY_RUN === 'true';
-const SPECIFIC_SPECIALIZATION = process.env.SPECIALIZATION || null;
+const RESET_PROGRESS = process.env.RESET_PROGRESS === 'true';
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+/**
+ * Generate all 2-letter prefixes (AA through ZZ = 676 combinations)
+ */
+function generateAllPrefixes() {
+    const prefixes = [];
+    for (const first of LETTERS) {
+        for (const second of LETTERS) {
+            prefixes.push(first + second);
+        }
+    }
+    return prefixes;
+}
+
+const ALL_PREFIXES = generateAllPrefixes();
 
 // ============================================================================
 // FIREBASE INITIALIZATION
@@ -124,13 +116,27 @@ function sleepWithJitter(baseMs) {
 // ============================================================================
 
 async function getProgress() {
+    if (RESET_PROGRESS) {
+        console.log('*** RESET_PROGRESS enabled - clearing all progress ***');
+        if (!DRY_RUN) {
+            const progressRef = db.collection('preintake_scrape_progress').doc('ncbar');
+            await progressRef.delete();
+        }
+        return {
+            completedPrefixes: [],
+            prefixesNeedingSubdivision: [],
+            completedSubPrefixes: {},
+            totalInserted: 0,
+            lastRunDate: null
+        };
+    }
+
     if (DRY_RUN) {
         return {
-            scrapedSpecializations: [],
+            completedPrefixes: [],
+            prefixesNeedingSubdivision: [],
+            completedSubPrefixes: {},
             totalInserted: 0,
-            totalSkipped: 0,
-            failedAttempts: {},
-            permanentlySkipped: [],
             lastRunDate: null
         };
     }
@@ -140,22 +146,20 @@ async function getProgress() {
 
     if (!doc.exists) {
         return {
-            scrapedSpecializations: [],
+            completedPrefixes: [],
+            prefixesNeedingSubdivision: [],
+            completedSubPrefixes: {},
             totalInserted: 0,
-            totalSkipped: 0,
-            failedAttempts: {},
-            permanentlySkipped: [],
             lastRunDate: null
         };
     }
 
     const data = doc.data();
     return {
-        scrapedSpecializations: data.scrapedSpecializations || [],
+        completedPrefixes: data.completedPrefixes || [],
+        prefixesNeedingSubdivision: data.prefixesNeedingSubdivision || [],
+        completedSubPrefixes: data.completedSubPrefixes || {},
         totalInserted: data.totalInserted || 0,
-        totalSkipped: data.totalSkipped || 0,
-        failedAttempts: data.failedAttempts || {},
-        permanentlySkipped: data.permanentlySkipped || [],
         lastRunDate: data.lastRunDate || null
     };
 }
@@ -169,6 +173,35 @@ async function saveProgress(progress) {
         lastRunDate: new Date().toISOString(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+}
+
+/**
+ * Get the next scrape target: either a prefix needing 3-letter subdivision,
+ * or the next unprocessed 2-letter prefix.
+ * Returns: { prefix: 'SM' or 'SMA', isSubPrefix: boolean } or null if all done.
+ */
+function getNextTarget(progress) {
+    // First: process prefixes already in subdivision queue (incomplete 3-letter sub-prefixes)
+    for (const prefix of progress.prefixesNeedingSubdivision) {
+        const completedSubs = progress.completedSubPrefixes[prefix] || [];
+        for (const letter of LETTERS) {
+            const subPrefix = prefix + letter;
+            if (!completedSubs.includes(subPrefix)) {
+                return { prefix: subPrefix, parentPrefix: prefix, isSubPrefix: true };
+            }
+        }
+        // All 26 sub-prefixes done for this prefix - it will be moved to completed in main loop
+    }
+
+    // Then: process next unprocessed 2-letter prefix
+    for (const prefix of ALL_PREFIXES) {
+        if (!progress.completedPrefixes.includes(prefix) &&
+            !progress.prefixesNeedingSubdivision.includes(prefix)) {
+            return { prefix, parentPrefix: null, isSubPrefix: false };
+        }
+    }
+
+    return null; // All done!
 }
 
 // ============================================================================
@@ -391,18 +424,19 @@ async function extractProfileData(page, memberId) {
 }
 
 /**
- * Scrape a single specialization
+ * Scrape a single last-name prefix search
  */
-async function scrapeSpecialization(browser, specialization, existingEmails, existingMemberIds, progress) {
-    const { value, displayName } = specialization;
+async function scrapePrefix(browser, target, existingEmails, existingMemberIds) {
+    const { prefix, isSubPrefix } = target;
 
     console.log(`\n${'='.repeat(60)}`);
-    console.log(`Scraping: ${displayName} (value: ${value})`);
+    console.log(`Scraping prefix: "${prefix}" ${isSubPrefix ? '(3-letter subdivision)' : ''}`);
     console.log('='.repeat(60));
 
     const stats = {
-        specialization: value,
-        displayName: displayName,
+        prefix,
+        isSubPrefix,
+        parentPrefix: target.parentPrefix,
         totalResults: 0,
         profilesFetched: 0,
         inserted: 0,
@@ -410,7 +444,7 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
         skippedExisting: 0,
         noEmail: 0,
         errors: 0,
-        all_attorneys_scraped: false
+        hit_cap: false
     };
 
     const page = await browser.newPage();
@@ -422,22 +456,39 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
         await page.goto(SEARCH_URL, { waitUntil: 'networkidle2', timeout: 60000 });
         await sleep(2000);
 
-        // Select specialization from dropdown
-        console.log(`   Selecting specialization: ${value}`);
-        await page.select('#ddSpecialization', value);
-        await sleep(1000);
+        // Fill in search form
+        console.log(`   Entering last name prefix: "${prefix}"`);
+
+        // Clear and type last name prefix
+        await page.$eval('#txtLast', el => el.value = '');
+        await page.type('#txtLast', prefix);
+
+        // Select "Active" member status
+        await page.select('#ddLicStatus', 'Active');
+        await sleep(500);
+
+        // Select "Attorney" member type
+        await page.select('#ddLicType', 'Attorney');
+        await sleep(500);
 
         // Find and click search button
         const searchButton = await page.$('input[type="submit"][value*="Search"], button[type="submit"], #btnSearch, input[name*="btnSearch"]');
         if (!searchButton) {
             // Try finding by text content
             const buttons = await page.$$('input[type="submit"], button');
+            let clicked = false;
             for (const btn of buttons) {
                 const text = await page.evaluate(el => el.value || el.textContent, btn);
                 if (text && text.toLowerCase().includes('search')) {
                     await btn.click();
+                    clicked = true;
                     break;
                 }
+            }
+            if (!clicked) {
+                console.log(`   WARNING: Could not find search button`);
+                await page.close();
+                return stats;
             }
         } else {
             await searchButton.click();
@@ -450,9 +501,8 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
         const pageText = await page.evaluate(() => document.body.innerText);
 
         // Check if no results
-        if (pageText.includes('No results found') || pageText.includes('0 results')) {
-            console.log(`   No results found for ${displayName}`);
-            stats.all_attorneys_scraped = true;
+        if (pageText.includes('No results found') || pageText.includes('0 results') || pageText.includes('no records found')) {
+            console.log(`   No results found for prefix "${prefix}"`);
             await page.close();
             return stats;
         }
@@ -464,9 +514,16 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
 
         if (attorneyIds.length === 0) {
             console.log(`   No attorney links found`);
-            stats.all_attorneys_scraped = true;
             await page.close();
             return stats;
+        }
+
+        // Detect if we hit the server cap
+        if (attorneyIds.length >= RESULTS_CAP) {
+            stats.hit_cap = true;
+            if (!isSubPrefix) {
+                console.log(`   ⚠ Hit ${RESULTS_CAP}-result cap for "${prefix}" - will subdivide to 3-letter prefixes`);
+            }
         }
 
         // Process each attorney
@@ -504,9 +561,6 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
                     continue;
                 }
 
-                // Add practice area
-                attorneyData.practiceArea = displayName;
-
                 // Insert into database
                 const result = await insertAttorney(attorneyData, existingEmails);
                 if (result.success) {
@@ -525,14 +579,10 @@ async function scrapeSpecialization(browser, specialization, existingEmails, exi
             }
         }
 
-        // Track if all attorneys were scraped
-        const allProcessed = (processedCount + stats.skippedExisting) >= attorneyIds.length;
-        stats.all_attorneys_scraped = allProcessed || (attorneyIds.length <= MAX_ATTORNEYS);
-
-        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, NoEmail ${stats.noEmail}, Errors ${stats.errors}`);
+        console.log(`   Done: ${stats.inserted} inserted, ${stats.skipped} skipped, ${stats.skippedExisting} existing, ${stats.noEmail} noEmail, ${stats.errors} errors`);
 
     } catch (err) {
-        console.error(`   Error scraping ${displayName}:`, err.message);
+        console.error(`   Error scraping prefix "${prefix}":`, err.message);
         stats.errors++;
     }
 
@@ -570,8 +620,10 @@ async function sendNotificationEmail(summary) {
         <h2>North Carolina Bar Attorney Scraper Summary</h2>
         ${DRY_RUN ? '<p style="color: orange; font-weight: bold;">*** DRY RUN - No data written ***</p>' : ''}
         <table style="border-collapse: collapse; margin: 20px 0;">
-            <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Specializations Scraped</strong></td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${summary.specializationsScraped}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Strategy</strong></td>
+                <td style="padding: 8px; border: 1px solid #ddd;">Last-name prefix (2-letter → 3-letter subdivision)</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Prefixes Scraped</strong></td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${summary.prefixesScraped}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Profiles Fetched</strong></td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${summary.totalProfilesFetched}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Inserted</strong></td>
@@ -584,8 +636,12 @@ async function sendNotificationEmail(summary) {
                 <td style="padding: 8px; border: 1px solid #ddd;">${summary.totalNoEmail}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Total NC Bar in DB</strong></td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${summary.totalInDb}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Prefixes Complete</strong></td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${summary.completedPrefixes}/${ALL_PREFIXES.length}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Needing Subdivision</strong></td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${summary.needingSubdivision}</td></tr>
         </table>
-        <p style="color: #666; font-size: 12px;">Timestamp: ${new Date().toISOString()}</p>
+        <p style="color: #666; font-size: 12px;">Duration: ${summary.duration} | Timestamp: ${new Date().toISOString()}</p>
     `;
 
     try {
@@ -608,8 +664,10 @@ async function sendNotificationEmail(summary) {
 async function main() {
     console.log('North Carolina Bar Attorney Scraper');
     console.log('='.repeat(60));
-    console.log(`Scraping portal.ncbar.gov by specialization`);
-    console.log();
+    console.log('Strategy: Last-name prefix search (2-letter → 3-letter subdivision)');
+    console.log(`Max combos per run: ${MAX_COMBOS}`);
+    console.log(`Max attorneys per run: ${MAX_ATTORNEYS}`);
+    console.log(`Results cap (server-side): ${RESULTS_CAP}\n`);
 
     if (DRY_RUN) {
         console.log('*** DRY RUN MODE - No data will be written ***\n');
@@ -618,7 +676,8 @@ async function main() {
     initializeFirebase();
 
     const progress = await getProgress();
-    console.log(`Progress: ${progress.scrapedSpecializations.length}/${SPECIALIZATIONS.length} specializations complete`);
+    console.log(`Progress: ${progress.completedPrefixes.length}/${ALL_PREFIXES.length} prefixes complete`);
+    console.log(`Prefixes needing subdivision: ${progress.prefixesNeedingSubdivision.length}`);
     console.log(`Total inserted so far: ${progress.totalInserted}\n`);
 
     console.log('Loading existing emails...');
@@ -629,59 +688,78 @@ async function main() {
     const existingMemberIds = await loadExistingMemberIds();
     console.log(`Loaded ${existingMemberIds.size} existing member IDs\n`);
 
+    const startTime = Date.now();
+
     console.log('Launching browser...\n');
     const browser = await puppeteer.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
     });
 
     const allStats = [];
     let totalInsertedThisRun = 0;
 
     try {
-        // Determine which specializations to scrape
-        let specializationsToScrape;
-        if (SPECIFIC_SPECIALIZATION) {
-            const spec = SPECIALIZATIONS.find(s => s.value === SPECIFIC_SPECIALIZATION);
-            if (!spec) {
-                console.error(`Unknown specialization: ${SPECIFIC_SPECIALIZATION}`);
-                console.error(`Valid options: ${SPECIALIZATIONS.map(s => s.value).join(', ')}`);
-                process.exit(1);
+        // Process up to MAX_COMBOS targets
+        for (let i = 0; i < MAX_COMBOS; i++) {
+            const target = getNextTarget(progress);
+
+            if (!target) {
+                console.log('\nAll prefixes and subdivisions complete!');
+                break;
             }
-            specializationsToScrape = [spec];
-        } else {
-            // Filter out already scraped and permanently skipped
-            specializationsToScrape = SPECIALIZATIONS.filter(spec =>
-                !progress.scrapedSpecializations.includes(spec.value) &&
-                !progress.permanentlySkipped.includes(spec.value)
-            );
-        }
 
-        console.log(`Specializations to scrape: ${specializationsToScrape.length}`);
-
-        for (const specialization of specializationsToScrape) {
             if (totalInsertedThisRun >= MAX_ATTORNEYS) {
                 console.log(`\nReached MAX_ATTORNEYS limit (${MAX_ATTORNEYS}), stopping.`);
                 break;
             }
 
-            const stats = await scrapeSpecialization(browser, specialization, existingEmails, existingMemberIds, progress);
+            const stats = await scrapePrefix(browser, target, existingEmails, existingMemberIds);
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
 
-            // Update progress
-            progress.totalInserted += stats.inserted;
-            progress.totalSkipped += stats.skipped;
+            // Update progress based on results
+            if (stats.isSubPrefix) {
+                // 3-letter sub-prefix completed
+                if (!progress.completedSubPrefixes[stats.parentPrefix]) {
+                    progress.completedSubPrefixes[stats.parentPrefix] = [];
+                }
+                progress.completedSubPrefixes[stats.parentPrefix].push(stats.prefix);
 
-            // Mark specialization complete only if ALL attorneys were scraped
-            if (stats.all_attorneys_scraped && !progress.scrapedSpecializations.includes(specialization.value)) {
-                progress.scrapedSpecializations.push(specialization.value);
-                console.log(`   ✓ Specialization ${specialization.displayName} marked as complete`);
-            } else if (!stats.all_attorneys_scraped) {
-                console.log(`   ⚠ Specialization ${specialization.displayName} NOT marked complete (hit MAX_ATTORNEYS limit)`);
+                // Check if all 26 sub-prefixes done for this parent prefix
+                if (progress.completedSubPrefixes[stats.parentPrefix].length >= LETTERS.length) {
+                    // Move from needingSubdivision to completed
+                    progress.prefixesNeedingSubdivision = progress.prefixesNeedingSubdivision.filter(
+                        p => p !== stats.parentPrefix
+                    );
+                    if (!progress.completedPrefixes.includes(stats.parentPrefix)) {
+                        progress.completedPrefixes.push(stats.parentPrefix);
+                    }
+                    console.log(`   All sub-prefixes complete for "${stats.parentPrefix}"`);
+                }
+            } else {
+                // 2-letter prefix completed
+                if (stats.hit_cap) {
+                    // Needs 3-letter subdivision
+                    if (!progress.prefixesNeedingSubdivision.includes(stats.prefix)) {
+                        progress.prefixesNeedingSubdivision.push(stats.prefix);
+                        console.log(`   → "${stats.prefix}" added to subdivision queue`);
+                    }
+                } else {
+                    // Complete (under cap)
+                    if (!progress.completedPrefixes.includes(stats.prefix)) {
+                        progress.completedPrefixes.push(stats.prefix);
+                    }
+                }
             }
 
+            progress.totalInserted = (progress.totalInserted || 0) + stats.inserted;
+            progress.lastRunDate = new Date().toISOString();
+
             await saveProgress(progress);
+
+            // Brief pause between searches
+            await sleepWithJitter(3000);
         }
 
     } catch (err) {
@@ -692,42 +770,49 @@ async function main() {
 
     // Summary
     const totalInDb = DRY_RUN ? totalInsertedThisRun : await getTotalInDb();
+    const duration = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
 
     console.log('\n' + '='.repeat(60));
     console.log('SUMMARY');
     console.log('='.repeat(60));
-    console.log(`   Specializations scraped: ${allStats.length}`);
+    console.log(`   Prefixes scraped this run: ${allStats.length}`);
     console.log(`   Profiles fetched: ${allStats.reduce((sum, s) => sum + s.profilesFetched, 0)}`);
     console.log(`   Inserted this run: ${totalInsertedThisRun}`);
     console.log(`   Total NC Bar in DB: ${totalInDb}`);
-    console.log(`   Progress: ${progress.scrapedSpecializations.length}/${SPECIALIZATIONS.length} specializations complete`);
+    console.log(`   Prefixes complete: ${progress.completedPrefixes.length}/${ALL_PREFIXES.length}`);
+    console.log(`   Needing subdivision: ${progress.prefixesNeedingSubdivision.length}`);
+    console.log(`   Duration: ${duration} minutes`);
 
     // Send notification
     await sendNotificationEmail({
-        specializationsScraped: allStats.length,
+        prefixesScraped: allStats.length,
         totalProfilesFetched: allStats.reduce((sum, s) => sum + s.profilesFetched, 0),
         totalInserted: totalInsertedThisRun,
         totalSkipped: allStats.reduce((sum, s) => sum + s.skipped, 0),
         totalSkippedExisting: allStats.reduce((sum, s) => sum + s.skippedExisting, 0),
         totalNoEmail: allStats.reduce((sum, s) => sum + s.noEmail, 0),
-        totalInDb
+        totalInDb,
+        completedPrefixes: progress.completedPrefixes.length,
+        needingSubdivision: progress.prefixesNeedingSubdivision.length,
+        duration: `${duration} minutes`
     });
 
     // Write summary for GitHub Actions
     const summaryPath = path.join(__dirname, 'ncbar-scrape-summary.json');
     fs.writeFileSync(summaryPath, JSON.stringify({
         timestamp: new Date().toISOString(),
-        specializationsScraped: allStats.length,
+        prefixesScraped: allStats.length,
         totalInserted: totalInsertedThisRun,
         totalInDb,
         progress: {
-            scrapedSpecializations: progress.scrapedSpecializations,
+            completedPrefixes: progress.completedPrefixes.length,
+            prefixesNeedingSubdivision: progress.prefixesNeedingSubdivision.length,
             totalInserted: progress.totalInserted
         },
         dryRun: DRY_RUN
     }, null, 2));
 
-    console.log('\n✓ Scrape complete!');
+    console.log('\nScrape complete!');
 }
 
 // ============================================================================
