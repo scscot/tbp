@@ -62,12 +62,15 @@ async function fetchSubjectLineStats(contactsRef) {
       .select('subjectTag', 'clickedAt')
       .get();
 
-    // Aggregate by subject tag
+    // Aggregate by subject tag (exclude legacy/unknown tags from A/B results)
+    const EXCLUDED_TAGS = new Set(['subject_recruiting_app', 'unknown']);
     const subjectStats = {};
 
     sentSnapshot.docs.forEach(doc => {
       const data = doc.data();
       const tag = data.subjectTag || 'unknown';
+
+      if (EXCLUDED_TAGS.has(tag)) return;
 
       if (!subjectStats[tag]) {
         subjectStats[tag] = { sent: 0, clicked: 0 };
