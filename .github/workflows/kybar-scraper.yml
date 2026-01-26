@@ -2,9 +2,9 @@ name: Kentucky Bar Attorney Scraper
 
 on:
   schedule:
-    # Daily at 16:00 UTC (8:00 AM PST)
-    # Offset from CalBar (8:00 UTC), FLBar (10:00 UTC), OhBar (12:00 UTC), MiBar (14:00 UTC)
-    - cron: '0 16 * * *'
+    # Run daily at 9:00 AM PST (17:00 UTC)
+    # Full schedule: CalBar(00), FLBar(02), MoBar(03), OhBar(04), NSBA(05), MiBar(06), OKBar(07), KyBar(09), GaBar(10)
+    - cron: '0 17 * * *'
   workflow_dispatch:
     inputs:
       practice_area:

@@ -2,7 +2,8 @@ name: Missouri Bar Attorney Scraper
 
 on:
   schedule:
-    # Run daily at 3:00 AM PST (11:00 UTC) - offset from other scrapers
+    # Run daily at 3:00 AM PST (11:00 UTC)
+    # Full schedule: CalBar(00), FLBar(02), MoBar(03), OhBar(04), NSBA(05), MiBar(06), OKBar(07), KyBar(09), GaBar(10)
     - cron: '0 11 * * *'
   workflow_dispatch:
     inputs:
