@@ -925,10 +925,11 @@ async function sendViaMailgun(to, subject, htmlContent, textContent, tags = []) 
     form.append('html', htmlContent);
     form.append('text', textContent);
 
-    // Enable tracking
-    form.append('o:tracking', 'yes');
-    form.append('o:tracking-opens', 'yes');
-    form.append('o:tracking-clicks', 'yes');
+    // Disable Mailgun tracking - using Firestore-based tracking instead
+    // (trackDemoView: type=visit on page load, type=view on demo start)
+    form.append('o:tracking', 'no');
+    form.append('o:tracking-opens', 'no');
+    form.append('o:tracking-clicks', 'no');
 
     // Add tags for analytics
     form.append('o:tag', 'preintake_campaign');
