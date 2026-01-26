@@ -69,8 +69,8 @@ const PRACTICE_AREAS = [
 
 const BASE_URL = 'https://isba.reliaguide.com';
 const API_PATH = '/api/public/profiles';
-const RESULTS_PER_PAGE = 40;
-const MAX_PAGES = 10; // API returns 400 error for page 10+
+const RESULTS_PER_PAGE = 20; // API returns max 20 per page regardless of size param
+const MAX_PAGES = 20; // Paginate until empty results or 400 error
 const DELAY_BETWEEN_REQUESTS = 3000;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const MAX_COMBOS = parseInt(process.env.MAX_COMBOS) || 50;
