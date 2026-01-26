@@ -791,11 +791,51 @@
                     </div>
                 </div>
 
-                <!-- Email Campaign Performance -->
-                <div class="section-card" id="emailCampaignSection" style="display: none;">
-                    <h3>Email Campaign Performance</h3>
-                    <div id="emailCampaignContent">
-                        <p class="no-data-message">Loading email campaign data...</p>
+                <!-- Email Campaign Performance (Firestore + GA4) -->
+                <div class="section-card" id="emailCampaignSection">
+                    <h3>Email Campaign Performance <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 400;">Firestore</span></h3>
+                    <!-- Firestore Stats -->
+                    <div class="stats-grid" id="emailCampaignStats">
+                        <div class="stat-card">
+                            <h3>SENT</h3>
+                            <div class="stat-value green" id="emailSent">-</div>
+                            <div class="stat-label" id="emailProgress">of 0 total</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>REMAINING</h3>
+                            <div class="stat-value" id="emailRemaining">-</div>
+                            <div class="stat-label">Not yet sent</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>FAILED</h3>
+                            <div class="stat-value red" id="emailFailed">-</div>
+                            <div class="stat-label">Delivery failures</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>CLICKED</h3>
+                            <div class="stat-value green" id="emailClicked">-</div>
+                            <div class="stat-label" id="emailClickRate">-</div>
+                        </div>
+                    </div>
+                    <!-- A/B Test Results -->
+                    <div id="emailAbTestSection" style="margin-top: 20px; display: none;">
+                        <h4 style="margin-bottom: 10px; color: #666;">A/B Test Results</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject Line</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailAbTestBody"></tbody>
+                        </table>
+                    </div>
+                    <!-- GA4 Campaign Traffic -->
+                    <div id="emailGa4Traffic" style="margin-top: 20px; display: none;">
+                        <h4 style="margin-bottom: 10px; color: #666;">Website Traffic from Email <span style="font-size: 0.7rem; color: #999; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; margin-left: 4px; font-weight: 400;">GA4</span></h4>
+                        <div id="emailCampaignContent"></div>
                     </div>
                 </div>
 
@@ -1270,13 +1310,46 @@
             const countriesTable = document.getElementById('topCountriesTable');
             countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">Country data not available in API</td></tr>';
 
-            // Email Campaign - API returns 'emailCampaign.data' with sessionCampaignName
-            const emailData = data.emailCampaign?.data || [];
-            if (emailData.length > 0) {
-                document.getElementById('emailCampaignSection').style.display = 'block';
-                // Group by campaign name and sum sessions
+            // Email Campaign - Firestore stats (top-level) + GA4 traffic (date-range)
+            const emailStats = analyticsData.emailCampaign;
+            if (emailStats) {
+                document.getElementById('emailSent').textContent = formatNumber(emailStats.sent || 0);
+                document.getElementById('emailRemaining').textContent = formatNumber(emailStats.remaining || 0);
+                document.getElementById('emailFailed').textContent = formatNumber(emailStats.failed || 0);
+                document.getElementById('emailClicked').textContent = formatNumber(emailStats.clicked || 0);
+                document.getElementById('emailClickRate').textContent = emailStats.clickRate || '0%';
+                document.getElementById('emailProgress').textContent = `of ${formatNumber(emailStats.total || 0)} total`;
+
+                // A/B Test Results
+                const SUBJECT_LABELS = {
+                    'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
+                    'prebuild_advantage': 'V2: "What if your next recruit already had a team?"'
+                };
+                const subjectLines = emailStats.subjectLines || [];
+                const abTestBody = document.getElementById('emailAbTestBody');
+                const abTestSection = document.getElementById('emailAbTestSection');
+                if (subjectLines.length > 0) {
+                    abTestSection.style.display = 'block';
+                    abTestBody.innerHTML = subjectLines.map(s => `
+                        <tr>
+                            <td>${escapeHtml(SUBJECT_LABELS[s.subjectTag] || s.subjectTag)}</td>
+                            <td>${formatNumber(s.sent)}</td>
+                            <td>${formatNumber(s.clicked)}</td>
+                            <td>${s.clickRate}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    abTestSection.style.display = 'none';
+                }
+            }
+
+            // GA4 Campaign Traffic (from date-range website data)
+            const ga4EmailData = data.emailCampaign?.data || [];
+            const ga4TrafficSection = document.getElementById('emailGa4Traffic');
+            if (ga4EmailData.length > 0) {
+                ga4TrafficSection.style.display = 'block';
                 const campaignMap = {};
-                emailData.forEach(c => {
+                ga4EmailData.forEach(c => {
                     const key = c.sessionCampaignName || 'Unknown';
                     if (!campaignMap[key]) {
                         campaignMap[key] = { sessions: 0, users: 0, engagementSum: 0, count: 0 };
@@ -1286,7 +1359,7 @@
                     campaignMap[key].engagementSum += (c.engagementRate || 0);
                     campaignMap[key].count++;
                 });
-                const campaignHtml = Object.entries(campaignMap).map(([name, stats]) => `
+                document.getElementById('emailCampaignContent').innerHTML = Object.entries(campaignMap).map(([name, stats]) => `
                     <div class="campaign-card">
                         <h4>${escapeHtml(name)}</h4>
                         <div class="campaign-stats">
@@ -1305,9 +1378,8 @@
                         </div>
                     </div>
                 `).join('');
-                document.getElementById('emailCampaignContent').innerHTML = campaignHtml;
             } else {
-                document.getElementById('emailCampaignSection').style.display = 'none';
+                ga4TrafficSection.style.display = 'none';
             }
 
             // GA4 AI Observations - from website.observations (shared across date ranges)

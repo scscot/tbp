@@ -6,6 +6,7 @@
 const {
   onRequest,
   logger,
+  db,
 } = require('./shared/utilities');
 
 const { defineSecret } = require('firebase-functions/params');
@@ -97,7 +98,7 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
         limit: 20
       }),
-      // Email campaign (filtered by mailgun source)
+      // Email campaign (filtered by SMTP medium)
       client.runReport({
         property: `properties/${propertyId}`,
         dateRanges: [{ startDate, endDate }],
@@ -113,8 +114,8 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
         ],
         dimensionFilter: {
           filter: {
-            fieldName: 'sessionSource',
-            stringFilter: { value: 'mailgun', matchType: 'EXACT' }
+            fieldName: 'sessionMedium',
+            stringFilter: { value: 'smtp', matchType: 'EXACT' }
           }
         },
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
@@ -851,7 +852,7 @@ Traffic Sources: ${context.topSources || 'No data'}
 
 Top Pages: ${context.topPages || 'No data'}
 
-Email Campaign Performance: ${context.emailSessions} sessions, ${context.emailUsers} users from Mailgun email campaigns
+Email Campaign Performance: ${context.emailSessions} sessions, ${context.emailUsers} users from SMTP email campaigns
 
 Context: Team Build Pro is an AI-powered downline builder app for direct sales professionals. The website serves as the main landing page and conversion funnel for app downloads.
 
@@ -1172,6 +1173,73 @@ async function fetchGooglePlayMetrics() {
 }
 
 // ==============================
+// Firestore Email Campaign Stats
+// ==============================
+
+const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
+
+/**
+ * Fetch email campaign stats from Firestore
+ * Provides sent/clicked/failed counts and A/B test breakdown
+ */
+async function fetchFirestoreEmailStats() {
+  try {
+    const contactsRef = db.collection(CONTACTS_COLLECTION);
+
+    // Run counts in parallel
+    const [sentSnap, failedSnap, clickedSnap, totalSnap] = await Promise.all([
+      contactsRef.where('sent', '==', true).count().get(),
+      contactsRef.where('status', '==', 'failed').count().get(),
+      contactsRef.where('clickedAt', '!=', null).count().get(),
+      contactsRef.count().get()
+    ]);
+
+    const sent = sentSnap.data().count;
+    const failed = failedSnap.data().count;
+    const clicked = clickedSnap.data().count;
+    const total = totalSnap.data().count;
+    const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
+
+    // A/B test breakdown (exclude legacy tags)
+    const EXCLUDED_TAGS = new Set(['subject_recruiting_app', 'unknown']);
+    const sentDocs = await contactsRef
+      .where('sent', '==', true)
+      .select('subjectTag', 'clickedAt')
+      .get();
+
+    const subjectStats = {};
+    sentDocs.docs.forEach(doc => {
+      const data = doc.data();
+      const tag = data.subjectTag || 'unknown';
+      if (EXCLUDED_TAGS.has(tag)) return;
+      if (!subjectStats[tag]) subjectStats[tag] = { sent: 0, clicked: 0 };
+      subjectStats[tag].sent++;
+      if (data.clickedAt) subjectStats[tag].clicked++;
+    });
+
+    const subjectLines = Object.entries(subjectStats).map(([tag, stats]) => ({
+      subjectTag: tag,
+      sent: stats.sent,
+      clicked: stats.clicked,
+      clickRate: stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) + '%' : '0%'
+    }));
+
+    return {
+      total,
+      sent,
+      remaining: total - sent,
+      failed,
+      clicked,
+      clickRate,
+      subjectLines
+    };
+  } catch (error) {
+    logger.error('Error fetching Firestore email stats:', error.message);
+    return null;
+  }
+}
+
+// ==============================
 // Main Unified Analytics Endpoint
 // ==============================
 
@@ -1201,7 +1269,7 @@ const getTBPAnalytics = onRequest({
     const _ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
 
     // Fetch all data sources in parallel
-    const [ga4Data30, ga4Data7, iosData, androidData] = await Promise.all([
+    const [ga4Data30, ga4Data7, iosData, androidData, emailStats] = await Promise.all([
       fetchGA4Analytics('30daysAgo'),
       fetchGA4Analytics('7daysAgo'),
       fetchAppStoreMetrics(
@@ -1210,7 +1278,8 @@ const getTBPAnalytics = onRequest({
         ascPrivateKey.value(),
         openaiApiKey.value()
       ),
-      fetchGooglePlayMetrics()
+      fetchGooglePlayMetrics(),
+      fetchFirestoreEmailStats()
     ]);
 
     // Generate AI observations for GA4 data (use 30-day data for more comprehensive analysis)
@@ -1230,7 +1299,8 @@ const getTBPAnalytics = onRequest({
         observations: ga4Observations
       },
       ios: iosData,
-      android: androidData
+      android: androidData,
+      emailCampaign: emailStats
     };
 
     logger.info('TBP Analytics Dashboard data fetched successfully');
