@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Email Campaign Analytics | PreIntake.ai</title>
+    <title>Campaign Analytics | PreIntake.ai</title>
     <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
     <style>
         * {
@@ -163,6 +163,24 @@
             font-size: 0.85rem;
         }
 
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: #ffffff;
+            font-size: 1.25rem;
+        }
+
+        .section-header .section-icon {
+            color: #c9a962;
+            font-size: 1.25rem;
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
@@ -176,6 +194,10 @@
             border-radius: 16px;
             padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card.accent {
+            border: 1px solid rgba(201, 169, 98, 0.3);
         }
 
         .stat-card h3 {
@@ -221,12 +243,58 @@
             color: #f59e0b;
         }
 
+        .stat-value.danger {
+            color: #ef4444;
+        }
+
         .stat-value.muted {
             color: #64748b;
         }
 
-        /* Click Rate Section */
-        .click-rate-section {
+        /* Big Number Cards */
+        .big-number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .big-number-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .big-number-card h4 {
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .big-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #c9a962;
+            line-height: 1.2;
+        }
+
+        .big-number.green { color: #10b981; }
+        .big-number.blue { color: #3b82f6; }
+        .big-number.amber { color: #f59e0b; }
+        .big-number.red { color: #ef4444; }
+
+        .big-number-sub {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        /* Funnel Section */
+        .funnel-section {
             background: #1e293b;
             border-radius: 16px;
             padding: 32px;
@@ -234,10 +302,53 @@
             border: 1px solid rgba(201, 169, 98, 0.2);
         }
 
-        .click-rate-section h2 {
+        .funnel-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .funnel-step {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            max-width: 200px;
+        }
+
+        .funnel-step-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .funnel-step-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .funnel-arrow {
+            color: #334155;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .funnel-rate {
             color: #c9a962;
-            font-size: 1.25rem;
-            margin-bottom: 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Rate Cards */
+        .rate-section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .rate-cards {
@@ -273,8 +384,8 @@
             font-size: 0.85rem;
         }
 
-        /* Lead Details Table */
-        .leads-section {
+        /* Breakdown Bars */
+        .breakdown-section {
             background: #1e293b;
             border-radius: 16px;
             padding: 32px;
@@ -282,10 +393,90 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .leads-section h2 {
-            color: #ffffff;
-            font-size: 1.25rem;
-            margin-bottom: 24px;
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .breakdown-list {
+            list-style: none;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .breakdown-value {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .breakdown-bar-container {
+            flex: 1;
+            max-width: 120px;
+            height: 6px;
+            background: #0f172a;
+            border-radius: 3px;
+            margin: 0 12px;
+        }
+
+        .breakdown-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #c9a962, #e0c88a);
+            transition: width 0.3s ease;
+        }
+
+        /* Traffic Sources Table */
+        .traffic-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .traffic-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .traffic-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .traffic-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Lead Details Table */
+        .leads-section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .leads-table {
@@ -351,6 +542,25 @@
             color: #64748b;
         }
 
+        /* Template Versions */
+        .template-versions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .template-badge {
+            background: #0f172a;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .template-badge code {
+            color: #c9a962;
+            margin-right: 8px;
+        }
+
         /* Loading State */
         .loading {
             display: flex;
@@ -378,25 +588,6 @@
             margin-top: 16px;
         }
 
-        /* Template Versions */
-        .template-versions {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .template-badge {
-            background: #0f172a;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-
-        .template-badge code {
-            color: #c9a962;
-            margin-right: 8px;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -404,13 +595,25 @@
                 align-items: flex-start;
             }
 
-            .leads-table {
+            .leads-table, .traffic-table {
                 display: block;
                 overflow-x: auto;
             }
 
             .rate-value {
                 font-size: 2rem;
+            }
+
+            .funnel-steps {
+                flex-direction: column;
+            }
+
+            .funnel-arrow {
+                transform: rotate(90deg);
+            }
+
+            .big-number {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -419,10 +622,10 @@
     <!-- Password Modal -->
     <div class="password-overlay" id="password-overlay">
         <div class="password-modal">
-            <h2>Email Analytics</h2>
-            <p>Enter password to access campaign analytics</p>
+            <h2>Campaign Analytics</h2>
+            <p>Enter password to access analytics dashboard</p>
             <input type="password" class="password-input" id="password-input" placeholder="Password" autofocus>
-            <button class="password-btn" id="password-btn">Access Analytics</button>
+            <button class="password-btn" id="password-btn">Access Dashboard</button>
             <p class="error-message" id="error-message">Incorrect password. Please try again.</p>
         </div>
     </div>
@@ -431,7 +634,7 @@
     <div class="analytics-container" id="analytics-container">
         <div class="header">
             <div>
-                <h1><span>PreIntake.ai</span> Email Analytics</h1>
+                <h1><span>PreIntake.ai</span> Campaign Analytics</h1>
                 <p class="last-updated" id="last-updated"></p>
             </div>
             <button class="refresh-btn" id="refresh-btn">Refresh Data</button>
@@ -448,22 +651,13 @@
     <script>
         const CORRECT_PASSWORD = 'TeamBuildPro2024!';
         const API_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailAnalytics';
+        const DEFAULT_TIMEOUT = 45000;
 
-        // Request timeout (30 seconds)
-        const DEFAULT_TIMEOUT = 30000;
-
-        /**
-         * Fetch with timeout support
-         */
         async function fetchWithTimeout(url, options = {}, timeout = DEFAULT_TIMEOUT) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
-
             try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
+                const response = await fetch(url, { ...options, signal: controller.signal });
                 return response;
             } finally {
                 clearTimeout(timeoutId);
@@ -487,9 +681,7 @@
             } else {
                 passwordInput.classList.add('error');
                 errorMessage.style.display = 'block';
-                setTimeout(() => {
-                    passwordInput.classList.remove('error');
-                }, 500);
+                setTimeout(() => passwordInput.classList.remove('error'), 500);
             }
         }
 
@@ -498,14 +690,12 @@
             if (e.key === 'Enter') checkPassword();
         });
 
-        // Check if already authenticated this session
         if (sessionStorage.getItem('analytics_auth') === 'true') {
             passwordOverlay.style.display = 'none';
             analyticsContainer.style.display = 'block';
             loadAnalytics();
         }
 
-        // Load analytics data
         async function loadAnalytics() {
             const content = document.getElementById('content');
             const refreshBtn = document.getElementById('refresh-btn');
@@ -530,205 +720,415 @@
 
         document.getElementById('refresh-btn').addEventListener('click', loadAnalytics);
 
+        function pct(num, den) {
+            if (!den || den === 0) return '0.0';
+            return ((num / den) * 100).toFixed(1);
+        }
+
+        function fmtDuration(seconds) {
+            if (!seconds || seconds === 0) return '0s';
+            const m = Math.floor(seconds / 60);
+            const s = Math.round(seconds % 60);
+            return m > 0 ? `${m}m ${s}s` : `${s}s`;
+        }
+
+        function fmtEngagement(rate) {
+            if (!rate && rate !== 0) return '-';
+            return (rate * 100).toFixed(1) + '%';
+        }
+
         function renderAnalytics(data) {
             const content = document.getElementById('content');
             const lastUpdated = document.getElementById('last-updated');
-
             lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
-            // Calculate click rates
-            const allTimeRate = data.withDemo > 0 ? ((data.viewedCount / data.withDemo) * 100).toFixed(1) : '0.0';
-            const last7DaysRate = data.last7DaysWithDemo > 0 ? ((data.last7DaysViewed / data.last7DaysWithDemo) * 100).toFixed(1) : '0.0';
-            const todayRate = data.todayWithDemo > 0 ? ((data.todayViewed / data.todayWithDemo) * 100).toFixed(1) : '0.0';
-            const yesterdayRate = data.yesterdayWithDemo > 0 ? ((data.yesterdayViewed / data.yesterdayWithDemo) * 100).toFixed(1) : '0.0';
+            // Calculate funnel rates
+            const visitRate = pct(data.visitedCount, data.withDemo);
+            const viewRate = pct(data.viewedCount, data.visitedCount);
+            const overallRate = pct(data.viewedCount, data.withDemo);
 
-            content.innerHTML = `
-                <!-- Email Campaign Progress -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Email Campaign Progress</h3>
-                        <div class="stat-row">
-                            <span class="stat-label">Total Emails Sent</span>
-                            <span class="stat-value">${data.totalSent.toLocaleString()}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">With Pre-generated Demo</span>
-                            <span class="stat-value success">${data.withDemo.toLocaleString()}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Without Demo (Fallback)</span>
-                            <span class="stat-value muted">${data.withoutDemo.toLocaleString()}</span>
-                        </div>
+            // Calculate time-bucketed rates
+            const todayVisitRate = pct(data.todayVisited, data.todayWithDemo);
+            const last7VisitRate = pct(data.last7DaysVisited, data.last7DaysWithDemo);
+            const yesterdayVisitRate = pct(data.yesterdayVisited, data.yesterdayWithDemo);
+
+            // Source breakdown sorted by count
+            const sources = data.sourceBreakdown ? Object.entries(data.sourceBreakdown)
+                .sort((a, b) => b[1] - a[1]) : [];
+            const maxSourceCount = sources.length > 0 ? sources[0][1] : 1;
+
+            // State breakdown sorted by count
+            const states = data.stateBreakdown ? Object.entries(data.stateBreakdown)
+                .sort((a, b) => b[1] - a[1]) : [];
+            const maxStateCount = states.length > 0 ? states[0][1] : 1;
+
+            // Source display names
+            const sourceNames = {
+                'calbar': 'California', 'flbar': 'Florida', 'ohbar': 'Ohio',
+                'mibar': 'Michigan', 'mobar': 'Missouri', 'kybar': 'Kentucky',
+                'gabar': 'Georgia', 'ilbar': 'Illinois', 'ncbar': 'North Carolina',
+                'wsba': 'Washington', 'msbar': 'Mississippi', 'nebar': 'Nebraska',
+                'nsba': 'Nebraska SBA', 'okbar': 'Oklahoma',
+                'unknown': 'Other/Legacy'
+            };
+
+            let html = '';
+
+            // ═══════════════════════════════════════════════
+            // GA4 WEBSITE TRAFFIC
+            // ═══════════════════════════════════════════════
+            if (data.ga4Stats) {
+                const g = data.ga4Stats;
+                html += `
+                <div class="section-header">
+                    <span class="section-icon">&#9670;</span>
+                    <h2>Website Traffic (preintake.ai)</h2>
+                </div>
+                <div class="big-number-grid">
+                    <div class="big-number-card">
+                        <h4>Users (7 Days)</h4>
+                        <div class="big-number blue">${g.last7Days.activeUsers.toLocaleString()}</div>
+                        <div class="big-number-sub">${g.last7Days.sessions.toLocaleString()} sessions</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3>Today</h3>
-                        <div class="stat-row">
-                            <span class="stat-label">Emails Sent</span>
-                            <span class="stat-value">${data.todaySent}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">With Demos</span>
-                            <span class="stat-value ${data.todayWithDemo > 0 ? 'success' : 'muted'}">${data.todayWithDemo}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Visits</span>
-                            <span class="stat-value ${data.todayVisited > 0 ? 'success' : 'muted'}">${data.todayVisited || 0}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Demos Viewed</span>
-                            <span class="stat-value ${data.todayViewed > 0 ? 'success' : 'muted'}">${data.todayViewed}</span>
-                        </div>
+                    <div class="big-number-card">
+                        <h4>Page Views (7 Days)</h4>
+                        <div class="big-number">${g.last7Days.pageViews.toLocaleString()}</div>
+                        <div class="big-number-sub">${fmtEngagement(g.last7Days.engagementRate)} engaged</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3>Yesterday</h3>
-                        <div class="stat-row">
-                            <span class="stat-label">Emails Sent</span>
-                            <span class="stat-value">${data.yesterdaySent}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">With Demos</span>
-                            <span class="stat-value ${data.yesterdayWithDemo > 0 ? 'success' : 'muted'}">${data.yesterdayWithDemo}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Visits</span>
-                            <span class="stat-value ${data.yesterdayVisited > 0 ? 'success' : 'muted'}">${data.yesterdayVisited || 0}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Demos Viewed</span>
-                            <span class="stat-value ${data.yesterdayViewed > 0 ? 'success' : 'muted'}">${data.yesterdayViewed}</span>
-                        </div>
+                    <div class="big-number-card">
+                        <h4>Users Today</h4>
+                        <div class="big-number green">${g.today.activeUsers.toLocaleString()}</div>
+                        <div class="big-number-sub">${g.today.sessions.toLocaleString()} sessions</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3>Last 7 Days</h3>
-                        <div class="stat-row">
-                            <span class="stat-label">Emails Sent</span>
-                            <span class="stat-value">${data.last7DaysSent}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">With Demos</span>
-                            <span class="stat-value ${data.last7DaysWithDemo > 0 ? 'success' : 'muted'}">${data.last7DaysWithDemo}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Visits</span>
-                            <span class="stat-value ${data.last7DaysVisited > 0 ? 'success' : 'muted'}">${data.last7DaysVisited || 0}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Demos Viewed</span>
-                            <span class="stat-value ${data.last7DaysViewed > 0 ? 'success' : 'muted'}">${data.last7DaysViewed}</span>
-                        </div>
+                    <div class="big-number-card">
+                        <h4>Users Yesterday</h4>
+                        <div class="big-number">${g.yesterday.activeUsers.toLocaleString()}</div>
+                        <div class="big-number-sub">${g.yesterday.sessions.toLocaleString()} sessions</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3>Engagement Tracking (All Time)</h3>
-                        <div class="stat-row">
-                            <span class="stat-label">Campaign Leads</span>
-                            <span class="stat-value">${data.campaignLeads}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Visits</span>
-                            <span class="stat-value ${data.visitedCount > 0 ? 'success' : 'muted'}">${data.visitedCount || 0}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Demos Viewed</span>
-                            <span class="stat-value ${data.viewedCount > 0 ? 'success' : 'muted'}">${data.viewedCount}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Active Leads</span>
-                            <span class="stat-value highlight">${data.activeLeads}</span>
-                        </div>
+                    <div class="big-number-card">
+                        <h4>Avg Session</h4>
+                        <div class="big-number">${fmtDuration(g.last7Days.avgSessionDuration)}</div>
+                        <div class="big-number-sub">last 7 days</div>
+                    </div>
+                    <div class="big-number-card">
+                        <h4>Bounce Rate</h4>
+                        <div class="big-number ${g.last7Days.bounceRate > 0.7 ? 'red' : g.last7Days.bounceRate > 0.5 ? 'amber' : 'green'}">${fmtEngagement(g.last7Days.bounceRate)}</div>
+                        <div class="big-number-sub">last 7 days</div>
                     </div>
                 </div>
 
-                <!-- Mailgun Delivery & Engagement (Last 7 Days) -->
-                ${data.mailgunStats ? `
-                <div class="click-rate-section" style="margin-bottom: 40px;">
-                    <h2>Mailgun Email Metrics (Last 7 Days)</h2>
-                    <div class="rate-cards">
-                        <div class="rate-card">
-                            <h4>Delivered</h4>
-                            <div class="rate-value" style="color: #10b981;">${data.mailgunStats.delivered}</div>
-                            <div class="rate-details">${data.mailgunStats.accepted} accepted</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Open Rate</h4>
-                            <div class="rate-value">${data.mailgunStats.openRate}%</div>
-                            <div class="rate-details">${data.mailgunStats.uniqueOpens} unique opens</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Click Rate</h4>
-                            <div class="rate-value">${data.mailgunStats.clickRate}%</div>
-                            <div class="rate-details">${data.mailgunStats.uniqueClicks} unique clicks</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Failed</h4>
-                            <div class="rate-value" style="color: ${data.mailgunStats.failed > 0 ? '#ef4444' : '#10b981'};">${data.mailgunStats.failed}</div>
-                            <div class="rate-details">${data.mailgunStats.complained} complaints, ${data.mailgunStats.unsubscribed} unsubs</div>
-                        </div>
+                ${g.trafficSources && g.trafficSources.length > 0 ? `
+                <div class="rate-section" style="margin-bottom: 40px;">
+                    <div class="section-header" style="margin-bottom: 16px;">
+                        <h2 style="font-size: 1.1rem;">Traffic Sources (Last 7 Days)</h2>
                     </div>
+                    <table class="traffic-table">
+                        <thead>
+                            <tr>
+                                <th>Source / Medium</th>
+                                <th>Sessions</th>
+                                <th>Users</th>
+                                <th>Engagement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${g.trafficSources.map(t => `
+                                <tr>
+                                    <td style="color: #e2e8f0; font-weight: 500;">${t.source} / ${t.medium}</td>
+                                    <td>${t.sessions.toLocaleString()}</td>
+                                    <td>${t.users.toLocaleString()}</td>
+                                    <td>${fmtEngagement(t.engagementRate)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
                 ` : ''}
+                `;
+            }
 
-                <!-- Click Rate Section -->
-                <div class="click-rate-section">
-                    <h2>Click Rate (Demo Views / Emails with Demos)</h2>
-                    ${data.withDemo > 0 ? `
-                    <div class="rate-cards">
-                        <div class="rate-card">
-                            <h4>All Time</h4>
-                            <div class="rate-value">${allTimeRate}%</div>
-                            <div class="rate-details">${data.viewedCount} views / ${data.withDemo} emails</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Last 7 Days</h4>
-                            <div class="rate-value">${last7DaysRate}%</div>
-                            <div class="rate-details">${data.last7DaysViewed} views / ${data.last7DaysWithDemo} emails</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Today</h4>
-                            <div class="rate-value">${todayRate}%</div>
-                            <div class="rate-details">${data.todayViewed} views / ${data.todayWithDemo} emails</div>
-                        </div>
-                        <div class="rate-card">
-                            <h4>Yesterday</h4>
-                            <div class="rate-value">${yesterdayRate}%</div>
-                            <div class="rate-details">${data.yesterdayViewed} views / ${data.yesterdayWithDemo} emails</div>
-                        </div>
+            // ═══════════════════════════════════════════════
+            // EMAIL DATABASE OVERVIEW
+            // ═══════════════════════════════════════════════
+            html += `
+            <div class="section-header">
+                <span class="section-icon">&#9670;</span>
+                <h2>Email Database</h2>
+            </div>
+            <div class="big-number-grid">
+                <div class="big-number-card">
+                    <h4>Total Contacts</h4>
+                    <div class="big-number">${(data.totalContacts || 0).toLocaleString()}</div>
+                    <div class="big-number-sub">${(data.totalPending || 0).toLocaleString()} remaining</div>
+                </div>
+                <div class="big-number-card">
+                    <h4>Emails Sent</h4>
+                    <div class="big-number green">${data.totalSent.toLocaleString()}</div>
+                    <div class="big-number-sub">${pct(data.totalSent, data.totalContacts)}% complete</div>
+                </div>
+                <div class="big-number-card">
+                    <h4>With Demo</h4>
+                    <div class="big-number blue">${data.withDemo.toLocaleString()}</div>
+                    <div class="big-number-sub">${data.withoutDemo.toLocaleString()} fallback</div>
+                </div>
+                <div class="big-number-card">
+                    <h4>Unsubscribed</h4>
+                    <div class="big-number ${(data.totalUnsubscribed || 0) > 0 ? 'amber' : 'green'}">${(data.totalUnsubscribed || 0).toLocaleString()}</div>
+                    <div class="big-number-sub">${pct(data.totalUnsubscribed, data.totalSent)}% of sent</div>
+                </div>
+                <div class="big-number-card">
+                    <h4>Failed</h4>
+                    <div class="big-number ${(data.totalFailed || 0) > 0 ? 'red' : 'green'}">${(data.totalFailed || 0).toLocaleString()}</div>
+                    <div class="big-number-sub">${pct(data.totalFailed, data.totalSent)}% failure rate</div>
+                </div>
+                <div class="big-number-card">
+                    <h4>Campaign Leads</h4>
+                    <div class="big-number">${data.campaignLeads}</div>
+                    <div class="big-number-sub">${data.activeLeads} active</div>
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // ENGAGEMENT FUNNEL
+            // ═══════════════════════════════════════════════
+            html += `
+            <div class="funnel-section">
+                <div class="section-header">
+                    <span class="section-icon">&#9670;</span>
+                    <h2>Engagement Funnel (All Time)</h2>
+                </div>
+                <div class="funnel-steps">
+                    <div class="funnel-step">
+                        <div class="funnel-step-value">${data.withDemo.toLocaleString()}</div>
+                        <div class="funnel-step-label">Emails with Demo</div>
                     </div>
-                    ` : `
-                    <p style="color: #94a3b8; text-align: center; padding: 40px;">
-                        No emails with pre-generated demos yet.<br>
-                        Run the campaign with demo generation enabled to start tracking click rates.
-                    </p>
-                    `}
+                    <div class="funnel-arrow">&#8594;</div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-value">${(data.visitedCount || 0)}</div>
+                        <div class="funnel-step-label">Visited Page</div>
+                        <div class="funnel-rate">${visitRate}%</div>
+                    </div>
+                    <div class="funnel-arrow">&#8594;</div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-value">${data.viewedCount}</div>
+                        <div class="funnel-step-label">Started Demo</div>
+                        <div class="funnel-rate">${viewRate}%</div>
+                    </div>
+                    <div class="funnel-arrow">&#8594;</div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-value">${data.activeLeads}</div>
+                        <div class="funnel-step-label">Active Leads</div>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // TIME-BUCKETED STATS
+            // ═══════════════════════════════════════════════
+            html += `
+            <div class="section-header">
+                <span class="section-icon">&#9670;</span>
+                <h2>Campaign Activity</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Today</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Emails Sent</span>
+                        <span class="stat-value">${data.todaySent}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">With Demos</span>
+                        <span class="stat-value ${data.todayWithDemo > 0 ? 'success' : 'muted'}">${data.todayWithDemo}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Page Visits</span>
+                        <span class="stat-value ${data.todayVisited > 0 ? 'success' : 'muted'}">${data.todayVisited || 0}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Demo Starts</span>
+                        <span class="stat-value ${data.todayViewed > 0 ? 'success' : 'muted'}">${data.todayViewed}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Visit Rate</span>
+                        <span class="stat-value highlight">${todayVisitRate}%</span>
+                    </div>
                 </div>
 
-                <!-- Template Versions -->
-                <div class="stat-card" style="margin-bottom: 40px;">
-                    <h3>Template Versions Used</h3>
-                    <div class="template-versions" style="margin-top: 16px;">
-                        ${Object.entries(data.templateVersions).map(([version, count]) => `
-                            <div class="template-badge">
-                                <code>${version}</code>
-                                <span>${count.toLocaleString()}</span>
-                            </div>
-                        `).join('')}
+                <div class="stat-card">
+                    <h3>Yesterday</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Emails Sent</span>
+                        <span class="stat-value">${data.yesterdaySent}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">With Demos</span>
+                        <span class="stat-value ${data.yesterdayWithDemo > 0 ? 'success' : 'muted'}">${data.yesterdayWithDemo}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Page Visits</span>
+                        <span class="stat-value ${data.yesterdayVisited > 0 ? 'success' : 'muted'}">${data.yesterdayVisited || 0}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Demo Starts</span>
+                        <span class="stat-value ${data.yesterdayViewed > 0 ? 'success' : 'muted'}">${data.yesterdayViewed}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Visit Rate</span>
+                        <span class="stat-value highlight">${yesterdayVisitRate}%</span>
                     </div>
                 </div>
 
-                <!-- Lead Details -->
-                ${data.leadDetails.length > 0 ? `
+                <div class="stat-card">
+                    <h3>Last 7 Days</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Emails Sent</span>
+                        <span class="stat-value">${data.last7DaysSent}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">With Demos</span>
+                        <span class="stat-value ${data.last7DaysWithDemo > 0 ? 'success' : 'muted'}">${data.last7DaysWithDemo}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Page Visits</span>
+                        <span class="stat-value ${data.last7DaysVisited > 0 ? 'success' : 'muted'}">${data.last7DaysVisited || 0}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Demo Starts</span>
+                        <span class="stat-value ${data.last7DaysViewed > 0 ? 'success' : 'muted'}">${data.last7DaysViewed}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Visit Rate</span>
+                        <span class="stat-value highlight">${last7VisitRate}%</span>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // CONVERSION RATES
+            // ═══════════════════════════════════════════════
+            html += `
+            <div class="rate-section">
+                <div class="section-header">
+                    <span class="section-icon">&#9670;</span>
+                    <h2>Conversion Rates (Visits / Emails with Demos)</h2>
+                </div>
+                ${data.withDemo > 0 ? `
+                <div class="rate-cards">
+                    <div class="rate-card">
+                        <h4>All Time</h4>
+                        <div class="rate-value">${visitRate}%</div>
+                        <div class="rate-details">${data.visitedCount || 0} visits / ${data.withDemo} emails</div>
+                    </div>
+                    <div class="rate-card">
+                        <h4>Last 7 Days</h4>
+                        <div class="rate-value">${last7VisitRate}%</div>
+                        <div class="rate-details">${data.last7DaysVisited || 0} visits / ${data.last7DaysWithDemo} emails</div>
+                    </div>
+                    <div class="rate-card">
+                        <h4>Today</h4>
+                        <div class="rate-value">${todayVisitRate}%</div>
+                        <div class="rate-details">${data.todayVisited || 0} visits / ${data.todayWithDemo} emails</div>
+                    </div>
+                    <div class="rate-card">
+                        <h4>Yesterday</h4>
+                        <div class="rate-value">${yesterdayVisitRate}%</div>
+                        <div class="rate-details">${data.yesterdayVisited || 0} visits / ${data.yesterdayWithDemo} emails</div>
+                    </div>
+                </div>
+                ` : `
+                <p style="color: #94a3b8; text-align: center; padding: 40px;">
+                    No emails with pre-generated demos yet.
+                </p>
+                `}
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // SOURCE & STATE BREAKDOWN
+            // ═══════════════════════════════════════════════
+            if (sources.length > 0 || states.length > 0) {
+                html += `
+                <div class="breakdown-section">
+                    <div class="section-header">
+                        <span class="section-icon">&#9670;</span>
+                        <h2>Emails Sent by Source &amp; State</h2>
+                    </div>
+                    <div class="breakdown-grid">
+                        ${sources.length > 0 ? `
+                        <div>
+                            <h3 style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">By Bar Association</h3>
+                            <ul class="breakdown-list">
+                                ${sources.map(([source, count]) => `
+                                    <li class="breakdown-item">
+                                        <span class="breakdown-label">${sourceNames[source] || source}</span>
+                                        <div class="breakdown-bar-container">
+                                            <div class="breakdown-bar" style="width: ${(count / maxSourceCount * 100).toFixed(0)}%"></div>
+                                        </div>
+                                        <span class="breakdown-value">${count.toLocaleString()}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        ${states.length > 0 ? `
+                        <div>
+                            <h3 style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">By State</h3>
+                            <ul class="breakdown-list">
+                                ${states.map(([state, count]) => `
+                                    <li class="breakdown-item">
+                                        <span class="breakdown-label">${state}</span>
+                                        <div class="breakdown-bar-container">
+                                            <div class="breakdown-bar" style="width: ${(count / maxStateCount * 100).toFixed(0)}%"></div>
+                                        </div>
+                                        <span class="breakdown-value">${count.toLocaleString()}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                `;
+            }
+
+            // ═══════════════════════════════════════════════
+            // TEMPLATE VERSIONS
+            // ═══════════════════════════════════════════════
+            html += `
+            <div class="stat-card" style="margin-bottom: 40px;">
+                <h3>Template Versions Used</h3>
+                <div class="template-versions" style="margin-top: 16px;">
+                    ${Object.entries(data.templateVersions).map(([version, count]) => `
+                        <div class="template-badge">
+                            <code>${version}</code>
+                            <span>${count.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            `;
+
+            // ═══════════════════════════════════════════════
+            // LEAD DETAILS TABLE
+            // ═══════════════════════════════════════════════
+            if (data.leadDetails && data.leadDetails.length > 0) {
+                html += `
                 <div class="leads-section">
-                    <h2>Campaign Lead Details</h2>
+                    <div class="section-header">
+                        <span class="section-icon">&#9670;</span>
+                        <h2>Campaign Lead Details</h2>
+                    </div>
                     <table class="leads-table">
                         <thead>
                             <tr>
                                 <th>Firm Name</th>
                                 <th>Created</th>
                                 <th>Visits</th>
-                                <th>Demo Views</th>
+                                <th>Demo Starts</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -739,12 +1139,12 @@
                                     <td>${lead.createdAt || 'Unknown'}</td>
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.visitCount > 0 ? `${lead.visitCount}x` : '-'}
+                                            ${lead.visitCount > 0 ? lead.visitCount + 'x' : '-'}
                                         </span>
                                     </td>
                                     <td>
                                         <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.viewCount > 0 ? `${lead.viewCount}x` : '-'}
+                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
                                         </span>
                                     </td>
                                     <td>
@@ -755,8 +1155,10 @@
                         </tbody>
                     </table>
                 </div>
-                ` : ''}
-            `;
+                `;
+            }
+
+            content.innerHTML = html;
         }
     </script>
 </body>

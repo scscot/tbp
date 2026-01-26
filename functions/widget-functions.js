@@ -11,6 +11,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const Anthropic = require('@anthropic-ai/sdk');
 const axios = require('axios');
+const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
@@ -605,72 +606,79 @@ const getEmailAnalytics = onRequest(
         try {
             const now = new Date();
 
-            // Fetch Mailgun stats for law.preintake.ai domain
-            let mailgunStats = null;
+            // Fetch GA4 website analytics for preintake.ai
+            let ga4Stats = null;
             try {
-                const MAILGUN_DOMAIN = process.env.PREINTAKE_MAILGUN_DOMAIN || 'law.preintake.ai';
-                const MAILGUN_API_KEY = process.env.PREINTAKE_MAILGUN_API_KEY;
-
-                if (!MAILGUN_API_KEY) {
-                    console.warn('PREINTAKE_MAILGUN_API_KEY not set, skipping Mailgun stats');
-                    throw new Error('Mailgun API key not configured');
-                }
-
-                const mailgunBaseUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`;
-
-                const statsResponse = await axios.get(`${mailgunBaseUrl}/stats/total`, {
-                    auth: {
-                        username: 'api',
-                        password: MAILGUN_API_KEY
-                    },
-                    params: {
-                        event: ['accepted', 'delivered', 'failed', 'opened', 'clicked', 'unsubscribed', 'complained'],
-                        duration: '7d',
-                        resolution: 'day'
-                    }
+                const GA4_PREINTAKE_PROPERTY_ID = '517857439';
+                const ga4Client = new BetaAnalyticsDataClient({
+                    keyFilename: './ga4-service-account.json'
                 });
 
-                // Extract totals from the stats response
-                const stats = statsResponse.data?.stats || [];
-                mailgunStats = {
-                    accepted: 0,
-                    delivered: 0,
-                    failed: 0,
-                    uniqueOpens: 0,
-                    totalOpens: 0,
-                    uniqueClicks: 0,
-                    totalClicks: 0,
-                    unsubscribed: 0,
-                    complained: 0
-                };
+                const [overviewResponse, trafficResponse] = await Promise.all([
+                    // Overview: 7-day and today metrics
+                    ga4Client.runReport({
+                        property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
+                        dateRanges: [
+                            { startDate: '7daysAgo', endDate: 'today' },
+                            { startDate: 'today', endDate: 'today' },
+                            { startDate: 'yesterday', endDate: 'yesterday' }
+                        ],
+                        metrics: [
+                            { name: 'activeUsers' },
+                            { name: 'sessions' },
+                            { name: 'screenPageViews' },
+                            { name: 'engagementRate' },
+                            { name: 'averageSessionDuration' },
+                            { name: 'bounceRate' }
+                        ]
+                    }),
+                    // Traffic sources (last 7 days)
+                    ga4Client.runReport({
+                        property: `properties/${GA4_PREINTAKE_PROPERTY_ID}`,
+                        dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
+                        dimensions: [
+                            { name: 'sessionSource' },
+                            { name: 'sessionMedium' }
+                        ],
+                        metrics: [
+                            { name: 'sessions' },
+                            { name: 'activeUsers' },
+                            { name: 'engagementRate' }
+                        ],
+                        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+                        limit: 10
+                    })
+                ]);
 
-                stats.forEach(day => {
-                    mailgunStats.accepted += day.accepted?.total || 0;
-                    mailgunStats.delivered += day.delivered?.total || 0;
-                    mailgunStats.failed += (day.failed?.permanent?.total || 0) + (day.failed?.temporary?.total || 0);
-                    // Use unique counts for rate calculations (one per recipient)
-                    mailgunStats.uniqueOpens += day.opened?.unique || 0;
-                    mailgunStats.totalOpens += day.opened?.total || 0;
-                    mailgunStats.uniqueClicks += day.clicked?.unique || 0;
-                    mailgunStats.totalClicks += day.clicked?.total || 0;
-                    mailgunStats.unsubscribed += day.unsubscribed?.total || 0;
-                    mailgunStats.complained += day.complained?.total || 0;
+                // Parse overview (3 date ranges: 7days, today, yesterday)
+                const rows = overviewResponse[0]?.rows || [];
+                const parseRow = (row) => ({
+                    activeUsers: parseInt(row?.metricValues?.[0]?.value || '0'),
+                    sessions: parseInt(row?.metricValues?.[1]?.value || '0'),
+                    pageViews: parseInt(row?.metricValues?.[2]?.value || '0'),
+                    engagementRate: parseFloat(row?.metricValues?.[3]?.value || '0'),
+                    avgSessionDuration: parseFloat(row?.metricValues?.[4]?.value || '0'),
+                    bounceRate: parseFloat(row?.metricValues?.[5]?.value || '0')
                 });
 
-                // Calculate rates using unique opens/clicks (industry standard)
-                // Cap at 100% since Mailgun's "unique" may count multiple devices per recipient
-                if (mailgunStats.delivered > 0) {
-                    const rawOpenRate = (mailgunStats.uniqueOpens / mailgunStats.delivered) * 100;
-                    const rawClickRate = (mailgunStats.uniqueClicks / mailgunStats.delivered) * 100;
-                    mailgunStats.openRate = Math.min(rawOpenRate, 100).toFixed(1);
-                    mailgunStats.clickRate = Math.min(rawClickRate, 100).toFixed(1);
-                } else {
-                    mailgunStats.openRate = '0.0';
-                    mailgunStats.clickRate = '0.0';
-                }
-            } catch (mailgunError) {
-                console.error('Mailgun stats fetch error:', mailgunError.message);
-                // Continue without Mailgun stats
+                const last7Days = rows[0] ? parseRow(rows[0]) : parseRow(null);
+                const today = rows[1] ? parseRow(rows[1]) : parseRow(null);
+                const yesterday = rows[2] ? parseRow(rows[2]) : parseRow(null);
+
+                // Parse traffic sources
+                const trafficRows = trafficResponse[0]?.rows || [];
+                const trafficSources = trafficRows.map(row => ({
+                    source: row.dimensionValues?.[0]?.value || '(not set)',
+                    medium: row.dimensionValues?.[1]?.value || '(not set)',
+                    sessions: parseInt(row.metricValues?.[0]?.value || '0'),
+                    users: parseInt(row.metricValues?.[1]?.value || '0'),
+                    engagementRate: parseFloat(row.metricValues?.[2]?.value || '0')
+                }));
+
+                ga4Stats = { last7Days, today, yesterday, trafficSources };
+            } catch (ga4Error) {
+                console.error('GA4 stats fetch error:', ga4Error.message);
+                // Continue without GA4 stats
             }
 
             // Calculate date boundaries in PST (UTC-8)
@@ -689,12 +697,20 @@ const getEmailAnalytics = onRequest(
             const endDate = new Date(Date.UTC(pstYear, pstMonth, pstDay + 1) - PST_OFFSET);
             const startDate = new Date(Date.UTC(pstYear, pstMonth, pstDay - 7) - PST_OFFSET);
 
-            // Get all sent emails
-            const emailsSnap = await db.collection('preintake_emails')
-                .where('sent', '==', true)
-                .get();
+            // Get sent emails + database overview in parallel
+            const [emailsSnap, unsubSnap, failedSnap, pendingSnap] = await Promise.all([
+                db.collection('preintake_emails').where('sent', '==', true).get(),
+                db.collection('preintake_emails').where('status', '==', 'unsubscribed').get(),
+                db.collection('preintake_emails').where('status', '==', 'failed').get(),
+                db.collection('preintake_emails').where('sent', '==', false).get()
+            ]);
 
             const totalSent = emailsSnap.size;
+            const totalUnsubscribed = unsubSnap.size;
+            const totalFailed = failedSnap.size;
+            const totalPending = pendingSnap.size;
+            const totalContacts = totalSent + totalPending;
+
             let withDemo = 0;
             let withoutDemo = 0;
             let last7DaysSent = 0;
@@ -704,6 +720,8 @@ const getEmailAnalytics = onRequest(
             let yesterdaySent = 0;
             let yesterdayWithDemo = 0;
             const templateVersions = {};
+            const sourceBreakdown = {};
+            const stateBreakdown = {};
 
             emailsSnap.forEach(doc => {
                 const data = doc.data();
@@ -714,6 +732,14 @@ const getEmailAnalytics = onRequest(
                 } else {
                     withoutDemo++;
                 }
+
+                // Source breakdown (calbar, flbar, ohbar, mibar, mobar, kybar, gabar, etc.)
+                const source = data.source || 'unknown';
+                sourceBreakdown[source] = (sourceBreakdown[source] || 0) + 1;
+
+                // State breakdown (CA, FL, OH, MI, MO, KY, GA, etc.)
+                const state = data.state || 'unknown';
+                stateBreakdown[state] = (stateBreakdown[state] || 0) + 1;
 
                 // Template versions
                 const version = data.templateVersion || 'unknown';
@@ -840,8 +866,15 @@ const getEmailAnalytics = onRequest(
                 activeLeads,
                 templateVersions,
                 leadDetails,
-                // Mailgun delivery & engagement stats (last 7 days)
-                mailgunStats,
+                // Database overview
+                totalContacts,
+                totalPending,
+                totalUnsubscribed,
+                totalFailed,
+                sourceBreakdown,
+                stateBreakdown,
+                // GA4 website analytics
+                ga4Stats,
             });
 
         } catch (error) {
