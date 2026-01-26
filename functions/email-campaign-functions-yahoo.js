@@ -65,9 +65,10 @@ async function sendEmailViaMailgun(contact, apiKey, domain, index = 0) {
   form.append('o:tag', 'yahoo_initial_campaign');
   form.append('o:tag', templateVersion);
   form.append('o:tag', subjectTag);
-  form.append('o:tracking', 'yes');
-  form.append('o:tracking-opens', 'yes');
-  form.append('o:tracking-clicks', 'yes');
+  // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
+  form.append('o:tracking', 'no');
+  form.append('o:tracking-opens', 'no');
+  form.append('o:tracking-clicks', 'no');
 
   // Add List-Unsubscribe headers (required by Gmail for bulk senders)
   const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
@@ -273,9 +274,10 @@ const sendAndroidLaunchCampaignYahoo = onSchedule({
         form.append('t:version', selectedVersion);
         form.append('o:tag', 'yahoo_android_launch');
         form.append('o:tag', selectedVersion);
-        form.append('o:tracking', 'yes');
-        form.append('o:tracking-opens', 'yes');
-        form.append('o:tracking-clicks', 'yes');
+        // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
+        form.append('o:tracking', 'no');
+        form.append('o:tracking-opens', 'no');
+        form.append('o:tracking-clicks', 'no');
 
         // Add List-Unsubscribe headers (required by Gmail for bulk senders)
         const unsubscribeUrl = `https://teambuildpro.com/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;

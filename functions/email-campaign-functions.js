@@ -172,10 +172,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   form.append('template', TEMPLATE_NAME);
   form.append('t:version', variant.templateVersion);
 
-  // Tracking options
-  form.append('o:tracking', 'yes');
-  form.append('o:tracking-opens', 'yes');
-  form.append('o:tracking-clicks', 'yes');
+  // Tracking disabled — using Firestore-based tracking via trackEmailClick Cloud Function
+  form.append('o:tracking', 'no');
+  form.append('o:tracking-opens', 'no');
+  form.append('o:tracking-clicks', 'no');
 
   // Tags for analytics
   form.append('o:tag', config.campaignTag);
