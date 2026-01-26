@@ -185,10 +185,11 @@ const PRACTICE_AREAS = [
 ];
 
 // ============================================================================
-// OHIO CITIES (top 50 by population)
+// OHIO CITIES (by population descending - all cities with 10,000+ population)
 // ============================================================================
 
 const OHIO_CITIES = [
+    // Top 50 by population
     'Columbus', 'Cleveland', 'Cincinnati', 'Toledo', 'Akron',
     'Dayton', 'Parma', 'Canton', 'Youngstown', 'Lorain',
     'Hamilton', 'Springfield', 'Kettering', 'Elyria', 'Lakewood',
@@ -198,7 +199,32 @@ const OHIO_CITIES = [
     'Gahanna', 'Pickerington', 'North Canton', 'Massillon', 'Sandusky',
     'Findlay', 'Zanesville', 'Marion', 'Wooster', 'Ashland',
     'Painesville', 'Steubenville', 'Tiffin', 'Sidney', 'Kent',
-    'Oxford', 'Defiance', 'Marysville', 'Fremont'
+    'Oxford', 'Defiance', 'Marysville', 'Fremont',
+    // Additional cities with 10,000+ population (by population descending)
+    'Euclid', 'Mansfield', 'Cleveland Heights', 'Hilliard', 'Warren',
+    'North Ridgeville', 'Mason', 'Brunswick', 'Fairborn', 'Lima',
+    'Westlake', 'Stow', 'North Olmsted', 'North Royalton', 'Bowling Green',
+    'Garfield Heights', 'Shaker Heights', 'Green', 'Troy', 'Avon Lake',
+    'Centerville', 'Xenia', 'Medina', 'Avon', 'Perrysburg',
+    'Athens', 'Wadsworth', 'Barberton', 'Riverside', 'Willoughby',
+    'Solon', 'Maple Heights', 'Trotwood', 'Hudson', 'Lebanon',
+    'Chillicothe', 'Alliance', 'Rocky River', 'South Euclid', 'Piqua',
+    'Parma Heights', 'Miamisburg', 'Forest Park', 'Whitehall', 'Mayfield Heights',
+    'Broadview Heights', 'Oregon', 'Springboro', 'Twinsburg', 'Norwood',
+    'Sylvania', 'Pataskala', 'Tallmadge', 'Niles', 'Brook Park',
+    'Berea', 'Aurora', 'Streetsboro', 'Ashtabula', 'Portsmouth',
+    'Eastlake', 'New Philadelphia', 'Mount Vernon', 'Norwalk', 'Fairview Park',
+    'Monroe', 'Bay Village', 'Middleburg Heights', 'Vandalia', 'Worthington',
+    'Powell', 'Washington Court House', 'Circleville', 'Willowick', 'Trenton',
+    'Bellefontaine', 'Sharonville', 'Brecksville', 'New Franklin', 'Beachwood',
+    'Lyndhurst', 'Maumee', 'Blue Ash', 'Harrison', 'Warrensville Heights',
+    'East Cleveland', 'Clayton', 'Englewood', 'Loveland', 'University Heights',
+    'Fostoria', 'Amherst', 'Marietta', 'Dover', 'West Carrollton',
+    'Bedford', 'Bexley', 'Greenville', 'Wickliffe', 'Wilmington',
+    'Conneaut', 'Macedonia', 'Franklin', 'Salem', 'New Albany',
+    'Bucyrus', 'Seven Hills', 'Norton', 'Ravenna', 'Urbana',
+    'Springdale', 'Van Wert', 'Coshocton', 'Brooklyn', 'Montgomery',
+    'Celina', 'Heath', 'Bedford Heights'
 ];
 
 // ============================================================================
