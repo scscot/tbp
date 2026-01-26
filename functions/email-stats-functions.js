@@ -19,40 +19,31 @@ const GA4_PROPERTY_ID = '485651473';
 
 /**
  * Get email tracking statistics from Firestore
- * Replaces Mailgun API stats with real-time Firestore tracking data
+ * Click tracking via trackEmailClick Cloud Function (permanent Firestore data)
+ * Open tracking disabled — Mailgun pixel removed for deliverability
  */
 async function fetchEmailTrackingStats(contactsRef) {
   try {
-    // Get sent count (accepted/delivered)
+    // Get sent count
     const sentSnapshot = await contactsRef.where('sent', '==', true).count().get();
-    const delivered = sentSnapshot.data().count;
+    const sent = sentSnapshot.data().count;
 
     // Get failed count
     const failedSnapshot = await contactsRef.where('status', '==', 'failed').count().get();
     const failed = failedSnapshot.data().count;
 
-    // Get opened count (contacts with openedAt timestamp)
-    const openedSnapshot = await contactsRef.where('openedAt', '!=', null).count().get();
-    const opened = openedSnapshot.data().count;
-
-    // Get clicked count (contacts with clickedAt timestamp)
+    // Get clicked count (contacts with clickedAt timestamp — tracked via trackEmailClick endpoint)
     const clickedSnapshot = await contactsRef.where('clickedAt', '!=', null).count().get();
     const clicked = clickedSnapshot.data().count;
 
-    // Calculate rates
-    const openRate = delivered > 0 ? ((opened / delivered) * 100).toFixed(1) + '%' : '0%';
-    const clickRate = delivered > 0 ? ((clicked / delivered) * 100).toFixed(1) + '%' : '0%';
-    const clickToOpenRate = opened > 0 ? ((clicked / opened) * 100).toFixed(1) + '%' : '0%';
+    // Calculate click rate against sent
+    const clickRate = sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '0%';
 
     return {
-      accepted: delivered + failed, // Total attempts
-      delivered,
+      sent,
       failed,
-      opened,
       clicked,
-      openRate,
-      clickRate,
-      clickToOpenRate
+      clickRate
     };
   } catch (error) {
     console.error('Error fetching email tracking stats:', error.message);
@@ -61,14 +52,14 @@ async function fetchEmailTrackingStats(contactsRef) {
 }
 
 /**
- * Get subject line breakdown from Firestore
+ * Get A/B test subject line breakdown from Firestore
  */
 async function fetchSubjectLineStats(contactsRef) {
   try {
     // Get all sent contacts with their subject tags
     const sentSnapshot = await contactsRef
       .where('sent', '==', true)
-      .select('subjectTag', 'openedAt', 'clickedAt')
+      .select('subjectTag', 'clickedAt')
       .get();
 
     // Aggregate by subject tag
@@ -79,21 +70,18 @@ async function fetchSubjectLineStats(contactsRef) {
       const tag = data.subjectTag || 'unknown';
 
       if (!subjectStats[tag]) {
-        subjectStats[tag] = { sent: 0, opened: 0, clicked: 0 };
+        subjectStats[tag] = { sent: 0, clicked: 0 };
       }
 
       subjectStats[tag].sent++;
-      if (data.openedAt) subjectStats[tag].opened++;
       if (data.clickedAt) subjectStats[tag].clicked++;
     });
 
-    // Calculate rates for each subject
+    // Calculate click rate for each subject
     const result = Object.entries(subjectStats).map(([tag, stats]) => ({
       subjectTag: tag,
       sent: stats.sent,
-      opened: stats.opened,
       clicked: stats.clicked,
-      openRate: stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) + '%' : '0%',
       clickRate: stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) + '%' : '0%'
     }));
 
@@ -259,7 +247,9 @@ const getEmailCampaignStats = onRequest({
       return {
         time: timestamp.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
         email: data.email || 'Unknown',
-        template: data.templateVersion || data.template || 'N/A'
+        template: data.templateVersion || data.template || 'N/A',
+        subjectTag: data.subjectTag || '-',
+        clicked: !!data.clickedAt
       };
     });
 
@@ -294,14 +284,10 @@ const getEmailCampaignStats = onRequest({
         sent: todayCount
       },
       tracking: trackingStats || {
-        accepted: 0,
-        delivered: 0,
+        sent: 0,
         failed: 0,
-        opened: 0,
         clicked: 0,
-        openRate: '0%',
-        clickRate: '0%',
-        clickToOpenRate: '0%'
+        clickRate: '0%'
       },
       subjectLines: subjectLineStats,
       ga4: ga4Stats || {
