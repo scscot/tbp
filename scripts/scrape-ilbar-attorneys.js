@@ -71,7 +71,8 @@ const BASE_URL = 'https://isba.reliaguide.com';
 const API_PATH = '/api/public/profiles';
 const RESULTS_PER_PAGE = 20; // API returns max 20 per page regardless of size param
 const MAX_PAGES = 20; // Paginate until empty results or 400 error
-const DELAY_BETWEEN_REQUESTS = 3000;
+const DELAY_BETWEEN_REQUESTS = 10000; // 10s between page requests (API is aggressively rate-limited)
+const DELAY_BETWEEN_CATEGORIES = 30000; // 30s pause between categories
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
 const MAX_COMBOS = parseInt(process.env.MAX_COMBOS) || 50;
 const DRY_RUN = process.env.DRY_RUN === 'true';
@@ -701,7 +702,8 @@ async function main() {
 
             // Longer delay between categories to avoid rate limiting
             if (i < MAX_COMBOS - 1) {
-                await sleepWithJitter(5000);
+                console.log(`   Waiting ${DELAY_BETWEEN_CATEGORIES / 1000}s before next category...`);
+                await sleepWithJitter(DELAY_BETWEEN_CATEGORIES);
             }
         }
 
