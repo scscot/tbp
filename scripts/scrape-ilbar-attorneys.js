@@ -8,16 +8,19 @@
  * Strategy:
  * 1. Navigate to search results with category filter (Puppeteer)
  * 2. Extract profile IDs from attorney cards
- * 3. Paginate through all results
- * 4. Fetch vCard API for each profile to get email/phone/firm
- * 5. Insert into Firestore with deduplication
+ * 3. Paginate through results (10-page server cap = 400 results max)
+ * 4. If results exceed cap, subdivide by city for comprehensive coverage
+ * 5. Fetch vCard API for each profile to get email/phone/firm
+ * 6. Insert into Firestore with deduplication
  *
  * Usage:
  *   node scripts/scrape-ilbar-attorneys.js
  *
  * Environment variables:
  *   MAX_ATTORNEYS - Maximum attorneys to process per run (default: 500)
+ *   MAX_COMBOS - Maximum practice area + city combinations per run (default: 50)
  *   DRY_RUN - If "true", don't write to Firestore
+ *   RESET_PROGRESS - If "true", reset scrape progress before starting
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
  *   PREINTAKE_SMTP_PASS - SMTP password for notifications
  */
@@ -31,8 +34,7 @@ const https = require('https');
 const { isGovernmentContact } = require('./gov-filter-utils');
 
 // ============================================================================
-// PRACTICE AREAS (same IDs across all ReliaGuide sites)
-// API endpoint: /api/public/category-lookups
+// PRACTICE AREAS (from ISBA ReliaGuide category-lookups API)
 // ============================================================================
 
 const PRACTICE_AREAS = [
@@ -40,6 +42,7 @@ const PRACTICE_AREAS = [
     { id: '264', name: 'Personal Injury' },
     { id: '210', name: 'Immigration & Naturalization' },
     { id: '172', name: 'Family Law' },
+    { id: '473', name: 'Criminal Law' },
     { id: '127', name: 'Criminal Defense' },
     { id: '3', name: 'Bankruptcy' },
     { id: '594', name: 'Workers Compensation' },
@@ -64,6 +67,46 @@ const PRACTICE_AREAS = [
 ];
 
 // ============================================================================
+// ILLINOIS CITIES (by population descending - all cities with 10,000+ population)
+// Used for subdivision when a practice area exceeds the 400-result pagination cap
+// ============================================================================
+
+const ILLINOIS_CITIES = [
+    // Major cities
+    'Chicago', 'Aurora', 'Naperville', 'Joliet', 'Rockford',
+    'Springfield', 'Elgin', 'Peoria', 'Champaign', 'Waukegan',
+    'Cicero', 'Bloomington', 'Arlington Heights', 'Evanston', 'Schaumburg',
+    'Decatur', 'Bolingbrook', 'Palatine', 'Skokie', 'Des Plaines',
+    'Orland Park', 'Tinley Park', 'Oak Lawn', 'Berwyn', 'Mount Prospect',
+    'Normal', 'Wheaton', 'Hoffman Estates', 'Oak Park', 'Downers Grove',
+    'Elmhurst', 'Glenview', 'Lombard', 'DeKalb', 'Moline',
+    'Belleville', 'Buffalo Grove', 'Bartlett', 'Urbana', 'Quincy',
+    'Crystal Lake', 'Streamwood', 'Carol Stream', 'Romeoville', 'Plainfield',
+    'Hanover Park', 'Carpentersville', 'Wheeling', 'Park Ridge', 'Addison',
+    // Mid-size cities
+    'Calumet City', 'Glendale Heights', 'Woodstock', 'Elk Grove Village', 'Oswego',
+    'Lake in the Hills', 'Mundelein', 'Niles', "O'Fallon", 'Northbrook',
+    'Algonquin', 'Gurnee', 'Highland Park', 'McHenry', 'Lake Zurich',
+    'Batavia', 'Glen Ellyn', 'Lisle', 'South Elgin', 'Libertyville',
+    'Vernon Hills', 'Crest Hill', 'Woodridge', 'Mattoon', 'Marion',
+    'Carbondale', 'Edwardsville', 'Collinsville', 'Danville', 'Granite City',
+    'Rock Island', 'Galesburg', 'Kankakee', 'Freeport', 'East Peoria',
+    'Jacksonville', 'Effingham', 'Charleston', 'Ottawa', 'Peru',
+    'Sterling', 'Macomb', 'Pontiac', 'Dixon', 'Streator',
+    // Affluent suburbs (high attorney concentration)
+    'Lake Forest', 'Wilmette', 'Winnetka', 'La Grange', 'Hinsdale',
+    'Western Springs', 'Geneva', 'St. Charles', 'North Aurora', 'West Chicago',
+    'Warrenville', 'Lockport', 'Mokena', 'Frankfort', 'New Lenox',
+    'Homer Glen', 'Lemont', 'Burr Ridge', 'Willowbrook', 'Westmont',
+    'Darien', 'Clarendon Hills', 'Oak Brook', 'Westchester', 'Riverside',
+    'Brookfield', 'La Grange Park', 'North Riverside', 'Melrose Park', 'Maywood',
+    'Bellwood', 'Forest Park', 'River Forest', 'Bensenville', 'Wood Dale',
+    'Roselle', 'Itasca', 'Bloomingdale', 'Hanover Park', 'Barrington',
+    'Inverness', 'Lincolnshire', 'Deerfield', 'Bannockburn', 'Kenilworth',
+    'Glencoe', 'Northfield', 'Winfield', 'Wheaton', 'Naperville',
+];
+
+// ============================================================================
 // CONFIGURATION
 // ============================================================================
 
@@ -71,8 +114,11 @@ const BASE_URL = 'https://isba.reliaguide.com';
 const DELAY_BETWEEN_PAGES = 3000;
 const DELAY_BETWEEN_VCARDS = 500;
 const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
+const MAX_COMBOS = parseInt(process.env.MAX_COMBOS) || 50;
 const DRY_RUN = process.env.DRY_RUN === 'true';
+const RESET_PROGRESS = process.env.RESET_PROGRESS === 'true';
 const RESULTS_PER_PAGE = 40;
+const RESULTS_CAP = 400; // ReliaGuide pagination cap (10 pages × 40 per page)
 
 // ============================================================================
 // FIREBASE INITIALIZATION
@@ -357,12 +403,27 @@ function parseVCard(vcardText) {
 // ============================================================================
 
 async function getProgress() {
+    if (RESET_PROGRESS) {
+        console.log('*** RESET_PROGRESS enabled - clearing all progress ***');
+        const progressRef = db.collection('preintake_scrape_progress').doc('ilbar');
+        await progressRef.delete();
+        return {
+            completedCategoryIds: [],
+            practiceAreaIdsNeedingCities: [],
+            completedCityCombos: {},
+            totalInserted: 0,
+            lastRunDate: null
+        };
+    }
+
     const progressRef = db.collection('preintake_scrape_progress').doc('ilbar');
     const doc = await progressRef.get();
 
     if (!doc.exists) {
         return {
             completedCategoryIds: [],
+            practiceAreaIdsNeedingCities: [],
+            completedCityCombos: {},
             totalInserted: 0,
             lastRunDate: null
         };
@@ -371,6 +432,8 @@ async function getProgress() {
     const data = doc.data();
     return {
         completedCategoryIds: data.completedCategoryIds || [],
+        practiceAreaIdsNeedingCities: data.practiceAreaIdsNeedingCities || [],
+        completedCityCombos: data.completedCityCombos || {},
         totalInserted: data.totalInserted || 0,
         lastRunDate: data.lastRunDate || null
     };
@@ -382,6 +445,36 @@ async function saveProgress(progress) {
         ...progress,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+}
+
+/**
+ * Get the next scrape target: either a practice area needing city subdivision,
+ * or a practice area not yet attempted.
+ */
+function getNextTarget(progress) {
+    // First, process practice areas that need city subdivision
+    for (const paId of progress.practiceAreaIdsNeedingCities) {
+        const completedCities = progress.completedCityCombos[paId] || [];
+        for (const city of ILLINOIS_CITIES) {
+            if (!completedCities.includes(city)) {
+                const pa = PRACTICE_AREAS.find(p => p.id === paId);
+                if (pa) {
+                    return { practiceAreaId: pa.id, practiceAreaName: pa.name, city };
+                }
+            }
+        }
+        // All cities done for this practice area - will be cleaned up in main loop
+    }
+
+    // Then, process practice areas not yet attempted
+    for (const pa of PRACTICE_AREAS) {
+        if (!progress.completedCategoryIds.includes(pa.id) &&
+            !progress.practiceAreaIdsNeedingCities.includes(pa.id)) {
+            return { practiceAreaId: pa.id, practiceAreaName: pa.name, city: null };
+        }
+    }
+
+    return null; // All done!
 }
 
 async function getTotalAttorneysInDb() {
@@ -476,16 +569,19 @@ async function goToNextPage(page, currentPage) {
 // MAIN SCRAPING FUNCTION
 // ============================================================================
 
-async function scrapeCategory(browser, category, existingEmails, existingProfileIds) {
-    const { id, name } = category;
+async function scrapeTarget(browser, target, existingEmails, existingProfileIds) {
+    const { practiceAreaId, practiceAreaName, city } = target;
+    const targetLabel = city ? `${practiceAreaName} + ${city}` : practiceAreaName;
 
     console.log(`\n${'='.repeat(60)}`);
-    console.log(`Scraping: ${name} (ID: ${id})`);
+    console.log(`Scraping: ${targetLabel}`);
     console.log('='.repeat(60));
 
     const stats = {
-        categoryId: id,
-        categoryName: name,
+        target: targetLabel,
+        practiceAreaId,
+        practiceAreaName,
+        city,
         totalResults: 0,
         profilesFetched: 0,
         vcardsFetched: 0,
@@ -493,6 +589,8 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
         skipped: 0,
         skippedExisting: 0,
         errors: 0,
+        govt_skipped: 0,
+        hit_cap: false,
         all_profiles_scraped: false
     };
 
@@ -506,7 +604,11 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
     const allProfileIds = [];
 
     try {
-        const url = `${BASE_URL}/lawyer/search?category.equals=${encodeURIComponent(name)}&categoryId.equals=${id}&memberTypeId.equals=1`;
+        // Build URL with optional city filter
+        let url = `${BASE_URL}/lawyer/search?category.equals=${encodeURIComponent(practiceAreaName)}&categoryId.equals=${practiceAreaId}&memberTypeId.equals=1`;
+        if (city) {
+            url += `&city.contains=${encodeURIComponent(city)}`;
+        }
         console.log(`   URL: ${url}`);
 
         await page.goto(url, {
@@ -519,13 +621,26 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
         console.log(`   Total results: ${stats.totalResults}`);
 
         if (stats.totalResults === 0) {
-            console.log('   No results found - marking as complete (no data available)');
-            stats.all_profiles_scraped = true; // Mark as complete so we don't retry
+            console.log('   No results found - marking as complete');
+            stats.all_profiles_scraped = true;
             await page.close();
             return stats;
         }
 
-        const totalPages = Math.ceil(stats.totalResults / RESULTS_PER_PAGE);
+        // Detect if results exceed pagination cap
+        if (stats.totalResults > RESULTS_CAP) {
+            stats.hit_cap = true;
+            if (!city) {
+                console.log(`   ⚠ Results (${stats.totalResults}) exceed cap (${RESULTS_CAP}) - will need city subdivision`);
+            } else {
+                console.log(`   ⚠ City combo still exceeds cap (${stats.totalResults}) - scraping first ${RESULTS_CAP}`);
+            }
+        }
+
+        const totalPages = Math.min(
+            Math.ceil(stats.totalResults / RESULTS_PER_PAGE),
+            Math.ceil(RESULTS_CAP / RESULTS_PER_PAGE) // Cap at 10 pages
+        );
         console.log(`   Pages to scrape: ${totalPages}`);
 
         let currentPage = 1;
@@ -607,7 +722,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                     email: emailLower,
                     phone: vcard.phone,
                     website: vcard.website,
-                    practiceArea: name,
+                    practiceArea: practiceAreaName,
                     city: vcard.city,
                     state: state,
                     source: 'ilbar',
@@ -622,7 +737,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 
                 // Check for government/institutional contact
                 if (isGovernmentContact(docData.email, docData.firmName)) {
-                    stats.govt_skipped = (stats.govt_skipped || 0) + 1;
+                    stats.govt_skipped++;
                     continue;
                 }
 
@@ -633,6 +748,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                 }
 
                 existingEmails.add(emailLower);
+                existingProfileIds.add(profileId.toString());
                 stats.inserted++;
 
                 if (batchCount >= BATCH_SIZE) {
@@ -661,11 +777,17 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
             console.log(`     Committed final batch of ${batchCount}`);
         }
 
-        // Track whether all profiles were scraped (not stopped by MAX_ATTORNEYS limit)
-        const allProfilesProcessed = (processedCount + stats.skippedExisting) >= allProfileIds.length;
-        stats.all_profiles_scraped = allProfilesProcessed || (processedCount >= MAX_ATTORNEYS && allProfileIds.length <= MAX_ATTORNEYS);
+        // Determine if all profiles were scraped
+        // For city combos or non-capped categories, mark complete if all profiles processed
+        if (!stats.hit_cap) {
+            const allProfilesProcessed = (processedCount + stats.skippedExisting) >= allProfileIds.length;
+            stats.all_profiles_scraped = allProfilesProcessed;
+        } else {
+            // Hit cap means we couldn't get all results, but we scraped what was available
+            stats.all_profiles_scraped = true; // Mark city combo as done even if capped
+        }
 
-        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, Errors ${stats.errors}`);
+        console.log(`   ✓ Inserted ${stats.inserted}, Skipped ${stats.skipped}, SkippedExisting ${stats.skippedExisting}, GovSkipped ${stats.govt_skipped}, Errors ${stats.errors}`);
 
     } catch (error) {
         console.error(`   Fatal error: ${error.message}`);
@@ -688,13 +810,13 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 // ============================================================================
 
 function generateEmailHTML(summary) {
-    const categoriesHtml = summary.categories.map(c => `
+    const targetsHtml = summary.targets.map(t => `
         <tr>
-            <td style="padding: 6px 8px; border-bottom: 1px solid #eee;">${c.categoryName}</td>
-            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${c.totalResults}</td>
-            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${c.vcardsFetched}</td>
-            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center; color: #166534; font-weight: 600;">${c.inserted}</td>
-            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${c.errors}</td>
+            <td style="padding: 6px 8px; border-bottom: 1px solid #eee;">${t.target}</td>
+            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${t.totalResults}</td>
+            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${t.vcardsFetched}</td>
+            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center; color: #166534; font-weight: 600;">${t.inserted}</td>
+            <td style="padding: 6px 8px; border-bottom: 1px solid #eee; text-align: center;">${t.hit_cap ? '⚠️' : '✓'}</td>
         </tr>
     `).join('');
 
@@ -708,23 +830,24 @@ function generateEmailHTML(summary) {
     <div style="background: #fff; padding: 25px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <p style="color: #64748b; font-size: 14px;">${new Date().toLocaleString()}</p>
 
-        <h2 style="font-size: 16px; margin: 20px 0 10px;">Categories Scraped</h2>
+        <h2 style="font-size: 16px; margin: 20px 0 10px;">Targets Scraped</h2>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr style="background: #f8fafc;">
-                <th style="padding: 8px; text-align: left;">Category</th>
+                <th style="padding: 8px; text-align: left;">Target</th>
                 <th style="padding: 8px; text-align: center;">Results</th>
                 <th style="padding: 8px; text-align: center;">vCards</th>
                 <th style="padding: 8px; text-align: center;">Inserted</th>
-                <th style="padding: 8px; text-align: center;">Errors</th>
+                <th style="padding: 8px; text-align: center;">Status</th>
             </tr>
-            ${categoriesHtml}
+            ${targetsHtml}
         </table>
 
         <h2 style="font-size: 16px; margin: 20px 0 10px;">Summary</h2>
         <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0;">Total inserted this run:</td><td style="text-align: right; font-weight: 600; color: #166534;">${summary.totalInserted}</td></tr>
             <tr><td style="padding: 8px 0;">Illinois Bar attorneys in DB:</td><td style="text-align: right;">${summary.totalInDb.toLocaleString()}</td></tr>
-            <tr><td style="padding: 8px 0;">Categories completed:</td><td style="text-align: right;">${summary.progress.completedCategoryIds.length} / ${PRACTICE_AREAS.length}</td></tr>
+            <tr><td style="padding: 8px 0;">Practice areas completed:</td><td style="text-align: right;">${summary.progress.completedCategoryIds.length} / ${PRACTICE_AREAS.length}</td></tr>
+            <tr><td style="padding: 8px 0;">Areas needing city subdivision:</td><td style="text-align: right;">${summary.progress.practiceAreaIdsNeedingCities.length}</td></tr>
             <tr><td style="padding: 8px 0;">Duration:</td><td style="text-align: right;">${summary.duration}</td></tr>
         </table>
 
@@ -741,7 +864,9 @@ function generateEmailHTML(summary) {
 async function main() {
     console.log('Illinois Bar Attorney Scraper');
     console.log('='.repeat(60));
-    console.log('Using vCard API for reliable email extraction\n');
+    console.log('Strategy: Practice Area + City filtering for comprehensive coverage');
+    console.log(`Max combos per run: ${MAX_COMBOS}`);
+    console.log(`Max attorneys per run: ${MAX_ATTORNEYS}\n`);
 
     if (DRY_RUN) {
         console.log('*** DRY RUN MODE - No data will be written ***\n');
@@ -750,7 +875,8 @@ async function main() {
     initializeFirebase();
 
     const progress = await getProgress();
-    console.log(`Progress: ${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length} categories complete`);
+    console.log(`Progress: ${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length} practice areas complete`);
+    console.log(`Areas needing city subdivision: ${progress.practiceAreaIdsNeedingCities.length}`);
     console.log(`Total inserted so far: ${progress.totalInserted.toLocaleString()}\n`);
 
     console.log('Loading existing emails...');
@@ -779,10 +905,13 @@ async function main() {
     let totalInsertedThisRun = 0;
 
     try {
-        for (const category of PRACTICE_AREAS) {
-            if (progress.completedCategoryIds.includes(category.id)) {
-                console.log(`\nSkipping ${category.name} (already completed)`);
-                continue;
+        // Process up to MAX_COMBOS targets
+        for (let i = 0; i < MAX_COMBOS; i++) {
+            const target = getNextTarget(progress);
+
+            if (!target) {
+                console.log('\n✓ All practice areas and city combinations complete!');
+                break;
             }
 
             if (totalInsertedThisRun >= MAX_ATTORNEYS) {
@@ -790,16 +919,44 @@ async function main() {
                 break;
             }
 
-            const stats = await scrapeCategory(browser, category, existingEmails, existingProfileIds);
+            const stats = await scrapeTarget(browser, target, existingEmails, existingProfileIds);
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
 
-            // Mark category complete ONLY if all profiles were scraped
-            if (stats.all_profiles_scraped && !progress.completedCategoryIds.includes(category.id)) {
-                progress.completedCategoryIds.push(category.id);
-                console.log(`   ✓ Category ${category.name} marked as complete`);
-            } else if (!stats.all_profiles_scraped) {
-                console.log(`   ⚠ Category ${category.name} NOT marked complete (hit MAX_ATTORNEYS limit)`);
+            // Update progress based on results
+            if (stats.city) {
+                // City-level scrape completed
+                if (!progress.completedCityCombos[stats.practiceAreaId]) {
+                    progress.completedCityCombos[stats.practiceAreaId] = [];
+                }
+                progress.completedCityCombos[stats.practiceAreaId].push(stats.city);
+
+                // Check if all cities done for this practice area
+                if (progress.completedCityCombos[stats.practiceAreaId].length >= ILLINOIS_CITIES.length) {
+                    // Move from needingCities to completed
+                    progress.practiceAreaIdsNeedingCities = progress.practiceAreaIdsNeedingCities.filter(
+                        id => id !== stats.practiceAreaId
+                    );
+                    if (!progress.completedCategoryIds.includes(stats.practiceAreaId)) {
+                        progress.completedCategoryIds.push(stats.practiceAreaId);
+                    }
+                    console.log(`   ✓ All cities complete for ${stats.practiceAreaName}`);
+                }
+            } else {
+                // Practice area level scrape (no city filter)
+                if (stats.hit_cap && !stats.city) {
+                    // Needs city subdivision
+                    if (!progress.practiceAreaIdsNeedingCities.includes(stats.practiceAreaId)) {
+                        progress.practiceAreaIdsNeedingCities.push(stats.practiceAreaId);
+                        console.log(`   → ${stats.practiceAreaName} added to city subdivision queue`);
+                    }
+                } else if (stats.all_profiles_scraped) {
+                    // Complete (under cap)
+                    if (!progress.completedCategoryIds.includes(stats.practiceAreaId)) {
+                        progress.completedCategoryIds.push(stats.practiceAreaId);
+                        console.log(`   ✓ Category ${stats.practiceAreaName} marked as complete`);
+                    }
+                }
             }
 
             progress.totalInserted = (progress.totalInserted || 0) + stats.inserted;
@@ -818,15 +975,16 @@ async function main() {
         console.log('\n' + '='.repeat(60));
         console.log('SUMMARY');
         console.log('='.repeat(60));
-        console.log(`   Categories scraped: ${allStats.length}`);
+        console.log(`   Targets scraped: ${allStats.length}`);
         console.log(`   Inserted this run: ${totalInsertedThisRun}`);
         console.log(`   Total Illinois Bar in DB: ${totalInDb.toLocaleString()}`);
-        console.log(`   Categories complete: ${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length}`);
+        console.log(`   Practice areas complete: ${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length}`);
+        console.log(`   Areas needing city subdivision: ${progress.practiceAreaIdsNeedingCities.length}`);
         console.log(`   Duration: ${duration} minutes`);
 
         const summary = {
             run_date: new Date().toISOString(),
-            categories: allStats,
+            targets: allStats,
             totalInserted: totalInsertedThisRun,
             totalInDb,
             progress,
