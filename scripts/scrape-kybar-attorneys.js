@@ -826,7 +826,7 @@ async function extractProfileData(iframe, name, customerCode, practiceArea) {
         firmName: '',
         email: null,
         phone: null,
-        website: null,
+        website: '',
         city: null,
         customerCode
     };

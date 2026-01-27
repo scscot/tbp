@@ -235,7 +235,7 @@ function extractAttorneyData(card) {
     firmName: null,
     email: null,
     phone: null,
-    website: null,
+    website: '',
     address: null,
     city: null,
     state: 'OK'
@@ -373,7 +373,7 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
           firmName: null,
           email: null,
           phone: null,
-          website: null,
+          website: '',
           address: null,
           city: null,
           state: 'OK'
@@ -475,7 +475,7 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
           lastName: lastName,
           firmName: attorney.firmName, // Keep original for reference
           phone: attorney.phone || null,
-          website: attorney.website || null,
+          website: attorney.website || '',
           address: attorney.address || null,
           city: attorney.city || null,
           state: attorney.state || 'OK',

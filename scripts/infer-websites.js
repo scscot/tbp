@@ -467,8 +467,19 @@ async function main() {
         return data.domainChecked === undefined;
     });
 
-    // Combine (snapshot already filtered, add unchecked legacy)
-    const allDocs = [...snapshot.docs, ...uncheckedLegacy];
+    // Also get contacts where website is null (KY/OK scrapers stored null instead of '')
+    const nullWebsiteQuery = db.collection('preintake_emails')
+        .where('website', '==', null);
+    const nullWebsiteSnapshot = await nullWebsiteQuery.get();
+
+    // Filter null-website contacts to only unchecked
+    const uncheckedNull = nullWebsiteSnapshot.docs.filter(doc => {
+        const data = doc.data();
+        return data.domainChecked !== true;
+    });
+
+    // Combine all three sources
+    const allDocs = [...snapshot.docs, ...uncheckedLegacy, ...uncheckedNull];
 
     // Dedupe by doc ID (in case of overlap)
     const seenIds = new Set();
