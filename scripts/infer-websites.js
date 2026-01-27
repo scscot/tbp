@@ -385,8 +385,56 @@ function isLawFirmWebsite(body, attorneyName, firmName, domain) {
 }
 
 /**
+ * Quick strict-SSL check (HEAD request with rejectUnauthorized: true)
+ * Returns whether the HTTPS URL works with standard browser-like validation.
+ */
+function checkStrictSsl(url, timeout = 5000) {
+    return new Promise((resolve) => {
+        const req = https.get(url, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PreIntake.ai Website Checker)' },
+            rejectUnauthorized: true
+        }, (res) => {
+            req.destroy();
+            resolve({ ok: res.statusCode < 400, statusCode: res.statusCode });
+        });
+
+        req.setTimeout(timeout, () => {
+            req.destroy();
+            resolve({ ok: false, error: 'timeout' });
+        });
+
+        req.on('error', (err) => {
+            resolve({ ok: false, error: err.code || err.message });
+        });
+    });
+}
+
+/**
+ * After finding a verified law firm URL via relaxed SSL, check if strict SSL works.
+ * If not, try the HTTP version as a fallback for demo generation compatibility.
+ */
+async function validateSslOrFallback(httpsUrl) {
+    const strictResult = await checkStrictSsl(httpsUrl);
+    if (strictResult.ok) {
+        return httpsUrl;
+    }
+
+    // Strict SSL failed — try HTTP fallback
+    const httpUrl = httpsUrl.replace('https://', 'http://');
+    const httpResult = await fetchUrl(httpUrl);
+    if (httpResult.success) {
+        console.log(`  ⚠️  SSL issue (${strictResult.error}) — using HTTP: ${httpUrl}`);
+        return httpUrl;
+    }
+
+    // HTTP also failed — keep the HTTPS URL (downstream will handle the error)
+    console.log(`  ⚠️  SSL issue (${strictResult.error}) and HTTP failed — keeping HTTPS`);
+    return httpsUrl;
+}
+
+/**
  * Try to find a working website for a domain
- * Only tries HTTPS (www and non-www) - skips HTTP
+ * Tries HTTPS first (www and non-www), validates SSL, falls back to HTTP if needed
  */
 async function findWebsite(domain, attorneyName, firmName) {
     const urlsToTry = [
@@ -401,9 +449,10 @@ async function findWebsite(domain, attorneyName, firmName) {
             const verification = isLawFirmWebsite(result.body, attorneyName, firmName, domain);
 
             if (verification.isLawFirm) {
+                const validatedUrl = await validateSslOrFallback(url);
                 return {
                     success: true,
-                    url,
+                    url: validatedUrl,
                     confidence: verification.confidence,
                     reason: verification.reason
                 };
@@ -416,9 +465,13 @@ async function findWebsite(domain, attorneyName, firmName) {
             if (redirectResult.success && redirectResult.body) {
                 const verification = isLawFirmWebsite(redirectResult.body, attorneyName, firmName, domain);
                 if (verification.isLawFirm) {
+                    const redirectUrl = result.redirect;
+                    const validatedUrl = redirectUrl.startsWith('https://')
+                        ? await validateSslOrFallback(redirectUrl)
+                        : redirectUrl;
                     return {
                         success: true,
-                        url: result.redirect,
+                        url: validatedUrl,
                         confidence: verification.confidence,
                         reason: verification.reason
                     };

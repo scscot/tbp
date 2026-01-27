@@ -240,13 +240,12 @@ async function analyzeWebsite(websiteUrl) {
     let html;
     let finalUrl = websiteUrl;
 
-    // Create a timeout promise
-    const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Website fetch timed out')), FETCH_TIMEOUT);
-    });
+    // SSL error codes that indicate certificate issues (not content/network failures)
+    const SSL_ERROR_CODES = ['CERT_HAS_EXPIRED', 'ERR_TLS_CERT_ALTNAME_INVALID',
+        'DEPTH_ZERO_SELF_SIGNED_CERT', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'EPROTO',
+        'CERT_NOT_YET_VALID', 'SELF_SIGNED_CERT_IN_CHAIN', 'ERR_TLS_CERT_AUTHORITY_INVALID'];
 
-    // Create the fetch promise
-    const fetchPromise = fetch(websiteUrl, {
+    const fetchWithHeaders = (url) => fetch(url, {
         headers: {
             'User-Agent': 'Mozilla/5.0 (compatible; PreIntakeBot/1.0; +https://preintake.ai)',
             'Accept': 'text/html,application/xhtml+xml',
@@ -255,8 +254,25 @@ async function analyzeWebsite(websiteUrl) {
         timeout: FETCH_TIMEOUT,
     });
 
-    // Race between fetch and timeout
-    const response = await Promise.race([fetchPromise, timeoutPromise]);
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Website fetch timed out')), FETCH_TIMEOUT);
+    });
+
+    let response;
+    try {
+        response = await Promise.race([fetchWithHeaders(websiteUrl), timeoutPromise]);
+    } catch (err) {
+        // If HTTPS failed with an SSL error, try HTTP fallback
+        if (websiteUrl.startsWith('https://') && SSL_ERROR_CODES.some(code => (err.code || err.message || '').includes(code))) {
+            const httpUrl = websiteUrl.replace('https://', 'http://');
+            console.log(`SSL error for ${websiteUrl} (${err.code || err.message}), trying HTTP: ${httpUrl}`);
+            finalUrl = httpUrl;
+            response = await Promise.race([fetchWithHeaders(httpUrl), timeoutPromise]);
+        } else {
+            throw err;
+        }
+    }
 
     if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
