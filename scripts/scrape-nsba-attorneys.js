@@ -143,7 +143,7 @@ async function sendNotificationEmail(subject, body) {
     try {
         await transporter.sendMail({
             from: `"NSBA Scraper" <${smtpUser}>`,
-            to: 'scscott@gmail.com',
+            to: 'scscot@gmail.com',
             subject,
             text: body
         });
