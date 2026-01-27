@@ -51,11 +51,11 @@ async function audit() {
         const d = doc.data();
         const id = doc.id;
 
-        // Required: email
+        // Required: email (skip failed records — they won't be sent)
         if (!d.email) {
-            issues.missingEmail.push({ id, data: d });
+            if (d.status !== 'failed') issues.missingEmail.push({ id, data: d });
         } else if (typeof d.email !== 'string' || !emailRegex.test(d.email)) {
-            issues.invalidEmail.push({ id, email: d.email });
+            if (d.status !== 'failed') issues.invalidEmail.push({ id, email: d.email });
         }
 
         // Required: sent (boolean)
