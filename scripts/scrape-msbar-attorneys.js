@@ -236,7 +236,7 @@ async function fetchVCard(profileId) {
 // ============================================================================
 
 async function loadProgress() {
-    if (DRY_RUN) return { completedCategoryIds: [], totalInserted: 0 };
+    if (DRY_RUN) return { completedCategoryIds: [], validatedCategoryIds: null, invalidCategoryIds: null, totalInserted: 0 };
 
     try {
         const progressRef = db.collection('preintake_scrape_progress').doc('msbar');
@@ -246,6 +246,8 @@ async function loadProgress() {
             const data = doc.data();
             return {
                 completedCategoryIds: data.completedCategoryIds || [],
+                validatedCategoryIds: data.validatedCategoryIds || null,
+                invalidCategoryIds: data.invalidCategoryIds || null,
                 totalInserted: data.totalInserted || 0,
                 lastRunDate: data.lastRunDate
             };
@@ -254,7 +256,7 @@ async function loadProgress() {
         console.error('Error loading progress:', err.message);
     }
 
-    return { completedCategoryIds: [], totalInserted: 0 };
+    return { completedCategoryIds: [], validatedCategoryIds: null, invalidCategoryIds: null, totalInserted: 0 };
 }
 
 async function saveProgress(progress) {
@@ -269,6 +271,102 @@ async function saveProgress(progress) {
     } catch (err) {
         console.error('Error saving progress:', err.message);
     }
+}
+
+// ============================================================================
+// CATEGORY VALIDATION
+// ============================================================================
+
+/**
+ * Get the total result count from a ReliaGuide search results page.
+ * Looks for "Listing X-Y of Z" text or falls back to counting cards.
+ * Returns: number (>0 = count, -1 = cards found but no count, 0 = no results)
+ */
+async function getResultsCount(page) {
+    return page.evaluate(() => {
+        const text = document.body.innerText;
+        let match = text.match(/Listing\s+\d+.*?of\s+(\d+)/i);
+        if (match) return parseInt(match[1]);
+        const cards = document.querySelectorAll('.ant-card');
+        return cards.length > 0 ? -1 : 0;
+    });
+}
+
+/**
+ * Validate hardcoded categories against live search results.
+ * Tests each category URL and caches results in Firestore progress.
+ * Returns filtered array of categories that have results.
+ */
+async function validateCategories(browser, progress) {
+    // Check for cached validation
+    if (progress.validatedCategoryIds) {
+        const validIds = new Set(progress.validatedCategoryIds);
+        const validCategories = PRACTICE_AREAS.filter(c => validIds.has(c.id));
+        const invalidCount = PRACTICE_AREAS.length - validCategories.length;
+        console.log(`Using cached category validation: ${validCategories.length} valid, ${invalidCount} invalid`);
+        if (progress.invalidCategoryIds && progress.invalidCategoryIds.length > 0) {
+            const invalidNames = PRACTICE_AREAS
+                .filter(c => progress.invalidCategoryIds.includes(c.id))
+                .map(c => c.name);
+            console.log(`   Invalid: ${invalidNames.join(', ')}`);
+        }
+        return validCategories;
+    }
+
+    // No cache — validate each category against live search
+    console.log('Validating practice area categories against live search...');
+    const validatedIds = [];
+    const invalidIds = [];
+
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+    for (const category of PRACTICE_AREAS) {
+        try {
+            const url = `${BASE_URL}/lawyer/search?category.equals=${encodeURIComponent(category.name)}&categoryId.equals=${category.id}&memberTypeId.equals=1`;
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            try {
+                await page.waitForSelector('.ant-layout', { timeout: 30000 });
+            } catch (e) {
+                // Layout didn't render — treat as 0 results
+            }
+            await delay(3000);
+
+            const count = await getResultsCount(page);
+            if (count !== 0) {
+                validatedIds.push(category.id);
+                console.log(`   ${category.name}: ${count === -1 ? 'results found' : count + ' results'}`);
+            } else {
+                invalidIds.push(category.id);
+                console.log(`   ${category.name}: 0 results (will skip)`);
+            }
+        } catch (err) {
+            // On error, keep the category (conservative)
+            validatedIds.push(category.id);
+            console.log(`   ${category.name}: error (${err.message}) — keeping`);
+        }
+        await delay(1000);
+    }
+
+    await page.close();
+
+    // Safety valve: if ALL categories returned 0, likely anti-bot or transient issue
+    if (validatedIds.length === 0 && PRACTICE_AREAS.length > 0) {
+        console.log(`\nWARNING: All ${PRACTICE_AREAS.length} categories returned 0 results.`);
+        console.log(`  This likely indicates anti-bot detection or a transient issue.`);
+        console.log(`  Falling back to ALL categories to prevent skipping everything.\n`);
+        return PRACTICE_AREAS;
+    }
+
+    // Cache results
+    progress.validatedCategoryIds = validatedIds;
+    progress.invalidCategoryIds = invalidIds;
+    await saveProgress(progress);
+
+    const validCategories = PRACTICE_AREAS.filter(c => validatedIds.includes(c.id));
+    console.log(`Validation complete: ${validCategories.length} valid, ${invalidIds.length} invalid\n`);
+    return validCategories;
 }
 
 // ============================================================================
@@ -401,16 +499,7 @@ async function scrapeByCategory(page, category, existingEmails, existingProfileI
         await delay(3000);
 
         // Get total results - look for listing count or card elements
-        const totalResults = await page.evaluate(() => {
-            const text = document.body.innerText;
-            // Try different patterns
-            let match = text.match(/Listing\s+\d+.*?of\s+(\d+)/i);
-            if (match) return parseInt(match[1]);
-
-            // Fallback: count visible cards
-            const cards = document.querySelectorAll('.ant-card');
-            return cards.length > 0 ? -1 : 0;  // -1 indicates cards found but no count
-        });
+        const totalResults = await getResultsCount(page);
 
         if (totalResults === 0) {
             console.log(`     No results found for ${name}`);
@@ -545,21 +634,6 @@ async function main() {
     console.log(`Previously completed categories: ${progress.completedCategoryIds.length}`);
     console.log(`Total inserted so far: ${progress.totalInserted}\n`);
 
-    // Get pending categories
-    const pendingCategories = PRACTICE_AREAS.filter(
-        cat => !progress.completedCategoryIds.includes(cat.id)
-    );
-
-    if (pendingCategories.length === 0) {
-        console.log('All categories already scraped!');
-        console.log('Reset progress in Firestore to re-scrape.');
-        return;
-    }
-
-    console.log(`Categories remaining: ${pendingCategories.length}`);
-    console.log(pendingCategories.map(c => c.name).join(', '));
-    console.log();
-
     console.log('Loading existing emails...');
     const existingEmails = await loadExistingEmails();
     console.log(`Loaded ${existingEmails.size} existing emails`);
@@ -577,6 +651,25 @@ async function main() {
             '--disable-blink-features=AutomationControlled'
         ]
     });
+
+    // Validate categories against live search before processing
+    const validCategories = await validateCategories(browser, progress);
+
+    // Get pending categories (from validated set only)
+    const pendingCategories = validCategories.filter(
+        cat => !progress.completedCategoryIds.includes(cat.id)
+    );
+
+    if (pendingCategories.length === 0) {
+        console.log('All categories already scraped!');
+        console.log('Reset progress in Firestore to re-scrape.');
+        await browser.close();
+        return;
+    }
+
+    console.log(`Categories remaining: ${pendingCategories.length}`);
+    console.log(pendingCategories.map(c => c.name).join(', '));
+    console.log();
 
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
@@ -627,6 +720,7 @@ async function main() {
     console.log('SUMMARY');
     console.log('='.repeat(60));
     console.log(`Categories processed: ${categoryResults.length}`);
+    console.log(`Categories complete: ${completedCategoryIds.length}/${validCategories.length} valid (${PRACTICE_AREAS.length} total)`);
     console.log(`Inserted this run: ${insertedThisRun}`);
     console.log(`Total MS Bar in DB: ${totalInDb}`);
     console.log();
@@ -641,6 +735,7 @@ async function main() {
     const emailHtml = `
         <h2>Mississippi Bar Scraper Complete</h2>
         <p><strong>Categories processed:</strong> ${categoryResults.length}</p>
+        <p><strong>Categories complete:</strong> ${completedCategoryIds.length}/${validCategories.length} valid (${PRACTICE_AREAS.length} total)</p>
         <p><strong>Inserted this run:</strong> ${insertedThisRun}</p>
         <p><strong>Total MS Bar in DB:</strong> ${totalInDb}</p>
         ${DRY_RUN ? '<p><strong>*** DRY RUN - No data written ***</strong></p>' : ''}
@@ -652,8 +747,8 @@ async function main() {
     `;
 
     const subject = DRY_RUN
-        ? '[DRY RUN] MS Bar Scraper Complete'
-        : 'MS Bar Scraper Complete';
+        ? `[DRY RUN] MS Bar: ${insertedThisRun} new attorneys (${completedCategoryIds.length}/${validCategories.length} categories)`
+        : `MS Bar: ${insertedThisRun} new attorneys (${completedCategoryIds.length}/${validCategories.length} categories)`;
 
     await sendNotificationEmail(subject, emailHtml);
 

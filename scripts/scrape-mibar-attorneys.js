@@ -392,6 +392,8 @@ async function getProgress() {
     if (!doc.exists) {
         return {
             completedCategoryIds: [],
+            validatedCategoryIds: null,
+            invalidCategoryIds: null,
             totalInserted: 0,
             lastRunDate: null
         };
@@ -400,6 +402,8 @@ async function getProgress() {
     const data = doc.data();
     return {
         completedCategoryIds: data.completedCategoryIds || [],
+        validatedCategoryIds: data.validatedCategoryIds || null,
+        invalidCategoryIds: data.invalidCategoryIds || null,
         totalInserted: data.totalInserted || 0,
         lastRunDate: data.lastRunDate || null
     };
@@ -411,6 +415,79 @@ async function saveProgress(progress) {
         ...progress,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+}
+
+/**
+ * Validate practice area categories against live search results.
+ * Tests each category by loading its search URL and checking result count.
+ * Caches results in progress document to avoid re-validation on subsequent runs.
+ */
+async function validateCategories(browser, progress) {
+    // Check for cached validation
+    if (progress.validatedCategoryIds) {
+        const validIds = new Set(progress.validatedCategoryIds);
+        const validCategories = PRACTICE_AREAS.filter(c => validIds.has(c.id));
+        const invalidCount = PRACTICE_AREAS.length - validCategories.length;
+        console.log(`Using cached category validation: ${validCategories.length} valid, ${invalidCount} invalid`);
+        if (progress.invalidCategoryIds && progress.invalidCategoryIds.length > 0) {
+            const invalidNames = PRACTICE_AREAS
+                .filter(c => progress.invalidCategoryIds.includes(c.id))
+                .map(c => c.name);
+            console.log(`   Invalid: ${invalidNames.join(', ')}`);
+        }
+        return validCategories;
+    }
+
+    // No cache — validate each category against live search
+    console.log('Validating practice area categories against live search...');
+    const validatedIds = [];
+    const invalidIds = [];
+
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+    for (const category of PRACTICE_AREAS) {
+        try {
+            const url = `${BASE_URL}/lawyer/search?category.equals=${encodeURIComponent(category.name)}&categoryId.equals=${category.id}&memberTypeId.equals=1`;
+            await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+            await new Promise(r => setTimeout(r, 5000));
+
+            const count = await getResultsCount(page);
+            if (count > 0) {
+                validatedIds.push(category.id);
+                console.log(`   ${category.name}: ${count} results`);
+            } else {
+                invalidIds.push(category.id);
+                console.log(`   ${category.name}: 0 results (will skip)`);
+            }
+        } catch (err) {
+            // On error, keep the category (conservative approach)
+            validatedIds.push(category.id);
+            console.log(`   ${category.name}: error (${err.message}) — keeping`);
+        }
+        await new Promise(r => setTimeout(r, 1000));
+    }
+
+    await page.close();
+
+    // Safety valve: if ALL categories returned 0, likely anti-bot or transient issue
+    if (validatedIds.length === 0 && PRACTICE_AREAS.length > 0) {
+        console.log(`\nWARNING: All ${PRACTICE_AREAS.length} categories returned 0 results.`);
+        console.log(`  This likely indicates anti-bot detection or a transient issue.`);
+        console.log(`  Falling back to ALL categories to prevent skipping everything.\n`);
+        return PRACTICE_AREAS;
+    }
+
+    // Cache results in progress document
+    progress.validatedCategoryIds = validatedIds;
+    progress.invalidCategoryIds = invalidIds;
+    if (!DRY_RUN) {
+        await saveProgress(progress);
+    }
+
+    const validCategories = PRACTICE_AREAS.filter(c => validatedIds.includes(c.id));
+    console.log(`Validation complete: ${validCategories.length} valid, ${invalidIds.length} invalid\n`);
+    return validCategories;
 }
 
 async function getTotalAttorneysInDb() {
@@ -771,7 +848,7 @@ function generateEmailHTML(summary) {
         <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0;">Total inserted this run:</td><td style="text-align: right; font-weight: 600; color: #166534;">${summary.totalInserted}</td></tr>
             <tr><td style="padding: 8px 0;">Michigan Bar attorneys in DB:</td><td style="text-align: right;">${summary.totalInDb.toLocaleString()}</td></tr>
-            <tr><td style="padding: 8px 0;">Categories completed:</td><td style="text-align: right;">${summary.progress.completedCategoryIds.length} / ${PRACTICE_AREAS.length}</td></tr>
+            <tr><td style="padding: 8px 0;">Categories completed:</td><td style="text-align: right;">${summary.progress.completedCategoryIds.length}/${summary.validCategoriesCount || PRACTICE_AREAS.length} valid (${summary.totalCategoriesCount || PRACTICE_AREAS.length} total)</td></tr>
             <tr><td style="padding: 8px 0;">Duration:</td><td style="text-align: right;">${summary.duration}</td></tr>
         </table>
 
@@ -829,8 +906,11 @@ async function main() {
     let totalInsertedThisRun = 0;
 
     try {
+        // Validate categories against live search before processing
+        const validCategories = await validateCategories(browser, progress);
+
         // Process categories
-        for (const category of PRACTICE_AREAS) {
+        for (const category of validCategories) {
             // Skip completed categories
             if (progress.completedCategoryIds.includes(category.id)) {
                 console.log(`\nSkipping ${category.name} (already completed)`);
@@ -878,7 +958,7 @@ async function main() {
         console.log(`   Categories scraped: ${allStats.length}`);
         console.log(`   Inserted this run: ${totalInsertedThisRun}`);
         console.log(`   Total Michigan Bar in DB: ${totalInDb.toLocaleString()}`);
-        console.log(`   Categories complete: ${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length}`);
+        console.log(`   Categories complete: ${progress.completedCategoryIds.length}/${validCategories.length} valid (${PRACTICE_AREAS.length} total)`);
         console.log(`   Duration: ${duration} minutes`);
 
         // Save summary
@@ -888,6 +968,8 @@ async function main() {
             totalInserted: totalInsertedThisRun,
             totalInDb,
             progress,
+            validCategoriesCount: validCategories.length,
+            totalCategoriesCount: PRACTICE_AREAS.length,
             duration: `${duration} minutes`,
             dry_run: DRY_RUN
         };
@@ -899,7 +981,7 @@ async function main() {
 
         // Send email
         await sendNotificationEmail(
-            `Michigan Bar: ${totalInsertedThisRun} new attorneys (${progress.completedCategoryIds.length}/${PRACTICE_AREAS.length} categories)`,
+            `Michigan Bar: ${totalInsertedThisRun} new attorneys (${progress.completedCategoryIds.length}/${validCategories.length} categories)`,
             generateEmailHTML(summary)
         );
 
