@@ -72,7 +72,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -506,6 +506,92 @@
             color: var(--text-light);
         }
 
+        .practice-area-section {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .practice-area-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--accent-gold);
+        }
+
+        .practice-area-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .practice-area-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .practice-area-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0;
+        }
+
+        .practice-area-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .practice-area-item input[type="checkbox"]:checked {
+            background: rgba(201, 169, 98, 0.3);
+            border-color: var(--accent-gold);
+        }
+
+        .practice-area-item input[type="checkbox"]:checked::after {
+            content: '\2713';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-gold);
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .practice-area-item label {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            cursor: pointer;
+            line-height: 1.3;
+        }
+
+        #save-practice-btn {
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .practice-area-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .practice-area-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 500px) {
             body {
                 padding: 1rem;
@@ -587,6 +673,15 @@
                                 <button class="save-btn" id="save-email-btn" onclick="saveDeliveryEmail()">Save</button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="practice-area-section">
+                        <h3>Practice Areas</h3>
+                        <p class="practice-area-hint">Select the practice areas your firm handles. This determines the screening questions used during intake.</p>
+                        <div class="practice-area-grid" id="practice-area-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <button class="save-btn" id="save-practice-btn" onclick="savePracticeAreas()">Save Practice Areas</button>
                     </div>
 
                     <div class="next-steps">
@@ -701,6 +796,23 @@
         let currentToken = null;
         let accountData = null;
         let currentEmbedType = 'button';
+
+        // Standard practice areas (39 total)
+        const STANDARD_PRACTICE_AREAS = [
+            'Administrative Law', 'Appellate Law', 'Bankruptcy', 'Business Law',
+            'Civil Litigation', 'Civil Rights Law', 'Class Action Litigation',
+            'Commercial Litigation', 'Construction Law', 'Consumer Protection',
+            'Contract Law', 'Corporate Law', 'Criminal Defense',
+            'Cybersecurity & Privacy Law', 'Debt Defense', 'Education Law',
+            'Elder Law', 'Employment & Labor Law', 'Entertainment & Media Law',
+            'Environmental Law', 'Estate Planning', 'Family Law',
+            'Health Care Law', 'Immigration Law', 'Insurance Defense',
+            'Intellectual Property Law', 'Juvenile Law', 'Landlord\u2013Tenant Law',
+            'Medical Malpractice', 'Mergers & Acquisitions', 'Personal Injury',
+            'Probate & Trust Administration', 'Product Liability', 'Real Estate Law',
+            'Securities Law', 'Social Security Disability', 'Sports Law',
+            'Tax Law', 'Workers\' Compensation'
+        ];
 
         /**
          * Initialize page based on URL parameters
@@ -858,6 +970,9 @@
                     // Update firm ID in embed codes
                     updateFirmIdCodes(accountData.firmId);
 
+                    // Populate practice areas
+                    renderPracticeAreas(accountData.practiceAreas);
+
                     showDashboard();
                 } else {
                     showError();
@@ -957,6 +1072,66 @@
                 console.error('Save error:', error);
                 alert('An error occurred. Please try again.');
                 btn.textContent = 'Save';
+            }
+
+            btn.disabled = false;
+        }
+
+        /**
+         * Render practice area checkboxes
+         */
+        function renderPracticeAreas(selectedAreas) {
+            const grid = document.getElementById('practice-area-grid');
+            const selectedLower = (selectedAreas || []).map(a => a.toLowerCase().trim());
+
+            grid.innerHTML = STANDARD_PRACTICE_AREAS.map((area, i) => {
+                const id = `pa-${i}`;
+                const checked = selectedLower.includes(area.toLowerCase()) ? 'checked' : '';
+                return `<div class="practice-area-item">
+                    <input type="checkbox" id="${id}" value="${area}" ${checked}>
+                    <label for="${id}">${area}</label>
+                </div>`;
+            }).join('');
+        }
+
+        /**
+         * Save practice areas
+         */
+        async function savePracticeAreas() {
+            const btn = document.getElementById('save-practice-btn');
+            const checkboxes = document.querySelectorAll('#practice-area-grid input[type="checkbox"]:checked');
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const response = await fetchWithTimeout(`${API_BASE}/updateAccountSettings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentToken, practiceAreas: selected })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    btn.textContent = 'Saved!';
+                    btn.classList.add('success');
+                    accountData.practiceAreas = data.account.practiceAreas;
+
+                    setTimeout(() => {
+                        btn.textContent = 'Save Practice Areas';
+                        btn.classList.remove('success');
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Failed to save. Please try again.');
+                    btn.textContent = 'Save Practice Areas';
+                }
+
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('An error occurred. Please try again.');
+                btn.textContent = 'Save Practice Areas';
             }
 
             btn.disabled = false;

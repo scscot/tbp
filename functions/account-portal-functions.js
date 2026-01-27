@@ -355,7 +355,10 @@ const verifyAccountToken = onRequest(
                     deliveryEmail: leadData.deliveryEmail || leadData.email,
                     subscriptionStatus: leadData.subscriptionStatus,
                     currentPeriodEnd: leadData.currentPeriodEnd,
-                    practiceAreas: leadData.practiceAreas?.breakdown ? Object.keys(leadData.practiceAreas.breakdown) : [],
+                    practiceAreas: leadData.confirmedPracticeAreas?.areas
+                        || (Array.isArray(leadData.practiceAreas) ? leadData.practiceAreas : null)
+                        || leadData.analysis?.practiceAreas
+                        || [],
                     logo: leadData.analysis?.logo || null,
                     primaryColor: leadData.analysis?.primaryColor || '#0c1f3f'
                 },
@@ -372,7 +375,7 @@ const verifyAccountToken = onRequest(
 
 /**
  * Update account settings
- * POST { token, deliveryEmail }
+ * POST { token, deliveryEmail?, practiceAreas? }
  */
 const updateAccountSettings = onRequest(
     {
@@ -385,7 +388,7 @@ const updateAccountSettings = onRequest(
         }
 
         try {
-            const { token, deliveryEmail } = req.body;
+            const { token, deliveryEmail, practiceAreas } = req.body;
 
             if (!token) {
                 return res.status(400).json({ error: 'Token is required' });
@@ -416,6 +419,13 @@ const updateAccountSettings = onRequest(
                 }
             }
 
+            // Validate practiceAreas if provided
+            if (practiceAreas !== undefined) {
+                if (!Array.isArray(practiceAreas)) {
+                    return res.status(400).json({ error: 'Practice areas must be an array' });
+                }
+            }
+
             // Update lead document
             const updateData = {
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -423,6 +433,10 @@ const updateAccountSettings = onRequest(
 
             if (deliveryEmail !== undefined) {
                 updateData.deliveryEmail = deliveryEmail.toLowerCase().trim();
+            }
+
+            if (practiceAreas !== undefined) {
+                updateData['confirmedPracticeAreas.areas'] = practiceAreas;
             }
 
             await db.collection('preintake_leads').doc(tokenData.leadId).update(updateData);
@@ -439,7 +453,11 @@ const updateAccountSettings = onRequest(
                     firmId: tokenData.leadId,
                     firmName: updatedData.analysis?.firmName || updatedData.firmDisplayName || 'Your Firm',
                     deliveryEmail: updatedData.deliveryEmail || updatedData.email,
-                    subscriptionStatus: updatedData.subscriptionStatus
+                    subscriptionStatus: updatedData.subscriptionStatus,
+                    practiceAreas: updatedData.confirmedPracticeAreas?.areas
+                        || (Array.isArray(updatedData.practiceAreas) ? updatedData.practiceAreas : null)
+                        || updatedData.analysis?.practiceAreas
+                        || []
                 }
             });
 
