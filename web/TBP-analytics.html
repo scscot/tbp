@@ -1306,9 +1306,20 @@
                 domainTable.innerHTML = '<tr><td colspan="6" class="no-data-message">No domain data</td></tr>';
             }
 
-            // Top Countries - Not in current API, hide section for now
+            // Top Countries
             const countriesTable = document.getElementById('topCountriesTable');
-            countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">Country data not available in API</td></tr>';
+            const countryData = data.topCountries?.data || [];
+            if (countryData.length > 0) {
+                countriesTable.innerHTML = countryData.slice(0, 15).map(c => `
+                    <tr>
+                        <td>${escapeHtml(c.country || '(not set)')}</td>
+                        <td>${formatNumber(c.activeUsers || 0)}</td>
+                        <td>${(c.engagementRate || 0).toFixed(1)}%</td>
+                    </tr>
+                `).join('');
+            } else {
+                countriesTable.innerHTML = '<tr><td colspan="3" class="no-data-message">No country data</td></tr>';
+            }
 
             // Email Campaign - Firestore stats (top-level) + GA4 traffic (date-range)
             const emailStats = analyticsData.emailCampaign;

@@ -65,7 +65,8 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
       topPagesResponse,
       deviceInfoResponse,
       eventsResponse,
-      domainBreakdownResponse
+      domainBreakdownResponse,
+      topCountriesResponse
     ] = await Promise.all([
       // Overview metrics
       client.runReport({
@@ -176,6 +177,19 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
         ],
         orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
         limit: 10
+      }),
+      // Top countries
+      client.runReport({
+        property: `properties/${propertyId}`,
+        dateRanges: [{ startDate, endDate }],
+        dimensions: [{ name: 'country' }],
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'sessions' },
+          { name: 'engagementRate' }
+        ],
+        orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+        limit: 15
       })
     ]);
 
@@ -188,7 +202,8 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
       topPages: formatGA4Report(topPagesResponse[0]),
       deviceBreakdown: formatGA4Report(deviceInfoResponse[0]),
       topEvents: formatGA4Report(eventsResponse[0]),
-      domainBreakdown: formatGA4Report(domainBreakdownResponse[0])
+      domainBreakdown: formatGA4Report(domainBreakdownResponse[0]),
+      topCountries: formatGA4Report(topCountriesResponse[0])
     };
 
   } catch (error) {
