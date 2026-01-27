@@ -346,12 +346,23 @@ const verifyAccountToken = onRequest(
                 portalAccessCount: admin.firestore.FieldValue.increment(1)
             });
 
+            // Resolve firstName/lastName (some leads store name as full string)
+            let firstName = leadData.firstName || '';
+            let lastName = leadData.lastName || '';
+            if (!firstName && leadData.name) {
+                const parts = leadData.name.trim().split(' ');
+                firstName = parts[0] || '';
+                lastName = parts.slice(1).join(' ') || '';
+            }
+
             // Return account data
             return res.json({
                 success: true,
                 account: {
                     firmId: tokenData.leadId,
                     firmName: leadData.analysis?.firmName || leadData.firmDisplayName || 'Your Firm',
+                    firstName,
+                    lastName,
                     deliveryEmail: leadData.deliveryEmail || leadData.email,
                     subscriptionStatus: leadData.subscriptionStatus,
                     currentPeriodEnd: leadData.currentPeriodEnd,
@@ -375,7 +386,7 @@ const verifyAccountToken = onRequest(
 
 /**
  * Update account settings
- * POST { token, deliveryEmail?, practiceAreas? }
+ * POST { token, deliveryEmail?, practiceAreas?, firstName?, lastName? }
  */
 const updateAccountSettings = onRequest(
     {
@@ -388,7 +399,7 @@ const updateAccountSettings = onRequest(
         }
 
         try {
-            const { token, deliveryEmail, practiceAreas } = req.body;
+            const { token, deliveryEmail, practiceAreas, firstName, lastName } = req.body;
 
             if (!token) {
                 return res.status(400).json({ error: 'Token is required' });
@@ -437,6 +448,17 @@ const updateAccountSettings = onRequest(
 
             if (practiceAreas !== undefined) {
                 updateData['confirmedPracticeAreas.areas'] = practiceAreas;
+                // Trigger demo regeneration so the intake page reflects the new practice areas
+                updateData.status = 'generating_demo';
+                updateData.regeneratingDemo = true;
+            }
+
+            if (firstName !== undefined) {
+                updateData.firstName = firstName.trim();
+            }
+
+            if (lastName !== undefined) {
+                updateData.lastName = lastName.trim();
             }
 
             await db.collection('preintake_leads').doc(tokenData.leadId).update(updateData);
@@ -447,11 +469,23 @@ const updateAccountSettings = onRequest(
 
             console.log(`Account settings updated for ${tokenData.leadId}`);
 
+            // Resolve names from updated data
+            let resolvedFirstName = updatedData.firstName || '';
+            let resolvedLastName = updatedData.lastName || '';
+            if (!resolvedFirstName && updatedData.name) {
+                const parts = updatedData.name.trim().split(' ');
+                resolvedFirstName = parts[0] || '';
+                resolvedLastName = parts.slice(1).join(' ') || '';
+            }
+
             return res.json({
                 success: true,
+                regeneratingDemo: practiceAreas !== undefined,
                 account: {
                     firmId: tokenData.leadId,
                     firmName: updatedData.analysis?.firmName || updatedData.firmDisplayName || 'Your Firm',
+                    firstName: resolvedFirstName,
+                    lastName: resolvedLastName,
                     deliveryEmail: updatedData.deliveryEmail || updatedData.email,
                     subscriptionStatus: updatedData.subscriptionStatus,
                     practiceAreas: updatedData.confirmedPracticeAreas?.areas

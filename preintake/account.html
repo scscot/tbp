@@ -667,21 +667,20 @@
                             <span class="value" id="subscription-status" style="color: var(--success);">Active</span>
                         </div>
                         <div class="info-row editable-row">
+                            <span class="label">Lead Delivery Contact</span>
+                            <div class="input-group">
+                                <input type="text" class="input-field" id="contact-first-name" placeholder="First Name">
+                                <input type="text" class="input-field" id="contact-last-name" placeholder="Last Name">
+                                <button class="save-btn" id="save-contact-btn" onclick="saveContactName()">Save</button>
+                            </div>
+                        </div>
+                        <div class="info-row editable-row">
                             <span class="label">Lead Delivery Email</span>
                             <div class="input-group">
                                 <input type="email" class="input-field" id="delivery-email" placeholder="leads@yourfirm.com">
                                 <button class="save-btn" id="save-email-btn" onclick="saveDeliveryEmail()">Save</button>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="practice-area-section">
-                        <h3>Practice Areas</h3>
-                        <p class="practice-area-hint">Select the practice areas your firm handles. This determines the screening questions used during intake.</p>
-                        <div class="practice-area-grid" id="practice-area-grid">
-                            <!-- Populated by JavaScript -->
-                        </div>
-                        <button class="save-btn" id="save-practice-btn" onclick="savePracticeAreas()">Save Practice Areas</button>
                     </div>
 
                     <div class="next-steps">
@@ -722,6 +721,15 @@
                             <p class="position-hint">Style the container <code>&lt;div&gt;</code> to control dimensions.</p>
                             <button class="copy-btn" onclick="copyEmbedCode('page')">Copy Code</button>
                         </div>
+                    </div>
+
+                    <div class="practice-area-section">
+                        <h3>Practice Areas</h3>
+                        <p class="practice-area-hint">Select the practice areas your firm handles. This determines the screening questions used during intake.</p>
+                        <div class="practice-area-grid" id="practice-area-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <button class="save-btn" id="save-practice-btn" onclick="savePracticeAreas()">Update Practice Areas</button>
                     </div>
 
                     <button class="btn-primary" onclick="openBillingPortal()" id="billing-btn">
@@ -960,6 +968,8 @@
                     // Populate dashboard
                     document.getElementById('firm-name').textContent = accountData.firmName;
                     document.getElementById('delivery-email').value = accountData.deliveryEmail || '';
+                    document.getElementById('contact-first-name').value = accountData.firstName || '';
+                    document.getElementById('contact-last-name').value = accountData.lastName || '';
 
                     // Update subscription status
                     const statusEl = document.getElementById('subscription-status');
@@ -1078,6 +1088,55 @@
         }
 
         /**
+         * Save contact name (firstName / lastName)
+         */
+        async function saveContactName() {
+            const firstName = document.getElementById('contact-first-name').value.trim();
+            const lastName = document.getElementById('contact-last-name').value.trim();
+            const btn = document.getElementById('save-contact-btn');
+
+            if (!firstName && !lastName) {
+                alert('Please enter at least a first or last name.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const response = await fetchWithTimeout(`${API_BASE}/updateAccountSettings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentToken, firstName, lastName })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    btn.textContent = 'Saved!';
+                    btn.classList.add('success');
+                    accountData.firstName = data.account.firstName;
+                    accountData.lastName = data.account.lastName;
+
+                    setTimeout(() => {
+                        btn.textContent = 'Save';
+                        btn.classList.remove('success');
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Failed to save. Please try again.');
+                    btn.textContent = 'Save';
+                }
+
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('An error occurred. Please try again.');
+                btn.textContent = 'Save';
+            }
+
+            btn.disabled = false;
+        }
+
+        /**
          * Render practice area checkboxes
          */
         function renderPracticeAreas(selectedAreas) {
@@ -1115,23 +1174,32 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    btn.textContent = 'Saved!';
-                    btn.classList.add('success');
                     accountData.practiceAreas = data.account.practiceAreas;
 
-                    setTimeout(() => {
-                        btn.textContent = 'Save Practice Areas';
-                        btn.classList.remove('success');
-                    }, 2000);
+                    if (data.regeneratingDemo) {
+                        btn.textContent = 'Saved! Regenerating intake page...';
+                        btn.classList.add('success');
+                        setTimeout(() => {
+                            btn.textContent = 'Update Practice Areas';
+                            btn.classList.remove('success');
+                        }, 4000);
+                    } else {
+                        btn.textContent = 'Saved!';
+                        btn.classList.add('success');
+                        setTimeout(() => {
+                            btn.textContent = 'Update Practice Areas';
+                            btn.classList.remove('success');
+                        }, 2000);
+                    }
                 } else {
                     alert(data.error || 'Failed to save. Please try again.');
-                    btn.textContent = 'Save Practice Areas';
+                    btn.textContent = 'Update Practice Areas';
                 }
 
             } catch (error) {
                 console.error('Save error:', error);
                 alert('An error occurred. Please try again.');
-                btn.textContent = 'Save Practice Areas';
+                btn.textContent = 'Update Practice Areas';
             }
 
             btn.disabled = false;

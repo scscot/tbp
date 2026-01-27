@@ -166,58 +166,79 @@ const generatePreIntakeDemo = onDocumentUpdated(
 
             // Check if this is an auto-confirmed flow (from landing page form)
             const isAutoConfirmed = afterData.autoConfirmed === true;
+            // Check if this is a re-generation from account portal (practice area update)
+            const isRegeneration = afterData.regeneratingDemo === true;
 
-            // Send notification emails BEFORE setting demo_ready
-            // This ensures frontend only shows "Check your email" after email is actually sent
-            try {
-                if (isAutoConfirmed) {
-                    // Auto-confirmed flow: Send email with ?demo= link for instant demo loading
-                    const demoLinkUrl = `https://preintake.ai/?demo=${leadId}`;
+            // Skip notification emails for re-generations (subscriber just updated practice areas)
+            if (isRegeneration) {
+                console.log(`Skipping notification emails for re-generation of lead ${leadId}`);
+            } else {
+                // Send notification emails BEFORE setting demo_ready
+                // This ensures frontend only shows "Check your email" after email is actually sent
+                try {
+                    if (isAutoConfirmed) {
+                        // Auto-confirmed flow: Send email with ?demo= link for instant demo loading
+                        const demoLinkUrl = `https://preintake.ai/?demo=${leadId}`;
 
-                    // Send both emails in parallel for faster completion
-                    await Promise.all([
-                        sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
-                        sendAutoConfirmedDemoEmail(leadId, afterData, analysis, demoLinkUrl)
-                    ]);
+                        // Send both emails in parallel for faster completion
+                        await Promise.all([
+                            sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
+                            sendAutoConfirmedDemoEmail(leadId, afterData, analysis, demoLinkUrl)
+                        ]);
 
-                    console.log(`Auto-confirmed demo email sent to ${afterData.email} with link: ${demoLinkUrl}`);
-                } else {
-                    // Manual flow: Send standard demo ready emails
-                    await Promise.all([
-                        sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
-                        sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl)
-                    ]);
+                        console.log(`Auto-confirmed demo email sent to ${afterData.email} with link: ${demoLinkUrl}`);
+                    } else {
+                        // Manual flow: Send standard demo ready emails
+                        await Promise.all([
+                            sendDemoReadyEmail(leadId, afterData, analysis, demoUrl),
+                            sendProspectDemoReadyEmail(leadId, afterData, analysis, demoUrl)
+                        ]);
+                    }
+                } catch (emailError) {
+                    console.error(`Email notification failed for ${leadId}:`, emailError.message);
+                    // Continue to set demo_ready even if email fails - demo IS ready
                 }
-            } catch (emailError) {
-                console.error(`Email notification failed for ${leadId}:`, emailError.message);
-                // Continue to set demo_ready even if email fails - demo IS ready
             }
 
-            // Generate unique 6-digit intake code for hosted URL
-            const intakeCode = await generateUniqueIntakeCode(db);
-            const hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
-            console.log(`Generated intake code ${intakeCode} for lead ${leadId}`);
+            // Generate unique 6-digit intake code for hosted URL (skip if re-generating — already has one)
+            let intakeCode = afterData.intakeCode;
+            let hostedIntakeUrl = afterData.hostedIntakeUrl;
+            if (!intakeCode) {
+                intakeCode = await generateUniqueIntakeCode(db);
+                hostedIntakeUrl = `https://preintake.ai/${intakeCode}`;
+                console.log(`Generated intake code ${intakeCode} for lead ${leadId}`);
+            } else {
+                console.log(`Keeping existing intake code ${intakeCode} for lead ${leadId}`);
+            }
 
-            // Update Firestore with demo URL and status AFTER email is sent
-            // Frontend polls for this status, so user sees "Check your email" only after email is sent
-            await leadRef.update({
+            // Build the Firestore update
+            const demoUpdate = {
                 status: 'demo_ready',
                 demoUrl: demoUrl,
                 intakeCode: intakeCode,
                 hostedIntakeUrl: hostedIntakeUrl,
                 'demo.generatedAt': FieldValue.serverTimestamp(),
                 'demo.version': '1.0.0',
-                // Default delivery config - email to the prospect who requested demo
-                deliveryConfig: {
+                updatedAt: FieldValue.serverTimestamp(),
+            };
+
+            // Only set delivery config and email flags on first generation (not re-generation)
+            if (!isRegeneration) {
+                demoUpdate.deliveryConfig = {
                     method: 'email',
                     emailAddress: afterData.email,
                     webhookUrl: null,
                     crmType: null
-                },
-                demoReadyEmailSent: true,
-                demoReadyEmailSentAt: FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp(),
-            });
+                };
+                demoUpdate.demoReadyEmailSent = true;
+                demoUpdate.demoReadyEmailSentAt = FieldValue.serverTimestamp();
+            } else {
+                // Clear the re-generation flag
+                demoUpdate.regeneratingDemo = FieldValue.delete();
+            }
+
+            // Update Firestore with demo URL and status
+            await leadRef.update(demoUpdate);
 
         } catch (error) {
             console.error(`Demo generation failed for lead ${leadId}:`, error.message);
