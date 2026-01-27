@@ -256,6 +256,29 @@ async function inferStateFromWebsite(websiteUrl) {
 // vCard FUNCTIONS
 // ============================================================================
 
+const MAX_VCARD_RETRIES = 3;
+const CONSECUTIVE_429_LIMIT = 10;
+
+/**
+ * Fetch vCard with retry and exponential backoff on 429
+ */
+async function fetchVCardWithRetry(profileId) {
+    let backoff = 2000;
+    for (let attempt = 0; attempt <= MAX_VCARD_RETRIES; attempt++) {
+        try {
+            return await fetchVCard(profileId);
+        } catch (error) {
+            if (error.message === 'HTTP 429' && attempt < MAX_VCARD_RETRIES) {
+                console.log(`     429 rate limit on profile ${profileId} — backing off ${backoff / 1000}s (attempt ${attempt + 1}/${MAX_VCARD_RETRIES})`);
+                await sleep(backoff);
+                backoff *= 2;
+            } else {
+                throw error;
+            }
+        }
+    }
+}
+
 /**
  * Fetch vCard data for a profile ID from ISBA ReliaGuide
  */
@@ -645,8 +668,10 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
         console.log(`   Total results: ${stats.totalResults}`);
 
         if (stats.totalResults === 0) {
-            console.log('   No results found - marking as complete (no data available)');
-            stats.all_profiles_scraped = true;
+            // Category was validated with results but shows 0 during scraping — anti-bot/rate limiting
+            console.log('   No results found — likely rate-limited (category validated with data). Will retry next run.');
+            stats.all_profiles_scraped = false;
+            stats.rate_limited = true;
             await page.close();
             return stats;
         }
@@ -691,6 +716,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 
         // Fetch vCards and insert into Firestore
         console.log(`   Fetching vCards...`);
+        let consecutive429s = 0;
 
         for (let i = 0; i < allProfileIds.length && i < MAX_ATTORNEYS; i++) {
             const profileId = allProfileIds[i];
@@ -703,8 +729,9 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
             }
 
             try {
-                const vcardText = await fetchVCard(profileId);
+                const vcardText = await fetchVCardWithRetry(profileId);
                 stats.vcardsFetched++;
+                consecutive429s = 0; // Reset on success
 
                 const vcard = parseVCard(vcardText);
 
@@ -792,6 +819,16 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
 
             } catch (error) {
                 stats.errors++;
+                if (error.message === 'HTTP 429') {
+                    consecutive429s++;
+                    if (consecutive429s >= CONSECUTIVE_429_LIMIT) {
+                        console.log(`     ${CONSECUTIVE_429_LIMIT} consecutive 429 errors — stopping category (rate limited)`);
+                        stats.rate_limited = true;
+                        break;
+                    }
+                } else {
+                    consecutive429s = 0;
+                }
                 if (stats.errors <= 5) {
                     console.log(`     Error fetching profile ${profileId}: ${error.message}`);
                 }
@@ -955,6 +992,17 @@ async function main() {
             allStats.push(stats);
             totalInsertedThisRun += stats.inserted;
             categoriesProcessed++;
+
+            // Stop processing if rate-limited (subsequent categories will also fail)
+            if (stats.rate_limited) {
+                console.log(`\n   Rate limiting detected — stopping run. Remaining categories will retry next run.`);
+                // Save progress before breaking
+                progress.lastRunDate = new Date().toISOString();
+                if (!DRY_RUN) {
+                    await saveProgress(progress);
+                }
+                break;
+            }
 
             // Only mark category complete if ALL profiles were scraped
             if (stats.all_profiles_scraped && !progress.completedCategoryIds.includes(category.id)) {
