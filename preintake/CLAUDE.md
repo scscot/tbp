@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-23
-**Version**: 4.4 (All 13 bar scrapers documented: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, OH, OK)
+**Last Updated**: 2026-01-26
+**Version**: 4.5 (15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
 
 ---
 
@@ -895,9 +895,10 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - **Source**: `"gabar"`, **State**: `"GA"`, 20 member groups with hash-based profile IDs
 
 ### Phase 37: Illinois Bar Attorney Scraper (2026-01-22)
-- [x] **Illinois Bar Scraper** - `scripts/scrape-ilbar-attorneys.js` (ReliaGuide platform, vCard API)
+- [x] **Illinois Bar Scraper** - `scripts/scrape-ilbar-attorneys.js` (ReliaGuide platform, Puppeteer + vCard API)
 - [x] **GitHub Actions** - `.github/workflows/ilbar-scraper.yml` (Daily, time offset)
 - **Source**: `"ilbar"`, **State**: `"IL"`, same 20 categories as Michigan Bar (ReliaGuide shared IDs)
+- **Note**: Rewritten multiple times (Jan 2026): REST API → Puppeteer + vCard due to aggressive rate limiting; added category validation with safety valve
 
 ### Phase 38: Indiana Bar Attorney Scraper (2026-01-22)
 - [x] **Indiana Bar Scraper** - `scripts/scrape-inbar-attorneys.js` (ReliaGuide platform, vCard API)
@@ -935,6 +936,56 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] **GitHub Actions** - `.github/workflows/nsba-scraper.yml` (Daily 5am PST)
 - **Source**: `"nsba"`, **State**: `"NE"`, iframe-based search with button pagination
 
+### Phase 45: Government Contact Filtering (2026-01-24)
+- [x] **Shared Filter Module** - `scripts/gov-filter-utils.js`
+  - Email domain patterns: `.gov`, `.mil`, `.state.XX`, `.us`, courts, etc.
+  - Firm name patterns: public defender, district attorney, court, etc.
+  - Exports: `isGovernmentContact()`, `isGovernmentEmail()`, `isGovernmentFirm()`
+- [x] **Cleanup Script** - `scripts/cleanup-gov-contacts.js` (removed 622 existing government contacts)
+- [x] **Audit Script** - `scripts/audit-gov-contacts.js` for ongoing auditing
+- [x] **All 14 Bar Scrapers Updated** - Skip government contacts at scrape time
+  - Applied to: calbar, flbar, gabar, ilbar, inbar, kybar, mibar, mobar, msbar, ncbar, nebar, ohiobar, okbar, wsba
+
+### Phase 46: Scraper Optimizations & Reliability (2026-01-25/26)
+- [x] **Workflow Cron Fixes** - Fixed schedule registration for kybar, mobar, nsba, okbar workflows
+  - Offset conflicting cron times: okbar 13:00→15:00 UTC, kybar 16:00→17:00 UTC
+- [x] **WSBA Scraper Timing** - Optimized delays to prevent timeout cancellation
+  - Reduced profile fetch timeout (30s→15s), post-profile wait (1000→500ms), between-profile delay (1500→800ms)
+  - Workflow timeout increased to 120 minutes
+- [x] **Ohio Bar Scraper** - Expanded OHIO_CITIES from 49 to 167 (all cities with 10K+ population)
+  - MAX_COMBOS increased from 5 to 100 (20x faster daily progress)
+- [x] **Kentucky Bar Scraper** - Counties sorted by population descending for faster yield
+- [x] **IL Bar Scraper Rewrite** - Multiple iterations for reliability
+  - REST API → Puppeteer + vCard (due to rate limiting) → final version with category validation
+- [x] **NC Bar Scraper Rewrite** - Re-enabled and rewritten with improved pagination
+- [x] **Category Validation with Safety Valve** - Added to IL, MI, MS ReliaGuide scrapers
+  - Validates hardcoded practice area categories against live search results before scraping
+  - Valid/invalid results cached in Firestore progress documents
+  - Safety valve: if ALL categories return 0 results, falls back to using all categories
+- [x] **Disabled Complete Scrapers** - Workflows renamed to `.yml.disabled`
+  - Illinois (`ilbar-scraper.yml`) - all categories scraped (re-enabled after rewrite)
+  - North Carolina (`ncbar-scraper.yml`) - all categories scraped (re-enabled after rewrite)
+  - Mississippi (`msbar-scraper.yml.disabled`) - 20/20 categories, 283 attorneys
+  - Georgia (`gabar-scraper.yml.disabled`) - fully complete
+  - Indiana (`inbar-scraper.yml.disabled`) - fully complete
+- [x] **New Utility Scripts** - `scripts/fetch-bar-categories.js` and `scripts/fetch-bar-categories-2.js`
+  - Fetch and validate practice area categories from ReliaGuide and other bar association websites
+  - Used for verifying hardcoded category IDs match live data
+
+### Phase 47: Email Analytics & Tracking Migration (2026-01-26)
+- [x] **PreIntake Campaign Tracking Update** - Disabled Mailgun tracking in `send-preintake-campaign.js`
+  - Set `o:tracking`, `o:tracking-opens`, `o:tracking-clicks` to `'no'`
+  - Using Firestore-based tracking instead (`trackDemoView`: visit on page load, view on demo start)
+- [x] **Email Analytics Dashboard Overhaul** - `preintake/email-analytics.html`
+  - Renamed from "Email Campaign Analytics" to "Campaign Analytics"
+  - Migrated backend from Mailgun API to GA4 Data API
+  - Added big number cards, section headers, accent styling
+  - New metrics: 7-day/today/yesterday GA4 website analytics for preintake.ai
+- [x] **Widget Functions GA4 Migration** - `functions/widget-functions.js`
+  - `getEmailAnalytics` endpoint migrated from Mailgun stats to GA4 Data API
+  - Uses `BetaAnalyticsDataClient` with GA4 property ID `517857439`
+  - Fetches overview metrics (7-day, today, yesterday) and traffic source breakdown
+
 ---
 
 ## Architecture
@@ -955,7 +1006,7 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── about-us.html           # About us page
 ├── contact-us.html         # Contact form page
 ├── faq.html                # FAQ with accordion
-├── email-analytics.html    # Campaign analytics dashboard
+├── email-analytics.html    # Campaign analytics dashboard (GA4-powered)
 ├── how-it-works-schematic.html  # Visual schematic of PreIntake.ai flow
 ├── privacy-policy.html     # Privacy policy
 ├── terms-of-service.html   # Terms of service
@@ -994,18 +1045,23 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── scrape-calbar-attorneys.js       # California Bar attorney scraper (CSS email obfuscation)
 ├── scrape-flbar-attorneys.js        # Florida Bar attorney scraper (Cloudflare obfuscation)
 ├── scrape-gabar-attorneys.js        # Georgia Bar attorney scraper (Puppeteer/JS-rendered)
-├── scrape-ilbar-attorneys.js        # Illinois Bar attorney scraper (ReliaGuide/vCard API)
+├── scrape-ilbar-attorneys.js        # Illinois Bar attorney scraper (Puppeteer + vCard + category validation)
 ├── scrape-inbar-attorneys.js        # Indiana Bar attorney scraper (ReliaGuide/no practice areas)
 ├── scrape-kybar-attorneys.js        # Kentucky Bar attorney scraper (Puppeteer/iframe CV5)
-├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (ReliaGuide/vCard API)
+├── scrape-mibar-attorneys.js        # Michigan Bar attorney scraper (ReliaGuide/vCard + category validation)
 ├── scrape-mobar-attorneys.js        # Missouri Bar attorney scraper (Puppeteer/ASP.NET)
-├── scrape-msbar-attorneys.js        # Mississippi Bar attorney scraper (ReliaGuide/keyword matching)
-├── scrape-ncbar-attorneys.js        # North Carolina Bar attorney scraper (Puppeteer/dropdown)
+├── scrape-msbar-attorneys.js        # Mississippi Bar attorney scraper (ReliaGuide + category validation)
+├── scrape-ncbar-attorneys.js        # North Carolina Bar attorney scraper (rewritten, Puppeteer/dropdown)
 ├── scrape-nebar-attorneys.js        # Nebraska Bar attorney scraper (ReliaGuide/keyword matching)
-├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox filtering)
+├── scrape-ohiobar-attorneys.js      # Ohio Bar attorney scraper (Puppeteer/checkbox, 167 cities)
 ├── scrape-okbar-attorneys.js        # Oklahoma Bar attorney scraper (simple HTML tables)
 ├── scrape-wsba-attorneys.js         # Washington State Bar attorney scraper (Puppeteer/checkbox filtering)
 ├── scrape-nsba-attorneys.js         # Nebraska State Bar Association attorney scraper (YourMembership)
+├── gov-filter-utils.js              # Shared government contact filtering module
+├── cleanup-gov-contacts.js          # Remove government contacts from preintake_emails
+├── audit-gov-contacts.js            # Audit for remaining government contacts
+├── fetch-bar-categories.js          # Fetch practice area categories from bar associations
+├── fetch-bar-categories-2.js        # Fetch categories (pass 2: network intercept approach)
 ├── enrich-flbar-profiles.js         # FL Bar profile enrichment (website extraction)
 ├── backfill-flbar-member-urls.js    # Backfill memberUrl for existing FL Bar contacts
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution

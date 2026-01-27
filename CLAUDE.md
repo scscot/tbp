@@ -99,10 +99,10 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 - Each post includes app download CTAs
 
 **6. Email Campaign Integration**
-- Cold email to 5,500+ direct sales professionals
-- 30.9% open rate (2x industry average)
+- Cold email to 17,900+ direct sales professionals
+- SMTP via Dreamhost (news.teambuildpro.com) with Firestore tracking
+- Click tracking via trackEmailClick endpoint; open tracking disabled for deliverability
 - Drives traffic to landing page → app downloads
-- Mailgun infrastructure with detailed analytics
 
 **7. Legacy Brand (teambuildingproject.com)**
 - Historical domain from earlier brand iteration
@@ -113,8 +113,8 @@ The Team Build Pro ecosystem is a comprehensive, interconnected network of digit
 
 | Metric | Current Value | Target |
 |--------|---------------|--------|
-| Email Open Rate | 30.9% | 25%+ |
-| Email Click Rate | 5.5% | 3%+ |
+| Email Click Rate | Tracked via Firestore | 3%+ |
+| Email Open Rate | N/A (disabled for deliverability) | - |
 | Website Languages | 4 (EN, ES, PT, DE) | 4 |
 | Blog Posts (per language) | 17-18 | 25+ |
 | Company Landing Pages | 114 (EN/ES) | 150+ |
@@ -164,7 +164,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **100+ direct sales companies** compatible
 - **$6.99/month** after 30-day free trial
 - **70% performance improvement** through client-side caching
-- **30.9% email open rate** - 2x industry average for cold email campaigns
+- **10/10 mail-tester.com score** - SMTP email deliverability with SPF/DKIM/DMARC
 
 ---
 
@@ -175,7 +175,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 - **Backend**: Firebase (Firestore, Cloud Functions v2, Authentication, Remote Config)
 - **Functions**: 99 Cloud Functions handling real-time operations
 - **Hosting**: Firebase Hosting for web properties
-- **Email**: Mailgun for all email delivery (campaigns and launch announcements)
+- **Email**: SMTP via Dreamhost nodemailer (news.teambuildpro.com) for campaign delivery
 
 ### Key Directories
 ```
@@ -231,7 +231,7 @@ The world's first AI-powered platform that lets **prospects pre-build their team
 │   │   ├── blog.html    # Author blog index
 │   │   └── blog/        # 15 blog posts (auto-generated weekly)
 │   └── scripts/         # Build automation scripts
-├── analytics/             # Analytics workspace (GA4 + Mailgun)
+├── analytics/             # Analytics workspace (GA4)
 │   ├── fetch-combined-analytics.js  # Combined reporting
 │   ├── fetch-ga4-data.js           # Google Analytics 4 data
 │   └── package.json                # Analytics dependencies
@@ -468,16 +468,35 @@ All four main sites have identical structure:
 
 ### Analytics Workspace (analytics/ directory)
 - **Purpose**: Separate npm workspace for analytics tools
-- **Dependencies**: Google Analytics Data API v1, Mailgun API integration
+- **Dependencies**: Google Analytics Data API v1
 - **Environment**: Service account authentication (ga4-service-account.json)
 
-### Core Analytics Functions
+### Analytics Dashboards (Web)
+
+**TBP Analytics Dashboard** (`web/TBP-analytics.html` + `functions/analytics-dashboard-functions.js`)
+- Password-protected dashboard at `/TBP-analytics.html`
+- Three tabs: Website (GA4), iOS App Store, Android Play Store
+- **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, device/domain breakdown)
+- **Email Campaign section**: Firestore stats (sent/remaining/failed/clicked, A/B test results) + GA4 campaign traffic
+- **iOS tab**: App Store Connect metrics (downloads, impressions, reviews, versions)
+- **Android tab**: Google Play metrics from GCS bucket + CSV import fallback
+- AI-generated observations via OpenAI
+- Backend: `getTBPAnalytics` Cloud Function combining GA4, App Store Connect, Google Play, and Firestore data
+
+**Email Stats Dashboard** (`web/email-stats.html` + `functions/email-stats-functions.js`)
+- Password-protected dashboard at `/email-stats.html`
+- **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'smtp'`)
+- **Tracking**: Click tracking via `trackEmailClick` Cloud Function; open tracking disabled for deliverability
+- **Metrics**: Campaign progress (sent/remaining/failed), click tracking, A/B test subject line breakdown
+- **A/B test tags**: `not_opportunity` (V1) and `prebuild_advantage` (V2); legacy tags `subject_recruiting_app` and `unknown` excluded
+- Backend: `getEmailCampaignStats` Cloud Function
+
+### Core Analytics Scripts
 
 **fetch-combined-analytics.js** (511 lines)
-- Combined GA4 + Mailgun reporting system
+- Combined GA4 + email campaign reporting system
 - Cross-references website traffic with email campaign performance
 - Generates comprehensive analytics reports
-- Correlates email engagement with website visits
 
 **fetch-ga4-data.js** (384 lines)
 - Google Analytics 4 data extraction
@@ -493,7 +512,7 @@ All four main sites have identical structure:
 
 ### Reporting Capabilities
 - Daily/weekly/monthly traffic reports
-- Email campaign performance metrics
+- Email campaign performance metrics (Firestore-based)
 - Geographic traffic distribution
 - User engagement analysis
 - Conversion funnel tracking
@@ -552,15 +571,16 @@ git add . && git commit -m "message" && git push
 
 ### Campaign Architecture Overview
 
-The email campaign system consists of two parallel campaigns targeting different audience segments, both using the same Mailgun template with different data sources.
+The email campaign system consists of two parallel campaigns targeting different audience segments, using SMTP via Dreamhost nodemailer with Firestore-based tracking.
 
-**Mailgun Configuration:**
-- **Template Name**: `mailer`
-- **Template Version**: `initial`
-- **Subject Line**: `A smarter way to build your team`
-- **From**: `Stephen Scott <stephen@hello.teambuildpro.com>`
-- **Domain**: hello.teambuildpro.com
-- **Tracking**: Opens, clicks, and delivery status enabled
+**SMTP Configuration:**
+- **Sending Domain**: `news.teambuildpro.com`
+- **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
+- **Template**: `functions/email_templates/tbp-smtp-template.js` (personal note style)
+- **Subject A/B Test**: V1 "Not an opportunity. Just a tool." (`not_opportunity`) / V2 "What if your next recruit already had a team?" (`prebuild_advantage`)
+- **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
+- **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
+- **SMTP Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_SMTP_* variables)
 
 ### Main Campaign (SMTP - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
@@ -597,14 +617,13 @@ The email campaign system consists of two parallel campaigns targeting different
   | 6+ | 100 | 600 |
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
-### Campaign Performance (Post-Cleanup, as of Nov 27, 2025)
-After cleaning invalid emails from the database, current metrics from the past 24 hours:
-- **Delivered**: 54 emails
-- **Failed**: 11 emails
-- **Delivery Rate**: 83.1% (54 of 65 accepted)
-- **Open Rate**: 20.4% (11 opens, above industry avg 15-25%)
-- **Click Rate**: 0.0% (0 clicks)
-- **Note**: Database was cleaned to remove invalid emails; metrics are now from verified contacts
+### Campaign Tracking (Post-SMTP Migration)
+- **Sent/Failed/Remaining**: Tracked in Firestore `emailCampaigns/master/contacts` (sent, status fields)
+- **Click Tracking**: Firestore `clickedAt` timestamp via `trackEmailClick` Cloud Function endpoint
+- **Open Tracking**: Disabled (tracking pixel removed for deliverability)
+- **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'smtp'` (UTM parameters in email links)
+- **A/B Test Breakdown**: By `subjectTag` field (`not_opportunity`, `prebuild_advantage`); legacy tags excluded
+- **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
 ### Android Launch Campaign (Mailgun - Automated Phase 2)
 - **Function**: `sendAndroidLaunchCampaign` in `functions/email-campaign-functions.js`
@@ -624,17 +643,11 @@ After cleaning invalid emails from the database, current metrics from the past 2
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection (resend field)
 - **Control Variable**: ANDROID_CAMPAIGN_ENABLED_YAHOO (currently disabled)
 
-### Mailgun Event Sync (Automated Data Collection)
+### Mailgun Event Sync (Legacy - Disabled)
 - **Function**: `syncMailgunEvents` in `functions/email-campaign-functions.js`
-- **Purpose**: Sync Mailgun delivery/engagement data to Firestore before 24-hour log expiration
-- **Schedule**: 10 minutes after each campaign window (8:10am, 10:10am, 12:10pm, 1:10pm, 3:10pm, 6:10pm PT)
-- **Lookback Window**: 2 hours (captures events from previous campaign run)
-- **Event Types**: delivered, failed, opened, clicked
-- **Data Stored**: deliveryStatus, deliveredAt, failedAt, failureReason, openedAt, openCount, clickedAt, clickCount
-- **Independent Control**: EMAIL_CAMPAIGN_SYNC_ENABLED environment variable
-- **Batch Processing**: Handles up to 500 contacts per Firestore batch commit
-- **API Limit**: 300 events per event type per query
-- **Status**: Deployed and operational (Nov 24, 2025)
+- **Purpose**: Was used to sync Mailgun delivery/engagement data to Firestore before 24-hour log expiration
+- **Status**: Disabled after SMTP migration (Jan 2026). Mailgun open/click tracking also disabled.
+- **Current tracking**: Firestore-native via `trackEmailClick` Cloud Function endpoint
 
 ### Launch Campaign (Mailgun - Manual Trigger)
 - **Function**: `sendLaunchCampaign` in `functions/sendLaunchCampaign.js`
@@ -655,13 +668,14 @@ After cleaning invalid emails from the database, current metrics from the past 2
    - Less "markety" for pitch-fatigued MLM audience
    - Builds trust through restraint
    - Stands out by NOT looking promotional
-   - Proven with 30.9% open rate
+   - High deliverability with 10/10 mail-tester.com score
 
 3. **Personal, Simple Style**:
    - No complex hero images or heavy formatting
    - Personal tone from Stephen Scott
    - Focus on value and benefits
-   - Works well with Mailgun's deliverability
+   - System sans-serif font, 16px body, left-aligned (not centered)
+   - Inline CTA link (not button): "take a look here: teambuildpro.com"
 
 ### Target Audience
 - Current direct sales professionals (not prospects)
@@ -718,15 +732,20 @@ After cleaning invalid emails from the database, current metrics from the past 2
 - `lib/l10n/app_*.arb` - Localization files (EN, ES, PT, DE)
 - `functions/index.js` - All Cloud Functions
 - `functions/email-campaign-functions.js` - Automated hourly email campaign
+- `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
+- `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
+- `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
+- `functions/email_templates/tbp-smtp-template.js` - SMTP email template (personal note style)
 - `functions/sendLaunchCampaign.js` - Manual launch announcement emails
-- `functions/email_templates/launch_campaign_mailgun.html` - Launch email template
+- `web/TBP-analytics.html` - TBP analytics dashboard (Website/iOS/Android tabs)
+- `web/email-stats.html` - Email campaign stats dashboard
 - `web/faq.html` - Dynamic FAQ implementation
 
 ### Utility Scripts (functions/)
 - `count-todays-emails.js` - Query Firestore for daily email send counts
-- `get-mailgun-stats.js` - Query Mailgun API for delivery/engagement statistics
-- `test-email.js` - Send test emails via Mailgun for campaign testing
-- `reset-failed-contacts.js` - Reset failed email campaign contacts from Mailgun CSV exports
+- `get-mailgun-stats.js` - Query Mailgun API for delivery/engagement statistics (legacy - pre-SMTP migration)
+- `test-email.js` - Send test emails via Mailgun for campaign testing (legacy)
+- `reset-failed-contacts.js` - Reset failed email campaign contacts from Mailgun CSV exports (legacy)
 - `reset_failed_batch.js` - Batch processing for failed contact resets
 - `reset_failed_contacts.js` - Alternative reset script for email campaign recovery
 - `mark-contacts-for-resend.js` - Mark all contacts sent before Nov 12, 2025 for Android launch resend campaign
@@ -753,10 +772,13 @@ After cleaning invalid emails from the database, current metrics from the past 2
   - ES: "Team Build Pro: IA Equipo", PT: "Team Build Pro: IA Equipe", DE: "Team Build Pro: KI Team"
 
 **Email Campaign Infrastructure**
-- ✅ **Mailgun Integration**: Campaign emails, event sync, A/B testing
+- ✅ **SMTP Migration**: Migrated from Mailgun API to SMTP via Dreamhost nodemailer (Jan 2026)
+  - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score
+  - Open tracking pixel removed for deliverability; click tracking via Firestore `trackEmailClick` endpoint
 - ✅ **A/B Testing Active**: V1 "Not an opportunity. Just a tool." vs V2 "What if your next recruit already had a team?" (strict alternation)
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
+- ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'smtp'` for website traffic. Mailgun API dependencies removed from dashboards.
 
 **Automation Systems**
 - ✅ **Automated Blog Generation**: Twice-weekly (Mon/Thu) via GitHub Actions + Claude CLI
@@ -776,7 +798,10 @@ After cleaning invalid emails from the database, current metrics from the past 2
 
 | Component | Status | Notes |
 |-----------|--------|-------|
+| Email Sending | SMTP | Via Dreamhost nodemailer, news.teambuildpro.com |
 | Email A/B Testing | Active | V1/V2 strict alternation |
+| Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
+| Analytics Dashboards | Firestore + GA4 | Mailgun API removed from dashboards |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages |
 | Domain Warming | Week 2 | TBP=12, PreIntake=10 per batch |
