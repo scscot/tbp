@@ -28,7 +28,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (discovered from Michigan Bar API 2026-01-20)
@@ -761,7 +761,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                     website: vcard.website,
                     practiceArea: name,
                     city: vcard.city,
-                    state: state,
+                    state: normalizeState(state, 'MI'),
                     source: 'mibar',
                     barNumber: '',
                     memberUrl: `${BASE_URL}/api/public/profiles/${profileId}/download-vcard`,

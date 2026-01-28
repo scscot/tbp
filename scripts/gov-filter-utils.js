@@ -5,12 +5,137 @@
  * public defenders, prosecutors, and other institutional contacts that are
  * not valid targets for PreIntake.ai marketing.
  *
+ * Also includes state name normalization utilities.
+ *
  * Usage:
- *   const { isGovernmentContact } = require('./gov-filter-utils');
+ *   const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
  *   if (isGovernmentContact(email, firmName)) {
  *       // Skip this contact
  *   }
+ *   const stateAbbrev = normalizeState('Mississippi'); // Returns 'MS'
  */
+
+// ============================================================================
+// STATE NAME TO ABBREVIATION MAPPING
+// ============================================================================
+
+const STATE_NAME_TO_ABBREV = {
+    'alabama': 'AL',
+    'alaska': 'AK',
+    'arizona': 'AZ',
+    'arkansas': 'AR',
+    'california': 'CA',
+    'colorado': 'CO',
+    'connecticut': 'CT',
+    'delaware': 'DE',
+    'florida': 'FL',
+    'georgia': 'GA',
+    'hawaii': 'HI',
+    'idaho': 'ID',
+    'illinois': 'IL',
+    'indiana': 'IN',
+    'iowa': 'IA',
+    'kansas': 'KS',
+    'kentucky': 'KY',
+    'louisiana': 'LA',
+    'maine': 'ME',
+    'maryland': 'MD',
+    'massachusetts': 'MA',
+    'michigan': 'MI',
+    'minnesota': 'MN',
+    'mississippi': 'MS',
+    'missouri': 'MO',
+    'montana': 'MT',
+    'nebraska': 'NE',
+    'nevada': 'NV',
+    'new hampshire': 'NH',
+    'new jersey': 'NJ',
+    'new mexico': 'NM',
+    'new york': 'NY',
+    'north carolina': 'NC',
+    'north dakota': 'ND',
+    'ohio': 'OH',
+    'oklahoma': 'OK',
+    'oregon': 'OR',
+    'pennsylvania': 'PA',
+    'rhode island': 'RI',
+    'south carolina': 'SC',
+    'south dakota': 'SD',
+    'tennessee': 'TN',
+    'texas': 'TX',
+    'utah': 'UT',
+    'vermont': 'VT',
+    'virginia': 'VA',
+    'washington': 'WA',
+    'west virginia': 'WV',
+    'wisconsin': 'WI',
+    'wyoming': 'WY',
+    'district of columbia': 'DC',
+    'washington dc': 'DC',
+    'washington d.c.': 'DC',
+    'd.c.': 'DC',
+    'dc': 'DC',
+    // Common variations
+    'n. carolina': 'NC',
+    'n carolina': 'NC',
+    's. carolina': 'SC',
+    's carolina': 'SC',
+    'n. dakota': 'ND',
+    'n dakota': 'ND',
+    's. dakota': 'SD',
+    's dakota': 'SD',
+    'w. virginia': 'WV',
+    'w virginia': 'WV',
+    'n. hampshire': 'NH',
+    'n hampshire': 'NH',
+    'n. jersey': 'NJ',
+    'n jersey': 'NJ',
+    'n. mexico': 'NM',
+    'n mexico': 'NM',
+    'n. york': 'NY',
+    'n york': 'NY',
+};
+
+// Valid two-letter state abbreviations for validation
+const VALID_STATE_ABBREVS = new Set([
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC'
+]);
+
+/**
+ * Normalize a state name to its two-letter abbreviation
+ * @param {string} state - State name or abbreviation
+ * @param {string} defaultState - Default state if normalization fails
+ * @returns {string} Two-letter state abbreviation
+ */
+function normalizeState(state, defaultState = '') {
+    if (!state) return defaultState;
+
+    const trimmed = state.trim();
+    const upper = trimmed.toUpperCase();
+
+    // If already a valid 2-letter abbreviation, return it
+    if (trimmed.length === 2 && VALID_STATE_ABBREVS.has(upper)) {
+        return upper;
+    }
+
+    // Look up full state name
+    const lower = trimmed.toLowerCase();
+    if (STATE_NAME_TO_ABBREV[lower]) {
+        return STATE_NAME_TO_ABBREV[lower];
+    }
+
+    // If it's already uppercase and 2 chars, might be valid even if not in our list
+    if (trimmed.length === 2 && /^[A-Z]{2}$/.test(upper)) {
+        return upper;
+    }
+
+    // Return default if we can't normalize
+    return defaultState || trimmed;
+}
 
 // Email domain patterns that indicate government/institutional contacts
 const GOV_EMAIL_PATTERNS = [
@@ -199,6 +324,9 @@ module.exports = {
     isGovernmentEmail,
     isGovernmentFirm,
     getGovernmentCategory,
+    normalizeState,
     GOV_EMAIL_PATTERNS,
-    GOV_FIRM_PATTERNS
+    GOV_FIRM_PATTERNS,
+    STATE_NAME_TO_ABBREV,
+    VALID_STATE_ABBREVS
 };

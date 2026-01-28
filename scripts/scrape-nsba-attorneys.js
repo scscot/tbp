@@ -33,7 +33,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const fs = require('fs');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -507,7 +507,7 @@ async function insertAttorney(attorney) {
     await docRef.set({
         ...attorney,
         source: 'nsba',
-        state: attorney.state || 'NE',
+        state: normalizeState(attorney.state, 'NE'),
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         sent: false,
         status: 'pending',

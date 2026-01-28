@@ -30,7 +30,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (from ISBA ReliaGuide category-lookups API)
@@ -775,7 +775,7 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                     website: vcard.website,
                     practiceArea: name,
                     city: vcard.city,
-                    state: state,
+                    state: normalizeState(state, 'IL'),
                     source: 'ilbar',
                     barNumber: '',
                     memberUrl: `${BASE_URL}/api/public/profiles/${profileId}/download-vcard`,

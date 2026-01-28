@@ -31,7 +31,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (discovered from MS Bar API 2026-01-24)
@@ -451,7 +451,7 @@ async function insertAttorney(attorney, existingEmails) {
             website: attorney.website || '',
             practiceArea: attorney.practiceArea || '',
             city: attorney.city || '',
-            state: attorney.state || 'MS',
+            state: normalizeState(attorney.state, 'MS'),
             source: 'msbar',
             profileId: attorney.profileId,
             memberUrl: `${BASE_URL}/lawyer/${attorney.profileId}`,

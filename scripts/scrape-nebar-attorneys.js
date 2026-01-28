@@ -29,7 +29,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // TARGET PRACTICE AREAS (keywords to match in attorney cards)
@@ -316,7 +316,7 @@ async function insertAttorney(attorney, existingEmails) {
             website: attorney.website || '',
             practiceArea: attorney.practiceArea || '',
             city: attorney.city || '',
-            state: attorney.state || 'NE',
+            state: normalizeState(attorney.state, 'NE'),
             source: 'nebar',
             profileId: attorney.profileId,
             memberUrl: `${BASE_URL}/lawyer/${attorney.profileId}`,

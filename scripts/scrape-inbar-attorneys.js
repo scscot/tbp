@@ -32,7 +32,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
 
 // ============================================================================
 // CONFIGURATION
@@ -283,7 +283,7 @@ async function insertAttorney(attorney, existingEmails) {
             website: attorney.website || '',
             practiceArea: '', // Indiana doesn't expose practice areas
             city: attorney.city || '',
-            state: attorney.state || 'IN',
+            state: normalizeState(attorney.state, 'IN'),
             source: 'inbar',
             profileId: attorney.profileId,
             memberUrl: `${BASE_URL}/lawyer/${attorney.profileId}`,
