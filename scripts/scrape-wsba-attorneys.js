@@ -76,9 +76,9 @@ const PROFILE_URL = `${BASE_URL}/LegalDirectory/LegalProfile.aspx`;
 const SOURCE = 'wsba';
 const DEFAULT_STATE = 'WA';
 
-const DELAY_BETWEEN_PAGES = 3000;
-const DELAY_BETWEEN_PROFILES = 800;
-const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 500;
+const DELAY_BETWEEN_PAGES = 2000;
+const DELAY_BETWEEN_PROFILES = 500;
+const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 350;
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PRACTICE_AREA_SLUG = process.env.PRACTICE_AREA_SLUG || null;
 
@@ -411,7 +411,7 @@ async function scrapeProfile(page, usrId) {
 
     try {
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
-        await sleep(500);
+        await sleep(300);
 
         const data = await page.evaluate(() => {
             const result = {
