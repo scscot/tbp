@@ -1115,12 +1115,14 @@
             // ═══════════════════════════════════════════════
             // LEAD DETAILS TABLE
             // ═══════════════════════════════════════════════
-            if (data.leadDetails && data.leadDetails.length > 0) {
+            // Filter to only show leads with at least 1 visit
+            const visitedLeads = data.leadDetails ? data.leadDetails.filter(lead => lead.visitCount > 0) : [];
+            if (visitedLeads.length > 0) {
                 html += `
                 <div class="leads-section">
                     <div class="section-header">
                         <span class="section-icon">&#9670;</span>
-                        <h2>Campaign Lead Details</h2>
+                        <h2>Campaign Lead Details (${visitedLeads.length} with visits)</h2>
                     </div>
                     <table class="leads-table">
                         <thead>
@@ -1133,7 +1135,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${data.leadDetails.map(lead => `
+                            ${visitedLeads.map(lead => `
                                 <tr>
                                     <td>${lead.firmName}</td>
                                     <td>${lead.createdAt || 'Unknown'}</td>
