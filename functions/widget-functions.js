@@ -769,9 +769,9 @@ const getEmailAnalytics = onRequest(
                 }
             });
 
-            // Get campaign-sourced leads
+            // Get campaign-sourced leads (includes both 'campaign' and 'bar_profile_campaign')
             const leadsSnap = await db.collection('preintake_leads')
-                .where('source', '==', 'campaign')
+                .where('source', 'in', ['campaign', 'bar_profile_campaign'])
                 .get();
 
             // Visit tracking (email CTA clicks)
