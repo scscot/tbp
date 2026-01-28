@@ -718,6 +718,7 @@
                 <div class="date-range-selector">
                     <button class="date-range-btn active" onclick="selectDateRange('30day', this)">30 Days</button>
                     <button class="date-range-btn" onclick="selectDateRange('7day', this)">7 Days</button>
+                    <button class="date-range-btn" onclick="selectDateRange('yesterday', this)">Yesterday</button>
                 </div>
 
                 <!-- Key Metrics -->
@@ -1209,9 +1210,14 @@
         function displayWebsiteData() {
             if (!analyticsData || !analyticsData.website) return;
 
-            const data = currentDateRange === '30day'
-                ? analyticsData.website.thirtyDay
-                : analyticsData.website.sevenDay;
+            let data;
+            if (currentDateRange === '30day') {
+                data = analyticsData.website.thirtyDay;
+            } else if (currentDateRange === '7day') {
+                data = analyticsData.website.sevenDay;
+            } else if (currentDateRange === 'yesterday') {
+                data = analyticsData.website.yesterday;
+            }
 
             if (!data) {
                 document.getElementById('ga4TotalUsers').textContent = 'N/A';

@@ -53,8 +53,17 @@ async function fetchGA4Analytics(dateRange = '30daysAgo') {
   const client = getGA4Client();
   const propertyId = GA4_PROPERTY_ID;
 
-  const startDate = dateRange === '7daysAgo' ? '7daysAgo' : '30daysAgo';
-  const endDate = 'today';
+  let startDate, endDate;
+  if (dateRange === 'yesterday') {
+    startDate = 'yesterday';
+    endDate = 'yesterday';
+  } else if (dateRange === '7daysAgo') {
+    startDate = '7daysAgo';
+    endDate = 'today';
+  } else {
+    startDate = '30daysAgo';
+    endDate = 'today';
+  }
 
   try {
     // Fetch multiple reports in parallel
@@ -1284,9 +1293,10 @@ const getTBPAnalytics = onRequest({
     const _ga4DateRange = dateRange === '7days' ? '7daysAgo' : '30daysAgo';
 
     // Fetch all data sources in parallel
-    const [ga4Data30, ga4Data7, iosData, androidData, emailStats] = await Promise.all([
+    const [ga4Data30, ga4Data7, ga4DataYesterday, iosData, androidData, emailStats] = await Promise.all([
       fetchGA4Analytics('30daysAgo'),
       fetchGA4Analytics('7daysAgo'),
+      fetchGA4Analytics('yesterday'),
       fetchAppStoreMetrics(
         ascKeyId.value(),
         ascIssuerId.value(),
@@ -1311,6 +1321,7 @@ const getTBPAnalytics = onRequest({
       website: {
         thirtyDay: ga4Data30,
         sevenDay: ga4Data7,
+        yesterday: ga4DataYesterday,
         observations: ga4Observations
       },
       ios: iosData,
