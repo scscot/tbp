@@ -31,7 +31,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (discovered from MS Bar API 2026-01-24)
@@ -426,12 +426,11 @@ async function getTotalAttorneysInDb() {
 }
 
 async function insertAttorney(attorney, existingEmails) {
-    // Validate email exists and has proper format (contains @ and .)
-    if (!attorney.email || !attorney.email.includes('@') || !attorney.email.includes('.')) {
+    // Validate and clean email
+    const emailLower = cleanEmail(attorney.email);
+    if (!emailLower) {
         return { success: false, reason: 'no_email' };
     }
-
-    const emailLower = attorney.email.toLowerCase();
     if (existingEmails.has(emailLower)) {
         return { success: false, reason: 'duplicate' };
     }

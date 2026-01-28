@@ -28,7 +28,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (discovered from Michigan Bar API 2026-01-20)
@@ -721,8 +721,13 @@ async function scrapeCategory(browser, category, existingEmails, existingProfile
                     continue;
                 }
 
-                // Skip if already exists
-                const emailLower = vcard.email.toLowerCase();
+                // Validate, clean, and skip if already exists
+                const emailLower = cleanEmail(vcard.email);
+                if (!emailLower) {
+                    stats.skipped++;
+                    processedCount++;
+                    continue;
+                }
                 if (existingEmails.has(emailLower)) {
                     stats.skipped++;
                     processedCount++;

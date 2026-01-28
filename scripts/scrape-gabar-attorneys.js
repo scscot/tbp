@@ -27,7 +27,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (Georgia Bar Section Codes)
@@ -646,13 +646,14 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
                 const details = await extractProfileDetails(page);
 
                 // Skip if no email or invalid format
-                if (!details.email || !details.email.includes('@') || !details.email.includes('.')) {
+                // Validate and clean email
+                const emailLower = cleanEmail(details.email);
+                if (!emailLower) {
                     stats.skipped++;
                     continue;
                 }
 
                 // Skip if already exists
-                const emailLower = details.email.toLowerCase();
                 if (existingEmails.has(emailLower)) {
                     stats.skipped++;
                     continue;

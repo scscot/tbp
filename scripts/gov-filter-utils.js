@@ -319,12 +319,67 @@ function getGovernmentCategory(email, firmName) {
     return null;
 }
 
+// ============================================================================
+// EMAIL CLEANING UTILITIES
+// ============================================================================
+
+/**
+ * Clean and validate an email address
+ * Handles common data quality issues from bar association sources:
+ * - Removes whitespace (e.g., "john@ example.com" → "john@example.com")
+ * - Takes first email if multiple are present (semicolon/comma separated)
+ * - Lowercases the email
+ * - Returns null if email is invalid after cleaning
+ *
+ * @param {string} email - Raw email address to clean
+ * @returns {string|null} Cleaned email or null if invalid
+ */
+function cleanEmail(email) {
+    if (!email || typeof email !== 'string') return null;
+
+    // Trim and remove all internal whitespace
+    let cleaned = email.trim().replace(/\s+/g, '');
+
+    // If multiple emails separated by semicolon or comma, take the first one
+    if (cleaned.includes(';')) {
+        cleaned = cleaned.split(';')[0].trim();
+    }
+    if (cleaned.includes(',')) {
+        cleaned = cleaned.split(',')[0].trim();
+    }
+
+    // Lowercase
+    cleaned = cleaned.toLowerCase();
+
+    // Basic email format validation
+    // Must have exactly one @, something before it, and a dot after it
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleaned)) {
+        return null;
+    }
+
+    return cleaned;
+}
+
+/**
+ * Validate email format without cleaning
+ * @param {string} email - Email to validate
+ * @returns {boolean} True if valid format
+ */
+function isValidEmail(email) {
+    if (!email || typeof email !== 'string') return false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email.trim());
+}
+
 module.exports = {
     isGovernmentContact,
     isGovernmentEmail,
     isGovernmentFirm,
     getGovernmentCategory,
     normalizeState,
+    cleanEmail,
+    isValidEmail,
     GOV_EMAIL_PATTERNS,
     GOV_FIRM_PATTERNS,
     STATE_NAME_TO_ABBREV,

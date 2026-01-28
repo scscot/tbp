@@ -26,7 +26,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // STATE INFERENCE FROM WEBSITE
@@ -704,7 +704,11 @@ async function scrapeTarget(browser, target, existingEmails, existingMemberIds) 
                 continue;
             }
 
-            const emailLower = attorney.email.toLowerCase();
+            const emailLower = cleanEmail(attorney.email);
+            if (!emailLower) {
+                stats.errors++;
+                continue;
+            }
 
             if (existingEmails.has(emailLower)) {
                 stats.skippedExisting++;

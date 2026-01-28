@@ -25,7 +25,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // STATE INFERENCE FROM WEBSITE
@@ -931,7 +931,11 @@ async function scrapePracticeArea(practiceAreaCode, existingBarNumbers) {
                         continue;
                     }
 
-                    const emailLower = attorney.email.toLowerCase();
+                    const emailLower = cleanEmail(attorney.email);
+                    if (!emailLower) {
+                        stats.no_email++;
+                        continue;
+                    }
 
                     // Skip duplicates by email
                     if (existingEmails.has(emailLower)) {

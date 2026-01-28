@@ -33,7 +33,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const fs = require('fs');
-const { isGovernmentContact, normalizeState } = require('./gov-filter-utils');
+const { isGovernmentContact, normalizeState, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -729,21 +729,16 @@ async function scrapeNSBAAttorneys() {
                 continue;
             }
 
-            if (!profileData.email || typeof profileData.email !== 'string') {
-                console.log(`  Skipped: No valid email found (got: ${typeof profileData.email})`);
-                totalSkipped++;
-                continue;
-            }
-
-            const email = profileData.email.trim();
-            if (!email || !email.includes('@')) {
-                console.log(`  Skipped: Invalid email format`);
+            // Validate and clean email
+            const email = cleanEmail(profileData.email);
+            if (!email) {
+                console.log(`  Skipped: No valid email found`);
                 totalSkipped++;
                 continue;
             }
 
             // Check for duplicate
-            if (existingEmails.has(email.toLowerCase())) {
+            if (existingEmails.has(email)) {
                 console.log(`  Skipped: Duplicate email ${email}`);
                 totalSkipped++;
                 continue;

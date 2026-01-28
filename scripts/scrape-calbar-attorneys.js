@@ -34,7 +34,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // STATE INFERENCE FROM WEBSITE
@@ -436,7 +436,8 @@ async function parseDetailPage(barNumber, practiceAreaName) {
         const html = await fetchWithRetry(url);
         const $ = cheerio.load(html);
 
-        const email = extractRealEmail($);
+        const rawEmail = extractRealEmail($);
+        const email = cleanEmail(rawEmail);
         if (!email) {
             return { success: false, reason: 'no_email' };
         }

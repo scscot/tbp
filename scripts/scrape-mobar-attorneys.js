@@ -28,7 +28,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // PRACTICE AREAS (Missouri Bar dropdown values)
@@ -267,12 +267,11 @@ async function getTotalInDb() {
 }
 
 async function insertAttorney(attorney, existingEmails) {
-    // Validate email exists and has proper format (contains @ and .)
-    if (!attorney.email || !attorney.email.includes('@') || !attorney.email.includes('.')) {
+    // Validate and clean email
+    const emailLower = cleanEmail(attorney.email);
+    if (!emailLower) {
         return { success: false, reason: 'no_email' };
     }
-
-    const emailLower = attorney.email.toLowerCase();
     if (existingEmails.has(emailLower)) {
         return { success: false, reason: 'duplicate' };
     }

@@ -18,7 +18,7 @@
 const puppeteer = require('puppeteer');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -254,9 +254,9 @@ function extractAttorneyData(card) {
   const emailLink = card.querySelector('a[href^="mailto:"]');
   if (emailLink) {
     const href = emailLink.getAttribute('href');
-    const email = href.replace('mailto:', '').trim();
-    if (email && email !== 'Unlisted' && !email.includes('Unlisted')) {
-      data.email = email.toLowerCase();
+    const rawEmail = href.replace('mailto:', '').trim();
+    if (rawEmail && rawEmail !== 'Unlisted' && !rawEmail.includes('Unlisted')) {
+      data.email = cleanEmail(rawEmail);
     }
   }
 
@@ -389,9 +389,9 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
         const emailLink = card.querySelector('a[href^="mailto:"]');
         if (emailLink) {
           const href = emailLink.getAttribute('href');
-          const email = href.replace('mailto:', '').trim();
-          if (email && email !== 'Unlisted' && !email.includes('Unlisted')) {
-            data.email = email.toLowerCase();
+          const rawEmail = href.replace('mailto:', '').trim();
+          if (rawEmail && rawEmail !== 'Unlisted' && !rawEmail.includes('Unlisted')) {
+            data.email = cleanEmail(rawEmail);
           }
         }
 

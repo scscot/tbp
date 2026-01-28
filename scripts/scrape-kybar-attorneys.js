@@ -33,7 +33,7 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const fs = require('fs');
-const { isGovernmentContact } = require('./gov-filter-utils');
+const { isGovernmentContact, cleanEmail } = require('./gov-filter-utils');
 
 // ============================================================================
 // Configuration
@@ -859,10 +859,10 @@ async function extractProfileData(iframe, name, customerCode, practiceArea) {
     try {
         // Get email from mailto link
         const mailtoLinks = await iframe.$$eval('a[href^="mailto:"]', links =>
-            links.map(l => l.href.replace('mailto:', '').toLowerCase())
+            links.map(l => l.href.replace('mailto:', ''))
         );
         if (mailtoLinks.length > 0) {
-            data.email = mailtoLinks[0];
+            data.email = cleanEmail(mailtoLinks[0]);
         }
 
         // Get phone
