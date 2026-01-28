@@ -282,13 +282,14 @@ async function insertAttorney(attorney, existingEmails) {
     }
 
     try {
+        const websiteValue = attorney.website || '';
         const docData = {
             firstName: attorney.firstName || '',
             lastName: attorney.lastName || '',
             firmName: attorney.firmName || '',
             email: emailLower,
             phone: attorney.phone || '',
-            website: attorney.website || '',
+            website: websiteValue,
             practiceArea: attorney.practiceArea || '',
             city: attorney.city || '',
             state: attorney.state || DEFAULT_STATE,
@@ -297,7 +298,9 @@ async function insertAttorney(attorney, existingEmails) {
             sent: false,
             status: 'pending',
             randomIndex: Math.random() * 0.1,  // Prioritize in email queue
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+            ...(websiteValue === '' ? { domainChecked: false } : {})
         };
 
         // Check for government/institutional contact

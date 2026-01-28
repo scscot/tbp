@@ -745,7 +745,9 @@ async function scrapePracticeArea(browser, practiceArea, existingEmails, existin
                     sent: false,
                     status: 'pending',
                     randomIndex: Math.random() * 0.1, // Prioritize in queue
-                    createdAt: admin.firestore.FieldValue.serverTimestamp()
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+                    ...(profile.website === '' ? { domainChecked: false } : {})
                 };
 
                 // Check for government/institutional contact

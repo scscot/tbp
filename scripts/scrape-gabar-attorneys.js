@@ -680,7 +680,9 @@ async function scrapeSection(browser, section, existingEmails, existingProfileId
                     sent: false,
                     status: 'pending',
                     randomIndex: Math.random() * 0.1,
-                    createdAt: admin.firestore.FieldValue.serverTimestamp()
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+                    ...(details.website === '' ? { domainChecked: false } : {})
                 };
 
                 // Check for government/institutional contact

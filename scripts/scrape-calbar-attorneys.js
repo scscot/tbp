@@ -479,7 +479,9 @@ async function parseDetailPage(barNumber, practiceAreaName) {
                 sent: false,
                 status: 'pending',
                 randomIndex: Math.random() * 0.1,  // Low range (0.0-0.1) to prioritize CalBar contacts
-                createdAt: admin.firestore.FieldValue.serverTimestamp()
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+                ...(website === '' ? { domainChecked: false } : {})
             }
         };
     } catch (error) {

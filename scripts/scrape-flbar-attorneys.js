@@ -989,7 +989,9 @@ async function scrapePracticeArea(practiceAreaCode, existingBarNumbers) {
                         sent: false,
                         status: 'pending',
                         randomIndex: Math.random() * 0.1, // Priority range (0.0-0.1)
-                        createdAt: admin.firestore.FieldValue.serverTimestamp()
+                        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                        // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+                        ...(website === '' ? { domainChecked: false } : {})
                     };
 
                     // Check for government/institutional contact

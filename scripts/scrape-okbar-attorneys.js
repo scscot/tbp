@@ -469,13 +469,14 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
 
       // Add to database
       if (!DRY_RUN) {
+        const websiteValue = attorney.website || '';
         const docData = {
           email: attorney.email,
           firstName: firstName,
           lastName: lastName,
           firmName: attorney.firmName, // Keep original for reference
           phone: attorney.phone || null,
-          website: attorney.website || '',
+          website: websiteValue,
           address: attorney.address || null,
           city: attorney.city || null,
           state: attorney.state || 'OK',
@@ -484,7 +485,9 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
           status: 'pending',
           sent: false,
           randomIndex: Math.random(),
-          createdAt: admin.firestore.FieldValue.serverTimestamp()
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+          ...(websiteValue === '' ? { domainChecked: false } : {})
         };
 
         // Check for government/institutional contact

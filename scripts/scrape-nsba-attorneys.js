@@ -511,7 +511,9 @@ async function insertAttorney(attorney) {
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         sent: false,
         status: 'pending',
-        randomIndex: Math.random()
+        randomIndex: Math.random(),
+        // Set domainChecked: false for contacts without websites so infer-websites.js can process them
+        ...((attorney.website || '') === '' ? { domainChecked: false } : {})
     });
     return docRef.id;
 }
