@@ -2,8 +2,8 @@ name: Multi-Company Contact Scraper
 
 on:
   schedule:
-    # Daily at 7:00 UTC (11:00pm PT previous day)
-    - cron: '0 7 * * *'
+    # Every 6 hours to process backlog and new URLs
+    - cron: '0 */6 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
