@@ -1974,8 +1974,8 @@
                     viewDemoBtn.href = '#';
                     viewDemoBtn.onclick = (e) => {
                         e.preventDefault();
-                        // Redirect back to demo
-                        window.location.href = `/?demo=${leadId}&firm=${encodeURIComponent(firmName || '')}`;
+                        // Redirect back to demo with autoopen to launch modal immediately
+                        window.location.href = `/?demo=${leadId}&firm=${encodeURIComponent(firmName || '')}&autoopen=true`;
                     };
                     floatingButtons.classList.add('visible');
                 }
