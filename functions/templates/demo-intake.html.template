@@ -3103,7 +3103,7 @@
     </div>
 
     <script>
-        // Onboarding modal - show once per session
+        // Onboarding modal - show every time demo is rendered
         (function() {
             const modal = document.getElementById('onboarding-modal');
             const closeBtn = document.getElementById('onboarding-modal-close');
@@ -3125,13 +3125,8 @@
                 }
             }
 
-            if (sessionStorage.getItem('preintake_onboarding_seen')) {
-                modal.classList.add('hidden');
-            }
-
             closeBtn.addEventListener('click', function() {
                 modal.classList.add('hidden');
-                sessionStorage.setItem('preintake_onboarding_seen', 'true');
 
                 // Notify parent window that demo has actually started (for view tracking)
                 if (window.parent !== window) {

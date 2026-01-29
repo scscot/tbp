@@ -825,6 +825,7 @@ const getEmailAnalytics = onRequest(
 
                 leadDetails.push({
                     firmName: data.name || data.analysis?.firmName || 'Unknown',
+                    source: data.source || 'unknown',
                     status: data.status || 'unknown',
                     createdAt: data.createdAt?.toDate()?.toISOString().split('T')[0] || null,
                     firstVisitAt: firstVisitAt?.toISOString().split('T')[0] || null,

@@ -39,15 +39,13 @@
             </header>
         `;
 
-        // Check if user is a campaign visitor (?demo= in URL) or has viewed their demo
-        const urlParams = new URLSearchParams(window.location.search);
-        const demoIdFromUrl = urlParams.get('demo');
+        // Check if user has actually started viewing their demo (not just arrived with ?demo=)
+        // The sessionStorage key is only set when user clicks "Start Demo" in the iframe
         const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
-        const leadId = demoIdFromUrl || demoViewedId;
         const accountBtn = container.querySelector('.nav-account');
 
-        if (leadId && accountBtn) {
-            accountBtn.href = `https://preintake.ai/create-account.html?firm=${leadId}`;
+        if (demoViewedId && accountBtn) {
+            accountBtn.href = `https://preintake.ai/create-account.html?firm=${demoViewedId}`;
             accountBtn.textContent = 'Get Started →';
             accountBtn.classList.add('nav-get-started');
         }
@@ -72,6 +70,39 @@
                 });
             });
         }
+    }
+
+    // =========================================================================
+    // FLOATING BUTTONS COMPONENT (shown after demo viewed)
+    // =========================================================================
+    function renderFloatingButtons() {
+        // Don't render if already exists (e.g., on index.html which has its own)
+        if (document.getElementById('floating-demo-buttons')) return;
+
+        // Check if user has viewed a demo
+        const demoViewedId = sessionStorage.getItem('tbp_demo_viewed');
+        if (!demoViewedId) return;
+
+        // Create floating buttons container
+        const container = document.createElement('div');
+        container.className = 'floating-demo-buttons visible';
+        container.id = 'floating-demo-buttons';
+        container.innerHTML = `
+            <a href="/create-account.html?firm=${demoViewedId}" class="get-started-btn" id="get-started-btn">
+                Get Started
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </a>
+            <a href="/?demo=${demoViewedId}&autoopen=true" class="view-demo-btn" id="view-demo-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                View Demo Again
+            </a>
+        `;
+
+        document.body.appendChild(container);
     }
 
     // =========================================================================
@@ -340,6 +371,83 @@
                     justify-content: center;
                 }
             }
+
+            /* Floating Buttons (shown after demo viewed) */
+            .floating-demo-buttons {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                display: none;
+                flex-direction: column;
+                gap: 0.75rem;
+                z-index: 9999;
+            }
+
+            .floating-demo-buttons.visible {
+                display: flex;
+            }
+
+            .get-started-btn {
+                padding: 1rem 1.5rem;
+                background: linear-gradient(135deg, #c9a962 0%, #e5d4a1 50%, #c9a962 100%);
+                color: #0c1f3f;
+                border: none;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(201, 169, 98, 0.4);
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .get-started-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 25px rgba(201, 169, 98, 0.5);
+            }
+
+            .view-demo-btn {
+                padding: 0.875rem 1.25rem;
+                background: #0c1f3f;
+                color: rgba(255, 255, 255, 0.9);
+                border: 2px solid #1a3a5c;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                text-decoration: none;
+            }
+
+            .view-demo-btn:hover {
+                background: #1a3a5c;
+                border-color: #c9a962;
+                transform: translateY(-2px);
+            }
+
+            @media (max-width: 768px) {
+                .floating-demo-buttons {
+                    bottom: 1rem;
+                    right: 1rem;
+                }
+
+                .get-started-btn {
+                    padding: 0.875rem 1.25rem;
+                    font-size: 0.9rem;
+                }
+
+                .view-demo-btn {
+                    padding: 0.75rem 1rem;
+                    font-size: 0.85rem;
+                }
+            }
         `;
 
         document.head.appendChild(styles);
@@ -352,6 +460,7 @@
         injectStyles();
         renderHeader();
         renderFooter();
+        renderFloatingButtons();
     }
 
     // Run on DOM ready

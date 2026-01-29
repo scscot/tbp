@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-01-24
+**Last Updated**: 2026-01-28
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -476,7 +476,8 @@ All four main sites have identical structure:
 **TBP Analytics Dashboard** (`web/TBP-analytics.html` + `functions/analytics-dashboard-functions.js`)
 - Password-protected dashboard at `/TBP-analytics.html`
 - Three tabs: Website (GA4), iOS App Store, Android Play Store
-- **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, device/domain breakdown)
+- **Website tab**: GA4 metrics (users, sessions, engagement, traffic sources, top pages, top countries, device/domain breakdown)
+- **Date range selector**: 30 Days, 7 Days, Yesterday options
 - **Email Campaign section**: Firestore stats (sent/remaining/failed/clicked, A/B test results) + GA4 campaign traffic
 - **iOS tab**: App Store Connect metrics (downloads, impressions, reviews, versions)
 - **Android tab**: Google Play metrics from GCS bucket + CSV import fallback
@@ -488,7 +489,7 @@ All four main sites have identical structure:
 - **Data sources**: Firestore (`emailCampaigns/master/contacts`) + GA4 (filtered by `sessionMedium: 'smtp'`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function; open tracking disabled for deliverability
 - **Metrics**: Campaign progress (sent/remaining/failed), click tracking, A/B test subject line breakdown
-- **A/B test tags**: `not_opportunity` (V1) and `prebuild_advantage` (V2); legacy tags `subject_recruiting_app` and `unknown` excluded
+- **A/B test tags**: `mobile_first_v3` (V3) and `mobile_first_v4` (V4); legacy tags `not_opportunity`, `prebuild_advantage`, `subject_recruiting_app`, `unknown` supported for historical data
 - Backend: `getEmailCampaignStats` Cloud Function
 
 ### Core Analytics Scripts
@@ -577,7 +578,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Sending Domain**: `news.teambuildpro.com`
 - **From**: `Stephen Scott <stephen@news.teambuildpro.com>`
 - **Template**: `functions/email_templates/tbp-smtp-template.js` (personal note style)
-- **Subject A/B Test**: V1 "Not an opportunity. Just a tool." (`not_opportunity`) / V2 "What if your next recruit already had a team?" (`prebuild_advantage`)
+- **Subject A/B Test**: V3/V4 "Using AI to Build Your Team" (`mobile_first_v3` / `mobile_first_v4`)
 - **Tracking**: Click tracking via `trackEmailClick` Cloud Function endpoint; open tracking disabled (pixel removed for deliverability)
 - **DNS**: SPF + DKIM + DMARC configured for 10/10 mail-tester.com score
 - **SMTP Credentials**: `functions/.env.teambuilder-plus-fe74d` (TBP_SMTP_* variables)
@@ -591,14 +592,15 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
 - **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
-### Yahoo Campaign (SMTP - Automated)
+### Yahoo Campaign (DISABLED - Jan 2026)
+- **Status**: DISABLED - File renamed to `email-campaign-functions-yahoo.js.disabled`, imports/exports commented out in `index.js`
 - **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
 - **Tags**: `yahoo_campaign`, `tracked`
-- **Schedule**: 7am, 9am, 11am, 1pm, 3pm, 5pm PT (odd hours, offset from main)
+- **Schedule**: Was 7am, 9am, 11am, 1pm, 3pm, 5pm PT (odd hours, offset from main)
 - **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
-- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSizeYahoo` (automated by GitHub Actions)
-- **Purpose**: Separate campaign for Yahoo/AOL email addresses which require different sending patterns
+- **Batch Size**: Was dynamic via Firestore `config/emailCampaign.batchSizeYahoo`
+- **Purpose**: Was separate campaign for Yahoo/AOL email addresses
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -622,7 +624,7 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Click Tracking**: Firestore `clickedAt` timestamp via `trackEmailClick` Cloud Function endpoint
 - **Open Tracking**: Disabled (tracking pixel removed for deliverability)
 - **GA4 Campaign Traffic**: Filtered by `sessionMedium: 'smtp'` (UTM parameters in email links)
-- **A/B Test Breakdown**: By `subjectTag` field (`not_opportunity`, `prebuild_advantage`); legacy tags excluded
+- **A/B Test Breakdown**: By `subjectTag` field (`mobile_first_v3`, `mobile_first_v4`); legacy tags (`not_opportunity`, `prebuild_advantage`) supported
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
 ### Android Launch Campaign (Mailgun - Automated Phase 2)
@@ -775,7 +777,11 @@ The email campaign system consists of two parallel campaigns targeting different
 - ✅ **SMTP Migration**: Migrated from Mailgun API to SMTP via Dreamhost nodemailer (Jan 2026)
   - Sending domain: `news.teambuildpro.com` with 10/10 mail-tester.com score
   - Open tracking pixel removed for deliverability; click tracking via Firestore `trackEmailClick` endpoint
-- ✅ **A/B Testing Active**: V1 "Not an opportunity. Just a tool." vs V2 "What if your next recruit already had a team?" (strict alternation)
+- ✅ **A/B Testing Active**: V3/V4 "Using AI to Build Your Team" (strict alternation with `mobile_first_v3`/`mobile_first_v4` tags)
+- ✅ **A/B Test Template Update** (Jan 28, 2026): Migrated from v1/v2 to v3/v4 Mailgun templates
+  - Subject changed from "Not an opportunity" / "What if your next recruit" to unified "Using AI to Build Your Team"
+  - New subjectTags: `mobile_first_v3`, `mobile_first_v4` (dashboard supports both new and legacy tags)
+- ✅ **Yahoo Campaign Disabled** (Jan 28, 2026): `email-campaign-functions-yahoo.js` disabled, imports/exports commented out
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
 - ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'smtp'` for website traffic. Mailgun API dependencies removed from dashboards.
@@ -794,14 +800,23 @@ The email campaign system consists of two parallel campaigns targeting different
 - ✅ **App Store URLs Standardized**: Simplified format `apps.apple.com/us/app/id6751211622` across 328 files
 - ✅ **SEO Audits**: Canonical URLs, hreflang tags, sitemaps verified across all sites
 
+**Analytics Dashboard Enhancements** (Jan 28, 2026)
+- ✅ **Top Countries Feature**: Added GA4 country dimension query to TBP Analytics Dashboard
+  - Backend: New GA4 report query using `country` dimension in `analytics-dashboard-functions.js`
+  - Frontend: Dynamic country data display in `TBP-analytics.html` (was previously hardcoded "not available")
+- ✅ **Yesterday Date Range**: Added "Yesterday" option to date range selector
+  - Backend: `fetchGA4Analytics('yesterday')` support with startDate=endDate='yesterday'
+  - Frontend: New "Yesterday" button in date range selector
+
 ### Current System Status (Jan 2026)
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Email Sending | SMTP | Via Dreamhost nodemailer, news.teambuildpro.com |
-| Email A/B Testing | Active | V1/V2 strict alternation |
+| Email A/B Testing | Active | V3/V4 strict alternation ("Using AI to Build Your Team") |
+| Yahoo Campaign | Disabled | File disabled, imports commented out (Jan 28) |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
-| Analytics Dashboards | Firestore + GA4 | Mailgun API removed from dashboards |
+| Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday date range added |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages |
 | Domain Warming | Week 2 | TBP=12, PreIntake=10 per batch |

@@ -41,17 +41,17 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // =============================================================================
 
 const AB_TEST_VARIANTS = {
-  v1: {
-    templateVersion: 'v1',
-    subject: 'Not an opportunity. Just a tool.',
-    subjectTag: 'not_opportunity',
-    description: 'Personal disarm approach'
+  v3: {
+    templateVersion: 'v3',
+    subject: 'Using AI to Build Your Team',
+    subjectTag: 'mobile_first_v3',
+    description: 'Critiques old advice, TBP as correction'
   },
-  v2: {
-    templateVersion: 'v2',
-    subject: 'What if your next recruit already had a team?',
-    subjectTag: 'prebuild_advantage',
-    description: 'Pre-Build Advantage hook'
+  v4: {
+    templateVersion: 'v4',
+    subject: 'Using AI to Build Your Team',
+    subjectTag: 'mobile_first_v4',
+    description: 'Flip the script - confidence before joining'
   }
 };
 
@@ -156,7 +156,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   }
 
   // A/B Test: Strict alternation between V1 and V2 templates
-  const templateVariant = index % 2 === 0 ? 'v1' : 'v2';
+  const templateVariant = index % 2 === 0 ? 'v3' : 'v4';
   const variant = AB_TEST_VARIANTS[templateVariant];
 
   // Build tracking URLs

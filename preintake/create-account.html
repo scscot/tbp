@@ -291,16 +291,17 @@
         }
 
         .features {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .features h4 {
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            text-align: center;
+            text-align: left;
             color: var(--text-muted);
         }
 
@@ -404,10 +405,6 @@
 
     <main>
     <div class="container">
-        <div class="logo">
-            <a href="/">Pre<span>Intake</span>.ai</a>
-        </div>
-
         <div class="card">
             <div id="loading" class="loading">
                 <div class="spinner"></div>
@@ -417,7 +414,14 @@
             <div id="content" style="display: none;">
                 <div class="card-header">
                     <h1>Activate Your Account</h1>
-                    <p>Start using AI-powered intake on your website today</p>
+                    <p id="account-subtitle">Start using AI-powered intake today</p>
+                </div>
+
+                <div class="features">
+                    <h4>What's Included</h4>
+                    <div class="feature-list" id="feature-list">
+                        <!-- Dynamically populated based on account type -->
+                    </div>
                 </div>
 
                 <div id="cancelled-notice" class="cancelled-message" style="display: none;">
@@ -476,42 +480,6 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                     Secure payment powered by Stripe
-                </div>
-
-                <div class="features">
-                    <h4>What's Included</h4>
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>AI-powered intake customized to your practice areas</span>
-                        </div>
-                        <div class="feature-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>Embeddable widget for your website</span>
-                        </div>
-                        <div class="feature-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>24/7 inquiry qualification and screening</span>
-                        </div>
-                        <div class="feature-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>Email or webhook delivery to your CRM</span>
-                        </div>
-                        <div class="feature-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>Cancel anytime - no long-term contracts</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -599,6 +567,42 @@
                 // Update UI with firm info
                 firmNameEl.textContent = firmData.firmName || 'Your Law Firm';
                 firmEmailEl.textContent = firmData.practiceAreas?.join(', ') || 'Legal Services';
+
+                // Update subtitle based on whether firm has a website
+                const subtitleEl = document.getElementById('account-subtitle');
+                const hasWebsite = firmData.website || firmData.hasWebsite;
+                if (subtitleEl) {
+                    if (hasWebsite) {
+                        subtitleEl.textContent = 'Start using AI-powered intake on your website today';
+                    } else {
+                        subtitleEl.textContent = 'Start using AI-powered intake today';
+                    }
+                }
+
+                // Update feature list based on account type
+                const featureListEl = document.getElementById('feature-list');
+                if (featureListEl) {
+                    const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+                    const features = hasWebsite
+                        ? [
+                            'Embeddable widget for your website',
+                            '24/7 inquiry qualification and screening',
+                            'Cancel anytime - no long-term contracts'
+                        ]
+                        : [
+                            'Fully customized intake page',
+                            '24/7 inquiry qualification and screening',
+                            'Cancel anytime - no long-term contracts'
+                        ];
+
+                    featureListEl.innerHTML = features.map(feature => `
+                        <div class="feature-item">
+                            ${checkIcon}
+                            <span>${feature}</span>
+                        </div>
+                    `).join('');
+                }
 
                 // Set logo
                 if (firmData.logoUrl) {

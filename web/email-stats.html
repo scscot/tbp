@@ -507,7 +507,9 @@
         // Friendly labels for A/B test subject tags
         const SUBJECT_LABELS = {
             'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
-            'prebuild_advantage': 'V2: "What if your next recruit already had a team?"'
+            'prebuild_advantage': 'V2: "What if your next recruit already had a team?"',
+            'mobile_first_v3': 'V3: "How Mobile-First AI Builds Stronger Direct Sales Teams"',
+            'mobile_first_v4': 'V4: "How Mobile-First AI Builds Stronger Direct Sales Teams"'
         };
 
         function authenticate() {
@@ -622,7 +624,7 @@
                 abBody.innerHTML = data.subjectLines.map(sl => {
                     const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
                     const isWinner = sl.subjectTag === winnerTag && data.subjectLines.length > 1;
-                    const badgeClass = sl.subjectTag === 'not_opportunity' ? 'badge-v1' : 'badge-v2';
+                    const badgeClass = (sl.subjectTag === 'not_opportunity' || sl.subjectTag === 'mobile_first_v3') ? 'badge-v1' : 'badge-v2';
                     return `
                         <tr class="${isWinner ? 'ab-winner' : ''}">
                             <td>${label} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
@@ -653,7 +655,11 @@
                         ? '<span class="badge badge-v1">V1</span>'
                         : send.subjectTag === 'prebuild_advantage'
                             ? '<span class="badge badge-v2">V2</span>'
-                            : send.subjectTag || '-';
+                            : send.subjectTag === 'mobile_first_v3'
+                                ? '<span class="badge badge-v1">V3</span>'
+                                : send.subjectTag === 'mobile_first_v4'
+                                    ? '<span class="badge badge-v2">V4</span>'
+                                    : send.subjectTag || '-';
                     const statusBadge = send.clicked
                         ? '<span class="badge badge-clicked">Clicked</span>'
                         : '<span class="badge badge-sent">Sent</span>';

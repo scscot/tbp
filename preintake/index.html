@@ -2006,6 +2006,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const demoLeadId = urlParams.get('demo');
                 const firmNameFromUrl = urlParams.get('firm');
+                const autoOpen = urlParams.get('autoopen') === 'true';
 
                 if (!demoLeadId) return false;
 
@@ -2087,6 +2088,15 @@
                         // Track actual demo view (user engaged with demo)
                         fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
                         sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
+
+                        // Update header button to "Get Started" dynamically
+                        const accountBtn = document.querySelector('.nav-account');
+                        if (accountBtn) {
+                            accountBtn.href = `/create-account.html?firm=${demoLeadId}`;
+                            accountBtn.textContent = 'Get Started →';
+                            accountBtn.classList.add('nav-get-started');
+                        }
+
                         // Store firm email for exit confirmation modal
                         if (e.data.firmEmail) {
                             demoFirmEmail = e.data.firmEmail;
@@ -2187,27 +2197,43 @@
                     stickyCta.style.display = 'none';
                 }
 
-                // Hide default hero CTA
+                // Change hero CTA to "Begin Your Custom Demo" and wire it to open modal
                 const defaultHeroCta = document.getElementById('default-hero-cta');
                 if (defaultHeroCta) {
-                    defaultHeroCta.style.display = 'none';
+                    // Update button text (keep arrow icon)
+                    defaultHeroCta.innerHTML = `
+                        Begin Your Custom Demo
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    `;
+                    // Change href and add click handler to open modal
+                    defaultHeroCta.href = '#';
+                    defaultHeroCta.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openDemoModal();
+                    });
                 }
 
-                // Hide campaign hero CTA (no longer needed with modal)
+                // Hide campaign hero CTA (using modified default CTA instead)
                 const campaignHeroCta = document.getElementById('campaign-hero-cta');
                 if (campaignHeroCta) {
                     campaignHeroCta.style.display = 'none';
                 }
 
-                // Open modal immediately (don't wait for status check)
-                openDemoModal();
+                // Auto-open modal if ?autoopen=true (from "View Demo Again" button)
+                // Otherwise let user click the hero CTA to start demo
+                if (autoOpen) {
+                    openDemoModal();
+                }
 
                 // Check subscription status in background (non-blocking)
                 // If they have an active subscription, close demo and show Account Active modal
                 fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`)
                     .then(response => response.ok ? response.json() : null)
                     .then(statusData => {
-                        if (statusData?.subscriptionStatus !== null) {
+                        // Only show account active modal if we got valid data AND they have a subscription
+                        if (statusData && statusData.subscriptionStatus) {
                             // They have a subscription - close demo modal and show account active
                             closeDemoModal();
                             showAccountActiveModal(statusData);

@@ -542,6 +542,32 @@
             color: #64748b;
         }
 
+        /* Source Badge */
+        .source-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .source-badge.campaign {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .source-badge.bar_profile_campaign {
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+        }
+
+        .source-badge.unknown {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+        }
+
         /* Template Versions */
         .template-versions {
             display: flex;
@@ -735,6 +761,15 @@
         function fmtEngagement(rate) {
             if (!rate && rate !== 0) return '-';
             return (rate * 100).toFixed(1) + '%';
+        }
+
+        function formatSource(source) {
+            if (!source || source === 'unknown') return 'Unknown';
+            const mapping = {
+                'campaign': 'Website',
+                'bar_profile_campaign': 'Bar Profile'
+            };
+            return mapping[source] || source;
         }
 
         function renderAnalytics(data) {
@@ -1128,6 +1163,7 @@
                         <thead>
                             <tr>
                                 <th>Firm Name</th>
+                                <th>Source</th>
                                 <th>Created</th>
                                 <th>Visits</th>
                                 <th>Demo Starts</th>
@@ -1138,6 +1174,7 @@
                             ${visitedLeads.map(lead => `
                                 <tr>
                                     <td>${lead.firmName}</td>
+                                    <td><span class="source-badge ${lead.source}">${formatSource(lead.source)}</span></td>
                                     <td>${lead.createdAt || 'Unknown'}</td>
                                     <td>
                                         <span class="view-count ${lead.visitCount > 0 ? 'viewed' : 'not-viewed'}">
