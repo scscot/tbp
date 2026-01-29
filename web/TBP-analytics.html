@@ -1289,11 +1289,33 @@
             const domainTable = document.getElementById('domainBreakdownTable');
             const domainData = data.domainBreakdown?.data || [];
             if (domainData.length > 0) {
+                // Define expected TBP domains in display order
+                const expectedDomains = [
+                    'teambuildpro.com',
+                    'de.teambuildpro.com',
+                    'es.teambuildpro.com',
+                    'pt.teambuildpro.com'
+                ];
+
                 // Filter to only show teambuildpro.com domains
                 const tbpDomains = domainData.filter(d => {
                     const host = (d.hostName || '').toLowerCase();
                     return host.includes('teambuildpro.com') || host.includes('localhost');
                 });
+
+                // Sort: expected domains first (in order), then others alphabetically
+                tbpDomains.sort((a, b) => {
+                    const hostA = (a.hostName || '').toLowerCase();
+                    const hostB = (b.hostName || '').toLowerCase();
+                    const indexA = expectedDomains.indexOf(hostA);
+                    const indexB = expectedDomains.indexOf(hostB);
+
+                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                    if (indexA !== -1) return -1;
+                    if (indexB !== -1) return 1;
+                    return hostA.localeCompare(hostB);
+                });
+
                 if (tbpDomains.length > 0) {
                     domainTable.innerHTML = tbpDomains.map(d => `
                         <tr>

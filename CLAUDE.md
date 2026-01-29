@@ -819,7 +819,7 @@ The email campaign system consists of two parallel campaigns targeting different
 | Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday date range added |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages |
-| Domain Warming | Week 2 | TBP=12, PreIntake=10 per batch |
+| Domain Warming | Week 3 | TBP=25 per batch (150/day) |
 | Bar Scrapers | Active | 12 state workflows |
 
 ---
