@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@faker-js/faker": "^9.9.0",
     "axios": "^1.13.4",
     "cheerio": "^1.0.0",

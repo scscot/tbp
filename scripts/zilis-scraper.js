@@ -25,6 +25,7 @@
 const puppeteer = require('puppeteer');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
 const fs = require('fs');
 
@@ -230,6 +231,80 @@ async function extractContactInfo(page) {
   }, SELECTORS);
 }
 
+/**
+ * Get visible text content from page for Claude analysis
+ * @param {Page} page - Puppeteer page object
+ * @returns {Promise<string>} - Visible text content (truncated)
+ */
+async function getPageTextContent(page) {
+  return await page.evaluate(() => {
+    // Get visible text, excluding scripts and styles
+    const body = document.body;
+    if (!body) return '';
+
+    // Clone and remove script/style elements
+    const clone = body.cloneNode(true);
+    const scripts = clone.querySelectorAll('script, style, noscript');
+    scripts.forEach(el => el.remove());
+
+    // Get text and clean it up
+    let text = clone.innerText || '';
+    text = text.replace(/\s+/g, ' ').trim();
+
+    // Truncate to avoid token limits (first 2000 chars should contain name)
+    return text.substring(0, 2000);
+  });
+}
+
+/**
+ * Use Claude AI to extract firstName and lastName from page content
+ * @param {string} pageText - Visible text from page
+ * @param {string} email - Email address found on page
+ * @returns {Promise<{firstName: string|null, lastName: string|null}>}
+ */
+async function extractNameWithClaude(pageText, email) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    console.log('  ANTHROPIC_API_KEY not set - skipping AI name extraction');
+    return { firstName: null, lastName: null };
+  }
+
+  try {
+    const client = new Anthropic({ apiKey });
+
+    const response = await client.messages.create({
+      model: 'claude-3-5-haiku-20241022',
+      max_tokens: 100,
+      messages: [{
+        role: 'user',
+        content: `Extract the person's first name and last name from this distributor profile page. The email address is: ${email}
+
+Page content:
+${pageText}
+
+Respond with ONLY a JSON object in this exact format (no other text):
+{"firstName": "John", "lastName": "Smith"}
+
+If you cannot determine the name, use null for that field. Do not guess or make up names.`
+      }]
+    });
+
+    // Parse Claude's response
+    const responseText = response.content[0].text.trim();
+    const nameData = JSON.parse(responseText);
+
+    return {
+      firstName: nameData.firstName || null,
+      lastName: nameData.lastName || null,
+    };
+
+  } catch (error) {
+    console.log(`  Claude API error: ${error.message}`);
+    return { firstName: null, lastName: null };
+  }
+}
+
 // ============================================================================
 // SCRAPING LOGIC
 // ============================================================================
@@ -262,9 +337,16 @@ async function scrapeUrl(browser, url) {
     // Extract contact info
     const contactInfo = await extractContactInfo(page);
 
+    // Get page text for Claude analysis (only if email found)
+    let pageText = null;
+    if (contactInfo.email) {
+      pageText = await getPageTextContent(page);
+    }
+
     return {
       success: true,
       data: contactInfo,
+      pageText: pageText,
       error: null,
     };
 
@@ -317,7 +399,7 @@ async function updateDocument(db, docId, data, success, error) {
   const docRef = db.collection(CONFIG.COLLECTION).doc(docId);
 
   if (success && data.email) {
-    // Success with email found
+    // Success with email found - update document
     await docRef.update({
       company: CONFIG.COMPANY,
       firstName: data.firstName,
@@ -329,20 +411,13 @@ async function updateDocument(db, docId, data, success, error) {
       scrapeError: null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+    return 'updated';
   } else if (success && !data.email) {
-    // Success but no email found
-    await docRef.update({
-      company: CONFIG.COMPANY,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      scraped: true,
-      scrapedAt: admin.firestore.FieldValue.serverTimestamp(),
-      scrapeStatus: 'no_email',
-      scrapeError: null,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    // Success but no email found - DELETE document
+    await docRef.delete();
+    return 'deleted';
   } else {
-    // Failed
+    // Failed - update with error info
     await docRef.update({
       company: CONFIG.COMPANY,
       scrapeStatus: 'failed',
@@ -351,6 +426,7 @@ async function updateDocument(db, docId, data, success, error) {
       lastAttemptAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+    return 'failed';
   }
 }
 
@@ -387,7 +463,7 @@ async function sendCompletionEmail(summary) {
     <table border="1" cellpadding="5" style="border-collapse: collapse;">
       <tr><td>URLs processed</td><td>${summary.processed}</td></tr>
       <tr><td>Success (with email)</td><td>${summary.successWithEmail}</td></tr>
-      <tr><td>Success (no email)</td><td>${summary.successNoEmail}</td></tr>
+      <tr><td>Deleted (no email)</td><td>${summary.deleted}</td></tr>
       <tr><td>Failed</td><td>${summary.failed}</td></tr>
       <tr><td>Duration</td><td>${summary.duration}s</td></tr>
     </table>
@@ -477,7 +553,7 @@ async function main() {
   const summary = {
     processed: 0,
     successWithEmail: 0,
-    successNoEmail: 0,
+    deleted: 0,
     failed: 0,
     stopped: false,
     duration: 0,
@@ -502,16 +578,37 @@ async function main() {
       consecutiveErrors = 0;
 
       if (result.data.email) {
-        console.log(`  ✓ Found: ${result.data.firstName} ${result.data.lastName} <${result.data.email}>`);
-        summary.successWithEmail++;
-      } else {
-        console.log(`  ○ No email found (name: ${result.data.firstName} ${result.data.lastName})`);
-        summary.successNoEmail++;
-      }
+        // Email found - use Claude AI to extract name
+        console.log(`  ✓ Email found: ${result.data.email}`);
 
-      // Update Firestore
-      if (!dryRun) {
-        await updateDocument(db, id, result.data, true, null);
+        // Use Claude to get better name extraction
+        if (result.pageText) {
+          console.log(`  🤖 Using Claude AI for name extraction...`);
+          const claudeName = await extractNameWithClaude(result.pageText, result.data.email);
+          if (claudeName.firstName || claudeName.lastName) {
+            result.data.firstName = claudeName.firstName;
+            result.data.lastName = claudeName.lastName;
+            console.log(`  ✓ Claude extracted: ${claudeName.firstName} ${claudeName.lastName}`);
+          } else {
+            console.log(`  ○ Claude could not extract name, using DOM extraction`);
+          }
+        }
+
+        console.log(`  ✓ Final: ${result.data.firstName || '(no first)'} ${result.data.lastName || '(no last)'} <${result.data.email}>`);
+        summary.successWithEmail++;
+
+        // Update Firestore
+        if (!dryRun) {
+          await updateDocument(db, id, result.data, true, null);
+        }
+      } else {
+        // No email found - delete document
+        console.log(`  ✗ No email found - deleting document`);
+        summary.deleted++;
+
+        if (!dryRun) {
+          await updateDocument(db, id, result.data, true, null);
+        }
       }
 
     } else {
@@ -550,7 +647,7 @@ async function main() {
   console.log('='.repeat(60));
   console.log(`URLs processed: ${summary.processed}`);
   console.log(`Success (with email): ${summary.successWithEmail}`);
-  console.log(`Success (no email): ${summary.successNoEmail}`);
+  console.log(`Deleted (no email): ${summary.deleted}`);
   console.log(`Failed: ${summary.failed}`);
   console.log(`Duration: ${summary.duration}s`);
   if (summary.stopped) {

@@ -71,6 +71,7 @@ jobs:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "Starting Zilis contact scraper..."
           echo "Max URLs: $MAX_URLS"
