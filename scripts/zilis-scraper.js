@@ -36,7 +36,7 @@ const fs = require('fs');
 const CONFIG = {
   // Firestore
   COLLECTION: 'direct_sales_contacts',
-  COMPANY: 'zilis',
+  COMPANY: 'Zilis',
 
   // Rate limiting
   DELAY_BETWEEN_PAGES: 2000,
