@@ -1,0 +1,87 @@
+name: Seed Contact URLs
+
+on:
+  schedule:
+    # Every 6 hours, offset from other workflows
+    - cron: '30 */6 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      company:
+        description: 'Company name (e.g., "Herbalife") or leave empty for all'
+        required: false
+        default: ''
+        type: string
+      max_urls:
+        description: 'Maximum URLs to seed per company'
+        required: false
+        default: '1000'
+        type: string
+      dry_run:
+        description: 'Dry run (preview only, no Firestore writes)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'scripts/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm ci && cd ..
+          echo "Dependencies installed"
+
+      - name: Setup Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          mkdir -p secrets
+          echo "$FIREBASE_SERVICE_ACCOUNT" > secrets/serviceAccountKey.json
+          echo "Firebase credentials configured"
+
+      - name: Seed contact URLs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          MAX_URLS: ${{ github.event.inputs.max_urls || '1000' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          COMPANY="${{ github.event.inputs.company }}"
+
+          echo "Starting Contact URL Seeder..."
+          echo "Max URLs per company: $MAX_URLS"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY RUN (no Firestore writes)"
+          else
+            echo "Mode: LIVE"
+          fi
+
+          if [ -n "$COMPANY" ]; then
+            echo "Company: $COMPANY"
+            node scripts/seed-contacts-urls.js --company="$COMPANY" --max=$MAX_URLS
+          else
+            echo "Seeding all companies with discovered patterns"
+            node scripts/seed-contacts-urls.js --max=$MAX_URLS
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf secrets/
+          echo "Cleanup complete"
