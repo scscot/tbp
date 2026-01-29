@@ -24,14 +24,45 @@ const path = require('path');
 // ============================================================================
 
 const CONFIG = {
-  // Common Crawl Index - use latest available index
+  // Common Crawl Index - comprehensive list of indexes to search
   // Index list: https://index.commoncrawl.org/collinfo.json
   COMMON_CRAWL_INDEXES: [
+    // 2026
+    'CC-MAIN-2026-04',
+    // 2025 (all available)
+    'CC-MAIN-2025-51',
+    'CC-MAIN-2025-47',
+    'CC-MAIN-2025-43',
+    'CC-MAIN-2025-38',
+    'CC-MAIN-2025-33',
+    'CC-MAIN-2025-30',
+    'CC-MAIN-2025-26',
+    'CC-MAIN-2025-21',
+    'CC-MAIN-2025-18',
+    'CC-MAIN-2025-13',
+    'CC-MAIN-2025-08',
+    'CC-MAIN-2025-05',
+    // 2024 (all available)
     'CC-MAIN-2024-51',
     'CC-MAIN-2024-46',
     'CC-MAIN-2024-42',
     'CC-MAIN-2024-38',
     'CC-MAIN-2024-33',
+    'CC-MAIN-2024-30',
+    'CC-MAIN-2024-26',
+    'CC-MAIN-2024-22',
+    'CC-MAIN-2024-18',
+    'CC-MAIN-2024-10',
+    // 2023
+    'CC-MAIN-2023-50',
+    'CC-MAIN-2023-40',
+    'CC-MAIN-2023-23',
+    'CC-MAIN-2023-14',
+    'CC-MAIN-2023-06',
+    // 2022
+    'CC-MAIN-2022-49',
+    'CC-MAIN-2022-40',
+    'CC-MAIN-2022-33',
   ],
   COMMON_CRAWL_BASE: 'https://index.commoncrawl.org',
 
