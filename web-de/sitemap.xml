@@ -392,4 +392,13 @@
     <priority>0.7</priority>
   </url>
 
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://pt.teambuildpro.com/blog/mlm-recruiting-roi-calculator-measure-success.html</loc>
+    <lastmod>2026-01-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

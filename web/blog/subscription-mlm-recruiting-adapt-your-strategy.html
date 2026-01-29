@@ -136,30 +136,6 @@
       .share-btn{width:100%;justify-content:center}
     }
   </style>
-
-<!-- Podcast Audio Schema for SEO -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AudioObject",
-  "name": "Listen: Subscription MLM Recruiting: How to Adapt Your Strategy When Companies Drop Traditional Compensation",
-  "description": "Adapt your MLM recruiting strategy for subscription-based compensation models. Learn positioning tactics that work when traditional MLM structures change.",
-  "contentUrl": "https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/subscription-mlm-recruiting-adapt-your-strategy.mp3",
-  "encodingFormat": "audio/mpeg",
-  "duration": "PT5M",
-  "uploadDate": "2026-01-26",
-  "inLanguage": "en",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Team Build Pro",
-    "url": "https://teambuildpro.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://teambuildpro.com/assets/icons/team-build-pro.png"
-    }
-  }
-}
-</script>
 </head>
 <body>
   <!-- Header -->
@@ -209,22 +185,6 @@
       </div>
 
       <article>
-
-<!-- Podcast Player Section -->
-<div class="podcast-player-section">
-  <div class="podcast-player-wrapper">
-    <span class="podcast-icon">🎧</span>
-    <div class="podcast-info">
-      <span class="podcast-label">Listen to this article</span>
-      <span class="podcast-duration">5 min</span>
-    </div>
-    <audio controls preload="metadata" class="podcast-audio" data-slug="subscription-mlm-recruiting-adapt-your-strategy" data-lang="en">
-      <source src="https://storage.googleapis.com/teambuilder-plus-fe74d.firebasestorage.app/podcasts/en/subscription-mlm-recruiting-adapt-your-strategy.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-</div>
-
         <p>The ground is shifting beneath your feet. Major direct sales companies are quietly abandoning traditional MLM compensation structures in favor of subscription-based models, and if you're still recruiting with yesterday's playbook, you're setting yourself—and your prospects—up for failure. The old promises of "build once, earn forever" ring hollow when the compensation plan revolves around monthly subscriptions and active customer retention.</p>
 
 <p>This isn't just a trend—it's a fundamental restructuring of how network marketing operates. Companies that built empires on recruitment-heavy models are pivoting to customer-centric subscription services, and the 75% of recruits who already quit in their first year are finding even less reason to stick around when the income opportunity shifts so dramatically from what they were originally pitched.</p>
@@ -487,52 +447,5 @@
   </script>
 
   <script src="/js/referral-tracking.js"></script>
-
-<script>
-// Podcast tracking for GA4
-document.addEventListener('DOMContentLoaded', function() {
-  const audioElements = document.querySelectorAll('.podcast-audio');
-  audioElements.forEach(function(audio) {
-    const slug = audio.dataset.slug || 'unknown';
-    const lang = audio.dataset.lang || 'en';
-
-    audio.addEventListener('play', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_play', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    audio.addEventListener('ended', function() {
-      if (typeof gtag === 'function') {
-        gtag('event', 'podcast_complete', {
-          'event_category': 'engagement',
-          'event_label': slug,
-          'language': lang
-        });
-      }
-    });
-
-    // Track 50% completion
-    let halfTracked = false;
-    audio.addEventListener('timeupdate', function() {
-      if (!halfTracked && audio.currentTime > audio.duration / 2) {
-        halfTracked = true;
-        if (typeof gtag === 'function') {
-          gtag('event', 'podcast_halfway', {
-            'event_category': 'engagement',
-            'event_label': slug,
-            'language': lang
-          });
-        }
-      }
-    });
-  });
-});
-</script>
-
 </body>
 </html>
