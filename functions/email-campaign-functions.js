@@ -43,13 +43,13 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 const AB_TEST_VARIANTS = {
   v3: {
     templateVersion: 'v3',
-    subject: 'Using AI to Build Your Team',
+    subject: 'Using AI to Build Your Direct Sales Team',
     subjectTag: 'mobile_first_v3',
     description: 'Critiques old advice, TBP as correction'
   },
   v4: {
     templateVersion: 'v4',
-    subject: 'Using AI to Build Your Team',
+    subject: 'Using AI to Build Your Direct Sales Team',
     subjectTag: 'mobile_first_v4',
     description: 'Flip the script - confidence before joining'
   }
