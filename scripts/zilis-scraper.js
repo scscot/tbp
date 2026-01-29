@@ -257,7 +257,7 @@ async function scrapeUrl(browser, url) {
     });
 
     // Wait a bit for any dynamic content
-    await page.waitForTimeout(1000);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Extract contact info
     const contactInfo = await extractContactInfo(page);
