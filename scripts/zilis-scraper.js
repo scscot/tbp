@@ -360,9 +360,8 @@ async function updateDocument(db, docId, data, success, error) {
  * @param {object} summary - Scrape summary
  */
 async function sendCompletionEmail(summary) {
-  // Try TBP credentials first, fall back to PreIntake credentials
-  const smtpUser = process.env.TBP_SMTP_USER || process.env.PREINTAKE_SMTP_USER;
-  const smtpPass = process.env.TBP_SMTP_PASS || process.env.PREINTAKE_SMTP_PASS;
+  const smtpUser = process.env.PREINTAKE_SMTP_USER;
+  const smtpPass = process.env.PREINTAKE_SMTP_PASS;
 
   if (!smtpUser || !smtpPass) {
     console.log('SMTP credentials not configured - skipping email notification');

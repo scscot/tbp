@@ -69,8 +69,6 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           MAX_URLS: ${{ github.event.inputs.max_urls || '100' }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
-          TBP_SMTP_USER: ${{ secrets.TBP_SMTP_USER }}
-          TBP_SMTP_PASS: ${{ secrets.TBP_SMTP_PASS }}
           PREINTAKE_SMTP_USER: ${{ secrets.PREINTAKE_SMTP_USER }}
           PREINTAKE_SMTP_PASS: ${{ secrets.PREINTAKE_SMTP_PASS }}
         run: |
