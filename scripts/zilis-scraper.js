@@ -319,6 +319,7 @@ async function updateDocument(db, docId, data, success, error) {
   if (success && data.email) {
     // Success with email found
     await docRef.update({
+      company: CONFIG.COMPANY,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
@@ -331,6 +332,7 @@ async function updateDocument(db, docId, data, success, error) {
   } else if (success && !data.email) {
     // Success but no email found
     await docRef.update({
+      company: CONFIG.COMPANY,
       firstName: data.firstName,
       lastName: data.lastName,
       scraped: true,
@@ -342,6 +344,7 @@ async function updateDocument(db, docId, data, success, error) {
   } else {
     // Failed
     await docRef.update({
+      company: CONFIG.COMPANY,
       scrapeStatus: 'failed',
       scrapeError: error,
       scrapeAttempts: admin.firestore.FieldValue.increment(1),
