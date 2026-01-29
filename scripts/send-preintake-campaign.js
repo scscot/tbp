@@ -344,8 +344,10 @@ async function generateDemoForContact(contactData) {
 
         // Step 3: Create lead document
         const leadId = db.collection(LEADS_COLLECTION).doc().id;
+        // Clean firmName - prefer analysis.firmName (scraped from website), fallback to cleaned campaign firmName
+        const cleanedFirmName = analysis.firmName || cleanFirmName(firmName) || firmName;
         const leadData = {
-            name: firmName,
+            name: cleanedFirmName,
             email: email,
             website: website,
             source: 'campaign',
