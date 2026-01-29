@@ -556,12 +556,75 @@ async function scrapeNSBAAttorneys() {
 
     try {
         page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-        await page.setViewport({ width: 1280, height: 800 });
+
+        // Enhanced anti-detection measures for Cloudflare
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+        await page.setViewport({ width: 1920, height: 1080 });
+
+        // Override navigator properties to appear more like a real browser
+        await page.evaluateOnNewDocument(() => {
+            // Override webdriver detection
+            Object.defineProperty(navigator, 'webdriver', { get: () => false });
+
+            // Override plugins (empty array is suspicious)
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5]
+            });
+
+            // Override languages
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en']
+            });
+
+            // Override permissions
+            const originalQuery = window.navigator.permissions.query;
+            window.navigator.permissions.query = (parameters) => (
+                parameters.name === 'notifications' ?
+                    Promise.resolve({ state: Notification.permission }) :
+                    originalQuery(parameters)
+            );
+        });
+
+        // Set extra HTTP headers to appear more legitimate
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'
+        });
 
         // Navigate to search page
         console.log(`Navigating to ${SEARCH_URL}...`);
         await page.goto(SEARCH_URL, { waitUntil: 'networkidle2', timeout: 60000 });
+
+        // Handle Cloudflare "Just a moment..." challenge
+        const handleCloudflareChallenge = async () => {
+            const maxWaitTime = 30000; // 30 seconds max
+            const checkInterval = 2000; // Check every 2 seconds
+            let totalWaited = 0;
+
+            while (totalWaited < maxWaitTime) {
+                const title = await page.title();
+                if (title.toLowerCase().includes('just a moment')) {
+                    console.log(`Cloudflare challenge detected (waited ${totalWaited / 1000}s), waiting for resolution...`);
+                    await delay(checkInterval);
+                    totalWaited += checkInterval;
+                } else {
+                    if (totalWaited > 0) {
+                        console.log(`Cloudflare challenge passed after ${totalWaited / 1000}s`);
+                    }
+                    return true;
+                }
+            }
+
+            console.log(`Cloudflare challenge did not resolve after ${maxWaitTime / 1000}s`);
+            return false;
+        };
+
+        const cloudflareResolved = await handleCloudflareChallenge();
+        if (!cloudflareResolved) {
+            throw new Error('Cloudflare challenge did not resolve - site may be blocking automated access');
+        }
+
         await delay(5000); // Give page more time to fully render (GitHub Actions can be slower)
 
         // Click the Continue button to load all results - with retry logic
