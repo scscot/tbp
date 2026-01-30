@@ -43,13 +43,13 @@ const LANDING_PAGE_URL = 'https://teambuildpro.com';
 // =============================================================================
 
 const AB_TEST_VARIANTS = {
-  v3: {
+  v5: {
     templateVersion: 'v5',
     subject: "Using AI to Build Your ${company} Team",
     subjectTag: 'mobile_first_v5',
     description: 'Critiques old advice, TBP as correction'
   },
-  v4: {
+  v6: {
     templateVersion: 'v6',
     subject: "Using AI to Build Your ${company} Team",
     subjectTag: 'mobile_first_v6',
@@ -152,7 +152,7 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between V5 and V6 templates
+  // A/B Test: Strict alternation between v5 (template v5) and v6 (template v6)
   const templateVariant = index % 2 === 0 ? 'v5' : 'v6';
   const variant = AB_TEST_VARIANTS[templateVariant];
 
