@@ -24,10 +24,12 @@
  *   PREINTAKE_SMTP_USER - SMTP username for notifications
  *   PREINTAKE_SMTP_PASS - SMTP password for notifications
  *
- * Early Termination:
- *   If first 10 URLs for a company yield 0 emails, the company is marked as
- *   a "no-email platform" in patterns.json and ALL documents for that company
- *   are deleted from Firestore to save resources.
+ * Early Termination (Cumulative Tracking):
+ *   Company scrape stats are tracked cumulatively in Firestore across runs.
+ *   If a company reaches 15+ URLs scraped with 0 emails found (cumulative),
+ *   it is marked as a "no-email platform" in patterns.json and ALL documents
+ *   for that company are deleted from Firestore to save resources.
+ *   Stats are stored in: config/contactsScraper.companyStats
  */
 
 const puppeteer = require('puppeteer');
@@ -56,8 +58,12 @@ const CONFIG = {
   MAX_RETRIES: 3,
   CONSECUTIVE_ERROR_LIMIT: 10,
 
-  // Early termination - sample size before marking as no-email platform
-  NO_EMAIL_SAMPLE_SIZE: 10,
+  // Early termination - cumulative sample size before marking as no-email platform
+  NO_EMAIL_SAMPLE_SIZE: 15,
+
+  // Firestore path for cumulative company stats
+  STATS_COLLECTION: 'config',
+  STATS_DOC: 'contactsScraper',
 
   // Email notifications
   SMTP_HOST: 'smtp.dreamhost.com',
@@ -547,6 +553,50 @@ async function deleteAllCompanyDocuments(db, company) {
 }
 
 // ============================================================================
+// CUMULATIVE COMPANY STATS (persisted across runs)
+// ============================================================================
+
+/**
+ * Load cumulative company stats from Firestore
+ * Returns: { companyName: { scraped: N, emailsFound: N }, ... }
+ */
+async function loadCumulativeStats(db) {
+  try {
+    const doc = await db.collection(CONFIG.STATS_COLLECTION).doc(CONFIG.STATS_DOC).get();
+    if (doc.exists && doc.data().companyStats) {
+      console.log('Loaded cumulative company stats from Firestore');
+      return doc.data().companyStats;
+    }
+  } catch (err) {
+    console.warn('Could not load cumulative stats:', err.message);
+  }
+  return {};
+}
+
+/**
+ * Save cumulative company stats to Firestore
+ */
+async function saveCumulativeStats(db, stats) {
+  try {
+    await db.collection(CONFIG.STATS_COLLECTION).doc(CONFIG.STATS_DOC).set({
+      companyStats: stats,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.warn('Could not save cumulative stats:', err.message);
+  }
+}
+
+/**
+ * Reset stats for a specific company (after deletion)
+ */
+async function resetCompanyStats(db, cumulativeStats, company) {
+  delete cumulativeStats[company];
+  await saveCumulativeStats(db, cumulativeStats);
+  console.log(`  Reset cumulative stats for ${company}`);
+}
+
+// ============================================================================
 // EMAIL NOTIFICATIONS
 // ============================================================================
 
@@ -731,6 +781,9 @@ async function main() {
   // Initialize Firebase
   const db = initializeFirebase();
 
+  // Load cumulative company stats (persisted across runs)
+  const cumulativeStats = dryRun ? {} : await loadCumulativeStats(db);
+
   // Get URLs to scrape
   console.log('\nFetching unscraped URLs...');
   let urlsToScrape;
@@ -785,9 +838,14 @@ async function main() {
   for (let i = 0; i < urlsToScrape.length; i++) {
     const { id, url, company, scrapeAttempts } = urlsToScrape[i];
 
-    // Initialize company stats if needed
+    // Initialize company stats if needed (per-run tracking)
     if (!companyStats[company]) {
       companyStats[company] = { scraped: 0, emailsFound: 0 };
+    }
+
+    // Initialize cumulative stats if needed
+    if (!cumulativeStats[company]) {
+      cumulativeStats[company] = { scraped: 0, emailsFound: 0 };
     }
 
     // Check if this company has been marked as no-email during this run
@@ -805,6 +863,7 @@ async function main() {
     const result = await scrapeUrl(browser, url);
     summary.processed++;
     companyStats[company].scraped++;
+    cumulativeStats[company].scraped++;
 
     if (result.success) {
       consecutiveErrors = 0;
@@ -816,6 +875,7 @@ async function main() {
 
       if (emailFound && !corporateCheck.isCorporate) {
         companyStats[company].emailsFound++;
+        cumulativeStats[company].emailsFound++;
 
         // Valid individual email found - use Claude AI to extract name
         console.log(`  Email found: ${result.data.email}`);
@@ -857,11 +917,12 @@ async function main() {
         }
       }
 
-      // Early termination check: 0 emails in first N samples
-      const stats = companyStats[company];
-      if (stats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && stats.emailsFound === 0) {
+      // Early termination check: 0 emails in cumulative samples (across runs)
+      const cumStats = cumulativeStats[company];
+      const runStats = companyStats[company];
+      if (cumStats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && cumStats.emailsFound === 0) {
         console.log(`\nEARLY TERMINATION: ${company}`);
-        console.log(`   0/${stats.scraped} emails found - marking as no-email platform`);
+        console.log(`   0/${cumStats.scraped} emails found (cumulative) - marking as no-email platform`);
 
         // Mark in patterns.json
         const domainKey = getCompanyDomain(company);
@@ -875,7 +936,10 @@ async function main() {
 
             // Delete ALL documents for this company
             const deletedCount = await deleteAllCompanyDocuments(db, company);
-            summary.deleted += deletedCount - stats.scraped; // Adjust for ones already counted
+            summary.deleted += deletedCount - runStats.scraped; // Adjust for ones already counted this run
+
+            // Reset cumulative stats for this company
+            await resetCompanyStats(db, cumulativeStats, company);
           } else {
             console.log(`   DRY RUN - Would update patterns.json and delete all documents`);
           }
@@ -930,17 +994,34 @@ async function main() {
   }
   console.log('='.repeat(60));
 
-  // Per-company breakdown
+  // Per-company breakdown (this run)
   if (Object.keys(companyStats).length > 1) {
-    console.log('\nPer-Company Breakdown:');
+    console.log('\nPer-Company Breakdown (this run):');
     for (const [company, stats] of Object.entries(companyStats)) {
       console.log(`  ${company}: ${stats.emailsFound}/${stats.scraped} emails found`);
     }
   }
 
+  // Cumulative stats (all runs)
+  if (!dryRun && Object.keys(cumulativeStats).length > 0) {
+    console.log('\nCumulative Stats (all runs):');
+    for (const [company, stats] of Object.entries(cumulativeStats)) {
+      const status = stats.scraped >= CONFIG.NO_EMAIL_SAMPLE_SIZE && stats.emailsFound === 0
+        ? ' ⚠️  WILL DELETE NEXT RUN'
+        : stats.emailsFound === 0
+          ? ` (${CONFIG.NO_EMAIL_SAMPLE_SIZE - stats.scraped} more needed to trigger deletion)`
+          : '';
+      console.log(`  ${company}: ${stats.emailsFound}/${stats.scraped} emails${status}`);
+    }
+
+    // Save cumulative stats to Firestore
+    await saveCumulativeStats(db, cumulativeStats);
+    console.log('\nCumulative stats saved to Firestore');
+  }
+
   // Save summary to file
   const summaryPath = path.join(__dirname, 'contacts-scrape-summary.json');
-  fs.writeFileSync(summaryPath, JSON.stringify({ ...summary, companyStats }, null, 2));
+  fs.writeFileSync(summaryPath, JSON.stringify({ ...summary, companyStats, cumulativeStats }, null, 2));
   console.log(`\nSummary saved to: ${summaryPath}`);
 
   // Send notification email
