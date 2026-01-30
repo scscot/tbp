@@ -86,6 +86,10 @@ const trackEmailOpen = onRequest({
  *
  * URL: /trackEmailClick?id={contactDocId}&url={encodedDestinationUrl}
  *
+ * Checks both collections:
+ * - emailCampaigns/master/contacts (main campaign)
+ * - direct_sales_contacts (contacts campaign)
+ *
  * Updates Firestore with:
  * - clickedAt: First click timestamp (only set once)
  * - clickCount: Incremented on each click
@@ -112,11 +116,18 @@ const trackEmailClick = onRequest({
   }
 
   try {
-    const contactRef = db.collection('emailCampaigns').doc('master').collection('contacts').doc(id);
-    const contactDoc = await contactRef.get();
+    // Try main campaign collection first
+    let contactRef = db.collection('emailCampaigns').doc('master').collection('contacts').doc(id);
+    let contactDoc = await contactRef.get();
+
+    // If not found, try direct_sales_contacts collection
+    if (!contactDoc.exists) {
+      contactRef = db.collection('direct_sales_contacts').doc(id);
+      contactDoc = await contactRef.get();
+    }
 
     if (!contactDoc.exists) {
-      console.log(`📧 Click tracking: Contact ${id} not found`);
+      console.log(`📧 Click tracking: Contact ${id} not found in any collection`);
       return res.redirect(302, destinationUrl);
     }
 

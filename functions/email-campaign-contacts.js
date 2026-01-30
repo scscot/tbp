@@ -110,15 +110,24 @@ function buildClickUrl(trackingId, destinationUrl) {
 }
 
 /**
- * Build destination URL with UTM parameters
+ * Build destination URL with UTM parameters and optional contact personalization
  */
-function buildLandingPageUrl(utmCampaign, utmContent) {
+function buildLandingPageUrl(utmCampaign, utmContent, contact = null) {
   const params = new URLSearchParams({
     utm_source: 'mailgun',
     utm_medium: 'email',
     utm_campaign: utmCampaign,
     utm_content: utmContent
   });
+
+  // Add contact name for personalized welcome message on landing page
+  if (contact && contact.firstName) {
+    params.set('fn', contact.firstName);
+    if (contact.lastName) {
+      params.set('ln', contact.lastName);
+    }
+  }
+
   return `${LANDING_PAGE_URL}?${params.toString()}`;
 }
 
@@ -151,8 +160,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
   const companyName = contact.company || 'Your';
   const subject = variant.subject.replace('${company}', companyName);
 
-  // Build tracking URLs
-  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag);
+  // Build tracking URLs (includes contact name for personalized welcome on landing page)
+  const landingPageUrl = buildLandingPageUrl(config.utmCampaign, variant.subjectTag, contact);
   const trackedCtaUrl = buildClickUrl(docId, landingPageUrl);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(contact.email)}`;
 

@@ -59,13 +59,22 @@ function buildClickUrl(trackingId, destinationUrl) {
   return `${TRACKING_BASE_URL}/trackEmailClick?id=${trackingId}&url=${encodedUrl}`;
 }
 
-function buildLandingPageUrl(utmCampaign, utmContent) {
+function buildLandingPageUrl(utmCampaign, utmContent, firstName, lastName) {
   const params = new URLSearchParams({
     utm_source: 'mailgun',
     utm_medium: 'email',
     utm_campaign: utmCampaign,
     utm_content: utmContent
   });
+
+  // Add contact name for personalized welcome message on landing page
+  if (firstName) {
+    params.set('fn', firstName);
+    if (lastName) {
+      params.set('ln', lastName);
+    }
+  }
+
   return `${LANDING_PAGE_URL}?${params.toString()}`;
 }
 
@@ -87,8 +96,12 @@ async function sendTestEmail(toEmail, company, templateVariant) {
   // Use a test tracking ID
   const trackingId = `test_${Date.now()}`;
 
-  // Build URLs
-  const landingPageUrl = buildLandingPageUrl('direct_sales_contacts_test', variant.subjectTag);
+  // Test contact name for welcome bar
+  const testFirstName = 'Test';
+  const testLastName = 'User';
+
+  // Build URLs (includes name for personalized welcome on landing page)
+  const landingPageUrl = buildLandingPageUrl('direct_sales_contacts_test', variant.subjectTag, testFirstName, testLastName);
   const trackedCtaUrl = buildClickUrl(trackingId, landingPageUrl);
   const unsubscribeUrl = `${LANDING_PAGE_URL}/unsubscribe.html?email=${encodeURIComponent(toEmail)}`;
 

@@ -16,8 +16,12 @@
   // Localized labels (EN version)
   const LABELS = {
     invited: 'Invited by',
-    recommended: 'Recommended by'
+    recommended: 'Recommended by',
+    welcome: 'Welcome'
   };
+
+  // Storage key for email campaign welcome data
+  const WELCOME_KEY = 'tbp_welcome_data';
 
   const STORAGE_KEY = 'tbp_referral';
   const TOKEN_KEY = 'tbp_referral_token';
@@ -38,11 +42,50 @@
   }
 
   /**
+   * Capture welcome data from email campaign URL parameters (fn, ln)
+   * Returns true if welcome data was captured
+   */
+  function captureWelcomeData() {
+    // Skip if running from file:// protocol
+    if (window.location.protocol === 'file:') return false;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const firstName = urlParams.get('fn');
+    const lastName = urlParams.get('ln');
+
+    if (firstName) {
+      const welcomeData = {
+        firstName: firstName,
+        lastName: lastName || '',
+        capturedAt: Date.now()
+      };
+      sessionStorage.setItem(WELCOME_KEY, JSON.stringify(welcomeData));
+      console.log('[TBP Referral] Welcome data captured:', welcomeData);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get stored welcome data from sessionStorage
+   */
+  function getStoredWelcomeData() {
+    try {
+      const stored = sessionStorage.getItem(WELCOME_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch (err) {
+      console.warn('[TBP Referral] Error reading welcome storage:', err);
+      return null;
+    }
+  }
+
+  /**
    * Capture referral from URL parameters and store in sessionStorage
+   * Returns true if referral was captured (used to determine priority)
    */
   function captureReferral() {
     // Skip if running from file:// protocol
-    if (window.location.protocol === 'file:') return;
+    if (window.location.protocol === 'file:') return false;
 
     const urlParams = new URLSearchParams(window.location.search);
     const newCode = urlParams.get('new');
@@ -56,9 +99,13 @@
       if (isValidReferralCode(code)) {
         const referralData = { code, type, targeting, capturedAt: Date.now() };
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(referralData));
+        // Clear any welcome data - referral takes priority
+        sessionStorage.removeItem(WELCOME_KEY);
         console.log('[TBP Referral] Captured:', referralData);
+        return true;
       }
     }
+    return false;
   }
 
   /**
@@ -227,35 +274,27 @@
   }
 
   /**
-   * Show the Top Invite Bar with sponsor info
+   * Show the Top Invite Bar with welcome message (for email campaign visitors)
+   * Returns true if welcome bar was shown
    */
-  async function showInviteBar() {
-    const referral = getStoredReferral();
-    if (!referral) {
-      console.log('[TBP Referral] No stored referral, invite bar not shown');
-      return;
-    }
-
-    const sponsor = await getSponsorData(referral.code);
-    if (!sponsor) {
-      console.log('[TBP Referral] Could not fetch sponsor data');
-      return;
+  function showWelcomeBar() {
+    const welcomeData = getStoredWelcomeData();
+    if (!welcomeData) {
+      return false;
     }
 
     const bar = getOrCreateInviteBarElement();
     if (!bar) {
       console.log('[TBP Referral] Could not get or create invite bar element');
-      return;
+      return false;
     }
 
-    const label = (referral.type === 'partner') ? LABELS.recommended : LABELS.invited;
-    const fullName = `${sponsor.firstName} ${sponsor.lastName}`;
-    const avatarUrl = sponsor.photoUrl || '/assets/images/default_avatar.png';
+    const fullName = welcomeData.lastName
+      ? `${welcomeData.firstName} ${welcomeData.lastName}`
+      : welcomeData.firstName;
 
     bar.innerHTML = `
-      <img src="${avatarUrl}" alt="${fullName}" class="top-invite-avatar"
-           onerror="this.src='/assets/images/default_avatar.png';">
-      <span class="top-invite-text">${label} ${fullName}</span>
+      <span class="top-invite-text">${LABELS.welcome} ${fullName}</span>
     `;
 
     // Trigger animation
@@ -264,20 +303,75 @@
       bar.style.top = '0';
     });
 
-    console.log('[TBP Referral] Invite bar shown for:', fullName);
+    console.log('[TBP Referral] Welcome bar shown for:', fullName);
+    return true;
+  }
+
+  /**
+   * Show the Top Invite Bar with sponsor info
+   * Priority: Referral (?ref=/?new=) > Welcome (?fn=)
+   */
+  async function showInviteBar() {
+    // PRIORITY 1: Check for referral data (from ?ref= or ?new= params)
+    // Referral ALWAYS takes priority over welcome message
+    const referral = getStoredReferral();
+    if (referral) {
+      const sponsor = await getSponsorData(referral.code);
+      if (sponsor) {
+        const bar = getOrCreateInviteBarElement();
+        if (bar) {
+          const label = (referral.type === 'partner') ? LABELS.recommended : LABELS.invited;
+          const fullName = `${sponsor.firstName} ${sponsor.lastName}`;
+          const avatarUrl = sponsor.photoUrl || '/assets/images/default_avatar.png';
+
+          bar.innerHTML = `
+            <img src="${avatarUrl}" alt="${fullName}" class="top-invite-avatar"
+                 onerror="this.src='/assets/images/default_avatar.png';">
+            <span class="top-invite-text">${label} ${fullName}</span>
+          `;
+
+          // Trigger animation
+          requestAnimationFrame(() => {
+            bar.classList.add('visible');
+            bar.style.top = '0';
+          });
+
+          console.log('[TBP Referral] Invite bar shown for:', fullName);
+          return; // Done - referral bar shown
+        }
+      } else {
+        console.log('[TBP Referral] Could not fetch sponsor data');
+      }
+    }
+
+    // PRIORITY 2: Fall back to welcome message (from email campaign ?fn= params)
+    // Only shown if NO referral data exists
+    if (showWelcomeBar()) {
+      return;
+    }
+
+    console.log('[TBP Referral] No referral or welcome data, bar not shown');
   }
 
   /**
    * Initialize referral tracking
+   * Priority: Referral (?ref=/?new=) > Welcome (?fn=)
    */
   function init() {
-    // Always capture referral from URL (in case user landed directly on this page)
-    captureReferral();
+    // FIRST: Capture referral from URL - this takes priority
+    // If referral is captured, it clears any existing welcome data
+    const hasReferral = captureReferral();
+
+    // SECOND: Only capture welcome data if no referral params in URL
+    // This ensures referral always wins when both could be present
+    if (!hasReferral) {
+      captureWelcomeData();
+    }
 
     // Update Google Play links with referrer if we have a stored referral
     updateGooglePlayLinks();
 
-    // Show the Top Invite Bar if we have a stored referral
+    // Show the Top Invite Bar (referral takes priority over welcome)
     showInviteBar();
   }
 
