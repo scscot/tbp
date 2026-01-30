@@ -347,7 +347,7 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
 // =============================================================================
 
 const sendHourlyContactsCampaign = onSchedule({
-  schedule: "0 10,12,14 * * *",
+  schedule: "0 8,10,12,14 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
