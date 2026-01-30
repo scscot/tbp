@@ -373,7 +373,7 @@ const sendHourlyContactsCampaign = onSchedule({
  * Prevents data loss since Mailgun logs expire after ~30 days
  */
 const syncContactsMailgunEvents = onSchedule({
-  schedule: "10 10,12,14 * * *",
+  schedule: "10 8,10,12,14 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
