@@ -54,9 +54,100 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": false,
+            "cleanUrls": true,
             "trailingSlash": false,
-            "redirects": [],
+            "redirects": [
+                {
+                    "source": "/faq",
+                    "destination": "/faq.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact",
+                    "destination": "/contact_us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact.html",
+                    "destination": "/contact_us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy",
+                    "destination": "/privacy_policy.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy.html",
+                    "destination": "/privacy_policy.html",
+                    "type": 301
+                },
+                {
+                    "source": "/terms",
+                    "destination": "/terms_of_service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/terms.html",
+                    "destination": "/terms_of_service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/tos",
+                    "destination": "/terms_of_service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/tos.html",
+                    "destination": "/terms_of_service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/blog/index.html",
+                    "destination": "/blog.html",
+                    "type": 301
+                },
+                {
+                    "source": "/companies/index.html",
+                    "destination": "/companies.html",
+                    "type": 301
+                },
+                {
+                    "source": "/faqs",
+                    "destination": "/faq.html",
+                    "type": 301
+                },
+                {
+                    "source": "/faqs.html",
+                    "destination": "/faq.html",
+                    "type": 301
+                },
+                {
+                    "source": "/contact_us",
+                    "destination": "/contact_us.html",
+                    "type": 301
+                },
+                {
+                    "source": "/delete-account",
+                    "destination": "/delete-account.html",
+                    "type": 301
+                },
+                {
+                    "source": "/privacy_policy",
+                    "destination": "/privacy_policy.html",
+                    "type": 301
+                },
+                {
+                    "source": "/terms_of_service",
+                    "destination": "/terms_of_service.html",
+                    "type": 301
+                },
+                {
+                    "source": "/learning/ai-recruiting-:company.html",
+                    "destination": "/companies/ai-recruiting-:company.html",
+                    "type": 301
+                }
+            ],
             "headers": [
                 {
                     "source": "**/*.@(html|htm)",

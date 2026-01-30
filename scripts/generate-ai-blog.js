@@ -814,6 +814,13 @@ function generateTranslatedBlogHTML(blogPost, lang) {
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${baseUrl}/blog/${blogPost.slug}.html" />
 
+  <!-- Hreflang tags for international SEO -->
+  <link rel="alternate" hreflang="en" href="https://teambuildpro.com/blog/${blogPost.slug}.html" />
+  <link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/blog/${blogPost.slug}.html" />
+  <link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/blog/${blogPost.slug}.html" />
+  <link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/blog/${blogPost.slug}.html" />
+  <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/blog/${blogPost.slug}.html" />
+
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="${blogPost.title} | Team Build Pro Blog" />
   <meta property="og:description" content="${blogPost.metaDescription}" />

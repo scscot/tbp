@@ -988,6 +988,13 @@ function generateBlogPost(post) {
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://teambuildpro.com/blog/${post.slug}.html" />
 
+  <!-- Hreflang tags for international SEO -->
+  <link rel="alternate" hreflang="en" href="https://teambuildpro.com/blog/${post.slug}.html" />
+  <link rel="alternate" hreflang="es" href="https://es.teambuildpro.com/blog/${post.slug}.html" />
+  <link rel="alternate" hreflang="pt" href="https://pt.teambuildpro.com/blog/${post.slug}.html" />
+  <link rel="alternate" hreflang="de" href="https://de.teambuildpro.com/blog/${post.slug}.html" />
+  <link rel="alternate" hreflang="x-default" href="https://teambuildpro.com/blog/${post.slug}.html" />
+
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="${post.title} | Team Build Pro Blog" />
   <meta property="og:description" content="${post.excerpt}" />
