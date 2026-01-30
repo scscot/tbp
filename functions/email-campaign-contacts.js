@@ -152,8 +152,8 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between V1 and V2 templates
-  const templateVariant = index % 2 === 0 ? 'v3' : 'v4';
+  // A/B Test: Strict alternation between V5 and V6 templates
+  const templateVariant = index % 2 === 0 ? 'v5' : 'v6';
   const variant = AB_TEST_VARIANTS[templateVariant];
 
   // Interpolate company name in subject line

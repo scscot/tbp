@@ -318,6 +318,79 @@
             font-weight: 400;
         }
 
+        /* Tab Styles */
+        .campaign-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .campaign-tab {
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .campaign-tab:hover {
+            background: #e9ecef;
+        }
+
+        .campaign-tab.active {
+            background: white;
+            color: #1a73e8;
+            border-bottom: 2px solid white;
+        }
+
+        .campaign-tab .tab-badge {
+            display: inline-block;
+            background: #e9ecef;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .campaign-tab.active .tab-badge {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .campaign-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .campaign-label.main {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .campaign-label.contacts {
+            background: #d4edda;
+            color: #155724;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -369,79 +442,208 @@
             </div>
 
             <div id="content" style="display: none;">
-                <!-- Campaign Progress -->
-                <h2 class="section-title">Campaign Progress</h2>
-                <div class="stat-card" style="margin-bottom: 30px;">
-                    <h3>Overall Send Progress</h3>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar" style="width: 0%;">0%</div>
+                <!-- Campaign Tabs -->
+                <div class="campaign-tabs">
+                    <div class="campaign-tab active" onclick="switchTab('main')">
+                        Main Campaign <span class="tab-badge" id="mainTabBadge">-</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                        <span><strong id="totalSent">0</strong> sent</span>
-                        <span><strong id="totalRemaining">0</strong> remaining</span>
-                        <span><strong id="totalContacts">0</strong> total</span>
+                    <div class="campaign-tab" onclick="switchTab('contacts')">
+                        Contacts Campaign <span class="tab-badge" id="contactsTabBadge">-</span>
                     </div>
                 </div>
 
-                <!-- Sending Activity -->
-                <h2 class="section-title">Sending Activity</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Sent Today</h3>
-                        <div class="stat-value" id="emailsSentToday">-</div>
-                        <div class="stat-label">Since midnight PT</div>
+                <!-- Main Campaign Tab Content -->
+                <div id="mainTab" class="tab-content active">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label main">Main</span></h2>
+                    <div class="stat-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="totalSent">0</strong> sent</span>
+                            <span><strong id="totalRemaining">0</strong> remaining</span>
+                            <span><strong id="totalContacts">0</strong> total</span>
+                        </div>
                     </div>
 
-                    <div class="stat-card">
-                        <h3>Sent (24h)</h3>
-                        <div class="stat-value" id="emailsSent24h">-</div>
-                        <div class="stat-label">Last 24 hours</div>
+                    <!-- Sending Activity -->
+                    <h2 class="section-title">Sending Activity</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Sent Today</h3>
+                            <div class="stat-value" id="emailsSentToday">-</div>
+                            <div class="stat-label">Since midnight PT</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>Sent (24h)</h3>
+                            <div class="stat-value" id="emailsSent24h">-</div>
+                            <div class="stat-label">Last 24 hours</div>
+                        </div>
+
+                        <div class="stat-card danger">
+                            <h3>Failed</h3>
+                            <div class="stat-value" id="failed">-</div>
+                            <div class="stat-label">Delivery failures (all time)</div>
+                        </div>
                     </div>
 
-                    <div class="stat-card danger">
-                        <h3>Failed</h3>
-                        <div class="stat-value" id="failed">-</div>
-                        <div class="stat-label">Delivery failures (all time)</div>
+                    <!-- Click Performance (Firestore) -->
+                    <h2 class="section-title">Click Performance <span class="source-label">Firestore</span></h2>
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <h3>Total Clicks</h3>
+                            <div class="stat-value" id="totalClicked">-</div>
+                            <div class="stat-label">Unique contacts who clicked</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>Click Rate</h3>
+                            <div class="stat-value" id="clickRate">-</div>
+                            <div class="stat-label">Clicked / Sent</div>
+                        </div>
+                    </div>
+
+                    <!-- A/B Test Performance -->
+                    <h2 class="section-title">A/B Test Performance <span class="source-label">Firestore</span></h2>
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subject Line</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="abTestBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #999;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Sends -->
+                    <h2 class="section-title">Recent Sends</h2>
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentSendsBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #999;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Click Performance (Firestore) -->
-                <h2 class="section-title">Click Performance <span class="source-label">Firestore</span></h2>
-                <div class="stats-grid">
-                    <div class="stat-card success">
-                        <h3>Total Clicks</h3>
-                        <div class="stat-value" id="totalClicked">-</div>
-                        <div class="stat-label">Unique contacts who clicked</div>
+                <!-- Contacts Campaign Tab Content -->
+                <div id="contactsTab" class="tab-content">
+                    <!-- Campaign Progress -->
+                    <h2 class="section-title">Campaign Progress <span class="campaign-label contacts">Contacts</span></h2>
+                    <div class="stat-card" style="margin-bottom: 30px;">
+                        <h3>Overall Send Progress</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="contactsProgressBar" style="width: 0%;">0%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span><strong id="contactsTotalSent">0</strong> sent</span>
+                            <span><strong id="contactsTotalRemaining">0</strong> remaining</span>
+                            <span><strong id="contactsTotalContacts">0</strong> total</span>
+                        </div>
                     </div>
 
-                    <div class="stat-card">
-                        <h3>Click Rate</h3>
-                        <div class="stat-value" id="clickRate">-</div>
-                        <div class="stat-label">Clicked / Sent</div>
+                    <!-- Sending Activity -->
+                    <h2 class="section-title">Sending Activity</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Sent Today</h3>
+                            <div class="stat-value" id="contactsEmailsSentToday">-</div>
+                            <div class="stat-label">Since midnight PT</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>Sent (24h)</h3>
+                            <div class="stat-value" id="contactsEmailsSent24h">-</div>
+                            <div class="stat-label">Last 24 hours</div>
+                        </div>
+
+                        <div class="stat-card danger">
+                            <h3>Failed</h3>
+                            <div class="stat-value" id="contactsFailed">-</div>
+                            <div class="stat-label">Delivery failures (all time)</div>
+                        </div>
+                    </div>
+
+                    <!-- Click Performance (Firestore) -->
+                    <h2 class="section-title">Click Performance <span class="source-label">Firestore</span></h2>
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <h3>Total Clicks</h3>
+                            <div class="stat-value" id="contactsTotalClicked">-</div>
+                            <div class="stat-label">Unique contacts who clicked</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>Click Rate</h3>
+                            <div class="stat-value" id="contactsClickRate">-</div>
+                            <div class="stat-label">Clicked / Sent</div>
+                        </div>
+                    </div>
+
+                    <!-- A/B Test Performance -->
+                    <h2 class="section-title">A/B Test Performance <span class="source-label">Firestore</span></h2>
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subject Line</th>
+                                    <th>Sent</th>
+                                    <th>Clicked</th>
+                                    <th>Click Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactsAbTestBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #999;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Sends -->
+                    <h2 class="section-title">Recent Sends</h2>
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time (PT)</th>
+                                    <th>Email</th>
+                                    <th>Company</th>
+                                    <th>Variant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactsRecentSendsBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #999;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- A/B Test Performance -->
-                <h2 class="section-title">A/B Test Performance <span class="source-label">Firestore</span></h2>
-                <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Subject Line</th>
-                                <th>Sent</th>
-                                <th>Clicked</th>
-                                <th>Click Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody id="abTestBody">
-                            <tr>
-                                <td colspan="4" style="text-align: center; color: #999;">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- GA4 Website Traffic -->
+                <!-- GA4 Website Traffic (shared) -->
                 <h2 class="section-title">Website Traffic from Email (24h) <span class="source-label">GA4</span></h2>
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -474,26 +676,6 @@
                         <div class="stat-label">Engaged sessions rate</div>
                     </div>
                 </div>
-
-                <!-- Recent Sends -->
-                <h2 class="section-title">Recent Sends</h2>
-                <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Time (PT)</th>
-                                <th>Email</th>
-                                <th>Variant</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recentSendsBody">
-                            <tr>
-                                <td colspan="4" style="text-align: center; color: #999;">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <div id="error" class="error" style="display: none;"></div>
@@ -502,6 +684,7 @@
 
     <script>
         let currentPassword = '';
+        let currentData = null;
         const FUNCTION_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunctions.net/getEmailCampaignStats';
 
         // Friendly labels for A/B test subject tags
@@ -513,6 +696,16 @@
             'mobile_first_v5': 'V5: "Using AI to Build Your {{company}} Team"',
             'mobile_first_v6': 'V6: "Using AI to Build Your {{company}} Team"'
         };
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.campaign-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.campaign-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
 
         function authenticate() {
             const password = document.getElementById('passwordInput').value;
@@ -593,7 +786,28 @@
             }
         }
 
+        function getVariantBadge(subjectTag) {
+            const badges = {
+                'not_opportunity': '<span class="badge badge-v1">V1</span>',
+                'prebuild_advantage': '<span class="badge badge-v2">V2</span>',
+                'mobile_first_v3': '<span class="badge badge-v1">V3</span>',
+                'mobile_first_v4': '<span class="badge badge-v2">V4</span>',
+                'mobile_first_v5': '<span class="badge badge-v1">V5</span>',
+                'mobile_first_v6': '<span class="badge badge-v2">V6</span>'
+            };
+            return badges[subjectTag] || (subjectTag || '-');
+        }
+
         function displayData(data) {
+            currentData = data;
+
+            // Update tab badges with sent counts
+            document.getElementById('mainTabBadge').textContent = data.campaign.sent.toLocaleString() + ' sent';
+            if (data.contactsCampaign) {
+                document.getElementById('contactsTabBadge').textContent = data.contactsCampaign.campaign.sent.toLocaleString() + ' sent';
+            }
+
+            // ==================== MAIN CAMPAIGN ====================
             // Campaign progress
             const total = data.campaign.total || 1;
             const progress = (data.campaign.sent / total * 100);
@@ -640,32 +854,11 @@
                 abBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No A/B test data</td></tr>';
             }
 
-            // GA4 stats
-            if (data.ga4) {
-                document.getElementById('ga4Sessions').textContent = data.ga4.sessions.toLocaleString();
-                document.getElementById('ga4Users').textContent = data.ga4.users.toLocaleString();
-                document.getElementById('ga4NewUsers').textContent = data.ga4.newUsers.toLocaleString();
-                document.getElementById('ga4AvgSession').textContent = data.ga4.avgSessionDuration;
-                document.getElementById('ga4Engagement').textContent = data.ga4.engagementRate;
-            }
-
-            // Recent sends
+            // Recent sends (main campaign)
             const tbody = document.getElementById('recentSendsBody');
             if (data.recentSends && data.recentSends.length > 0) {
                 tbody.innerHTML = data.recentSends.map(send => {
-                    const variantBadge = send.subjectTag === 'not_opportunity'
-                        ? '<span class="badge badge-v1">V1</span>'
-                        : send.subjectTag === 'prebuild_advantage'
-                            ? '<span class="badge badge-v2">V2</span>'
-                            : send.subjectTag === 'mobile_first_v3'
-                                ? '<span class="badge badge-v1">V3</span>'
-                                : send.subjectTag === 'mobile_first_v4'
-                                    ? '<span class="badge badge-v2">V4</span>'
-                                    : send.subjectTag === 'mobile_first_v5'
-                                        ? '<span class="badge badge-v1">V5</span>'
-                                        : send.subjectTag === 'mobile_first_v6'
-                                            ? '<span class="badge badge-v2">V6</span>'
-                                            : send.subjectTag || '-';
+                    const variantBadge = getVariantBadge(send.subjectTag);
                     const statusBadge = send.clicked
                         ? '<span class="badge badge-clicked">Clicked</span>'
                         : '<span class="badge badge-sent">Sent</span>';
@@ -680,6 +873,87 @@
                 }).join('');
             } else {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No recent sends</td></tr>';
+            }
+
+            // ==================== CONTACTS CAMPAIGN ====================
+            if (data.contactsCampaign) {
+                const cc = data.contactsCampaign;
+
+                // Campaign progress
+                const ccTotal = cc.campaign.total || 1;
+                const ccProgress = (cc.campaign.sent / ccTotal * 100);
+                document.getElementById('contactsProgressBar').style.width = ccProgress + '%';
+                document.getElementById('contactsProgressBar').textContent = ccProgress.toFixed(1) + '%';
+                document.getElementById('contactsTotalSent').textContent = cc.campaign.sent.toLocaleString();
+                document.getElementById('contactsTotalRemaining').textContent = cc.campaign.remaining.toLocaleString();
+                document.getElementById('contactsTotalContacts').textContent = cc.campaign.total.toLocaleString();
+
+                // Sending activity
+                document.getElementById('contactsEmailsSentToday').textContent = cc.today.sent.toLocaleString();
+                document.getElementById('contactsEmailsSent24h').textContent = cc.last24h.sent.toLocaleString();
+
+                // Click performance
+                if (cc.tracking) {
+                    document.getElementById('contactsFailed').textContent = cc.tracking.failed.toLocaleString();
+                    document.getElementById('contactsTotalClicked').textContent = cc.tracking.clicked.toLocaleString();
+                    document.getElementById('contactsClickRate').textContent = cc.tracking.clickRate;
+                }
+
+                // A/B test performance
+                const contactsAbBody = document.getElementById('contactsAbTestBody');
+                if (cc.subjectLines && cc.subjectLines.length > 0) {
+                    const sorted = [...cc.subjectLines].sort((a, b) => {
+                        return parseFloat(b.clickRate) - parseFloat(a.clickRate);
+                    });
+                    const winnerTag = sorted[0].subjectTag;
+
+                    contactsAbBody.innerHTML = cc.subjectLines.map(sl => {
+                        const label = SUBJECT_LABELS[sl.subjectTag] || sl.subjectTag;
+                        const isWinner = sl.subjectTag === winnerTag && cc.subjectLines.length > 1;
+                        const badgeClass = (sl.subjectTag === 'mobile_first_v5') ? 'badge-v1' : 'badge-v2';
+                        return `
+                            <tr class="${isWinner ? 'ab-winner' : ''}">
+                                <td>${label} ${isWinner ? '<span class="badge badge-clicked">LEADING</span>' : ''}</td>
+                                <td>${sl.sent.toLocaleString()}</td>
+                                <td>${sl.clicked.toLocaleString()}</td>
+                                <td><span class="badge ${badgeClass}">${sl.clickRate}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    contactsAbBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No A/B test data</td></tr>';
+                }
+
+                // Recent sends (contacts campaign - includes company column)
+                const contactsTbody = document.getElementById('contactsRecentSendsBody');
+                if (cc.recentSends && cc.recentSends.length > 0) {
+                    contactsTbody.innerHTML = cc.recentSends.map(send => {
+                        const variantBadge = getVariantBadge(send.subjectTag);
+                        const statusBadge = send.clicked
+                            ? '<span class="badge badge-clicked">Clicked</span>'
+                            : '<span class="badge badge-sent">Sent</span>';
+                        return `
+                            <tr>
+                                <td>${send.time}</td>
+                                <td>${send.email}</td>
+                                <td>${send.company || '-'}</td>
+                                <td>${variantBadge}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    contactsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No recent sends</td></tr>';
+                }
+            }
+
+            // ==================== GA4 (shared) ====================
+            if (data.ga4) {
+                document.getElementById('ga4Sessions').textContent = data.ga4.sessions.toLocaleString();
+                document.getElementById('ga4Users').textContent = data.ga4.users.toLocaleString();
+                document.getElementById('ga4NewUsers').textContent = data.ga4.newUsers.toLocaleString();
+                document.getElementById('ga4AvgSession').textContent = data.ga4.avgSessionDuration;
+                document.getElementById('ga4Engagement').textContent = data.ga4.engagementRate;
             }
 
             // Timestamp

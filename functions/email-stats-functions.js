@@ -13,7 +13,8 @@ const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const ga4ServiceAccount = defineSecret('GA4_SERVICE_ACCOUNT');
 
 // Constants
-const CONTACTS_COLLECTION = 'emailCampaigns/master/contacts';
+const MAIN_CAMPAIGN_COLLECTION = 'emailCampaigns/master/contacts';
+const CONTACTS_CAMPAIGN_COLLECTION = 'direct_sales_contacts';
 const MONITORING_PASSWORD = process.env.MONITORING_PASSWORD || 'TeamBuildPro2024!';
 const GA4_PROPERTY_ID = '485651473';
 
@@ -187,6 +188,93 @@ async function fetchGA4Stats(serviceAccountJson) {
 }
 
 /**
+ * Fetch campaign stats for a given collection
+ */
+async function fetchCampaignStats(collectionPath, now, twentyFourHoursAgo, startOfTodayUTC, options = {}) {
+  const contactsRef = db.collection(collectionPath);
+  const { isContactsCampaign = false } = options;
+
+  // Get total count
+  let totalSnapshot;
+  if (isContactsCampaign) {
+    // For contacts campaign, count scraped contacts (email validation done during scraping)
+    totalSnapshot = await contactsRef
+      .where('scraped', '==', true)
+      .count()
+      .get();
+  } else {
+    totalSnapshot = await contactsRef.count().get();
+  }
+  const totalContacts = totalSnapshot.data().count;
+
+  // Get sent count
+  const sentSnapshot = await contactsRef.where('sent', '==', true).count().get();
+  const sentCount = sentSnapshot.data().count;
+
+  // Get last 24 hours count
+  const last24hSnapshot = await contactsRef
+    .where('sentTimestamp', '>=', twentyFourHoursAgo)
+    .count()
+    .get();
+  const last24hCount = last24hSnapshot.data().count;
+
+  // Get today's count (PT timezone)
+  const todaySnapshot = await contactsRef
+    .where('sentTimestamp', '>=', startOfTodayUTC)
+    .count()
+    .get();
+  const todayCount = todaySnapshot.data().count;
+
+  // Get recent sends (last 20)
+  const recentSendsSnapshot = await contactsRef
+    .where('sent', '==', true)
+    .orderBy('sentTimestamp', 'desc')
+    .limit(20)
+    .get();
+
+  const recentSends = recentSendsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    const timestamp = data.sentTimestamp?.toDate?.() || new Date(data.sentTimestamp);
+    return {
+      time: timestamp.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
+      email: data.email || 'Unknown',
+      template: data.templateVersion || data.template || 'N/A',
+      subjectTag: data.subjectTag || '-',
+      clicked: !!data.clickedAt,
+      company: data.company || null  // Include company for contacts campaign
+    };
+  });
+
+  // Get email tracking stats from Firestore
+  const trackingStats = await fetchEmailTrackingStats(contactsRef);
+
+  // Get subject line breakdown
+  const subjectLineStats = await fetchSubjectLineStats(contactsRef);
+
+  return {
+    campaign: {
+      sent: sentCount,
+      remaining: totalContacts - sentCount,
+      total: totalContacts
+    },
+    last24h: {
+      sent: last24hCount
+    },
+    today: {
+      sent: todayCount
+    },
+    tracking: trackingStats || {
+      sent: 0,
+      failed: 0,
+      clicked: 0,
+      clickRate: '0%'
+    },
+    subjectLines: subjectLineStats,
+    recentSends
+  };
+}
+
+/**
  * HTTP endpoint to get email campaign statistics for the dashboard
  */
 const getEmailCampaignStats = onRequest({
@@ -212,57 +300,13 @@ const getEmailCampaignStats = onRequest({
     // Convert back to UTC for Firestore query
     const startOfTodayUTC = new Date(startOfTodayPT.getTime() - (ptOffset + now.getTimezoneOffset()) * 60 * 1000);
 
-    // Query campaign contacts
-    const contactsRef = db.collection(CONTACTS_COLLECTION);
+    // Fetch stats for both campaigns in parallel
+    const [mainCampaignStats, contactsCampaignStats] = await Promise.all([
+      fetchCampaignStats(MAIN_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC),
+      fetchCampaignStats(CONTACTS_CAMPAIGN_COLLECTION, now, twentyFourHoursAgo, startOfTodayUTC, { isContactsCampaign: true })
+    ]);
 
-    // Get total count
-    const totalSnapshot = await contactsRef.count().get();
-    const totalContacts = totalSnapshot.data().count;
-
-    // Get sent count
-    const sentSnapshot = await contactsRef.where('sent', '==', true).count().get();
-    const sentCount = sentSnapshot.data().count;
-
-    // Get last 24 hours count
-    const last24hSnapshot = await contactsRef
-      .where('sentTimestamp', '>=', twentyFourHoursAgo)
-      .count()
-      .get();
-    const last24hCount = last24hSnapshot.data().count;
-
-    // Get today's count (PT timezone)
-    const todaySnapshot = await contactsRef
-      .where('sentTimestamp', '>=', startOfTodayUTC)
-      .count()
-      .get();
-    const todayCount = todaySnapshot.data().count;
-
-    // Get recent sends (last 20)
-    const recentSendsSnapshot = await contactsRef
-      .where('sent', '==', true)
-      .orderBy('sentTimestamp', 'desc')
-      .limit(20)
-      .get();
-
-    const recentSends = recentSendsSnapshot.docs.map(doc => {
-      const data = doc.data();
-      const timestamp = data.sentTimestamp?.toDate?.() || new Date(data.sentTimestamp);
-      return {
-        time: timestamp.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
-        email: data.email || 'Unknown',
-        template: data.templateVersion || data.template || 'N/A',
-        subjectTag: data.subjectTag || '-',
-        clicked: !!data.clickedAt
-      };
-    });
-
-    // Get email tracking stats from Firestore (replaces Mailgun API)
-    const trackingStats = await fetchEmailTrackingStats(contactsRef);
-
-    // Get subject line breakdown
-    const subjectLineStats = await fetchSubjectLineStats(contactsRef);
-
-    // Get GA4 stats
+    // Get GA4 stats (shared across campaigns)
     let ga4Stats = null;
     try {
       const serviceAccountJson = ga4ServiceAccount.value();
@@ -273,26 +317,28 @@ const getEmailCampaignStats = onRequest({
       console.error('GA4 stats error:', ga4Error.message);
     }
 
-    // Build response
+    // Build response - maintain backward compatibility with existing dashboard
+    // while adding contacts campaign data
     const response = {
-      campaign: {
-        sent: sentCount,
-        remaining: totalContacts - sentCount,
-        total: totalContacts
+      // Main campaign data (for backward compatibility)
+      campaign: mainCampaignStats.campaign,
+      last24h: mainCampaignStats.last24h,
+      today: mainCampaignStats.today,
+      tracking: mainCampaignStats.tracking,
+      subjectLines: mainCampaignStats.subjectLines,
+      recentSends: mainCampaignStats.recentSends,
+
+      // Contacts campaign data (new)
+      contactsCampaign: {
+        campaign: contactsCampaignStats.campaign,
+        last24h: contactsCampaignStats.last24h,
+        today: contactsCampaignStats.today,
+        tracking: contactsCampaignStats.tracking,
+        subjectLines: contactsCampaignStats.subjectLines,
+        recentSends: contactsCampaignStats.recentSends
       },
-      last24h: {
-        sent: last24hCount
-      },
-      today: {
-        sent: todayCount
-      },
-      tracking: trackingStats || {
-        sent: 0,
-        failed: 0,
-        clicked: 0,
-        clickRate: '0%'
-      },
-      subjectLines: subjectLineStats,
+
+      // GA4 stats (shared)
       ga4: ga4Stats || {
         sessions: 0,
         users: 0,
@@ -300,7 +346,7 @@ const getEmailCampaignStats = onRequest({
         avgSessionDuration: '0s',
         engagementRate: '0%'
       },
-      recentSends,
+
       timestamp: now.toISOString()
     };
 
