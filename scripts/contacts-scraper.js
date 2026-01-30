@@ -489,6 +489,9 @@ async function updateDocument(db, docId, company, data, success, error) {
       scrapeStatus: 'success',
       scrapeError: null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      // Campaign fields
+      randomIndex: Math.random(),
+      sent: false,
     });
     return 'updated';
   } else if (success && !data.email) {
