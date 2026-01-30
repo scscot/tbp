@@ -144,6 +144,7 @@ rebuild_*
 *.tmp
 *.temp
 *.txt
+!scripts/base_urls.txt
 results.md
 xcode-logs.md
 GIT_COMMIT_MESSAGE.md
