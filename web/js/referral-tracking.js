@@ -294,7 +294,7 @@
       : welcomeData.firstName;
 
     bar.innerHTML = `
-      <span class="top-invite-text">${LABELS.welcome} ${fullName}</span>
+      <span class="top-invite-text">${LABELS.welcome} ${fullName}!</span>
     `;
 
     // Trigger animation
