@@ -196,15 +196,56 @@ async function saveProgress(progress) {
 }
 
 // ============================================================================
-// Deduplication Check
+// Deduplication Check (Optimized with pre-loaded email Set)
 // ============================================================================
 
-async function emailExists(email) {
+// In-memory Set of existing emails for fast lookup
+let existingEmailsSet = null;
+
+/**
+ * Pre-load all existing emails from Firestore into memory.
+ * This dramatically reduces Firestore reads - one batch query instead of thousands.
+ */
+async function preloadExistingEmails() {
+    console.log('Pre-loading existing emails from Firestore...');
+    const startTime = Date.now();
+
+    existingEmailsSet = new Set();
+
+    // Query all emails from kybar source (most likely to have duplicates)
+    // Also query all emails to catch cross-source duplicates
     const snapshot = await db.collection('preintake_emails')
-        .where('email', '==', email.toLowerCase())
-        .limit(1)
+        .select('email')  // Only fetch email field to minimize data transfer
         .get();
-    return !snapshot.empty;
+
+    snapshot.forEach(doc => {
+        const email = doc.data().email;
+        if (email) {
+            existingEmailsSet.add(email.toLowerCase());
+        }
+    });
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`Loaded ${existingEmailsSet.size} existing emails in ${elapsed}s\n`);
+}
+
+/**
+ * Check if email already exists (uses pre-loaded Set for O(1) lookup)
+ */
+function emailExists(email) {
+    if (!existingEmailsSet) {
+        throw new Error('existingEmailsSet not initialized - call preloadExistingEmails() first');
+    }
+    return existingEmailsSet.has(email.toLowerCase());
+}
+
+/**
+ * Add email to the in-memory set after successful insert
+ */
+function markEmailAsInserted(email) {
+    if (existingEmailsSet) {
+        existingEmailsSet.add(email.toLowerCase());
+    }
 }
 
 // ============================================================================
@@ -221,6 +262,9 @@ async function scrapeKyBar() {
 
     // Initialize Firebase
     initFirebase();
+
+    // Pre-load existing emails for fast deduplication
+    await preloadExistingEmails();
 
     // Get progress
     const progress = await getProgress();
@@ -521,9 +565,8 @@ async function scrapePracticeArea(browser, practiceArea, maxAttorneys, progress,
                         continue;
                     }
 
-                    // Check for duplicate
-                    const exists = await emailExists(profileData.email);
-                    if (exists) {
+                    // Check for duplicate (fast in-memory lookup)
+                    if (emailExists(profileData.email)) {
                         console.log(`    ✗ Email already exists, skipping`);
                         skipped++;
 
@@ -556,6 +599,8 @@ async function scrapePracticeArea(browser, practiceArea, maxAttorneys, progress,
                             // Set domainChecked: false for contacts without websites so infer-websites.js can process them
                             ...(profileData.website === '' ? { domainChecked: false } : {})
                         });
+                        // Update in-memory set to prevent duplicates within the same run
+                        markEmailAsInserted(profileData.email);
                     }
 
                     console.log(`    ✓ Inserted: ${profileData.email}`);
@@ -735,9 +780,8 @@ async function scrapePracticeAreaWithCounty(browser, practiceArea, county, maxAt
                         continue;
                     }
 
-                    // Check for duplicate
-                    const exists = await emailExists(profileData.email);
-                    if (exists) {
+                    // Check for duplicate (fast in-memory lookup)
+                    if (emailExists(profileData.email)) {
                         console.log(`    ✗ Email already exists, skipping`);
                         skipped++;
 
@@ -771,6 +815,8 @@ async function scrapePracticeAreaWithCounty(browser, practiceArea, county, maxAt
                             // Set domainChecked: false for contacts without websites so infer-websites.js can process them
                             ...(profileData.website === '' ? { domainChecked: false } : {})
                         });
+                        // Update in-memory set to prevent duplicates within the same run
+                        markEmailAsInserted(profileData.email);
                     }
 
                     console.log(`    ✓ Inserted: ${profileData.email}`);
