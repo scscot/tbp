@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-26
-**Version**: 4.5 (15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
+**Last Updated**: 2026-01-30
+**Version**: 4.6 (15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
 
 ---
 
@@ -685,13 +685,20 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 | `firmName` | Law firm name |
 | `email` | Contact email |
 | `sent` | Boolean - email sent |
-| `status` | `pending`, `sent`, `failed`, `unsubscribed` |
+| `status` | `pending`, `sent`, `failed`, `unsubscribed` (ONLY valid values) |
 | `sentTimestamp` | When email was sent |
 | `batchId` | Batch identifier |
 | `messageId` | SMTP message ID |
 | `subjectLine` | Subject line used |
 | `templateVersion` | Template version (v4-generic) |
 | `randomIndex` | Random number for shuffled sending order |
+| `failReason` | (optional) Reason for failure if status is `failed` |
+
+**Data Quality Policy:**
+- Valid status values are ONLY: `pending`, `sent`, `failed`, `unsubscribed`
+- Records with invalid/corrupt data should be **deleted**, not marked with special status values
+- The `audit-preintake-emails.js` script validates data integrity before campaign runs
+- If a record cannot be sent (bad data, missing required fields), delete it or set `status: 'failed'` with `failReason`
 
 **Dynamic Batch Size (2026-01-19):**
 - [x] **Firestore-Based Batch Size** - Domain warming automation
@@ -886,8 +893,9 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 
 ### Phase 35: Kentucky Bar Attorney Scraper (2026-01-22)
 - [x] **Kentucky Bar Scraper** - `scripts/scrape-kybar-attorneys.js` (DNN/CV5 iframe, AJAX pagination)
-- [x] **GitHub Actions** - `.github/workflows/kybar-scraper.yml` (Daily 8am PST)
+- [x] **GitHub Actions** - `.github/workflows/kybar-scraper.yml` (Daily 9am PST, 90-min timeout)
 - **Source**: `"kybar"`, **State**: `"KY"`, 20 practice areas with county subdivision for 500+ results
+- **Optimization**: Pre-loaded email deduplication (Phase 48) - loads all emails into memory Set at startup
 
 ### Phase 36: Georgia Bar Attorney Scraper (2026-01-22)
 - [x] **Georgia Bar Scraper** - `scripts/scrape-gabar-attorneys.js` (Puppeteer, JS-rendered directory)
@@ -955,6 +963,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
 - [x] **Ohio Bar Scraper** - Expanded OHIO_CITIES from 49 to 167 (all cities with 10K+ population)
   - MAX_COMBOS increased from 5 to 100 (20x faster daily progress)
 - [x] **Kentucky Bar Scraper** - Counties sorted by population descending for faster yield
+  - Further optimization with pre-loaded email deduplication in Phase 48
 - [x] **IL Bar Scraper Rewrite** - Multiple iterations for reliability
   - REST API → Puppeteer + vCard (due to rate limiting) → final version with category validation
 - [x] **NC Bar Scraper Rewrite** - Re-enabled and rewritten with improved pagination
@@ -985,6 +994,40 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - `getEmailAnalytics` endpoint migrated from Mailgun stats to GA4 Data API
   - Uses `BetaAnalyticsDataClient` with GA4 property ID `517857439`
   - Fetches overview metrics (7-day, today, yesterday) and traffic source breakdown
+
+### Phase 48: Scraper Performance Optimization (2026-01-30)
+- [x] **Pre-loaded Email Deduplication** - Implemented in Kentucky Bar scraper
+  - Replaced individual Firestore queries with in-memory Set lookup (O(1) vs O(n))
+  - New functions: `preloadExistingEmails()`, `emailExists()`, `markEmailAsInserted()`
+  - Loads all existing emails at startup (~17K records in ~2-3 seconds)
+  - Eliminates per-profile Firestore roundtrip that caused 90-minute timeout
+  - Expected 5-10x speedup for scrapers with high duplicate rates
+  - Pattern can be applied to other scrapers experiencing timeout issues
+
+**Pre-loaded Email Deduplication Pattern:**
+```javascript
+// In-memory Set of existing emails for fast lookup
+let existingEmailsSet = null;
+
+async function preloadExistingEmails() {
+    existingEmailsSet = new Set();
+    const snapshot = await db.collection('preintake_emails')
+        .select('email')  // Only fetch email field
+        .get();
+    snapshot.forEach(doc => {
+        const email = doc.data().email;
+        if (email) existingEmailsSet.add(email.toLowerCase());
+    });
+}
+
+function emailExists(email) {
+    return existingEmailsSet.has(email.toLowerCase());
+}
+
+function markEmailAsInserted(email) {
+    if (existingEmailsSet) existingEmailsSet.add(email.toLowerCase());
+}
+```
 
 ---
 
@@ -1067,7 +1110,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── diagnose-flbar-data.js           # Analyze FL Bar data distribution
 ├── reset-flbar-data.js              # Reset FL Bar data for clean re-scrape
 ├── analyze-sources.js               # Analyze preintake_emails by source (scraper vs legacy)
-└── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
+├── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
+└── infer-websites.js                # Infer attorney websites from email domains
 ```
 
 ### Firebase Configuration
@@ -1260,9 +1304,11 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | Collection | Purpose |
 |------------|---------|
 | `preintake_leads` | Lead records with status, analysis, delivery config |
+| `preintake_emails` | Attorney contacts for email campaigns (scraped from bar associations) |
 | `preintake_intake_codes` | Short code → leadId lookup table |
 | `intake_dedup` | Deduplication records (leadId_email_phone) |
 | `preintake_rate_limits` | IP rate limiting records |
+| `scraper_progress/*` | Per-scraper progress tracking (practice areas completed, counts) |
 
 ### Firebase Storage
 
