@@ -54,7 +54,7 @@ const CONFIG = {
   NAVIGATION_TIMEOUT: 30000,
 
   // Safety limits
-  MAX_URLS_PER_RUN: 100,
+  MAX_URLS_PER_RUN: 200,
   MAX_RETRIES: 2,  // Delete after 2 failed attempts
   CONSECUTIVE_ERROR_LIMIT: 10,
 
