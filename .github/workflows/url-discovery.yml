@@ -22,6 +22,10 @@ on:
 env:
   NODE_VERSION: '20'
 
+# Required for git push
+permissions:
+  contents: write
+
 jobs:
   discover:
     runs-on: ubuntu-latest
