@@ -55,7 +55,7 @@ const CONFIG = {
 
   // Safety limits
   MAX_URLS_PER_RUN: 100,
-  MAX_RETRIES: 3,
+  MAX_RETRIES: 2,  // Delete after 2 failed attempts
   CONSECUTIVE_ERROR_LIMIT: 10,
 
   // Early termination - cumulative sample size before marking as no-email platform
@@ -394,7 +394,19 @@ If you cannot determine the name, use null for that field. Do not guess or make 
 // ============================================================================
 
 /**
- * Scrape a single URL
+ * SSL certificate errors that should trigger HTTP fallback
+ */
+const SSL_ERRORS = [
+  'ERR_CERT_AUTHORITY_INVALID',
+  'ERR_CERT_COMMON_NAME_INVALID',
+  'ERR_CERT_DATE_INVALID',
+  'ERR_SSL_PROTOCOL_ERROR',
+  'ERR_SSL_VERSION_OR_CIPHER_MISMATCH',
+  'ERR_CERT_REVOKED',
+];
+
+/**
+ * Scrape a single URL (with HTTP fallback for SSL errors)
  */
 async function scrapeUrl(browser, url) {
   const page = await browser.newPage();
@@ -403,10 +415,34 @@ async function scrapeUrl(browser, url) {
     await page.setUserAgent(CONFIG.USER_AGENT);
     await page.setViewport({ width: 1280, height: 800 });
 
-    await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: CONFIG.NAVIGATION_TIMEOUT,
-    });
+    let currentUrl = url;
+    let usedHttpFallback = false;
+
+    try {
+      await page.goto(currentUrl, {
+        waitUntil: 'networkidle2',
+        timeout: CONFIG.NAVIGATION_TIMEOUT,
+      });
+    } catch (navError) {
+      // Check if this is an SSL error and URL is HTTPS
+      const isSSLError = SSL_ERRORS.some(err => navError.message.includes(err));
+      const isHttps = currentUrl.startsWith('https://');
+
+      if (isSSLError && isHttps) {
+        // Try HTTP fallback
+        currentUrl = currentUrl.replace('https://', 'http://');
+        console.log(`  SSL error, trying HTTP fallback: ${currentUrl}`);
+        usedHttpFallback = true;
+
+        await page.goto(currentUrl, {
+          waitUntil: 'networkidle2',
+          timeout: CONFIG.NAVIGATION_TIMEOUT,
+        });
+      } else {
+        // Re-throw non-SSL errors or HTTP URLs
+        throw navError;
+      }
+    }
 
     // Wait a bit for any dynamic content
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -424,6 +460,7 @@ async function scrapeUrl(browser, url) {
       data: contactInfo,
       pageText: pageText,
       error: null,
+      usedHttpFallback: usedHttpFallback,
     };
 
   } catch (error) {
@@ -480,8 +517,9 @@ async function getUnscrapedUrlsAllCompanies(db, limit) {
 
 /**
  * Update document with scraped data
+ * @param {number} currentAttempts - Current scrapeAttempts count BEFORE this attempt
  */
-async function updateDocument(db, docId, company, data, success, error) {
+async function updateDocument(db, docId, company, data, success, error, currentAttempts = 0) {
   const docRef = db.collection(CONFIG.COLLECTION).doc(docId);
 
   if (success && data.email) {
@@ -505,11 +543,20 @@ async function updateDocument(db, docId, company, data, success, error) {
     await docRef.delete();
     return 'deleted';
   } else {
-    // Failed - update with error info
+    // Failed - check if this was the last attempt
+    const newAttemptCount = currentAttempts + 1;
+
+    if (newAttemptCount >= CONFIG.MAX_RETRIES) {
+      // Max retries reached - DELETE document
+      await docRef.delete();
+      return 'deleted_max_retries';
+    }
+
+    // Still has retries left - update with error info
     await docRef.update({
       scrapeStatus: 'failed',
       scrapeError: error,
-      scrapeAttempts: admin.firestore.FieldValue.increment(1),
+      scrapeAttempts: newAttemptCount,
       lastAttemptAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -821,7 +868,9 @@ async function main() {
     processed: 0,
     successWithEmail: 0,
     deleted: 0,
+    deletedMaxRetries: 0,  // Documents deleted after max failed attempts
     failed: 0,
+    httpFallbacks: 0,  // URLs that succeeded via HTTP fallback
     stopped: false,
     duration: 0,
     noEmailPlatforms: [],
@@ -867,6 +916,11 @@ async function main() {
 
     if (result.success) {
       consecutiveErrors = 0;
+
+      if (result.usedHttpFallback) {
+        console.log(`  HTTP fallback succeeded`);
+        summary.httpFallbacks++;
+      }
 
       // Check if email was found and if it's a valid individual email (not corporate)
       const emailFound = result.data.email;
@@ -954,7 +1008,14 @@ async function main() {
       consecutiveErrors++;
 
       if (!dryRun) {
-        await updateDocument(db, id, company, null, false, result.error);
+        const updateResult = await updateDocument(db, id, company, null, false, result.error, scrapeAttempts);
+        if (updateResult === 'deleted_max_retries') {
+          // Document was deleted after max retries - count as deleted, not failed
+          summary.deleted++;
+          summary.deletedMaxRetries++;
+          summary.failed--; // Adjust since we already counted as failed above
+          console.log(`  Deleted: max retries (${CONFIG.MAX_RETRIES}) reached`);
+        }
       }
 
       // Check for consecutive errors
@@ -983,8 +1044,14 @@ async function main() {
   console.log('='.repeat(60));
   console.log(`URLs processed: ${summary.processed}`);
   console.log(`Success (with email): ${summary.successWithEmail}`);
-  console.log(`Deleted (no email): ${summary.deleted}`);
-  console.log(`Failed: ${summary.failed}`);
+  console.log(`Deleted (no email): ${summary.deleted - summary.deletedMaxRetries}`);
+  if (summary.deletedMaxRetries > 0) {
+    console.log(`Deleted (max retries): ${summary.deletedMaxRetries}`);
+  }
+  console.log(`Failed (will retry): ${summary.failed}`);
+  if (summary.httpFallbacks > 0) {
+    console.log(`HTTP fallbacks used: ${summary.httpFallbacks}`);
+  }
   console.log(`Duration: ${summary.duration}s`);
   if (summary.noEmailPlatforms.length > 0) {
     console.log(`No-email platforms detected: ${summary.noEmailPlatforms.join(', ')}`);
