@@ -45,7 +45,7 @@ async function audit() {
     const sourceDistribution = {};
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const validStatuses = ["pending", "sent", "failed", "unsubscribed", "skipped_bad_data"];
+    const validStatuses = ["pending", "sent", "failed", "unsubscribed"];
 
     snapshot.forEach(doc => {
         const d = doc.data();
