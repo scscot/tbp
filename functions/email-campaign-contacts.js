@@ -22,8 +22,8 @@ const { db } = require('./shared/utilities');
 // PARAMETERS
 // =============================================================================
 
-const emailCampaignEnabled = defineString("EMAIL_CAMPAIGN_ENABLED", { default: "false" });
-const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
+const contactsCampaignEnabled = defineString("CONTACTS_CAMPAIGN_ENABLED", { default: "false" });
+const contactsCampaignSyncEnabled = defineString("CONTACTS_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("TBP_MAILGUN_API_KEY");
 const mailgunDomain = defineString("TBP_MAILGUN_DOMAIN", { default: "news.teambuildpro.com" });
@@ -349,7 +349,7 @@ const sendHourlyContactsCampaign = onSchedule({
 
   return processCampaignBatch(
     CAMPAIGN_CONFIGS.main,
-    emailCampaignEnabled,
+    contactsCampaignEnabled,
     batchSize
   );
 });
@@ -372,7 +372,7 @@ const syncContactsMailgunEvents = onSchedule({
 }, async () => {
   console.log("🔄 MAILGUN EVENT SYNC: Starting event synchronization");
 
-  const syncEnabled = emailCampaignSyncEnabled.value().toLowerCase() === 'true';
+  const syncEnabled = contactsCampaignSyncEnabled.value().toLowerCase() === 'true';
   const apiKey = mailgunApiKey.value();
   const domain = mailgunDomain.value();
 
