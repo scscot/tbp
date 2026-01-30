@@ -1,0 +1,126 @@
+name: Cleanup Old Workflow Runs
+
+on:
+  schedule:
+    # Run daily at 2am PT (10am UTC)
+    - cron: '0 10 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      days_to_keep:
+        description: 'Delete runs older than this many days'
+        required: false
+        default: '1'
+        type: string
+      dry_run:
+        description: 'Dry run (list but do not delete)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Delete old workflow runs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const daysToKeep = parseInt('${{ github.event.inputs.days_to_keep }}' || '1');
+            const dryRun = '${{ github.event.inputs.dry_run }}' === 'true';
+
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+
+            console.log(`🧹 Cleanup Settings:`);
+            console.log(`   Repository: ${owner}/${repo}`);
+            console.log(`   Delete runs older than: ${daysToKeep} day(s)`);
+            console.log(`   Cutoff date: ${cutoffDate.toISOString()}`);
+            console.log(`   Dry run: ${dryRun}`);
+            console.log('');
+
+            let totalDeleted = 0;
+            let totalSkipped = 0;
+            let page = 1;
+            const perPage = 100;
+
+            // Process all workflow runs
+            while (true) {
+              console.log(`📄 Fetching page ${page}...`);
+
+              const { data: { workflow_runs: runs, total_count } } = await github.rest.actions.listWorkflowRunsForRepo({
+                owner,
+                repo,
+                per_page: perPage,
+                page,
+              });
+
+              if (page === 1) {
+                console.log(`   Total workflow runs: ${total_count}`);
+              }
+
+              if (runs.length === 0) {
+                console.log('   No more runs to process');
+                break;
+              }
+
+              for (const run of runs) {
+                const runDate = new Date(run.created_at);
+
+                if (runDate < cutoffDate) {
+                  if (dryRun) {
+                    console.log(`   [DRY RUN] Would delete: ${run.name} #${run.run_number} (${run.created_at})`);
+                  } else {
+                    try {
+                      await github.rest.actions.deleteWorkflowRun({
+                        owner,
+                        repo,
+                        run_id: run.id,
+                      });
+                      console.log(`   ✓ Deleted: ${run.name} #${run.run_number} (${run.created_at})`);
+                      totalDeleted++;
+
+                      // Rate limiting: small delay between deletions
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                    } catch (error) {
+                      console.log(`   ✗ Failed to delete run ${run.id}: ${error.message}`);
+                    }
+                  }
+                } else {
+                  totalSkipped++;
+                }
+              }
+
+              // If all runs on this page are newer than cutoff, we're done
+              // (runs are returned newest first)
+              const oldestOnPage = new Date(runs[runs.length - 1].created_at);
+              if (oldestOnPage >= cutoffDate && runs.length === perPage) {
+                page++;
+              } else if (runs.length < perPage) {
+                // Last page
+                break;
+              } else {
+                page++;
+              }
+
+              // Safety limit to prevent infinite loops
+              if (page > 100) {
+                console.log('⚠️ Reached page limit (100), stopping');
+                break;
+              }
+            }
+
+            console.log('');
+            console.log('━'.repeat(50));
+            console.log(`✅ Cleanup complete`);
+            console.log(`   Deleted: ${totalDeleted} runs`);
+            console.log(`   Kept: ${totalSkipped} runs (newer than ${daysToKeep} day(s))`);
