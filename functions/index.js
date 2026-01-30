@@ -155,6 +155,13 @@ const {
 } = require('./email-stats-functions');
 
 // ==============================
+// Import Blog Notification Functions
+// ==============================
+const {
+  sendBlogNotification,
+} = require('./blog-notification-functions');
+
+// ==============================
 // Import Admin Functions
 // ==============================
 const {
@@ -391,6 +398,9 @@ module.exports = {
 
   // Email stats (HTTP endpoint)
   getEmailCampaignStats,
+
+  // Blog notification (Firestore triggered)
+  sendBlogNotification,
 
   // ========== CONTACT FUNCTIONS ==========
   submitContactForm,

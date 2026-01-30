@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const admin = require('firebase-admin');
 
 // ANSI color codes for terminal output
 const colors = {
@@ -791,35 +792,56 @@ async function runFullAutomation(title, category, keywords, extraNotes) {
   return blogPost;
 }
 
-async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
-  const FormData = require('form-data');
-  const mailgunApiKey = process.env.MAILGUN_API_KEY;
-  const mailgunDomain = 'hello.teambuildpro.com';
+/**
+ * Initialize Firebase Admin SDK for Firestore access
+ */
+function initializeFirebase() {
+  const serviceAccountPath = path.join(__dirname, '..', 'secrets', 'serviceAccountKey.json');
 
-  if (!mailgunApiKey) {
-    console.log(`${colors.yellow}MAILGUN_API_KEY not set, skipping email${colors.reset}`);
-    return false;
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(require(serviceAccountPath))
+    });
   }
 
+  return admin.firestore();
+}
+
+/**
+ * Send email notification via Firestore
+ *
+ * Creates a document in 'blog_notifications' collection which triggers
+ * the sendBlogNotification Cloud Function to send the email via SMTP.
+ *
+ * @param {string} subject - Email subject
+ * @param {string} htmlBody - HTML content
+ * @param {string} textBody - Plain text content
+ * @param {string} toEmail - Recipient email address
+ * @returns {Promise<boolean>} True if document was created successfully
+ */
+async function sendEmailNotification(subject, htmlBody, textBody, toEmail) {
   try {
-    const form = new FormData();
-    form.append('from', 'Stephen Scott Blog Bot <blog@hello.teambuildpro.com>');
-    form.append('to', toEmail);
-    form.append('subject', subject);
-    form.append('html', htmlBody);
-    form.append('text', textBody);
+    const db = initializeFirebase();
 
-    await axios.post(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, form, {
-      headers: {
-        ...form.getHeaders(),
-        'Authorization': `Basic ${Buffer.from('api:' + mailgunApiKey).toString('base64')}`
-      }
-    });
+    const notificationDoc = {
+      to: toEmail,
+      subject: subject,
+      htmlBody: htmlBody,
+      textBody: textBody,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      status: 'pending'
+    };
 
-    console.log(`${colors.green}Email sent to ${toEmail}${colors.reset}`);
+    const docRef = await db.collection('blog_notifications').add(notificationDoc);
+
+    console.log(`${colors.green}Email notification queued: ${docRef.id}${colors.reset}`);
+    console.log(`${colors.cyan}  Recipient: ${toEmail}${colors.reset}`);
+    console.log(`${colors.cyan}  Subject: ${subject}${colors.reset}`);
+    console.log(`${colors.cyan}  Cloud Function will send via SMTP${colors.reset}`);
+
     return true;
   } catch (error) {
-    console.error(`${colors.yellow}Email failed: ${error.message}${colors.reset}`);
+    console.error(`${colors.yellow}Failed to queue email notification: ${error.message}${colors.reset}`);
     return false;
   }
 }
