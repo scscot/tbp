@@ -7,7 +7,7 @@
  * Uses Mailgun API for email delivery.
  *
  * SCHEDULE (PT Time Enforcement):
- *   - Days: 7 days a week
+ *   - Days: Monday-Friday only
  *   - Windows: 9:00-10:00am PT and 1:00-2:00pm PT
  *   - Automatically handles DST (script checks PT time, not UTC)
  *   - Exits cleanly with code 0 if outside allowed window
@@ -276,8 +276,8 @@ function checkPTBusinessWindow() {
     const minute = ptDate.getMinutes();
     const timeInMinutes = hour * 60 + minute;
 
-    // Allowed days: Every day (0-6)
-    const allowedDays = [0, 1, 2, 3, 4, 5, 6];
+    // Allowed days: Monday-Friday (1-5)
+    const allowedDays = [1, 2, 3, 4, 5];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     if (!allowedDays.includes(day)) {
