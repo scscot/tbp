@@ -54,7 +54,7 @@
                 "**/.*",
                 "**/node_modules/**"
             ],
-            "cleanUrls": true,
+            "cleanUrls": false,
             "trailingSlash": false,
             "redirects": [
                 {

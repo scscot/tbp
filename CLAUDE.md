@@ -712,6 +712,13 @@ The email campaign system consists of two parallel campaigns targeting different
    - User will handle ALL Firebase hosting deployments manually
    - Do NOT run `firebase deploy` commands
 
+7. **NEVER set `cleanUrls: true` in firebase.json**
+   - All TBP websites use explicit `.html` extensions in URLs
+   - `cleanUrls: true` strips `.html` extensions and causes redirect loops
+   - The main hosting target MUST have `"cleanUrls": false`
+   - Redirect rules like `/faq` → `/faq.html` are intentional for SEO
+   - Changing this setting breaks the entire website with "too many redirects" errors
+
 ---
 
 ## 🎓 Learning Resources
