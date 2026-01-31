@@ -347,7 +347,7 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
 // =============================================================================
 
 const sendHourlyContactsCampaign = onSchedule({
-  schedule: "0 8,10,12,14 * * *",
+  schedule: "0 9,12,15,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
@@ -373,7 +373,7 @@ const sendHourlyContactsCampaign = onSchedule({
  * Prevents data loss since Mailgun logs expire after ~30 days
  */
 const syncContactsMailgunEvents = onSchedule({
-  schedule: "10 8,10,12,14 * * *",
+  schedule: "10 9,12,15,18 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",

@@ -20,7 +20,6 @@ const { db } = require('./shared/utilities');
 // =============================================================================
 
 const emailCampaignEnabled = defineString("EMAIL_CAMPAIGN_ENABLED", { default: "false" });
-const androidCampaignEnabled = defineString("ANDROID_CAMPAIGN_ENABLED", { default: "false" });
 const emailCampaignSyncEnabled = defineString("EMAIL_CAMPAIGN_SYNC_ENABLED", { default: "false" });
 const emailCampaignBatchSize = defineString("EMAIL_CAMPAIGN_BATCH_SIZE", { default: "1" });
 const mailgunApiKey = defineString("TBP_MAILGUN_API_KEY");
@@ -67,20 +66,6 @@ const CAMPAIGN_CONFIGS = {
     sentField: 'sent',
     utmCampaign: 'tbp_mailgun_campaign',
     campaignTag: 'tbp_campaign'
-  },
-  android: {
-    name: 'ANDROID LAUNCH CAMPAIGN',
-    logPrefix: '📧',
-    batchIdPrefix: 'android_mailgun_batch',
-    sentField: 'resend',
-    utmCampaign: 'android_launch',
-    campaignTag: 'android_launch',
-    // Field mappings for resend campaign
-    timestampField: 'resendTimestamp',
-    statusField: 'resendStatus',
-    errorField: 'resendErrorMessage',
-    messageIdField: 'mailgunResendId',
-    lastAttemptField: 'lastResendAttempt'
   }
 };
 
@@ -344,7 +329,7 @@ async function processCampaignBatch(config, enabledParam, batchSize) {
 // =============================================================================
 
 const sendHourlyEmailCampaign = onSchedule({
-  schedule: "0 8,10,12,14,16,18 * * *",
+  schedule: "0 8,11,14,17 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
@@ -360,23 +345,6 @@ const sendHourlyEmailCampaign = onSchedule({
   );
 });
 
-const sendAndroidLaunchCampaign = onSchedule({
-  schedule: "0 8,10,12,14,16,18 * * *",
-  timeZone: "America/Los_Angeles",
-  region: "us-central1",
-  memory: "512MiB",
-  timeoutSeconds: 120
-}, async () => {
-  // Get batch size from Firestore (updated by GitHub Actions) or fall back to .env
-  const batchSize = await getDynamicBatchSize(emailCampaignBatchSize.value());
-
-  return processCampaignBatch(
-    CAMPAIGN_CONFIGS.android,
-    androidCampaignEnabled,
-    batchSize
-  );
-});
-
 // =============================================================================
 // MAILGUN EVENT SYNC (Main Campaign)
 // =============================================================================
@@ -387,7 +355,7 @@ const sendAndroidLaunchCampaign = onSchedule({
  * Prevents data loss since Mailgun logs expire after ~30 days
  */
 const syncMailgunEvents = onSchedule({
-  schedule: "10 8,10,12,14,16,18 * * *",
+  schedule: "10 8,11,14,17 * * *",
   timeZone: "America/Los_Angeles",
   region: "us-central1",
   memory: "512MiB",
@@ -568,6 +536,5 @@ const syncMailgunEvents = onSchedule({
 
 module.exports = {
   sendHourlyEmailCampaign,
-  sendAndroidLaunchCampaign,
   syncMailgunEvents
 };
