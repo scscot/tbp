@@ -2,9 +2,11 @@ const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const fs = require('fs');
 const path = require('path');
 
-// Initialize the GA4 client
-// Uses GOOGLE_APPLICATION_CREDENTIALS environment variable for auth
-const analyticsDataClient = new BetaAnalyticsDataClient();
+// Initialize the GA4 client with explicit credentials
+const SERVICE_ACCOUNT_PATH = path.join(__dirname, '..', 'secrets', 'ga4-service-account.json');
+const analyticsDataClient = new BetaAnalyticsDataClient({
+  keyFilename: SERVICE_ACCOUNT_PATH
+});
 
 // Your GA4 Property ID (visible in GA4 Admin > Property Settings)
 const propertyId = '485651473'; // Update this with your actual property ID
@@ -39,7 +41,8 @@ async function fetchAllReports() {
       conversions,
       deviceInfo,
       pagePerformance,
-      eventTracking
+      eventTracking,
+      domainBreakdown
     ] = await Promise.all([
       getDemographics(),
       getTrafficSources(),
@@ -48,7 +51,8 @@ async function fetchAllReports() {
       getConversions(),
       getDeviceInfo(),
       getPagePerformance(),
-      getEventTracking()
+      getEventTracking(),
+      getDomainBreakdown()
     ]);
 
     // Save individual reports
@@ -60,6 +64,7 @@ async function fetchAllReports() {
     saveReport(outputDir, 'device-info', deviceInfo);
     saveReport(outputDir, 'page-performance', pagePerformance);
     saveReport(outputDir, 'event-tracking', eventTracking);
+    saveReport(outputDir, 'domain-breakdown', domainBreakdown);
 
     // Create summary report
     const summary = createSummary({
@@ -70,7 +75,8 @@ async function fetchAllReports() {
       conversions,
       deviceInfo,
       pagePerformance,
-      eventTracking
+      eventTracking,
+      domainBreakdown
     });
 
     saveReport(outputDir, 'summary', summary);
@@ -322,6 +328,35 @@ async function getEventTracking() {
 }
 
 /**
+ * Get domain/hostname breakdown (teambuildpro.com, es., pt., de.)
+ */
+async function getDomainBreakdown() {
+  console.log('🌐 Fetching domain breakdown...');
+
+  const [response] = await analyticsDataClient.runReport({
+    property: `properties/${propertyId}`,
+    dateRanges: [{ startDate, endDate }],
+    dimensions: [
+      { name: 'hostName' }
+    ],
+    metrics: [
+      { name: 'activeUsers' },
+      { name: 'newUsers' },
+      { name: 'sessions' },
+      { name: 'screenPageViews' },
+      { name: 'engagementRate' },
+      { name: 'averageSessionDuration' }
+    ],
+    orderBys: [
+      { metric: { metricName: 'sessions' }, desc: true }
+    ],
+    limit: 20
+  });
+
+  return formatResponse(response);
+}
+
+/**
  * Format GA4 API response into readable structure
  */
 function formatResponse(response) {
@@ -414,6 +449,15 @@ function createSummary(reports) {
       device: d.deviceCategory,
       os: d.operatingSystem,
       users: d.activeUsers
+    })),
+    domainBreakdown: reports.domainBreakdown.data.map(d => ({
+      domain: d.hostName,
+      users: d.activeUsers,
+      newUsers: d.newUsers,
+      sessions: d.sessions,
+      pageViews: d.screenPageViews,
+      engagementRate: d.engagementRate,
+      avgSessionDuration: d.averageSessionDuration
     }))
   };
 

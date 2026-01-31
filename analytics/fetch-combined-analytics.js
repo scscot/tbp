@@ -3,8 +3,11 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-// Initialize clients
-const analyticsDataClient = new BetaAnalyticsDataClient();
+// Initialize clients with explicit credentials
+const SERVICE_ACCOUNT_PATH = path.join(__dirname, '..', 'secrets', 'ga4-service-account.json');
+const analyticsDataClient = new BetaAnalyticsDataClient({
+  keyFilename: SERVICE_ACCOUNT_PATH
+});
 
 // Configuration
 const GA4_PROPERTY_ID = '485651473';

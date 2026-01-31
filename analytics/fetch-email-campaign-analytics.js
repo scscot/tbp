@@ -2,9 +2,11 @@ const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const fs = require('fs');
 const path = require('path');
 
-// Initialize the GA4 client
-// Uses GOOGLE_APPLICATION_CREDENTIALS environment variable for auth
-const analyticsDataClient = new BetaAnalyticsDataClient();
+// Initialize the GA4 client with explicit credentials
+const SERVICE_ACCOUNT_PATH = path.join(__dirname, '..', 'secrets', 'ga4-service-account.json');
+const analyticsDataClient = new BetaAnalyticsDataClient({
+  keyFilename: SERVICE_ACCOUNT_PATH
+});
 
 // Your GA4 Property ID (visible in GA4 Admin > Property Settings)
 const propertyId = '485651473';
