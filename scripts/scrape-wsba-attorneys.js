@@ -78,7 +78,7 @@ const DEFAULT_STATE = 'WA';
 
 const DELAY_BETWEEN_PAGES = 2000;
 const DELAY_BETWEEN_PROFILES = 500;
-const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 350;
+const MAX_ATTORNEYS = parseInt(process.env.MAX_ATTORNEYS) || 250;
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PRACTICE_AREA_SLUG = process.env.PRACTICE_AREA_SLUG || null;
 
