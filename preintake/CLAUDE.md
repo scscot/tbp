@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-30
-**Version**: 4.6 (15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
+**Last Updated**: 2026-01-31
+**Version**: 4.7 (Email campaign user flow audit - 15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
 
 ---
 
@@ -1029,6 +1029,51 @@ function markEmailAsInserted(email) {
 }
 ```
 
+### Phase 49: Email Campaign User Flow Analysis (2026-01-31)
+- [x] **User Flow Audit** - Analyzed `send-preintake-campaign.js` conversion funnel
+  - Email click rate: 10.9% (solid for cold outreach)
+  - Visit-to-view rate: 25% (intentional design - allows brand validation)
+  - Homepage bounce rate: 70.3%
+- [x] **Verified Design Decisions**
+  - Auto-open demo intentionally reverted to allow brand validation
+  - `?autoopen=true` parameter exists but only used for "View Demo Again" button
+  - Campaign visitors see "Begin Your Custom Demo" CTA after page load
+- [x] **Bar Profile Personalization Confirmed**
+  - `generateBarProfileDemoForContact()` creates demos branded with attorney name + practice area
+  - Subject line "I built you a personalized intake demo" is accurate
+- [x] **Generic Fallback Phased Out**
+  - Query logic only fetches contacts with `website != ''` OR `domainChecked == true`
+  - 68 v6-generic emails in analytics are legacy from before bar profile system
+
+**Email Campaign User Flow (Current Architecture):**
+```
+Email Sent → Link Clicked → Homepage Loads → "Begin Your Custom Demo" CTA → Demo Started → Intake Completed
+                                 ↓
+                       Welcome Banner + CTA Transform
+```
+
+**Campaign Visitor Detection (index.html):**
+- `?demo={leadId}` triggers campaign mode
+- Welcome banner: "Welcome [FirmName]" shown immediately
+- Hero CTA changed to "Begin Your Custom Demo"
+- Demo modal opens on CTA click (not auto-open)
+- Exit confirmation modal prevents abandonment
+- `?autoopen=true` exists for "View Demo Again" only
+
+**Template Distribution (as of 2026-01-31):**
+| Template | Purpose | Usage |
+|----------|---------|-------|
+| v7-bar-profile-demo | Bar contacts (no website) | 62% |
+| v6-personalized-demo | Website contacts | 19% |
+| v6-generic | Fallback (legacy) | 19% |
+
+**Tracking Flow:**
+1. `trackDemoView?type=visit` - On page load with `?demo=`
+2. `trackDemoView?type=view` - On "Start Demo" click (via postMessage from iframe)
+3. `sessionStorage.tbp_demo_viewed` - Header CTA becomes "Get Started →"
+
+**Conclusion:** Current flow is well-optimized. No changes needed.
+
 ---
 
 ## Architecture
@@ -1326,6 +1371,18 @@ For firms with strict data residency requirements, self-hosted option at custom 
 4. **Activation**: Payment → first embedded widget
 5. **Retention**: Monthly churn rate
 6. **Platform**: Practice areas supported, firms onboarded, intakes processed
+
+---
+
+## Known Issues & Historical Notes
+
+### UTM Parameter "bhgefbdu" in GA4 (Jan 2026)
+GA4 shows 7 users from `email/bhgefbdu` - a corrupted UTM medium parameter. Investigation confirmed:
+- Current code correctly uses `utm_medium=outreach` with proper `encodeURIComponent()` encoding
+- The "bhgefbdu" entries are legacy from before Mailgun tracking was disabled (Jan 2026)
+- Mailgun's click tracking rewrote URLs before they were delivered, causing corruption
+- **No fix needed** - these entries will naturally age out of GA4's 14-month retention window
+- Current tracking uses Firestore-based `trackDemoView` (visit on page load, view on "Start Demo" click)
 
 ---
 

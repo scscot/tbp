@@ -71,6 +71,40 @@
     <script src="js/components.js"></script>
     <style>
         /* Page-specific overrides can go here if needed */
+
+        /* Examples Toggle Button */
+        .examples-toggle {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .examples-toggle-btn {
+            background: transparent;
+            border: 1px solid rgba(201, 169, 98, 0.3);
+            color: var(--gold);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .examples-toggle-btn:hover {
+            background: rgba(201, 169, 98, 0.1);
+            border-color: var(--gold);
+        }
+        .examples-toggle-btn svg {
+            transition: transform 0.3s ease;
+        }
+        .examples-toggle-btn.expanded svg {
+            transform: rotate(180deg);
+        }
+        .examples-container {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -134,477 +168,6 @@
                     <p>Outside SOL, wrong jurisdiction, existing representation, or clear disqualifier.</p>
                     <div class="routing-action">→ Inquiry Informed + Full Details Delivered</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Practice Areas -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Built Around Your Practice Areas</h2>
-                <p>We configure custom intake logic based on how your firm evaluates cases. The practice areas shown below are examples of how PreIntake.ai adapts to different legal disciplines.</p>
-            </div>
-            <div class="practice-grid">
-                <div class="practice-card">
-                    <h3><span>🚗</span> Personal Injury</h3>
-                    <ul>
-                        <li>Vehicle accidents (Car, Motorcycle, Truck)</li>
-                        <li>Rideshare incidents (Uber/Lyft)</li>
-                        <li>Premises liability, Dog bites</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: SOL, fault, injuries, insurance, representation</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>🌎</span> Immigration</h3>
-                    <ul>
-                        <li>Family-based (spouse, parent, sibling)</li>
-                        <li>Employment-based (H-1B, L-1, PERM)</li>
-                        <li>Asylum, VAWA, U-visa</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: Visa status, timeline, bars, violations</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>👨‍👩‍👧</span> Family Law</h3>
-                    <ul>
-                        <li>Divorce (contested/uncontested)</li>
-                        <li>Child custody and support</li>
-                        <li>Protective orders</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: Jurisdiction, children, assets, urgency</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>💳</span> Bankruptcy</h3>
-                    <ul>
-                        <li>Chapter 7 (liquidation)</li>
-                        <li>Chapter 13 (reorganization)</li>
-                        <li>Means test pre-qualification</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: Income, debt type, prior filings</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>⚖️</span> Criminal Defense</h3>
-                    <ul>
-                        <li>Misdemeanor and felony defense</li>
-                        <li>DUI/DWI</li>
-                        <li>Federal crimes</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: Charges, court dates, bail, representation</div>
-                </div>
-                <div class="practice-card">
-                    <h3><span>📊</span> Tax Litigation</h3>
-                    <ul>
-                        <li>IRS disputes and audits</li>
-                        <li>State tax agency conflicts</li>
-                        <li>Offer in Compromise</li>
-                    </ul>
-                    <div class="practice-card-screening">Checks: Tax type, amount, procedural posture</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- What You Receive Section -->
-    <section class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Your Firm Receives</h2>
-                <p>Every intake arrives as a complete, actionable summary—not a data dump. Here's exactly what lands in your inbox.</p>
-            </div>
-            <div class="lead-examples">
-                <!-- Qualified Lead Example -->
-                <div class="lead-card">
-                    <div class="lead-card-header qualified">
-                        <span class="lead-badge qualified">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Qualified
-                        </span>
-                        <span class="lead-card-meta">Confidence: high · Schedule Consultation</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <!-- Contact Information -->
-                        <div class="lead-card-section contact-section">
-                            <div class="lead-card-section-title">Contact Information</div>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <span class="contact-label">Name:</span>
-                                    <span class="contact-value">Steve Martinez</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Phone:</span>
-                                    <span class="contact-value">(415) 555-3874</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Email:</span>
-                                    <span class="contact-value">steve@email.com</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Case Summary -->
-                        <div class="lead-card-summary">
-                            <div class="lead-card-summary-title">Case Summary</div>
-                            <p>Received 30-day eviction notice last Friday alleging lease violation. Client believes notice is invalid. Minor alleged violation (plants on balcony). Not currently represented. Located in California. Time-sensitive matter requiring immediate attention.</p>
-                        </div>
-                        <!-- Case Information -->
-                        <div class="lead-card-section">
-                            <div class="lead-card-section-title">Case Information</div>
-                            <div class="lead-card-details">
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Case Type</div>
-                                    <div class="lead-detail-value">Tenant Rights</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Date Occurred</div>
-                                    <div class="lead-detail-value">Last Friday</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Key Factors -->
-                        <div class="lead-card-factors">
-                            <div class="lead-card-section-title">Key Factors</div>
-                            <div class="factor-pills">
-                                <span class="factor-pill positive">✓ Recent eviction notice</span>
-                                <span class="factor-pill positive">✓ Believes notice invalid</span>
-                                <span class="factor-pill positive">✓ Within service area</span>
-                                <span class="factor-pill positive">✓ Not represented</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lead-card-transcript" id="transcript-qualified">
-                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">Steve Martinez</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Thank you, Steve. Could you briefly describe what happened and why you're seeking legal help?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">I got a 30-day eviction notice last Friday. They're saying I violated my lease but I think it's bogus.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">I understand. What reason did they give for the alleged lease violation?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">They said I have plants on my balcony which is apparently not allowed. But I've had them there for 2 years and no one said anything.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Are you currently represented by an attorney in this matter?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">Steve:</div>
-                            <div class="transcript-text">No, not yet. That's why I'm reaching out.</div>
-                        </div>
-                    </div>
-                    <div class="lead-card-footer">
-                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Delivered via email or CRM</span>
-                    </div>
-                </div>
-
-                <!-- Declined Lead Example -->
-                <div class="lead-card">
-                    <div class="lead-card-header declined">
-                        <span class="lead-badge declined">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Not a Fit
-                        </span>
-                        <span class="lead-card-meta declined-meta">Reason: SOL exceeded</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <!-- Contact Information -->
-                        <div class="lead-card-section contact-section">
-                            <div class="lead-card-section-title">Contact Information</div>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <span class="contact-label">Name:</span>
-                                    <span class="contact-value">James Wilson</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Phone:</span>
-                                    <span class="contact-value">(510) 555-9821</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-label">Email:</span>
-                                    <span class="contact-value">jwilson@email.com</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Assessment Rationale -->
-                        <div class="lead-card-summary declined-summary">
-                            <div class="lead-card-summary-title">Assessment Rationale</div>
-                            <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
-                        </div>
-                        <!-- Case Information -->
-                        <div class="lead-card-section">
-                            <div class="lead-card-section-title">Case Information</div>
-                            <div class="lead-card-details">
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Case Type</div>
-                                    <div class="lead-detail-value">Personal Injury</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">Date Occurred</div>
-                                    <div class="lead-detail-value">Dec 2022</div>
-                                </div>
-                                <div class="lead-detail">
-                                    <div class="lead-detail-label">SOL Status</div>
-                                    <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Key Factors -->
-                        <div class="lead-card-factors">
-                            <div class="lead-card-section-title">Key Factors</div>
-                            <div class="factor-pills">
-                                <span class="factor-pill negative">✗ SOL exceeded (3+ years)</span>
-                                <span class="factor-pill negative">✗ No documentation</span>
-                                <span class="factor-pill neutral">○ No prior treatment</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lead-card-transcript" id="transcript-declined">
-                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">James Wilson</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Thank you, James. Could you briefly describe what happened?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">I slipped and fell at a grocery store back in December 2022. Hurt my back pretty bad.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">I'm sorry to hear that. Did you receive any medical treatment for your injuries?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">No, I couldn't afford it at the time. I just rested at home.</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role ai">Intake:</div>
-                            <div class="transcript-text">Did you document the incident? For example, did you file an incident report with the store or take photos?</div>
-                        </div>
-                        <div class="transcript-message">
-                            <div class="transcript-role user">James:</div>
-                            <div class="transcript-text">No, I didn't think to do that. I just wanted to get out of there.</div>
-                        </div>
-                    </div>
-                    <div class="lead-card-footer">
-                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
-                        <span class="lead-card-time">Delivered via email or CRM</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Bar (HIDDEN)
-    <div class="stats-bar">
-        <div class="stats-container">
-            <div class="stat">
-                <div class="stat-number">Up to 70%</div>
-                <div class="stat-label">of intake submissions are often unqualified</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">$25-50</div>
-                <div class="stat-label">each unqualified call can cost in staff time</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">5-10+</div>
-                <div class="stat-label">disconnected tools many firms rely on</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">intake coverage without hiring staff</div>
-            </div>
-        </div>
-    </div>
-    -->
-
-    <!-- Problem Section (HIDDEN)
-    <section class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <h2>Generic Intake Tools Don't Work</h2>
-                <p>Forms and chatbots flood your inbox. Your staff wastes hours on inquiries that never sign. Real cases slip through the cracks.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3>No Legal Training</h3>
-                    <p>Generic chatbots don't understand SOL deadlines, jurisdiction issues, or practice-specific disqualifiers.</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <h3>Raw Data Dumps</h3>
-                    <p>Form submissions give you data. They don't tell you if the case is worth pursuing or why.</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <h3>No After-Hours Coverage</h3>
-                    <p>Contact forms sit in your inbox until morning. Hot inquiries go cold while you sleep—or call another firm.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    -->
-
-    <!-- CRM Integration Note (HIDDEN)
-    <div class="crm-note">
-        <div class="container">
-            <p>Already use Lawmatics, Clio, or Filevine? PreIntake.ai integrates seamlessly—reviewed inquiries flow directly into your existing system.</p>
-        </div>
-    </div>
-    -->
-
-    <!-- Trust & Privacy Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Your Data, Your Control</h2>
-                <p>Unlike competitors who store everything, PreIntake.ai is built with privacy at its core.</p>
-            </div>
-            <div class="trust-grid">
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3>Zero Data Retention</h3>
-                    <p>We never store client intake data. Inquiries are processed in real-time, delivered to you, then immediately discarded. Your clients' information never sits on our servers.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3>Real-Time Delivery</h3>
-                    <p>All reviewed inquiries arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot inquiries.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
-                    <h3>Your Branded Experience</h3>
-                    <p>The intake widget embeds seamlessly on your website with your branding. Clients see your firm, not ours. You control the look and feel.</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 3 Simple Steps Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Get Started in 3 Simple Steps</h2>
-                <p>From demo to live intake in minutes, not weeks.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Request Your Custom Demo</h3>
-                        <p>Enter your website URL. We analyze your practice areas and build a personalized AI intake demo—free, in under 5 minutes.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Create Your Account</h3>
-                        <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Add One Line of Code</h3>
-                        <p>Copy a single script tag to your website. That's it—your AI intake is live and reviewing inquiries 24/7.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="section section-dark" id="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>One-time setup, straightforward monthly subscription.<br />No hidden fees. Cancel anytime.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <div class="pricing-label">One-Time Setup</div>
-                    <div class="pricing-amount">$149</div>
-                    <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas, branding, and assessment criteria</div>
-                </div>
-                <div class="pricing-card featured">
-                    <div class="pricing-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                    </div>
-                    <div class="pricing-label">Monthly Subscription</div>
-                    <div class="pricing-amount">$99<span>/mo</span></div>
-                    <div class="pricing-desc">Unlimited AI-powered intake reviews, inquiry routing, and real-time delivery via email or CRM</div>
-                </div>
-            </div>
-            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Expert-level review tailored to your practice area. Every inquiry arrives in your inbox with a complete assessment. Cancel anytime—no long-term contracts.
-            </p>
-            <!-- Get Started CTA (shown for ?demo= visitors) -->
-            <div class="pricing-cta-container" id="pricing-cta-container" style="display: none;">
-                <a href="#" class="pricing-get-started-btn" id="pricing-get-started-btn">
-                    Get Started
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </a>
             </div>
         </div>
     </section>
@@ -892,6 +455,489 @@
         </div>
     </section>
 
+    <!-- Practice Areas -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built Around Your Practice Areas</h2>
+                <p>We configure custom intake logic based on how your firm evaluates cases. The practice areas shown below are examples of how PreIntake.ai adapts to different legal disciplines.</p>
+            </div>
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <h3><span>🚗</span> Personal Injury</h3>
+                    <ul>
+                        <li>Vehicle accidents (Car, Motorcycle, Truck)</li>
+                        <li>Rideshare incidents (Uber/Lyft)</li>
+                        <li>Premises liability, Dog bites</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: SOL, fault, injuries, insurance, representation</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>🌎</span> Immigration</h3>
+                    <ul>
+                        <li>Family-based (spouse, parent, sibling)</li>
+                        <li>Employment-based (H-1B, L-1, PERM)</li>
+                        <li>Asylum, VAWA, U-visa</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: Visa status, timeline, bars, violations</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>👨‍👩‍👧</span> Family Law</h3>
+                    <ul>
+                        <li>Divorce (contested/uncontested)</li>
+                        <li>Child custody and support</li>
+                        <li>Protective orders</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: Jurisdiction, children, assets, urgency</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>💳</span> Bankruptcy</h3>
+                    <ul>
+                        <li>Chapter 7 (liquidation)</li>
+                        <li>Chapter 13 (reorganization)</li>
+                        <li>Means test pre-qualification</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: Income, debt type, prior filings</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>⚖️</span> Criminal Defense</h3>
+                    <ul>
+                        <li>Misdemeanor and felony defense</li>
+                        <li>DUI/DWI</li>
+                        <li>Federal crimes</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: Charges, court dates, bail, representation</div>
+                </div>
+                <div class="practice-card">
+                    <h3><span>📊</span> Tax Litigation</h3>
+                    <ul>
+                        <li>IRS disputes and audits</li>
+                        <li>State tax agency conflicts</li>
+                        <li>Offer in Compromise</li>
+                    </ul>
+                    <div class="practice-card-screening">Checks: Tax type, amount, procedural posture</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What You Receive Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Your Firm Receives</h2>
+                <p>Every intake arrives as a complete, actionable summary—not a data dump. Here's exactly what lands in your inbox.</p>
+            </div>
+            <!-- Examples Toggle Button -->
+            <div class="examples-toggle">
+                <button class="examples-toggle-btn" id="examples-toggle-btn" onclick="toggleExamples()">
+                    <span id="examples-toggle-text">See Full Intake Examples</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="examples-toggle-icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Collapsible Examples Container -->
+            <div class="examples-container" id="examples-container" style="display: none;">
+            <div class="lead-examples">
+                <!-- Qualified Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header qualified">
+                        <span class="lead-badge qualified">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Qualified
+                        </span>
+                        <span class="lead-card-meta">Confidence: high · Schedule Consultation</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">Steve Martinez</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(415) 555-3874</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">steve@email.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Case Summary -->
+                        <div class="lead-card-summary">
+                            <div class="lead-card-summary-title">Case Summary</div>
+                            <p>Received 30-day eviction notice last Friday alleging lease violation. Client believes notice is invalid. Minor alleged violation (plants on balcony). Not currently represented. Located in California. Time-sensitive matter requiring immediate attention.</p>
+                        </div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Tenant Rights</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Last Friday</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill positive">✓ Recent eviction notice</span>
+                                <span class="factor-pill positive">✓ Believes notice invalid</span>
+                                <span class="factor-pill positive">✓ Within service area</span>
+                                <span class="factor-pill positive">✓ Not represented</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-qualified">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">Steve Martinez</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Thank you, Steve. Could you briefly describe what happened and why you're seeking legal help?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">I got a 30-day eviction notice last Friday. They're saying I violated my lease but I think it's bogus.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">I understand. What reason did they give for the alleged lease violation?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">They said I have plants on my balcony which is apparently not allowed. But I've had them there for 2 years and no one said anything.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Are you currently represented by an attorney in this matter?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">Steve:</div>
+                            <div class="transcript-text">No, not yet. That's why I'm reaching out.</div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-qualified', this)">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
+                    </div>
+                </div>
+
+                <!-- Declined Lead Example -->
+                <div class="lead-card">
+                    <div class="lead-card-header declined">
+                        <span class="lead-badge declined">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Not a Fit
+                        </span>
+                        <span class="lead-card-meta declined-meta">Reason: SOL exceeded</span>
+                    </div>
+                    <div class="lead-card-body">
+                        <!-- Contact Information -->
+                        <div class="lead-card-section contact-section">
+                            <div class="lead-card-section-title">Contact Information</div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <span class="contact-label">Name:</span>
+                                    <span class="contact-value">James Wilson</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">(510) 555-9821</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">jwilson@email.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Assessment Rationale -->
+                        <div class="lead-card-summary declined-summary">
+                            <div class="lead-card-summary-title">Assessment Rationale</div>
+                            <p>Incident occurred 3 years ago. Statute of limitations has expired for premises liability claims in this jurisdiction. Caller was unaware of time limits. Advised to consult with attorney regarding potential exceptions.</p>
+                        </div>
+                        <!-- Case Information -->
+                        <div class="lead-card-section">
+                            <div class="lead-card-section-title">Case Information</div>
+                            <div class="lead-card-details">
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Case Type</div>
+                                    <div class="lead-detail-value">Personal Injury</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">Date Occurred</div>
+                                    <div class="lead-detail-value">Dec 2022</div>
+                                </div>
+                                <div class="lead-detail">
+                                    <div class="lead-detail-label">SOL Status</div>
+                                    <div class="lead-detail-value" style="color: #ef4444;">Expired</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Key Factors -->
+                        <div class="lead-card-factors">
+                            <div class="lead-card-section-title">Key Factors</div>
+                            <div class="factor-pills">
+                                <span class="factor-pill negative">✗ SOL exceeded (3+ years)</span>
+                                <span class="factor-pill negative">✗ No documentation</span>
+                                <span class="factor-pill neutral">○ No prior treatment</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-card-transcript" id="transcript-declined">
+                        <div class="lead-card-transcript-title">Full Conversation Transcript</div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Hello! I'm here to help you with a free case evaluation. To get started, may I have your name?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">James Wilson</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Thank you, James. Could you briefly describe what happened?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">I slipped and fell at a grocery store back in December 2022. Hurt my back pretty bad.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">I'm sorry to hear that. Did you receive any medical treatment for your injuries?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I couldn't afford it at the time. I just rested at home.</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role ai">Intake:</div>
+                            <div class="transcript-text">Did you document the incident? For example, did you file an incident report with the store or take photos?</div>
+                        </div>
+                        <div class="transcript-message">
+                            <div class="transcript-role user">James:</div>
+                            <div class="transcript-text">No, I didn't think to do that. I just wanted to get out of there.</div>
+                        </div>
+                    </div>
+                    <div class="lead-card-footer">
+                        <a href="javascript:void(0)" class="transcript-toggle" onclick="toggleTranscript('transcript-declined', this)">View Full Transcript →</a>
+                        <span class="lead-card-time">Delivered via email or CRM</span>
+                    </div>
+                </div>
+            </div>
+            </div><!-- End examples-container -->
+        </div>
+    </section>
+
+    <!-- Stats Bar (HIDDEN)
+    <div class="stats-bar">
+        <div class="stats-container">
+            <div class="stat">
+                <div class="stat-number">Up to 70%</div>
+                <div class="stat-label">of intake submissions are often unqualified</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">$25-50</div>
+                <div class="stat-label">each unqualified call can cost in staff time</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">5-10+</div>
+                <div class="stat-label">disconnected tools many firms rely on</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">intake coverage without hiring staff</div>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <!-- Problem Section (HIDDEN)
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>Generic Intake Tools Don't Work</h2>
+                <p>Forms and chatbots flood your inbox. Your staff wastes hours on inquiries that never sign. Real cases slip through the cracks.</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3>No Legal Training</h3>
+                    <p>Generic chatbots don't understand SOL deadlines, jurisdiction issues, or practice-specific disqualifiers.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h3>Raw Data Dumps</h3>
+                    <p>Form submissions give you data. They don't tell you if the case is worth pursuing or why.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <h3>No After-Hours Coverage</h3>
+                    <p>Contact forms sit in your inbox until morning. Hot inquiries go cold while you sleep—or call another firm.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+
+    <!-- CRM Integration Note (HIDDEN)
+    <div class="crm-note">
+        <div class="container">
+            <p>Already use Lawmatics, Clio, or Filevine? PreIntake.ai integrates seamlessly—reviewed inquiries flow directly into your existing system.</p>
+        </div>
+    </div>
+    -->
+
+    <!-- Trust & Privacy Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Your Data, Your Control</h2>
+                <p>Unlike competitors who store everything, PreIntake.ai is built with privacy at its core.</p>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3>Zero Data Retention</h3>
+                    <p>We never store client intake data. Inquiries are processed in real-time, delivered to you, then immediately discarded. Your clients' information never sits on our servers.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3>Real-Time Delivery</h3>
+                    <p>All reviewed inquiries arrive in your inbox or CRM within seconds of intake completion. No batching, no delays—immediate action on hot inquiries.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3>Your Branded Experience</h3>
+                    <p>The intake widget embeds seamlessly on your website with your branding. Clients see your firm, not ours. You control the look and feel.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 3 Simple Steps Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get Started in 3 Simple Steps</h2>
+                <p>From demo to live intake in minutes, not weeks.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Request Your Custom Demo</h3>
+                        <p>Enter your website URL. We analyze your practice areas and build a personalized AI intake demo—free, in under 5 minutes.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Create Your Account</h3>
+                        <p>Love what you see? Activate your account and we'll finalize your custom intake configuration for production use.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Add One Line of Code</h3>
+                        <p>Copy a single script tag to your website. That's it—your AI intake is live and reviewing inquiries 24/7.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section section-dark" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>One-time setup, straightforward monthly subscription.<br />No hidden fees. Cancel anytime.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div class="pricing-label">One-Time Setup</div>
+                    <div class="pricing-amount">$149</div>
+                    <div class="pricing-desc">Custom AI intake tailored to your firm's practice areas, branding, and assessment criteria</div>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </div>
+                    <div class="pricing-label">Monthly Subscription</div>
+                    <div class="pricing-amount">$99<span>/mo</span></div>
+                    <div class="pricing-desc">Unlimited AI-powered intake reviews, inquiry routing, and real-time delivery via email or CRM</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.95rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Expert-level review tailored to your practice area. Every inquiry arrives in your inbox with a complete assessment. Cancel anytime—no long-term contracts.
+            </p>
+            <!-- Get Started CTA (shown for ?demo= visitors) -->
+            <div class="pricing-cta-container" id="pricing-cta-container" style="display: none;">
+                <a href="#" class="pricing-get-started-btn" id="pricing-get-started-btn">
+                    Get Started
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <div id="preintake-footer"></div>
 
@@ -1117,6 +1163,27 @@
         function updateConfirmButton() {
             const confirmBtn = document.getElementById('modal-confirm-btn');
             confirmBtn.disabled = practiceAreas.length === 0;
+        }
+
+        // =====================================
+        // Examples Toggle
+        // =====================================
+
+        function toggleExamples() {
+            const container = document.getElementById('examples-container');
+            const btn = document.getElementById('examples-toggle-btn');
+            const text = document.getElementById('examples-toggle-text');
+            const isHidden = container.style.display === 'none';
+
+            if (isHidden) {
+                container.style.display = 'block';
+                btn.classList.add('expanded');
+                text.textContent = 'Hide Intake Examples';
+            } else {
+                container.style.display = 'none';
+                btn.classList.remove('expanded');
+                text.textContent = 'See Full Intake Examples';
+            }
         }
 
         // =====================================

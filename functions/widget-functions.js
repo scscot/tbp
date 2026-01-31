@@ -789,6 +789,12 @@ const getEmailAnalytics = onRequest(
             let activeLeads = 0;
             const leadDetails = [];
 
+            // A/B Test Performance tracking
+            const abTestStats = {
+                not_opportunity: { sent: 0, visited: 0, viewed: 0 },
+                prebuild_advantage: { sent: 0, visited: 0, viewed: 0 }
+            };
+
             leadsSnap.forEach(doc => {
                 const data = doc.data();
 
@@ -823,6 +829,14 @@ const getEmailAnalytics = onRequest(
                     activeLeads++;
                 }
 
+                // A/B test tracking by subjectTag
+                const tag = data.subjectTag;
+                if (tag && abTestStats[tag]) {
+                    abTestStats[tag].sent++;
+                    if (visitCount > 0) abTestStats[tag].visited++;
+                    if (viewCount > 0) abTestStats[tag].viewed++;
+                }
+
                 leadDetails.push({
                     firmName: data.name || data.analysis?.firmName || 'Unknown',
                     source: data.source || 'unknown',
@@ -832,6 +846,7 @@ const getEmailAnalytics = onRequest(
                     visitCount: visitCount,
                     firstViewedAt: firstViewedAt?.toISOString().split('T')[0] || null,
                     viewCount: viewCount,
+                    subjectTag: tag || null,
                 });
             });
 
@@ -876,6 +891,8 @@ const getEmailAnalytics = onRequest(
                 stateBreakdown,
                 // GA4 website analytics
                 ga4Stats,
+                // A/B test performance
+                abTestStats,
             });
 
         } catch (error) {
