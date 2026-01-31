@@ -1,6 +1,6 @@
 # Team Build Pro - Comprehensive Knowledge Base
 
-**Last Updated**: 2026-01-28
+**Last Updated**: 2026-01-31
 **Purpose**: Persistent knowledge base for AI assistants across sessions
 
 ---
@@ -586,21 +586,26 @@ The email campaign system consists of two parallel campaigns targeting different
 ### Main Campaign (SMTP - Automated)
 - **Function**: `sendHourlyEmailCampaign` in `functions/email-campaign-functions.js`
 - **Tags**: `tbp_campaign`, `tracked`
-- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT (6 runs/day)
+- **Schedule**: 8am, 11am, 2pm, 5pm PT (4 runs/day)
 - **Data Source**: Firestore `emailCampaigns/master/contacts` collection
 - **Control Variable**: EMAIL_CAMPAIGN_ENABLED
 - **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (automated by GitHub Actions)
 - **Domain Warming**: Automated via `.github/workflows/domain-warming-update.yml`
 
-### Yahoo Campaign (DISABLED - Jan 2026)
-- **Status**: DISABLED - File renamed to `email-campaign-functions-yahoo.js.disabled`, imports/exports commented out in `index.js`
-- **Function**: `sendHourlyEmailCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
-- **Tags**: `yahoo_campaign`, `tracked`
-- **Schedule**: Was 7am, 9am, 11am, 1pm, 3pm, 5pm PT (odd hours, offset from main)
-- **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection
-- **Control Variable**: EMAIL_CAMPAIGN_ENABLED_YAHOO
-- **Batch Size**: Was dynamic via Firestore `config/emailCampaign.batchSizeYahoo`
+### Contacts Campaign (SMTP - Automated)
+- **Function**: `sendHourlyContactsCampaign` in `functions/email-campaign-contacts.js`
+- **Tags**: `tbp_campaign`, `tracked`
+- **Schedule**: 9am, 12pm, 3pm, 6pm PT (4 runs/day, staggered 1hr after Main)
+- **Data Source**: Firestore `direct_sales_contacts` collection
+- **Control Variable**: EMAIL_CAMPAIGN_ENABLED (shares with Main)
+- **Batch Size**: Dynamic via Firestore `config/emailCampaign.batchSize` (shares with Main)
+- **Subject**: "Using AI to Build Your {Company} Team" (company-specific)
+- **Template Variables**: `first_name`, `company`, `tracked_cta_url`, `unsubscribe_url`
+
+### Yahoo Campaign (REMOVED - Jan 2026)
+- **Status**: REMOVED - File and function deleted
 - **Purpose**: Was separate campaign for Yahoo/AOL email addresses
+- **Data Source**: Was Firestore `emailCampaigns/master/contacts_yahoo` collection
 
 ### Automated Domain Warming System
 - **Workflow**: `.github/workflows/domain-warming-update.yml`
@@ -608,15 +613,15 @@ The email campaign system consists of two parallel campaigns targeting different
 - **Schedule**: Runs every Monday at 6am PT
 - **Mechanism**: GitHub Actions calculates current week, looks up batch size from config, updates Firestore
 - **Firestore Config**: `config/emailCampaign` document stores `batchSize`, `batchSizeYahoo`, `warmingWeek`
-- **TBP Warming Schedule** (started 2026-01-12):
+- **TBP Warming Schedule** (started 2026-01-12, 8 runs/day total):
   | Week | Batch Size | Emails/Day |
   |------|------------|------------|
-  | 1 | 6 | 36 |
-  | 2 | 12 | 72 |
-  | 3 | 25 | 150 |
-  | 4 | 50 | 300 |
-  | 5 | 75 | 450 |
-  | 6+ | 100 | 600 |
+  | 1 | 6 | 48 |
+  | 2 | 12 | 96 |
+  | 3 | 25 | 200 |
+  | 4 | 50 | 400 |
+  | 5 | 75 | 600 |
+  | 6+ | 100 | 800 |
 - **Manual Override**: `workflow_dispatch` with `force_week` input to test specific week
 
 ### Campaign Tracking (Post-SMTP Migration)
@@ -627,23 +632,9 @@ The email campaign system consists of two parallel campaigns targeting different
 - **A/B Test Breakdown**: By `subjectTag` field (`mobile_first_v3`, `mobile_first_v4`); legacy tags (`not_opportunity`, `prebuild_advantage`) supported
 - **Dashboards**: `email-stats.html` (email-focused) and `TBP-analytics.html` (unified analytics)
 
-### Android Launch Campaign (Mailgun - Automated Phase 2)
-- **Function**: `sendAndroidLaunchCampaign` in `functions/email-campaign-functions.js`
-- **Tags**: `android_launch`, `initial`
-- **Template Version**: `initial`
-- **Purpose**: Re-engage contacts sent before Nov 12, 2025 Android launch
-- **Schedule**: Same as Main Campaign (8am, 10am, 12pm, 2pm, 4pm, 6pm PT)
-- **Data Source**: Firestore `emailCampaigns/master/contacts` collection (resend field)
-- **Control Variable**: ANDROID_CAMPAIGN_ENABLED (currently disabled)
-- **Pre-marked Contacts**: 2,077 contacts marked with `resend: false` via mark-contacts-for-resend.js script
-- **Status**: Ready to deploy after Phase 1 completion
-
-### Yahoo Android Launch Campaign
-- **Function**: `sendAndroidLaunchCampaignYahoo` in `functions/email-campaign-functions-yahoo.js`
-- **Tags**: `yahoo_android_launch`, `initial`
-- **Schedule**: 8am, 10am, 12pm, 2pm, 4pm, 6pm PT
-- **Data Source**: Firestore `emailCampaigns/master/contacts_yahoo` collection (resend field)
-- **Control Variable**: ANDROID_CAMPAIGN_ENABLED_YAHOO (currently disabled)
+### Android Launch Campaign (REMOVED - Jan 2026)
+- **Status**: REMOVED - Function deleted
+- **Purpose**: Was for re-engaging contacts sent before Nov 12, 2025 Android launch
 
 ### Mailgun Event Sync (Legacy - Disabled)
 - **Function**: `syncMailgunEvents` in `functions/email-campaign-functions.js`
@@ -740,7 +731,8 @@ The email campaign system consists of two parallel campaigns targeting different
 - `lib/widgets/quick_prompts_widget.dart` - AI Coach welcome screen with quick prompts
 - `lib/l10n/app_*.arb` - Localization files (EN, ES, PT, DE)
 - `functions/index.js` - All Cloud Functions
-- `functions/email-campaign-functions.js` - Automated hourly email campaign
+- `functions/email-campaign-functions.js` - Main Campaign (emailCampaigns/master/contacts)
+- `functions/email-campaign-contacts.js` - Contacts Campaign (direct_sales_contacts)
 - `functions/email-stats-functions.js` - Email campaign stats API (Firestore + GA4)
 - `functions/analytics-dashboard-functions.js` - TBP analytics dashboard API (GA4 + iOS + Android + Firestore)
 - `functions/email-smtp-sender.js` - SMTP transporter with connection pooling
@@ -788,7 +780,10 @@ The email campaign system consists of two parallel campaigns targeting different
 - ✅ **A/B Test Template Update** (Jan 28, 2026): Migrated from v1/v2 to v3/v4 Mailgun templates
   - Subject changed from "Not an opportunity" / "What if your next recruit" to unified "Using AI to Build Your Team"
   - New subjectTags: `mobile_first_v3`, `mobile_first_v4` (dashboard supports both new and legacy tags)
-- ✅ **Yahoo Campaign Disabled** (Jan 28, 2026): `email-campaign-functions-yahoo.js` disabled, imports/exports commented out
+- ✅ **Yahoo Campaign Removed** (Jan 31, 2026): File and function deleted
+- ✅ **Android Launch Campaign Removed** (Jan 31, 2026): Function deleted from `email-campaign-functions.js`
+- ✅ **Contacts Campaign Added** (Jan 31, 2026): New campaign targeting `direct_sales_contacts` collection with company-specific subject lines
+- ✅ **Campaign Schedules Staggered** (Jan 31, 2026): Main (8am, 11am, 2pm, 5pm) + Contacts (9am, 12pm, 3pm, 6pm) = 8 runs/day total
 - ✅ **Domain Warming Automation**: GitHub Actions workflow manages batch sizes via Firestore config
 - ✅ **SMTP Email Validation**: 18,334 Gmail addresses validated, 89.3% valid
 - ✅ **Analytics Dashboards Migrated to Firestore**: Both `email-stats.html` and `TBP-analytics.html` now use Firestore for email stats (sent/failed/clicked/A/B test) and GA4 filtered by `sessionMedium: 'smtp'` for website traffic. Mailgun API dependencies removed from dashboards.
@@ -819,14 +814,17 @@ The email campaign system consists of two parallel campaigns targeting different
 
 | Component | Status | Notes |
 |-----------|--------|-------|
+| Main Campaign | Active | 8am, 11am, 2pm, 5pm PT (4 runs/day) |
+| Contacts Campaign | Active | 9am, 12pm, 3pm, 6pm PT (4 runs/day) |
 | Email Sending | SMTP | Via Dreamhost nodemailer, news.teambuildpro.com |
 | Email A/B Testing | Active | V3/V4 strict alternation ("Using AI to Build Your Team") |
-| Yahoo Campaign | Disabled | File disabled, imports commented out (Jan 28) |
+| Yahoo Campaign | Removed | File and function deleted (Jan 31) |
+| Android Campaign | Removed | Function deleted (Jan 31) |
 | Email Tracking | Firestore | Clicks via trackEmailClick; opens disabled |
 | Analytics Dashboards | Firestore + GA4 | Top Countries + Yesterday date range added |
 | Push Notifications | Working | profile_reminder, trial_expired verified |
 | Blog Automation | Running | Mon/Thu schedule, 4 languages |
-| Domain Warming | Week 3 | TBP=25 per batch (150/day) |
+| Domain Warming | Week 3 | batchSize=12, 96 emails/day (8 runs total) |
 | Bar Scrapers | Active | 12 state workflows |
 
 ---
