@@ -95,4 +95,5 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add scripts/patterns.json
           git commit -m "Update patterns.json: ${{ steps.check_changes.outputs.total }} companies (${{ steps.check_changes.outputs.active }} active, ${{ steps.check_changes.outputs.inactive }} inactive)"
+          git pull --rebase origin main
           git push
