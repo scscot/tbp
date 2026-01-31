@@ -113,7 +113,8 @@
 
     <!-- Campaign Welcome Banner (shown for ?demo= visitors) -->
     <div class="campaign-welcome" id="campaign-welcome">
-        <p class="campaign-welcome-text">Welcome, <span id="campaign-firm-name">Your Firm</span>!</p>
+        <p class="campaign-welcome-text">Welcome, <span id="campaign-firm-name">Your Firm</span><span id="campaign-welcome-suffix"> — Your demo is ready</span></p>
+        <button class="campaign-welcome-cta" id="campaign-welcome-cta">Start Now →</button>
     </div>
 
     <!-- Hero Section -->
@@ -1965,6 +1966,20 @@
             }
 
             // =====================================
+            // Firm Name Display Helper
+            // =====================================
+            // Clean firm name for display: strip ", Attorney at Law" suffix for bar profile contacts
+            function cleanFirmNameForDisplay(rawFirmName) {
+                if (!rawFirmName) return '';
+                let name = decodeURIComponent(rawFirmName);
+                // Strip ", Attorney at Law" suffix (used for bar profile contacts without firm names)
+                if (name.endsWith(', Attorney at Law')) {
+                    name = name.replace(/, Attorney at Law$/, '');
+                }
+                return name;
+            }
+
+            // =====================================
             // Firm Name Display (?firm= parameter)
             // =====================================
             // For visitors arriving from email campaign WITHOUT pre-generated demo
@@ -1981,7 +1996,7 @@
                 const welcomeBanner = document.getElementById('campaign-welcome');
                 const firmNameSpan = document.getElementById('campaign-firm-name');
                 if (welcomeBanner && firmNameSpan) {
-                    firmNameSpan.textContent = decodeURIComponent(firmName);
+                    firmNameSpan.textContent = cleanFirmNameForDisplay(firmName);
                     welcomeBanner.classList.add('visible');
                 }
 
@@ -2011,7 +2026,7 @@
                     const welcomeBanner = document.getElementById('campaign-welcome');
                     const firmNameSpan = document.getElementById('campaign-firm-name');
                     if (welcomeBanner && firmNameSpan) {
-                        firmNameSpan.textContent = decodeURIComponent(firmName);
+                        firmNameSpan.textContent = cleanFirmNameForDisplay(firmName);
                         welcomeBanner.classList.add('visible');
                     }
                 }
@@ -2089,9 +2104,14 @@
                 // Show firm name welcome banner IMMEDIATELY (before async API calls)
                 const welcomeBanner = document.getElementById('campaign-welcome');
                 const firmNameSpan = document.getElementById('campaign-firm-name');
+                const welcomeSuffix = document.getElementById('campaign-welcome-suffix');
+                const welcomeCta = document.getElementById('campaign-welcome-cta');
                 if (firmNameFromUrl) {
-                    firmNameSpan.textContent = decodeURIComponent(firmNameFromUrl);
+                    firmNameSpan.textContent = cleanFirmNameForDisplay(firmNameFromUrl);
                     welcomeBanner.classList.add('visible');
+                    // Show the "Your demo is ready" suffix and CTA for campaign demo visitors
+                    if (welcomeSuffix) welcomeSuffix.classList.add('visible');
+                    if (welcomeCta) welcomeCta.classList.add('visible');
                 }
 
                 // Construct demo URL (embed=true hides sidebar CTA; firm name is embedded in demo config)
@@ -2142,6 +2162,11 @@
                     document.body.style.overflow = 'hidden';
                     // Note: "view" is tracked when user clicks "Start Demo" in the iframe
                     // (via postMessage from demo template)
+                }
+
+                // Attach click handler to welcome banner CTA
+                if (welcomeCta) {
+                    welcomeCta.addEventListener('click', openDemoModal);
                 }
 
                 // Track demo state for exit confirmation

@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
 **Last Updated**: 2026-01-31
-**Version**: 4.7 (Email campaign user flow audit - 15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
+**Version**: 4.8 (Welcome banner CTA + daily email sending - 15 bar scrapers across 14 states: CA, FL, GA, IL, IN, KY, MI, MO, MS, NC, NE, NE-NSBA, OH, OK, WA)
 
 ---
 
@@ -1073,6 +1073,25 @@ Email Sent → Link Clicked → Homepage Loads → "Begin Your Custom Demo" CTA 
 3. `sessionStorage.tbp_demo_viewed` - Header CTA becomes "Get Started →"
 
 **Conclusion:** Current flow is well-optimized. No changes needed.
+
+### Phase 50: Welcome Banner CTA & Daily Email Sending (2026-01-31)
+- [x] **Welcome Banner CTA** - Made banner actionable for campaign visitors
+  - Banner now shows: "Welcome, [Name] — Your demo is ready [Start Now →]"
+  - CTA button triggers `openDemoModal()` directly from banner
+  - Suffix and CTA hidden by default, shown only for `?demo=` visitors
+  - `cleanFirmNameForDisplay()` strips ", Attorney at Law" suffix for bar profile contacts
+  - CSS: Flexbox layout, white button text on dark background, responsive mobile styling
+- [x] **Daily Email Sending** - Changed from Mon-Fri to 7 days/week
+  - Updated `send-preintake-campaign.js` allowedDays from `[1,2,3,4,5]` to `[0,1,2,3,4,5,6]`
+  - Workflow was already configured for daily runs (`* * *` cron pattern)
+
+**Banner Display Logic:**
+| Visitor Type | Banner Display |
+|--------------|----------------|
+| `?demo=` (campaign with demo) | "Welcome, Smith & Associates — Your demo is ready [Start Now →]" |
+| `?demo=` (bar profile, no firm) | "Welcome, John Smith — Your demo is ready [Start Now →]" |
+| `?firm=` (no demo yet) | "Welcome, Smith & Associates" (no suffix/CTA) |
+| `?completed=` (finished demo) | "Welcome, Smith & Associates" (no suffix/CTA) |
 
 ---
 
