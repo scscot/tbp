@@ -39,21 +39,33 @@ const TRACKING_BASE_URL = 'https://us-central1-teambuilder-plus-fe74d.cloudfunct
 const LANDING_PAGE_URL = 'https://teambuildpro.com';
 
 // =============================================================================
-// A/B TEST CONFIGURATIONS
+// ABCD TEST CONFIGURATIONS
 // =============================================================================
 
-const AB_TEST_VARIANTS = {
+const ABCD_TEST_VARIANTS = {
+  v3: {
+    templateVersion: 'v3',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v3',
+    description: 'Critiques old advice, TBP as correction'
+  },
+  v4: {
+    templateVersion: 'v4',
+    subject: 'Using AI to Build Your Direct Sales Team',
+    subjectTag: 'mobile_first_v4',
+    description: 'Flip the script - confidence before joining'
+  },
   v5: {
     templateVersion: 'v5',
     subject: "Using AI to Build Your ${company} Team",
     subjectTag: 'mobile_first_v5',
-    description: 'Critiques old advice, TBP as correction'
+    description: 'Critiques old advice, TBP as correction (company-specific)'
   },
   v6: {
     templateVersion: 'v6',
     subject: "Using AI to Build Your ${company} Team",
     subjectTag: 'mobile_first_v6',
-    description: 'Flip the script - confidence before joining'
+    description: 'Flip the script - confidence before joining (company-specific)'
   }
 };
 
@@ -152,9 +164,10 @@ async function sendEmailViaMailgun(contact, docId, config, index) {
     throw new Error('TBP_MAILGUN_API_KEY not configured');
   }
 
-  // A/B Test: Strict alternation between v5 (template v5) and v6 (template v6)
-  const templateVariant = index % 2 === 0 ? 'v5' : 'v6';
-  const variant = AB_TEST_VARIANTS[templateVariant];
+  // ABCD Test: Strict rotation through v3, v4, v5, v6
+  const variantKeys = ['v3', 'v4', 'v5', 'v6'];
+  const templateVariant = variantKeys[index % 4];
+  const variant = ABCD_TEST_VARIANTS[templateVariant];
 
   // Interpolate company name in subject line
   const companyName = contact.company || 'Your';
