@@ -92,12 +92,13 @@ Your CRM manages leads. We make sure only real cases get there in the first plac
 - Green leads auto-route to your consultation calendar
 - Structured case data—no more deciphering form submissions
 
-**Analytics Dashboard** (Future)
-- Completion rate tracking (see where leads drop off)
-- Green/Yellow/Red distribution by practice area
-- Conversion tracking: leads → consults → signed cases
-- A/B testable question flows (optimize for your audience)
-- Monthly ROI reporting
+**Analytics Dashboard** (`email-analytics.html`)
+- ✅ GA4 website traffic (users, sessions, bounce rate, traffic sources)
+- ✅ Email campaign metrics (sent, delivered, visits, demo starts)
+- ✅ Engagement funnel tracking (emails → visits → demo starts → leads)
+- ✅ A/B test performance (subject line variants)
+- ✅ Source/state breakdown by bar association
+- 🔮 Future: Green/Yellow/Red distribution, question flow A/B testing, ROI reporting
 
 ---
 
@@ -1138,8 +1139,9 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── deep-research-functions.js       # Multi-page scraping
 ├── demo-generator-functions.js      # Demo page generation
 ├── intake-delivery-functions.js     # Intake webhook + delivery
-├── widget-functions.js              # Widget endpoints
+├── widget-functions.js              # Widget endpoints + getEmailAnalytics
 ├── stripe-functions.js              # Payment processing
+├── account-portal-functions.js      # Account portal (magic link auth, settings, billing)
 └── templates/
     ├── demo-intake.html.template    # Demo intake template
     └── demo-config.js               # Demo config template
@@ -1175,7 +1177,8 @@ pending → analyzing → researching → generating_demo → demo_ready
 ├── reset-flbar-data.js              # Reset FL Bar data for clean re-scrape
 ├── analyze-sources.js               # Analyze preintake_emails by source (scraper vs legacy)
 ├── audit-preintake-emails.js        # Audit data integrity for send-preintake-campaign.js
-└── infer-websites.js                # Infer attorney websites from email domains
+├── infer-websites.js                # Infer attorney websites from email domains
+└── cleanup-stale-demos.js           # Auto-delete 31+ day old unconverted demos (daily workflow)
 ```
 
 ### Firebase Configuration
@@ -1314,15 +1317,16 @@ For firms with strict data residency requirements, self-hosted option at custom 
 **Recently Completed:**
 - ✅ Post-intake conversion email (Phase 17) - Sends after first demo lead delivery
 - ✅ Demo ready notification to customer - Sends via `sendProspectDemoReadyEmail()` when demo is generated
+- ✅ Customer Portal - `account.html` with magic link auth, settings management, Stripe billing portal
+- ✅ Analytics Dashboard - `email-analytics.html` with GA4 integration, email stats, A/B test tracking, engagement funnel
+- ✅ Demo Expiration - `cleanup-stale-demos.js` auto-deletes 31+ day old unconverted demos (daily workflow)
+- ✅ A/B Testing (Subject Lines) - Subject line variants tracked via `subjectTag` field with dashboard reporting
 
 | Gap | Current State | Planned Solution | Priority |
 |-----|---------------|------------------|----------|
-| Customer portal | None | Stripe Customer Portal integration | Medium |
-| Analytics dashboard | None | Track demo engagement, conversion rates | Medium |
 | CRM integrations | Email/webhook only (covers 80%) | Native integrations when 5+ customers request same CRM | Low (deferred) |
-| Demo expiration | Demos persist indefinitely | Auto-delete after 30 days or on cancel | Low |
 | Multi-language support | English only | Spanish, Chinese intake options | Low |
-| A/B testing | None | Question flow optimization | Low |
+| A/B testing (question flows) | Subject lines only | Question flow optimization | Low |
 
 ---
 
@@ -1346,6 +1350,11 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `resendActivationEmail` | HTTP | Admin endpoint to resend activation emails |
 | `getWidgetConfig` | HTTP | Return widget configuration |
 | `intakeChat` | HTTP | AI chat endpoint |
+| `sendAccountAccessLink` | HTTP | Send magic link email for account portal |
+| `verifyAccountToken` | HTTP | Verify magic link token, return account data |
+| `updateAccountSettings` | HTTP | Update delivery email, practice areas, name |
+| `createBillingPortalSession` | HTTP | Create Stripe billing portal session |
+| `getEmailAnalytics` | HTTP | Return campaign analytics (GA4 + Firestore) |
 
 ### API Endpoints
 
@@ -1362,6 +1371,11 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `/:intakeCode` | GET | Serve hosted intake by 6-digit short code (via serveHostedIntake) |
 | `/intake/:barNumber` | GET | Serve hosted intake by bar number (via serveHostedIntake) |
 | `/resendActivationEmail` | GET | Admin: resend activation email |
+| `/sendAccountAccessLink` | POST | Send magic link email for account portal |
+| `/verifyAccountToken` | GET | Verify magic link, return account data |
+| `/updateAccountSettings` | POST | Update account settings |
+| `/createBillingPortalSession` | POST | Create Stripe billing portal session |
+| `/getEmailAnalytics` | GET | Return campaign analytics dashboard data |
 
 ### Firestore Collections (preintake database)
 
@@ -1372,6 +1386,8 @@ For firms with strict data residency requirements, self-hosted option at custom 
 | `preintake_intake_codes` | Short code → leadId lookup table |
 | `intake_dedup` | Deduplication records (leadId_email_phone) |
 | `preintake_rate_limits` | IP rate limiting records |
+| `account_tokens` | Magic link tokens for account portal authentication |
+| `account_portal_rate_limits` | Rate limiting for magic link requests |
 | `scraper_progress/*` | Per-scraper progress tracking (practice areas completed, counts) |
 
 ### Firebase Storage
