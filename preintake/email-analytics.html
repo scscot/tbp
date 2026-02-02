@@ -528,6 +528,36 @@
             color: #34d399;
         }
 
+        /* Subscription status badges */
+        .subscription-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .subscription-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .subscription-badge.cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .subscription-badge.past_due {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .subscription-badge.none {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+        }
+
         .view-count {
             display: inline-flex;
             align-items: center;
@@ -1241,6 +1271,7 @@
                                 <th>Visits</th>
                                 <th>Demo Starts</th>
                                 <th>Status</th>
+                                <th>Subscription</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1261,6 +1292,9 @@
                                     </td>
                                     <td>
                                         <span class="status-badge ${lead.status}">${lead.status.replace(/_/g, ' ')}</span>
+                                    </td>
+                                    <td>
+                                        <span class="subscription-badge ${lead.subscriptionStatus || 'none'}">${lead.subscriptionStatus ? lead.subscriptionStatus.replace(/_/g, ' ') : 'none'}</span>
                                     </td>
                                 </tr>
                             `).join('')}

@@ -841,6 +841,7 @@ const getEmailAnalytics = onRequest(
                     firmName: data.name || data.analysis?.firmName || 'Unknown',
                     source: data.source || 'unknown',
                     status: data.status || 'unknown',
+                    subscriptionStatus: data.subscriptionStatus || null,
                     createdAt: data.createdAt?.toDate()?.toISOString().split('T')[0] || null,
                     firstVisitAt: firstVisitAt?.toISOString().split('T')[0] || null,
                     visitCount: visitCount,

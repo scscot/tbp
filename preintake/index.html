@@ -2088,7 +2088,6 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const demoLeadId = urlParams.get('demo');
                 const firmNameFromUrl = urlParams.get('firm');
-                const autoOpen = urlParams.get('autoopen') === 'true';
 
                 if (!demoLeadId) return false;
 
@@ -2313,11 +2312,9 @@
                     campaignHeroCta.style.display = 'none';
                 }
 
-                // Auto-open modal if ?autoopen=true (from "View Demo Again" button)
-                // Otherwise let user click the hero CTA to start demo
-                if (autoOpen) {
-                    openDemoModal();
-                }
+                // Auto-open modal immediately for campaign visitors
+                // They clicked an email expecting to see their demo - don't add friction
+                openDemoModal();
 
                 // Check subscription status in background (non-blocking)
                 // If they have an active subscription, close demo and show Account Active modal
