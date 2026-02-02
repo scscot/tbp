@@ -1451,10 +1451,10 @@
         const SUBJECT_LABELS = {
             'not_opportunity': 'V1: "Not an opportunity. Just a tool."',
             'prebuild_advantage': 'V2: "What if your next recruit already had a team?"',
-            'mobile_first_v3': 'V3: Mobile First',
-            'mobile_first_v4': 'V4: Mobile First Alt',
-            'mobile_first_v5': 'V5: Mobile First (Contacts)',
-            'mobile_first_v6': 'V6: Mobile First Alt (Contacts)'
+            'mobile_first_v3': 'V3: "Direct Sales Team" (Generic)',
+            'mobile_first_v4': 'V4: "Direct Sales Team" (Generic Alt)',
+            'mobile_first_v5': 'V5: "{Company} Team" (Personalized)',
+            'mobile_first_v6': 'V6: "{Company} Team" (Personalized Alt)'
         };
 
         // Authentication
@@ -1610,7 +1610,19 @@
             }
 
             if (!data) {
+                // Clear all sections when data is unavailable
                 document.getElementById('ga4TotalUsers').textContent = 'N/A';
+                document.getElementById('ga4NewUsers').textContent = 'N/A';
+                document.getElementById('ga4Sessions').textContent = 'N/A';
+                document.getElementById('ga4EngagementRate').textContent = 'N/A';
+                document.getElementById('ga4AvgDuration').textContent = 'N/A';
+                document.getElementById('ga4PageViews').textContent = 'N/A';
+                document.getElementById('trafficSourcesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('topPagesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('deviceBreakdown').innerHTML = '<p class="no-data-message">No data for this date range</p>';
+                document.getElementById('domainBreakdownTable').innerHTML = '<tr><td colspan="6" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('topCountriesTable').innerHTML = '<tr><td colspan="3" class="no-data-message">No data for this date range</td></tr>';
+                document.getElementById('emailGa4Traffic').style.display = 'none';
                 return;
             }
 
