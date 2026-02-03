@@ -15,7 +15,7 @@
 
 PreIntake.ai has reached a mature, fully-automated state:
 - ✅ 15 bar scrapers continuously adding attorney contacts
-- ✅ Email campaign runs twice daily (10am, 2pm PT) with domain warming
+- ✅ Email campaign runs 4x daily Mon-Fri (8am, 10am, 12pm, 2pm PT) with domain warming
 - ✅ Demo generation fully automated (website + bar profile)
 - ✅ Analytics dashboard operational (GA4 + Firestore)
 - ✅ Customer portal implemented (magic link auth, settings, billing)
@@ -699,7 +699,7 @@ When you're spending $300-500 per lead, even small conversion improvements mean 
   - Tracks sent status, batch ID, message ID in Firestore
   - Template version: `v4-generic` (practice-agnostic messaging)
 - [x] **GitHub Actions Workflow** - `.github/workflows/preintake-email-campaign.yml`
-  - Scheduled: Mon-Fri at 10am and 2pm PT (cron: `0 18,22 * * 1-5`)
+  - Scheduled: Mon-Fri, 4 runs/day at 8am, 10am, 12pm, 2pm PT
   - Manual trigger with configurable batch size
   - Uses `PREINTAKE_SMTP_USER` and `PREINTAKE_SMTP_PASS` secrets
   - Uses `FIREBASE_SERVICE_ACCOUNT` for Firestore access
@@ -1115,16 +1115,13 @@ Email Sent → Link Clicked → Homepage Loads → Pre-Demo Screen → "Start De
 2. `trackDemoView?type=view` - On "Start Demo" click in parent pre-demo screen (moved from iframe postMessage)
 3. `sessionStorage.tbp_demo_viewed` - Header CTA becomes "Get Started →"
 
-### Phase 50: Welcome Banner CTA & Daily Email Sending (2026-01-31)
+### Phase 50: Welcome Banner CTA (2026-01-31)
 - [x] **Welcome Banner CTA** - Made banner actionable for campaign visitors
   - Banner now shows: "Welcome, [Name] — Your demo is ready [Start Now →]"
   - CTA button triggers `reopenDemoModal()` directly from banner
   - Suffix and CTA hidden by default, shown only for `?demo=` visitors
   - `cleanFirmNameForDisplay()` strips ", Attorney at Law" suffix for bar profile contacts
   - CSS: Flexbox layout, white button text on dark background, responsive mobile styling
-- [x] **Daily Email Sending** - Changed from Mon-Fri to 7 days/week
-  - Updated `send-preintake-campaign.js` allowedDays from `[1,2,3,4,5]` to `[0,1,2,3,4,5,6]`
-  - Workflow was already configured for daily runs (`* * *` cron pattern)
 
 ### Phase 51: Pre-Demo Screen & Onboarding Refactor (2026-02-03)
 - [x] **Problem**: 42 campaign leads visited via email `?demo=` links but 0 started the demo (0% demo start rate)
@@ -1169,6 +1166,21 @@ Email click → page loads with ?demo= → visit tracked
 1. `firebase deploy --only functions` — template change
 2. Demo regeneration (already completed — 473 demos)
 3. `firebase deploy --only hosting:preintake-ai` — parent page + CSS
+
+### Phase 52: Email Campaign Schedule Optimization (2026-02-03)
+- [x] **4 Runs/Day** - Increased from 2 to 4 daily sends for better deliverability spread
+  - Windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT
+  - Spreads volume across business hours (ISPs prefer steady flow vs bursts)
+  - Updated `checkPTBusinessWindow()` in `send-preintake-campaign.js`
+- [x] **Weekday-Only Sending** - Reverted from 7 days/week to Mon-Fri
+  - Law firms closed weekends; weekend emails get buried in Monday inbox
+  - Lower weekend engagement hurts sender reputation
+  - `allowedDays` changed from `[0,1,2,3,4,5,6]` to `[1,2,3,4,5]`
+- [x] **Workflow Cron Update** - `.github/workflows/preintake-email-campaign.yml`
+  - 4 cron entries with DST dual-triggers, Mon-Fri (`1-5`)
+  - 8 total triggers/day → 4 effective runs (DST dedup via script time check)
+- **Net effect**: 4 runs x batch x 5 days vs previous 2 runs x batch x 7 days
+  - At week 4 (batch=40): 800 emails/week (was 560) — 43% increase, concentrated on business days
 
 **Banner Display Logic:**
 | Visitor Type | Banner Display |
