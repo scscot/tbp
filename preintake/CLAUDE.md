@@ -1,7 +1,7 @@
 # PreIntake.ai: Comprehensive Project Documentation
 
-**Last Updated**: 2026-01-31
-**Version**: 4.9 (System maturity pause - autonomous operation)
+**Last Updated**: 2026-02-03
+**Version**: 5.0 (Pre-demo screen refactor for campaign conversion)
 
 ---
 
@@ -1090,18 +1090,18 @@ function markEmailAsInserted(email) {
 
 **Email Campaign User Flow (Current Architecture):**
 ```
-Email Sent → Link Clicked → Homepage Loads → "Begin Your Custom Demo" CTA → Demo Started → Intake Completed
+Email Sent → Link Clicked → Homepage Loads → Pre-Demo Screen → "Start Demo" Click → Iframe Loads → Intake Completed
                                  ↓
                        Welcome Banner + CTA Transform
 ```
 
 **Campaign Visitor Detection (index.html):**
 - `?demo={leadId}` triggers campaign mode
-- Welcome banner: "Welcome [FirmName]" shown immediately
-- Hero CTA changed to "Begin Your Custom Demo"
-- Demo modal opens on CTA click (not auto-open)
+- Welcome banner: "Welcome [FirmName] — Your demo is ready [Start Now]" shown immediately
+- Pre-demo screen auto-opens in modal (native HTML, no iframe yet)
+- User clicks "Start Demo" → iframe loads with `skip_onboarding=true`
 - Exit confirmation modal prevents abandonment
-- `?autoopen=true` exists for "View Demo Again" only
+- Re-opening after close shows iframe directly (skips pre-screen)
 
 **Template Distribution (as of 2026-01-31):**
 | Template | Purpose | Usage |
@@ -1112,21 +1112,63 @@ Email Sent → Link Clicked → Homepage Loads → "Begin Your Custom Demo" CTA 
 
 **Tracking Flow:**
 1. `trackDemoView?type=visit` - On page load with `?demo=`
-2. `trackDemoView?type=view` - On "Start Demo" click (via postMessage from iframe)
+2. `trackDemoView?type=view` - On "Start Demo" click in parent pre-demo screen (moved from iframe postMessage)
 3. `sessionStorage.tbp_demo_viewed` - Header CTA becomes "Get Started →"
-
-**Conclusion:** Current flow is well-optimized. No changes needed.
 
 ### Phase 50: Welcome Banner CTA & Daily Email Sending (2026-01-31)
 - [x] **Welcome Banner CTA** - Made banner actionable for campaign visitors
   - Banner now shows: "Welcome, [Name] — Your demo is ready [Start Now →]"
-  - CTA button triggers `openDemoModal()` directly from banner
+  - CTA button triggers `reopenDemoModal()` directly from banner
   - Suffix and CTA hidden by default, shown only for `?demo=` visitors
   - `cleanFirmNameForDisplay()` strips ", Attorney at Law" suffix for bar profile contacts
   - CSS: Flexbox layout, white button text on dark background, responsive mobile styling
 - [x] **Daily Email Sending** - Changed from Mon-Fri to 7 days/week
   - Updated `send-preintake-campaign.js` allowedDays from `[1,2,3,4,5]` to `[0,1,2,3,4,5,6]`
   - Workflow was already configured for daily runs (`* * *` cron pattern)
+
+### Phase 51: Pre-Demo Screen & Onboarding Refactor (2026-02-03)
+- [x] **Problem**: 42 campaign leads visited via email `?demo=` links but 0 started the demo (0% demo start rate)
+  - Two-layer modal UX problem: parent overlay → iframe → onboarding modal inside iframe
+  - Users saw the onboarding screen inside the iframe but never clicked "Start Demo"
+- [x] **Pre-Demo Screen (Parent Page)** - Native HTML welcome screen shown before iframe loads
+  - Added `<div id="demo-pre-screen">` inside `.demo-modal-container` with:
+    - PreIntake.ai logo, "Welcome to Your Demo" heading, firm name display
+    - 3 numbered instruction steps (Try Conversation, See Assessment, Receive Summary)
+    - "Start Demo" button, "I'll explore the site first" escape link
+  - CSS: ~140 lines in `preintake/css/styles.css` (`.demo-pre-screen` classes, mobile responsive)
+- [x] **Skip Onboarding in iframe** - `functions/templates/demo-intake.html.template`
+  - Added `skip_onboarding=true` URL parameter detection at start of onboarding IIFE
+  - When detected: hides onboarding modal, sends `demo-started` postMessage with `firmEmail`, returns early
+  - When NOT detected (direct URL visitors): existing behavior unchanged
+- [x] **JS Refactor** - Replaced single `openDemoModal()` with three functions in `checkCampaignDemo()`:
+  - `showPreDemoScreen()` — shows native pre-demo screen, no iframe loaded
+  - `loadDemoIframe()` — tracks view, updates header to "Get Started →", hides pre-screen, loads iframe with `skip_onboarding=true`
+  - `reopenDemoModal()` — shows iframe directly if already loaded, otherwise shows pre-screen
+  - View tracking (`trackDemoView?type=view`) moved from iframe postMessage to parent's "Start Demo" button click
+  - `demo-started` postMessage handler simplified (only captures `firmEmail`)
+  - `forceCloseDemoModal()` updated to also hide pre-screen
+  - `getPreIntakeFirmStatus` response populates `deliveryEmail` on pre-screen (no backend changes needed)
+- [x] **Demo Regeneration** - 473 existing demos regenerated with updated template
+  - `node scripts/regenerate-preintake-demos.js --run`
+  - All demos now recognize `skip_onboarding=true` parameter
+- [x] **Email Analytics Cleanup** - Removed legacy A/B test section from `email-analytics.html`
+  - Removed V1/V2 ("Not an opportunity" / "What if your next recruit") table (legacy subject lines)
+
+**Data Flow (Post-Refactor):**
+```
+Email click → page loads with ?demo= → visit tracked
+  → Modal overlay opens with PRE-DEMO SCREEN (native HTML, no iframe)
+  → Firm name from URL (instant), email from getPreIntakeFirmStatus (async)
+  → User clicks "Start Demo"
+    → View tracked, header updated
+    → iframe loads with skip_onboarding=true
+    → Demo conversation starts directly (no second onboarding modal)
+```
+
+**Deploy Order:**
+1. `firebase deploy --only functions` — template change
+2. Demo regeneration (already completed — 473 demos)
+3. `firebase deploy --only hosting:preintake-ai` — parent page + CSS
 
 **Banner Display Logic:**
 | Visitor Type | Banner Display |

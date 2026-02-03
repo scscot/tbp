@@ -3110,6 +3110,21 @@
             const firmNameDiv = document.getElementById('onboarding-firm-name');
             const emailSpan = document.getElementById('onboarding-email');
 
+            // Check for skip_onboarding parameter (parent page handles onboarding)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('skip_onboarding') === 'true') {
+                modal.classList.add('hidden');
+                // Still send demo-started so parent gets firmEmail for exit confirmation
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'demo-started',
+                        firmId: '{{LEAD_ID}}',
+                        firmEmail: (typeof CONFIG !== 'undefined' && CONFIG.firmEmail) ? CONFIG.firmEmail : ''
+                    }, '*');
+                }
+                return;
+            }
+
             // Use firm name and email from embedded CONFIG
             if (typeof CONFIG !== 'undefined') {
                 if (CONFIG.firmName && firmNameDiv) {
