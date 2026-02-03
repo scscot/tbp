@@ -7,8 +7,8 @@
  * Uses Mailgun API for email delivery.
  *
  * SCHEDULE (PT Time Enforcement):
- *   - Days: Daily (7 days/week)
- *   - Windows: 9:00-10:00am PT and 1:00-2:00pm PT
+ *   - Days: Monday-Friday (weekdays only)
+ *   - Windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT (4 runs/day)
  *   - Automatically handles DST (script checks PT time, not UTC)
  *   - Exits cleanly with code 0 if outside allowed window
  *
@@ -276,8 +276,8 @@ function checkPTBusinessWindow() {
     const minute = ptDate.getMinutes();
     const timeInMinutes = hour * 60 + minute;
 
-    // Allowed days: Every day (0-6)
-    const allowedDays = [0, 1, 2, 3, 4, 5, 6];
+    // Allowed days: Monday-Friday only (law firms closed weekends)
+    const allowedDays = [1, 2, 3, 4, 5];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     if (!allowedDays.includes(day)) {
@@ -288,21 +288,24 @@ function checkPTBusinessWindow() {
         };
     }
 
-    // Allowed windows: 9:00-10:00am PT and 1:00-2:00pm PT
-    // Window 1: 9:00am - 10:00am (540-600 minutes)
-    // Window 2: 1:00pm - 2:00pm (780-840 minutes)
-    const window1Start = 9 * 60;       // 9:00am = 540
-    const window1End = 10 * 60;        // 10:00am = 600
-    const window2Start = 13 * 60;      // 1:00pm = 780
-    const window2End = 14 * 60;        // 2:00pm = 840
+    // Allowed windows: 4 runs spread across business hours
+    // Window 1:  8:00am -  9:00am (480-540 minutes)
+    // Window 2: 10:00am - 11:00am (600-660 minutes)
+    // Window 3: 12:00pm -  1:00pm (720-780 minutes)
+    // Window 4:  2:00pm -  3:00pm (840-900 minutes)
+    const windows = [
+        { start:  8 * 60, end:  9 * 60 },  // 8:00-9:00am
+        { start: 10 * 60, end: 11 * 60 },  // 10:00-11:00am
+        { start: 12 * 60, end: 13 * 60 },  // 12:00-1:00pm
+        { start: 14 * 60, end: 15 * 60 },  // 2:00-3:00pm
+    ];
 
-    const inWindow1 = timeInMinutes >= window1Start && timeInMinutes < window1End;
-    const inWindow2 = timeInMinutes >= window2Start && timeInMinutes < window2End;
+    const inWindow = windows.some(w => timeInMinutes >= w.start && timeInMinutes < w.end);
 
-    if (!inWindow1 && !inWindow2) {
+    if (!inWindow) {
         return {
             allowed: false,
-            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (9:00-10:00am, 1:00-2:00pm)`,
+            reason: `${hour}:${minute.toString().padStart(2, '0')} PT is outside allowed windows (8-9am, 10-11am, 12-1pm, 2-3pm)`,
             ptTime: ptTimeStr
         };
     }

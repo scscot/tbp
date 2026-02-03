@@ -3,18 +3,19 @@ name: PreIntake Email Campaign
 on:
   schedule:
     # Script enforces PT time windows - cron triggers cover both DST scenarios
-    # Target windows: 9:00-10:00am PT and 1:00-2:00pm PT, 7 days/week
+    # 4 windows: 8-9am, 10-11am, 12-1pm, 2-3pm PT, Mon-Fri only
     #
-    # Morning window triggers (9:30am PT target):
-    #   16:30 UTC = 9:30am PDT / 8:30am PST (PDT passes, PST skipped)
-    #   17:30 UTC = 10:30am PDT / 9:30am PST (PDT skipped, PST passes)
-    # Afternoon window triggers (1:30pm PT target):
-    #   20:30 UTC = 1:30pm PDT / 12:30pm PST (PDT passes, PST skipped)
-    #   21:30 UTC = 2:30pm PDT / 1:30pm PST (PDT skipped, PST passes)
+    # Each window needs 2 UTC triggers (PDT=UTC-7, PST=UTC-8):
+    #   8:30am PT  → 15:30 UTC (PDT) / 16:30 UTC (PST)
+    #   10:30am PT → 17:30 UTC (PDT) / 18:30 UTC (PST)
+    #   12:30pm PT → 19:30 UTC (PDT) / 20:30 UTC (PST)
+    #   2:30pm PT  → 21:30 UTC (PDT) / 22:30 UTC (PST)
     #
-    # Day-of-week: * = every day
-    - cron: '30 16,17 * * *'
-    - cron: '30 20,21 * * *'
+    # Day-of-week: 1-5 = Mon-Fri
+    - cron: '30 15,16 * * 1-5'
+    - cron: '30 17,18 * * 1-5'
+    - cron: '30 19,20 * * 1-5'
+    - cron: '30 21,22 * * 1-5'
 
   # Allow manual trigger for testing
   workflow_dispatch:
