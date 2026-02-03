@@ -541,8 +541,8 @@ const trackDemoView = onRequest(
             }
 
             // Validate type
-            if (trackType !== 'visit' && trackType !== 'view') {
-                return res.status(400).json({ error: 'Invalid type parameter (must be visit or view)' });
+            if (trackType !== 'visit' && trackType !== 'view' && trackType !== 'explore') {
+                return res.status(400).json({ error: 'Invalid type parameter (must be visit, view, or explore)' });
             }
 
             // Get lead document
@@ -567,6 +567,14 @@ const trackDemoView = onRequest(
                     updateData.firstVisitAt = now;
                 }
                 console.log(`Visit tracked for lead ${firmId}`);
+            } else if (trackType === 'explore') {
+                // Track "I'll explore the site first" click
+                updateData.lastExploreAt = now;
+                updateData.exploreCount = admin.firestore.FieldValue.increment(1);
+                if (!data.firstExploreAt) {
+                    updateData.firstExploreAt = now;
+                }
+                console.log(`Explore tracked for lead ${firmId}`);
             } else {
                 // Track demo view (engagement)
                 updateData.lastViewedAt = now;
@@ -826,14 +834,12 @@ const getEmailAnalytics = onRequest(
                 leadDetails.push({
                     firmName: data.name || data.analysis?.firmName || 'Unknown',
                     source: data.source || 'unknown',
-                    status: data.status || 'unknown',
-                    subscriptionStatus: data.subscriptionStatus || null,
                     createdAt: data.createdAt?.toDate()?.toISOString().split('T')[0] || null,
                     firstVisitAt: firstVisitAt?.toISOString().split('T')[0] || null,
                     visitCount: visitCount,
+                    exploreCount: data.exploreCount || 0,
                     firstViewedAt: firstViewedAt?.toISOString().split('T')[0] || null,
                     viewCount: viewCount,
-                    subjectTag: data.subjectTag || null,
                 });
             });
 

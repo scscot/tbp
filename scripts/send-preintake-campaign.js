@@ -1057,10 +1057,10 @@ async function runCampaign() {
         allDocs = [specificDoc];
         console.log(`📊 Found document: ${specificDoc.data().firmName || specificDoc.data().email}`);
     } else {
-        // Query contacts in parallel, then apply 50/50 distribution between
-        // contacts WITH websites vs contacts WITHOUT websites (bar profile)
-        // This ensures high-value website contacts get equal representation
-        const queryLimit = BATCH_SIZE * 2; // Fetch extra to ensure we have enough
+        // Query all eligible contacts (website + bar profile) in parallel,
+        // then merge into a single pool sorted by randomIndex for natural distribution.
+        // Firestore can't OR across different field conditions, so we run 3 queries.
+        const queryLimit = BATCH_SIZE * 2; // Fetch extra to handle filtering
 
         const [withWebsiteSnapshot, notFoundSnapshot, personalEmailSnapshot] = await Promise.all([
             // Contacts with website URLs
@@ -1097,64 +1097,34 @@ async function runCampaign() {
         console.log(`   - Bar profile (not_found): ${notFoundSnapshot.size}`);
         console.log(`   - Bar profile (personal_email): ${personalEmailSnapshot.size}`);
 
-        // Sort website contacts by randomIndex
-        const websiteDocs = withWebsiteSnapshot.docs
-            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
-
-        // Dedupe and sort bar profile contacts by randomIndex
-        const barProfileMap = new Map();
-        [...notFoundSnapshot.docs, ...personalEmailSnapshot.docs].forEach(doc => {
-            if (!barProfileMap.has(doc.id)) {
-                barProfileMap.set(doc.id, doc);
+        // Merge all contacts into a single deduplicated pool sorted by randomIndex
+        const contactMap = new Map();
+        [...withWebsiteSnapshot.docs, ...notFoundSnapshot.docs, ...personalEmailSnapshot.docs].forEach(doc => {
+            if (!contactMap.has(doc.id)) {
+                contactMap.set(doc.id, doc);
             }
         });
-        const barProfileDocs = Array.from(barProfileMap.values())
+        let mergedDocs = Array.from(contactMap.values())
             .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
 
         // Apply Yahoo/AOL filter if enabled
-        let filteredWebsiteDocs = websiteDocs;
-        let filteredBarProfileDocs = barProfileDocs;
         if (EXCLUDE_YAHOO_AOL) {
-            const beforeWebsite = filteredWebsiteDocs.length;
-            const beforeBarProfile = filteredBarProfileDocs.length;
-            filteredWebsiteDocs = filteredWebsiteDocs.filter(doc => !isYahooAolEmail(doc.data().email));
-            filteredBarProfileDocs = filteredBarProfileDocs.filter(doc => !isYahooAolEmail(doc.data().email));
-            const filtered = (beforeWebsite - filteredWebsiteDocs.length) + (beforeBarProfile - filteredBarProfileDocs.length);
+            const before = mergedDocs.length;
+            mergedDocs = mergedDocs.filter(doc => !isYahooAolEmail(doc.data().email));
+            const filtered = before - mergedDocs.length;
             if (filtered > 0) {
                 console.log(`🛡️  Excluded ${filtered} Yahoo/AOL emails (domain warming mode)`);
             }
         }
 
-        // 50/50 distribution: take half from each pool
-        // If one pool is short, supplement from the other
-        const halfBatch = Math.ceil(BATCH_SIZE / 2);
+        // Take top BATCH_SIZE contacts by randomIndex (natural distribution)
+        allDocs = mergedDocs.slice(0, BATCH_SIZE);
 
-        let websiteToTake = Math.min(halfBatch, filteredWebsiteDocs.length);
-        let barProfileToTake = Math.min(halfBatch, filteredBarProfileDocs.length);
-
-        // If website pool is short, take more from bar profile
-        const websiteShortfall = halfBatch - websiteToTake;
-        if (websiteShortfall > 0) {
-            barProfileToTake = Math.min(barProfileToTake + websiteShortfall, filteredBarProfileDocs.length);
-        }
-
-        // If bar profile pool is short, take more from website
-        const barProfileShortfall = halfBatch - barProfileToTake;
-        if (barProfileShortfall > 0) {
-            websiteToTake = Math.min(websiteToTake + barProfileShortfall, filteredWebsiteDocs.length);
-        }
-
-        // Select from each pool
-        const selectedWebsiteDocs = filteredWebsiteDocs.slice(0, websiteToTake);
-        const selectedBarProfileDocs = filteredBarProfileDocs.slice(0, barProfileToTake);
-
-        // Combine and sort by randomIndex for fair processing order
-        allDocs = [...selectedWebsiteDocs, ...selectedBarProfileDocs]
-            .sort((a, b) => (a.data().randomIndex || 0) - (b.data().randomIndex || 0));
-
-        console.log(`📊 50/50 distribution applied:`);
-        console.log(`   - Website contacts selected: ${selectedWebsiteDocs.length}`);
-        console.log(`   - Bar profile contacts selected: ${selectedBarProfileDocs.length}`);
+        const websiteCount = allDocs.filter(doc => doc.data().website && doc.data().website !== '').length;
+        const barProfileCount = allDocs.length - websiteCount;
+        console.log(`📊 Random selection (natural distribution):`);
+        console.log(`   - Website contacts: ${websiteCount}`);
+        console.log(`   - Bar profile contacts: ${barProfileCount}`);
         console.log(`   - Total batch: ${allDocs.length}`);
     }
 

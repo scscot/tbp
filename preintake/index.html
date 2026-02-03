@@ -2222,6 +2222,7 @@
                 if (preEscapeLink) {
                     preEscapeLink.addEventListener('click', function(e) {
                         e.preventDefault();
+                        fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=explore`).catch(() => {});
                         forceCloseDemoModal();
                     });
                 }

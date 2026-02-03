@@ -856,7 +856,7 @@
                         <div class="big-number-sub">${g.last7Days.sessions.toLocaleString()} sessions</div>
                     </div>
                     <div class="big-number-card">
-                        <h4>Page Views (7 Days)</h4>
+                        <h4>Page Views<br />(7 Days)</h4>
                         <div class="big-number">${g.last7Days.pageViews.toLocaleString()}</div>
                         <div class="big-number-sub">${fmtEngagement(g.last7Days.engagementRate)} engaged</div>
                     </div>
@@ -1197,9 +1197,8 @@
                                 <th>Source</th>
                                 <th>Created</th>
                                 <th>Visits</th>
+                                <th>Explored</th>
                                 <th>Demo Starts</th>
-                                <th>Status</th>
-                                <th>Subscription</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1214,15 +1213,14 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
-                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
+                                        <span class="view-count ${(lead.exploreCount || 0) > 0 ? 'viewed' : 'not-viewed'}">
+                                            ${(lead.exploreCount || 0) > 0 ? lead.exploreCount + 'x' : '-'}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="status-badge ${lead.status}">${lead.status.replace(/_/g, ' ')}</span>
-                                    </td>
-                                    <td>
-                                        <span class="subscription-badge ${lead.subscriptionStatus || 'none'}">${lead.subscriptionStatus ? lead.subscriptionStatus.replace(/_/g, ' ') : 'none'}</span>
+                                        <span class="view-count ${lead.viewCount > 0 ? 'viewed' : 'not-viewed'}">
+                                            ${lead.viewCount > 0 ? lead.viewCount + 'x' : '-'}
+                                        </span>
                                     </td>
                                 </tr>
                             `).join('')}
