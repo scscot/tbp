@@ -40,6 +40,10 @@ jobs:
   send-campaign:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+      MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -105,9 +109,6 @@ jobs:
 
       - name: Send email batch
         env:
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size || steps.warming.outputs.batch_size }}
           SKIP_TIME_CHECK: ${{ github.event.inputs.skip_time_check || 'false' }}
           # Exclude Yahoo/AOL during domain warming (remove this line when warming is complete)
@@ -121,9 +122,6 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        env:
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
         run: |
           curl -s --user "api:$MAILGUN_API_KEY" \
             https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages \
