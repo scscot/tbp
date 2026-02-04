@@ -391,7 +391,7 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
           const href = emailLink.getAttribute('href');
           const rawEmail = href.replace('mailto:', '').trim();
           if (rawEmail && rawEmail !== 'Unlisted' && !rawEmail.includes('Unlisted')) {
-            data.email = cleanEmail(rawEmail);
+            data.email = rawEmail;
           }
         }
 
@@ -443,6 +443,11 @@ async function scrapePracticeArea(page, db, practiceArea, existingEmails, stats)
       if (stats.totalInserted >= MAX_ATTORNEYS) {
         console.log(`Reached MAX_ATTORNEYS limit (${MAX_ATTORNEYS})`);
         break;
+      }
+
+      // Clean email in Node.js context (cleanEmail is not available inside page.evaluate)
+      if (attorney.email) {
+        attorney.email = cleanEmail(attorney.email);
       }
 
       // Skip if no email
