@@ -1365,15 +1365,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
     margin-bottom: 1.5rem;
-}
-
-.demo-pre-screen-logo span {
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
     font-weight: 600;
-    color: white;
+}
+
+.demo-pre-screen-logo .logo-icon {
+    height: 1.5rem;
+    width: auto;
+    margin-right: 0.5rem;
+}
+
+.demo-pre-screen-logo .logo-pre {
+    color: #ffffff;
+}
+
+.demo-pre-screen-logo .logo-intake {
+    color: #c9a962;
+}
+
+.demo-pre-screen-logo .logo-ai {
+    color: #ffffff;
 }
 
 .demo-pre-screen-content h2 {

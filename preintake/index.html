@@ -2091,6 +2091,12 @@
 
                 if (!demoLeadId) return false;
 
+                // Redirect to dedicated demo page (preserves all URL params)
+                const redirectUrl = `/demo/?demo=${demoLeadId}${firmNameFromUrl ? `&firm=${encodeURIComponent(firmNameFromUrl)}` : ''}`;
+                window.location.href = redirectUrl;
+                return true; // Redirecting, so we handled it
+
+                // NOTE: Code below is now unreachable but kept for reference
                 const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
                 const TRACK_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView';
 
@@ -2600,13 +2606,8 @@
             <div class="demo-pre-screen" id="demo-pre-screen">
                 <div class="demo-pre-screen-content">
                     <div class="demo-pre-screen-logo">
-                        <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M50 5 L90 25 L90 45 C90 70 70 90 50 95 C30 90 10 70 10 45 L10 25 Z" fill="url(#preScreenGold)" stroke="#c9a962" stroke-width="2"/>
-                            <path d="M50 20 L72 32 L72 46 C72 62 62 76 50 80 C38 76 28 62 28 46 L28 32 Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-                            <path d="M38 48 L46 56 L62 40" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                            <defs><linearGradient id="preScreenGold" x1="10" y1="5" x2="90" y2="95"><stop offset="0%" stop-color="#c9a962"/><stop offset="100%" stop-color="#a08339"/></linearGradient></defs>
-                        </svg>
-                        PreIntake.ai
+                        <img src="/images/icon.svg" alt="PreIntake.ai" class="logo-icon">
+                        <span class="logo-pre">Pre</span><span class="logo-intake">Intake</span><span class="logo-ai">.ai</span>
                     </div>
                     <h2>Welcome to Your Demo</h2>
                     <p class="demo-pre-firm-name" id="demo-pre-firm-name"></p>

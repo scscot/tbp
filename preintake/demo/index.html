@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5DR80KWBP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-V5DR80KWBP');
+    </script>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Your Demo | PreIntake.ai</title>
+    <meta name="description" content="Experience AI-powered legal intake for your firm.">
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="apple-touch-icon" href="/images/icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/components.js"></script>
+    <style>
+        /* Demo page specific styles */
+        .demo-page-content {
+            min-height: calc(100vh - 72px);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .demo-welcome {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-welcome-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .demo-welcome-logo .logo-icon {
+            height: 1.5rem;
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .demo-welcome-logo .logo-pre {
+            color: #ffffff;
+        }
+
+        .demo-welcome-logo .logo-intake {
+            color: #c9a962;
+        }
+
+        .demo-welcome-logo .logo-ai {
+            color: #ffffff;
+        }
+
+        .demo-welcome h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .demo-welcome-firm-name {
+            font-size: 1.75rem;
+            color: var(--accent-gold);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .demo-welcome-firm-name:empty {
+            display: none;
+        }
+
+        .demo-welcome-steps {
+            text-align: left;
+            margin: 1.5rem 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .demo-welcome-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.875rem;
+            color: white;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .demo-welcome-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-welcome-step-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: rgba(201, 169, 98, 0.2);
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .demo-welcome-step-email {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .demo-welcome-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1.5rem 0;
+        }
+
+        .demo-welcome-start-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .demo-welcome-start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .demo-welcome-explore-link {
+            display: block;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .demo-welcome-explore-link:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Iframe container (full width below header) */
+        .demo-iframe-container {
+            display: none;
+            width: 100%;
+            height: calc(100vh - 72px);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+        }
+
+        .demo-iframe-container.visible {
+            display: block;
+        }
+
+        .demo-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Exit confirmation modal */
+        .exit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.95);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+        }
+
+        .exit-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .exit-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .exit-modal-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .exit-modal-icon svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .exit-modal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .exit-modal p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .exit-modal-email {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .exit-modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .exit-modal-btn-continue {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            color: var(--primary-dark);
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .exit-modal-btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 169, 98, 0.4);
+        }
+
+        .exit-modal-btn-leave {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .exit-modal-btn-leave:hover {
+            background: #f8fafc;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+
+        /* Floating buttons (after demo completed) */
+        .demo-floating-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 9999;
+        }
+
+        .demo-floating-buttons.visible {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-page-content {
+                min-height: calc(100vh - 60px);
+                padding: 1rem;
+            }
+
+            .demo-welcome {
+                padding: 2rem 1.5rem;
+            }
+
+            .demo-welcome h1 {
+                font-size: 1.5rem;
+            }
+
+            .demo-welcome-firm-name {
+                font-size: 1.35rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .demo-iframe-container {
+                height: calc(100vh - 60px);
+            }
+
+            .exit-modal {
+                padding: 2rem 1.5rem;
+            }
+
+            .exit-modal h2 {
+                font-size: 1.25rem;
+            }
+
+            .demo-floating-buttons {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="preintake-header"></div>
+
+    <!-- Welcome Content (shown before demo starts) -->
+    <div class="demo-page-content" id="demo-page-content">
+        <div class="demo-welcome">
+            <div class="demo-welcome-logo">
+                <img src="/images/icon.svg" alt="PreIntake.ai" class="logo-icon">
+                <span class="logo-pre">Pre</span><span class="logo-intake">Intake</span><span class="logo-ai">.ai</span>
+            </div>
+            <h1>Welcome to Your Demo</h1>
+            <p class="demo-welcome-firm-name" id="demo-firm-name"></p>
+            <div class="demo-welcome-steps">
+                <div class="demo-welcome-step">
+                    <div class="demo-welcome-step-icon">1</div>
+                    <div>
+                        <strong>Try the Intake Conversation</strong>
+                        <span>Experience the AI-powered screening as your potential clients would</span>
+                    </div>
+                </div>
+                <div class="demo-welcome-step">
+                    <div class="demo-welcome-step-icon">2</div>
+                    <div>
+                        <strong>See the Case Assessment</strong>
+                        <span>Watch how inquiries get qualified with a GREEN, YELLOW, or RED rating</span>
+                    </div>
+                </div>
+                <div class="demo-welcome-step">
+                    <div class="demo-welcome-step-icon">3</div>
+                    <div>
+                        <strong>Receive the Lead Summary</strong>
+                        <span>A complete report is delivered to <span class="demo-welcome-step-email" id="demo-delivery-email">your email</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-welcome-divider"></div>
+            <button class="demo-welcome-start-btn" id="start-demo-btn">
+                Start Demo
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+            <a href="#" class="demo-welcome-explore-link" id="explore-link">I'll explore the site first</a>
+        </div>
+    </div>
+
+    <!-- Demo Iframe Container (shown after Start Demo clicked) -->
+    <div class="demo-iframe-container" id="demo-iframe-container">
+        <iframe class="demo-iframe" id="demo-iframe" src="" title="PreIntake Demo"></iframe>
+    </div>
+
+    <!-- Floating Buttons (shown after demo completed or closed) -->
+    <div class="demo-floating-buttons" id="demo-floating-buttons">
+        <a href="#" class="get-started-btn" id="get-started-btn">
+            Get Started
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </a>
+        <button class="view-demo-btn" id="view-demo-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            View Demo Again
+        </button>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="exit-modal-overlay" id="exit-modal">
+        <div class="exit-modal">
+            <div class="exit-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h2>Complete the Demo?</h2>
+            <p>To see the full value of PreIntake.ai, complete the intake conversation. You'll receive a sample lead notification at:</p>
+            <p class="exit-modal-email" id="exit-modal-email">your email</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">This shows exactly what your team receives for every inquiry.</p>
+            <div class="exit-modal-buttons">
+                <button class="exit-modal-btn-continue" id="exit-modal-continue">
+                    Continue Demo
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </button>
+                <button class="exit-modal-btn-leave" id="exit-modal-leave">
+                    Leave Anyway
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // =========================================================================
+        // CONFIGURATION
+        // =========================================================================
+        const STATUS_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/getPreIntakeFirmStatus';
+        const TRACK_ENDPOINT = 'https://us-west1-teambuilder-plus-fe74d.cloudfunctions.net/trackDemoView';
+
+        // =========================================================================
+        // STATE
+        // =========================================================================
+        let demoLeadId = null;
+        let firmName = null;
+        let deliveryEmail = null;
+        let demoStarted = false;
+        let intakeCompleted = false;
+        let pendingNavUrl = null;
+
+        // =========================================================================
+        // INITIALIZATION
+        // =========================================================================
+        function init() {
+            // Parse URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            demoLeadId = urlParams.get('demo');
+            firmName = urlParams.get('firm');
+
+            // If no demo ID, redirect to homepage
+            if (!demoLeadId) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Clean firm name for display
+            if (firmName) {
+                firmName = cleanFirmNameForDisplay(decodeURIComponent(firmName));
+                document.getElementById('demo-firm-name').textContent = firmName;
+            }
+
+            // Track visit
+            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=visit`).catch(() => {});
+
+            // Fetch firm status to get delivery email
+            fetchFirmStatus();
+
+            // Update header button to "Get Started"
+            updateHeaderButton();
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Intercept header navigation clicks
+            interceptHeaderNavigation();
+
+            // Listen for postMessages from iframe
+            window.addEventListener('message', handlePostMessage);
+        }
+
+        // =========================================================================
+        // FIRM STATUS
+        // =========================================================================
+        function fetchFirmStatus() {
+            fetch(`${STATUS_ENDPOINT}?leadId=${demoLeadId}`)
+                .then(response => response.ok ? response.json() : null)
+                .then(data => {
+                    if (!data) return;
+
+                    // Update delivery email display
+                    if (data.deliveryEmail) {
+                        deliveryEmail = data.deliveryEmail;
+                        document.getElementById('demo-delivery-email').textContent = deliveryEmail;
+                        document.getElementById('exit-modal-email').textContent = deliveryEmail;
+                    }
+
+                    // Update firm name if not from URL
+                    if (!firmName && data.firmName) {
+                        firmName = cleanFirmNameForDisplay(data.firmName);
+                        document.getElementById('demo-firm-name').textContent = firmName;
+                    }
+
+                    // If already subscribed, redirect to homepage with message
+                    if (data.subscriptionStatus === 'active') {
+                        // Could show a modal here instead
+                        console.log('Account already active');
+                    }
+                })
+                .catch(err => console.warn('Status check failed:', err));
+        }
+
+        // =========================================================================
+        // HEADER CUSTOMIZATION
+        // =========================================================================
+        function updateHeaderButton() {
+            // Wait for header to render
+            setTimeout(() => {
+                const accountBtn = document.querySelector('.nav-account');
+                if (accountBtn) {
+                    accountBtn.href = `/create-account.html?firm=${demoLeadId}`;
+                    accountBtn.textContent = 'Get Started →';
+                    accountBtn.classList.add('nav-get-started');
+                }
+            }, 100);
+        }
+
+        function interceptHeaderNavigation() {
+            // Wait for header to render
+            setTimeout(() => {
+                const navLinks = document.querySelectorAll('.nav-menu a:not(.nav-get-started)');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', handleNavClick);
+                });
+
+                // Also intercept logo click
+                const logo = document.querySelector('.logo');
+                if (logo) {
+                    logo.addEventListener('click', handleNavClick);
+                }
+            }, 100);
+        }
+
+        function handleNavClick(e) {
+            // If demo not started or intake completed, allow navigation
+            if (!demoStarted || intakeCompleted) {
+                return; // Allow normal navigation
+            }
+
+            // Demo started but not completed - show exit confirmation
+            e.preventDefault();
+            pendingNavUrl = e.currentTarget.href;
+            showExitModal();
+        }
+
+        // =========================================================================
+        // DEMO FLOW
+        // =========================================================================
+        function startDemo() {
+            demoStarted = true;
+
+            // Track view
+            fetch(`${TRACK_ENDPOINT}?firmId=${demoLeadId}&type=view`).catch(() => {});
+
+            // Store in sessionStorage for header button state
+            sessionStorage.setItem('tbp_demo_viewed', demoLeadId);
+
+            // Hide welcome content
+            document.getElementById('demo-page-content').style.display = 'none';
+
+            // Show and load iframe
+            const iframeContainer = document.getElementById('demo-iframe-container');
+            const iframe = document.getElementById('demo-iframe');
+
+            iframeContainer.classList.add('visible');
+            iframe.src = `https://preintake.ai/demo/${demoLeadId}?embed=true&skip_onboarding=true&_t=${Date.now()}`;
+        }
+
+        function showDemo() {
+            // Show iframe container
+            document.getElementById('demo-page-content').style.display = 'none';
+            document.getElementById('demo-iframe-container').classList.add('visible');
+            document.getElementById('demo-floating-buttons').classList.remove('visible');
+        }
+
+        function hideDemo() {
+            // Hide iframe, show floating buttons
+            document.getElementById('demo-iframe-container').classList.remove('visible');
+            document.getElementById('demo-floating-buttons').classList.add('visible');
+        }
+
+        // =========================================================================
+        // EXIT CONFIRMATION MODAL
+        // =========================================================================
+        function showExitModal() {
+            document.getElementById('exit-modal').classList.add('show');
+        }
+
+        function hideExitModal() {
+            document.getElementById('exit-modal').classList.remove('show');
+            pendingNavUrl = null;
+        }
+
+        function handleContinueDemo() {
+            hideExitModal();
+        }
+
+        function handleLeaveDemo() {
+            hideExitModal();
+
+            // Navigate to pending URL or homepage
+            if (pendingNavUrl) {
+                window.location.href = pendingNavUrl;
+            } else {
+                window.location.href = '/';
+            }
+        }
+
+        // =========================================================================
+        // POSTMESSAGE HANDLER
+        // =========================================================================
+        function handlePostMessage(e) {
+            if (!e.data || !e.data.type) return;
+
+            switch (e.data.type) {
+                case 'demo-started':
+                    // Capture delivery email from iframe
+                    if (e.data.firmEmail) {
+                        deliveryEmail = e.data.firmEmail;
+                        document.getElementById('exit-modal-email').textContent = deliveryEmail;
+                    }
+                    break;
+
+                case 'intake-completed':
+                    // Mark intake as completed - disable exit confirmation
+                    intakeCompleted = true;
+                    break;
+
+                case 'demo-complete':
+                    // Demo fully completed (user clicked OK on success modal)
+                    intakeCompleted = true;
+                    hideDemo();
+                    break;
+
+                case 'demo-complete-redirect':
+                    // User wants to go somewhere after demo
+                    intakeCompleted = true;
+                    if (e.data.redirectUrl && e.data.redirectUrl !== '/') {
+                        window.location.href = e.data.redirectUrl;
+                    } else {
+                        hideDemo();
+                    }
+                    break;
+            }
+        }
+
+        // =========================================================================
+        // EVENT LISTENERS
+        // =========================================================================
+        function setupEventListeners() {
+            // Start Demo button
+            document.getElementById('start-demo-btn').addEventListener('click', startDemo);
+
+            // Explore link (triggers exit confirmation)
+            document.getElementById('explore-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                pendingNavUrl = '/';
+                showExitModal();
+            });
+
+            // Exit modal buttons
+            document.getElementById('exit-modal-continue').addEventListener('click', handleContinueDemo);
+            document.getElementById('exit-modal-leave').addEventListener('click', handleLeaveDemo);
+
+            // Floating buttons
+            document.getElementById('get-started-btn').href = `/create-account.html?firm=${demoLeadId}`;
+            document.getElementById('view-demo-btn').addEventListener('click', showDemo);
+        }
+
+        // =========================================================================
+        // UTILITY
+        // =========================================================================
+        function cleanFirmNameForDisplay(name) {
+            if (!name) return '';
+            // Remove common suffixes that look redundant
+            return name
+                .replace(/,?\s*(Attorney at Law|Attorneys at Law|Law Firm|Law Office|Law Offices|PLLC|PLC|LLC|LLP|PC|P\.?C\.?|P\.?A\.?)$/i, '')
+                .trim();
+        }
+
+        // =========================================================================
+        // RUN
+        // =========================================================================
+        document.addEventListener('DOMContentLoaded', init);
+    })();
+    </script>
+</body>
+</html>

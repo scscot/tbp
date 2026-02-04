@@ -440,9 +440,9 @@ async function generateBarProfileDemoForContact(contactData) {
  */
 function generateEmailHTML(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    // Direct link to personalized demo via homepage with ?demo= parameter
-    // Include &firm= so homepage shows "Welcome [firmName]" banner immediately
-    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    // Direct link to personalized demo via dedicated demo page
+    // Include &firm= so the demo page shows firm name immediately
+    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     // Add greeting if firstName is available
     const greeting = firstName ? `<p style="font-size: 16px;">Hello ${firstName},</p>\n\n      ` : '';
@@ -627,7 +627,7 @@ function generateFallbackEmailHTML(firmName, email, firstName) {
  */
 function generateEmailPlainText(firmName, email, leadId, firstName) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
+    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=law_firms&utm_content=cta_button`;
 
     // Add greeting if firstName is available
     const greeting = firstName ? `Hello ${firstName},\n\n` : '';
@@ -717,7 +717,7 @@ Unsubscribe: ${unsubscribeUrl}`;
  */
 function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practiceArea, state) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
     // Format practice area for display
     const displayPracticeArea = practiceArea || 'legal';
@@ -799,7 +799,7 @@ function generateBarProfileEmailHTML(firmName, email, leadId, firstName, practic
  */
 function generateBarProfileEmailPlainText(firmName, email, leadId, firstName, practiceArea, state) {
     const unsubscribeUrl = `https://preintake.ai/unsubscribe.html?email=${encodeURIComponent(email)}`;
-    const demoUrl = `https://preintake.ai/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
+    const demoUrl = `https://preintake.ai/demo/?demo=${leadId}&firm=${encodeURIComponent(firmName)}&utm_source=email&utm_medium=outreach&utm_campaign=bar_profile&utm_content=cta_button`;
 
     const displayPracticeArea = practiceArea || 'legal';
 
