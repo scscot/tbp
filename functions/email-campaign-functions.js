@@ -48,7 +48,7 @@ const AB_TEST_VARIANTS = {
   },
   v4: {
     templateVersion: 'v4',
-    subject: 'Using AI to Build Your Direct Sales Team',
+    subject: 'Not an opportunity. Just a tool.',
     subjectTag: 'mobile_first_v4',
     description: 'Flip the script - confidence before joining'
   }
